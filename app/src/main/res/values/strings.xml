@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">MyDiary</string>
+
+    <string name="weather_api_key">d173aae09c9fc47e1ef98019e91cfd06</string>
+    <string name="ms">м/с</string>
+    <string name="wind">Ветер</string>
+    <string name="permission_request">Приложению требуется разрешение для определения
+        местоположения вашей новой записи</string>
+</resources>
