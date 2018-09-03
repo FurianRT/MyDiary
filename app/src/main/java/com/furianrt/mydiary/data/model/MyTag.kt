@@ -1,14 +1,19 @@
 package com.furianrt.mydiary.data.model
 
-import android.arch.persistence.room.*
+import android.arch.persistence.room.ColumnInfo
+import android.arch.persistence.room.Entity
+import android.arch.persistence.room.Ignore
+import android.arch.persistence.room.PrimaryKey
+import java.io.Serializable
 
-@Entity(tableName = "Tags", indices = [Index("id_note")], foreignKeys =
-[ForeignKey(entity = MyNote::class, parentColumns = ["id"], childColumns = ["id_note"],
-        onDelete = ForeignKey.CASCADE)])
-data class MyTag(@ColumnInfo(name = "id_note") val noteId: Long,
-                 @ColumnInfo(name = "name") val name: String) {
+@Entity(tableName = "Tags")
+ data class MyTag(
+        @ColumnInfo(name = "name") @PrimaryKey(autoGenerate = false) var name: String
+) : Serializable {
 
-    @ColumnInfo(name = "id")
-    @PrimaryKey(autoGenerate = true)
-    var id: Long = 0
+    @Ignore var isChecked: Boolean = false
+
+    constructor(name: String, isChecked: Boolean) : this(name) {
+        this.isChecked = isChecked
+    }
 }

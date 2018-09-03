@@ -86,7 +86,12 @@ class MainListAdapter(private val mListener: OnMainListItemInteractionListener)
                 text_day_of_week.text = getDayOfWeek(time)
                 text_day.text = getDay(time)
                 text_time.text = getTime(time)
-                text_note_title.text = mContentItem.note.title
+                val title = mContentItem.note.title
+                if (title.isEmpty()) {
+                    text_note_title.visibility = View.GONE
+                } else {
+                    text_note_title.text =title
+                }
                 text_note_content.text = mContentItem.note.content
             }
         }

@@ -1,7 +1,10 @@
 package com.furianrt.mydiary.di.application
 
 import android.app.Application
+import android.arch.persistence.db.SupportSQLiteDatabase
 import android.arch.persistence.room.Room
+import android.arch.persistence.room.RoomDatabase
+import android.content.ContentValues
 import android.content.Context
 import android.util.Log
 import com.furianrt.mydiary.LOG_TAG
@@ -52,8 +55,19 @@ class AppModule(private val app: Application) {
 
     @Provides
     @AppScope
-    fun provideContactDatabase(context: Context, @DatabaseInfo databaseName: String) =
+    fun provideRoomCallback() = object : RoomDatabase.Callback() {
+                override fun onCreate(db: SupportSQLiteDatabase) {
+                    super.onCreate(db)
+                    setInitialData(db)
+                }
+            }
+
+    @Provides
+    @AppScope
+    fun provideNoteDatabase(context: Context, @DatabaseInfo databaseName: String,
+                               callback: RoomDatabase.Callback) =
             Room.databaseBuilder(context, NoteDatabase::class.java, databaseName)
+                    .addCallback(callback)
                     .build()
 
     @Provides
@@ -107,4 +121,34 @@ class AppModule(private val app: Application) {
     @AppScope
     fun provideWeatherApiService(retrofit: Retrofit): WeatherApiService =
             retrofit.create(WeatherApiService::class.java)
+
+    private fun setInitialData(db: SupportSQLiteDatabase) {
+        val cv = ContentValues()
+        cv.put("name", app.getString(R.string.mood_great))
+        db.insert("Moods", 0, cv)
+        cv.put("name", app.getString(R.string.mood_good))
+        db.insert("Moods", 0, cv)
+        cv.put("name", app.getString(R.string.mood_normal))
+        db.insert("Moods", 0, cv)
+        cv.put("name", app.getString(R.string.mood_bad))
+        db.insert("Moods", 0, cv)
+        cv.put("name", app.getString(R.string.mood_terrible))
+        db.insert("Moods", 0, cv)
+        cv.put("name", app.getString(R.string.tag_dream))
+        db.insert("Tags", 0, cv)
+        cv.put("name", app.getString(R.string.tag_idea))
+        db.insert("Tags", 0, cv)
+        cv.put("name", app.getString(R.string.tag_plans))
+        db.insert("Tags", 0, cv)
+        cv.put("name", app.getString(R.string.package_love))
+        db.insert("Packages", 0, cv)
+        cv.put("name", app.getString(R.string.package_friends))
+        db.insert("Packages", 0, cv)
+        cv.put("name", app.getString(R.string.package_business))
+        db.insert("Packages", 0, cv)
+        cv.put("name", app.getString(R.string.package_todo))
+        db.insert("Packages", 0, cv)
+        cv.put("name", app.getString(R.string.package_entertainment))
+        db.insert("Packages", 0, cv)
+    }
 }

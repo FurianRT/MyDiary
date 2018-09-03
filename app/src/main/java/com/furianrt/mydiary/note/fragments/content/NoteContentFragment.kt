@@ -47,7 +47,12 @@ class NoteContentFragment : Fragment(), NoteContentFragmentContract.View {
         mPresenter.attachView(this)
 
         view.apply {
-            text_note_title.text = mNote.title
+            val title = mNote.title
+            if (title.isEmpty()) {
+                text_note_title.visibility = View.GONE
+            } else {
+                text_note_title.text = mNote.title
+            }
             text_note_content.text = mNote.content
         }
 
@@ -60,7 +65,12 @@ class NoteContentFragment : Fragment(), NoteContentFragmentContract.View {
         Log.e("fff", "FragmentContent.showNote()")
         mNote = note
         view?.let {
-            it.text_note_title.text = mNote.title
+            val title = mNote.title
+            if (title.isEmpty()) {
+                it.text_note_title.visibility = View.GONE
+            } else {
+                it.text_note_title.text = mNote.title
+            }
             it.text_note_content.text = mNote.content
         }
     }

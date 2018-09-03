@@ -30,10 +30,10 @@
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
             android:background="@color/white"
-            android:text="22"
             android:textSize="14pt"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/container_note_edit" />
+            app:layout_constraintTop_toBottomOf="@id/container_note_edit"
+            tools:text="22" />
 
         <TextView
             android:id="@+id/text_day_of_week"
@@ -41,29 +41,50 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
-            android:text="Среда"
             app:layout_constraintStart_toEndOf="@id/text_day"
-            app:layout_constraintTop_toBottomOf="@id/container_note_edit" />
+            app:layout_constraintTop_toBottomOf="@id/container_note_edit"
+            tools:text="Среда" />
 
         <TextView
             android:id="@+id/text_month"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
-            android:text="Август"
             android:textAllCaps="true"
             app:layout_constraintStart_toEndOf="@id/text_day"
-            app:layout_constraintTop_toBottomOf="@id/text_day_of_week" />
+            app:layout_constraintTop_toBottomOf="@id/text_day_of_week"
+            tools:text="Август" />
 
         <TextView
             android:id="@+id/text_year"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
-            android:text="2018"
             android:textAllCaps="true"
             app:layout_constraintStart_toEndOf="@id/text_month"
-            app:layout_constraintTop_toBottomOf="@id/text_day_of_week" />
+            app:layout_constraintTop_toBottomOf="@id/text_day_of_week"
+            tools:text="2018" />
+
+        <TextView
+            android:id="@+id/text_static_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:text="@string/time"
+            app:layout_constraintEnd_toStartOf="@id/image_weather"
+            app:layout_constraintStart_toEndOf="@id/text_year"
+            app:layout_constraintTop_toBottomOf="@id/container_note_edit" />
+
+        <TextView
+            android:id="@+id/text_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toStartOf="@id/image_weather"
+            app:layout_constraintStart_toEndOf="@id/text_year"
+            app:layout_constraintTop_toBottomOf="@id/text_static_time"
+            tools:text="20:15" />
 
         <TextView
             android:id="@+id/text_temp"
@@ -114,7 +135,7 @@
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
             android:drawableStart="@drawable/ic_tag"
-            android:text="Теги"
+            android:text="@string/choose_tags"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/text_categories" />
 
@@ -147,6 +168,7 @@
             android:layout_marginEnd="8dp"
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
+            android:visibility="invisible"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/text_location" />

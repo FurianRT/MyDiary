@@ -13,6 +13,8 @@ import com.furianrt.mydiary.note.fragments.content.NoteContentFragmentContract
 import com.furianrt.mydiary.note.fragments.content.NoteContentFragmentPresenter
 import com.furianrt.mydiary.note.fragments.edit.NoteEditFragmentContract
 import com.furianrt.mydiary.note.fragments.edit.NoteEditFragmentPresenter
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationServices
 import dagger.Module
 import dagger.Provides
 
@@ -21,8 +23,8 @@ class PresenterModule(private val context: Context) {
 
     @Provides
     @PresenterScope
-    fun provideLocationManager() =
-            context.getSystemService(Context.LOCATION_SERVICE) as LocationManager
+    fun provideFusedLocationProviderClient(): FusedLocationProviderClient =
+            LocationServices.getFusedLocationProviderClient(context)
 
     @Provides
     @PresenterScope

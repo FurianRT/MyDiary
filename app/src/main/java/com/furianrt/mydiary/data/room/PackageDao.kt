@@ -3,6 +3,7 @@ package com.furianrt.mydiary.data.room
 import android.arch.persistence.room.*
 import com.furianrt.mydiary.data.model.MyPackage
 import io.reactivex.Flowable
+import io.reactivex.Observable
 
 @Dao
 interface PackageDao {
@@ -17,5 +18,5 @@ interface PackageDao {
     fun delete(pack: MyPackage)
 
     @Query("SELECT * FROM Packages")
-    fun getAllNotes(): Flowable<List<MyPackage>>
+    fun getAllPackages(): Flowable<List<MyPackage>>
 }

@@ -2,6 +2,7 @@ package com.furianrt.mydiary.note
 
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import android.support.v4.view.ViewPager
 import android.util.Log
 import com.furianrt.mydiary.LOG_TAG
 import com.furianrt.mydiary.R
@@ -38,6 +39,19 @@ class NoteActivity : AppCompatActivity(), NoteActivityContract.View {
         mPagerAdapter = NotePagerAdapter(supportFragmentManager, mode)
 
         pager_note.adapter = mPagerAdapter
+        pager_note.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
+            override fun onPageScrollStateChanged(p0: Int) {
+
+            }
+
+            override fun onPageScrolled(p0: Int, p1: Float, p2: Int) {
+
+            }
+
+            override fun onPageSelected(position: Int) {
+                mPagerPosition = position
+            }
+        })
 
         mPresenter.loadNotes(mode)
     }

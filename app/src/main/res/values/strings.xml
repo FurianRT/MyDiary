@@ -6,4 +6,26 @@
     <string name="wind">Ветер</string>
     <string name="permission_request">Приложению требуется разрешение для определения
         местоположения вашей новой записи</string>
+    <string name="time">Время</string>
+    <string name="mood_great">Отличное</string>
+    <string name="mood_good">Хорошее</string>
+    <string name="mood_normal">Нормальное</string>
+    <string name="mood_bad">Плохое</string>
+    <string name="mood_terrible">Ужасное</string>
+    <string name="tag_dream">Мечта</string>
+    <string name="tag_idea">Идея</string>
+    <string name="tag_plans">Планы</string>
+    <string name="package_entertainment">Развлечение</string>
+    <string name="package_business">Бизнесс</string>
+    <string name="package_friends">Друзья</string>
+    <string name="package_love">Любовь</string>
+    <string name="package_todo">План</string>
+
+    <string name="save">Сохранить</string>
+    <string name="cancel">Отмена</string>
+    <string name="edit">Редактировать</string>
+    <string name="delete">Удалить</string>
+
+    <string name="choose_tags">Выберите теги</string>
+
 </resources>

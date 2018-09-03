@@ -3,6 +3,8 @@ package com.furianrt.mydiary.data.room
 import android.arch.persistence.room.*
 import com.furianrt.mydiary.data.model.MyTag
 import io.reactivex.Flowable
+import io.reactivex.Observable
+import io.reactivex.Single
 
 @Dao
 interface TagDao {
@@ -17,5 +19,5 @@ interface TagDao {
     fun delete(tag: MyTag)
 
     @Query("SELECT * FROM Tags")
-    fun getAllNotes(): Flowable<List<MyTag>>
+    fun getAllTags(): Single<List<MyTag>>
 }

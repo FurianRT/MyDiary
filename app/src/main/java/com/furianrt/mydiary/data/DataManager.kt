@@ -2,9 +2,10 @@ package com.furianrt.mydiary.data
 
 import com.furianrt.mydiary.data.api.Forecast
 import com.furianrt.mydiary.data.model.MyNote
-import io.reactivex.Completable
-import io.reactivex.Flowable
-import io.reactivex.Single
+import com.furianrt.mydiary.data.model.MyTag
+import com.furianrt.mydiary.data.model.NoteTag
+import com.furianrt.mydiary.data.model.NoteWithTags
+import io.reactivex.*
 
 interface DataManager {
 
@@ -16,7 +17,19 @@ interface DataManager {
 
     fun getAllNotes(): Flowable<List<MyNote>>
 
-    fun contains(noteId: Long): Single<Boolean>
+    fun getNoteWithTags(noteId: Long): Single<NoteWithTags>
+
+    fun getAllTags(): Single<List<MyTag>>
+
+    fun findNote(noteId: Long): Maybe<MyNote>
 
     fun getForecast(lat: Double, lon: Double): Single<Forecast>
+
+    fun deleteNoteTag(noteTag: NoteTag): Completable
+
+    fun deleteAllTagsForNote(noteId: Long): Completable
+
+    fun insertNoteTag(noteTag: NoteTag): Completable
+
+    fun insertAllNoteTag(noteTags: List<NoteTag>): Completable
 }

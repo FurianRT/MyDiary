@@ -2,10 +2,8 @@ package com.furianrt.mydiary.note.fragments
 
 import android.Manifest
 import android.annotation.SuppressLint
-import android.location.Criteria
-import android.location.Location
-import android.location.LocationListener
-import android.location.LocationManager
+import android.content.Context
+import android.graphics.Color
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
@@ -15,23 +13,28 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.furianrt.mydiary.LOG_TAG
-
 import com.furianrt.mydiary.R
 import com.furianrt.mydiary.data.api.Forecast
 import com.furianrt.mydiary.data.model.MyNote
+import com.furianrt.mydiary.data.model.MyTag
 import com.furianrt.mydiary.note.Mode
+import com.furianrt.mydiary.note.dialogs.TagsDialog
 import com.furianrt.mydiary.note.fragments.content.NoteContentFragment
 import com.furianrt.mydiary.note.fragments.edit.ClickedView
 import com.furianrt.mydiary.note.fragments.edit.NoteEditFragment
 import com.furianrt.mydiary.utils.*
 import com.google.android.gms.maps.*
-import com.google.android.gms.maps.model.LatLng
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.fragment_note.*
 import kotlinx.android.synthetic.main.fragment_note.view.*
 import pub.devrel.easypermissions.AfterPermissionGranted
 import pub.devrel.easypermissions.EasyPermissions
 import javax.inject.Inject
+import android.location.Geocoder
+import android.os.Looper
+import com.google.android.gms.location.*
+import com.google.android.gms.maps.model.LatLng
+import java.util.*
 
 inline fun FragmentManager.inTransaction(func: FragmentTransaction.() -> Unit) {
     val fragmentTransaction = beginTransaction()
@@ -42,22 +45,36 @@ inline fun FragmentManager.inTransaction(func: FragmentTransaction.() -> Unit) {
 const val ARG_NOTE = "note"
 const val ARG_MODE = "mode"
 
-private const val MIN_TIME = 400L
-private const val ZOOM = 15f
-private const val MIN_DISTANCE = 1f
+private const val LOCATION_INTERVAL = 400L
 private const val REQUEST_CODE = 123
+private const val ZOOM = 15f
 
-class NoteFragment : Fragment(), NoteFragmentContract.View, OnMapReadyCallback, LocationListener {
+class NoteFragment : Fragment(), NoteFragmentContract.View, OnMapReadyCallback,
+        TagsDialog.OnTagsDialogInteractionListener, View.OnClickListener {
 
     private lateinit var mNote: MyNote
     private lateinit var mMode: Mode
     private var mGoogleMap: GoogleMap? = null
+    private val mMapFragment = SupportMapFragment()
 
     @Inject
-    lateinit var mLocationManager: LocationManager
+    lateinit var mFusedLocationClient: FusedLocationProviderClient
 
     @Inject
     lateinit var mPresenter: NoteFragmentContract.Presenter
+
+    private val mLocationCallback = object : LocationCallback() {
+        override fun onLocationResult(result: LocationResult?) {
+            super.onLocationResult(result)
+            if (result != null) {
+                mFusedLocationClient.removeLocationUpdates(this)
+                val lastLocation = result.lastLocation
+                val latLng = LatLng(lastLocation.latitude, lastLocation.longitude)
+                mPresenter.getForecast(latLng)
+                showLocation(latLng)
+            }
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         getPresenterComponent(context!!).inject(this)
@@ -80,14 +97,31 @@ class NoteFragment : Fragment(), NoteFragmentContract.View, OnMapReadyCallback, 
             text_day_of_week.text = getFullDayOfWeek(time)
             text_month.text = getMonth(time)
             text_year.text = getYear(time)
+            text_time.text = getTime(time)
+            text_tags.setOnClickListener(this@NoteFragment)
         }
 
-        showFragments(savedInstanceState)
+        if (mNote.id != 0L) {
+            mPresenter.loadNoteProperties(mNote)
+        }
+
+        addFragments(savedInstanceState)
+
+        mMapFragment.getMapAsync(this@NoteFragment)
 
         return view
     }
 
-    private fun showFragments(savedInstanceState: Bundle?) {
+    override fun setUserVisibleHint(isVisibleToUser: Boolean) {
+        super.setUserVisibleHint(isVisibleToUser)
+        if (isVisibleToUser) {
+            val dialog =
+                    fragmentManager?.findFragmentByTag(TagsDialog::class.toString()) as TagsDialog?
+            dialog?.setOnTagChangedListener(this)
+        }
+    }
+
+    private fun addFragments(savedInstanceState: Bundle?) {
         val contentTag = NoteContentFragment::class.toString()
         if (childFragmentManager.findFragmentByTag(contentTag) == null) {
             childFragmentManager.inTransaction {
@@ -110,18 +144,30 @@ class NoteFragment : Fragment(), NoteFragmentContract.View, OnMapReadyCallback, 
         }
         if (mMode == Mode.ADD && isNetworkAvailable(context!!)) {
             val mapTag = SupportMapFragment::class.toString()
-                if (childFragmentManager.findFragmentByTag(mapTag) == null) {
-                    childFragmentManager.inTransaction {
-                        val mapFragment = SupportMapFragment()
-                        add(R.id.container_map_note, mapFragment, mapTag)
-                        mapFragment.getMapAsync(this@NoteFragment)
-                        Log.e(LOG_TAG, "LoadingMap")
-                    }
+            if (childFragmentManager.findFragmentByTag(mapTag) == null) {
+                childFragmentManager.inTransaction {
+                    add(R.id.container_map_note, mMapFragment, mapTag)
                 }
-                mPresenter.getForecast()
+            }
         } else if (mMode == Mode.READ) {
 
         }
+    }
+
+    override fun onClick(v: View) {
+        val editTag = NoteEditFragment::class.toString()
+        if (mMode == Mode.ADD && childFragmentManager.findFragmentByTag(editTag) != null) {
+            childFragmentManager.popBackStack()
+        }
+        when(v.id) {
+            R.id.text_tags -> mPresenter.onTagsFieldClick(mNote)
+        }
+    }
+
+    override fun showTagsDialog(tags: ArrayList<MyTag>) {
+        val dialog = TagsDialog.newInstance(tags)
+        dialog.setOnTagChangedListener(this)
+        dialog.show(activity?.supportFragmentManager, TagsDialog::class.toString())
     }
 
     override fun showForecast(forecast: Forecast?) {
@@ -137,6 +183,28 @@ class NoteFragment : Fragment(), NoteFragmentContract.View, OnMapReadyCallback, 
         text_wind_speed.text = wind
     }
 
+    override fun showTagNames(tagNames: List<String>) {
+        if (tagNames.isEmpty()) {
+            view?.text_tags?.text = getString(R.string.choose_tags)
+            view?.text_tags?.setTextColor(resources.getColor(R.color.grey_dark))
+        } else {
+            view?.text_tags?.text = tagNames.joinToString(", ")
+            view?.text_tags?.setTextColor(Color.BLACK)
+        }
+    }
+
+    override fun onTagsDialogPositiveButtonClick(tags: List<MyTag>) {
+        mPresenter.changeNoteTags(mNote, tags)
+    }
+
+    override fun onTagsDialogTagDeleted() {
+
+    }
+
+    override fun onTagsDialogTagEdited() {
+
+    }
+
     override fun onDestroyView() {
         super.onDestroyView()
         mPresenter.detachView()
@@ -149,47 +217,46 @@ class NoteFragment : Fragment(), NoteFragmentContract.View, OnMapReadyCallback, 
 
     override fun onMapReady(map: GoogleMap?) {
         Log.e(LOG_TAG, "MapLoaded")
-        view?.container_map_note?.visibility = View.GONE
         mGoogleMap = map
-        mGoogleMap?.uiSettings?.isScrollGesturesEnabled = false
-        val permission = Manifest.permission.ACCESS_FINE_LOCATION
-        if (EasyPermissions.hasPermissions(context!!, permission)) {
+        mGoogleMap?.let {
+            it.uiSettings.isScrollGesturesEnabled = false
+            requestLocationPermissions(context!!)
+        }
+    }
+
+    private fun requestLocationPermissions(context: Context) {
+        val permission1 = Manifest.permission.ACCESS_FINE_LOCATION
+        val permission2 = Manifest.permission.ACCESS_COARSE_LOCATION
+        if (EasyPermissions.hasPermissions(context, permission1, permission2)) {
             requestLocation()
         } else {
             EasyPermissions.requestPermissions(this, getString(R.string.permission_request),
-                    REQUEST_CODE, permission)
+                    REQUEST_CODE, permission1, permission2)
         }
     }
 
     @SuppressLint("MissingPermission")
     @AfterPermissionGranted(REQUEST_CODE)
     private fun requestLocation() {
-        val criteria = Criteria()
-        val provider = mLocationManager.getBestProvider(criteria, false)
-        mLocationManager.requestLocationUpdates(provider, MIN_TIME, MIN_DISTANCE, this)
-    }
-
-    override fun onLocationChanged(location: Location?) {
-        location?.let {
-            Log.e(LOG_TAG, "ApplyingCoordsTOMap")
-            val coords = LatLng(it.latitude, it.longitude)
-            val camera = CameraUpdateFactory.newLatLngZoom(coords, ZOOM)
-            mGoogleMap?.moveCamera(camera)
-            mLocationManager.removeUpdates(this)
-            view?.container_map_note?.visibility = View.VISIBLE
+        val locationRequest = LocationRequest.create()
+        locationRequest.apply {
+            interval = LOCATION_INTERVAL
+            priority = LocationRequest.PRIORITY_HIGH_ACCURACY
         }
+
+        mFusedLocationClient
+                .requestLocationUpdates(locationRequest,mLocationCallback, Looper.myLooper())
     }
 
-    override fun onProviderDisabled(provider: String?) {
-        Log.e(LOG_TAG, "onProviderDisabled")
-    }
-
-    override fun onProviderEnabled(provider: String?) {
-        Log.e(LOG_TAG, "onProviderEnabled")
-    }
-
-    override fun onStatusChanged(provider: String?, status: Int, extras: Bundle?) {
-        Log.e(LOG_TAG, "onStatusChanged")
+    private fun showLocation(latLng: LatLng) {
+        val geocoder = Geocoder(context, Locale.getDefault())
+        val addresses = geocoder.getFromLocation(latLng.latitude, latLng.longitude, 1)
+        val address = addresses[0].getAddressLine(0)
+        view?.text_location?.text = address
+        view?.text_location?.setTextColor(resources.getColor(R.color.black))
+        val camera = CameraUpdateFactory.newLatLngZoom(latLng, ZOOM)
+        mGoogleMap?.moveCamera(camera)
+        view?.container_map_note?.visibility = View.VISIBLE
     }
 
     companion object {

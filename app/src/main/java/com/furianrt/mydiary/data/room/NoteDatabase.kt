@@ -2,17 +2,22 @@ package com.furianrt.mydiary.data.room
 
 import android.arch.persistence.room.Database
 import android.arch.persistence.room.RoomDatabase
-import com.furianrt.mydiary.data.model.MyNote
-import com.furianrt.mydiary.data.model.MyPackage
-import com.furianrt.mydiary.data.model.MyTag
+import com.furianrt.mydiary.data.model.*
 
-@Database(entities = [MyNote::class, MyPackage::class, MyTag::class], version = 1,
-        exportSchema = false)
+@Database(entities =
+[MyNote::class, MyPackage::class, MyTag::class, MyMood::class, MyLocation::class, NoteTag::class],
+        version = 1, exportSchema = false)
 abstract class NoteDatabase : RoomDatabase() {
 
-    abstract fun myNoteDao(): NoteDao
+    abstract fun noteDao(): NoteDao
 
-    abstract fun myPackageDao(): PackageDao
+    abstract fun packageDao(): PackageDao
 
-    abstract fun myTagDao(): TagDao
+    abstract fun tagDao(): TagDao
+
+    abstract fun moodDao(): MoodDao
+
+    abstract fun locationDao(): LocationDao
+
+    abstract fun noteTagDao(): NoteTagDao
 }

@@ -2,13 +2,15 @@ package com.furianrt.mydiary.data.room
 
 import android.arch.persistence.room.*
 import com.furianrt.mydiary.data.model.MyNote
+import com.furianrt.mydiary.data.model.NoteWithTags
 import io.reactivex.Flowable
+import io.reactivex.Maybe
 import io.reactivex.Single
 
 @Dao
 interface NoteDao {
 
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insert(note: MyNote): Long
 
     @Update
@@ -20,6 +22,10 @@ interface NoteDao {
     @Query("SELECT * FROM Notes ORDER BY time DESC")
     fun getAllNotes(): Flowable<List<MyNote>>
 
-    @Query("SELECT COUNT(*) FROM Notes WHERE id =:noteId")
-    fun contains(noteId: Long): Single<Boolean>
+    @Transaction
+    @Query("SELECT * FROM Notes WHERE id=:noteId")
+    fun getNoteWithTags(noteId: Long): Single<NoteWithTags>
+
+    @Query("SELECT * FROM Notes WHERE id =:noteId")
+    fun findNote(noteId: Long): Maybe<MyNote>
 }
