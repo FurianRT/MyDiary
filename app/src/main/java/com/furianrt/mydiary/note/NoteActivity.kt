@@ -1,16 +1,16 @@
 package com.furianrt.mydiary.note
 
-import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.v4.view.ViewPager
+import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import com.furianrt.mydiary.LOG_TAG
 import com.furianrt.mydiary.R
 import com.furianrt.mydiary.data.model.MyNote
+import com.furianrt.mydiary.main.EXTRA_CLICKED_NOTE_POSITION
 import kotlinx.android.synthetic.main.activity_note.*
 import javax.inject.Inject
 
-const val EXTRA_POSITION = "position"
 const val EXTRA_MODE = "mode"
 
 enum class Mode { ADD, READ }
@@ -31,8 +31,8 @@ class NoteActivity : AppCompatActivity(), NoteActivityContract.View {
 
         mPresenter.attachView(this)
 
-        mPagerPosition = savedInstanceState?.getInt(EXTRA_POSITION, 0) ?:
-                intent.getIntExtra(EXTRA_POSITION, 0)
+        mPagerPosition = savedInstanceState?.getInt(EXTRA_CLICKED_NOTE_POSITION, 0) ?:
+                intent.getIntExtra(EXTRA_CLICKED_NOTE_POSITION, 0)
 
         val mode = intent.getSerializableExtra(EXTRA_MODE) as Mode
 
@@ -58,7 +58,7 @@ class NoteActivity : AppCompatActivity(), NoteActivityContract.View {
 
     override fun onSaveInstanceState(outState: Bundle?) {
         super.onSaveInstanceState(outState)
-        outState?.putInt(EXTRA_POSITION, pager_note.currentItem)
+        outState?.putInt(EXTRA_CLICKED_NOTE_POSITION, pager_note.currentItem)
     }
 
     override fun showNotes(notes: List<MyNote>) {

@@ -96,11 +96,11 @@ class TagsDialog
     }
 
     override fun showTags(tags: MutableList<MyTag>) {
-        mListAdapter.submitList(tags)
+        mListAdapter.submitList(tags.toMutableList())
     }
 
     private fun initUiElements(view: View?) {
-        showTags(mTags)
+        mListAdapter.submitList(mTags)
 
         view?.apply {
             val textSearch = search_add_tags

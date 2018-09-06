@@ -12,6 +12,4 @@ class TagsDialogDiffCallback : DiffUtil.ItemCallback<MyTag>() {
     override fun areContentsTheSame(oldItem: MyTag, newItem: MyTag): Boolean {
         return oldItem == newItem
     }
-
-
 }

@@ -108,16 +108,16 @@ class NoteFragment : Fragment(), NoteFragmentContract.View, OnMapReadyCallback,
 
         addFragments(savedInstanceState)
 
+        view.map_touch_event_interceptor.setOnTouchListener { _, _ -> true }
+
         return view
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         mPresenter.loadNoteProperties(mNote)
-
-        if (isNetworkAvailable(context!!) && isLocationEnabled(context!!)) {
-            mPresenter.findLocation(mNote, mMode)
-        }
+        mPresenter.findLocation(mNote, mMode,
+                isLocationEnabled(context!!), isNetworkAvailable(context!!))
     }
 
     override fun requestLocationPermissions() {

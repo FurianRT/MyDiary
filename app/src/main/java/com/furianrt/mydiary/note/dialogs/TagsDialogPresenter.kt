@@ -19,6 +19,10 @@ class TagsDialogPresenter(private val mDataManager: DataManager) : TagsDialogCon
     override fun onTagClicked(tags: MutableList<MyTag>, tag: MyTag) {
         tags.find { it.id == tag.id }
                 ?.isChecked = tag.isChecked
+        mView?.showTags(tags)
+
+        /*tags.find { it.id == tag.id }
+                ?.isChecked = tag.isChecked*/
     }
 
     override fun onButtonAddTagClicked(tagName: String, tags: MutableList<MyTag>) {

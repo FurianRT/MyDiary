@@ -57,14 +57,15 @@ class NoteFragmentPresenter(private val mDataManager: DataManager) : NoteFragmen
         }
     }
 
-    override fun findLocation(note: MyNote, mode: Mode) {
+    override fun findLocation(note: MyNote, mode: Mode, locationEnabled: Boolean,
+                              networkAvailable: Boolean) {
         val latitude = note.latitude
         val longitude = note.longitude
         if (latitude != null && longitude != null) {
             val address = note.address
             if (address != null) {
                 mView?.showAddress(address)
-            } else {
+            } else if (mode == Mode.ADD && networkAvailable) {
                 mView?.findAddress(latitude, longitude)
             }
 
@@ -73,10 +74,10 @@ class NoteFragmentPresenter(private val mDataManager: DataManager) : NoteFragmen
             val forecast = note.forecast
             if (forecast != null) {
                 mView?.showForecast(forecast)
-            } else {
+            } else if (mode == Mode.ADD && networkAvailable) {
                 getForecast(note)
             }
-        } else if (mode == Mode.ADD) {
+        } else if (mode == Mode.ADD && networkAvailable && locationEnabled) {
             mView?.requestLocationPermissions()
         }
     }

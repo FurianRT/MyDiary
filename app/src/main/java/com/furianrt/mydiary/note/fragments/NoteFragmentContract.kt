@@ -43,7 +43,7 @@ interface NoteFragmentContract {
 
         fun onLocationReceived(note: MyNote, result: LocationResult)
 
-        fun findLocation(note: MyNote, mode: Mode)
+        fun findLocation(note: MyNote, mode: Mode, locationEnabled: Boolean, networkAvailable: Boolean)
 
         fun onPermissionsGranted()
 

@@ -13,8 +13,7 @@ import com.furianrt.mydiary.data.model.MyTag
 import kotlinx.android.synthetic.main.dialog_tags_list_item.view.*
 
 class TagsDialogListAdapter(private val mListener: OnTagChangedListener)
-    : ListAdapter<MyTag,
-        TagsDialogListAdapter.TagsDialogViewHolder>(TagsDialogDiffCallback()) {
+    : ListAdapter<MyTag, TagsDialogListAdapter.TagsDialogViewHolder>(TagsDialogDiffCallback()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TagsDialogViewHolder {
         val view = LayoutInflater.from(parent.context)
