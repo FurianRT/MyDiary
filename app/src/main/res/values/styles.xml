@@ -7,10 +7,11 @@
     </style>
 
     <style name="SearchViewStyle" parent="Widget.AppCompat.SearchView">
-        <item name="searchIcon">@drawable/ic_search</item>
+        <item name="searchIcon">@drawable/ic_add</item>
+        <item name="closeIcon">@drawable/ic_done</item>
         <item name="searchHintIcon">@null</item>
+        <item name="android:textColorHint">@color/grey</item>
         <item name="android:editTextColor">@android:color/white</item>
-
     </style>
 
 </resources>

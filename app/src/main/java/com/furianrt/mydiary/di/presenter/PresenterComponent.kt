@@ -2,6 +2,7 @@ package com.furianrt.mydiary.di.presenter
 
 import com.furianrt.mydiary.main.MainActivity
 import com.furianrt.mydiary.note.NoteActivity
+import com.furianrt.mydiary.note.dialogs.TagsDialog
 import com.furianrt.mydiary.note.fragments.NoteFragment
 import com.furianrt.mydiary.note.fragments.content.NoteContentFragment
 import com.furianrt.mydiary.note.fragments.edit.NoteEditFragment
@@ -20,4 +21,6 @@ interface PresenterComponent {
     fun inject(fragment: NoteEditFragment)
 
     fun inject(fragment: NoteFragment)
+
+    fun inject(dialog: TagsDialog)
 }

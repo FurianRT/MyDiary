@@ -2,15 +2,13 @@ package com.furianrt.mydiary.data.room
 
 import android.arch.persistence.room.*
 import com.furianrt.mydiary.data.model.MyTag
-import io.reactivex.Flowable
-import io.reactivex.Observable
 import io.reactivex.Single
 
 @Dao
 interface TagDao {
 
-    @Insert
-    fun insert(tag: MyTag)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun insert(tag: MyTag): Long
 
     @Update
     fun update(tag: MyTag)

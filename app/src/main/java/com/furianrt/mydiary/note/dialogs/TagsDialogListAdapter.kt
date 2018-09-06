@@ -1,15 +1,16 @@
 package com.furianrt.mydiary.note.dialogs
 
 import android.support.v7.recyclerview.extensions.ListAdapter
+import android.support.v7.widget.PopupMenu
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import android.widget.CompoundButton
 import com.furianrt.mydiary.R
 import com.furianrt.mydiary.data.model.MyTag
 import kotlinx.android.synthetic.main.dialog_tags_list_item.view.*
-import android.support.v7.widget.PopupMenu
-import android.widget.CompoundButton
 
 class TagsDialogListAdapter(private val mListener: OnTagChangedListener)
     : ListAdapter<MyTag,
@@ -35,7 +36,8 @@ class TagsDialogListAdapter(private val mListener: OnTagChangedListener)
     }
 
     inner class TagsDialogViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView),
-            View.OnClickListener, CompoundButton.OnCheckedChangeListener {
+            View.OnClickListener, CompoundButton.OnCheckedChangeListener,
+            PopupMenu.OnMenuItemClickListener {
 
         private lateinit var mTag: MyTag
 
@@ -48,6 +50,7 @@ class TagsDialogListAdapter(private val mListener: OnTagChangedListener)
                 check_tag.isChecked = tag.isChecked
                 button_tag_more.setOnClickListener {
                     val popup = PopupMenu(it.context, it)
+                    popup.setOnMenuItemClickListener(this@TagsDialogViewHolder)
                     popup.inflate(R.menu.dialog_tags_list_item_menu)
                     popup.show()
                 }
@@ -61,6 +64,20 @@ class TagsDialogListAdapter(private val mListener: OnTagChangedListener)
 
         override fun onClick(v: View) {
             v.check_tag.isChecked = !v.check_tag.isChecked
+        }
+
+        override fun onMenuItemClick(item: MenuItem): Boolean {
+            return when (item.itemId) {
+                R.id.menu_delete -> {
+                    mListener.onTagDeleted(mTag)
+                    true
+                }
+                R.id.menu_edit -> {
+                    mListener.onTagEdited(mTag)
+                    true
+                }
+                else -> false
+            }
         }
     }
 }

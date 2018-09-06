@@ -7,13 +7,12 @@ import android.arch.persistence.room.PrimaryKey
 import java.io.Serializable
 
 @Entity(tableName = "Tags")
- data class MyTag(
-        @ColumnInfo(name = "name") @PrimaryKey(autoGenerate = false) var name: String
-) : Serializable {
+data class MyTag(@ColumnInfo(name = "name") var name: String) : Serializable {
 
-    @Ignore var isChecked: Boolean = false
+    @ColumnInfo(name = "id_tag")
+    @PrimaryKey(autoGenerate = true)
+    var id: Long = 0
 
-    constructor(name: String, isChecked: Boolean) : this(name) {
-        this.isChecked = isChecked
-    }
+    @Ignore
+    var isChecked: Boolean = false
 }

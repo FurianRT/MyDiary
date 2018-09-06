@@ -4,32 +4,42 @@ import com.furianrt.mydiary.data.api.Forecast
 import com.furianrt.mydiary.data.model.MyNote
 import com.furianrt.mydiary.data.model.MyTag
 import com.furianrt.mydiary.data.model.NoteTag
-import com.furianrt.mydiary.data.model.NoteWithTags
-import io.reactivex.*
+import io.reactivex.Completable
+import io.reactivex.Flowable
+import io.reactivex.Maybe
+import io.reactivex.Single
 
 interface DataManager {
 
-    fun insertNote(note: MyNote) : Single<Long>
+    fun insertNote(note: MyNote): Single<Long>
 
-    fun updateNote(note: MyNote) : Completable
+    fun insertNoteTag(noteTag: NoteTag): Completable
 
-    fun deleteNote(note: MyNote) : Completable
+    fun insertTag(tag: MyTag): Single<Long>
 
-    fun getAllNotes(): Flowable<List<MyNote>>
+    fun insertTagsForNote(noteId: Long, tags: List<MyTag>): Completable
 
-    fun getNoteWithTags(noteId: Long): Single<NoteWithTags>
+    fun updateNote(note: MyNote): Completable
 
-    fun getAllTags(): Single<List<MyTag>>
+    fun updateTag(tag: MyTag): Completable
 
-    fun findNote(noteId: Long): Maybe<MyNote>
+    fun deleteTag(tag: MyTag): Completable
 
-    fun getForecast(lat: Double, lon: Double): Single<Forecast>
+    fun deleteNote(note: MyNote): Completable
 
     fun deleteNoteTag(noteTag: NoteTag): Completable
 
     fun deleteAllTagsForNote(noteId: Long): Completable
 
-    fun insertNoteTag(noteTag: NoteTag): Completable
+    fun getAllNotes(): Flowable<List<MyNote>>
 
-    fun insertAllNoteTag(noteTags: List<NoteTag>): Completable
+    fun getTagsForNote(noteId: Long): Maybe<List<MyTag>>
+
+    fun getNotesWithTag(tagId: Long): Maybe<List<MyNote>>
+
+    fun getAllTags(): Single<List<MyTag>>
+
+    fun getForecast(lat: Double, lon: Double): Single<Forecast>
+
+    fun findNote(noteId: Long): Maybe<MyNote>
 }

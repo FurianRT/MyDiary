@@ -1,8 +1,9 @@
 package com.furianrt.mydiary.main
 
 import android.content.Intent
-import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import android.os.Parcelable
+import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.widget.Toast
 import com.furianrt.mydiary.R
@@ -16,7 +17,9 @@ import com.furianrt.mydiary.note.NoteActivity
 import kotlinx.android.synthetic.main.activity_main.*
 import javax.inject.Inject
 
-const val EXTRA_POSITION = "position"
+const val EXTRA_CLICKED_NOTE_POSITION = "notePosition"
+
+private const val RECYCLER_VIEW_POSITION = "recyclerPosition"
 
 class MainActivity : AppCompatActivity(), MainActivityContract.View,
         MainListAdapter.OnMainListItemInteractionListener {
@@ -25,6 +28,8 @@ class MainActivity : AppCompatActivity(), MainActivityContract.View,
     lateinit var mPresenter: MainActivityContract.Presenter
 
     private val mAdapter = MainListAdapter(this)
+
+    private var mRecyclerViewState: Parcelable? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -36,7 +41,6 @@ class MainActivity : AppCompatActivity(), MainActivityContract.View,
         mPresenter.loadNotes()
 
         fab.setOnClickListener {
-            //mPresenter.addNote(MyNote("", "", Date().time))
             val intent = Intent(this, NoteActivity::class.java)
             intent.putExtra(EXTRA_MODE, Mode.ADD)
             startActivity(intent)
@@ -46,7 +50,15 @@ class MainActivity : AppCompatActivity(), MainActivityContract.View,
             layoutManager = LinearLayoutManager(this@MainActivity)
             addItemDecoration(HeaderItemDecoration(this, mAdapter))
             adapter = mAdapter
+            savedInstanceState?.let {
+                mRecyclerViewState = it.getParcelable(RECYCLER_VIEW_POSITION)
+            }
         }
+    }
+
+    override fun onSaveInstanceState(outState: Bundle?) {
+        outState?.putParcelable(RECYCLER_VIEW_POSITION, list_main.layoutManager?.onSaveInstanceState())
+        super.onSaveInstanceState(outState)
     }
 
     override fun showAdded() {
@@ -59,6 +71,10 @@ class MainActivity : AppCompatActivity(), MainActivityContract.View,
 
     override fun showNotes(notes: List<MainListItem>?) {
         mAdapter.submitList(notes)
+        mRecyclerViewState?.let {
+            list_main.layoutManager?.onRestoreInstanceState(mRecyclerViewState)
+            mRecyclerViewState = null
+        }
     }
 
     override fun onMainListItemClick(note: MyNote) {
@@ -67,7 +83,7 @@ class MainActivity : AppCompatActivity(), MainActivityContract.View,
 
     override fun openNotePager(position: Int) {
         val intent = Intent(this, NoteActivity::class.java)
-        intent.putExtra(EXTRA_POSITION, position)
+        intent.putExtra(EXTRA_CLICKED_NOTE_POSITION, position)
         intent.putExtra(EXTRA_MODE, Mode.READ)
         startActivity(intent)
     }

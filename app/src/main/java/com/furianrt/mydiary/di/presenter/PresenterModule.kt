@@ -1,12 +1,13 @@
 package com.furianrt.mydiary.di.presenter
 
 import android.content.Context
-import android.location.LocationManager
 import com.furianrt.mydiary.data.DataManager
 import com.furianrt.mydiary.main.MainActivityContract
 import com.furianrt.mydiary.main.MainActivityPresenter
 import com.furianrt.mydiary.note.NoteActivityContract
 import com.furianrt.mydiary.note.NoteActivityPresenter
+import com.furianrt.mydiary.note.dialogs.TagsDialogContract
+import com.furianrt.mydiary.note.dialogs.TagsDialogPresenter
 import com.furianrt.mydiary.note.fragments.NoteFragmentContract
 import com.furianrt.mydiary.note.fragments.NoteFragmentPresenter
 import com.furianrt.mydiary.note.fragments.content.NoteContentFragmentContract
@@ -50,4 +51,9 @@ class PresenterModule(private val context: Context) {
     @PresenterScope
     fun provideNoteFragmentPresenter(dataManager: DataManager)
             : NoteFragmentContract.Presenter = NoteFragmentPresenter(dataManager)
+
+    @Provides
+    @PresenterScope
+    fun provideTagsDialogPresenter(dataManager: DataManager)
+            : TagsDialogContract.Presenter = TagsDialogPresenter(dataManager)
 }
