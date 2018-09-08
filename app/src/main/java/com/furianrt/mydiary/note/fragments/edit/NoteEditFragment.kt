@@ -5,12 +5,11 @@ import android.support.v4.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-
 import com.furianrt.mydiary.R
 import com.furianrt.mydiary.data.model.MyNote
-import com.furianrt.mydiary.note.fragments.*
-import kotlinx.android.synthetic.main.fragment_note_edit.view.*
+import com.furianrt.mydiary.note.fragments.ARG_NOTE
 import com.furianrt.mydiary.utils.showKeyboard
+import kotlinx.android.synthetic.main.fragment_note_edit.view.*
 import java.util.*
 import javax.inject.Inject
 
@@ -82,7 +81,7 @@ class NoteEditFragment : Fragment(), NoteEditFragmentContract.View {
         super.onStop()
         mNote.title = view?.edit_note_title?.text.toString()
         mNote.content = view?.edit_note_content?.text.toString()
-        mPresenter.addOrUpdateNote(mNote)
+        mPresenter.onStop(mNote)
     }
 
     override fun onDestroyView() {

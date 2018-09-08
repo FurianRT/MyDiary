@@ -6,18 +6,20 @@ import com.furianrt.mydiary.data.model.MyNote
 import com.furianrt.mydiary.data.model.MyTag
 import com.furianrt.mydiary.note.Mode
 import com.google.android.gms.location.LocationResult
-import io.reactivex.Completable
 import io.reactivex.Observable
+import io.reactivex.disposables.CompositeDisposable
 
 class NoteFragmentPresenter(private val mDataManager: DataManager) : NoteFragmentContract.Presenter {
 
     private var mView: NoteFragmentContract.View? = null
+    private val mCompositeDisposable = CompositeDisposable()
 
     override fun attachView(view: NoteFragmentContract.View) {
         mView = view
     }
 
     override fun detachView() {
+        mCompositeDisposable.clear()
         mView = null
     }
 
@@ -45,15 +47,15 @@ class NoteFragmentPresenter(private val mDataManager: DataManager) : NoteFragmen
             mView?.showAddressNotFound()
         }
 
-        mView?.showMap()
-
         getForecast(note)
     }
 
     override fun loadNoteProperties(note: MyNote) {
         if (note.id != 0L) {
-            mDataManager.getTagsForNote(note.id)
-                    .subscribe { tags -> mView?.showTagNames(tags.map { it.name }) }
+            val disposable = mDataManager.getTagsForNote(note.id)
+                    .map { tags -> tags.map { it.name } }
+                    .subscribe { mView?.showTagNames(it) }
+            mCompositeDisposable.add(disposable)
         }
     }
 
@@ -69,7 +71,7 @@ class NoteFragmentPresenter(private val mDataManager: DataManager) : NoteFragmen
                 mView?.findAddress(latitude, longitude)
             }
 
-            mView?.showMap()
+            mView?.showMap(latitude, longitude)
 
             val forecast = note.forecast
             if (forecast != null) {
@@ -86,7 +88,8 @@ class NoteFragmentPresenter(private val mDataManager: DataManager) : NoteFragmen
         val allTagsObservable = mDataManager.getAllTags()
                 .flatMapObservable { tags -> Observable.fromIterable(tags) }
 
-        mDataManager.getTagsForNote(note.id)
+        val disposable = mDataManager.getTagsForNote(note.id)
+                .firstElement()
                 .flatMapObservable { tags -> Observable.fromIterable(tags) }
                 .map { tag -> tag.apply { isChecked = true } }
                 .concatWith(allTagsObservable)
@@ -95,25 +98,27 @@ class NoteFragmentPresenter(private val mDataManager: DataManager) : NoteFragmen
                     if (foundedTag == null) list.add(tag)
                 }
                 .subscribe { tags -> mView?.showTagsDialog(tags) }
+        mCompositeDisposable.add(disposable)
     }
 
     private fun getForecast(note: MyNote) {
         val latitude = note.latitude
         val longitude = note.longitude
         if (latitude != null && longitude != null) {
-            mDataManager.getForecast(latitude, longitude)
+            val disposable = mDataManager.getForecast(latitude, longitude)
                     .subscribe({ forecast ->
                         note.forecast = forecast
                         mView?.showForecast(forecast)
                     }, { error -> error.printStackTrace() })
+            mCompositeDisposable.add(disposable)
         }
     }
 
     override fun changeNoteTags(note: MyNote, tags: List<MyTag>) {
-        Completable.concatArray(mDataManager.deleteAllTagsForNote(note.id),
-                mDataManager.insertTagsForNote(note.id, tags.filter { it.isChecked }))
-                .andThen(mDataManager.getTagsForNote(note.id))
-                .subscribe { tagList -> mView?.showTagNames(tagList.map { it.name }) }
+        val disposable = mDataManager.deleteAllTagsForNote(note.id)
+                .andThen(mDataManager.insertTagsForNote(note.id, tags.filter { it.isChecked }))
+                .subscribe()
+        mCompositeDisposable.add(disposable)
     }
 
     override fun onMapReady(latitude: Double?, longitude: Double?) {

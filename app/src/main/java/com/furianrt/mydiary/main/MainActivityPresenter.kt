@@ -1,15 +1,11 @@
 package com.furianrt.mydiary.main
 
-import android.util.Log
 import com.furianrt.mydiary.data.DataManager
-import com.furianrt.mydiary.data.api.Forecast
 import com.furianrt.mydiary.data.model.MyNote
 import com.furianrt.mydiary.main.listadapter.MainContentItem
 import com.furianrt.mydiary.main.listadapter.MainHeaderItem
 import com.furianrt.mydiary.main.listadapter.MainListItem
-import io.reactivex.Observer
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.disposables.Disposable
+import io.reactivex.disposables.CompositeDisposable
 import java.util.*
 import kotlin.Comparator
 import kotlin.collections.ArrayList
@@ -17,31 +13,36 @@ import kotlin.collections.ArrayList
 class MainActivityPresenter(private val mDataManager: DataManager) : MainActivityContract.Presenter {
 
     private var mView: MainActivityContract.View? = null
+    private val mCompositeDisposable = CompositeDisposable()
 
     override fun attachView(view: MainActivityContract.View) {
         mView = view
     }
 
     override fun detachView() {
+        mCompositeDisposable.clear()
         mView = null
     }
 
     override fun addNote(note: MyNote) {
-        mDataManager.insertNote(note)
+        val disposable = mDataManager.insertNote(note)
                 .subscribe()
+        mCompositeDisposable.add(disposable)
         mView?.showAdded()
     }
 
     override fun deleteNote(note: MyNote) {
-        mDataManager.deleteNote(note)
+        val disposable = mDataManager.deleteNote(note)
                 .subscribe()
+        mCompositeDisposable.add(disposable)
         mView?.showDeleted()
     }
 
     override fun loadNotes() {
-        mDataManager.getAllNotes()
+        val disposable = mDataManager.getAllNotes()
                 .map { formatNotes(toMap(it)) }
                 .subscribe { mView?.showNotes(it) }
+        mCompositeDisposable.add(disposable)
     }
 
     private fun toMap(notes: List<MyNote>): Map<Long, ArrayList<MyNote>> {
@@ -77,8 +78,9 @@ class MainActivityPresenter(private val mDataManager: DataManager) : MainActivit
     }
 
     override fun onMainListItemClick(note: MyNote) {
-        mDataManager.getAllNotes()
+        val disposable = mDataManager.getAllNotes()
                 .first(ArrayList())
                 .subscribe { notes -> mView?.openNotePager(notes.indexOf(note)) }
+        mCompositeDisposable.add(disposable)
     }
 }

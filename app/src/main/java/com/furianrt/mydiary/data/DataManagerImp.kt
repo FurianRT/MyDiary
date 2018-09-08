@@ -75,13 +75,13 @@ class DataManagerImp(private val mDatabase: NoteDatabase,
                     .getAllNotes()
                     .observeOn(AndroidSchedulers.mainThread())
 
-    override fun getTagsForNote(noteId: Long): Maybe<List<MyTag>> =
+    override fun getTagsForNote(noteId: Long): Flowable<List<MyTag>> =
             mDatabase.noteTagDao()
                     .getTagsForNote(noteId)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
 
-    override fun getNotesWithTag(tagId: Long): Maybe<List<MyNote>> =
+    override fun getNotesWithTag(tagId: Long): Flowable<List<MyNote>> =
             mDatabase.noteTagDao()
                     .getNotesWithTag(tagId)
                     .subscribeOn(Schedulers.io())

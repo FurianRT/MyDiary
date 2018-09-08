@@ -33,9 +33,9 @@ interface DataManager {
 
     fun getAllNotes(): Flowable<List<MyNote>>
 
-    fun getTagsForNote(noteId: Long): Maybe<List<MyTag>>
+    fun getTagsForNote(noteId: Long): Flowable<List<MyTag>>
 
-    fun getNotesWithTag(tagId: Long): Maybe<List<MyNote>>
+    fun getNotesWithTag(tagId: Long): Flowable<List<MyNote>>
 
     fun getAllTags(): Single<List<MyTag>>
 

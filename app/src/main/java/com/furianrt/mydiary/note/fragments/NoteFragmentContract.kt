@@ -30,7 +30,7 @@ interface NoteFragmentContract {
 
         fun showAddressNotFound()
 
-        fun showMap()
+        fun showMap(latitude: Double, longitude: Double)
 
         fun zoomMap(latitude: Double, longitude: Double)
     }

@@ -4,7 +4,7 @@ import android.arch.persistence.room.*
 import com.furianrt.mydiary.data.model.MyNote
 import com.furianrt.mydiary.data.model.MyTag
 import com.furianrt.mydiary.data.model.NoteTag
-import io.reactivex.Maybe
+import io.reactivex.Flowable
 
 @Dao
 abstract class NoteTagDao {
@@ -24,8 +24,8 @@ abstract class NoteTagDao {
     abstract fun deleteAllTagsForNote(noteId: Long)
 
     @Query("SELECT * FROM Tags INNER JOIN NoteTag ON Tags.id_tag = NoteTag.id_tag WHERE NoteTag.id_note = :noteId")
-    abstract fun getTagsForNote(noteId: Long): Maybe<List<MyTag>>
+    abstract fun getTagsForNote(noteId: Long): Flowable<List<MyTag>>
 
     @Query("SELECT * FROM Notes INNER JOIN NoteTag ON Notes.id_note = NoteTag.id_note WHERE NoteTag.id_tag = :tagId")
-    abstract fun getNotesWithTag(tagId: Long): Maybe<List<MyNote>>
+    abstract fun getNotesWithTag(tagId: Long): Flowable<List<MyNote>>
 }

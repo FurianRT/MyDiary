@@ -100,19 +100,20 @@ class TagsDialog
     }
 
     private fun initUiElements(view: View?) {
-        mListAdapter.submitList(mTags)
+        showTags(mTags)
 
         view?.apply {
-            val textSearch = search_add_tags
+            val editSearch = search_add_tags
                     .findViewById<EditText>(android.support.v7.appcompat.R.id.search_src_text)
-            textSearch.setTextColor(Color.WHITE)
+            editSearch.setTextColor(Color.WHITE)
 
             val addTagButton = search_add_tags
                     .findViewById<ImageView>(android.support.v7.appcompat.R.id.search_close_btn)
             addTagButton.setOnClickListener {
                 mPresenter.onButtonAddTagClicked(search_add_tags.query.toString(), mTags)
-                button_close_search.visibility = View.GONE
-                search_add_tags.onActionViewCollapsed()
+                button_close_search.visibility = View.INVISIBLE
+                search_add_tags.isIconified = true
+                search_add_tags.isIconified = true
             }
 
             search_add_tags.setOnSearchClickListener {
@@ -120,9 +121,15 @@ class TagsDialog
             }
 
             button_close_search.setOnClickListener {
-                it.visibility = View.GONE
+                it.visibility = View.INVISIBLE
                 search_add_tags.onActionViewCollapsed()
             }
+
+            button_close_search.postDelayed({
+                if (!search_add_tags.isIconified) {
+                    button_close_search.visibility = View.VISIBLE
+                }
+            }, 150)
 
             list_tags.apply {
                 val manager = LinearLayoutManager(context)

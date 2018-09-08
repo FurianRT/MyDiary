@@ -3,7 +3,6 @@ package com.furianrt.mydiary.note
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
 import android.support.v4.app.FragmentStatePagerAdapter
-import android.view.ViewGroup
 import com.furianrt.mydiary.data.model.MyNote
 import com.furianrt.mydiary.note.fragments.NoteFragment
 

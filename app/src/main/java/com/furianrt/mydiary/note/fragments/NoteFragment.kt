@@ -246,7 +246,7 @@ class NoteFragment : Fragment(), NoteFragmentContract.View, OnMapReadyCallback,
         view?.text_location?.setTextColor(getColor(context!!, R.color.black))
     }
 
-    override fun showMap() {
+    override fun showMap(latitude: Double, longitude: Double) {
         view?.container_map_note?.visibility = View.VISIBLE
         mMapFragment.getMapAsync(this)
     }

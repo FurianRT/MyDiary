@@ -12,7 +12,7 @@ interface NoteEditFragmentContract {
 
     interface Presenter : BasePresenter<View> {
 
-        fun addOrUpdateNote(note: MyNote)
+        fun onStop(note: MyNote)
 
         fun deleteNote(note: MyNote)
     }

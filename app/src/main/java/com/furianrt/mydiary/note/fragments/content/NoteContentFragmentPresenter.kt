@@ -2,20 +2,24 @@ package com.furianrt.mydiary.note.fragments.content
 
 import com.furianrt.mydiary.data.DataManager
 import com.furianrt.mydiary.data.model.MyNote
+import io.reactivex.disposables.CompositeDisposable
 
 class NoteContentFragmentPresenter(private val mDataManager: DataManager)
     : NoteContentFragmentContract.Presenter {
 
     private var mView: NoteContentFragmentContract.View? = null
+    private val mCompositeDisposable = CompositeDisposable()
 
     override fun findNote(note: MyNote) {
-        mDataManager.findNote(note.id)
+        val disposable = mDataManager.findNote(note.id)
                 .subscribe { mView?.showNote(note) }
+        mCompositeDisposable.add(disposable)
     }
 
     override fun deleteNote(note: MyNote) {
-        mDataManager.deleteNote(note)
+        val disposable = mDataManager.deleteNote(note)
                 .subscribe()
+        mCompositeDisposable.add(disposable)
     }
 
     override fun attachView(view: NoteContentFragmentContract.View) {
@@ -23,6 +27,7 @@ class NoteContentFragmentPresenter(private val mDataManager: DataManager)
     }
 
     override fun detachView() {
+        mCompositeDisposable.clear()
         mView = null
     }
 }

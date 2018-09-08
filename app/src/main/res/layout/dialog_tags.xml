@@ -14,24 +14,23 @@
         android:gravity="end|center_vertical"
         android:orientation="horizontal">
 
+        <ImageButton
+            android:id="@+id/button_close_search"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginStart="8dp"
+            android:background="@color/transparent"
+            android:src="@drawable/ic_close"
+            android:visibility="invisible" />
+
         <android.support.v7.widget.SearchView
             android:id="@+id/search_add_tags"
             style="@style/SearchViewStyle"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:layout_weight="10"
             android:layoutDirection="rtl"
+            android:maxWidth="10000dp"
             app:queryHint="@string/add_tag" />
-
-        <ImageButton
-            android:id="@+id/button_close_search"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="8dp"
-            android:layout_weight="1"
-            android:background="@color/transparent"
-            android:src="@drawable/ic_close"
-            android:visibility="gone" />
 
     </LinearLayout>
 
