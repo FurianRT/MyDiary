@@ -39,18 +39,20 @@ interface NoteFragmentContract {
 
         fun onTagsFieldClick(note: MyNote)
 
-        fun loadNoteProperties(note: MyNote)
+        fun loadNoteProperties(noteId: Long)
 
         fun onLocationReceived(note: MyNote, result: LocationResult)
 
         fun findLocation(note: MyNote, mode: Mode, locationEnabled: Boolean, networkAvailable: Boolean)
 
-        fun onPermissionsGranted()
+        fun onLocationPermissionsGranted()
 
         fun onAddressFound(note: MyNote, addresses: List<Address>)
 
         fun changeNoteTags(note: MyNote, tags: List<MyTag>)
 
         fun onMapReady(latitude: Double?, longitude: Double?)
+
+        fun onStop(note: MyNote)
     }
 }

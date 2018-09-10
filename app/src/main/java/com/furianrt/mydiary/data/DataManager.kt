@@ -8,6 +8,7 @@ import io.reactivex.Completable
 import io.reactivex.Flowable
 import io.reactivex.Maybe
 import io.reactivex.Single
+import java.io.File
 
 interface DataManager {
 
@@ -42,4 +43,8 @@ interface DataManager {
     fun getForecast(lat: Double, lon: Double): Single<Forecast>
 
     fun findNote(noteId: Long): Maybe<MyNote>
+
+    fun saveImage(sourcePath: String, destFileName: String): Single<File>
+
+    fun getImagePath(imageName: String) : Single<File>
 }

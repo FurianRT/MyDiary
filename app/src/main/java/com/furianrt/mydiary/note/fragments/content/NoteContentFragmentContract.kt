@@ -13,8 +13,6 @@ interface NoteContentFragmentContract {
 
     interface Presenter : BasePresenter<View> {
 
-        fun findNote(note: MyNote)
-
         fun deleteNote(note: MyNote)
     }
 }

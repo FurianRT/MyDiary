@@ -21,6 +21,11 @@ class MainListAdapter(private val mListener: OnMainListItemInteractionListener)
         if (headerPosition == RecyclerView.NO_POSITION) {
             header.layoutParams.height = 0
         }
+
+        val time = (getItem(headerPosition) as MainHeaderItem).time
+        val date = getMonth(time) + ", " + getYear(time)
+
+        header.text_date.text = date
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
@@ -57,6 +62,8 @@ class MainListAdapter(private val mListener: OnMainListItemInteractionListener)
     interface OnMainListItemInteractionListener {
 
         fun onMainListItemClick(note: MyNote)
+
+        fun onMainListItemLongClick(note: MyNote)
     }
 
     abstract class MyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -69,8 +76,10 @@ class MainListAdapter(private val mListener: OnMainListItemInteractionListener)
 
         override fun bind(item: MainListItem) {
             mHeaderItem = item as MainHeaderItem
-            val date = getMonth(mHeaderItem.time) + " " + getYear(mHeaderItem.time)
-            view.text_date.text = date
+            val date = getMonth(mHeaderItem.time) + ", " + getYear(mHeaderItem.time)
+            view.apply {
+                text_date.text = date
+            }
         }
     }
 
@@ -90,7 +99,7 @@ class MainListAdapter(private val mListener: OnMainListItemInteractionListener)
                 if (title.isEmpty()) {
                     text_note_title.visibility = View.GONE
                 } else {
-                    text_note_title.text =title
+                    text_note_title.text = title
                 }
                 text_note_content.text = mContentItem.note.content
             }

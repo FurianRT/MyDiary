@@ -7,6 +7,7 @@ import com.furianrt.mydiary.data.model.MyTag
 import com.furianrt.mydiary.note.Mode
 import com.google.android.gms.location.LocationResult
 import io.reactivex.Observable
+import io.reactivex.Single
 import io.reactivex.disposables.CompositeDisposable
 
 class NoteFragmentPresenter(private val mDataManager: DataManager) : NoteFragmentContract.Presenter {
@@ -23,7 +24,7 @@ class NoteFragmentPresenter(private val mDataManager: DataManager) : NoteFragmen
         mView = null
     }
 
-    override fun onPermissionsGranted() {
+    override fun onLocationPermissionsGranted() {
         mView?.requestLocation()
     }
 
@@ -31,6 +32,7 @@ class NoteFragmentPresenter(private val mDataManager: DataManager) : NoteFragmen
         val lastLocation = result.lastLocation
         note.latitude = lastLocation.latitude
         note.longitude = lastLocation.longitude
+        mView?.showMap(lastLocation.latitude, lastLocation.longitude)
         mView?.findAddress(lastLocation.latitude, lastLocation.longitude)
     }
 
@@ -50,9 +52,9 @@ class NoteFragmentPresenter(private val mDataManager: DataManager) : NoteFragmen
         getForecast(note)
     }
 
-    override fun loadNoteProperties(note: MyNote) {
-        if (note.id != 0L) {
-            val disposable = mDataManager.getTagsForNote(note.id)
+    override fun loadNoteProperties(noteId: Long) {
+        if (noteId != 0L) {
+            val disposable = mDataManager.getTagsForNote(noteId)
                     .map { tags -> tags.map { it.name } }
                     .subscribe { mView?.showTagNames(it) }
             mCompositeDisposable.add(disposable)
@@ -88,7 +90,20 @@ class NoteFragmentPresenter(private val mDataManager: DataManager) : NoteFragmen
         val allTagsObservable = mDataManager.getAllTags()
                 .flatMapObservable { tags -> Observable.fromIterable(tags) }
 
-        val disposable = mDataManager.getTagsForNote(note.id)
+        val disposable = mDataManager.findNote(note.id)
+                .isEmpty
+                .flatMap { empty ->
+                    return@flatMap if (empty) {
+                        mDataManager.insertNote(note)
+                    } else {
+                        Single.fromCallable { note.id }
+                    }
+                }
+                .flatMapPublisher { id ->
+                    note.id = id
+                    loadNoteProperties(id)
+                    return@flatMapPublisher mDataManager.getTagsForNote(id)
+                }
                 .firstElement()
                 .flatMapObservable { tags -> Observable.fromIterable(tags) }
                 .map { tag -> tag.apply { isChecked = true } }
@@ -98,6 +113,7 @@ class NoteFragmentPresenter(private val mDataManager: DataManager) : NoteFragmen
                     if (foundedTag == null) list.add(tag)
                 }
                 .subscribe { tags -> mView?.showTagsDialog(tags) }
+
         mCompositeDisposable.add(disposable)
     }
 
@@ -125,5 +141,14 @@ class NoteFragmentPresenter(private val mDataManager: DataManager) : NoteFragmen
         if (latitude != null && longitude != null) {
             mView?.zoomMap(latitude, longitude)
         }
+    }
+
+    override fun onStop(note: MyNote) {
+        mDataManager.findNote(note.id)
+                .subscribe(
+                        { mDataManager.updateNote(note).subscribe() },
+                        {},
+                        { mDataManager.insertNote(note).subscribe { id -> note.id = id } }
+                )
     }
 }

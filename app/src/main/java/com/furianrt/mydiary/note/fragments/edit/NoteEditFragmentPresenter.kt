@@ -10,12 +10,11 @@ class NoteEditFragmentPresenter(private val mDataManager: DataManager)
     private var mView: NoteEditFragmentContract.View? = null
     private val mCompositeDisposable = CompositeDisposable()
 
-    override fun onStop(note: MyNote) {
+    override fun onStop(note: MyNote, noteTitle: String, noteContent: String) {
         //if (!note.title.isEmpty() || !note.content.isEmpty()) {
-        val disposable = mDataManager.insertNote(note)
-                .subscribe { id -> note.id = id }
-        mCompositeDisposable.add(disposable)
-       // }
+        note.title = noteTitle
+        note.content = noteContent
+        // }
     }
 
     override fun deleteNote(note: MyNote) {

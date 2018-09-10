@@ -79,9 +79,9 @@ class NoteEditFragment : Fragment(), NoteEditFragmentContract.View {
 
     override fun onStop() {
         super.onStop()
-        mNote.title = view?.edit_note_title?.text.toString()
-        mNote.content = view?.edit_note_content?.text.toString()
-        mPresenter.onStop(mNote)
+        val noteTitle = view?.edit_note_title?.text.toString()
+        val noteContent = view?.edit_note_content?.text.toString()
+        mPresenter.onStop(mNote, noteTitle, noteContent)
     }
 
     override fun onDestroyView() {

@@ -11,7 +11,7 @@ class NoteActivityPresenter(private val mDataManager: DataManager) : NoteActivit
 
     override fun addNote(note: MyNote) {
         mDataManager.insertNote(note)
-                .subscribe()
+                .subscribe { id -> note.id = id}
     }
 
     override fun deleteNote(note: MyNote) {

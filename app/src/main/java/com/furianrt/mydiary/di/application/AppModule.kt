@@ -15,16 +15,16 @@ import com.furianrt.mydiary.data.api.WeatherApiService
 import com.furianrt.mydiary.data.prefs.PreferencesHelper
 import com.furianrt.mydiary.data.prefs.PreferencesHelperImp
 import com.furianrt.mydiary.data.room.NoteDatabase
+import com.furianrt.mydiary.data.storage.StorageHelper
+import com.furianrt.mydiary.data.storage.StorageHelperImp
 import dagger.Module
 import dagger.Provides
 import okhttp3.Interceptor
-import retrofit2.converter.gson.GsonConverterFactory
-import retrofit2.Retrofit
 import okhttp3.OkHttpClient
-import okhttp3.Response
 import okhttp3.logging.HttpLoggingInterceptor
+import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
-import okhttp3.HttpUrl
+import retrofit2.converter.gson.GsonConverterFactory
 
 
 @Module
@@ -37,6 +37,10 @@ class AppModule(private val app: Application) {
     @Provides
     @AppScope
     fun provideContext(): Context = app
+
+    @Provides
+    @AppScope
+    fun provideStorageHelper(context: Context) : StorageHelper = StorageHelperImp(context)
 
     @Provides
     @PreferenceInfo
@@ -72,9 +76,9 @@ class AppModule(private val app: Application) {
 
     @Provides
     @AppScope
-    fun provideDataManager(database: NoteDatabase, prefs: PreferencesHelper,
+    fun provideDataManager(database: NoteDatabase, prefs: PreferencesHelper, storage: StorageHelper,
                            weatherApi: WeatherApiService): DataManager =
-            DataManagerImp(database, prefs, weatherApi)
+            DataManagerImp(database, prefs, storage, weatherApi)
 
     @Provides
     @AppScope

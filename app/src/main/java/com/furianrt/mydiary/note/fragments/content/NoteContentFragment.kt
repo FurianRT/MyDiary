@@ -8,6 +8,7 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import com.furianrt.mydiary.LOG_TAG
 
 import com.furianrt.mydiary.R
 import com.furianrt.mydiary.data.model.MyNote
@@ -17,7 +18,6 @@ import com.furianrt.mydiary.note.fragments.edit.ClickedView
 import com.furianrt.mydiary.note.fragments.edit.NoteEditFragment
 import com.furianrt.mydiary.note.fragments.inTransaction
 import kotlinx.android.synthetic.main.fragment_note_content.view.*
-import java.util.*
 import javax.inject.Inject
 
 class NoteContentFragment : Fragment(), NoteContentFragmentContract.View {
@@ -31,12 +31,8 @@ class NoteContentFragment : Fragment(), NoteContentFragmentContract.View {
     override fun onCreate(savedInstanceState: Bundle?) {
         getPresenterComponent(context!!).inject(this)
         super.onCreate(savedInstanceState)
-        if (arguments == null) {
-            mNote = MyNote("", "", Date().time)
-        } else {
-            arguments?.let {
-                mNote = it.getSerializable(ARG_NOTE) as MyNote
-            }
+        arguments?.let {
+            mNote = it.getSerializable(ARG_NOTE) as MyNote
         }
     }
 
@@ -62,7 +58,7 @@ class NoteContentFragment : Fragment(), NoteContentFragmentContract.View {
     }
 
     override fun showNote(note: MyNote) {
-        Log.e("fff", "FragmentContent.showNote()")
+        Log.e(LOG_TAG, "FragmentContent.showNote()")
         mNote = note
         view?.let {
             val title = mNote.title
@@ -122,11 +118,6 @@ class NoteContentFragment : Fragment(), NoteContentFragmentContract.View {
                 }
             }
         }
-    }
-
-    override fun onStop() {
-        super.onStop()
-        mPresenter.findNote(mNote)
     }
 
     companion object {

@@ -7,6 +7,7 @@ import com.furianrt.mydiary.data.model.MyTag
 import com.furianrt.mydiary.data.model.NoteTag
 import com.furianrt.mydiary.data.prefs.PreferencesHelper
 import com.furianrt.mydiary.data.room.NoteDatabase
+import com.furianrt.mydiary.data.storage.StorageHelper
 import com.furianrt.mydiary.di.application.AppScope
 import io.reactivex.Completable
 import io.reactivex.Flowable
@@ -14,10 +15,12 @@ import io.reactivex.Maybe
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
+import java.io.File
 
 @AppScope
 class DataManagerImp(private val mDatabase: NoteDatabase,
                      private val mPrefs: PreferencesHelper,
+                     private val mStorage: StorageHelper,
                      private val mWeatherApi: WeatherApiService) : DataManager {
 
     override fun insertNote(note: MyNote): Single<Long> =
@@ -101,6 +104,16 @@ class DataManagerImp(private val mDatabase: NoteDatabase,
 
     override fun getForecast(lat: Double, lon: Double): Single<Forecast> =
             mWeatherApi.getForecast(lat, lon)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+
+    override fun saveImage(sourcePath: String, destFileName: String): Single<File> =
+            Single.fromCallable { mStorage.copyImageToStorage(sourcePath, destFileName) }
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+
+    override fun getImagePath(imageName: String): Single<File> =
+            Single.fromCallable { mStorage.getFile(imageName) }
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
 }

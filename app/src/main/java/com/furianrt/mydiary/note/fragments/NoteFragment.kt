@@ -52,7 +52,7 @@ const val ARG_NOTE = "note"
 const val ARG_MODE = "mode"
 
 private const val LOCATION_INTERVAL = 400L
-private const val REQUEST_CODE = 123
+private const val LOCATION_PERMISSIONS_REQUEST_CODE = 1
 private const val ZOOM = 15f
 
 class NoteFragment : Fragment(), NoteFragmentContract.View, OnMapReadyCallback,
@@ -115,19 +115,24 @@ class NoteFragment : Fragment(), NoteFragmentContract.View, OnMapReadyCallback,
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        mPresenter.loadNoteProperties(mNote)
+        mPresenter.loadNoteProperties(mNote.id)
         mPresenter.findLocation(mNote, mMode,
                 isLocationEnabled(context!!), isNetworkAvailable(context!!))
     }
 
+    override fun onStop() {
+        super.onStop()
+        mPresenter.onStop(mNote)
+    }
+
     override fun requestLocationPermissions() {
-        val permission1 = Manifest.permission.ACCESS_FINE_LOCATION
-        val permission2 = Manifest.permission.ACCESS_COARSE_LOCATION
-        if (EasyPermissions.hasPermissions(context!!, permission1, permission2)) {
-            mPresenter.onPermissionsGranted()
+        val fineLocation = Manifest.permission.ACCESS_FINE_LOCATION
+        val coarseLocation = Manifest.permission.ACCESS_COARSE_LOCATION
+        if (EasyPermissions.hasPermissions(context!!, fineLocation, coarseLocation)) {
+            mPresenter.onLocationPermissionsGranted()
         } else {
-            EasyPermissions.requestPermissions(this, getString(R.string.permission_request),
-                    REQUEST_CODE, permission1, permission2)
+            EasyPermissions.requestPermissions(this, getString(R.string.location_permission_request),
+                    LOCATION_PERMISSIONS_REQUEST_CODE, fineLocation, coarseLocation)
         }
     }
 
@@ -149,7 +154,7 @@ class NoteFragment : Fragment(), NoteFragmentContract.View, OnMapReadyCallback,
         val contentTag = NoteContentFragment::class.toString()
         if (childFragmentManager.findFragmentByTag(contentTag) == null) {
             childFragmentManager.inTransaction {
-                add(R.id.container_note_edit, NoteContentFragment.newInstance(mNote), contentTag)
+                replace(R.id.container_note_edit, NoteContentFragment.newInstance(mNote), contentTag)
             }
         }
 
@@ -180,6 +185,8 @@ class NoteFragment : Fragment(), NoteFragmentContract.View, OnMapReadyCallback,
         if (childFragmentManager.findFragmentByTag(editTag) != null) {
             childFragmentManager.popBackStack()
         }
+
+        Thread.sleep(500)
         when (v.id) {
             R.id.text_tags -> mPresenter.onTagsFieldClick(mNote)
         }
@@ -229,7 +236,7 @@ class NoteFragment : Fragment(), NoteFragmentContract.View, OnMapReadyCallback,
     }
 
     @SuppressLint("MissingPermission")
-    @AfterPermissionGranted(REQUEST_CODE)
+    @AfterPermissionGranted(LOCATION_PERMISSIONS_REQUEST_CODE)
     override fun requestLocation() {
         val locationRequest = LocationRequest.create()
         locationRequest.apply {

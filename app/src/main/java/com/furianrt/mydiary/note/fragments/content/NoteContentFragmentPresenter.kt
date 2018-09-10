@@ -10,12 +10,6 @@ class NoteContentFragmentPresenter(private val mDataManager: DataManager)
     private var mView: NoteContentFragmentContract.View? = null
     private val mCompositeDisposable = CompositeDisposable()
 
-    override fun findNote(note: MyNote) {
-        val disposable = mDataManager.findNote(note.id)
-                .subscribe { mView?.showNote(note) }
-        mCompositeDisposable.add(disposable)
-    }
-
     override fun deleteNote(note: MyNote) {
         val disposable = mDataManager.deleteNote(note)
                 .subscribe()

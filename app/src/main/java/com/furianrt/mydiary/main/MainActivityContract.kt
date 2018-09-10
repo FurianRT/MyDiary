@@ -4,6 +4,7 @@ import com.furianrt.mydiary.BasePresenter
 import com.furianrt.mydiary.BaseView
 import com.furianrt.mydiary.data.model.MyNote
 import com.furianrt.mydiary.main.listadapter.MainListItem
+import java.io.File
 
 interface MainActivityContract {
 
@@ -16,6 +17,16 @@ interface MainActivityContract {
         fun showNotes(notes: List<MainListItem>?)
 
         fun openNotePager(position: Int)
+
+        fun showHeaderImage(image: File)
+
+        fun requestStoragePermissions()
+
+        fun showViewNewNote()
+
+        fun showImageExplorer()
+
+        fun showContextualActionBar()
     }
 
     interface Presenter : BasePresenter<View> {
@@ -24,8 +35,18 @@ interface MainActivityContract {
 
         fun deleteNote(note: MyNote)
 
-        fun loadNotes()
-
         fun onMainListItemClick(note: MyNote)
+
+        fun onHeaderImagePicked(imagePath: String?)
+
+        fun onViewCreate()
+
+        fun onButtonSetMainImageClick()
+
+        fun onButtonAddNoteClick()
+
+        fun onStoragePermissionsGranted()
+
+        fun onMainListItemLongClick(note: MyNote)
     }
 }
