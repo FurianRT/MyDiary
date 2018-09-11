@@ -36,5 +36,6 @@
     <string name="close">Закрыть</string>
 
     <string name="album">Альбом</string>
+    <string name="click_again_to_exit">Нажмите еще раз для выхода</string>
 
 </resources>

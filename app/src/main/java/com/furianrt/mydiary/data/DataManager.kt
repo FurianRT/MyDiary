@@ -2,6 +2,7 @@ package com.furianrt.mydiary.data
 
 import com.furianrt.mydiary.data.api.Forecast
 import com.furianrt.mydiary.data.model.MyNote
+import com.furianrt.mydiary.data.model.MyNoteWithProp
 import com.furianrt.mydiary.data.model.MyTag
 import com.furianrt.mydiary.data.model.NoteTag
 import io.reactivex.Completable
@@ -47,4 +48,6 @@ interface DataManager {
     fun saveImage(sourcePath: String, destFileName: String): Single<File>
 
     fun getImagePath(imageName: String) : Single<File>
+
+    fun getNotesWithProp(): Flowable<List<MyNoteWithProp>>
 }

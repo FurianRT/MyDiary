@@ -6,7 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.furianrt.mydiary.R
-import com.furianrt.mydiary.data.model.MyNote
+import com.furianrt.mydiary.data.model.MyNoteWithProp
 import com.furianrt.mydiary.general.HeaderItemDecoration
 import com.furianrt.mydiary.utils.*
 import kotlinx.android.synthetic.main.activity_main_list_content.view.*
@@ -61,9 +61,9 @@ class MainListAdapter(private val mListener: OnMainListItemInteractionListener)
 
     interface OnMainListItemInteractionListener {
 
-        fun onMainListItemClick(note: MyNote)
+        fun onMainListItemClick(note: MyNoteWithProp)
 
-        fun onMainListItemLongClick(note: MyNote)
+        fun onMainListItemLongClick(note: MyNoteWithProp)
     }
 
     abstract class MyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -83,30 +83,37 @@ class MainListAdapter(private val mListener: OnMainListItemInteractionListener)
         }
     }
 
-    inner class ContentViewHolder(private val view: View) : MyViewHolder(view), View.OnClickListener {
+    inner class ContentViewHolder(private val view: View) : MyViewHolder(view), View.OnClickListener,
+            View.OnLongClickListener {
 
         private lateinit var mContentItem: MainContentItem
 
         override fun bind(item: MainListItem) {
             mContentItem = item as MainContentItem
-            val time = mContentItem.note.time
+            val time = mContentItem.note.note.time
             view.apply {
                 setOnClickListener(this@ContentViewHolder)
+                setOnLongClickListener(this@ContentViewHolder)
                 text_day_of_week.text = getDayOfWeek(time)
                 text_day.text = getDay(time)
                 text_time.text = getTime(time)
-                val title = mContentItem.note.title
+                val title = mContentItem.note.note.title
                 if (title.isEmpty()) {
                     text_note_title.visibility = View.GONE
                 } else {
                     text_note_title.text = title
                 }
-                text_note_content.text = mContentItem.note.content
+                text_note_content.text = mContentItem.note.note.content
             }
         }
 
         override fun onClick(view: View?) {
             mListener.onMainListItemClick(mContentItem.note)
+        }
+
+        override fun onLongClick(v: View?): Boolean {
+            mListener.onMainListItemLongClick(mContentItem.note)
+            return true
         }
     }
 }

@@ -4,6 +4,7 @@ import android.util.Log
 import com.furianrt.mydiary.LOG_TAG
 import com.furianrt.mydiary.data.DataManager
 import com.furianrt.mydiary.data.model.MyNote
+import com.furianrt.mydiary.data.model.MyNoteWithProp
 import com.furianrt.mydiary.main.listadapter.MainContentItem
 import com.furianrt.mydiary.main.listadapter.MainHeaderItem
 import com.furianrt.mydiary.main.listadapter.MainListItem
@@ -56,22 +57,25 @@ class MainActivityPresenter(private val mDataManager: DataManager) : MainActivit
     }
 
     private fun loadNotes() {
-        val disposable = mDataManager.getAllNotes()
+        val disposable = mDataManager.getNotesWithProp()
                 .map { formatNotes(toMap(it)) }
-                .subscribe { mView?.showNotes(it) }
+                .subscribe {
+                    Log.e("trtr", "новые записи пришли")
+                    mView?.showNotes(it)
+                }
         mCompositeDisposable.add(disposable)
     }
 
-    private fun toMap(notes: List<MyNote>): Map<Long, ArrayList<MyNote>> {
-        val map = TreeMap<Long, ArrayList<MyNote>>(Comparator<Long> { p0, p1 -> p1.compareTo(p0) })
+    private fun toMap(notes: List<MyNoteWithProp>): Map<Long, ArrayList<MyNoteWithProp>> {
+        val map = TreeMap<Long, ArrayList<MyNoteWithProp>>(Comparator<Long> { p0, p1 -> p1.compareTo(p0) })
         for (note in notes) {
             val calendar = Calendar.getInstance()
-            calendar.timeInMillis = note.time
-            calendar.set(Calendar.DAY_OF_MONTH, 2)
+            calendar.timeInMillis = note.note.time
+            calendar.set(Calendar.DAY_OF_MONTH, 2)              //Временно. Позже будет убранно
             calendar.set(Calendar.HOUR, 0)
-            calendar.set(Calendar.MINUTE, 0)
+            calendar.set(Calendar.MINUTE, 0)                    //
             calendar.set(Calendar.SECOND, 0)
-            calendar.set(Calendar.MILLISECOND, 0)
+            calendar.set(Calendar.MILLISECOND, 0)               //
             var value = map[calendar.timeInMillis]
             if (value == null) {
                 value = ArrayList()
@@ -82,7 +86,7 @@ class MainActivityPresenter(private val mDataManager: DataManager) : MainActivit
         return map
     }
 
-    private fun formatNotes(notes: Map<Long, List<MyNote>>): ArrayList<MainListItem> {
+    private fun formatNotes(notes: Map<Long, List<MyNoteWithProp>>): ArrayList<MainListItem> {
         val list = ArrayList<MainListItem>()
         for (date in notes.keys) {
             val header = MainHeaderItem(date)
@@ -94,8 +98,8 @@ class MainActivityPresenter(private val mDataManager: DataManager) : MainActivit
         return list
     }
 
-    override fun onMainListItemClick(note: MyNote) {
-        val disposable = mDataManager.getAllNotes()
+    override fun onMainListItemClick(note: MyNoteWithProp) {
+        val disposable = mDataManager.getNotesWithProp()
                 .first(ArrayList())
                 .subscribe { notes -> mView?.openNotePager(notes.indexOf(note)) }
         mCompositeDisposable.add(disposable)
@@ -118,8 +122,8 @@ class MainActivityPresenter(private val mDataManager: DataManager) : MainActivit
         mView?.requestStoragePermissions()
     }
 
-    override fun onMainListItemLongClick(note: MyNote) {
-        mView?.showContextualActionBar()
+    override fun onMainListItemLongClick(note: MyNoteWithProp) {
+        mView?.activateSelection()
     }
 
     override fun onStoragePermissionsGranted() {

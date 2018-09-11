@@ -7,7 +7,7 @@ import android.arch.persistence.room.PrimaryKey
 import java.io.Serializable
 
 @Entity(tableName = "Tags")
-data class MyTag(@ColumnInfo(name = "name") var name: String) : Serializable {
+data class MyTag(@ColumnInfo(name = "name_tag") var name: String) : Serializable {
 
     @ColumnInfo(name = "id_tag")
     @PrimaryKey(autoGenerate = true)

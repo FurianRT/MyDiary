@@ -5,15 +5,13 @@ import android.content.Intent
 import android.os.Bundle
 import android.os.Parcelable
 import android.support.v4.content.ContextCompat
+import android.support.v4.view.GravityCompat
 import android.support.v7.app.ActionBarDrawerToggle
 import android.support.v7.app.AppCompatActivity
-import android.support.v7.view.ActionMode
 import android.support.v7.widget.LinearLayoutManager
-import android.view.Menu
-import android.view.MenuItem
 import android.widget.Toast
 import com.furianrt.mydiary.R
-import com.furianrt.mydiary.data.model.MyNote
+import com.furianrt.mydiary.data.model.MyNoteWithProp
 import com.furianrt.mydiary.general.HeaderItemDecoration
 import com.furianrt.mydiary.main.listadapter.MainListAdapter
 import com.furianrt.mydiary.main.listadapter.MainListItem
@@ -27,12 +25,12 @@ import com.yanzhenjie.album.Album
 import com.yanzhenjie.album.AlbumConfig
 import com.yanzhenjie.album.api.widget.Widget
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.activity_main_toolbar.*
 import pub.devrel.easypermissions.AfterPermissionGranted
 import pub.devrel.easypermissions.EasyPermissions
 import java.io.File
 import java.util.*
 import javax.inject.Inject
-
 
 const val EXTRA_CLICKED_NOTE_POSITION = "notePosition"
 
@@ -40,7 +38,7 @@ private const val RECYCLER_VIEW_POSITION = "recyclerPosition"
 private const val STORAGE_PERMISSIONS_REQUEST_CODE = 2
 
 class MainActivity : AppCompatActivity(), MainActivityContract.View,
-        MainListAdapter.OnMainListItemInteractionListener, ActionMode.Callback {
+        MainListAdapter.OnMainListItemInteractionListener {
 
     @Inject
     lateinit var mPresenter: MainActivityContract.Presenter
@@ -48,6 +46,8 @@ class MainActivity : AppCompatActivity(), MainActivityContract.View,
     private val mAdapter = MainListAdapter(this)
 
     private var mRecyclerViewState: Parcelable? = null
+
+    private var mBackPressCount = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -78,14 +78,24 @@ class MainActivity : AppCompatActivity(), MainActivityContract.View,
     private fun setupUi() {
         setSupportActionBar(toolbar_main)
 
-        val toggle = ActionBarDrawerToggle(this, drawer_layout, toolbar_main, R.string.open, R.string.close)
-        drawer_layout.addDrawerListener(toggle)
+        val toggle =
+                ActionBarDrawerToggle(this, drawer, toolbar_main, R.string.open, R.string.close)
+        drawer.addDrawerListener(toggle)
         toggle.syncState()
 
         mPresenter.attachView(this)
         mPresenter.onViewCreate()
 
-        fab.setOnClickListener { mPresenter.onButtonAddNoteClick() }
+        fab_menu.setOnClickListener {
+            if (fab_menu.isOpened) {
+                fab_menu.close(true)
+            } else {
+                mPresenter.onButtonAddNoteClick()
+            }
+        }
+        fab_menu.menuButtonColorNormal = ContextCompat.getColor(this, R.color.colorAccent)
+        fab_menu.menuButtonColorPressed = ContextCompat.getColor(this, R.color.colorAccent)
+        fab_menu.setMenuButtonColorRippleResId(R.color.colorPrimary)
 
         fab_toolbar.setOnClickListener { mPresenter.onButtonSetMainImageClick() }
 
@@ -99,24 +109,6 @@ class MainActivity : AppCompatActivity(), MainActivityContract.View,
     override fun onSaveInstanceState(outState: Bundle?) {
         outState?.putParcelable(RECYCLER_VIEW_POSITION, list_main.layoutManager?.onSaveInstanceState())
         super.onSaveInstanceState(outState)
-    }
-
-    override fun onActionItemClicked(mode: ActionMode?, item: MenuItem?): Boolean {
-        return false
-    }
-
-    override fun onCreateActionMode(mode: ActionMode?, menu: Menu?): Boolean {
-        mode?.title = "Test"
-        mode?.menuInflater?.inflate(R.menu.dialog_tags_list_item_menu, menu)
-        return true
-    }
-
-    override fun onDestroyActionMode(mode: ActionMode?) {
-
-    }
-
-    override fun onPrepareActionMode(mode: ActionMode?, menu: Menu?): Boolean {
-        return false
     }
 
     override fun showViewNewNote() {
@@ -184,16 +176,17 @@ class MainActivity : AppCompatActivity(), MainActivityContract.View,
         }
     }
 
-    override fun onMainListItemClick(note: MyNote) {
+    override fun onMainListItemClick(note: MyNoteWithProp) {
         mPresenter.onMainListItemClick(note)
     }
 
-    override fun onMainListItemLongClick(note: MyNote) {
+    override fun onMainListItemLongClick(note: MyNoteWithProp) {
         mPresenter.onMainListItemLongClick(note)
+        //mPresenter.deleteNote(note)
     }
 
-    override fun showContextualActionBar() {
-        startSupportActionMode(this)
+    override fun activateSelection() {
+        fab_menu.open(true)
     }
 
     override fun openNotePager(position: Int) {
@@ -201,6 +194,23 @@ class MainActivity : AppCompatActivity(), MainActivityContract.View,
         intent.putExtra(EXTRA_CLICKED_NOTE_POSITION, position)
         intent.putExtra(EXTRA_MODE, Mode.READ)
         startActivity(intent)
+    }
+
+    override fun onBackPressed() {
+        when {
+            drawer.isDrawerOpen(GravityCompat.START) ->
+                drawer.closeDrawer(GravityCompat.START, true)
+            fab_menu.isOpened ->
+                fab_menu.close(true)
+            ++mBackPressCount < 2 ->
+                Toast.makeText(this, getString(R.string.click_again_to_exit), Toast.LENGTH_SHORT).show()
+            else -> super.onBackPressed()
+        }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        mBackPressCount = 0
     }
 
     override fun onDestroy() {

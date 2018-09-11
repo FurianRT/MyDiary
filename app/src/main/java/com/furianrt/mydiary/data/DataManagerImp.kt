@@ -3,6 +3,7 @@ package com.furianrt.mydiary.data
 import com.furianrt.mydiary.data.api.Forecast
 import com.furianrt.mydiary.data.api.WeatherApiService
 import com.furianrt.mydiary.data.model.MyNote
+import com.furianrt.mydiary.data.model.MyNoteWithProp
 import com.furianrt.mydiary.data.model.MyTag
 import com.furianrt.mydiary.data.model.NoteTag
 import com.furianrt.mydiary.data.prefs.PreferencesHelper
@@ -116,4 +117,11 @@ class DataManagerImp(private val mDatabase: NoteDatabase,
             Single.fromCallable { mStorage.getFile(imageName) }
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
+
+    override fun getNotesWithProp(): Flowable<List<MyNoteWithProp>> =
+            mDatabase.noteDao()
+                    .getNotesWithProp()
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+
 }

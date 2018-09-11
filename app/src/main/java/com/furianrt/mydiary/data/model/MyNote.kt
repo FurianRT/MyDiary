@@ -15,15 +15,15 @@ data class MyNote(@ColumnInfo(name = "title") var title: String,
     @PrimaryKey(autoGenerate = true)
     var id: Long = 0
 
+    @ColumnInfo(name = "mood")
+    var idMood: Long = 0
+
+    @ColumnInfo(name = "location")
+    var locationId: Long = 0
+
+    @ColumnInfo(name = "category")
+    var categoryId: Long = 0
+
     @ColumnInfo(name = "forecast")
     var forecast: Forecast? = null
-
-    @ColumnInfo(name = "address")
-    var address: String? = null
-
-    @ColumnInfo(name = "latitude")
-    var latitude: Double? = null
-
-    @ColumnInfo(name = "longitude")
-    var longitude: Double? = null
 }

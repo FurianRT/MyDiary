@@ -6,7 +6,7 @@ import android.arch.persistence.room.TypeConverters
 import com.furianrt.mydiary.data.model.*
 
 @Database(entities =
-[MyNote::class, MyPackage::class, MyTag::class, MyMood::class, MyLocation::class, NoteTag::class],
+[MyNote::class, MyCategory::class, MyTag::class, MyMood::class, MyLocation::class, NoteTag::class],
         version = 1, exportSchema = false)
 @TypeConverters(RoomTypeConverter::class)
 abstract class NoteDatabase : RoomDatabase() {

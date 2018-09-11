@@ -1,22 +1,21 @@
 package com.furianrt.mydiary.data.room
 
 import android.arch.persistence.room.*
-import com.furianrt.mydiary.data.model.MyPackage
+import com.furianrt.mydiary.data.model.MyCategory
 import io.reactivex.Flowable
-import io.reactivex.Observable
 
 @Dao
 interface PackageDao {
 
     @Insert
-    fun insert(pack: MyPackage)
+    fun insert(pack: MyCategory)
 
     @Update
-    fun update(pack: MyPackage)
+    fun update(pack: MyCategory)
 
     @Delete
-    fun delete(pack: MyPackage)
+    fun delete(pack: MyCategory)
 
-    @Query("SELECT * FROM Packages")
-    fun getAllPackages(): Flowable<List<MyPackage>>
+    @Query("SELECT * FROM Categories")
+    fun getAllCategories(): Flowable<List<MyCategory>>
 }

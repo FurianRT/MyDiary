@@ -7,7 +7,7 @@ import io.reactivex.Single
 @Dao
 interface TagDao {
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Insert
     fun insert(tag: MyTag): Long
 
     @Update

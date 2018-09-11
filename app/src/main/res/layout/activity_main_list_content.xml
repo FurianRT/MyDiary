@@ -37,10 +37,10 @@
             android:id="@+id/text_note_title"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
             android:layout_marginEnd="8dp"
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
-            android:layout_marginBottom="8dp"
             android:maxLines="1"
             android:textStyle="bold"
             app:layout_constraintEnd_toStartOf="@id/image_main_list"
@@ -67,6 +67,7 @@
             android:layout_width="100dp"
             android:layout_height="0dp"
             android:src="#FFFFFF"
+            android:scaleType="centerCrop"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -87,7 +88,7 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="8dp"
                 android:drawableStart="@drawable/ic_folder"
-                android:text="Category" />
+                tools:text="Category" />
 
             <TextView
                 android:id="@+id/text_tags"
@@ -95,7 +96,7 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="8dp"
                 android:drawableStart="@drawable/ic_tag"
-                android:text="0" />
+                tools:text="0" />
 
             <TextView
                 android:id="@+id/text_images"
@@ -103,7 +104,7 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="8dp"
                 android:drawableStart="@drawable/ic_image"
-                android:text="1" />
+                tools:text="1" />
 
         </LinearLayout>
 

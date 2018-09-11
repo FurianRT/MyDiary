@@ -10,11 +10,9 @@ import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
 import android.support.v4.app.FragmentTransaction
 import android.support.v4.content.ContextCompat.getColor
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.furianrt.mydiary.LOG_TAG
 import com.furianrt.mydiary.R
 import com.furianrt.mydiary.data.api.Forecast
 import com.furianrt.mydiary.data.model.MyNote
@@ -259,12 +257,12 @@ class NoteFragment : Fragment(), NoteFragmentContract.View, OnMapReadyCallback,
     }
 
     override fun onMapReady(map: GoogleMap?) {
-        Log.e(LOG_TAG, "MapLoaded")
+        /*Log.e(LOG_TAG, "MapLoaded")
         mGoogleMap = map
         mGoogleMap?.let {
             it.uiSettings.isScrollGesturesEnabled = false
             mPresenter.onMapReady(mNote.latitude, mNote.longitude)
-        }
+        }*/
     }
 
     override fun zoomMap(latitude: Double, longitude: Double) {
@@ -274,8 +272,8 @@ class NoteFragment : Fragment(), NoteFragmentContract.View, OnMapReadyCallback,
     }
 
     override fun showAddressNotFound() {
-        mNote.address = getString(R.string.unknown_address)
-        view?.text_location?.text = mNote.address
+        //mNote.address = getString(R.string.unknown_address)
+        //view?.text_location?.text = mNote.address
     }
 
     override fun findAddress(latitude: Double, longitude: Double) {

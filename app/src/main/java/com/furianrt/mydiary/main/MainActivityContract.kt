@@ -3,6 +3,7 @@ package com.furianrt.mydiary.main
 import com.furianrt.mydiary.BasePresenter
 import com.furianrt.mydiary.BaseView
 import com.furianrt.mydiary.data.model.MyNote
+import com.furianrt.mydiary.data.model.MyNoteWithProp
 import com.furianrt.mydiary.main.listadapter.MainListItem
 import java.io.File
 
@@ -26,7 +27,7 @@ interface MainActivityContract {
 
         fun showImageExplorer()
 
-        fun showContextualActionBar()
+        fun activateSelection()
     }
 
     interface Presenter : BasePresenter<View> {
@@ -35,7 +36,7 @@ interface MainActivityContract {
 
         fun deleteNote(note: MyNote)
 
-        fun onMainListItemClick(note: MyNote)
+        fun onMainListItemClick(note: MyNoteWithProp)
 
         fun onHeaderImagePicked(imagePath: String?)
 
@@ -47,6 +48,6 @@ interface MainActivityContract {
 
         fun onStoragePermissionsGranted()
 
-        fun onMainListItemLongClick(note: MyNote)
+        fun onMainListItemLongClick(note: MyNoteWithProp)
     }
 }

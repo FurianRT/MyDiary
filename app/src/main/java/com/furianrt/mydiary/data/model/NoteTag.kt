@@ -4,8 +4,10 @@ import android.arch.persistence.room.ColumnInfo
 import android.arch.persistence.room.Entity
 import android.arch.persistence.room.ForeignKey
 import android.arch.persistence.room.Index
+import java.io.Serializable
 
-@Entity(tableName = "NoteTag",
+@Entity(
+        tableName = "NoteTag",
         primaryKeys = ["id_tag", "id_note"],
         indices = [Index("id_tag"), Index("id_note")],
         foreignKeys = [
@@ -13,7 +15,9 @@ import android.arch.persistence.room.Index
                     childColumns = ["id_tag"], onDelete = ForeignKey.CASCADE),
             ForeignKey(entity = MyNote::class, parentColumns = ["id_note"],
                     childColumns = ["id_note"], onDelete = ForeignKey.CASCADE)
-        ])
+        ]
+)
 data class NoteTag(@ColumnInfo(name = "id_note") var noteId: Long,
-                   @ColumnInfo(name = "id_tag") var tagId: Long) {
+                   @ColumnInfo(name = "id_tag") var tagId: Long,
+                   @ColumnInfo(name = "name_tag") var tagName: String): Serializable {
 }

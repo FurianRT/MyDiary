@@ -29,15 +29,15 @@ class NoteFragmentPresenter(private val mDataManager: DataManager) : NoteFragmen
     }
 
     override fun onLocationReceived(note: MyNote, result: LocationResult) {
-        val lastLocation = result.lastLocation
+        /*val lastLocation = result.lastLocation
         note.latitude = lastLocation.latitude
         note.longitude = lastLocation.longitude
         mView?.showMap(lastLocation.latitude, lastLocation.longitude)
-        mView?.findAddress(lastLocation.latitude, lastLocation.longitude)
+        mView?.findAddress(lastLocation.latitude, lastLocation.longitude)*/
     }
 
     override fun onAddressFound(note: MyNote, addresses: List<Address>) {
-        if (addresses.isNotEmpty()) {
+        /*if (addresses.isNotEmpty()) {
             val address = addresses[0].getAddressLine(0)
             if (address != null) {
                 note.address = address
@@ -49,7 +49,7 @@ class NoteFragmentPresenter(private val mDataManager: DataManager) : NoteFragmen
             mView?.showAddressNotFound()
         }
 
-        getForecast(note)
+        getForecast(note)*/
     }
 
     override fun loadNoteProperties(noteId: Long) {
@@ -63,7 +63,7 @@ class NoteFragmentPresenter(private val mDataManager: DataManager) : NoteFragmen
 
     override fun findLocation(note: MyNote, mode: Mode, locationEnabled: Boolean,
                               networkAvailable: Boolean) {
-        val latitude = note.latitude
+        /*val latitude = note.latitude
         val longitude = note.longitude
         if (latitude != null && longitude != null) {
             val address = note.address
@@ -83,7 +83,7 @@ class NoteFragmentPresenter(private val mDataManager: DataManager) : NoteFragmen
             }
         } else if (mode == Mode.ADD && networkAvailable && locationEnabled) {
             mView?.requestLocationPermissions()
-        }
+        }*/
     }
 
     override fun onTagsFieldClick(note: MyNote) {
@@ -118,7 +118,7 @@ class NoteFragmentPresenter(private val mDataManager: DataManager) : NoteFragmen
     }
 
     private fun getForecast(note: MyNote) {
-        val latitude = note.latitude
+        /*val latitude = note.latitude
         val longitude = note.longitude
         if (latitude != null && longitude != null) {
             val disposable = mDataManager.getForecast(latitude, longitude)
@@ -127,7 +127,7 @@ class NoteFragmentPresenter(private val mDataManager: DataManager) : NoteFragmen
                         mView?.showForecast(forecast)
                     }, { error -> error.printStackTrace() })
             mCompositeDisposable.add(disposable)
-        }
+        }*/
     }
 
     override fun changeNoteTags(note: MyNote, tags: List<MyTag>) {
