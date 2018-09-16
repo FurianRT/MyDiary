@@ -29,6 +29,10 @@
     <string name="delete">Удалить</string>
 
     <string name="choose_tags">Выберите теги</string>
+    <string name="choose_category">Выберите категорию</string>
+    <string name="choose_mood">Выберите настроение</string>
+    <string name="choose_location">Выберите локацию</string>
+
     <string name="add_tag">Добавить тег</string>
     <string name="unknown_address">Неизвестный адрес</string>
 

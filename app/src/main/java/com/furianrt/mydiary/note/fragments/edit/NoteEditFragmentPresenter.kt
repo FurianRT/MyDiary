@@ -14,6 +14,12 @@ class NoteEditFragmentPresenter(private val mDataManager: DataManager)
         //if (!note.title.isEmpty() || !note.content.isEmpty()) {
         note.title = noteTitle
         note.content = noteContent
+        mDataManager.findNote(note.id)
+                .subscribe(
+                        { mDataManager.updateNote(note).subscribe() },
+                        {},
+                        { mDataManager.insertNote(note).subscribe { id -> note.id = id } }
+                )
         // }
     }
 

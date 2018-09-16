@@ -13,12 +13,18 @@ interface TagsDialogContract {
 
     interface Presenter : BasePresenter<View> {
 
-        fun onTagClicked(tags: MutableList<MyTag>, tag: MyTag)
+        fun setTags(tags: ArrayList<MyTag>)
 
-        fun onButtonAddTagClicked(tagName: String, tags: MutableList<MyTag>)
+        fun getTags(): ArrayList<MyTag>
 
-        fun onButtonDeleteTagClicked(tag: MyTag, tags: MutableList<MyTag>)
+        fun onTagClicked(tag: MyTag)
 
-        fun onButtonEditTagClicked(tag: MyTag, tags: MutableList<MyTag>)
+        fun onButtonAddTagClicked(tagName: String)
+
+        fun onButtonDeleteTagClicked(tag: MyTag)
+
+        fun onButtonEditTagClicked(tag: MyTag)
+
+        fun onViewCreate()
     }
 }

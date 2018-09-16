@@ -7,24 +7,26 @@ import io.reactivex.Flowable
 import io.reactivex.Maybe
 
 @Dao
-interface NoteDao {
+abstract class NoteDao {
 
     @Insert
-    fun insert(note: MyNote): Long
+    abstract fun insert(note: MyNote): Long
 
     @Update
-    fun update(note: MyNote)
+    abstract fun update(note: MyNote)
 
     @Delete
-    fun delete(note: MyNote)
+    abstract fun delete(note: MyNote)
 
     @Query("SELECT * FROM Notes ORDER BY time DESC")
-    fun getAllNotes(): Flowable<List<MyNote>>
+    abstract fun getAllNotes(): Flowable<List<MyNote>>
 
     @Query("SELECT * FROM Notes WHERE id_note =:noteId")
-    fun findNote(noteId: Long): Maybe<MyNote>
+    abstract fun findNote(noteId: Long): Maybe<MyNote>
 
     @Transaction
-    @Query("SELECT * FROM Notes INNER JOIN Moods ON mood = id_mood INNER JOIN Locations ON location = id_location INNER JOIN Categories ON category = id_category")
-    fun getNotesWithProp(): Flowable<List<MyNoteWithProp>>
+    @Query("SELECT * FROM Notes LEFT JOIN Moods ON mood = id_mood " +
+            "LEFT JOIN Locations ON location = id_location " +
+            "LEFT JOIN Categories ON category = id_category ORDER BY time DESC")
+    abstract fun getNotesWithProp(): Flowable<List<MyNoteWithProp>>
 }

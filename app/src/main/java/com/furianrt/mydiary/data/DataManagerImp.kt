@@ -2,10 +2,7 @@ package com.furianrt.mydiary.data
 
 import com.furianrt.mydiary.data.api.Forecast
 import com.furianrt.mydiary.data.api.WeatherApiService
-import com.furianrt.mydiary.data.model.MyNote
-import com.furianrt.mydiary.data.model.MyNoteWithProp
-import com.furianrt.mydiary.data.model.MyTag
-import com.furianrt.mydiary.data.model.NoteTag
+import com.furianrt.mydiary.data.model.*
 import com.furianrt.mydiary.data.prefs.PreferencesHelper
 import com.furianrt.mydiary.data.room.NoteDatabase
 import com.furianrt.mydiary.data.storage.StorageHelper
@@ -41,6 +38,11 @@ class DataManagerImp(private val mDatabase: NoteDatabase,
 
     override fun insertTagsForNote(noteId: Long, tags: List<MyTag>): Completable =
             Completable.fromAction { mDatabase.noteTagDao().insertTagsForNote(noteId, tags) }
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+
+    override fun addLocation(location: MyLocation): Single<Long> =
+            Single.fromCallable { mDatabase.locationDao().insert(location) }
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
 
@@ -124,4 +126,8 @@ class DataManagerImp(private val mDatabase: NoteDatabase,
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
 
+    override fun getTags(tagIds: List<Long>): Single<List<MyTag>> =
+            Single.fromCallable { mDatabase.tagDao().getTags(tagIds) }
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
 }

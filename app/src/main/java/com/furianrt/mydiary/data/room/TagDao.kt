@@ -5,17 +5,28 @@ import com.furianrt.mydiary.data.model.MyTag
 import io.reactivex.Single
 
 @Dao
-interface TagDao {
+abstract class TagDao {
 
     @Insert
-    fun insert(tag: MyTag): Long
+    abstract fun insert(tag: MyTag): Long
 
     @Update
-    fun update(tag: MyTag)
+    abstract fun update(tag: MyTag)
 
     @Delete
-    fun delete(tag: MyTag)
+    abstract fun delete(tag: MyTag)
+
+    @Transaction
+    open fun getTags(tagIds: List<Long>): List<MyTag> =
+            ArrayList<MyTag>().apply {
+                for (id in tagIds) {
+                    this.add(getTag(id))
+                }
+            }
+
+    @Query("SELECT * FROM Tags WHERE id_tag = :tagId")
+    abstract fun getTag(tagId: Long): MyTag
 
     @Query("SELECT * FROM Tags")
-    fun getAllTags(): Single<List<MyTag>>
+    abstract fun getAllTags(): Single<List<MyTag>>
 }

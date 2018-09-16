@@ -34,7 +34,7 @@ import javax.inject.Inject
 
 const val EXTRA_CLICKED_NOTE_POSITION = "notePosition"
 
-private const val RECYCLER_VIEW_POSITION = "recyclerPosition"
+private const val RECYCLER_VIEW_STATE = "recyclerState"
 private const val STORAGE_PERMISSIONS_REQUEST_CODE = 2
 
 class MainActivity : AppCompatActivity(), MainActivityContract.View,
@@ -44,9 +44,7 @@ class MainActivity : AppCompatActivity(), MainActivityContract.View,
     lateinit var mPresenter: MainActivityContract.Presenter
 
     private val mAdapter = MainListAdapter(this)
-
     private var mRecyclerViewState: Parcelable? = null
-
     private var mBackPressCount = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -55,14 +53,13 @@ class MainActivity : AppCompatActivity(), MainActivityContract.View,
         setContentView(R.layout.activity_main)
 
         savedInstanceState?.let {
-            mRecyclerViewState = it.getParcelable(RECYCLER_VIEW_POSITION)
+            mRecyclerViewState = it.getParcelable(RECYCLER_VIEW_STATE)
         }
 
         Album.initialize(AlbumConfig.newBuilder(this)
                 .setAlbumLoader(MediaLoader())
                 .setLocale(Locale.getDefault())
                 .build())
-
         setupUi()
     }
 
@@ -107,7 +104,7 @@ class MainActivity : AppCompatActivity(), MainActivityContract.View,
     }
 
     override fun onSaveInstanceState(outState: Bundle?) {
-        outState?.putParcelable(RECYCLER_VIEW_POSITION, list_main.layoutManager?.onSaveInstanceState())
+        outState?.putParcelable(RECYCLER_VIEW_STATE, list_main.layoutManager?.onSaveInstanceState())
         super.onSaveInstanceState(outState)
     }
 
@@ -169,7 +166,7 @@ class MainActivity : AppCompatActivity(), MainActivityContract.View,
     }
 
     override fun showNotes(notes: List<MainListItem>?) {
-        mAdapter.submitList(notes)
+        mAdapter.submitList(notes?.toMutableList())
         mRecyclerViewState?.let {
             list_main.layoutManager?.onRestoreInstanceState(mRecyclerViewState)
             mRecyclerViewState = null

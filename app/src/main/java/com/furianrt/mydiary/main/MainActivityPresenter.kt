@@ -60,7 +60,7 @@ class MainActivityPresenter(private val mDataManager: DataManager) : MainActivit
         val disposable = mDataManager.getNotesWithProp()
                 .map { formatNotes(toMap(it)) }
                 .subscribe {
-                    Log.e("trtr", "новые записи пришли")
+                    Log.e(LOG_TAG, it.toString())
                     mView?.showNotes(it)
                 }
         mCompositeDisposable.add(disposable)

@@ -32,7 +32,7 @@ class NoteContentFragment : Fragment(), NoteContentFragmentContract.View {
         getPresenterComponent(context!!).inject(this)
         super.onCreate(savedInstanceState)
         arguments?.let {
-            mNote = it.getSerializable(ARG_NOTE) as MyNote
+            mNote = it.getParcelable(ARG_NOTE)!!
         }
     }
 
@@ -125,7 +125,7 @@ class NoteContentFragment : Fragment(), NoteContentFragmentContract.View {
         fun newInstance(note: MyNote?) =
                 NoteContentFragment().apply {
                     arguments = Bundle().apply {
-                        putSerializable(ARG_NOTE, note)
+                        putParcelable(ARG_NOTE, note)
                     }
                 }
     }

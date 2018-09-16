@@ -13,9 +13,7 @@ import android.view.View
 import android.widget.EditText
 import android.widget.ImageView
 import com.furianrt.mydiary.R
-import com.furianrt.mydiary.data.model.MyNote
 import com.furianrt.mydiary.data.model.MyTag
-import com.furianrt.mydiary.note.fragments.ARG_NOTE
 import kotlinx.android.synthetic.main.dialog_tags.view.*
 import javax.inject.Inject
 
@@ -27,19 +25,15 @@ class TagsDialog
     private val mListAdapter = TagsDialogListAdapter(this)
     private var mListener: OnTagsDialogInteractionListener? = null
 
-    private lateinit var mNote: MyNote
-    private lateinit var mTags: ArrayList<MyTag>
-
     @Inject
     lateinit var mPresenter: TagsDialogContract.Presenter
 
     companion object {
         @JvmStatic
-        fun newInstance(note: MyNote, tags: ArrayList<MyTag>) =
+        fun newInstance(tags: ArrayList<MyTag>) =
                 TagsDialog().apply {
                     arguments = Bundle().apply {
-                        putSerializable(ARG_NOTE, note)
-                        putSerializable(ARG_TAGS, tags)
+                        putParcelableArrayList(ARG_TAGS, tags)
                     }
                 }
     }
@@ -47,12 +41,13 @@ class TagsDialog
     override fun onCreate(savedInstanceState: Bundle?) {
         getPresenterComponent(context!!).inject(this)
         super.onCreate(savedInstanceState)
-        mTags = if (savedInstanceState != null) {
-            savedInstanceState.getSerializable(ARG_TAGS) as ArrayList<MyTag>
+        val tags: ArrayList<MyTag> = if (savedInstanceState != null) {
+            savedInstanceState.getParcelableArrayList(ARG_TAGS)!!
         } else {
-            arguments?.getSerializable(ARG_TAGS) as ArrayList<MyTag>
+            arguments?.getParcelableArrayList(ARG_TAGS)!!
         }
-        mNote = arguments?.getSerializable(ARG_NOTE) as MyNote
+
+        mPresenter.setTags(tags)
     }
 
     @SuppressLint("InflateParams")
@@ -67,7 +62,7 @@ class TagsDialog
         return AlertDialog.Builder(context)
                 .setView(view)
                 .setPositiveButton(getString(R.string.save)) { _, _ ->
-                    mListener?.onTagsDialogPositiveButtonClick(mTags)
+                    mListener?.onTagsDialogPositiveButtonClick(mPresenter.getTags())
                 }
                 .setNegativeButton(getString(R.string.cancel), null)
                 .create()
@@ -79,20 +74,20 @@ class TagsDialog
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
-        outState.putSerializable(ARG_TAGS, mTags)
+        outState.putParcelableArrayList(ARG_TAGS, mPresenter.getTags())
         super.onSaveInstanceState(outState)
     }
 
     override fun onTagClicked(tag: MyTag) {
-        mPresenter.onTagClicked(mTags, tag)
+        mPresenter.onTagClicked(tag)
     }
 
     override fun onTagDeleted(tag: MyTag) {
-        mPresenter.onButtonDeleteTagClicked(tag, mTags)
+        mPresenter.onButtonDeleteTagClicked(tag)
     }
 
     override fun onTagEdited(tag: MyTag) {
-        mPresenter.onButtonEditTagClicked(tag, mTags)
+        mPresenter.onButtonEditTagClicked(tag)
     }
 
     override fun showTags(tags: MutableList<MyTag>) {
@@ -100,7 +95,7 @@ class TagsDialog
     }
 
     private fun initUiElements(view: View?) {
-        showTags(mTags)
+        mPresenter.onViewCreate()
 
         view?.apply {
             val editSearch = search_add_tags
@@ -110,7 +105,7 @@ class TagsDialog
             val addTagButton = search_add_tags
                     .findViewById<ImageView>(android.support.v7.appcompat.R.id.search_close_btn)
             addTagButton.setOnClickListener {
-                mPresenter.onButtonAddTagClicked(search_add_tags.query.toString(), mTags)
+                mPresenter.onButtonAddTagClicked(search_add_tags.query.toString())
                 button_close_search.visibility = View.INVISIBLE
                 search_add_tags.isIconified = true
                 search_add_tags.isIconified = true

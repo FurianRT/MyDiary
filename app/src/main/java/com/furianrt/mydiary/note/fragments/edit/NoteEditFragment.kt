@@ -35,7 +35,7 @@ class NoteEditFragment : Fragment(), NoteEditFragmentContract.View {
             mClickedView = ClickedView.TITLE
         } else {
             arguments?.apply {
-                mNote = this.getSerializable(ARG_NOTE) as MyNote
+                mNote = this.getParcelable(ARG_NOTE)!!
                 mClickedView = this.getSerializable(ARG_CLICKED_VIEW) as ClickedView
                 mClickPosition = this.getInt(ARG_POSITION)
             }
@@ -95,7 +95,7 @@ class NoteEditFragment : Fragment(), NoteEditFragmentContract.View {
         fun newInstance(note: MyNote?, clickedView: ClickedView, clickPosition: Int) =
                 NoteEditFragment().apply {
                     arguments = Bundle().apply {
-                        putSerializable(ARG_NOTE, note)
+                        putParcelable(ARG_NOTE, note)
                         putSerializable(ARG_CLICKED_VIEW, clickedView)
                         putInt(ARG_POSITION, clickPosition)
                     }

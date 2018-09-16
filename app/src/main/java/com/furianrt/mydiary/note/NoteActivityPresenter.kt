@@ -2,8 +2,7 @@ package com.furianrt.mydiary.note
 
 import com.furianrt.mydiary.data.DataManager
 import com.furianrt.mydiary.data.model.MyNote
-import io.reactivex.android.schedulers.AndroidSchedulers
-import java.util.*
+import com.furianrt.mydiary.data.model.MyNoteWithProp
 
 class NoteActivityPresenter(private val mDataManager: DataManager) : NoteActivityContract.Presenter {
 
@@ -21,13 +20,10 @@ class NoteActivityPresenter(private val mDataManager: DataManager) : NoteActivit
 
     override fun loadNotes(mode: Mode) {
         if (mode == Mode.ADD) {
-            mView?.showNotes(listOf(MyNote("", "", Date().time)))
+            mView?.showNotes(listOf(MyNoteWithProp()))
         } else if (mode == Mode.READ) {
-            mDataManager.getAllNotes()
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe {
-                        mView?.showNotes(it)
-                    }
+            mDataManager.getNotesWithProp()
+                    .subscribe { mView?.showNotes(it) }
         }
     }
 

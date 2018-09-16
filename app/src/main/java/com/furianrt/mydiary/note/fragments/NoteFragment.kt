@@ -10,12 +10,15 @@ import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
 import android.support.v4.app.FragmentTransaction
 import android.support.v4.content.ContextCompat.getColor
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.furianrt.mydiary.LOG_TAG
 import com.furianrt.mydiary.R
 import com.furianrt.mydiary.data.api.Forecast
-import com.furianrt.mydiary.data.model.MyNote
+import com.furianrt.mydiary.data.model.MyLocation
+import com.furianrt.mydiary.data.model.MyNoteWithProp
 import com.furianrt.mydiary.data.model.MyTag
 import com.furianrt.mydiary.note.Mode
 import com.furianrt.mydiary.note.dialogs.TagsDialog
@@ -30,7 +33,6 @@ import com.google.android.gms.location.LocationResult
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
-import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.fragment_note.view.*
@@ -56,10 +58,8 @@ private const val ZOOM = 15f
 class NoteFragment : Fragment(), NoteFragmentContract.View, OnMapReadyCallback,
         TagsDialog.OnTagsDialogInteractionListener, View.OnClickListener {
 
-    private lateinit var mNote: MyNote
     private lateinit var mMode: Mode
     private var mGoogleMap: GoogleMap? = null
-    private val mMapFragment = SupportMapFragment()
 
     @Inject
     lateinit var mFusedLocationClient: FusedLocationProviderClient
@@ -72,7 +72,7 @@ class NoteFragment : Fragment(), NoteFragmentContract.View, OnMapReadyCallback,
             super.onLocationResult(result)
             if (result != null) {
                 mFusedLocationClient.removeLocationUpdates(this)
-                mPresenter.onLocationReceived(mNote, result)
+                mPresenter.onLocationReceived(result)
             }
         }
     }
@@ -80,11 +80,13 @@ class NoteFragment : Fragment(), NoteFragmentContract.View, OnMapReadyCallback,
     override fun onCreate(savedInstanceState: Bundle?) {
         getPresenterComponent(context!!).inject(this)
         super.onCreate(savedInstanceState)
-        mNote = if (savedInstanceState != null) {
-            savedInstanceState.getSerializable(ARG_NOTE) as MyNote
+        val note = if (savedInstanceState != null) {
+            savedInstanceState.getParcelable<MyNoteWithProp>(ARG_NOTE)
         } else {
-            arguments?.getSerializable(ARG_NOTE) as MyNote
+            arguments?.getParcelable(ARG_NOTE)
         }
+
+        mPresenter.setNote(note!!)
         mMode = arguments?.getSerializable(ARG_MODE) as Mode
     }
 
@@ -94,15 +96,7 @@ class NoteFragment : Fragment(), NoteFragmentContract.View, OnMapReadyCallback,
 
         mPresenter.attachView(this)
 
-        view.apply {
-            val time = mNote.time
-            text_day.text = getDay(time)
-            text_day_of_week.text = getFullDayOfWeek(time)
-            text_month.text = getMonth(time)
-            text_year.text = getYear(time)
-            text_time.text = getTime(time)
-            text_tags.setOnClickListener(this@NoteFragment)
-        }
+        setupUi(view)
 
         addFragments(savedInstanceState)
 
@@ -111,16 +105,69 @@ class NoteFragment : Fragment(), NoteFragmentContract.View, OnMapReadyCallback,
         return view
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        mPresenter.loadNoteProperties(mNote.id)
-        mPresenter.findLocation(mNote, mMode,
-                isLocationEnabled(context!!), isNetworkAvailable(context!!))
+    private fun setupUi(view: View) {
+        view.apply {
+            val time = mPresenter.getNote().note.time
+            text_day.text = getDay(time)
+            text_day_of_week.text = getFullDayOfWeek(time)
+            text_month.text = getMonth(time)
+            text_year.text = getYear(time)
+            text_time.text = getTime(time)
+            text_tags.setOnClickListener(this@NoteFragment)
+        }
     }
 
-    override fun onStop() {
-        super.onStop()
-        mPresenter.onStop(mNote)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        mPresenter.onViewCreated(mMode, isLocationEnabled(context!!), isNetworkAvailable(context!!))
+    }
+
+    override fun showNoTagsMessage() {
+        view?.text_category?.text = getString(R.string.choose_tags)
+        view?.text_category?.setTextColor(getColor(context!!, R.color.grey_dark))
+    }
+
+    override fun showCategoryName(name: String?) {
+        view?.text_tags?.text = name
+        view?.text_tags?.setTextColor(Color.BLACK)
+    }
+
+    override fun showNoCategoryMessage() {
+        view?.text_category?.text = getString(R.string.choose_category)
+        view?.text_category?.setTextColor(getColor(context!!, R.color.grey_dark))
+    }
+
+    override fun showMood(name: String?) {
+        view?.text_tags?.text = name
+        view?.text_tags?.setTextColor(Color.BLACK)
+    }
+
+    override fun showNoMoodMessage() {
+        view?.text_mood?.text = getString(R.string.choose_mood)
+        view?.text_mood?.setTextColor(getColor(context!!, R.color.grey_dark))
+    }
+
+    override fun showLocation(location: MyLocation) {
+        view?.text_location?.text = location.name
+        view?.text_location?.setTextColor(getColor(context!!, R.color.black))
+        view?.map_view?.onCreate(null)
+        view?.map_view?.onResume()
+        view?.map_view?.getMapAsync(this)
+    }
+
+    override fun onMapReady(map: GoogleMap?) {
+        Log.e(LOG_TAG, "MapLoaded")
+        mGoogleMap = map
+        mGoogleMap?.let {
+            it.uiSettings.isScrollGesturesEnabled = false
+            mPresenter.onMapReady()
+        }
+    }
+
+    override fun zoomMap(latitude: Double, longitude: Double) {
+        val camera = CameraUpdateFactory
+                .newLatLngZoom(LatLng(latitude, longitude), ZOOM)
+        mGoogleMap?.moveCamera(camera)
     }
 
     override fun requestLocationPermissions() {
@@ -135,7 +182,7 @@ class NoteFragment : Fragment(), NoteFragmentContract.View, OnMapReadyCallback,
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
-        outState.putSerializable(ARG_NOTE, mNote)
+        outState.putParcelable(ARG_NOTE, mPresenter.getNote())
         super.onSaveInstanceState(outState)
     }
 
@@ -152,7 +199,8 @@ class NoteFragment : Fragment(), NoteFragmentContract.View, OnMapReadyCallback,
         val contentTag = NoteContentFragment::class.toString()
         if (childFragmentManager.findFragmentByTag(contentTag) == null) {
             childFragmentManager.inTransaction {
-                replace(R.id.container_note_edit, NoteContentFragment.newInstance(mNote), contentTag)
+                replace(R.id.container_note_edit,
+                        NoteContentFragment.newInstance(mPresenter.getNote().note), contentTag)
             }
         }
 
@@ -165,15 +213,9 @@ class NoteFragment : Fragment(), NoteFragmentContract.View, OnMapReadyCallback,
             }
             childFragmentManager.inTransaction {
                 replace(R.id.container_note_edit,
-                        NoteEditFragment.newInstance(mNote, ClickedView.TITLE, 0), editTag)
+                        NoteEditFragment.newInstance(mPresenter.getNote().note, ClickedView.TITLE,
+                                0), editTag)
                         .addToBackStack(null)
-            }
-        }
-
-        val mapTag = SupportMapFragment::class.toString()
-        if (childFragmentManager.findFragmentByTag(mapTag) == null) {
-            childFragmentManager.inTransaction {
-                add(R.id.container_map_note, mMapFragment, mapTag)
             }
         }
     }
@@ -186,12 +228,12 @@ class NoteFragment : Fragment(), NoteFragmentContract.View, OnMapReadyCallback,
 
         Thread.sleep(500)
         when (v.id) {
-            R.id.text_tags -> mPresenter.onTagsFieldClick(mNote)
+            R.id.text_tags -> mPresenter.onTagsFieldClick()
         }
     }
 
     override fun showTagsDialog(tags: ArrayList<MyTag>) {
-        val dialog = TagsDialog.newInstance(mNote, tags)
+        val dialog = TagsDialog.newInstance(tags)
         dialog.setOnTagChangedListener(this)
         dialog.show(activity?.supportFragmentManager, TagsDialog::class.toString())
     }
@@ -203,8 +245,7 @@ class NoteFragment : Fragment(), NoteFragmentContract.View, OnMapReadyCallback,
                         + ".png")
                 .into(view?.image_weather)
         val temp = forecast.main.temp.toInt().toString() + " °C"
-        val wind = getString(R.string.wind) + " " + forecast.wind.speed.toInt().toString() +
-                " " + getString(R.string.ms)
+        val wind = getString(R.string.wind) + " " + forecast.wind.speed.toInt().toString() + " " + getString(R.string.ms)
         view?.text_temp?.text = temp
         view?.text_wind_speed?.text = wind
     }
@@ -220,7 +261,7 @@ class NoteFragment : Fragment(), NoteFragmentContract.View, OnMapReadyCallback,
     }
 
     override fun onTagsDialogPositiveButtonClick(tags: List<MyTag>) {
-        mPresenter.changeNoteTags(mNote, tags)
+        mPresenter.changeNoteTags(tags)
     }
 
     override fun onDestroyView() {
@@ -246,41 +287,11 @@ class NoteFragment : Fragment(), NoteFragmentContract.View, OnMapReadyCallback,
                 .requestLocationUpdates(locationRequest, mLocationCallback, Looper.myLooper())
     }
 
-    override fun showAddress(address: String) {
-        view?.text_location?.text = address
-        view?.text_location?.setTextColor(getColor(context!!, R.color.black))
-    }
-
-    override fun showMap(latitude: Double, longitude: Double) {
-        view?.container_map_note?.visibility = View.VISIBLE
-        mMapFragment.getMapAsync(this)
-    }
-
-    override fun onMapReady(map: GoogleMap?) {
-        /*Log.e(LOG_TAG, "MapLoaded")
-        mGoogleMap = map
-        mGoogleMap?.let {
-            it.uiSettings.isScrollGesturesEnabled = false
-            mPresenter.onMapReady(mNote.latitude, mNote.longitude)
-        }*/
-    }
-
-    override fun zoomMap(latitude: Double, longitude: Double) {
-        val camera = CameraUpdateFactory
-                .newLatLngZoom(LatLng(latitude, longitude), ZOOM)
-        mGoogleMap?.moveCamera(camera)
-    }
-
-    override fun showAddressNotFound() {
-        //mNote.address = getString(R.string.unknown_address)
-        //view?.text_location?.text = mNote.address
-    }
-
     override fun findAddress(latitude: Double, longitude: Double) {
         try {
             val geoCoder = Geocoder(context, Locale.getDefault())
             val addresses = geoCoder.getFromLocation(latitude, longitude, 1)
-            mPresenter.onAddressFound(mNote, addresses)
+            mPresenter.onAddressFound(addresses, latitude, longitude)
         } catch (e: IOException) {
             e.printStackTrace()
         }
@@ -288,10 +299,10 @@ class NoteFragment : Fragment(), NoteFragmentContract.View, OnMapReadyCallback,
 
     companion object {
         @JvmStatic
-        fun newInstance(note: MyNote, mode: Mode) =
+        fun newInstance(note: MyNoteWithProp, mode: Mode) =
                 NoteFragment().apply {
                     arguments = Bundle().apply {
-                        putSerializable(ARG_NOTE, note)
+                        putParcelable(ARG_NOTE, note)
                         putSerializable(ARG_MODE, mode)
                     }
                 }

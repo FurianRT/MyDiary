@@ -4,7 +4,8 @@ import android.location.Address
 import com.furianrt.mydiary.BasePresenter
 import com.furianrt.mydiary.BaseView
 import com.furianrt.mydiary.data.api.Forecast
-import com.furianrt.mydiary.data.model.MyNote
+import com.furianrt.mydiary.data.model.MyLocation
+import com.furianrt.mydiary.data.model.MyNoteWithProp
 import com.furianrt.mydiary.data.model.MyTag
 import com.furianrt.mydiary.note.Mode
 import com.google.android.gms.location.LocationResult
@@ -26,33 +27,39 @@ interface NoteFragmentContract {
 
         fun findAddress(latitude: Double, longitude: Double)
 
-        fun showAddress(address: String)
-
-        fun showAddressNotFound()
-
-        fun showMap(latitude: Double, longitude: Double)
-
         fun zoomMap(latitude: Double, longitude: Double)
+
+        fun showCategoryName(name: String?)
+
+        fun showMood(name: String?)
+
+        fun showNoTagsMessage()
+
+        fun showNoCategoryMessage()
+
+        fun showNoMoodMessage()
+
+        fun showLocation(location: MyLocation)
     }
 
     interface Presenter : BasePresenter<View> {
 
-        fun onTagsFieldClick(note: MyNote)
+        fun onTagsFieldClick()
 
-        fun loadNoteProperties(noteId: Long)
-
-        fun onLocationReceived(note: MyNote, result: LocationResult)
-
-        fun findLocation(note: MyNote, mode: Mode, locationEnabled: Boolean, networkAvailable: Boolean)
+        fun onLocationReceived(result: LocationResult)
 
         fun onLocationPermissionsGranted()
 
-        fun onAddressFound(note: MyNote, addresses: List<Address>)
+        fun onAddressFound(addresses: List<Address>, latitude: Double, longitude: Double)
 
-        fun changeNoteTags(note: MyNote, tags: List<MyTag>)
+        fun changeNoteTags(tags: List<MyTag>)
 
-        fun onMapReady(latitude: Double?, longitude: Double?)
+        fun onMapReady()
 
-        fun onStop(note: MyNote)
+        fun getNote(): MyNoteWithProp
+
+        fun setNote(note: MyNoteWithProp)
+
+        fun onViewCreated(mode: Mode, locationEnabled: Boolean, networkAvailable: Boolean)
     }
 }

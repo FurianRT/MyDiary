@@ -6,7 +6,7 @@ import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import com.furianrt.mydiary.LOG_TAG
 import com.furianrt.mydiary.R
-import com.furianrt.mydiary.data.model.MyNote
+import com.furianrt.mydiary.data.model.MyNoteWithProp
 import com.furianrt.mydiary.main.EXTRA_CLICKED_NOTE_POSITION
 import kotlinx.android.synthetic.main.activity_note.*
 import javax.inject.Inject
@@ -61,7 +61,7 @@ class NoteActivity : AppCompatActivity(), NoteActivityContract.View {
         outState?.putInt(EXTRA_CLICKED_NOTE_POSITION, pager_note.currentItem)
     }
 
-    override fun showNotes(notes: List<MyNote>) {
+    override fun showNotes(notes: List<MyNoteWithProp>) {
         mPagerAdapter.list = notes
         Log.e(LOG_TAG, "notify")
         mPagerAdapter.notifyDataSetChanged()
