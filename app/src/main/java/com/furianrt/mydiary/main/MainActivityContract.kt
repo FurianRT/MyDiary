@@ -2,10 +2,10 @@ package com.furianrt.mydiary.main
 
 import com.furianrt.mydiary.BasePresenter
 import com.furianrt.mydiary.BaseView
+import com.furianrt.mydiary.data.model.MyHeaderImage
 import com.furianrt.mydiary.data.model.MyNote
 import com.furianrt.mydiary.data.model.MyNoteWithProp
 import com.furianrt.mydiary.main.listadapter.MainListItem
-import java.io.File
 
 interface MainActivityContract {
 
@@ -15,11 +15,11 @@ interface MainActivityContract {
 
         fun showDeleted()
 
-        fun showNotes(notes: List<MainListItem>?)
+        fun showNotes(notes: List<MainListItem>?, selectedNotes: ArrayList<MyNote>)
 
         fun openNotePager(position: Int)
 
-        fun showHeaderImage(image: File)
+        fun showHeaderImages(images: List<MyHeaderImage>)
 
         fun requestStoragePermissions()
 
@@ -28,26 +28,38 @@ interface MainActivityContract {
         fun showImageExplorer()
 
         fun activateSelection()
+
+        fun deactivateSelection()
+
+        fun updateItemSelection(selectedNotes: ArrayList<MyNote>)
+
+        fun refreshTags()
     }
 
     interface Presenter : BasePresenter<View> {
 
-        fun addNote(note: MyNote)
+        fun onMainListItemClick(note: MyNoteWithProp, position: Int)
 
-        fun deleteNote(note: MyNote)
-
-        fun onMainListItemClick(note: MyNoteWithProp)
-
-        fun onHeaderImagePicked(imagePath: String?)
+        fun onHeaderImagesPicked(imageUrls: List<String>)
 
         fun onViewCreate()
 
         fun onButtonSetMainImageClick()
 
-        fun onButtonAddNoteClick()
-
         fun onStoragePermissionsGranted()
 
-        fun onMainListItemLongClick(note: MyNoteWithProp)
+        fun onMainListItemLongClick(note: MyNoteWithProp, position: Int)
+
+        fun onSaveInstanceState(): ArrayList<MyNote>?
+
+        fun onRestoreInstanceState(selectedNotes: ArrayList<MyNote>?)
+
+        fun onFabMenuClick()
+
+        fun onMenuDeleteClick()
+
+        fun onMenuAllNotesClick()
+
+        fun onNotePagerViewFinished()
     }
 }

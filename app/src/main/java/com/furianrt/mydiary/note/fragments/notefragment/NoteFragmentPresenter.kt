@@ -1,12 +1,15 @@
-package com.furianrt.mydiary.note.fragments
+package com.furianrt.mydiary.note.fragments.notefragment
 
 import android.location.Address
 import com.furianrt.mydiary.data.DataManager
+import com.furianrt.mydiary.data.model.MyImage
 import com.furianrt.mydiary.data.model.MyLocation
 import com.furianrt.mydiary.data.model.MyNoteWithProp
 import com.furianrt.mydiary.data.model.MyTag
 import com.furianrt.mydiary.note.Mode
+import com.furianrt.mydiary.utils.generateUniqueId
 import com.google.android.gms.location.LocationResult
+import io.reactivex.Flowable
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 
@@ -52,7 +55,7 @@ class NoteFragmentPresenter(private val mDataManager: DataManager) : NoteFragmen
         mCompositeDisposable.add(disposable)
     }
 
-    override fun changeNoteTags(tags: List<MyTag>) {
+    override fun onNoteTagsChanged(tags: List<MyTag>) {
         val checkedTags = tags.filter { it.isChecked }
         val disposable = mDataManager.deleteAllTagsForNote(mNote.note.id)
                 .andThen(mDataManager.insertTagsForNote(mNote.note.id, checkedTags))
@@ -74,6 +77,8 @@ class NoteFragmentPresenter(private val mDataManager: DataManager) : NoteFragmen
     override fun getNote() = mNote
 
     override fun onViewCreated(mode: Mode, locationEnabled: Boolean, networkAvailable: Boolean) {
+        loadNoteImages(mNote.note.id)
+
         val location = mNote.location
         if (location != null) {
             mView?.showLocation(location)
@@ -90,6 +95,14 @@ class NoteFragmentPresenter(private val mDataManager: DataManager) : NoteFragmen
         loadTagNames(mNote.tags)
         mNote.category?.let { mView?.showCategoryName(mNote.category?.name) }
         mNote.mood?.let { mView?.showMood(mNote.mood?.name) }
+    }
+
+    private fun loadNoteImages(noteId: Long) {
+        if (noteId == 0L) return
+        val disposable = mDataManager.getImagesForNote(noteId)
+                .subscribe { images -> mView?.showImages(images) }
+
+        mCompositeDisposable.add(disposable)
     }
 
     private fun findLocation(locationEnabled: Boolean, networkAvailable: Boolean) {
@@ -132,6 +145,30 @@ class NoteFragmentPresenter(private val mDataManager: DataManager) : NoteFragmen
                 .subscribe { tagNames ->
                     mView?.showTagNames(tagNames)
                 }
+        mCompositeDisposable.add(disposable)
+    }
+
+    override fun onAddImageButtonClick() {
+        mView?.requestStoragePermissions()
+    }
+
+    override fun onStoragePermissionsGranted() {
+        mView?.showImageExplorer()
+    }
+
+    override fun onNoteImagesPicked(imageUrls: List<String>) {
+        val disposable = Flowable.fromIterable(imageUrls)
+                .map { url ->
+                    val name = mNote.note.id.toString() + "_" + generateUniqueId()
+                    return@map MyImage(name, url, mNote.note.id)
+                }
+                .flatMapSingle { image -> mDataManager.saveImageToStorage(image) }
+                .flatMapCompletable { savedImage -> mDataManager.insertImage(savedImage) }
+                .andThen(mDataManager.getImagesForNote(mNote.note.id))
+                .subscribe { images ->
+                    mView?.showImages(images)
+                }
+
         mCompositeDisposable.add(disposable)
     }
 }

@@ -1,20 +1,27 @@
 package com.furianrt.mydiary.main.listadapter
 
+import android.support.annotation.ColorRes
+import android.support.v4.content.ContextCompat
 import android.support.v7.recyclerview.extensions.ListAdapter
+import android.support.v7.widget.CardView
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.furianrt.mydiary.R
+import com.furianrt.mydiary.data.model.MyNote
 import com.furianrt.mydiary.data.model.MyNoteWithProp
 import com.furianrt.mydiary.general.HeaderItemDecoration
 import com.furianrt.mydiary.utils.*
 import kotlinx.android.synthetic.main.activity_main_list_content.view.*
 import kotlinx.android.synthetic.main.activity_main_list_date.view.*
 import kotlinx.android.synthetic.main.activity_main_list_header.view.*
+import java.util.*
 
-class MainListAdapter(private val mListener: OnMainListItemInteractionListener)
-    : ListAdapter<MainListItem, MainListAdapter.MyViewHolder>(MainDiffCallback()),
+class MainListAdapter(
+        var listener: OnMainListItemInteractionListener?,
+        var selectedNotes: ArrayList<MyNote> = ArrayList()
+) : ListAdapter<MainListItem, MainListAdapter.MyViewHolder>(MainDiffCallback()),
         HeaderItemDecoration.StickyHeaderInterface {
 
     override fun bindHeaderData(header: View, headerPosition: Int) {
@@ -23,7 +30,7 @@ class MainListAdapter(private val mListener: OnMainListItemInteractionListener)
         }
 
         val time = (getItem(headerPosition) as MainHeaderItem).time
-        val date = getMonth(time) + ", " + getYear(time)
+        val date = getMonth(time).toUpperCase(Locale.getDefault()) + ", " + getYear(time)
 
         header.text_date.text = date
     }
@@ -61,9 +68,9 @@ class MainListAdapter(private val mListener: OnMainListItemInteractionListener)
 
     interface OnMainListItemInteractionListener {
 
-        fun onMainListItemClick(note: MyNoteWithProp)
+        fun onMainListItemClick(note: MyNoteWithProp, position: Int)
 
-        fun onMainListItemLongClick(note: MyNoteWithProp)
+        fun onMainListItemLongClick(note: MyNoteWithProp, position: Int)
     }
 
     abstract class MyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -76,7 +83,8 @@ class MainListAdapter(private val mListener: OnMainListItemInteractionListener)
 
         override fun bind(item: MainListItem) {
             mHeaderItem = item as MainHeaderItem
-            val date = getMonth(mHeaderItem.time) + ", " + getYear(mHeaderItem.time)
+            val date = getMonth(mHeaderItem.time)
+                    .toUpperCase(Locale.getDefault()) + ", " + getYear(mHeaderItem.time)
             view.apply {
                 text_date.text = date
             }
@@ -97,23 +105,36 @@ class MainListAdapter(private val mListener: OnMainListItemInteractionListener)
                 text_day_of_week.text = getDayOfWeek(time)
                 text_day.text = getDay(time)
                 text_time.text = getTime(time)
+                text_tags.text = mContentItem.note.tags.size.toString()
                 val title = mContentItem.note.note.title
                 if (title.isEmpty()) {
                     text_note_title.visibility = View.GONE
                 } else {
                     text_note_title.text = title
+                    text_note_title.visibility = View.VISIBLE
                 }
                 text_note_content.text = mContentItem.note.note.content
+
+                selectItem(mContentItem.note.note, R.color.colorAccent, R.color.white)
             }
         }
 
         override fun onClick(view: View?) {
-            mListener.onMainListItemClick(mContentItem.note)
+            listener?.onMainListItemClick(mContentItem.note, layoutPosition)
         }
 
         override fun onLongClick(v: View?): Boolean {
-            mListener.onMainListItemLongClick(mContentItem.note)
+            listener?.onMainListItemLongClick(mContentItem.note, layoutPosition)
             return true
+        }
+
+        private fun selectItem(note: MyNote, @ColorRes firstColor: Int,@ColorRes secondColor: Int) {
+            val cardView = view as CardView
+            if (selectedNotes.contains(note)) {
+                cardView.setCardBackgroundColor(ContextCompat.getColor(view.context!!, firstColor))
+            } else {
+                cardView.setCardBackgroundColor(ContextCompat.getColor(view.context!!, secondColor))
+            }
         }
     }
 }

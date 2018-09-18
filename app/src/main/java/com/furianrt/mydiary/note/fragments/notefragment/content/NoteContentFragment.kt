@@ -1,4 +1,4 @@
-package com.furianrt.mydiary.note.fragments.content
+package com.furianrt.mydiary.note.fragments.notefragment.content
 
 import android.os.Bundle
 import android.support.v4.app.Fragment
@@ -13,10 +13,10 @@ import com.furianrt.mydiary.LOG_TAG
 import com.furianrt.mydiary.R
 import com.furianrt.mydiary.data.model.MyNote
 import com.furianrt.mydiary.note.NoteActivity
-import com.furianrt.mydiary.note.fragments.ARG_NOTE
-import com.furianrt.mydiary.note.fragments.edit.ClickedView
-import com.furianrt.mydiary.note.fragments.edit.NoteEditFragment
-import com.furianrt.mydiary.note.fragments.inTransaction
+import com.furianrt.mydiary.note.fragments.notefragment.ARG_NOTE
+import com.furianrt.mydiary.note.fragments.notefragment.edit.ClickedView
+import com.furianrt.mydiary.note.fragments.notefragment.edit.NoteEditFragment
+import com.furianrt.mydiary.note.fragments.notefragment.inTransaction
 import kotlinx.android.synthetic.main.fragment_note_content.view.*
 import javax.inject.Inject
 

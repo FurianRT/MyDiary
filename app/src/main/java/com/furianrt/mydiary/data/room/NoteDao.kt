@@ -18,6 +18,9 @@ abstract class NoteDao {
     @Delete
     abstract fun delete(note: MyNote)
 
+    @Delete
+    abstract fun delete(notes: List<MyNote>)
+
     @Query("SELECT * FROM Notes ORDER BY time DESC")
     abstract fun getAllNotes(): Flowable<List<MyNote>>
 

@@ -1,9 +1,10 @@
-package com.furianrt.mydiary.note.fragments
+package com.furianrt.mydiary.note.fragments.notefragment
 
 import android.location.Address
 import com.furianrt.mydiary.BasePresenter
 import com.furianrt.mydiary.BaseView
 import com.furianrt.mydiary.data.api.Forecast
+import com.furianrt.mydiary.data.model.MyImage
 import com.furianrt.mydiary.data.model.MyLocation
 import com.furianrt.mydiary.data.model.MyNoteWithProp
 import com.furianrt.mydiary.data.model.MyTag
@@ -40,6 +41,12 @@ interface NoteFragmentContract {
         fun showNoMoodMessage()
 
         fun showLocation(location: MyLocation)
+
+        fun requestStoragePermissions()
+
+        fun showImageExplorer()
+
+        fun showImages(images: List<MyImage>)
     }
 
     interface Presenter : BasePresenter<View> {
@@ -52,7 +59,7 @@ interface NoteFragmentContract {
 
         fun onAddressFound(addresses: List<Address>, latitude: Double, longitude: Double)
 
-        fun changeNoteTags(tags: List<MyTag>)
+        fun onNoteTagsChanged(tags: List<MyTag>)
 
         fun onMapReady()
 
@@ -61,5 +68,11 @@ interface NoteFragmentContract {
         fun setNote(note: MyNoteWithProp)
 
         fun onViewCreated(mode: Mode, locationEnabled: Boolean, networkAvailable: Boolean)
+
+        fun onAddImageButtonClick()
+
+        fun onStoragePermissionsGranted()
+
+        fun onNoteImagesPicked(imageUrls: List<String>)
     }
 }

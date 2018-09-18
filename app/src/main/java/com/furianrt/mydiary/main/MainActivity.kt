@@ -1,25 +1,33 @@
 package com.furianrt.mydiary.main
 
 import android.Manifest
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.os.Parcelable
+import android.os.Vibrator
 import android.support.v4.content.ContextCompat
 import android.support.v4.view.GravityCompat
 import android.support.v7.app.ActionBarDrawerToggle
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
+import android.util.Log
+import android.view.Menu
+import android.view.MenuItem
+import android.view.View
 import android.widget.Toast
+import com.furianrt.mydiary.LOG_TAG
 import com.furianrt.mydiary.R
+import com.furianrt.mydiary.data.model.MyHeaderImage
+import com.furianrt.mydiary.data.model.MyNote
 import com.furianrt.mydiary.data.model.MyNoteWithProp
 import com.furianrt.mydiary.general.HeaderItemDecoration
+import com.furianrt.mydiary.general.MediaLoader
 import com.furianrt.mydiary.main.listadapter.MainListAdapter
 import com.furianrt.mydiary.main.listadapter.MainListItem
 import com.furianrt.mydiary.note.EXTRA_MODE
 import com.furianrt.mydiary.note.Mode
 import com.furianrt.mydiary.note.NoteActivity
-import com.squareup.picasso.MemoryPolicy
-import com.squareup.picasso.NetworkPolicy
 import com.squareup.picasso.Picasso
 import com.yanzhenjie.album.Album
 import com.yanzhenjie.album.AlbumConfig
@@ -34,11 +42,13 @@ import javax.inject.Inject
 
 const val EXTRA_CLICKED_NOTE_POSITION = "notePosition"
 
-private const val RECYCLER_VIEW_STATE = "recyclerState"
-private const val STORAGE_PERMISSIONS_REQUEST_CODE = 2
+private const val BUNDLE_RECYCLER_VIEW_STATE = "recyclerState"
+private const val BUNDLE_SELECTED_LIST_ITEMS = "selectedListItems"
+private const val STORAGE_PERMISSIONS_REQUEST_CODE = 1
+private const val NOTE_ACTIVITY_RESULT_CODE = 2
 
 class MainActivity : AppCompatActivity(), MainActivityContract.View,
-        MainListAdapter.OnMainListItemInteractionListener {
+        MainListAdapter.OnMainListItemInteractionListener, View.OnClickListener {
 
     @Inject
     lateinit var mPresenter: MainActivityContract.Presenter
@@ -52,22 +62,28 @@ class MainActivity : AppCompatActivity(), MainActivityContract.View,
         getPresenterComponent(this).inject(this)
         setContentView(R.layout.activity_main)
 
+        mPresenter.attachView(this)
+
         savedInstanceState?.let {
-            mRecyclerViewState = it.getParcelable(RECYCLER_VIEW_STATE)
+            mRecyclerViewState = it.getParcelable(BUNDLE_RECYCLER_VIEW_STATE)
+            val selectedListItems = it.getParcelableArrayList<MyNote>(BUNDLE_SELECTED_LIST_ITEMS)
+            mPresenter.onRestoreInstanceState(selectedListItems)
         }
 
         Album.initialize(AlbumConfig.newBuilder(this)
                 .setAlbumLoader(MediaLoader())
                 .setLocale(Locale.getDefault())
                 .build())
+
+        mPresenter.onViewCreate()
+
         setupUi()
     }
 
-    override fun showHeaderImage(image: File) {
+    override fun showHeaderImages(images: List<MyHeaderImage>) {
+        Log.e(LOG_TAG, "" + images.size)
         Picasso.get()
-                .load(image)
-                .memoryPolicy(MemoryPolicy.NO_CACHE)
-                .networkPolicy(NetworkPolicy.NO_CACHE)
+                .load(File(images[0].url))
                 .noPlaceholder()
                 .into(image_toolbar_main)
     }
@@ -80,21 +96,16 @@ class MainActivity : AppCompatActivity(), MainActivityContract.View,
         drawer.addDrawerListener(toggle)
         toggle.syncState()
 
-        mPresenter.attachView(this)
-        mPresenter.onViewCreate()
-
-        fab_menu.setOnClickListener {
-            if (fab_menu.isOpened) {
-                fab_menu.close(true)
-            } else {
-                mPresenter.onButtonAddNoteClick()
-            }
-        }
+        fab_menu.setOnClickListener(this)
         fab_menu.menuButtonColorNormal = ContextCompat.getColor(this, R.color.colorAccent)
         fab_menu.menuButtonColorPressed = ContextCompat.getColor(this, R.color.colorAccent)
         fab_menu.setMenuButtonColorRippleResId(R.color.colorPrimary)
 
-        fab_toolbar.setOnClickListener { mPresenter.onButtonSetMainImageClick() }
+        fab_delete.setOnClickListener(this)
+        fab_folder.setOnClickListener(this)
+        fab_place.setOnClickListener(this)
+
+        fab_toolbar_main.setOnClickListener(this)
 
         list_main.apply {
             layoutManager = LinearLayoutManager(this@MainActivity)
@@ -103,8 +114,32 @@ class MainActivity : AppCompatActivity(), MainActivityContract.View,
         }
     }
 
+    override fun onClick(v: View?) {
+        when(v?.id) {
+            R.id.fab_delete -> mPresenter.onMenuDeleteClick()
+            R.id.fab_toolbar_main ->  mPresenter.onButtonSetMainImageClick()
+            R.id.fab_menu -> mPresenter.onFabMenuClick()
+        }
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+        return when(item?.itemId) {
+            R.id.menu_all_notes -> {
+                mPresenter.onMenuAllNotesClick()
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.activity_main_toolbar_menu, menu)
+        return super.onCreateOptionsMenu(menu)
+    }
+
     override fun onSaveInstanceState(outState: Bundle?) {
-        outState?.putParcelable(RECYCLER_VIEW_STATE, list_main.layoutManager?.onSaveInstanceState())
+        outState?.putParcelable(BUNDLE_RECYCLER_VIEW_STATE, list_main.layoutManager?.onSaveInstanceState())
+        outState?.putParcelableArrayList(BUNDLE_SELECTED_LIST_ITEMS, mPresenter.onSaveInstanceState())
         super.onSaveInstanceState(outState)
     }
 
@@ -141,7 +176,7 @@ class MainActivity : AppCompatActivity(), MainActivityContract.View,
                 .build()
 
         Album.image(this)
-                .singleChoice()
+                .multipleChoice()
                 .columnCount(3)
                 .filterMimeType {
                     when (it) {
@@ -153,7 +188,7 @@ class MainActivity : AppCompatActivity(), MainActivityContract.View,
                 .afterFilterVisibility(false)
                 .camera(true)
                 .widget(widget)
-                .onResult { mPresenter.onHeaderImagePicked(it.firstOrNull()?.path) }
+                .onResult { albImg -> mPresenter.onHeaderImagesPicked(albImg.map { it.path }) }
                 .start()
     }
 
@@ -165,40 +200,65 @@ class MainActivity : AppCompatActivity(), MainActivityContract.View,
         Toast.makeText(this, "Deleted", Toast.LENGTH_SHORT).show()
     }
 
-    override fun showNotes(notes: List<MainListItem>?) {
+    override fun showNotes(notes: List<MainListItem>?, selectedNotes: ArrayList<MyNote>) {
         mAdapter.submitList(notes?.toMutableList())
+        mAdapter.selectedNotes = selectedNotes
         mRecyclerViewState?.let {
             list_main.layoutManager?.onRestoreInstanceState(mRecyclerViewState)
             mRecyclerViewState = null
         }
     }
 
-    override fun onMainListItemClick(note: MyNoteWithProp) {
-        mPresenter.onMainListItemClick(note)
+    override fun onMainListItemClick(note: MyNoteWithProp, position: Int) {
+        mPresenter.onMainListItemClick(note, position)
     }
 
-    override fun onMainListItemLongClick(note: MyNoteWithProp) {
-        mPresenter.onMainListItemLongClick(note)
-        //mPresenter.deleteNote(note)
+    override fun onMainListItemLongClick(note: MyNoteWithProp, position: Int) {
+        val vibrator = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
+        if (vibrator.hasVibrator()) {
+            vibrator.vibrate(40L)
+        }
+        mPresenter.onMainListItemLongClick(note, position)
     }
 
     override fun activateSelection() {
         fab_menu.open(true)
     }
 
+    override fun deactivateSelection() {
+        fab_menu.close(true)
+    }
+
+    override fun updateItemSelection(selectedNotes: ArrayList<MyNote>) {
+        mAdapter.selectedNotes = selectedNotes
+        mAdapter.notifyDataSetChanged()
+    }
+
     override fun openNotePager(position: Int) {
         val intent = Intent(this, NoteActivity::class.java)
         intent.putExtra(EXTRA_CLICKED_NOTE_POSITION, position)
         intent.putExtra(EXTRA_MODE, Mode.READ)
-        startActivity(intent)
+        startActivityForResult(intent, NOTE_ACTIVITY_RESULT_CODE)
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == NOTE_ACTIVITY_RESULT_CODE) {
+            mPresenter.onNotePagerViewFinished()
+        }
+    }
+
+    override fun refreshTags() {
+        mAdapter.notifyDataSetChanged()
     }
 
     override fun onBackPressed() {
         when {
             drawer.isDrawerOpen(GravityCompat.START) ->
                 drawer.closeDrawer(GravityCompat.START, true)
-            fab_menu.isOpened ->
-                fab_menu.close(true)
+            fab_menu.isOpened -> {
+                mPresenter.onFabMenuClick()
+            }
             ++mBackPressCount < 2 ->
                 Toast.makeText(this, getString(R.string.click_again_to_exit), Toast.LENGTH_SHORT).show()
             else -> super.onBackPressed()
@@ -212,6 +272,7 @@ class MainActivity : AppCompatActivity(), MainActivityContract.View,
 
     override fun onDestroy() {
         super.onDestroy()
+        mAdapter.listener = null
         mPresenter.detachView()
     }
 }

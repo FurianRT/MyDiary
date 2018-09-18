@@ -13,7 +13,6 @@ import io.reactivex.Maybe
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
-import java.io.File
 
 @AppScope
 class DataManagerImp(private val mDatabase: NoteDatabase,
@@ -41,6 +40,26 @@ class DataManagerImp(private val mDatabase: NoteDatabase,
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
 
+    override fun insertImage(image: MyImage): Completable =
+            Completable.fromAction { mDatabase.imageDao().insert(image) }
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+
+    override fun insertImages(images: List<MyImage>): Completable =
+            Completable.fromAction { mDatabase.imageDao().insert(images) }
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+
+    override fun insertHeaderImage(headerImage: MyHeaderImage): Completable =
+            Completable.fromAction { mDatabase.headerImageDao().insert(headerImage) }
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+
+    override fun insertHeaderImage(headerImages: List<MyHeaderImage>): Completable =
+            Completable.fromAction { mDatabase.headerImageDao().insert(headerImages) }
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+
     override fun addLocation(location: MyLocation): Single<Long> =
             Single.fromCallable { mDatabase.locationDao().insert(location) }
                     .subscribeOn(Schedulers.io())
@@ -63,6 +82,11 @@ class DataManagerImp(private val mDatabase: NoteDatabase,
 
     override fun deleteNote(note: MyNote): Completable =
             Completable.fromAction { mDatabase.noteDao().delete(note) }
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+
+    override fun deleteNotes(notes: List<MyNote>): Completable =
+            Completable.fromAction { mDatabase.noteDao().delete(notes) }
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
 
@@ -110,15 +134,23 @@ class DataManagerImp(private val mDatabase: NoteDatabase,
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
 
-    override fun saveImage(sourcePath: String, destFileName: String): Single<File> =
-            Single.fromCallable { mStorage.copyImageToStorage(sourcePath, destFileName) }
+    override fun saveImageToStorage(image: MyImage): Single<MyImage> =
+            Single.fromCallable { mStorage.copyImageToStorage(image.url, image.name) }
+                    .map { file -> MyImage(file.name, file.path, image.noteId) }
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
 
-    override fun getImagePath(imageName: String): Single<File> =
-            Single.fromCallable { mStorage.getFile(imageName) }
+    override fun saveHeaderImageToStorage(headerImage: MyHeaderImage): Single<MyHeaderImage> =
+            Single.fromCallable { mStorage.copyImageToStorage(headerImage.url, headerImage.name) }
+                    .map { file -> MyHeaderImage(file.name, file.path) }
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
+
+    /*override fun getImageFromStorage(imageName: String): Single<File> =
+            Single.fromCallable { mStorage.getFile(imageName) }
+                    .map { file -> MyImage(file.name, file.path, image.noteId) }
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())*/
 
     override fun getNotesWithProp(): Flowable<List<MyNoteWithProp>> =
             mDatabase.noteDao()
@@ -128,6 +160,16 @@ class DataManagerImp(private val mDatabase: NoteDatabase,
 
     override fun getTags(tagIds: List<Long>): Single<List<MyTag>> =
             Single.fromCallable { mDatabase.tagDao().getTags(tagIds) }
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+
+    override fun getImagesForNote(noteId: Long): Flowable<List<MyImage>> =
+            mDatabase.imageDao().getImagesForNote(noteId)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+
+    override fun getHeaderImages(): Flowable<List<MyHeaderImage>> =
+            mDatabase.headerImageDao().getHeaderImages()
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
 }

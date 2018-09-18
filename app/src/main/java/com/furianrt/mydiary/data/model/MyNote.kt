@@ -8,9 +8,11 @@ import android.os.Parcelable
 import com.furianrt.mydiary.data.api.Forecast
 
 @Entity(tableName = "Notes")
-data class MyNote(@ColumnInfo(name = "title") var title: String,
-                  @ColumnInfo(name = "content") var content: String,
-                  @ColumnInfo(name = "time") var time: Long) : Parcelable {
+data class MyNote(
+        @ColumnInfo(name = "title") var title: String,
+        @ColumnInfo(name = "content") var content: String,
+        @ColumnInfo(name = "time") var time: Long
+) : Parcelable {
 
     @ColumnInfo(name = "id_note")
     @PrimaryKey(autoGenerate = true)

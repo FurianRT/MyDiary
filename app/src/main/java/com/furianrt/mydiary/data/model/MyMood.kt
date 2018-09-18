@@ -7,8 +7,11 @@ import android.os.Parcel
 import android.os.Parcelable
 
 @Entity(tableName = "Moods")
-data class MyMood(@ColumnInfo(name = "id_mood") @PrimaryKey(autoGenerate = true) var id: Long,
-                  @ColumnInfo(name = "name_mood") var name: String): Parcelable {
+data class MyMood(
+        @ColumnInfo(name = "id_mood") @PrimaryKey(autoGenerate = true) var id: Long,
+        @ColumnInfo(name = "name_mood") var name: String
+) : Parcelable {
+
     constructor(parcel: Parcel) : this(
             parcel.readLong(),
             parcel.readString()!!) {

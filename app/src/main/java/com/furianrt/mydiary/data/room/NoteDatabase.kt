@@ -5,9 +5,12 @@ import android.arch.persistence.room.RoomDatabase
 import android.arch.persistence.room.TypeConverters
 import com.furianrt.mydiary.data.model.*
 
-@Database(entities =
-[MyNote::class, MyCategory::class, MyTag::class, MyMood::class, MyLocation::class, NoteTag::class],
-        version = 1, exportSchema = false)
+@Database(
+        entities = [MyNote::class, MyCategory::class, MyTag::class, MyMood::class,
+            MyLocation::class, NoteTag::class, MyImage::class, MyHeaderImage::class],
+        version = 1,
+        exportSchema = false
+)
 @TypeConverters(RoomTypeConverter::class)
 abstract class NoteDatabase : RoomDatabase() {
 
@@ -22,4 +25,8 @@ abstract class NoteDatabase : RoomDatabase() {
     abstract fun locationDao(): LocationDao
 
     abstract fun noteTagDao(): NoteTagDao
+
+    abstract fun imageDao(): ImageDao
+
+    abstract fun headerImageDao(): HeaderImageDao
 }

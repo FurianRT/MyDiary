@@ -7,8 +7,11 @@ import android.os.Parcel
 import android.os.Parcelable
 
 @Entity(tableName = "Categories")
-data class MyCategory(@ColumnInfo(name = "id_category") @PrimaryKey(autoGenerate = true) var id: Long,
-                      @ColumnInfo(name = "name_category") var name: String): Parcelable {
+data class MyCategory(
+        @ColumnInfo(name = "id_category") @PrimaryKey(autoGenerate = true) var id: Long,
+        @ColumnInfo(name = "name_category") var name: String
+) : Parcelable {
+
     constructor(parcel: Parcel) : this(
             parcel.readLong(),
             parcel.readString()!!) {

@@ -6,7 +6,6 @@ import io.reactivex.Completable
 import io.reactivex.Flowable
 import io.reactivex.Maybe
 import io.reactivex.Single
-import java.io.File
 
 interface DataManager {
 
@@ -18,6 +17,14 @@ interface DataManager {
 
     fun insertTagsForNote(noteId: Long, tags: List<MyTag>): Completable
 
+    fun insertImage(image: MyImage): Completable
+
+    fun insertImages(images: List<MyImage>): Completable
+
+    fun insertHeaderImage(headerImage: MyHeaderImage): Completable
+
+    fun insertHeaderImage(headerImages: List<MyHeaderImage>): Completable
+
     fun updateNote(note: MyNote): Completable
 
     fun updateTag(tag: MyTag): Completable
@@ -25,6 +32,8 @@ interface DataManager {
     fun deleteTag(tag: MyTag): Completable
 
     fun deleteNote(note: MyNote): Completable
+
+    fun deleteNotes(notes: List<MyNote>): Completable
 
     fun deleteNoteTag(noteTag: NoteTag): Completable
 
@@ -42,13 +51,19 @@ interface DataManager {
 
     fun findNote(noteId: Long): Maybe<MyNote>
 
-    fun saveImage(sourcePath: String, destFileName: String): Single<File>
+    fun saveImageToStorage(image: MyImage): Single<MyImage>
 
-    fun getImagePath(imageName: String) : Single<File>
+    fun saveHeaderImageToStorage(headerImage: MyHeaderImage): Single<MyHeaderImage>
+
+    fun getImagesForNote(noteId: Long): Flowable<List<MyImage>>
+
+    //fun getImageFromStorage(imageName: String) : Single<File>
 
     fun getNotesWithProp(): Flowable<List<MyNoteWithProp>>
 
     fun getTags(tagIds: List<Long>): Single<List<MyTag>>
+
+    fun getHeaderImages(): Flowable<List<MyHeaderImage>>
 
     fun addLocation(location: MyLocation): Single<Long>
 }

@@ -4,6 +4,7 @@ import android.app.Application
 import com.furianrt.mydiary.di.application.AppComponent
 import com.furianrt.mydiary.di.application.AppModule
 import com.furianrt.mydiary.di.application.DaggerAppComponent
+import net.danlew.android.joda.JodaTimeAndroid
 
 const val LOG_TAG = "myTag"
 
@@ -12,6 +13,11 @@ class MyApp : Application() {
     val component: AppComponent = DaggerAppComponent.builder()
             .appModule(AppModule(this))
             .build()
+
+    override fun onCreate() {
+        super.onCreate()
+        JodaTimeAndroid.init(this)
+    }
 }
 
 /*TODO

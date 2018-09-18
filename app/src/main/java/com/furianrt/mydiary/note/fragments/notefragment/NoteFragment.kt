@@ -1,4 +1,4 @@
-package com.furianrt.mydiary.note.fragments
+package com.furianrt.mydiary.note.fragments.notefragment
 
 import android.Manifest
 import android.annotation.SuppressLint
@@ -9,6 +9,7 @@ import android.os.Looper
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
 import android.support.v4.app.FragmentTransaction
+import android.support.v4.content.ContextCompat
 import android.support.v4.content.ContextCompat.getColor
 import android.util.Log
 import android.view.LayoutInflater
@@ -17,14 +18,15 @@ import android.view.ViewGroup
 import com.furianrt.mydiary.LOG_TAG
 import com.furianrt.mydiary.R
 import com.furianrt.mydiary.data.api.Forecast
+import com.furianrt.mydiary.data.model.MyImage
 import com.furianrt.mydiary.data.model.MyLocation
 import com.furianrt.mydiary.data.model.MyNoteWithProp
 import com.furianrt.mydiary.data.model.MyTag
 import com.furianrt.mydiary.note.Mode
 import com.furianrt.mydiary.note.dialogs.TagsDialog
-import com.furianrt.mydiary.note.fragments.content.NoteContentFragment
-import com.furianrt.mydiary.note.fragments.edit.ClickedView
-import com.furianrt.mydiary.note.fragments.edit.NoteEditFragment
+import com.furianrt.mydiary.note.fragments.notefragment.content.NoteContentFragment
+import com.furianrt.mydiary.note.fragments.notefragment.edit.ClickedView
+import com.furianrt.mydiary.note.fragments.notefragment.edit.NoteEditFragment
 import com.furianrt.mydiary.utils.*
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationCallback
@@ -35,7 +37,10 @@ import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.model.LatLng
 import com.squareup.picasso.Picasso
+import com.yanzhenjie.album.Album
+import com.yanzhenjie.album.api.widget.Widget
 import kotlinx.android.synthetic.main.fragment_note.view.*
+import kotlinx.android.synthetic.main.fragment_note_toolbar.view.*
 import pub.devrel.easypermissions.AfterPermissionGranted
 import pub.devrel.easypermissions.EasyPermissions
 import java.io.IOException
@@ -53,19 +58,21 @@ const val ARG_MODE = "mode"
 
 private const val LOCATION_INTERVAL = 400L
 private const val LOCATION_PERMISSIONS_REQUEST_CODE = 1
+private const val STORAGE_PERMISSIONS_REQUEST_CODE = 2
 private const val ZOOM = 15f
 
 class NoteFragment : Fragment(), NoteFragmentContract.View, OnMapReadyCallback,
         TagsDialog.OnTagsDialogInteractionListener, View.OnClickListener {
-
-    private lateinit var mMode: Mode
-    private var mGoogleMap: GoogleMap? = null
 
     @Inject
     lateinit var mFusedLocationClient: FusedLocationProviderClient
 
     @Inject
     lateinit var mPresenter: NoteFragmentContract.Presenter
+
+    private var mGoogleMap: GoogleMap? = null
+    private lateinit var mPagerAdapter: NoteFragmentPagerAdapter
+    private lateinit var mMode: Mode
 
     private val mLocationCallback = object : LocationCallback() {
         override fun onLocationResult(result: LocationResult?) {
@@ -96,11 +103,11 @@ class NoteFragment : Fragment(), NoteFragmentContract.View, OnMapReadyCallback,
 
         mPresenter.attachView(this)
 
+        mPagerAdapter = NoteFragmentPagerAdapter(childFragmentManager)
+
         setupUi(view)
 
         addFragments(savedInstanceState)
-
-        view.map_touch_event_interceptor.setOnTouchListener { _, _ -> true }
 
         return view
     }
@@ -114,6 +121,9 @@ class NoteFragment : Fragment(), NoteFragmentContract.View, OnMapReadyCallback,
             text_year.text = getYear(time)
             text_time.text = getTime(time)
             text_tags.setOnClickListener(this@NoteFragment)
+            fab_toolbar_note.setOnClickListener(this@NoteFragment)
+            pager_note_image.adapter = mPagerAdapter
+            map_touch_event_interceptor.setOnTouchListener { _, _ -> true }
         }
     }
 
@@ -148,11 +158,17 @@ class NoteFragment : Fragment(), NoteFragmentContract.View, OnMapReadyCallback,
     }
 
     override fun showLocation(location: MyLocation) {
-        view?.text_location?.text = location.name
-        view?.text_location?.setTextColor(getColor(context!!, R.color.black))
-        view?.map_view?.onCreate(null)
-        view?.map_view?.onResume()
-        view?.map_view?.getMapAsync(this)
+        view?.apply {
+            text_location.text = location.name
+            text_location.setTextColor(getColor(context!!, R.color.black))
+            map_touch_event_interceptor.visibility = View.VISIBLE
+            map_view.apply {
+                visibility = View.VISIBLE
+                onCreate(null)
+                onResume()
+                getMapAsync(this@NoteFragment)
+            }
+        }
     }
 
     override fun onMapReady(map: GoogleMap?) {
@@ -226,9 +242,9 @@ class NoteFragment : Fragment(), NoteFragmentContract.View, OnMapReadyCallback,
             childFragmentManager.popBackStack()
         }
 
-        Thread.sleep(500)
         when (v.id) {
             R.id.text_tags -> mPresenter.onTagsFieldClick()
+            R.id.fab_toolbar_note -> mPresenter.onAddImageButtonClick()
         }
     }
 
@@ -261,7 +277,7 @@ class NoteFragment : Fragment(), NoteFragmentContract.View, OnMapReadyCallback,
     }
 
     override fun onTagsDialogPositiveButtonClick(tags: List<MyTag>) {
-        mPresenter.changeNoteTags(tags)
+        mPresenter.onNoteTagsChanged(tags)
     }
 
     override fun onDestroyView() {
@@ -269,7 +285,8 @@ class NoteFragment : Fragment(), NoteFragmentContract.View, OnMapReadyCallback,
         mPresenter.detachView()
     }
 
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>,
+                                            grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults, this)
     }
@@ -295,6 +312,52 @@ class NoteFragment : Fragment(), NoteFragmentContract.View, OnMapReadyCallback,
         } catch (e: IOException) {
             e.printStackTrace()
         }
+    }
+
+    override fun requestStoragePermissions() {
+        val readExtStorage = Manifest.permission.READ_EXTERNAL_STORAGE
+        val camera = Manifest.permission.CAMERA
+        if (EasyPermissions.hasPermissions(context!!, readExtStorage, camera)) {
+            mPresenter.onStoragePermissionsGranted()
+        } else {
+            EasyPermissions.requestPermissions(this,
+                    getString(R.string.storage_permission_request),
+                    STORAGE_PERMISSIONS_REQUEST_CODE, readExtStorage, camera)
+        }
+    }
+
+    @AfterPermissionGranted(STORAGE_PERMISSIONS_REQUEST_CODE)
+    override fun showImageExplorer() {
+        val widget = Widget.newDarkBuilder(context)
+                .statusBarColor(ContextCompat.getColor(context!!, R.color.colorPrimaryDark))
+                .toolBarColor(ContextCompat.getColor(context!!, R.color.colorPrimary))
+                .navigationBarColor(ContextCompat.getColor(context!!, R.color.black))
+                .title(R.string.album)
+                .build()
+
+        Album.image(this)
+                .multipleChoice()
+                .columnCount(3)
+                .filterMimeType {
+                    when (it) {
+                        "jpeg" -> true
+                        "jpg " -> true
+                        else -> false
+                    }
+                }
+                .afterFilterVisibility(false)
+                .camera(true)
+                .widget(widget)
+                .onResult { albImage ->
+                    mPresenter.onNoteImagesPicked(albImage.map { it.path })
+                }
+                .start()
+    }
+
+    override fun showImages(images: List<MyImage>) {
+        mPagerAdapter.images = images
+        mPagerAdapter.notifyDataSetChanged()
+        Log.e(LOG_TAG, "showImages " + images.toString())
     }
 
     companion object {

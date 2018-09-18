@@ -7,9 +7,11 @@ import android.os.Parcel
 import android.os.Parcelable
 
 @Entity(tableName = "Locations")
-data class MyLocation(@ColumnInfo(name = "name_location") var name: String,
-                      @ColumnInfo(name = "lat") var lat: Double,
-                      @ColumnInfo(name = "lon") var lon: Double): Parcelable {
+data class MyLocation(
+        @ColumnInfo(name = "name_location") var name: String,
+        @ColumnInfo(name = "lat") var lat: Double,
+        @ColumnInfo(name = "lon") var lon: Double
+) : Parcelable {
 
     @ColumnInfo(name = "id_location")
     @PrimaryKey(autoGenerate = true)

@@ -1,4 +1,4 @@
-package com.furianrt.mydiary.note.fragments.content
+package com.furianrt.mydiary.note.fragments.notefragment.content
 
 import com.furianrt.mydiary.BasePresenter
 import com.furianrt.mydiary.BaseView

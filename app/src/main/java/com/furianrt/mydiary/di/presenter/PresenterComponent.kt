@@ -3,9 +3,9 @@ package com.furianrt.mydiary.di.presenter
 import com.furianrt.mydiary.main.MainActivity
 import com.furianrt.mydiary.note.NoteActivity
 import com.furianrt.mydiary.note.dialogs.TagsDialog
-import com.furianrt.mydiary.note.fragments.NoteFragment
-import com.furianrt.mydiary.note.fragments.content.NoteContentFragment
-import com.furianrt.mydiary.note.fragments.edit.NoteEditFragment
+import com.furianrt.mydiary.note.fragments.notefragment.NoteFragment
+import com.furianrt.mydiary.note.fragments.notefragment.content.NoteContentFragment
+import com.furianrt.mydiary.note.fragments.notefragment.edit.NoteEditFragment
 import dagger.Subcomponent
 
 @PresenterScope

@@ -8,6 +8,7 @@ import com.furianrt.mydiary.LOG_TAG
 import com.furianrt.mydiary.R
 import com.furianrt.mydiary.data.model.MyNoteWithProp
 import com.furianrt.mydiary.main.EXTRA_CLICKED_NOTE_POSITION
+import com.furianrt.mydiary.note.fragments.notefragment.edit.NoteEditFragment
 import kotlinx.android.synthetic.main.activity_note.*
 import javax.inject.Inject
 
@@ -15,14 +16,15 @@ const val EXTRA_MODE = "mode"
 
 enum class Mode { ADD, READ }
 
-class NoteActivity : AppCompatActivity(), NoteActivityContract.View {
+class NoteActivity : AppCompatActivity(), NoteActivityContract.View,
+        NoteEditFragment.OnNoteFragmentInteractionListener {
 
     @Inject
     lateinit var mPresenter: NoteActivityContract.Presenter
 
     private var mPagerPosition = 0
 
-    private lateinit var mPagerAdapter: NotePagerAdapter
+    private lateinit var mPagerAdapter: NoteActivityPagerAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -36,7 +38,7 @@ class NoteActivity : AppCompatActivity(), NoteActivityContract.View {
 
         val mode = intent.getSerializableExtra(EXTRA_MODE) as Mode
 
-        mPagerAdapter = NotePagerAdapter(supportFragmentManager, mode)
+        mPagerAdapter = NoteActivityPagerAdapter(supportFragmentManager, mode)
 
         pager_note.adapter = mPagerAdapter
         pager_note.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
@@ -66,6 +68,14 @@ class NoteActivity : AppCompatActivity(), NoteActivityContract.View {
         Log.e(LOG_TAG, "notify")
         mPagerAdapter.notifyDataSetChanged()
         pager_note.setCurrentItem(mPagerPosition, false)
+    }
+
+    override fun onNoteFragmentEditModeDisabled() {
+        pager_note.swipeEnabled = true
+    }
+
+    override fun onNoteFragmentEditModeEnabled() {
+        pager_note.swipeEnabled = false
     }
 
     override fun onDestroy() {

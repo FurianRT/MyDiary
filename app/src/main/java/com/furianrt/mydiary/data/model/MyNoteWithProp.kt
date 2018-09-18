@@ -8,10 +8,12 @@ import android.os.Parcelable
 import java.util.*
 import kotlin.collections.ArrayList
 
-data class MyNoteWithProp(@Embedded var note: MyNote,
-                     @Embedded var mood: MyMood?,
-                     @Embedded var location: MyLocation?,
-                     @Embedded var category: MyCategory?) : Parcelable {
+data class MyNoteWithProp(
+        @Embedded var note: MyNote,
+        @Embedded var mood: MyMood?,
+        @Embedded var location: MyLocation?,
+        @Embedded var category: MyCategory?
+) : Parcelable {
 
     @Ignore
     constructor() : this(MyNote("", "", Date().time), null, null, null)

@@ -1,4 +1,4 @@
-package com.furianrt.mydiary.note.fragments.content
+package com.furianrt.mydiary.note.fragments.notefragment.content
 
 import com.furianrt.mydiary.data.DataManager
 import com.furianrt.mydiary.data.model.MyNote
