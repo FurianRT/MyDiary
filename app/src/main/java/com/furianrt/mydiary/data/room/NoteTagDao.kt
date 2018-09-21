@@ -10,7 +10,7 @@ import io.reactivex.Flowable
 abstract class NoteTagDao {
 
     @Transaction
-    open fun insertTagsForNote(noteId: Long, tags: List<MyTag>) {
+    open fun insertTagsForNote(noteId: String, tags: List<MyTag>) {
         for (tag in tags) insert(NoteTag(noteId, tag.id))
     }
 
@@ -21,7 +21,7 @@ abstract class NoteTagDao {
     abstract fun delete(noteTag: NoteTag)
 
     @Query("DELETE FROM NoteTag WHERE id_note = :noteId")
-    abstract fun deleteAllTagsForNote(noteId: Long)
+    abstract fun deleteAllTagsForNote(noteId: String)
 
     @Query("SELECT Tags.* FROM Tags " +
             "INNER JOIN NoteTag ON Tags.id_tag = NoteTag.id_tag WHERE id_note = :noteId")

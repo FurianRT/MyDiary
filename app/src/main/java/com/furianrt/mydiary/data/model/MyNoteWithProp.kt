@@ -16,19 +16,21 @@ data class MyNoteWithProp(
 ) : Parcelable {
 
     @Ignore
-    constructor() : this(MyNote("", "", Date().time), null, null, null)
+    constructor(id: String) : this(MyNote(id, "", "", Date().time),
+            null, null, null)
 
     @Relation(entity = NoteTag::class, parentColumn = "id_note", entityColumn = "id_note",
             projection = ["id_tag"])
     var tags: List<Long> = ArrayList()
 
+    @Relation(entity = MyImage::class, parentColumn = "id_note", entityColumn = "id_note")
+    var images: List<MyImage> = ArrayList()
+
     constructor(parcel: Parcel) : this(
             parcel.readParcelable(MyNote::class.java.classLoader)!!,
             parcel.readParcelable(MyMood::class.java.classLoader),
             parcel.readParcelable(MyLocation::class.java.classLoader),
-            parcel.readParcelable(MyCategory::class.java.classLoader)) {
-
-    }
+            parcel.readParcelable(MyCategory::class.java.classLoader))
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeParcelable(note, flags)

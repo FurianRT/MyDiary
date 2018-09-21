@@ -3,12 +3,11 @@ package com.furianrt.mydiary.note.fragments.notefragment.edit
 import android.content.Context
 import android.os.Bundle
 import android.support.v4.app.Fragment
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import com.furianrt.mydiary.R
 import com.furianrt.mydiary.data.model.MyNote
 import com.furianrt.mydiary.note.fragments.notefragment.ARG_NOTE
+import com.furianrt.mydiary.note.fragments.notefragment.NoteFragment
 import com.furianrt.mydiary.utils.showKeyboard
 import kotlinx.android.synthetic.main.fragment_note_edit.view.*
 import javax.inject.Inject
@@ -21,7 +20,7 @@ enum class ClickedView { TITLE, CONTENT }
 class NoteEditFragment : Fragment(), NoteEditFragmentContract.View {
 
     private lateinit var mNote: MyNote
-    private lateinit var mClickedView: ClickedView
+    private var mClickedView: ClickedView? = null
     private var mClickPosition = 0
     private var mListener: OnNoteFragmentInteractionListener? = null
 
@@ -33,9 +32,13 @@ class NoteEditFragment : Fragment(), NoteEditFragmentContract.View {
         super.onCreate(savedInstanceState)
         arguments?.apply {
             mNote = this.getParcelable(ARG_NOTE)!!
-            mClickedView = this.getSerializable(ARG_CLICKED_VIEW) as ClickedView
+            mClickedView = this.getSerializable(ARG_CLICKED_VIEW) as? ClickedView
             mClickPosition = this.getInt(ARG_POSITION)
         }
+        if (savedInstanceState != null) {
+            mClickedView = null
+        }
+        setHasOptionsMenu(true)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -52,12 +55,34 @@ class NoteEditFragment : Fragment(), NoteEditFragmentContract.View {
         return view
     }
 
+    override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
+        super.onCreateOptionsMenu(menu, inflater)
+        menu?.removeItem(R.id.menu_edit)
+        inflater?.inflate(R.menu.fragment_edit_menu, menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+        return when(item?.itemId) {
+            R.id.menu_done -> {
+                mPresenter.onDoneButtonClick()
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
+
+    }
+
+    override fun closeView() {
+        fragmentManager?.popBackStack()
+    }
+
     override fun onAttach(context: Context?) {
         super.onAttach(context)
         if (context is OnNoteFragmentInteractionListener) {
             mListener = context
         } else {
-            throw RuntimeException(context.toString() + " must implement OnNoteFragmentInteractionListener")
+            throw RuntimeException(context.toString()
+                    + " must implement OnNoteFragmentInteractionListener")
         }
     }
 
@@ -69,20 +94,20 @@ class NoteEditFragment : Fragment(), NoteEditFragmentContract.View {
     override fun onResume() {
         super.onResume()
         mListener?.onNoteFragmentEditModeEnabled()
+        (parentFragment as? NoteFragment)?.disableActionBarExpanding()
         view?.apply {
-            val focus = activity?.currentFocus
-            when {
-                focus != null ->
-                    showKeyboard(context)
-                mClickedView == ClickedView.TITLE -> {
+            when (mClickedView) {
+                null -> activity?.currentFocus?.postDelayed({ showKeyboard(context) }, 400)
+                ClickedView.TITLE -> {
                     edit_note_title.requestFocus()
                     edit_note_title.setSelection(mClickPosition)
-                    showKeyboard(context)
+                    edit_note_title.postDelayed({ showKeyboard(context) }, 400)
+
                 }
-                mClickedView == ClickedView.CONTENT -> {
+                ClickedView.CONTENT -> {
                     edit_note_content.requestFocus()
                     edit_note_content.setSelection(mClickPosition)
-                    showKeyboard(context)
+                    edit_note_content.postDelayed({ showKeyboard(context) }, 400)
                 }
             }
         }
@@ -93,6 +118,7 @@ class NoteEditFragment : Fragment(), NoteEditFragmentContract.View {
         val noteTitle = view?.edit_note_title?.text.toString()
         val noteContent = view?.edit_note_content?.text.toString()
         mListener?.onNoteFragmentEditModeDisabled()
+        (parentFragment as? NoteFragment)?.enableActionBarExpanding(false, false)
         mPresenter.onStop(mNote, noteTitle, noteContent)
     }
 
@@ -111,7 +137,7 @@ class NoteEditFragment : Fragment(), NoteEditFragmentContract.View {
 
     companion object {
         @JvmStatic
-        fun newInstance(note: MyNote, clickedView: ClickedView, clickPosition: Int) =
+        fun newInstance(note: MyNote, clickedView: ClickedView?, clickPosition: Int) =
                 NoteEditFragment().apply {
                     arguments = Bundle().apply {
                         putParcelable(ARG_NOTE, note)

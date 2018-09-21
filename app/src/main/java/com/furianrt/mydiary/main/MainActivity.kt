@@ -3,9 +3,12 @@ package com.furianrt.mydiary.main
 import android.Manifest
 import android.content.Context
 import android.content.Intent
+import android.content.res.Configuration
 import android.os.Bundle
 import android.os.Parcelable
 import android.os.Vibrator
+import android.support.design.widget.AppBarLayout
+import android.support.design.widget.CoordinatorLayout
 import android.support.v4.content.ContextCompat
 import android.support.v4.view.GravityCompat
 import android.support.v7.app.ActionBarDrawerToggle
@@ -19,8 +22,9 @@ import android.widget.Toast
 import com.furianrt.mydiary.LOG_TAG
 import com.furianrt.mydiary.R
 import com.furianrt.mydiary.data.model.MyHeaderImage
-import com.furianrt.mydiary.data.model.MyNote
 import com.furianrt.mydiary.data.model.MyNoteWithProp
+import com.furianrt.mydiary.general.AppBarLayoutBehavior
+import com.furianrt.mydiary.general.GlideApp
 import com.furianrt.mydiary.general.HeaderItemDecoration
 import com.furianrt.mydiary.general.MediaLoader
 import com.furianrt.mydiary.main.listadapter.MainListAdapter
@@ -28,7 +32,6 @@ import com.furianrt.mydiary.main.listadapter.MainListItem
 import com.furianrt.mydiary.note.EXTRA_MODE
 import com.furianrt.mydiary.note.Mode
 import com.furianrt.mydiary.note.NoteActivity
-import com.squareup.picasso.Picasso
 import com.yanzhenjie.album.Album
 import com.yanzhenjie.album.AlbumConfig
 import com.yanzhenjie.album.api.widget.Widget
@@ -36,7 +39,6 @@ import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.activity_main_toolbar.*
 import pub.devrel.easypermissions.AfterPermissionGranted
 import pub.devrel.easypermissions.EasyPermissions
-import java.io.File
 import java.util.*
 import javax.inject.Inject
 
@@ -66,26 +68,56 @@ class MainActivity : AppCompatActivity(), MainActivityContract.View,
 
         savedInstanceState?.let {
             mRecyclerViewState = it.getParcelable(BUNDLE_RECYCLER_VIEW_STATE)
-            val selectedListItems = it.getParcelableArrayList<MyNote>(BUNDLE_SELECTED_LIST_ITEMS)
+            val selectedListItems = it.getParcelableArrayList<MyNoteWithProp>(BUNDLE_SELECTED_LIST_ITEMS)
             mPresenter.onRestoreInstanceState(selectedListItems)
         }
 
-        Album.initialize(AlbumConfig.newBuilder(this)
-                .setAlbumLoader(MediaLoader())
-                .setLocale(Locale.getDefault())
-                .build())
+        setupUi()
 
         mPresenter.onViewCreate()
-
-        setupUi()
     }
 
     override fun showHeaderImages(images: List<MyHeaderImage>) {
-        Log.e(LOG_TAG, "" + images.size)
-        Picasso.get()
-                .load(File(images[0].url))
-                .noPlaceholder()
+        enableActionBarExpanding()
+        GlideApp.with(this)
+                .load(images.first().url)
                 .into(image_toolbar_main)
+    }
+
+    override fun showEmptyHeaderImage() {
+        disableActionBarExpanding()
+    }
+
+    private fun disableActionBarExpanding() {
+        val appBarParams = collapsing_toolbar_main.layoutParams as AppBarLayout.LayoutParams
+        appBarParams.scrollFlags = AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL or
+                AppBarLayout.LayoutParams.SCROLL_FLAG_EXIT_UNTIL_COLLAPSED
+        collapsing_toolbar_main.layoutParams = appBarParams
+
+        app_bar_layout.setExpanded(false)
+
+        val coordParams = app_bar_layout.layoutParams as CoordinatorLayout.LayoutParams
+        (coordParams.behavior as AppBarLayoutBehavior).shouldScroll = false
+    }
+
+    private fun enableActionBarExpanding() {
+        val appBarParams = collapsing_toolbar_main.layoutParams as AppBarLayout.LayoutParams
+        val orientation = resources.configuration.orientation
+        if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            appBarParams.scrollFlags = AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL or
+                    AppBarLayout.LayoutParams.SCROLL_FLAG_ENTER_ALWAYS or
+                    AppBarLayout.LayoutParams.SCROLL_FLAG_ENTER_ALWAYS_COLLAPSED
+            collapsing_toolbar_main.layoutParams = appBarParams
+        } else {
+            appBarParams.scrollFlags = AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL or
+                    AppBarLayout.LayoutParams.SCROLL_FLAG_EXIT_UNTIL_COLLAPSED
+            collapsing_toolbar_main.layoutParams = appBarParams
+        }
+
+        app_bar_layout.setExpanded(true)
+
+        val coordParams = app_bar_layout.layoutParams as CoordinatorLayout.LayoutParams
+        (coordParams.behavior as AppBarLayoutBehavior).shouldScroll = true
     }
 
     private fun setupUi() {
@@ -95,6 +127,11 @@ class MainActivity : AppCompatActivity(), MainActivityContract.View,
                 ActionBarDrawerToggle(this, drawer, toolbar_main, R.string.open, R.string.close)
         drawer.addDrawerListener(toggle)
         toggle.syncState()
+
+        Album.initialize(AlbumConfig.newBuilder(this)
+                .setAlbumLoader(MediaLoader())
+                .setLocale(Locale.getDefault())
+                .build())
 
         fab_menu.setOnClickListener(this)
         fab_menu.menuButtonColorNormal = ContextCompat.getColor(this, R.color.colorAccent)
@@ -115,17 +152,21 @@ class MainActivity : AppCompatActivity(), MainActivityContract.View,
     }
 
     override fun onClick(v: View?) {
-        when(v?.id) {
+        when (v?.id) {
             R.id.fab_delete -> mPresenter.onMenuDeleteClick()
-            R.id.fab_toolbar_main ->  mPresenter.onButtonSetMainImageClick()
+            R.id.fab_toolbar_main -> mPresenter.onButtonSetMainImageClick()
             R.id.fab_menu -> mPresenter.onFabMenuClick()
         }
     }
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-        return when(item?.itemId) {
+        return when (item?.itemId) {
             R.id.menu_all_notes -> {
                 mPresenter.onMenuAllNotesClick()
+                true
+            }
+            R.id.menu_image -> {
+                mPresenter.onButtonSetMainImageClick()
                 true
             }
             else -> super.onOptionsItemSelected(item)
@@ -176,7 +217,7 @@ class MainActivity : AppCompatActivity(), MainActivityContract.View,
                 .build()
 
         Album.image(this)
-                .multipleChoice()
+                .singleChoice()
                 .columnCount(3)
                 .filterMimeType {
                     when (it) {
@@ -200,8 +241,8 @@ class MainActivity : AppCompatActivity(), MainActivityContract.View,
         Toast.makeText(this, "Deleted", Toast.LENGTH_SHORT).show()
     }
 
-    override fun showNotes(notes: List<MainListItem>?, selectedNotes: ArrayList<MyNote>) {
-        mAdapter.submitList(notes?.toMutableList())
+    override fun showNotes(notes: List<MainListItem>, selectedNotes: ArrayList<MyNoteWithProp>) {
+        mAdapter.submitList(notes.toMutableList())
         mAdapter.selectedNotes = selectedNotes
         mRecyclerViewState?.let {
             list_main.layoutManager?.onRestoreInstanceState(mRecyclerViewState)
@@ -216,6 +257,7 @@ class MainActivity : AppCompatActivity(), MainActivityContract.View,
     override fun onMainListItemLongClick(note: MyNoteWithProp, position: Int) {
         val vibrator = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
         if (vibrator.hasVibrator()) {
+            @Suppress("DEPRECATION")
             vibrator.vibrate(40L)
         }
         mPresenter.onMainListItemLongClick(note, position)
@@ -226,10 +268,11 @@ class MainActivity : AppCompatActivity(), MainActivityContract.View,
     }
 
     override fun deactivateSelection() {
+        Log.e(LOG_TAG, "deactivateSelection")
         fab_menu.close(true)
     }
 
-    override fun updateItemSelection(selectedNotes: ArrayList<MyNote>) {
+    override fun updateItemSelection(selectedNotes: ArrayList<MyNoteWithProp>) {
         mAdapter.selectedNotes = selectedNotes
         mAdapter.notifyDataSetChanged()
     }

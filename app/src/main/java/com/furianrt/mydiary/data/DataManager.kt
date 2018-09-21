@@ -9,13 +9,13 @@ import io.reactivex.Single
 
 interface DataManager {
 
-    fun insertNote(note: MyNote): Single<Long>
+    fun insertNote(note: MyNote): Completable
 
     fun insertNoteTag(noteTag: NoteTag): Completable
 
     fun insertTag(tag: MyTag): Single<Long>
 
-    fun insertTagsForNote(noteId: Long, tags: List<MyTag>): Completable
+    fun insertTagsForNote(noteId: String, tags: List<MyTag>): Completable
 
     fun insertImage(image: MyImage): Completable
 
@@ -37,7 +37,11 @@ interface DataManager {
 
     fun deleteNoteTag(noteTag: NoteTag): Completable
 
-    fun deleteAllTagsForNote(noteId: Long): Completable
+    fun deleteAllTagsForNote(noteId: String): Completable
+
+    fun deleteImageFromStorage(fileName: String): Single<Boolean>
+
+    fun deleteAllHeaderImages(): Completable
 
     fun getAllNotes(): Flowable<List<MyNote>>
 
@@ -49,13 +53,13 @@ interface DataManager {
 
     fun getForecast(lat: Double, lon: Double): Single<Forecast>
 
-    fun findNote(noteId: Long): Maybe<MyNote>
+    fun findNote(noteId: String): Maybe<MyNote>
 
     fun saveImageToStorage(image: MyImage): Single<MyImage>
 
     fun saveHeaderImageToStorage(headerImage: MyHeaderImage): Single<MyHeaderImage>
 
-    fun getImagesForNote(noteId: Long): Flowable<List<MyImage>>
+    fun getImagesForNote(noteId: String): Flowable<List<MyImage>>
 
     //fun getImageFromStorage(imageName: String) : Single<File>
 

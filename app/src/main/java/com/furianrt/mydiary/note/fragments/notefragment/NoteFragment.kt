@@ -6,6 +6,7 @@ import android.graphics.Color
 import android.location.Geocoder
 import android.os.Bundle
 import android.os.Looper
+import android.support.design.widget.CoordinatorLayout
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
 import android.support.v4.app.FragmentTransaction
@@ -13,6 +14,7 @@ import android.support.v4.content.ContextCompat
 import android.support.v4.content.ContextCompat.getColor
 import android.util.Log
 import android.view.LayoutInflater
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import com.furianrt.mydiary.LOG_TAG
@@ -22,6 +24,8 @@ import com.furianrt.mydiary.data.model.MyImage
 import com.furianrt.mydiary.data.model.MyLocation
 import com.furianrt.mydiary.data.model.MyNoteWithProp
 import com.furianrt.mydiary.data.model.MyTag
+import com.furianrt.mydiary.general.AppBarLayoutBehavior
+import com.furianrt.mydiary.general.GlideApp
 import com.furianrt.mydiary.note.Mode
 import com.furianrt.mydiary.note.dialogs.TagsDialog
 import com.furianrt.mydiary.note.fragments.notefragment.content.NoteContentFragment
@@ -36,9 +40,9 @@ import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.model.LatLng
-import com.squareup.picasso.Picasso
 import com.yanzhenjie.album.Album
 import com.yanzhenjie.album.api.widget.Widget
+import kotlinx.android.synthetic.main.activity_main_toolbar.*
 import kotlinx.android.synthetic.main.fragment_note.view.*
 import kotlinx.android.synthetic.main.fragment_note_toolbar.view.*
 import pub.devrel.easypermissions.AfterPermissionGranted
@@ -95,6 +99,7 @@ class NoteFragment : Fragment(), NoteFragmentContract.View, OnMapReadyCallback,
 
         mPresenter.setNote(note!!)
         mMode = arguments?.getSerializable(ARG_MODE) as Mode
+        setHasOptionsMenu(true)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -130,6 +135,43 @@ class NoteFragment : Fragment(), NoteFragmentContract.View, OnMapReadyCallback,
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         mPresenter.onViewCreated(mMode, isLocationEnabled(context!!), isNetworkAvailable(context!!))
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+        return when (item?.itemId) {
+            R.id.menu_image -> {
+                mPresenter.onAddImageButtonClick()
+                true
+            }
+            R.id.menu_edit -> {
+                mPresenter.onEditButtonClick()
+                true
+            }
+            R.id.menu_delete -> {
+                mPresenter.onDeleteButtonClick()
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
+
+    }
+
+    override fun showNoteEditView() {
+        val editTag = NoteEditFragment::class.toString()
+        if (childFragmentManager.findFragmentByTag(editTag) == null) {
+            fragmentManager?.inTransaction {
+                setPrimaryNavigationFragment(this@NoteFragment)
+            }
+            childFragmentManager.inTransaction {
+                val note = mPresenter.getNote().note
+                replace(
+                        R.id.container_note_edit,
+                        NoteEditFragment.newInstance(note, ClickedView.TITLE, note.title.length),
+                        editTag
+                )
+                        .addToBackStack(null)
+            }
+        }
     }
 
     override fun showNoTagsMessage() {
@@ -211,6 +253,20 @@ class NoteFragment : Fragment(), NoteFragmentContract.View, OnMapReadyCallback,
         }
     }
 
+    fun disableActionBarExpanding() {
+        app_bar_layout.setExpanded(false)
+
+        val coordParams = app_bar_layout.layoutParams as CoordinatorLayout.LayoutParams
+        (coordParams.behavior as AppBarLayoutBehavior).shouldScroll = false
+    }
+
+    fun enableActionBarExpanding(expanded: Boolean, animate: Boolean) {
+        app_bar_layout.setExpanded(expanded, animate)
+
+        val coordParams = app_bar_layout.layoutParams as CoordinatorLayout.LayoutParams
+        (coordParams.behavior as AppBarLayoutBehavior).shouldScroll = true
+    }
+
     private fun addFragments(savedInstanceState: Bundle?) {
         val contentTag = NoteContentFragment::class.toString()
         if (childFragmentManager.findFragmentByTag(contentTag) == null) {
@@ -220,19 +276,8 @@ class NoteFragment : Fragment(), NoteFragmentContract.View, OnMapReadyCallback,
             }
         }
 
-        val editTag = NoteEditFragment::class.toString()
-        if (mMode == Mode.ADD
-                && childFragmentManager.findFragmentByTag(editTag) == null
-                && savedInstanceState == null) {
-            fragmentManager?.inTransaction {
-                setPrimaryNavigationFragment(this@NoteFragment)
-            }
-            childFragmentManager.inTransaction {
-                replace(R.id.container_note_edit,
-                        NoteEditFragment.newInstance(mPresenter.getNote().note, ClickedView.TITLE,
-                                0), editTag)
-                        .addToBackStack(null)
-            }
+        if (mMode == Mode.ADD && savedInstanceState == null) {
+            showNoteEditView()
         }
     }
 
@@ -255,15 +300,22 @@ class NoteFragment : Fragment(), NoteFragmentContract.View, OnMapReadyCallback,
     }
 
     override fun showForecast(forecast: Forecast) {
-        Picasso.get()
-                .load("http://openweathermap.org/img/w/"
-                        + forecast.weather[0].icon
-                        + ".png")
-                .into(view?.image_weather)
-        val temp = forecast.main.temp.toInt().toString() + " °C"
-        val wind = getString(R.string.wind) + " " + forecast.wind.speed.toInt().toString() + " " + getString(R.string.ms)
-        view?.text_temp?.text = temp
-        view?.text_wind_speed?.text = wind
+        view?.apply {
+            val url = "http://openweathermap.org/img/w/" + forecast.weather[0].icon + ".png"
+            GlideApp.with(this)
+                    .load(url)
+                    .into(image_weather)
+
+            val temp = forecast.main.temp.toInt().toString() + " °C"
+            val wind = getString(R.string.wind) +
+                    " " +
+                    forecast.wind.speed.toInt().toString() +
+                    " " +
+                    getString(R.string.ms)
+
+            text_temp.text = temp
+            text_wind_speed.text = wind
+        }
     }
 
     override fun showTagNames(tagNames: List<String>) {
@@ -358,6 +410,19 @@ class NoteFragment : Fragment(), NoteFragmentContract.View, OnMapReadyCallback,
         mPagerAdapter.images = images
         mPagerAdapter.notifyDataSetChanged()
         Log.e(LOG_TAG, "showImages " + images.toString())
+        if (childFragmentManager.findFragmentByTag(NoteEditFragment::class.toString()) == null) {
+            enableActionBarExpanding(true, false)
+        }
+    }
+
+    override fun showNoImages() {
+        mPagerAdapter.images = emptyList()
+        mPagerAdapter.notifyDataSetChanged()
+        disableActionBarExpanding()
+    }
+
+    override fun closeView() {
+        activity?.finish()
     }
 
     companion object {

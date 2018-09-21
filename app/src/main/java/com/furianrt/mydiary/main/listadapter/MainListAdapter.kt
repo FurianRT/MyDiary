@@ -5,12 +5,14 @@ import android.support.v4.content.ContextCompat
 import android.support.v7.recyclerview.extensions.ListAdapter
 import android.support.v7.widget.CardView
 import android.support.v7.widget.RecyclerView
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.furianrt.mydiary.LOG_TAG
 import com.furianrt.mydiary.R
-import com.furianrt.mydiary.data.model.MyNote
 import com.furianrt.mydiary.data.model.MyNoteWithProp
+import com.furianrt.mydiary.general.GlideApp
 import com.furianrt.mydiary.general.HeaderItemDecoration
 import com.furianrt.mydiary.utils.*
 import kotlinx.android.synthetic.main.activity_main_list_content.view.*
@@ -20,7 +22,7 @@ import java.util.*
 
 class MainListAdapter(
         var listener: OnMainListItemInteractionListener?,
-        var selectedNotes: ArrayList<MyNote> = ArrayList()
+        var selectedNotes: ArrayList<MyNoteWithProp> = ArrayList()
 ) : ListAdapter<MainListItem, MainListAdapter.MyViewHolder>(MainDiffCallback()),
         HeaderItemDecoration.StickyHeaderInterface {
 
@@ -98,6 +100,7 @@ class MainListAdapter(
 
         override fun bind(item: MainListItem) {
             mContentItem = item as MainContentItem
+            Log.e(LOG_TAG, mContentItem.note.images.map { it.url }.toString())
             val time = mContentItem.note.note.time
             view.apply {
                 setOnClickListener(this@ContentViewHolder)
@@ -106,6 +109,14 @@ class MainListAdapter(
                 text_day.text = getDay(time)
                 text_time.text = getTime(time)
                 text_tags.text = mContentItem.note.tags.size.toString()
+
+                if (!mContentItem.note.images.isEmpty()) {
+                    GlideApp.with(itemView)
+                            .load(mContentItem.note.images[0].url)
+                            .override(200, 200)
+                            .into(image_main_list)
+                }
+
                 val title = mContentItem.note.note.title
                 if (title.isEmpty()) {
                     text_note_title.visibility = View.GONE
@@ -115,7 +126,7 @@ class MainListAdapter(
                 }
                 text_note_content.text = mContentItem.note.note.content
 
-                selectItem(mContentItem.note.note, R.color.colorAccent, R.color.white)
+                selectItem(mContentItem.note, R.color.colorAccent, R.color.white)
             }
         }
 
@@ -128,7 +139,7 @@ class MainListAdapter(
             return true
         }
 
-        private fun selectItem(note: MyNote, @ColorRes firstColor: Int,@ColorRes secondColor: Int) {
+        private fun selectItem(note: MyNoteWithProp, @ColorRes firstColor: Int,@ColorRes secondColor: Int) {
             val cardView = view as CardView
             if (selectedNotes.contains(note)) {
                 cardView.setCardBackgroundColor(ContextCompat.getColor(view.context!!, firstColor))

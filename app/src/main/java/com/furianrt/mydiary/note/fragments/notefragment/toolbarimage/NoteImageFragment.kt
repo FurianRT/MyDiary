@@ -8,9 +8,8 @@ import android.view.View
 import android.view.ViewGroup
 import com.furianrt.mydiary.R
 import com.furianrt.mydiary.data.model.MyImage
-import com.squareup.picasso.Picasso
+import com.furianrt.mydiary.general.GlideApp
 import kotlinx.android.synthetic.main.fragment_note_image.view.*
-import java.io.File
 
 private const val ARG_NOTE_IMAGE = "noteImage"
 
@@ -29,8 +28,8 @@ class NoteImageFragment : Fragment() {
                               savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_note_image, container, false)
 
-        Picasso.get()
-                .load(File(mImage?.url))
+        GlideApp.with(this)
+                .load(mImage?.url)
                 .into(view.image_note)
 
         return view

@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.support.v4.view.ViewPager
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
+import android.view.Menu
 import com.furianrt.mydiary.LOG_TAG
 import com.furianrt.mydiary.R
 import com.furianrt.mydiary.data.model.MyNoteWithProp
@@ -33,12 +34,22 @@ class NoteActivity : AppCompatActivity(), NoteActivityContract.View,
 
         mPresenter.attachView(this)
 
-        mPagerPosition = savedInstanceState?.getInt(EXTRA_CLICKED_NOTE_POSITION, 0) ?:
-                intent.getIntExtra(EXTRA_CLICKED_NOTE_POSITION, 0)
+        mPagerPosition = savedInstanceState?.getInt(EXTRA_CLICKED_NOTE_POSITION, 0) ?: intent.getIntExtra(EXTRA_CLICKED_NOTE_POSITION, 0)
 
         val mode = intent.getSerializableExtra(EXTRA_MODE) as Mode
 
         mPagerAdapter = NoteActivityPagerAdapter(supportFragmentManager, mode)
+
+        setupUi()
+
+        mPresenter.loadNotes(mode)
+    }
+
+    private fun setupUi() {
+        setSupportActionBar(toolbar_note_activity)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        supportActionBar?.setDisplayShowHomeEnabled(true)
+
 
         pager_note.adapter = mPagerAdapter
         pager_note.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
@@ -54,8 +65,11 @@ class NoteActivity : AppCompatActivity(), NoteActivityContract.View,
                 mPagerPosition = position
             }
         })
+    }
 
-        mPresenter.loadNotes(mode)
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.activity_note_toolbar_menu, menu)
+        return super.onCreateOptionsMenu(menu)
     }
 
     override fun onSaveInstanceState(outState: Bundle?) {
@@ -76,6 +90,11 @@ class NoteActivity : AppCompatActivity(), NoteActivityContract.View,
 
     override fun onNoteFragmentEditModeEnabled() {
         pager_note.swipeEnabled = false
+    }
+
+    override fun onSupportNavigateUp(): Boolean {
+        onBackPressed()
+        return true
     }
 
     override fun onDestroy() {

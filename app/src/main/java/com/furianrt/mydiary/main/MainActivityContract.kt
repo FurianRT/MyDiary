@@ -3,7 +3,6 @@ package com.furianrt.mydiary.main
 import com.furianrt.mydiary.BasePresenter
 import com.furianrt.mydiary.BaseView
 import com.furianrt.mydiary.data.model.MyHeaderImage
-import com.furianrt.mydiary.data.model.MyNote
 import com.furianrt.mydiary.data.model.MyNoteWithProp
 import com.furianrt.mydiary.main.listadapter.MainListItem
 
@@ -15,7 +14,7 @@ interface MainActivityContract {
 
         fun showDeleted()
 
-        fun showNotes(notes: List<MainListItem>?, selectedNotes: ArrayList<MyNote>)
+        fun showNotes(notes: List<MainListItem>, selectedNotes: ArrayList<MyNoteWithProp>)
 
         fun openNotePager(position: Int)
 
@@ -31,9 +30,11 @@ interface MainActivityContract {
 
         fun deactivateSelection()
 
-        fun updateItemSelection(selectedNotes: ArrayList<MyNote>)
+        fun updateItemSelection(selectedNotes: ArrayList<MyNoteWithProp>)
 
         fun refreshTags()
+
+        fun showEmptyHeaderImage()
     }
 
     interface Presenter : BasePresenter<View> {
@@ -50,9 +51,9 @@ interface MainActivityContract {
 
         fun onMainListItemLongClick(note: MyNoteWithProp, position: Int)
 
-        fun onSaveInstanceState(): ArrayList<MyNote>?
+        fun onSaveInstanceState(): ArrayList<MyNoteWithProp>?
 
-        fun onRestoreInstanceState(selectedNotes: ArrayList<MyNote>?)
+        fun onRestoreInstanceState(selectedNotes: ArrayList<MyNoteWithProp>?)
 
         fun onFabMenuClick()
 

@@ -47,6 +47,12 @@ interface NoteFragmentContract {
         fun showImageExplorer()
 
         fun showImages(images: List<MyImage>)
+
+        fun showNoImages()
+
+        fun showNoteEditView()
+
+        fun closeView()
     }
 
     interface Presenter : BasePresenter<View> {
@@ -74,5 +80,9 @@ interface NoteFragmentContract {
         fun onStoragePermissionsGranted()
 
         fun onNoteImagesPicked(imageUrls: List<String>)
+
+        fun onEditButtonClick()
+
+        fun onDeleteButtonClick()
     }
 }

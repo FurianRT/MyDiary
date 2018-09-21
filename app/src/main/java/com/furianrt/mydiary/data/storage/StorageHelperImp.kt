@@ -11,10 +11,11 @@ import java.io.FileOutputStream
 
 class StorageHelperImp(private val context: Context) : StorageHelper {
 
+    private val mDirectory = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES)
+
     @Suppress("RECEIVER_NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
     override fun getFile(fileName: String): File {
-        val dir = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES)
-        val files = dir.listFiles { file -> file.name.startsWith(fileName) }
+        val files = mDirectory.listFiles { file -> file.name.startsWith(fileName) }
 
         if (files.isEmpty()) {
             throw FileNotFoundException()
@@ -23,9 +24,10 @@ class StorageHelperImp(private val context: Context) : StorageHelper {
         }
     }
 
+    override fun deleteFile(fileName: String): Boolean = File(mDirectory, fileName).delete()
+
     override fun copyImageToStorage(sourcePath: String, destFileName: String): File {
-        val dir = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES)
-        val destFile = File(dir, "$destFileName.jpg")
+        val destFile = File(mDirectory, "$destFileName.jpg")
 
         val fos = FileOutputStream(destFile)
 

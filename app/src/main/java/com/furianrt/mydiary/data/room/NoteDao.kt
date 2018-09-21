@@ -10,7 +10,7 @@ import io.reactivex.Maybe
 abstract class NoteDao {
 
     @Insert
-    abstract fun insert(note: MyNote): Long
+    abstract fun insert(note: MyNote)
 
     @Update
     abstract fun update(note: MyNote)
@@ -25,7 +25,7 @@ abstract class NoteDao {
     abstract fun getAllNotes(): Flowable<List<MyNote>>
 
     @Query("SELECT * FROM Notes WHERE id_note =:noteId")
-    abstract fun findNote(noteId: Long): Maybe<MyNote>
+    abstract fun findNote(noteId: String): Maybe<MyNote>
 
     @Transaction
     @Query("SELECT * FROM Notes LEFT JOIN Moods ON mood = id_mood " +

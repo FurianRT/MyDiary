@@ -16,5 +16,5 @@ interface ImageDao {
     fun insert(images: List<MyImage>)
 
     @Query("SELECT * FROM Images WHERE id_note = :noteId")
-    fun getImagesForNote(noteId: Long): Flowable<List<MyImage>>
+    fun getImagesForNote(noteId: String): Flowable<List<MyImage>>
 }

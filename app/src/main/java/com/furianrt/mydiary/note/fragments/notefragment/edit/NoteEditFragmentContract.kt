@@ -8,6 +8,8 @@ interface NoteEditFragmentContract {
 
     interface View : BaseView {
 
+        fun closeView()
+
     }
 
     interface Presenter : BasePresenter<View> {
@@ -15,5 +17,7 @@ interface NoteEditFragmentContract {
         fun onStop(note: MyNote, noteTitle: String, noteContent: String)
 
         fun deleteNote(note: MyNote)
+
+        fun onDoneButtonClick()
     }
 }

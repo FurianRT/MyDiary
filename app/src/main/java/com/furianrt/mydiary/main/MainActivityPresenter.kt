@@ -1,16 +1,15 @@
 package com.furianrt.mydiary.main
 
-import android.util.Log
-import com.furianrt.mydiary.LOG_TAG
 import com.furianrt.mydiary.data.DataManager
 import com.furianrt.mydiary.data.model.MyHeaderImage
-import com.furianrt.mydiary.data.model.MyNote
 import com.furianrt.mydiary.data.model.MyNoteWithProp
 import com.furianrt.mydiary.main.listadapter.MainContentItem
 import com.furianrt.mydiary.main.listadapter.MainHeaderItem
 import com.furianrt.mydiary.main.listadapter.MainListItem
 import com.furianrt.mydiary.utils.generateUniqueId
 import io.reactivex.Flowable
+import io.reactivex.Observable
+import io.reactivex.Single
 import io.reactivex.disposables.CompositeDisposable
 import org.joda.time.DateTime
 import java.util.*
@@ -23,7 +22,7 @@ class MainActivityPresenter(private val mDataManager: DataManager) : MainActivit
 
     private var mView: MainActivityContract.View? = null
     private val mCompositeDisposable = CompositeDisposable()
-    private var mSelectedNotes = ArrayList<MyNote>()
+    private var mSelectedNotes = ArrayList<MyNoteWithProp>()
 
     override fun attachView(view: MainActivityContract.View) {
         mView = view
@@ -34,17 +33,27 @@ class MainActivityPresenter(private val mDataManager: DataManager) : MainActivit
         mView = null
     }
 
+    private fun deleteImagesAndNote(note: MyNoteWithProp): Single<Boolean> {
+        return Flowable.fromIterable(note.images)
+                .flatMapSingle { image -> mDataManager.deleteImageFromStorage(image.name) }
+                .collectInto(mutableListOf<Boolean>()) { l, i -> l.add(i) }
+                .flatMap { mDataManager.deleteNote(note.note).toSingleDefault(true) }
+    }
+
     override fun onMenuDeleteClick() {
-        val disposable = mDataManager.deleteNotes(mSelectedNotes)
-                .subscribe {
+        val disposable = Flowable.fromIterable(mSelectedNotes)
+                .flatMapSingle { note -> deleteImagesAndNote(note) }
+                .collectInto(mutableListOf<Boolean>()) { l, i -> l.add(i) }
+                .subscribe { temp ->
                     mSelectedNotes.clear()
                     mView?.deactivateSelection()
                 }
+
         mCompositeDisposable.add(disposable)
     }
 
     override fun onMenuAllNotesClick() {
-        val disposable = mDataManager.getAllNotes()
+        val disposable = mDataManager.getNotesWithProp()
                 .first(ArrayList())
                 .subscribe { notes ->
                     mSelectedNotes = ArrayList(notes)
@@ -63,10 +72,28 @@ class MainActivityPresenter(private val mDataManager: DataManager) : MainActivit
         mView?.showImageExplorer()
     }
 
+    override fun onHeaderImagesPicked(imageUrls: List<String>) {
+        val disposable = mDataManager.getHeaderImages()
+                .first(emptyList())
+                .flatMapObservable { images -> Observable.fromIterable(images) }
+                .defaultIfEmpty(MyHeaderImage("oops", "oops"))
+                .flatMapSingle { image -> mDataManager.deleteImageFromStorage(image.name) }
+                .flatMapCompletable { mDataManager.deleteAllHeaderImages() }
+                .andThen(Observable.fromIterable(imageUrls))
+                .map { url -> MyHeaderImage(HEADER_IMAGE_NAME + "_" + generateUniqueId(), url) }
+                .flatMapSingle { image -> mDataManager.saveHeaderImageToStorage(image) }
+                .flatMapCompletable { savedImage -> mDataManager.insertHeaderImage(savedImage) }
+                .subscribe()
+
+        mCompositeDisposable.add(disposable)
+    }
+
     private fun loadHeaderImages() {
         val disposable = mDataManager.getHeaderImages()
                 .subscribe { images ->
-                    if (!images.isEmpty()) {
+                    if (images.isEmpty()) {
+                        mView?.showEmptyHeaderImage()
+                    } else {
                         mView?.showHeaderImages(images)
                     }
                 }
@@ -77,10 +104,8 @@ class MainActivityPresenter(private val mDataManager: DataManager) : MainActivit
     private fun loadNotes() {
         val disposable = mDataManager.getNotesWithProp()
                 .map { formatNotes(toMap(it)) }
-                .subscribe {
-                    Log.e(LOG_TAG, it.toString())
-                    mView?.showNotes(it, mSelectedNotes)
-                }
+                .subscribe { mView?.showNotes(it, mSelectedNotes) }
+
         mCompositeDisposable.add(disposable)
     }
 
@@ -114,19 +139,6 @@ class MainActivityPresenter(private val mDataManager: DataManager) : MainActivit
         return list
     }
 
-    override fun onHeaderImagesPicked(imageUrls: List<String>) {
-        val disposable = Flowable.fromIterable(imageUrls)
-                .map { url ->
-                    val name = HEADER_IMAGE_NAME + "_" + generateUniqueId()
-                    return@map MyHeaderImage(name, url)
-                }
-                .flatMapSingle { image -> mDataManager.saveHeaderImageToStorage(image) }
-                .flatMapCompletable { savedImage -> mDataManager.insertHeaderImage(savedImage) }
-                .subscribe()
-
-        mCompositeDisposable.add(disposable)
-    }
-
     override fun onFabMenuClick() {
         if (mSelectedNotes.isEmpty()) {
             mView?.showViewNewNote()
@@ -145,7 +157,7 @@ class MainActivityPresenter(private val mDataManager: DataManager) : MainActivit
         if (mSelectedNotes.isEmpty()) {
             openNotePagerView(note)
         } else {
-            selectListItem(note.note)
+            selectListItem(note)
         }
     }
 
@@ -153,12 +165,12 @@ class MainActivityPresenter(private val mDataManager: DataManager) : MainActivit
         if (mSelectedNotes.isEmpty()) {
             mView?.activateSelection()
         }
-        selectListItem(note.note)
+        selectListItem(note)
     }
 
     override fun onSaveInstanceState() = mSelectedNotes
 
-    override fun onRestoreInstanceState(selectedNotes: ArrayList<MyNote>?) {
+    override fun onRestoreInstanceState(selectedNotes: ArrayList<MyNoteWithProp>?) {
         selectedNotes?.let { mSelectedNotes = selectedNotes }
         if (!mSelectedNotes.isEmpty()) {
             mView?.activateSelection()
@@ -169,7 +181,7 @@ class MainActivityPresenter(private val mDataManager: DataManager) : MainActivit
         mView?.refreshTags()
     }
 
-    private fun selectListItem(note: MyNote) {
+    private fun selectListItem(note: MyNoteWithProp) {
         when {
             mSelectedNotes.contains(note) && mSelectedNotes.size == 1 -> {
                 mSelectedNotes.remove(note)

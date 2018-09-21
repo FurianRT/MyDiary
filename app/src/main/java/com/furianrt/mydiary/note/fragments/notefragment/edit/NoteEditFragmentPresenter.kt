@@ -15,15 +15,17 @@ class NoteEditFragmentPresenter(private val mDataManager: DataManager)
         note.title = noteTitle
         note.content = noteContent
         mDataManager.findNote(note.id)
-                .subscribe(
-                        { mDataManager.updateNote(note).subscribe() },
-                        {},
-                        { mDataManager.insertNote(note).subscribe { id -> note.id = id } }
-                )
+                .doOnComplete { mDataManager.insertNote(note).subscribe() }
+                .doOnSuccess { mDataManager.updateNote(note).subscribe() }
+                .subscribe()
         // }
     }
 
     override fun deleteNote(note: MyNote) {
+    }
+
+    override fun onDoneButtonClick() {
+        mView?.closeView()
     }
 
     override fun attachView(view: NoteEditFragmentContract.View) {

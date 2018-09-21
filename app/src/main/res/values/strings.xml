@@ -48,7 +48,10 @@
 
     <string name="settings">Настройки</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="image">Картинка</string>
+    <string name="date">Дата</string>
+    <string name="share">Поделиться</string>
+    <string name="title">Загловок…</string>
+    <string name="content">Остальное…</string>
 
 </resources>

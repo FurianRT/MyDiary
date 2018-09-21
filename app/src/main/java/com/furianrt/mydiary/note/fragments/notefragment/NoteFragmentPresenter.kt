@@ -97,10 +97,16 @@ class NoteFragmentPresenter(private val mDataManager: DataManager) : NoteFragmen
         mNote.mood?.let { mView?.showMood(mNote.mood?.name) }
     }
 
-    private fun loadNoteImages(noteId: Long) {
-        if (noteId == 0L) return
+    private fun loadNoteImages(noteId: String) {
         val disposable = mDataManager.getImagesForNote(noteId)
-                .subscribe { images -> mView?.showImages(images) }
+                .subscribe { images ->
+                    mNote.images = images
+                    if (images.isEmpty()) {
+                        mView?.showNoImages()
+                    } else {
+                        mView?.showImages(images)
+                    }
+                }
 
         mCompositeDisposable.add(disposable)
     }
@@ -159,15 +165,27 @@ class NoteFragmentPresenter(private val mDataManager: DataManager) : NoteFragmen
     override fun onNoteImagesPicked(imageUrls: List<String>) {
         val disposable = Flowable.fromIterable(imageUrls)
                 .map { url ->
-                    val name = mNote.note.id.toString() + "_" + generateUniqueId()
+                    val name = mNote.note.id + "_" + generateUniqueId()
                     return@map MyImage(name, url, mNote.note.id)
                 }
                 .flatMapSingle { image -> mDataManager.saveImageToStorage(image) }
                 .flatMapCompletable { savedImage -> mDataManager.insertImage(savedImage) }
                 .andThen(mDataManager.getImagesForNote(mNote.note.id))
-                .subscribe { images ->
-                    mView?.showImages(images)
-                }
+                .subscribe { images -> mNote.images = images }
+
+        mCompositeDisposable.add(disposable)
+    }
+
+    override fun onEditButtonClick() {
+        mView?.showNoteEditView()
+    }
+
+    override fun onDeleteButtonClick() {
+        val disposable = Observable.fromIterable(mNote.images)
+                .flatMapSingle { image -> mDataManager.deleteImageFromStorage(image.name) }
+                .collectInto(mutableListOf<Boolean>()) { l, i -> l.add(i) }
+                .flatMapCompletable { mDataManager.deleteNote(mNote.note) }
+                .subscribe { mView?.closeView() }
 
         mCompositeDisposable.add(disposable)
     }

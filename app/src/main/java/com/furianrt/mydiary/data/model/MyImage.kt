@@ -21,20 +21,19 @@ import android.os.Parcelable
 class MyImage(
         @PrimaryKey(autoGenerate = false) @ColumnInfo(name = "name") var name: String,
         @ColumnInfo(name = "url") var url: String,
-        @ColumnInfo(name = "id_note", index = true) var noteId: Long
+        @ColumnInfo(name = "id_note", index = true) var noteId: String
 ) : Parcelable {
 
     @Suppress("NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
     constructor(parcel: Parcel) : this(
             parcel.readString(),
             parcel.readString(),
-            parcel.readLong()) {
-    }
+            parcel.readString())
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeString(name)
         parcel.writeString(url)
-        parcel.writeLong(noteId)
+        parcel.writeString(noteId)
     }
 
     override fun describeContents(): Int {

@@ -25,17 +25,17 @@ import android.os.Parcelable
         ]
 )
 data class NoteTag(
-        @ColumnInfo(name = "id_note", index = true) var noteId: Long,
+        @ColumnInfo(name = "id_note", index = true) var noteId: String,
         @ColumnInfo(name = "id_tag", index = true) var tagId: Long
 ) : Parcelable {
 
+    @Suppress("NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
     constructor(parcel: Parcel) : this(
-            parcel.readLong(),
-            parcel.readLong()) {
-    }
+            parcel.readString(),
+            parcel.readLong())
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
-        parcel.writeLong(noteId)
+        parcel.writeString(noteId)
         parcel.writeLong(tagId)
     }
 

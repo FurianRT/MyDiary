@@ -9,6 +9,12 @@
         app:showAsAction="ifRoom" />
 
     <item
+        android:id="@+id/menu_image"
+        android:icon="@drawable/ic_image_white"
+        android:title="@string/image"
+        app:showAsAction="ifRoom" />
+
+    <item
         android:id="@+id/menu_sort"
         android:title="@string/search"
         app:showAsAction="never" />

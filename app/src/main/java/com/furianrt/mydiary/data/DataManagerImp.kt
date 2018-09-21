@@ -1,5 +1,7 @@
 package com.furianrt.mydiary.data
 
+import android.util.Log
+import com.furianrt.mydiary.LOG_TAG
 import com.furianrt.mydiary.data.api.Forecast
 import com.furianrt.mydiary.data.api.WeatherApiService
 import com.furianrt.mydiary.data.model.*
@@ -20,8 +22,8 @@ class DataManagerImp(private val mDatabase: NoteDatabase,
                      private val mStorage: StorageHelper,
                      private val mWeatherApi: WeatherApiService) : DataManager {
 
-    override fun insertNote(note: MyNote): Single<Long> =
-            Single.fromCallable { mDatabase.noteDao().insert(note) }
+    override fun insertNote(note: MyNote): Completable =
+            Completable.fromAction { mDatabase.noteDao().insert(note) }
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
 
@@ -35,7 +37,7 @@ class DataManagerImp(private val mDatabase: NoteDatabase,
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
 
-    override fun insertTagsForNote(noteId: Long, tags: List<MyTag>): Completable =
+    override fun insertTagsForNote(noteId: String, tags: List<MyTag>): Completable =
             Completable.fromAction { mDatabase.noteTagDao().insertTagsForNote(noteId, tags) }
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
@@ -85,18 +87,30 @@ class DataManagerImp(private val mDatabase: NoteDatabase,
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
 
-    override fun deleteNotes(notes: List<MyNote>): Completable =
-            Completable.fromAction { mDatabase.noteDao().delete(notes) }
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
+    override fun deleteNotes(notes: List<MyNote>): Completable {
+       Log.e(LOG_TAG, "deleteNotes")
+        return Completable.fromAction { mDatabase.noteDao().delete(notes) }
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+    }
 
     override fun deleteNoteTag(noteTag: NoteTag): Completable =
             Completable.fromAction { mDatabase.noteTagDao().delete(noteTag) }
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
 
-    override fun deleteAllTagsForNote(noteId: Long): Completable =
+    override fun deleteAllTagsForNote(noteId: String): Completable =
             Completable.fromAction { mDatabase.noteTagDao().deleteAllTagsForNote(noteId) }
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+
+    override fun deleteImageFromStorage(fileName: String): Single<Boolean> =
+            Single.fromCallable { mStorage.deleteFile(fileName) }
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+
+    override fun deleteAllHeaderImages(): Completable =
+            Completable.fromAction { mDatabase.headerImageDao().deleteAll() }
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
 
@@ -123,7 +137,7 @@ class DataManagerImp(private val mDatabase: NoteDatabase,
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
 
-    override fun findNote(noteId: Long): Maybe<MyNote> =
+    override fun findNote(noteId: String): Maybe<MyNote> =
             mDatabase.noteDao()
                     .findNote(noteId)
                     .subscribeOn(Schedulers.io())
@@ -163,7 +177,7 @@ class DataManagerImp(private val mDatabase: NoteDatabase,
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
 
-    override fun getImagesForNote(noteId: Long): Flowable<List<MyImage>> =
+    override fun getImagesForNote(noteId: String): Flowable<List<MyImage>> =
             mDatabase.imageDao().getImagesForNote(noteId)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())

@@ -9,14 +9,11 @@ import com.furianrt.mydiary.data.api.Forecast
 
 @Entity(tableName = "Notes")
 data class MyNote(
+        @ColumnInfo(name = "id_note") @PrimaryKey(autoGenerate = false) var id: String,
         @ColumnInfo(name = "title") var title: String,
         @ColumnInfo(name = "content") var content: String,
         @ColumnInfo(name = "time") var time: Long
 ) : Parcelable {
-
-    @ColumnInfo(name = "id_note")
-    @PrimaryKey(autoGenerate = true)
-    var id: Long = 0
 
     @ColumnInfo(name = "mood")
     var idMood: Long = 0
@@ -30,21 +27,22 @@ data class MyNote(
     @ColumnInfo(name = "forecast")
     var forecast: Forecast? = null
 
+    @Suppress("NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
     constructor(parcel: Parcel) : this(
-            parcel.readString()!!,
-            parcel.readString()!!,
+            parcel.readString(),
+            parcel.readString(),
+            parcel.readString(),
             parcel.readLong()) {
-        id = parcel.readLong()
         idMood = parcel.readLong()
         locationId = parcel.readLong()
         categoryId = parcel.readLong()
     }
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
+        parcel.writeString(id)
         parcel.writeString(title)
         parcel.writeString(content)
         parcel.writeLong(time)
-        parcel.writeLong(id)
         parcel.writeLong(idMood)
         parcel.writeLong(locationId)
         parcel.writeLong(categoryId)

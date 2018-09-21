@@ -200,7 +200,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_anchor="@id/app_bar_layout"
-        app:layout_anchorGravity="bottom|left|start"
+        app:layout_anchorGravity="bottom|right|end"
         app:fabSize="mini"
         android:src="@drawable/ic_add_a_photo"
         app:useCompatPadding="true"
