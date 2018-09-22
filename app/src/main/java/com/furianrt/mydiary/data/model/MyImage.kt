@@ -24,6 +24,9 @@ class MyImage(
         @ColumnInfo(name = "id_note", index = true) var noteId: String
 ) : Parcelable {
 
+    @ColumnInfo(name = "order")
+    var order: Int = 0
+
     @Suppress("NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
     constructor(parcel: Parcel) : this(
             parcel.readString(),

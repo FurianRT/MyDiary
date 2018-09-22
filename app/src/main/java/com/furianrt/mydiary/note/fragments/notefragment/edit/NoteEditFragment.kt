@@ -58,6 +58,7 @@ class NoteEditFragment : Fragment(), NoteEditFragmentContract.View {
     override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
         super.onCreateOptionsMenu(menu, inflater)
         menu?.removeItem(R.id.menu_edit)
+        menu?.removeItem(R.id.menu_delete)
         inflater?.inflate(R.menu.fragment_edit_menu, menu)
     }
 
@@ -94,7 +95,7 @@ class NoteEditFragment : Fragment(), NoteEditFragmentContract.View {
     override fun onResume() {
         super.onResume()
         mListener?.onNoteFragmentEditModeEnabled()
-        (parentFragment as? NoteFragment)?.disableActionBarExpanding()
+        (parentFragment as? NoteFragment)?.disableActionBarExpanding(true)
         view?.apply {
             when (mClickedView) {
                 null -> activity?.currentFocus?.postDelayed({ showKeyboard(context) }, 400)

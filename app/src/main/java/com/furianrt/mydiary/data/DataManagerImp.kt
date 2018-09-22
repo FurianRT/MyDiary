@@ -77,6 +77,11 @@ class DataManagerImp(private val mDatabase: NoteDatabase,
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
 
+    override fun updateImages(images: List<MyImage>): Completable =
+            Completable.fromAction { mDatabase.imageDao().updateAll(images) }
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+
     override fun deleteTag(tag: MyTag): Completable =
             Completable.fromAction { mDatabase.tagDao().delete(tag) }
                     .subscribeOn(Schedulers.io())
@@ -88,7 +93,7 @@ class DataManagerImp(private val mDatabase: NoteDatabase,
                     .observeOn(AndroidSchedulers.mainThread())
 
     override fun deleteNotes(notes: List<MyNote>): Completable {
-       Log.e(LOG_TAG, "deleteNotes")
+        Log.e(LOG_TAG, "deleteNotes")
         return Completable.fromAction { mDatabase.noteDao().delete(notes) }
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())

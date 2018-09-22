@@ -34,7 +34,8 @@ class NoteActivity : AppCompatActivity(), NoteActivityContract.View,
 
         mPresenter.attachView(this)
 
-        mPagerPosition = savedInstanceState?.getInt(EXTRA_CLICKED_NOTE_POSITION, 0) ?: intent.getIntExtra(EXTRA_CLICKED_NOTE_POSITION, 0)
+        mPagerPosition = savedInstanceState?.getInt(EXTRA_CLICKED_NOTE_POSITION, 0)
+                ?: intent.getIntExtra(EXTRA_CLICKED_NOTE_POSITION, 0)
 
         val mode = intent.getSerializableExtra(EXTRA_MODE) as Mode
 

@@ -104,7 +104,7 @@ class NoteFragmentPresenter(private val mDataManager: DataManager) : NoteFragmen
                     if (images.isEmpty()) {
                         mView?.showNoImages()
                     } else {
-                        mView?.showImages(images)
+                        mView?.showImages(images.sortedBy { it.order })
                     }
                 }
 
@@ -188,5 +188,9 @@ class NoteFragmentPresenter(private val mDataManager: DataManager) : NoteFragmen
                 .subscribe { mView?.closeView() }
 
         mCompositeDisposable.add(disposable)
+    }
+
+    override fun onToolbarImageClick() {
+        mView?.showGalleryView(mNote.note.id)
     }
 }

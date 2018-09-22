@@ -1,5 +1,4 @@
-package com.furianrt.mydiary.note.fragments.notefragment.toolbarimage
-
+package com.furianrt.mydiary.gallery.fragments.pager.image
 
 import android.os.Bundle
 import android.support.v4.app.Fragment
@@ -9,31 +8,30 @@ import android.view.ViewGroup
 import com.furianrt.mydiary.R
 import com.furianrt.mydiary.data.model.MyImage
 import com.furianrt.mydiary.general.GlideApp
-import com.furianrt.mydiary.note.fragments.notefragment.NoteFragment
-import kotlinx.android.synthetic.main.fragment_note_image.view.*
+import kotlinx.android.synthetic.main.fragment_gallery_image.view.*
 
-private const val ARG_NOTE_IMAGE = "noteImage"
+private const val ARG_IMAGE = "image"
 
-class NoteImageFragment : Fragment() {
+class GalleryImageFragment : Fragment() {
 
     private var mImage: MyImage? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-            mImage = it.getParcelable(ARG_NOTE_IMAGE)
+            mImage = it.getParcelable(ARG_IMAGE)
         }
+
+        setHasOptionsMenu(true)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        val view = inflater.inflate(R.layout.fragment_note_image, container, false)
+        val view = inflater.inflate(R.layout.fragment_gallery_image, container, false)
 
         GlideApp.with(this)
                 .load(mImage?.url)
-                .into(view.image_note)
-
-        view.image_note.setOnClickListener { (parentFragment as NoteFragment).onToolbarImageClick() }
+                .into(view.image_gallery)
 
         return view
     }
@@ -41,9 +39,9 @@ class NoteImageFragment : Fragment() {
     companion object {
         @JvmStatic
         fun newInstance(image: MyImage) =
-                NoteImageFragment().apply {
+                GalleryImageFragment().apply {
                     arguments = Bundle().apply {
-                        putParcelable(ARG_NOTE_IMAGE, image)
+                        putParcelable(ARG_IMAGE, image)
                     }
                 }
     }

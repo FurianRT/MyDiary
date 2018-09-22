@@ -4,7 +4,11 @@ import android.app.Application
 import com.furianrt.mydiary.di.application.AppComponent
 import com.furianrt.mydiary.di.application.AppModule
 import com.furianrt.mydiary.di.application.DaggerAppComponent
+import com.furianrt.mydiary.general.MediaLoader
+import com.yanzhenjie.album.Album
+import com.yanzhenjie.album.AlbumConfig
 import net.danlew.android.joda.JodaTimeAndroid
+import java.util.*
 
 const val LOG_TAG = "myTag"
 
@@ -17,6 +21,11 @@ class MyApp : Application() {
     override fun onCreate() {
         super.onCreate()
         JodaTimeAndroid.init(this)
+
+        Album.initialize(AlbumConfig.newBuilder(this)
+                .setAlbumLoader(MediaLoader())
+                .setLocale(Locale.getDefault())
+                .build())
     }
 }
 
@@ -24,13 +33,10 @@ class MyApp : Application() {
 * удаление картинок
 * редактор картинок
 * исправить исчезание заголовка при удалении всех записей
-*
-*
+* объемные теги
+* диктор
 * изменить цвет подсказки диалога
-* исправить построение даты для хедера
-* добавление картинки к записи
 * синхронизация с гугл диском
-* изменить оформление хедера списка
 * запилить дравер лайаут с поиском
 * изменение цвета текста
 * выбор шрифта
@@ -42,7 +48,6 @@ class MyApp : Application() {
 * добавление/удаление/измениение настроения
 * оптимизация
 * реклама
-* задать поведение компонентов при появлении клавиатуры
 * добавить возможность изменения даты/времени
 * */
 

@@ -25,6 +25,7 @@ data class MyNoteWithProp(
 
     @Relation(entity = MyImage::class, parentColumn = "id_note", entityColumn = "id_note")
     var images: List<MyImage> = ArrayList()
+        get() = field.sortedBy { it.order }
 
     constructor(parcel: Parcel) : this(
             parcel.readParcelable(MyNote::class.java.classLoader)!!,

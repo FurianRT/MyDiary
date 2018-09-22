@@ -53,6 +53,8 @@ interface NoteFragmentContract {
         fun showNoteEditView()
 
         fun closeView()
+
+        fun showGalleryView(noteId: String)
     }
 
     interface Presenter : BasePresenter<View> {
@@ -84,5 +86,7 @@ interface NoteFragmentContract {
         fun onEditButtonClick()
 
         fun onDeleteButtonClick()
+
+        fun onToolbarImageClick()
     }
 }

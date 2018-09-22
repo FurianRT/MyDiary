@@ -1,5 +1,8 @@
 package com.furianrt.mydiary.di.presenter
 
+import com.furianrt.mydiary.gallery.GalleryActivity
+import com.furianrt.mydiary.gallery.fragments.list.GalleryListFragment
+import com.furianrt.mydiary.gallery.fragments.pager.GalleryPagerFragment
 import com.furianrt.mydiary.main.MainActivity
 import com.furianrt.mydiary.note.NoteActivity
 import com.furianrt.mydiary.note.dialogs.TagsDialog
@@ -23,4 +26,10 @@ interface PresenterComponent {
     fun inject(fragment: NoteFragment)
 
     fun inject(dialog: TagsDialog)
+
+    fun inject(activity: GalleryActivity)
+
+    fun inject(fragment: GalleryPagerFragment)
+
+    fun inject(fragment: GalleryListFragment)
 }

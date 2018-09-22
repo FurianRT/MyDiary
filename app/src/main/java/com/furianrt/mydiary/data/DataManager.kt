@@ -29,6 +29,8 @@ interface DataManager {
 
     fun updateTag(tag: MyTag): Completable
 
+    fun updateImages(images: List<MyImage>): Completable
+
     fun deleteTag(tag: MyTag): Completable
 
     fun deleteNote(note: MyNote): Completable

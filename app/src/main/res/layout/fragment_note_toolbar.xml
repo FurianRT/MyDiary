@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="250dp"
     android:fitsSystemWindows="true"
-    app:expanded="false"
+    app:expanded="true"
     android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
     app:layout_behavior="com.furianrt.mydiary.general.AppBarLayoutBehavior">
 
@@ -13,7 +13,7 @@
         android:id="@+id/collapsing_toolbar_note"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:contentScrim="?colorPrimary"
+        app:contentScrim="@color/colorPrimary"
         app:expandedTitleMarginStart="48dp"
         app:layout_scrollFlags="scroll|exitUntilCollapsed">
 
@@ -24,10 +24,18 @@
             android:fitsSystemWindows="true"
             app:layout_collapseMode="parallax" />
 
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="7dp"
+            app:layout_collapseMode="parallax"
+            android:fitsSystemWindows="true"
+            android:layout_gravity="bottom"
+            android:background="@color/colorAccent"/>
+
         <android.support.v7.widget.Toolbar
             android:id="@+id/toolbar_note_fragment"
             android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
+            android:layout_height="?android:attr/actionBarSize"
             app:layout_collapseMode="pin">
 
         </android.support.v7.widget.Toolbar>

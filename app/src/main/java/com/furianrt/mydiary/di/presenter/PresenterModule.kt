@@ -2,6 +2,12 @@ package com.furianrt.mydiary.di.presenter
 
 import android.content.Context
 import com.furianrt.mydiary.data.DataManager
+import com.furianrt.mydiary.gallery.GalleryActivityContract
+import com.furianrt.mydiary.gallery.GalleryActivityPresenter
+import com.furianrt.mydiary.gallery.fragments.list.GalleryListContract
+import com.furianrt.mydiary.gallery.fragments.list.GalleryListPresenter
+import com.furianrt.mydiary.gallery.fragments.pager.GalleryPagerContract
+import com.furianrt.mydiary.gallery.fragments.pager.GalleryPagerPresenter
 import com.furianrt.mydiary.main.MainActivityContract
 import com.furianrt.mydiary.main.MainActivityPresenter
 import com.furianrt.mydiary.note.NoteActivityContract
@@ -56,4 +62,19 @@ class PresenterModule(private val context: Context) {
     @PresenterScope
     fun provideTagsDialogPresenter(dataManager: DataManager)
             : TagsDialogContract.Presenter = TagsDialogPresenter(dataManager)
+
+    @Provides
+    @PresenterScope
+    fun provideGalleryActivityPresenter(dataManager: DataManager): GalleryActivityContract.Presenter =
+            GalleryActivityPresenter(dataManager)
+
+    @Provides
+    @PresenterScope
+    fun provideGalleryPagerPresenter(dataManager: DataManager): GalleryPagerContract.Presenter =
+            GalleryPagerPresenter(dataManager)
+
+    @Provides
+    @PresenterScope
+    fun provideGalleryListPresenter(dataManager: DataManager): GalleryListContract.Presenter =
+            GalleryListPresenter(dataManager)
 }

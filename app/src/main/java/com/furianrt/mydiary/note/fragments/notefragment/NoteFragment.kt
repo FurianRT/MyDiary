@@ -2,6 +2,7 @@ package com.furianrt.mydiary.note.fragments.notefragment
 
 import android.Manifest
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.graphics.Color
 import android.location.Geocoder
 import android.os.Bundle
@@ -24,6 +25,9 @@ import com.furianrt.mydiary.data.model.MyImage
 import com.furianrt.mydiary.data.model.MyLocation
 import com.furianrt.mydiary.data.model.MyNoteWithProp
 import com.furianrt.mydiary.data.model.MyTag
+import com.furianrt.mydiary.gallery.EXTRA_NOTE_ID
+import com.furianrt.mydiary.gallery.EXTRA_POSITION
+import com.furianrt.mydiary.gallery.GalleryActivity
 import com.furianrt.mydiary.general.AppBarLayoutBehavior
 import com.furianrt.mydiary.general.GlideApp
 import com.furianrt.mydiary.note.Mode
@@ -91,13 +95,14 @@ class NoteFragment : Fragment(), NoteFragmentContract.View, OnMapReadyCallback,
     override fun onCreate(savedInstanceState: Bundle?) {
         getPresenterComponent(context!!).inject(this)
         super.onCreate(savedInstanceState)
-        val note = if (savedInstanceState != null) {
+        val note = (if (savedInstanceState != null) {
             savedInstanceState.getParcelable<MyNoteWithProp>(ARG_NOTE)
         } else {
             arguments?.getParcelable(ARG_NOTE)
-        }
+        }) ?: throw IllegalStateException()
 
-        mPresenter.setNote(note!!)
+        mPresenter.setNote(note)
+
         mMode = arguments?.getSerializable(ARG_MODE) as Mode
         setHasOptionsMenu(true)
     }
@@ -154,6 +159,17 @@ class NoteFragment : Fragment(), NoteFragmentContract.View, OnMapReadyCallback,
             else -> super.onOptionsItemSelected(item)
         }
 
+    }
+
+    fun onToolbarImageClick() {
+        mPresenter.onToolbarImageClick()
+    }
+
+    override fun showGalleryView(noteId: String) {
+        val intent = Intent(context, GalleryActivity::class.java)
+        intent.putExtra(EXTRA_POSITION, view!!.pager_note_image.currentItem)
+        intent.putExtra(EXTRA_NOTE_ID, noteId)
+        startActivity(intent)
     }
 
     override fun showNoteEditView() {
@@ -253,8 +269,8 @@ class NoteFragment : Fragment(), NoteFragmentContract.View, OnMapReadyCallback,
         }
     }
 
-    fun disableActionBarExpanding() {
-        app_bar_layout.setExpanded(false)
+    fun disableActionBarExpanding(animate: Boolean) {
+        app_bar_layout.setExpanded(false, animate)
 
         val coordParams = app_bar_layout.layoutParams as CoordinatorLayout.LayoutParams
         (coordParams.behavior as AppBarLayoutBehavior).shouldScroll = false
@@ -411,14 +427,14 @@ class NoteFragment : Fragment(), NoteFragmentContract.View, OnMapReadyCallback,
         mPagerAdapter.notifyDataSetChanged()
         Log.e(LOG_TAG, "showImages " + images.toString())
         if (childFragmentManager.findFragmentByTag(NoteEditFragment::class.toString()) == null) {
-            enableActionBarExpanding(true, false)
+            enableActionBarExpanding(true, true)
         }
     }
 
     override fun showNoImages() {
         mPagerAdapter.images = emptyList()
         mPagerAdapter.notifyDataSetChanged()
-        disableActionBarExpanding()
+        disableActionBarExpanding(false)
     }
 
     override fun closeView() {

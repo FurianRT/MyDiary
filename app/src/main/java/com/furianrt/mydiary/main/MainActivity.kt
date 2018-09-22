@@ -26,14 +26,12 @@ import com.furianrt.mydiary.data.model.MyNoteWithProp
 import com.furianrt.mydiary.general.AppBarLayoutBehavior
 import com.furianrt.mydiary.general.GlideApp
 import com.furianrt.mydiary.general.HeaderItemDecoration
-import com.furianrt.mydiary.general.MediaLoader
 import com.furianrt.mydiary.main.listadapter.MainListAdapter
 import com.furianrt.mydiary.main.listadapter.MainListItem
 import com.furianrt.mydiary.note.EXTRA_MODE
 import com.furianrt.mydiary.note.Mode
 import com.furianrt.mydiary.note.NoteActivity
 import com.yanzhenjie.album.Album
-import com.yanzhenjie.album.AlbumConfig
 import com.yanzhenjie.album.api.widget.Widget
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.activity_main_toolbar.*
@@ -127,11 +125,6 @@ class MainActivity : AppCompatActivity(), MainActivityContract.View,
                 ActionBarDrawerToggle(this, drawer, toolbar_main, R.string.open, R.string.close)
         drawer.addDrawerListener(toggle)
         toggle.syncState()
-
-        Album.initialize(AlbumConfig.newBuilder(this)
-                .setAlbumLoader(MediaLoader())
-                .setLocale(Locale.getDefault())
-                .build())
 
         fab_menu.setOnClickListener(this)
         fab_menu.menuButtonColorNormal = ContextCompat.getColor(this, R.color.colorAccent)

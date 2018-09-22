@@ -1,0 +1,113 @@
+package com.furianrt.mydiary.gallery.fragments.pager
+
+import android.os.Bundle
+import android.support.v4.app.Fragment
+import android.support.v4.view.ViewPager
+import android.view.LayoutInflater
+import android.view.MenuItem
+import android.view.View
+import android.view.ViewGroup
+
+import com.furianrt.mydiary.R
+import com.furianrt.mydiary.data.model.MyImage
+import com.furianrt.mydiary.gallery.fragments.list.GalleryListFragment
+import com.furianrt.mydiary.note.fragments.notefragment.inTransaction
+import kotlinx.android.synthetic.main.fragment_gallery_pager.view.*
+import javax.inject.Inject
+
+private const val ARG_POSITION = "position"
+private const val ARG_NOTE_ID = "noteId"
+
+class GalleryPagerFragment : Fragment(), GalleryPagerContract.View {
+
+    @Inject
+    lateinit var mPresenter: GalleryPagerContract.Presenter
+
+    private var mPagerPosition = 0
+    private lateinit var mPagerAdapter: GalleryPagerAdapter
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        getPresenterComponent(context!!).inject(this)
+        super.onCreate(savedInstanceState)
+        mPagerPosition = savedInstanceState?.getInt(ARG_POSITION)
+                ?: (arguments?.getInt(ARG_POSITION) ?: 0)
+        val noteId = arguments?.getString(ARG_NOTE_ID) ?: throw IllegalStateException()
+        mPresenter.setNoteId(noteId)
+        setHasOptionsMenu(true)
+    }
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
+                              savedInstanceState: Bundle?): View? {
+        val view = inflater.inflate(R.layout.fragment_gallery_pager, container, false)
+
+        mPresenter.attachView(this)
+
+        setupUi(view)
+
+        mPresenter.onViewCreate()
+
+        return view
+    }
+
+    private fun setupUi(view: View) {
+        mPagerAdapter = GalleryPagerAdapter(ArrayList(), childFragmentManager)
+        view.pager_gallery.adapter = mPagerAdapter
+        view.pager_gallery.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
+            override fun onPageScrollStateChanged(p0: Int) {
+
+            }
+
+            override fun onPageScrolled(p0: Int, p1: Float, p2: Int) {
+
+            }
+
+            override fun onPageSelected(position: Int) {
+                mPagerPosition = position
+            }
+        })
+    }
+
+    override fun showImages(images: List<MyImage>) {
+        mPagerAdapter.list = images
+        mPagerAdapter.notifyDataSetChanged()
+        view?.pager_gallery?.setCurrentItem(mPagerPosition, false)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+        return when (item?.itemId) {
+            R.id.menu_list_mode -> {
+                mPresenter.onListModeButtonClick()
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
+    }
+
+    override fun showListImagesView(noteId: String) {
+        fragmentManager?.inTransaction {
+            val tag = GalleryListFragment::class.toString()
+            replace(R.id.container_gallery, GalleryListFragment.newInstance(noteId), tag)
+        }
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putInt(ARG_POSITION, view!!.pager_gallery.currentItem)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        mPresenter.detachView()
+    }
+
+    companion object {
+        @JvmStatic
+        fun newInstance(noteId: String, position: Int) =
+                GalleryPagerFragment().apply {
+                    arguments = Bundle().apply {
+                        putString(ARG_NOTE_ID, noteId)
+                        putInt(ARG_POSITION, position)
+                    }
+                }
+    }
+}
