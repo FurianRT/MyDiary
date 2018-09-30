@@ -1,12 +1,12 @@
 package com.furianrt.mydiary.di.application
 
 import android.app.Application
-import android.arch.persistence.db.SupportSQLiteDatabase
-import android.arch.persistence.room.Room
-import android.arch.persistence.room.RoomDatabase
 import android.content.ContentValues
 import android.content.Context
 import android.util.Log
+import androidx.room.Room
+import androidx.room.RoomDatabase
+import androidx.sqlite.db.SupportSQLiteDatabase
 import com.furianrt.mydiary.LOG_TAG
 import com.furianrt.mydiary.R
 import com.furianrt.mydiary.data.DataManager
@@ -25,7 +25,6 @@ import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
-
 
 @Module
 class AppModule(private val app: Application) {
@@ -128,33 +127,35 @@ class AppModule(private val app: Application) {
 
     private fun setInitialData(db: SupportSQLiteDatabase) {
         val cv = ContentValues()
-        cv.put("name_mood", app.getString(R.string.mood_great))
-        db.insert("Moods", 0, cv)
-        cv.put("name_mood", app.getString(R.string.mood_good))
-        db.insert("Moods", 0, cv)
-        cv.put("name_mood", app.getString(R.string.mood_normal))
-        db.insert("Moods", 0, cv)
-        cv.put("name_mood", app.getString(R.string.mood_bad))
-        db.insert("Moods", 0, cv)
-        cv.put("name_mood", app.getString(R.string.mood_terrible))
-        db.insert("Moods", 0, cv)
+        val moodNames = app.resources.getStringArray(R.array.moods)
+        val moodIcons = arrayOf(
+                app.resources.getResourceEntryName(R.drawable.ic_mood_angry),
+                app.resources.getResourceEntryName(R.drawable.ic_mood_awful),
+                app.resources.getResourceEntryName(R.drawable.ic_mood_bad),
+                app.resources.getResourceEntryName(R.drawable.ic_mood_neutral),
+                app.resources.getResourceEntryName(R.drawable.ic_mood_good),
+                app.resources.getResourceEntryName(R.drawable.ic_mood_great)
+        )
+
+        for (i in 0 until moodNames.size) {
+            cv.put("name_mood", moodNames[i])
+            cv.put("icon_mood", moodIcons[i])
+            db.insert("Moods", 0, cv)
+        }
         cv.clear()
-        cv.put("name_tag", app.getString(R.string.tag_dream))
-        db.insert("Tags", 0, cv)
-        cv.put("name_tag", app.getString(R.string.tag_idea))
-        db.insert("Tags", 0, cv)
-        cv.put("name_tag", app.getString(R.string.tag_plans))
-        db.insert("Tags", 0, cv)
+
+        val tagNames = app.resources.getStringArray(R.array.tags)
+        for (tagName in tagNames) {
+            cv.put("name_tag", tagName)
+            db.insert("Tags", 0, cv)
+        }
         cv.clear()
-        cv.put("name_category", app.getString(R.string.package_love))
-        db.insert("Categories", 0, cv)
-        cv.put("name_category", app.getString(R.string.package_friends))
-        db.insert("Categories", 0, cv)
-        cv.put("name_category", app.getString(R.string.package_business))
-        db.insert("Categories", 0, cv)
-        cv.put("name_category", app.getString(R.string.package_todo))
-        db.insert("Categories", 0, cv)
-        cv.put("name_category", app.getString(R.string.package_entertainment))
-        db.insert("Categories", 0, cv)
+
+        val categoryNames = app.resources.getStringArray(R.array.categories)
+        for (categoryName in categoryNames) {
+            cv.put("name_category", categoryName)
+            db.insert("Categories", 0, cv)
+        }
+        cv.clear()
     }
 }
