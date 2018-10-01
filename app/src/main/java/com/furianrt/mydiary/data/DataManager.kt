@@ -37,6 +37,8 @@ interface DataManager {
 
     fun deleteNotes(notes: List<MyNote>): Completable
 
+    fun deleteImages(images: List<MyImage>): Completable
+
     fun deleteNoteTag(noteTag: NoteTag): Completable
 
     fun deleteAllTagsForNote(noteId: String): Completable
@@ -54,6 +56,10 @@ interface DataManager {
     fun getAllTags(): Single<List<MyTag>>
 
     fun getForecast(lat: Double, lon: Double): Single<Forecast>
+
+    fun getMood(moodId: Int): Single<MyMood>
+
+    fun getAllMoods(): Single<List<MyMood>>
 
     fun findNote(noteId: String): Maybe<MyNote>
 

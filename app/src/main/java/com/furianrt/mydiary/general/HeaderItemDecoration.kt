@@ -1,19 +1,17 @@
 package com.furianrt.mydiary.general
 
 import android.graphics.Canvas
-import android.support.constraint.ConstraintLayout
-import android.support.v7.widget.CardView
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.recyclerview.widget.RecyclerView
 
-class HeaderItemDecoration(private val mRecyclerView: RecyclerView,
+class HeaderItemDecoration(private val mRecyclerView: androidx.recyclerview.widget.RecyclerView,
                            private val mListener: StickyHeaderInterface)
-    : RecyclerView.ItemDecoration() {
+    : androidx.recyclerview.widget.RecyclerView.ItemDecoration() {
 
-    private val mHeaderContainer = CardView(mRecyclerView.context)
+    private val mHeaderContainer = androidx.cardview.widget.CardView(mRecyclerView.context)
     private var mStickyHeaderHeight: Int = 0
     private var mCurrentHeader: View? = null
     private var mCurrentHeaderPosition = 0
@@ -32,17 +30,17 @@ class HeaderItemDecoration(private val mRecyclerView: RecyclerView,
                 ConstraintLayout.LayoutParams.WRAP_CONTENT)
     }
 
-    override fun onDrawOver(c: Canvas, parent: RecyclerView, state: RecyclerView.State) {
+    override fun onDrawOver(c: Canvas, parent: androidx.recyclerview.widget.RecyclerView, state: androidx.recyclerview.widget.RecyclerView.State) {
         super.onDrawOver(c, parent, state)
 
         val topChild = parent.getChildAt(0) ?: return
 
         val topChildPosition = parent.getChildAdapterPosition(topChild)
-        if (topChildPosition == RecyclerView.NO_POSITION) {
+        if (topChildPosition == androidx.recyclerview.widget.RecyclerView.NO_POSITION) {
             return
         }
 
-        if ((mRecyclerView.layoutManager as LinearLayoutManager)
+        if ((mRecyclerView.layoutManager as androidx.recyclerview.widget.LinearLayoutManager)
                         .findFirstCompletelyVisibleItemPosition() == 0) {
             mHeaderContainer.cardElevation = 0f
             return
@@ -62,7 +60,7 @@ class HeaderItemDecoration(private val mRecyclerView: RecyclerView,
         drawHeader(currentHeader, topChildPosition)
     }
 
-    private fun getHeaderViewForItem(itemPosition: Int, parent: RecyclerView): View {
+    private fun getHeaderViewForItem(itemPosition: Int, parent: androidx.recyclerview.widget.RecyclerView): View {
         val headerPosition = mListener.getHeaderPositionForItem(itemPosition)
         val layoutResId = mListener.getHeaderLayout(headerPosition)
         val header = LayoutInflater.from(parent.context).inflate(layoutResId, parent, false)
@@ -97,7 +95,7 @@ class HeaderItemDecoration(private val mRecyclerView: RecyclerView,
         mHeaderContainer.addView(mCurrentHeader)
     }
 
-    private fun getChildInContact(parent: RecyclerView, contactPoint: Int): View? =
+    private fun getChildInContact(parent: androidx.recyclerview.widget.RecyclerView, contactPoint: Int): View? =
             (0 until parent.childCount)
                     .map { parent.getChildAt(it) }
                     .firstOrNull { it.bottom > contactPoint && it.top <= contactPoint }

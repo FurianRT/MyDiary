@@ -7,35 +7,43 @@
         android:icon="@drawable/ic_edit"
         android:orderInCategory="1"
         android:title="@string/edit"
-        app:showAsAction="ifRoom" />
+        app:showAsAction="always" />
+
+    <item
+        android:id="@+id/menu_mic"
+        android:icon="@drawable/ic_microphone"
+        android:orderInCategory="2"
+        android:title="@string/edit"
+        app:showAsAction="always" />
 
     <item
         android:id="@+id/menu_image"
         android:icon="@drawable/ic_image_white"
-        android:orderInCategory="2"
+        android:orderInCategory="3"
         android:title="@string/image"
-        app:showAsAction="ifRoom" />
+        app:showAsAction="always" />
 
     <item
         android:id="@+id/menu_date"
-        android:orderInCategory="3"
+        android:orderInCategory="4"
         android:title="@string/date"
         app:showAsAction="never" />
 
     <item
         android:id="@+id/menu_time"
-        android:orderInCategory="4"
+        android:orderInCategory="5"
         android:title="@string/time"
         app:showAsAction="never" />
 
     <item
         android:id="@+id/menu_share"
-        android:icon="@drawable/ic_image_white"
+        android:orderInCategory="6"
         android:title="@string/share"
         app:showAsAction="never" />
 
     <item
         android:id="@+id/menu_delete"
+        android:orderInCategory="7"
         android:title="@string/delete"
         app:showAsAction="never" />
 

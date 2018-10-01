@@ -9,19 +9,29 @@
     <string name="storage_permission_request">Приложению требуется разрешение
         для сохранения изображения</string>
     <string name="time">Время</string>
-    <string name="mood_great">Отличное</string>
-    <string name="mood_good">Хорошее</string>
-    <string name="mood_normal">Нормальное</string>
-    <string name="mood_bad">Плохое</string>
-    <string name="mood_terrible">Ужасное</string>
-    <string name="tag_dream">Мечта</string>
-    <string name="tag_idea">Идея</string>
-    <string name="tag_plans">Планы</string>
-    <string name="package_entertainment">Развлечение</string>
-    <string name="package_business">Бизнесс</string>
-    <string name="package_friends">Друзья</string>
-    <string name="package_love">Любовь</string>
-    <string name="package_todo">План</string>
+
+    <string-array name="tags">
+        <item>Мечта</item>
+        <item>Идея</item>
+        <item>Планы</item>
+    </string-array>
+
+    <string-array name="moods">
+        <item>Злость</item>
+        <item>Ужасное</item>
+        <item>Плохое</item>
+        <item>Нормальное</item>
+        <item>Хорошее</item>
+        <item>Отличное</item>
+    </string-array>
+
+    <string-array name="categories">
+        <item>Развлечение</item>
+        <item>Бизнесс</item>
+        <item>Друзья</item>
+        <item>Любовь</item>
+        <item>План</item>
+    </string-array>
 
     <string name="save">Сохранить</string>
     <string name="cancel">Отмена</string>
@@ -29,8 +39,8 @@
     <string name="delete">Удалить</string>
 
     <string name="choose_tags">Выберите теги</string>
-    <string name="choose_category">Выберите категорию</string>
-    <string name="choose_mood">Выберите настроение</string>
+    <string name="choose_category">Категория</string>
+    <string name="choose_mood">Настроение</string>
     <string name="choose_location">Выберите локацию</string>
 
     <string name="add_tag">Добавить тег</string>
@@ -54,8 +64,10 @@
     <string name="title">Загловок…</string>
     <string name="content">Остальное…</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="list">Лист</string>
+    <string name="multi_selection">Множественный выбор</string>
+    <string name="choose_all_images">Выбрать все картинки</string>
+    <string name="no_mood">Нет настроения</string>
+    <string name="add_image">Добавить картинку</string>
 
 </resources>

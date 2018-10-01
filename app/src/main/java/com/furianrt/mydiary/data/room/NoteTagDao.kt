@@ -1,6 +1,6 @@
 package com.furianrt.mydiary.data.room
 
-import android.arch.persistence.room.*
+import androidx.room.*
 import com.furianrt.mydiary.data.model.MyNote
 import com.furianrt.mydiary.data.model.MyTag
 import com.furianrt.mydiary.data.model.NoteTag

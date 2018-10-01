@@ -1,13 +1,13 @@
 package com.furianrt.mydiary.data.room
 
-import android.arch.persistence.room.Database
-import android.arch.persistence.room.RoomDatabase
-import android.arch.persistence.room.TypeConverters
+import androidx.room.Database
+import androidx.room.RoomDatabase
+import androidx.room.TypeConverters
 import com.furianrt.mydiary.data.model.*
 
 @Database(
-        entities = [MyNote::class, MyCategory::class, MyTag::class, MyMood::class,
-            MyLocation::class, NoteTag::class, MyImage::class, MyHeaderImage::class],
+        entities = [MyNote::class, MyCategory::class, MyTag::class, MyLocation::class,
+            NoteTag::class, MyImage::class, MyHeaderImage::class, MyMood::class],
         version = 1,
         exportSchema = false
 )
@@ -20,8 +20,6 @@ abstract class NoteDatabase : RoomDatabase() {
 
     abstract fun tagDao(): TagDao
 
-    abstract fun moodDao(): MoodDao
-
     abstract fun locationDao(): LocationDao
 
     abstract fun noteTagDao(): NoteTagDao
@@ -29,4 +27,6 @@ abstract class NoteDatabase : RoomDatabase() {
     abstract fun imageDao(): ImageDao
 
     abstract fun headerImageDao(): HeaderImageDao
+
+    abstract fun moodDao(): MoodDao
 }

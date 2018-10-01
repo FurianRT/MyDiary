@@ -1,10 +1,10 @@
 package com.furianrt.mydiary.data.model
 
-import android.arch.persistence.room.ColumnInfo
-import android.arch.persistence.room.Entity
-import android.arch.persistence.room.PrimaryKey
 import android.os.Parcel
 import android.os.Parcelable
+import androidx.room.ColumnInfo
+import androidx.room.Entity
+import androidx.room.PrimaryKey
 import com.furianrt.mydiary.data.api.Forecast
 
 @Entity(tableName = "Notes")
@@ -15,8 +15,8 @@ data class MyNote(
         @ColumnInfo(name = "time") var time: Long
 ) : Parcelable {
 
-    @ColumnInfo(name = "mood")
-    var idMood: Long = 0
+    @ColumnInfo(name = "id_mood")
+    var moodId: Int = 0
 
     @ColumnInfo(name = "location")
     var locationId: Long = 0
@@ -33,7 +33,7 @@ data class MyNote(
             parcel.readString(),
             parcel.readString(),
             parcel.readLong()) {
-        idMood = parcel.readLong()
+        moodId = parcel.readInt()
         locationId = parcel.readLong()
         categoryId = parcel.readLong()
     }
@@ -43,7 +43,7 @@ data class MyNote(
         parcel.writeString(title)
         parcel.writeString(content)
         parcel.writeLong(time)
-        parcel.writeLong(idMood)
+        parcel.writeInt(moodId)
         parcel.writeLong(locationId)
         parcel.writeLong(categoryId)
     }

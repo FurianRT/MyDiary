@@ -4,6 +4,5 @@
     android:id="@+id/image_gallery"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".gallery.fragments.pager.image.GalleryImageFragment">
-
-</ImageView>
+    tools:context=".gallery.fragments.pager.image.GalleryImageFragment"
+    tools:ignore="ContentDescription"/>

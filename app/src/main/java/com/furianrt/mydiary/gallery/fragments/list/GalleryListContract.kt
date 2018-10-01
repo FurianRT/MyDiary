@@ -10,18 +10,37 @@ interface GalleryListContract {
 
         fun showViewImagePager(noteId: String, position: Int)
 
-        fun showImages(images: List<MyImage>)
+        fun showImages(images: List<MyImage>, selectedImages: List<MyImage>)
 
+        fun activateSelection()
+
+        fun deactivateSelection()
+
+        fun deselectItem(image: MyImage)
+
+        fun selectItem(image: MyImage)
+
+        fun selectItems(items: MutableList<MyImage>)
     }
 
     interface Presenter : BasePresenter<View> {
 
-        fun onListItemClick(image: MyImage, position: Int)
+        fun onListItemClick(image: MyImage, position: Int, selectionActive: Boolean)
 
         fun setNoteId(noteId: String)
 
         fun onViewCreate()
 
         fun onStop(images: List<MyImage>)
+
+        fun onMultiSelectionButtonClick()
+
+        fun onCabDeleteButtonClick()
+
+        fun onCabSelectAllButtonClick()
+
+        fun onSaveInstanceState(): MutableList<MyImage>
+
+        fun onRestoreInstanceState(selectedImages: MutableList<MyImage>?)
     }
 }

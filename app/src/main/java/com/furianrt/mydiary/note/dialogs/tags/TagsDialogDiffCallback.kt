@@ -1,6 +1,6 @@
-package com.furianrt.mydiary.note.dialogs
+package com.furianrt.mydiary.note.dialogs.tags
 
-import android.support.v7.util.DiffUtil
+import androidx.recyclerview.widget.DiffUtil
 import com.furianrt.mydiary.data.model.MyTag
 
 class TagsDialogDiffCallback : DiffUtil.ItemCallback<MyTag>() {

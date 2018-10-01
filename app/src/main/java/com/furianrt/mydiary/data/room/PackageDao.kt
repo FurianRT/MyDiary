@@ -1,6 +1,6 @@
 package com.furianrt.mydiary.data.room
 
-import android.arch.persistence.room.*
+import androidx.room.*
 import com.furianrt.mydiary.data.model.MyCategory
 import io.reactivex.Flowable
 

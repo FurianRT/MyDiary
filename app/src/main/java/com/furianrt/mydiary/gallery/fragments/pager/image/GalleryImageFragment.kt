@@ -1,7 +1,6 @@
 package com.furianrt.mydiary.gallery.fragments.pager.image
 
 import android.os.Bundle
-import android.support.v4.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,7 +11,7 @@ import kotlinx.android.synthetic.main.fragment_gallery_image.view.*
 
 private const val ARG_IMAGE = "image"
 
-class GalleryImageFragment : Fragment() {
+class GalleryImageFragment : androidx.fragment.app.Fragment() {
 
     private var mImage: MyImage? = null
 

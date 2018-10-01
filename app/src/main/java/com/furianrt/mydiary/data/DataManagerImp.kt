@@ -99,6 +99,11 @@ class DataManagerImp(private val mDatabase: NoteDatabase,
                 .observeOn(AndroidSchedulers.mainThread())
     }
 
+    override fun deleteImages(images: List<MyImage>): Completable =
+            Completable.fromAction { mDatabase.imageDao().delete(images) }
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+
     override fun deleteNoteTag(noteTag: NoteTag): Completable =
             Completable.fromAction { mDatabase.noteTagDao().delete(noteTag) }
                     .subscribeOn(Schedulers.io())
@@ -136,6 +141,16 @@ class DataManagerImp(private val mDatabase: NoteDatabase,
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
 
+    override fun getMood(moodId: Int): Single<MyMood> =
+            mDatabase.moodDao().getMood(moodId)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+
+    override fun getAllMoods(): Single<List<MyMood>> =
+            mDatabase.moodDao().getAllMoods()
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+
     override fun getAllTags(): Single<List<MyTag>> =
             mDatabase.tagDao()
                     .getAllTags()
@@ -155,7 +170,7 @@ class DataManagerImp(private val mDatabase: NoteDatabase,
 
     override fun saveImageToStorage(image: MyImage): Single<MyImage> =
             Single.fromCallable { mStorage.copyImageToStorage(image.url, image.name) }
-                    .map { file -> MyImage(file.name, file.path, image.noteId) }
+                    .map { file -> MyImage(file.name, file.path, image.noteId, image.addedTime) }
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
 

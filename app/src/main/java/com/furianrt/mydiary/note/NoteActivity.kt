@@ -1,10 +1,9 @@
 package com.furianrt.mydiary.note
 
 import android.os.Bundle
-import android.support.v4.view.ViewPager
-import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.view.Menu
+import androidx.appcompat.app.AppCompatActivity
 import com.furianrt.mydiary.LOG_TAG
 import com.furianrt.mydiary.R
 import com.furianrt.mydiary.data.model.MyNoteWithProp
@@ -50,10 +49,11 @@ class NoteActivity : AppCompatActivity(), NoteActivityContract.View,
         setSupportActionBar(toolbar_note_activity)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setDisplayShowHomeEnabled(true)
+        supportActionBar?.setDisplayShowTitleEnabled(false)
 
 
         pager_note.adapter = mPagerAdapter
-        pager_note.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
+        pager_note.addOnPageChangeListener(object : androidx.viewpager.widget.ViewPager.OnPageChangeListener {
             override fun onPageScrollStateChanged(p0: Int) {
 
             }

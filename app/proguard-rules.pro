@@ -27,3 +27,6 @@
     **[] $VALUES;
     public *;
 }
+
+-dontwarn com.yanzhenjie.album.**
+-dontwarn com.yanzhenjie.mediascanner.**

@@ -4,34 +4,37 @@ import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.graphics.Color
+import android.graphics.PorterDuff
 import android.location.Geocoder
 import android.os.Bundle
 import android.os.Looper
-import android.support.design.widget.CoordinatorLayout
-import android.support.v4.app.Fragment
-import android.support.v4.app.FragmentManager
-import android.support.v4.app.FragmentTransaction
-import android.support.v4.content.ContextCompat
-import android.support.v4.content.ContextCompat.getColor
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import android.widget.FrameLayout
+import android.widget.ImageView
+import android.widget.LinearLayout
+import android.widget.TextView
+import androidx.cardview.widget.CardView
+import androidx.core.content.ContextCompat
+import androidx.core.content.ContextCompat.getColor
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
+import androidx.fragment.app.FragmentTransaction
 import com.furianrt.mydiary.LOG_TAG
 import com.furianrt.mydiary.R
 import com.furianrt.mydiary.data.api.Forecast
-import com.furianrt.mydiary.data.model.MyImage
-import com.furianrt.mydiary.data.model.MyLocation
-import com.furianrt.mydiary.data.model.MyNoteWithProp
-import com.furianrt.mydiary.data.model.MyTag
+import com.furianrt.mydiary.data.model.*
 import com.furianrt.mydiary.gallery.EXTRA_NOTE_ID
 import com.furianrt.mydiary.gallery.EXTRA_POSITION
 import com.furianrt.mydiary.gallery.GalleryActivity
 import com.furianrt.mydiary.general.AppBarLayoutBehavior
 import com.furianrt.mydiary.general.GlideApp
 import com.furianrt.mydiary.note.Mode
-import com.furianrt.mydiary.note.dialogs.TagsDialog
+import com.furianrt.mydiary.note.dialogs.moods.MoodsDialog
+import com.furianrt.mydiary.note.dialogs.tags.TagsDialog
 import com.furianrt.mydiary.note.fragments.notefragment.content.NoteContentFragment
 import com.furianrt.mydiary.note.fragments.notefragment.edit.ClickedView
 import com.furianrt.mydiary.note.fragments.notefragment.edit.NoteEditFragment
@@ -46,8 +49,8 @@ import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.model.LatLng
 import com.yanzhenjie.album.Album
 import com.yanzhenjie.album.api.widget.Widget
-import kotlinx.android.synthetic.main.activity_main_toolbar.*
 import kotlinx.android.synthetic.main.fragment_note.view.*
+import kotlinx.android.synthetic.main.fragment_note_toolbar.*
 import kotlinx.android.synthetic.main.fragment_note_toolbar.view.*
 import pub.devrel.easypermissions.AfterPermissionGranted
 import pub.devrel.easypermissions.EasyPermissions
@@ -70,7 +73,7 @@ private const val STORAGE_PERMISSIONS_REQUEST_CODE = 2
 private const val ZOOM = 15f
 
 class NoteFragment : Fragment(), NoteFragmentContract.View, OnMapReadyCallback,
-        TagsDialog.OnTagsDialogInteractionListener, View.OnClickListener {
+        TagsDialog.OnTagsDialogInteractionListener, View.OnClickListener, MoodsDialog.OnMoodsDialogInteractionListener {
 
     @Inject
     lateinit var mFusedLocationClient: FusedLocationProviderClient
@@ -130,8 +133,9 @@ class NoteFragment : Fragment(), NoteFragmentContract.View, OnMapReadyCallback,
             text_month.text = getMonth(time)
             text_year.text = getYear(time)
             text_time.text = getTime(time)
-            text_tags.setOnClickListener(this@NoteFragment)
-            fab_toolbar_note.setOnClickListener(this@NoteFragment)
+            text_mood.setOnClickListener(this@NoteFragment)
+            layout_tags.setOnClickListener(this@NoteFragment)
+            //fab_toolbar_note.setOnClickListener(this@NoteFragment)
             pager_note_image.adapter = mPagerAdapter
             map_touch_event_interceptor.setOnTouchListener { _, _ -> true }
         }
@@ -191,13 +195,60 @@ class NoteFragment : Fragment(), NoteFragmentContract.View, OnMapReadyCallback,
     }
 
     override fun showNoTagsMessage() {
-        view?.text_category?.text = getString(R.string.choose_tags)
-        view?.text_category?.setTextColor(getColor(context!!, R.color.grey_dark))
+        view?.apply {
+            val itemCount = layout_tags.flexItemCount
+            layout_tags.removeViews(1, itemCount - 1)
+
+            val image = layout_tags.getChildAt(0) as? ImageView?
+            image?.setColorFilter(getColor(context!!, R.color.grey_dark), PorterDuff.Mode.SRC_IN)
+
+            val textNoTags = TextView(context!!)
+            textNoTags.setTextColor(getColor(context!!, R.color.grey_dark))
+            textNoTags.setText(R.string.choose_tags)
+
+            val params = LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.WRAP_CONTENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT
+            )
+            params.marginStart = 16
+            textNoTags.layoutParams = params
+
+            layout_tags.addView(textNoTags)
+        }
+    }
+
+    override fun showTagNames(tagNames: List<String>) {
+        view?.apply {
+            val itemCount = layout_tags.flexItemCount
+            layout_tags.removeViews(1, itemCount - 1)
+            val image = layout_tags.getChildAt(0) as? ImageView?
+            image?.setColorFilter(getColor(context!!, R.color.black), PorterDuff.Mode.SRC_IN)
+
+            for (tagName in tagNames) {
+                val card = CardView(context!!)
+                card.elevation = 5f
+                card.radius = 25f
+                val params = FrameLayout.LayoutParams(
+                        FrameLayout.LayoutParams.WRAP_CONTENT,
+                        FrameLayout.LayoutParams.WRAP_CONTENT
+                )
+                params.setMargins(10, 10, 10, 10)
+                card.layoutParams = params
+
+                val textTag = TextView(context!!)
+                textTag.text = tagName
+                textTag.setTextColor(Color.BLACK)
+                textTag.setPadding(20, 10, 20, 10)
+
+                card.addView(textTag)
+                layout_tags.addView(card)
+            }
+        }
     }
 
     override fun showCategoryName(name: String?) {
-        view?.text_tags?.text = name
-        view?.text_tags?.setTextColor(Color.BLACK)
+        view?.text_category?.text = name
+        view?.text_category?.setTextColor(Color.BLACK)
     }
 
     override fun showNoCategoryMessage() {
@@ -205,14 +256,27 @@ class NoteFragment : Fragment(), NoteFragmentContract.View, OnMapReadyCallback,
         view?.text_category?.setTextColor(getColor(context!!, R.color.grey_dark))
     }
 
-    override fun showMood(name: String?) {
-        view?.text_tags?.text = name
-        view?.text_tags?.setTextColor(Color.BLACK)
+    override fun showMood(mood: MyMood) {
+        view?.apply {
+            text_mood.setTextColor(Color.BLACK)
+            text_mood.text = mood.name
+            val smile = resources.getIdentifier(mood.iconName, "drawable", context?.packageName)
+            text_mood.setCompoundDrawablesWithIntrinsicBounds(smile, 0, 0, 0)
+        }
     }
 
     override fun showNoMoodMessage() {
-        view?.text_mood?.text = getString(R.string.choose_mood)
-        view?.text_mood?.setTextColor(getColor(context!!, R.color.grey_dark))
+        view?.apply {
+            text_mood.text = getString(R.string.choose_mood)
+            text_mood.setTextColor(getColor(context!!, R.color.grey_dark))
+            text_mood.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_smile, 0, 0, 0)
+        }
+    }
+
+    override fun showMoodsDialog(moods: List<MyMood>) {
+        val dialog = MoodsDialog()
+        dialog.setOnMoodsDialogInteractionListener(this)
+        dialog.show(activity?.supportFragmentManager, MoodsDialog::class.toString())
     }
 
     override fun showLocation(location: MyLocation) {
@@ -263,23 +327,38 @@ class NoteFragment : Fragment(), NoteFragmentContract.View, OnMapReadyCallback,
     override fun setUserVisibleHint(isVisibleToUser: Boolean) {
         super.setUserVisibleHint(isVisibleToUser)
         if (isVisibleToUser) {
-            val dialog =
+            val tagsDialog =
                     fragmentManager?.findFragmentByTag(TagsDialog::class.toString()) as TagsDialog?
-            dialog?.setOnTagChangedListener(this)
+            tagsDialog?.setOnTagChangedListener(this)
+
+            val moodsDialog =
+                    fragmentManager?.findFragmentByTag(MoodsDialog::class.toString()) as MoodsDialog?
+            moodsDialog?.setOnMoodsDialogInteractionListener(this)
         }
+    }
+
+    override fun onMoodPicked(mood: MyMood) {
+        mPresenter.onMoodPicked(mood)
+    }
+
+    override fun onNoMoodPicked() {
+        mPresenter.onNoMoodPicked()
     }
 
     fun disableActionBarExpanding(animate: Boolean) {
         app_bar_layout.setExpanded(false, animate)
 
-        val coordParams = app_bar_layout.layoutParams as CoordinatorLayout.LayoutParams
+        val coordParams = app_bar_layout.layoutParams as androidx.coordinatorlayout.widget.CoordinatorLayout.LayoutParams
         (coordParams.behavior as AppBarLayoutBehavior).shouldScroll = false
     }
 
     fun enableActionBarExpanding(expanded: Boolean, animate: Boolean) {
+        if (mPresenter.getNote().images.isEmpty()) {
+            return
+        }
         app_bar_layout.setExpanded(expanded, animate)
 
-        val coordParams = app_bar_layout.layoutParams as CoordinatorLayout.LayoutParams
+        val coordParams = app_bar_layout.layoutParams as androidx.coordinatorlayout.widget.CoordinatorLayout.LayoutParams
         (coordParams.behavior as AppBarLayoutBehavior).shouldScroll = true
     }
 
@@ -304,8 +383,9 @@ class NoteFragment : Fragment(), NoteFragmentContract.View, OnMapReadyCallback,
         }
 
         when (v.id) {
-            R.id.text_tags -> mPresenter.onTagsFieldClick()
-            R.id.fab_toolbar_note -> mPresenter.onAddImageButtonClick()
+            R.id.layout_tags -> mPresenter.onTagsFieldClick()
+            //R.id.fab_toolbar_note -> mPresenter.onAddImageButtonClick()
+            R.id.text_mood -> mPresenter.onMoodFieldClick()
         }
     }
 
@@ -331,16 +411,6 @@ class NoteFragment : Fragment(), NoteFragmentContract.View, OnMapReadyCallback,
 
             text_temp.text = temp
             text_wind_speed.text = wind
-        }
-    }
-
-    override fun showTagNames(tagNames: List<String>) {
-        if (tagNames.isEmpty()) {
-            view?.text_tags?.text = getString(R.string.choose_tags)
-            view?.text_tags?.setTextColor(getColor(context!!, R.color.grey_dark))
-        } else {
-            view?.text_tags?.text = tagNames.joinToString(", ")
-            view?.text_tags?.setTextColor(Color.BLACK)
         }
     }
 
@@ -425,7 +495,7 @@ class NoteFragment : Fragment(), NoteFragmentContract.View, OnMapReadyCallback,
     override fun showImages(images: List<MyImage>) {
         mPagerAdapter.images = images
         mPagerAdapter.notifyDataSetChanged()
-        Log.e(LOG_TAG, "showImages " + images.toString())
+        Log.e(LOG_TAG, "NoteFragment showImages " + images.toString())
         if (childFragmentManager.findFragmentByTag(NoteEditFragment::class.toString()) == null) {
             enableActionBarExpanding(true, true)
         }

@@ -7,6 +7,6 @@
         android:icon="@drawable/ic_done"
         android:title="@string/save"
         android:orderInCategory="0"
-        app:showAsAction="ifRoom" />
+        app:showAsAction="always" />
 
 </menu>

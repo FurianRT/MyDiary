@@ -1,5 +1,5 @@
 package com.furianrt.mydiary.data.room
-import android.arch.persistence.room.TypeConverter
+import androidx.room.TypeConverter
 import com.furianrt.mydiary.data.api.Forecast
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken

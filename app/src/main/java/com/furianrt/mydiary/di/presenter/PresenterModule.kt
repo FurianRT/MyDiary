@@ -12,8 +12,10 @@ import com.furianrt.mydiary.main.MainActivityContract
 import com.furianrt.mydiary.main.MainActivityPresenter
 import com.furianrt.mydiary.note.NoteActivityContract
 import com.furianrt.mydiary.note.NoteActivityPresenter
-import com.furianrt.mydiary.note.dialogs.TagsDialogContract
-import com.furianrt.mydiary.note.dialogs.TagsDialogPresenter
+import com.furianrt.mydiary.note.dialogs.moods.MoodsDialogContract
+import com.furianrt.mydiary.note.dialogs.moods.MoodsDialogPresenter
+import com.furianrt.mydiary.note.dialogs.tags.TagsDialogContract
+import com.furianrt.mydiary.note.dialogs.tags.TagsDialogPresenter
 import com.furianrt.mydiary.note.fragments.notefragment.NoteFragmentContract
 import com.furianrt.mydiary.note.fragments.notefragment.NoteFragmentPresenter
 import com.furianrt.mydiary.note.fragments.notefragment.content.NoteContentFragmentContract
@@ -62,6 +64,11 @@ class PresenterModule(private val context: Context) {
     @PresenterScope
     fun provideTagsDialogPresenter(dataManager: DataManager)
             : TagsDialogContract.Presenter = TagsDialogPresenter(dataManager)
+
+    @Provides
+    @PresenterScope
+    fun provideMoodsDialogPresenter(dataManager: DataManager)
+            : MoodsDialogContract.Presenter = MoodsDialogPresenter(dataManager)
 
     @Provides
     @PresenterScope

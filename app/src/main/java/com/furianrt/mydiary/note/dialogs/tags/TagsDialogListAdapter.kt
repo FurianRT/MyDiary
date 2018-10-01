@@ -1,13 +1,12 @@
-package com.furianrt.mydiary.note.dialogs
+package com.furianrt.mydiary.note.dialogs.tags
 
-import android.support.v7.recyclerview.extensions.ListAdapter
-import android.support.v7.widget.PopupMenu
-import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.CompoundButton
+import androidx.appcompat.widget.PopupMenu
+import androidx.recyclerview.widget.ListAdapter
 import com.furianrt.mydiary.R
 import com.furianrt.mydiary.data.model.MyTag
 import kotlinx.android.synthetic.main.dialog_tags_list_item.view.*
@@ -34,7 +33,7 @@ class TagsDialogListAdapter(private val mListener: OnTagChangedListener)
         fun onTagEdited(tag: MyTag)
     }
 
-    inner class TagsDialogViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView),
+    inner class TagsDialogViewHolder(itemView: View) : androidx.recyclerview.widget.RecyclerView.ViewHolder(itemView),
             View.OnClickListener, CompoundButton.OnCheckedChangeListener,
             PopupMenu.OnMenuItemClickListener {
 

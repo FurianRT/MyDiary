@@ -1,7 +1,6 @@
 package com.furianrt.mydiary.note.fragments.notefragment.content
 
 import android.os.Bundle
-import android.support.v4.app.Fragment
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.MotionEvent
@@ -9,7 +8,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import com.furianrt.mydiary.LOG_TAG
-
 import com.furianrt.mydiary.R
 import com.furianrt.mydiary.data.model.MyNote
 import com.furianrt.mydiary.note.NoteActivity
@@ -20,7 +18,7 @@ import com.furianrt.mydiary.note.fragments.notefragment.inTransaction
 import kotlinx.android.synthetic.main.fragment_note_content.view.*
 import javax.inject.Inject
 
-class NoteContentFragment : Fragment(), NoteContentFragmentContract.View {
+class NoteContentFragment : androidx.fragment.app.Fragment(), NoteContentFragmentContract.View {
 
     private lateinit var mNote: MyNote
     private var mTouchPosition = 0

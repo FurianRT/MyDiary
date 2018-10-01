@@ -1,6 +1,6 @@
 package com.furianrt.mydiary.data.room
 
-import android.arch.persistence.room.*
+import androidx.room.*
 import com.furianrt.mydiary.data.model.MyImage
 import io.reactivex.Flowable
 
@@ -21,6 +21,9 @@ abstract class ImageDao {
         images.forEach { update(it) }
     }
 
-    @Query("SELECT * FROM Images WHERE id_note = :noteId ORDER BY `order`")
+    @Delete
+    abstract fun delete(images: List<MyImage>)
+
+    @Query("SELECT * FROM Images WHERE id_note = :noteId ORDER BY `order` ASC, time_added DESC")
     abstract fun getImagesForNote(noteId: String): Flowable<List<MyImage>>
 }

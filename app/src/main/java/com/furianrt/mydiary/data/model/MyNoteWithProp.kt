@@ -1,23 +1,22 @@
 package com.furianrt.mydiary.data.model
 
-import android.arch.persistence.room.Embedded
-import android.arch.persistence.room.Ignore
-import android.arch.persistence.room.Relation
 import android.os.Parcel
 import android.os.Parcelable
+import androidx.room.Embedded
+import androidx.room.Ignore
+import androidx.room.Relation
 import java.util.*
 import kotlin.collections.ArrayList
 
 data class MyNoteWithProp(
         @Embedded var note: MyNote,
-        @Embedded var mood: MyMood?,
         @Embedded var location: MyLocation?,
         @Embedded var category: MyCategory?
 ) : Parcelable {
 
     @Ignore
     constructor(id: String) : this(MyNote(id, "", "", Date().time),
-            null, null, null)
+            null, null)
 
     @Relation(entity = NoteTag::class, parentColumn = "id_note", entityColumn = "id_note",
             projection = ["id_tag"])
@@ -27,15 +26,14 @@ data class MyNoteWithProp(
     var images: List<MyImage> = ArrayList()
         get() = field.sortedBy { it.order }
 
+    @Suppress("NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
     constructor(parcel: Parcel) : this(
-            parcel.readParcelable(MyNote::class.java.classLoader)!!,
-            parcel.readParcelable(MyMood::class.java.classLoader),
+            parcel.readParcelable(MyNote::class.java.classLoader),
             parcel.readParcelable(MyLocation::class.java.classLoader),
             parcel.readParcelable(MyCategory::class.java.classLoader))
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeParcelable(note, flags)
-        parcel.writeParcelable(mood, flags)
         parcel.writeParcelable(location, flags)
         parcel.writeParcelable(category, flags)
     }

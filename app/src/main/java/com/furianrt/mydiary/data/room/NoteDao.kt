@@ -1,6 +1,6 @@
 package com.furianrt.mydiary.data.room
 
-import android.arch.persistence.room.*
+import androidx.room.*
 import com.furianrt.mydiary.data.model.MyNote
 import com.furianrt.mydiary.data.model.MyNoteWithProp
 import io.reactivex.Flowable
@@ -28,8 +28,7 @@ abstract class NoteDao {
     abstract fun findNote(noteId: String): Maybe<MyNote>
 
     @Transaction
-    @Query("SELECT * FROM Notes LEFT JOIN Moods ON mood = id_mood " +
-            "LEFT JOIN Locations ON location = id_location " +
+    @Query("SELECT * FROM Notes LEFT JOIN Locations ON location = id_location " +
             "LEFT JOIN Categories ON category = id_category ORDER BY time DESC")
     abstract fun getNotesWithProp(): Flowable<List<MyNoteWithProp>>
 }

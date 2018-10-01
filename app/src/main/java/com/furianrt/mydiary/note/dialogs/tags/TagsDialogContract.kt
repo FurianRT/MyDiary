@@ -1,4 +1,4 @@
-package com.furianrt.mydiary.note.dialogs
+package com.furianrt.mydiary.note.dialogs.tags
 
 import com.furianrt.mydiary.BasePresenter
 import com.furianrt.mydiary.BaseView

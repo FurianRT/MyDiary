@@ -2,7 +2,6 @@ package com.furianrt.mydiary.note.fragments.notefragment.edit
 
 import android.content.Context
 import android.os.Bundle
-import android.support.v4.app.Fragment
 import android.view.*
 import com.furianrt.mydiary.R
 import com.furianrt.mydiary.data.model.MyNote
@@ -17,7 +16,7 @@ const val ARG_POSITION = "position"
 
 enum class ClickedView { TITLE, CONTENT }
 
-class NoteEditFragment : Fragment(), NoteEditFragmentContract.View {
+class NoteEditFragment : androidx.fragment.app.Fragment(), NoteEditFragmentContract.View {
 
     private lateinit var mNote: MyNote
     private var mClickedView: ClickedView? = null
@@ -53,6 +52,26 @@ class NoteEditFragment : Fragment(), NoteEditFragmentContract.View {
         }
 
         return view
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        view.apply {
+            when (mClickedView) {
+                null -> activity?.currentFocus?.postDelayed({ showKeyboard(context) }, 400)
+                ClickedView.TITLE -> {
+                    edit_note_title.requestFocus()
+                    edit_note_title.setSelection(mClickPosition)
+                    edit_note_title.postDelayed({ showKeyboard(context) }, 400)
+
+                }
+                ClickedView.CONTENT -> {
+                    edit_note_content.requestFocus()
+                    edit_note_content.setSelection(mClickPosition)
+                    edit_note_content.postDelayed({ showKeyboard(context) }, 400)
+                }
+            }
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
@@ -96,22 +115,6 @@ class NoteEditFragment : Fragment(), NoteEditFragmentContract.View {
         super.onResume()
         mListener?.onNoteFragmentEditModeEnabled()
         (parentFragment as? NoteFragment)?.disableActionBarExpanding(true)
-        view?.apply {
-            when (mClickedView) {
-                null -> activity?.currentFocus?.postDelayed({ showKeyboard(context) }, 400)
-                ClickedView.TITLE -> {
-                    edit_note_title.requestFocus()
-                    edit_note_title.setSelection(mClickPosition)
-                    edit_note_title.postDelayed({ showKeyboard(context) }, 400)
-
-                }
-                ClickedView.CONTENT -> {
-                    edit_note_content.requestFocus()
-                    edit_note_content.setSelection(mClickPosition)
-                    edit_note_content.postDelayed({ showKeyboard(context) }, 400)
-                }
-            }
-        }
     }
 
     override fun onStop() {

@@ -1,8 +1,8 @@
 package com.furianrt.mydiary.data.room
 
-import android.arch.persistence.room.Dao
-import android.arch.persistence.room.Delete
-import android.arch.persistence.room.Insert
+import androidx.room.Dao
+import androidx.room.Delete
+import androidx.room.Insert
 import com.furianrt.mydiary.data.model.MyLocation
 
 @Dao

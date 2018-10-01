@@ -1,14 +1,13 @@
 package com.furianrt.mydiary.main.listadapter
 
-import android.support.annotation.ColorRes
-import android.support.v4.content.ContextCompat
-import android.support.v7.recyclerview.extensions.ListAdapter
-import android.support.v7.widget.CardView
-import android.support.v7.widget.RecyclerView
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.annotation.ColorRes
+import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.ListAdapter
+import androidx.recyclerview.widget.RecyclerView
 import com.furianrt.mydiary.LOG_TAG
 import com.furianrt.mydiary.R
 import com.furianrt.mydiary.data.model.MyNoteWithProp
@@ -27,7 +26,7 @@ class MainListAdapter(
         HeaderItemDecoration.StickyHeaderInterface {
 
     override fun bindHeaderData(header: View, headerPosition: Int) {
-        if (headerPosition == RecyclerView.NO_POSITION) {
+        if (headerPosition == androidx.recyclerview.widget.RecyclerView.NO_POSITION) {
             header.layoutParams.height = 0
         }
 
@@ -54,7 +53,7 @@ class MainListAdapter(
     override fun getHeaderPositionForItem(itemPosition: Int): Int =
             (itemPosition downTo 0)
                     .map { Pair(isHeader(it), it) }
-                    .firstOrNull { it.first }?.second ?: RecyclerView.NO_POSITION
+                    .firstOrNull { it.first }?.second ?: androidx.recyclerview.widget.RecyclerView.NO_POSITION
 
     override fun getHeaderLayout(headerPosition: Int): Int {
         return R.layout.activity_main_list_header
@@ -75,7 +74,7 @@ class MainListAdapter(
         fun onMainListItemLongClick(note: MyNoteWithProp, position: Int)
     }
 
-    abstract class MyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    abstract class MyViewHolder(itemView: View) : androidx.recyclerview.widget.RecyclerView.ViewHolder(itemView) {
         abstract fun bind(item: MainListItem)
     }
 
@@ -93,7 +92,7 @@ class MainListAdapter(
         }
     }
 
-    inner class ContentViewHolder(private val view: View) : MyViewHolder(view), View.OnClickListener,
+    inner class ContentViewHolder(private val mView: View) : MyViewHolder(mView), View.OnClickListener,
             View.OnLongClickListener {
 
         private lateinit var mContentItem: MainContentItem
@@ -102,15 +101,18 @@ class MainListAdapter(
             mContentItem = item as MainContentItem
             Log.e(LOG_TAG, mContentItem.note.images.map { it.url }.toString())
             val time = mContentItem.note.note.time
-            view.apply {
+            mView.apply {
                 setOnClickListener(this@ContentViewHolder)
                 setOnLongClickListener(this@ContentViewHolder)
                 text_day_of_week.text = getDayOfWeek(time)
                 text_day.text = getDay(time)
                 text_time.text = getTime(time)
                 text_tags.text = mContentItem.note.tags.size.toString()
+                text_images.text = mContentItem.note.images.size.toString()
 
-                if (!mContentItem.note.images.isEmpty()) {
+                if (mContentItem.note.images.isEmpty()) {
+                    image_main_list.setImageDrawable(null)
+                } else {
                     GlideApp.with(itemView)
                             .load(mContentItem.note.images[0].url)
                             .override(200, 200)
@@ -140,11 +142,11 @@ class MainListAdapter(
         }
 
         private fun selectItem(note: MyNoteWithProp, @ColorRes firstColor: Int,@ColorRes secondColor: Int) {
-            val cardView = view as CardView
+            val cardView = mView as androidx.cardview.widget.CardView
             if (selectedNotes.contains(note)) {
-                cardView.setCardBackgroundColor(ContextCompat.getColor(view.context!!, firstColor))
+                cardView.setCardBackgroundColor(ContextCompat.getColor(mView.context!!, firstColor))
             } else {
-                cardView.setCardBackgroundColor(ContextCompat.getColor(view.context!!, secondColor))
+                cardView.setCardBackgroundColor(ContextCompat.getColor(mView.context!!, secondColor))
             }
         }
     }

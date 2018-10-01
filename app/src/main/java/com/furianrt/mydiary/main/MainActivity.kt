@@ -7,18 +7,15 @@ import android.content.res.Configuration
 import android.os.Bundle
 import android.os.Parcelable
 import android.os.Vibrator
-import android.support.design.widget.AppBarLayout
-import android.support.design.widget.CoordinatorLayout
-import android.support.v4.content.ContextCompat
-import android.support.v4.view.GravityCompat
-import android.support.v7.app.ActionBarDrawerToggle
-import android.support.v7.app.AppCompatActivity
-import android.support.v7.widget.LinearLayoutManager
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
+import androidx.appcompat.app.ActionBarDrawerToggle
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
+import androidx.core.view.GravityCompat
 import com.furianrt.mydiary.LOG_TAG
 import com.furianrt.mydiary.R
 import com.furianrt.mydiary.data.model.MyHeaderImage
@@ -31,6 +28,7 @@ import com.furianrt.mydiary.main.listadapter.MainListItem
 import com.furianrt.mydiary.note.EXTRA_MODE
 import com.furianrt.mydiary.note.Mode
 import com.furianrt.mydiary.note.NoteActivity
+import com.google.android.material.appbar.AppBarLayout
 import com.yanzhenjie.album.Album
 import com.yanzhenjie.album.api.widget.Widget
 import kotlinx.android.synthetic.main.activity_main.*
@@ -94,7 +92,7 @@ class MainActivity : AppCompatActivity(), MainActivityContract.View,
 
         app_bar_layout.setExpanded(false)
 
-        val coordParams = app_bar_layout.layoutParams as CoordinatorLayout.LayoutParams
+        val coordParams = app_bar_layout.layoutParams as androidx.coordinatorlayout.widget.CoordinatorLayout.LayoutParams
         (coordParams.behavior as AppBarLayoutBehavior).shouldScroll = false
     }
 
@@ -114,12 +112,13 @@ class MainActivity : AppCompatActivity(), MainActivityContract.View,
 
         app_bar_layout.setExpanded(true)
 
-        val coordParams = app_bar_layout.layoutParams as CoordinatorLayout.LayoutParams
+        val coordParams = app_bar_layout.layoutParams as androidx.coordinatorlayout.widget.CoordinatorLayout.LayoutParams
         (coordParams.behavior as AppBarLayoutBehavior).shouldScroll = true
     }
 
     private fun setupUi() {
         setSupportActionBar(toolbar_main)
+        supportActionBar?.setDisplayShowTitleEnabled(false)
 
         val toggle =
                 ActionBarDrawerToggle(this, drawer, toolbar_main, R.string.open, R.string.close)
@@ -138,7 +137,7 @@ class MainActivity : AppCompatActivity(), MainActivityContract.View,
         fab_toolbar_main.setOnClickListener(this)
 
         list_main.apply {
-            layoutManager = LinearLayoutManager(this@MainActivity)
+            layoutManager = androidx.recyclerview.widget.LinearLayoutManager(this@MainActivity)
             addItemDecoration(HeaderItemDecoration(this, mAdapter))
             adapter = mAdapter
         }

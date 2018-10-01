@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/menu_add_image"
+        android:title="@string/add_image"
+        app:showAsAction="ifRoom" />
+
+    <item
+        android:id="@+id/menu_multi_select"
+        android:title="@string/multi_selection"
+        app:showAsAction="never" />
+
+</menu>

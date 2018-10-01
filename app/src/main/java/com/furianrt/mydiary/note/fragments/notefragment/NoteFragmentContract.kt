@@ -4,10 +4,7 @@ import android.location.Address
 import com.furianrt.mydiary.BasePresenter
 import com.furianrt.mydiary.BaseView
 import com.furianrt.mydiary.data.api.Forecast
-import com.furianrt.mydiary.data.model.MyImage
-import com.furianrt.mydiary.data.model.MyLocation
-import com.furianrt.mydiary.data.model.MyNoteWithProp
-import com.furianrt.mydiary.data.model.MyTag
+import com.furianrt.mydiary.data.model.*
 import com.furianrt.mydiary.note.Mode
 import com.google.android.gms.location.LocationResult
 import java.util.*
@@ -32,7 +29,7 @@ interface NoteFragmentContract {
 
         fun showCategoryName(name: String?)
 
-        fun showMood(name: String?)
+        fun showMood(mood: MyMood)
 
         fun showNoTagsMessage()
 
@@ -55,6 +52,8 @@ interface NoteFragmentContract {
         fun closeView()
 
         fun showGalleryView(noteId: String)
+
+        fun showMoodsDialog(moods: List<MyMood>)
     }
 
     interface Presenter : BasePresenter<View> {
@@ -88,5 +87,11 @@ interface NoteFragmentContract {
         fun onDeleteButtonClick()
 
         fun onToolbarImageClick()
+
+        fun onMoodFieldClick()
+
+        fun onMoodPicked(mood: MyMood)
+
+        fun onNoMoodPicked()
     }
 }

@@ -1,8 +1,7 @@
 package com.furianrt.mydiary.gallery
 
 import android.os.Bundle
-import android.support.v7.app.AppCompatActivity
-import android.view.Menu
+import androidx.appcompat.app.AppCompatActivity
 import com.furianrt.mydiary.R
 import com.furianrt.mydiary.gallery.fragments.list.GalleryListFragment
 import com.furianrt.mydiary.gallery.fragments.pager.GalleryPagerFragment
@@ -32,6 +31,7 @@ class GalleryActivity : AppCompatActivity(), GalleryActivityContract.View {
         setSupportActionBar(toolbar_gallery)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setDisplayShowHomeEnabled(true)
+        supportActionBar?.setDisplayShowTitleEnabled(false)
 
         val position = intent.getIntExtra(EXTRA_POSITION, 0)
         val noteId = intent.getStringExtra(EXTRA_NOTE_ID)
@@ -44,11 +44,6 @@ class GalleryActivity : AppCompatActivity(), GalleryActivityContract.View {
                 add(R.id.container_gallery, GalleryPagerFragment.newInstance(noteId, position), pagerTag)
             }
         }
-    }
-
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        menuInflater.inflate(R.menu.activity_gallery_menu, menu)
-        return super.onCreateOptionsMenu(menu)
     }
 
     override fun onSupportNavigateUp(): Boolean {

@@ -30,7 +30,7 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyBqIaX5gl6vGr0C5xZA29CKXoYyJPW2pxI" />
 
-        <activity android:name=".gallery.GalleryActivity">4
+        <activity android:name=".gallery.GalleryActivity">
         </activity>
     </application>
 

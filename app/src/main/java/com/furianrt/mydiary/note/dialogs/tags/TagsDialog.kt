@@ -1,4 +1,4 @@
-package com.furianrt.mydiary.note.dialogs
+package com.furianrt.mydiary.note.dialogs.tags
 
 import android.annotation.SuppressLint
 import android.app.AlertDialog
@@ -6,12 +6,11 @@ import android.app.Dialog
 import android.content.DialogInterface
 import android.graphics.Color
 import android.os.Bundle
-import android.support.v4.app.DialogFragment
-import android.support.v7.widget.DividerItemDecoration
-import android.support.v7.widget.LinearLayoutManager
 import android.view.View
 import android.widget.EditText
 import android.widget.ImageView
+import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.furianrt.mydiary.R
 import com.furianrt.mydiary.data.model.MyTag
 import kotlinx.android.synthetic.main.dialog_tags.view.*
@@ -19,8 +18,8 @@ import javax.inject.Inject
 
 private const val ARG_TAGS = "tags"
 
-class TagsDialog
-    : DialogFragment(), TagsDialogListAdapter.OnTagChangedListener, TagsDialogContract.View {
+class TagsDialog : androidx.fragment.app.DialogFragment(), TagsDialogListAdapter.OnTagChangedListener,
+        TagsDialogContract.View {
 
     private val mListAdapter = TagsDialogListAdapter(this)
     private var mListener: OnTagsDialogInteractionListener? = null
@@ -99,11 +98,11 @@ class TagsDialog
 
         view?.apply {
             val editSearch = search_add_tags
-                    .findViewById<EditText>(android.support.v7.appcompat.R.id.search_src_text)
+                    .findViewById<EditText>(R.id.search_src_text)
             editSearch.setTextColor(Color.WHITE)
 
             val addTagButton = search_add_tags
-                    .findViewById<ImageView>(android.support.v7.appcompat.R.id.search_close_btn)
+                    .findViewById<ImageView>(R.id.search_close_btn)
             addTagButton.setOnClickListener {
                 mPresenter.onButtonAddTagClicked(search_add_tags.query.toString())
                 button_close_search.visibility = View.INVISIBLE

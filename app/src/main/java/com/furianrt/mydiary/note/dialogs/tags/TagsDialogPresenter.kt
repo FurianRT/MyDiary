@@ -1,4 +1,4 @@
-package com.furianrt.mydiary.note.dialogs
+package com.furianrt.mydiary.note.dialogs.tags
 
 import com.furianrt.mydiary.data.DataManager
 import com.furianrt.mydiary.data.model.MyTag

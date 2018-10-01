@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -15,6 +15,7 @@
         android:imeOptions="flagNoExtractUi"
         android:inputType="text"
         android:padding="8dp"
+        android:textColor="@color/black"
         android:textSize="8pt"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
@@ -25,17 +26,25 @@
         android:id="@+id/edit_note_content"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
         android:background="@color/grey"
         android:gravity="top|start"
         android:hint="@string/content"
         android:imeOptions="flagNoExtractUi"
         android:inputType="textMultiLine"
-        android:minHeight="140dp"
+        android:minHeight="130dp"
         android:padding="8dp"
+        android:textColor="@color/black"
         android:textSize="8pt"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/edit_note_title" />
 
-</android.support.constraint.ConstraintLayout>
+    <View
+        android:layout_width="0dp"
+        android:layout_height="1dp"
+        android:background="@color/grey_light"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/edit_note_title" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

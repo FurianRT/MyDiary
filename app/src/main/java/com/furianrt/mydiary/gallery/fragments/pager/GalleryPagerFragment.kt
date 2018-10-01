@@ -1,13 +1,7 @@
 package com.furianrt.mydiary.gallery.fragments.pager
 
 import android.os.Bundle
-import android.support.v4.app.Fragment
-import android.support.v4.view.ViewPager
-import android.view.LayoutInflater
-import android.view.MenuItem
-import android.view.View
-import android.view.ViewGroup
-
+import android.view.*
 import com.furianrt.mydiary.R
 import com.furianrt.mydiary.data.model.MyImage
 import com.furianrt.mydiary.gallery.fragments.list.GalleryListFragment
@@ -18,7 +12,7 @@ import javax.inject.Inject
 private const val ARG_POSITION = "position"
 private const val ARG_NOTE_ID = "noteId"
 
-class GalleryPagerFragment : Fragment(), GalleryPagerContract.View {
+class GalleryPagerFragment : androidx.fragment.app.Fragment(), GalleryPagerContract.View {
 
     @Inject
     lateinit var mPresenter: GalleryPagerContract.Presenter
@@ -52,7 +46,7 @@ class GalleryPagerFragment : Fragment(), GalleryPagerContract.View {
     private fun setupUi(view: View) {
         mPagerAdapter = GalleryPagerAdapter(ArrayList(), childFragmentManager)
         view.pager_gallery.adapter = mPagerAdapter
-        view.pager_gallery.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
+        view.pager_gallery.addOnPageChangeListener(object : androidx.viewpager.widget.ViewPager.OnPageChangeListener {
             override fun onPageScrollStateChanged(p0: Int) {
 
             }
@@ -71,6 +65,11 @@ class GalleryPagerFragment : Fragment(), GalleryPagerContract.View {
         mPagerAdapter.list = images
         mPagerAdapter.notifyDataSetChanged()
         view?.pager_gallery?.setCurrentItem(mPagerPosition, false)
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
+        super.onCreateOptionsMenu(menu, inflater)
+        inflater?.inflate(R.menu.fragment_gallery_pager_menu, menu)
     }
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {

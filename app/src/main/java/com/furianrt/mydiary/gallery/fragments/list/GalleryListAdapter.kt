@@ -1,6 +1,5 @@
 package com.furianrt.mydiary.gallery.fragments.list
 
-import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,10 +10,31 @@ import com.makeramen.dragsortadapter.DragSortAdapter
 import kotlinx.android.synthetic.main.fragment_gallery_list_item.view.*
 
 class GalleryListAdapter(
-        var items: ArrayList<GalleryListItem>,
+        private var mItems: MutableList<GalleryListItem>,
         var listener: OnListItemClickListener,
-        recyclerView: RecyclerView
+        recyclerView: androidx.recyclerview.widget.RecyclerView,
+        var selectedItems: MutableList<MyImage> = ArrayList()
 ) : DragSortAdapter<GalleryListAdapter.GalleryListViewHolder>(recyclerView) {
+
+    fun getImages(): List<MyImage> = mItems.asSequence()
+            .map { it.image }
+            .toList()
+
+    fun submitList(list: List<MyImage>) {
+        if (mItems.isEmpty()) {
+            mItems = list.asSequence()
+                    .map { GalleryListAdapter.GalleryListItem(it.order.toLong(), it) }
+                    .toMutableList()
+            notifyItemRangeInserted(0, list.size)
+        } else {
+            for (i in mItems.size - 1 downTo 0) {
+                if (list.find { it.name == mItems[i].image.name } == null) {
+                    mItems.removeAt(i)
+                    notifyItemRemoved(i)
+                }
+            }
+        }
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): GalleryListViewHolder {
         val inflater = LayoutInflater.from(parent.context)
@@ -23,41 +43,43 @@ class GalleryListAdapter(
     }
 
     override fun onBindViewHolder(holder: GalleryListViewHolder, position: Int) {
-        holder.bind(items[position])
+        holder.bind(mItems[position])
     }
 
-    override fun getPositionForId(id: Long) = items.indexOf(items.find { it.id == id })
+    override fun getPositionForId(id: Long) = mItems.indexOf(mItems.find { it.id == id })
 
-    override fun getItemCount() = items.size
+    override fun getItemCount() = mItems.size
 
-    override fun getItemId(position: Int) = items[position].id
+    override fun getItemId(position: Int) = mItems[position].id
 
     override fun move(fromPosition: Int, toPosition: Int): Boolean {
-        items.add(toPosition, items.removeAt(fromPosition))
-        for (i in 0 until items.size) {
-            items[i].image.order = i
+        mItems.add(toPosition, mItems.removeAt(fromPosition))
+        for (i in 0 until mItems.size) {
+            mItems[i].image.order = i
         }
         return true
     }
 
     inner class GalleryListViewHolder(
             adapter: DragSortAdapter<GalleryListAdapter.GalleryListViewHolder>,
-            private val view: View
-    ) : ViewHolder(adapter, view), View.OnLongClickListener, View.OnClickListener {
+            private val mView: View
+    ) : ViewHolder(adapter, mView), View.OnLongClickListener, View.OnClickListener {
 
         private lateinit var mImage: MyImage
 
         fun bind(item: GalleryListItem) {
             mImage = item.image
-            view.apply {
+            mView.apply {
                 setOnLongClickListener(this@GalleryListViewHolder)
                 setOnClickListener(this@GalleryListViewHolder)
 
-                GlideApp.with(view)
+                GlideApp.with(mView)
                         .load(mImage.url)
                         .override(550, 400)
                         .into(image_gallery_item)
             }
+
+            selectItem()
         }
 
         override fun onLongClick(v: View?): Boolean {
@@ -66,7 +88,15 @@ class GalleryListAdapter(
         }
 
         override fun onClick(v: View?) {
-            listener.onListItemClick(mImage, layoutPosition)
+            listener.onListItemClick(mImage, mImage.order)
+        }
+
+        private fun selectItem() {
+            if (selectedItems.contains(mImage)) {
+                mView.layout_selection.visibility = View.VISIBLE
+            } else {
+                mView.layout_selection.visibility = View.INVISIBLE
+            }
         }
     }
 
