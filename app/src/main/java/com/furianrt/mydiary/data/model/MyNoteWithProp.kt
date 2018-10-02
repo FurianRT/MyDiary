@@ -10,13 +10,11 @@ import kotlin.collections.ArrayList
 
 data class MyNoteWithProp(
         @Embedded var note: MyNote,
-        @Embedded var location: MyLocation?,
-        @Embedded var category: MyCategory?
+        @Embedded var location: MyLocation?
 ) : Parcelable {
 
     @Ignore
-    constructor(id: String) : this(MyNote(id, "", "", Date().time),
-            null, null)
+    constructor(id: String) : this(MyNote(id, "", "", Date().time), null)
 
     @Relation(entity = NoteTag::class, parentColumn = "id_note", entityColumn = "id_note",
             projection = ["id_tag"])
@@ -29,13 +27,13 @@ data class MyNoteWithProp(
     @Suppress("NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
     constructor(parcel: Parcel) : this(
             parcel.readParcelable(MyNote::class.java.classLoader),
-            parcel.readParcelable(MyLocation::class.java.classLoader),
-            parcel.readParcelable(MyCategory::class.java.classLoader))
+            parcel.readParcelable(MyLocation::class.java.classLoader)) {
+
+    }
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeParcelable(note, flags)
         parcel.writeParcelable(location, flags)
-        parcel.writeParcelable(category, flags)
     }
 
     override fun describeContents(): Int {

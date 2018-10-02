@@ -154,6 +154,7 @@ class AppModule(private val app: Application) {
         val categoryNames = app.resources.getStringArray(R.array.categories)
         for (categoryName in categoryNames) {
             cv.put("name_category", categoryName)
+            cv.put("color", -0xffff01)
             db.insert("Categories", 0, cv)
         }
         cv.clear()

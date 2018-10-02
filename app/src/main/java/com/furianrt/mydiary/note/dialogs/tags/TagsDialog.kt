@@ -28,6 +28,9 @@ class TagsDialog : androidx.fragment.app.DialogFragment(), TagsDialogListAdapter
     lateinit var mPresenter: TagsDialogContract.Presenter
 
     companion object {
+
+        val TAG = TagsDialog::class.toString()
+
         @JvmStatic
         fun newInstance(tags: ArrayList<MyTag>) =
                 TagsDialog().apply {
@@ -61,7 +64,8 @@ class TagsDialog : androidx.fragment.app.DialogFragment(), TagsDialogListAdapter
         return AlertDialog.Builder(context)
                 .setView(view)
                 .setPositiveButton(getString(R.string.save)) { _, _ ->
-                    mListener?.onTagsDialogPositiveButtonClick(mPresenter.getTags())
+                    mListener?.onTagsDialogPositiveButtonClick(
+                            mPresenter.getTags().filter { it.isChecked })
                 }
                 .setNegativeButton(getString(R.string.cancel), null)
                 .create()

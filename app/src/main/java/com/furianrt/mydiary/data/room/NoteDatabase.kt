@@ -16,7 +16,7 @@ abstract class NoteDatabase : RoomDatabase() {
 
     abstract fun noteDao(): NoteDao
 
-    abstract fun packageDao(): PackageDao
+    abstract fun categoryDao(): CategoryDao
 
     abstract fun tagDao(): TagDao
 

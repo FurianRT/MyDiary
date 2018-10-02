@@ -7,11 +7,12 @@ import android.view.ViewGroup
 import android.widget.CompoundButton
 import androidx.appcompat.widget.PopupMenu
 import androidx.recyclerview.widget.ListAdapter
+import androidx.recyclerview.widget.RecyclerView
 import com.furianrt.mydiary.R
 import com.furianrt.mydiary.data.model.MyTag
 import kotlinx.android.synthetic.main.dialog_tags_list_item.view.*
 
-class TagsDialogListAdapter(private val mListener: OnTagChangedListener)
+class TagsDialogListAdapter(val listener: OnTagChangedListener)
     : ListAdapter<MyTag, TagsDialogListAdapter.TagsDialogViewHolder>(TagsDialogDiffCallback()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TagsDialogViewHolder {
@@ -33,7 +34,7 @@ class TagsDialogListAdapter(private val mListener: OnTagChangedListener)
         fun onTagEdited(tag: MyTag)
     }
 
-    inner class TagsDialogViewHolder(itemView: View) : androidx.recyclerview.widget.RecyclerView.ViewHolder(itemView),
+    inner class TagsDialogViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView),
             View.OnClickListener, CompoundButton.OnCheckedChangeListener,
             PopupMenu.OnMenuItemClickListener {
 
@@ -57,7 +58,7 @@ class TagsDialogListAdapter(private val mListener: OnTagChangedListener)
 
         override fun onCheckedChanged(buttonView: CompoundButton?, isChecked: Boolean) {
             mTag.isChecked = isChecked
-            mListener.onTagClicked(mTag)
+            listener.onTagClicked(mTag)
         }
 
         override fun onClick(v: View) {
@@ -66,12 +67,12 @@ class TagsDialogListAdapter(private val mListener: OnTagChangedListener)
 
         override fun onMenuItemClick(item: MenuItem): Boolean {
             return when (item.itemId) {
-                R.id.menu_delete -> {
-                    mListener.onTagDeleted(mTag)
+                R.id.menu_tag_delete -> {
+                    listener.onTagDeleted(mTag)
                     true
                 }
-                R.id.menu_edit -> {
-                    mListener.onTagEdited(mTag)
+                R.id.menu_tag_edit -> {
+                    listener.onTagEdited(mTag)
                     true
                 }
                 else -> false

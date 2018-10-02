@@ -8,7 +8,6 @@ import android.graphics.PorterDuff
 import android.location.Geocoder
 import android.os.Bundle
 import android.os.Looper
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
@@ -23,7 +22,6 @@ import androidx.core.content.ContextCompat.getColor
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
-import com.furianrt.mydiary.LOG_TAG
 import com.furianrt.mydiary.R
 import com.furianrt.mydiary.data.api.Forecast
 import com.furianrt.mydiary.data.model.*
@@ -33,12 +31,16 @@ import com.furianrt.mydiary.gallery.GalleryActivity
 import com.furianrt.mydiary.general.AppBarLayoutBehavior
 import com.furianrt.mydiary.general.GlideApp
 import com.furianrt.mydiary.note.Mode
+import com.furianrt.mydiary.note.dialogs.categories.CategoriesDialog
 import com.furianrt.mydiary.note.dialogs.moods.MoodsDialog
 import com.furianrt.mydiary.note.dialogs.tags.TagsDialog
 import com.furianrt.mydiary.note.fragments.notefragment.content.NoteContentFragment
 import com.furianrt.mydiary.note.fragments.notefragment.edit.ClickedView
 import com.furianrt.mydiary.note.fragments.notefragment.edit.NoteEditFragment
-import com.furianrt.mydiary.utils.*
+import com.furianrt.mydiary.utils.formatTime
+import com.furianrt.mydiary.utils.getTime
+import com.furianrt.mydiary.utils.isLocationEnabled
+import com.furianrt.mydiary.utils.isNetworkAvailable
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationRequest
@@ -73,7 +75,7 @@ private const val STORAGE_PERMISSIONS_REQUEST_CODE = 2
 private const val ZOOM = 15f
 
 class NoteFragment : Fragment(), NoteFragmentContract.View, OnMapReadyCallback,
-        TagsDialog.OnTagsDialogInteractionListener, View.OnClickListener, MoodsDialog.OnMoodsDialogInteractionListener {
+        TagsDialog.OnTagsDialogInteractionListener, View.OnClickListener, MoodsDialog.OnMoodsDialogInteractionListener, CategoriesDialog.OnCategoriesDialogInteractionListener {
 
     @Inject
     lateinit var mFusedLocationClient: FusedLocationProviderClient
@@ -128,14 +130,11 @@ class NoteFragment : Fragment(), NoteFragmentContract.View, OnMapReadyCallback,
     private fun setupUi(view: View) {
         view.apply {
             val time = mPresenter.getNote().note.time
-            text_day.text = getDay(time)
-            text_day_of_week.text = getFullDayOfWeek(time)
-            text_month.text = getMonth(time)
-            text_year.text = getYear(time)
+            text_date.text = formatTime(time)
             text_time.text = getTime(time)
             text_mood.setOnClickListener(this@NoteFragment)
+            text_category.setOnClickListener(this@NoteFragment)
             layout_tags.setOnClickListener(this@NoteFragment)
-            //fab_toolbar_note.setOnClickListener(this@NoteFragment)
             pager_note_image.adapter = mPagerAdapter
             map_touch_event_interceptor.setOnTouchListener { _, _ -> true }
         }
@@ -246,8 +245,8 @@ class NoteFragment : Fragment(), NoteFragmentContract.View, OnMapReadyCallback,
         }
     }
 
-    override fun showCategoryName(name: String?) {
-        view?.text_category?.text = name
+    override fun showCategory(category: MyCategory) {
+        view?.text_category?.text = category.name
         view?.text_category?.setTextColor(Color.BLACK)
     }
 
@@ -294,7 +293,6 @@ class NoteFragment : Fragment(), NoteFragmentContract.View, OnMapReadyCallback,
     }
 
     override fun onMapReady(map: GoogleMap?) {
-        Log.e(LOG_TAG, "MapLoaded")
         mGoogleMap = map
         mGoogleMap?.let {
             it.uiSettings.isScrollGesturesEnabled = false
@@ -328,12 +326,16 @@ class NoteFragment : Fragment(), NoteFragmentContract.View, OnMapReadyCallback,
         super.setUserVisibleHint(isVisibleToUser)
         if (isVisibleToUser) {
             val tagsDialog =
-                    fragmentManager?.findFragmentByTag(TagsDialog::class.toString()) as TagsDialog?
+                    fragmentManager?.findFragmentByTag(TagsDialog.TAG) as TagsDialog?
             tagsDialog?.setOnTagChangedListener(this)
 
             val moodsDialog =
                     fragmentManager?.findFragmentByTag(MoodsDialog::class.toString()) as MoodsDialog?
             moodsDialog?.setOnMoodsDialogInteractionListener(this)
+
+            val categoriesDialog =
+                    fragmentManager?.findFragmentByTag(CategoriesDialog.TAG) as CategoriesDialog?
+            categoriesDialog?.setOnCategoriesDialogListener(this)
         }
     }
 
@@ -384,15 +386,21 @@ class NoteFragment : Fragment(), NoteFragmentContract.View, OnMapReadyCallback,
 
         when (v.id) {
             R.id.layout_tags -> mPresenter.onTagsFieldClick()
-            //R.id.fab_toolbar_note -> mPresenter.onAddImageButtonClick()
             R.id.text_mood -> mPresenter.onMoodFieldClick()
+            R.id.text_category -> mPresenter.onCategoryFieldClick()
         }
+    }
+
+    override fun showCategoriesDialog(noteId: String) {
+        val dialog = CategoriesDialog.newInstance(noteId)
+        dialog.setOnCategoriesDialogListener(this)
+        dialog.show(activity?.supportFragmentManager, CategoriesDialog.TAG)
     }
 
     override fun showTagsDialog(tags: ArrayList<MyTag>) {
         val dialog = TagsDialog.newInstance(tags)
         dialog.setOnTagChangedListener(this)
-        dialog.show(activity?.supportFragmentManager, TagsDialog::class.toString())
+        dialog.show(activity?.supportFragmentManager, TagsDialog.TAG)
     }
 
     override fun showForecast(forecast: Forecast) {
@@ -403,15 +411,16 @@ class NoteFragment : Fragment(), NoteFragmentContract.View, OnMapReadyCallback,
                     .into(image_weather)
 
             val temp = forecast.main.temp.toInt().toString() + " °C"
-            val wind = getString(R.string.wind) +
-                    " " +
-                    forecast.wind.speed.toInt().toString() +
-                    " " +
-                    getString(R.string.ms)
-
             text_temp.text = temp
-            text_wind_speed.text = wind
         }
+    }
+
+    override fun onCategoryPicked(category: MyCategory) {
+        mPresenter.onCategoryPicked(category)
+    }
+
+    override fun onNoCategoryPicked() {
+        mPresenter.onNoCategoryPicked()
     }
 
     override fun onTagsDialogPositiveButtonClick(tags: List<MyTag>) {
@@ -495,7 +504,6 @@ class NoteFragment : Fragment(), NoteFragmentContract.View, OnMapReadyCallback,
     override fun showImages(images: List<MyImage>) {
         mPagerAdapter.images = images
         mPagerAdapter.notifyDataSetChanged()
-        Log.e(LOG_TAG, "NoteFragment showImages " + images.toString())
         if (childFragmentManager.findFragmentByTag(NoteEditFragment::class.toString()) == null) {
             enableActionBarExpanding(true, true)
         }

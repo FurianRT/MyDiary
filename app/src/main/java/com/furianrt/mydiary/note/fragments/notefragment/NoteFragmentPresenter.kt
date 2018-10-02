@@ -38,7 +38,8 @@ class NoteFragmentPresenter(private val mDataManager: DataManager) : NoteFragmen
         val allTagsObservable = mDataManager.getAllTags()
                 .flatMapObservable { tags -> Observable.fromIterable(tags) }
 
-        val disposable = mDataManager.getTags(mNote.tags)
+        val disposable = mDataManager.getTagsForNote(mNote.note.id)
+                .first(emptyList())
                 .flatMapObservable { tags -> Observable.fromIterable(tags) }
                 .map { tag -> tag.apply { isChecked = true } }
                 .concatWith(allTagsObservable)
@@ -51,6 +52,10 @@ class NoteFragmentPresenter(private val mDataManager: DataManager) : NoteFragmen
         mCompositeDisposable.add(disposable)
     }
 
+    override fun onCategoryFieldClick() {
+        mView?.showCategoriesDialog(mNote.note.id)
+    }
+
     private fun getForecast(location: MyLocation) {
         val disposable = mDataManager.getForecast(location.lat, location.lon)
                 .subscribe({ forecast ->
@@ -61,17 +66,8 @@ class NoteFragmentPresenter(private val mDataManager: DataManager) : NoteFragmen
     }
 
     override fun onNoteTagsChanged(tags: List<MyTag>) {
-        val checkedTags = tags.filter { it.isChecked }
-        val disposable = mDataManager.deleteAllTagsForNote(mNote.note.id)
-                .andThen(mDataManager.insertTagsForNote(mNote.note.id, checkedTags))
-                .subscribe {
-                    mNote.tags = checkedTags.map { it.id }
-                    if (checkedTags.isEmpty()) {
-                        mView?.showNoTagsMessage()
-                    } else {
-                        mView?.showTagNames(checkedTags.map { it.name })
-                    }
-                }
+        val disposable = mDataManager.replaceNoteTags(mNote.note.id, tags)
+                .subscribe()
         mCompositeDisposable.add(disposable)
     }
 
@@ -101,10 +97,20 @@ class NoteFragmentPresenter(private val mDataManager: DataManager) : NoteFragmen
             findLocation(locationEnabled, networkAvailable)
         }
 
-        loadTagNames(mNote.tags)
+        loadTags(mNote.note.id)
         loadNoteMood(mNote.note.moodId)
+        loadNoteCategory(mNote.note.categoryId)
+    }
 
-        mNote.category?.let { mView?.showCategoryName(mNote.category?.name) }
+    private fun loadNoteCategory(categoryId: Long) {
+        if (categoryId == 0L) {
+            mView?.showNoCategoryMessage()
+            return
+        }
+        val disposable = mDataManager.getCategory(categoryId)
+                .subscribe { category -> mView?.showCategory(category) }
+
+        mCompositeDisposable.add(disposable)
     }
 
     private fun loadNoteMood(moodId: Int) {
@@ -167,14 +173,15 @@ class NoteFragmentPresenter(private val mDataManager: DataManager) : NoteFragmen
         mCompositeDisposable.add(disposable)
     }
 
-    private fun loadTagNames(tagsIds: List<Long>) {
-        val disposable = mDataManager.getTags(tagsIds)
-                .map { tags -> tags.map { it.name } }
-                .subscribe { tagNames ->
-                    if (tagNames.isEmpty()) {
+    private fun loadTags(noteId: String) {
+        val disposable = mDataManager.getTagsForNote(noteId)
+                .defaultIfEmpty(emptyList())
+                .subscribe { tags ->
+                    mNote.tags = tags.map { it.id }
+                    if (tags.isEmpty()) {
                         mView?.showNoTagsMessage()
                     } else {
-                        mView?.showTagNames(tagNames)
+                        mView?.showTagNames(tags.map { it.name })
                     }
                 }
 
@@ -233,6 +240,22 @@ class NoteFragmentPresenter(private val mDataManager: DataManager) : NoteFragmen
         mNote.note.moodId = 0
         val disposable = mDataManager.updateNote(mNote.note)
                 .subscribe { mView?.showNoMoodMessage() }
+
+        mCompositeDisposable.add(disposable)
+    }
+
+    override fun onCategoryPicked(category: MyCategory) {
+        mNote.note.categoryId = category.id
+        val disposable = mDataManager.updateNote(mNote.note)
+                .subscribe { mView?.showCategory(category) }
+
+        mCompositeDisposable.add(disposable)
+    }
+
+    override fun onNoCategoryPicked() {
+        mNote.note.categoryId = 0
+        val disposable = mDataManager.updateNote(mNote.note)
+                .subscribe { mView?.showNoCategoryMessage() }
 
         mCompositeDisposable.add(disposable)
     }

@@ -1,5 +1,6 @@
 package com.furianrt.mydiary.data.model
 
+import android.graphics.Color
 import android.os.Parcel
 import android.os.Parcelable
 import androidx.room.ColumnInfo
@@ -12,10 +13,13 @@ data class MyNote(
         @ColumnInfo(name = "id_note") @PrimaryKey(autoGenerate = false) var id: String,
         @ColumnInfo(name = "title") var title: String,
         @ColumnInfo(name = "content") var content: String,
-        @ColumnInfo(name = "time") var time: Long
+        @ColumnInfo(name = "time") var time: Long,
+        @ColumnInfo(name = "background_color") var background: Int = Color.LTGRAY,
+        @ColumnInfo(name = "text_color") var textColor: Int = Color.BLACK,
+        @ColumnInfo(name = "text_size") var textSize: Float = 16f
 ) : Parcelable {
 
-    @ColumnInfo(name = "id_mood")
+    @ColumnInfo(name = "mood")
     var moodId: Int = 0
 
     @ColumnInfo(name = "location")
@@ -32,7 +36,10 @@ data class MyNote(
             parcel.readString(),
             parcel.readString(),
             parcel.readString(),
-            parcel.readLong()) {
+            parcel.readLong(),
+            parcel.readInt(),
+            parcel.readInt(),
+            parcel.readFloat()) {
         moodId = parcel.readInt()
         locationId = parcel.readLong()
         categoryId = parcel.readLong()
@@ -43,6 +50,9 @@ data class MyNote(
         parcel.writeString(title)
         parcel.writeString(content)
         parcel.writeLong(time)
+        parcel.writeInt(background)
+        parcel.writeInt(textColor)
+        parcel.writeFloat(textSize)
         parcel.writeInt(moodId)
         parcel.writeLong(locationId)
         parcel.writeLong(categoryId)

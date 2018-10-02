@@ -28,7 +28,6 @@ abstract class NoteDao {
     abstract fun findNote(noteId: String): Maybe<MyNote>
 
     @Transaction
-    @Query("SELECT * FROM Notes LEFT JOIN Locations ON location = id_location " +
-            "LEFT JOIN Categories ON category = id_category ORDER BY time DESC")
+    @Query("SELECT * FROM Notes LEFT JOIN Locations ON location = id_location ORDER BY time DESC")
     abstract fun getNotesWithProp(): Flowable<List<MyNoteWithProp>>
 }

@@ -16,14 +16,6 @@ abstract class TagDao {
     @Delete
     abstract fun delete(tag: MyTag)
 
-    @Transaction
-    open fun getTags(tagIds: List<Long>): List<MyTag> =
-            ArrayList<MyTag>().apply {
-                for (id in tagIds) {
-                    this.add(getTag(id))
-                }
-            }
-
     @Query("SELECT * FROM Tags WHERE id_tag = :tagId")
     abstract fun getTag(tagId: Long): MyTag
 

@@ -27,7 +27,7 @@ interface NoteFragmentContract {
 
         fun zoomMap(latitude: Double, longitude: Double)
 
-        fun showCategoryName(name: String?)
+        fun showCategory(category: MyCategory)
 
         fun showMood(mood: MyMood)
 
@@ -54,6 +54,8 @@ interface NoteFragmentContract {
         fun showGalleryView(noteId: String)
 
         fun showMoodsDialog(moods: List<MyMood>)
+
+        fun showCategoriesDialog(noteId: String)
     }
 
     interface Presenter : BasePresenter<View> {
@@ -93,5 +95,11 @@ interface NoteFragmentContract {
         fun onMoodPicked(mood: MyMood)
 
         fun onNoMoodPicked()
+
+        fun onCategoryFieldClick()
+
+        fun onNoCategoryPicked()
+
+        fun onCategoryPicked(category: MyCategory)
     }
 }

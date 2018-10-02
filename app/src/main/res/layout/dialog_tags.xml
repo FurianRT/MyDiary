@@ -21,7 +21,8 @@
             android:layout_marginStart="8dp"
             android:background="@color/transparent"
             android:src="@drawable/ic_close"
-            android:visibility="invisible" />
+            android:visibility="invisible"
+            tools:ignore="ContentDescription" />
 
         <androidx.appcompat.widget.SearchView
             android:id="@+id/search_add_tags"

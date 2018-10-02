@@ -12,6 +12,12 @@ import com.furianrt.mydiary.main.MainActivityContract
 import com.furianrt.mydiary.main.MainActivityPresenter
 import com.furianrt.mydiary.note.NoteActivityContract
 import com.furianrt.mydiary.note.NoteActivityPresenter
+import com.furianrt.mydiary.note.dialogs.categories.CategoriesDialogContract
+import com.furianrt.mydiary.note.dialogs.categories.CategoriesDialogPresenter
+import com.furianrt.mydiary.note.dialogs.categories.edit.CategoryEditContract
+import com.furianrt.mydiary.note.dialogs.categories.edit.CategoryEditPresenter
+import com.furianrt.mydiary.note.dialogs.categories.list.CategoryListContract
+import com.furianrt.mydiary.note.dialogs.categories.list.CategoryListPresenter
 import com.furianrt.mydiary.note.dialogs.moods.MoodsDialogContract
 import com.furianrt.mydiary.note.dialogs.moods.MoodsDialogPresenter
 import com.furianrt.mydiary.note.dialogs.tags.TagsDialogContract
@@ -72,6 +78,11 @@ class PresenterModule(private val context: Context) {
 
     @Provides
     @PresenterScope
+    fun provideCategoriesDialogPresenter(dataManager: DataManager)
+            : CategoriesDialogContract.Presenter = CategoriesDialogPresenter(dataManager)
+
+    @Provides
+    @PresenterScope
     fun provideGalleryActivityPresenter(dataManager: DataManager): GalleryActivityContract.Presenter =
             GalleryActivityPresenter(dataManager)
 
@@ -84,4 +95,14 @@ class PresenterModule(private val context: Context) {
     @PresenterScope
     fun provideGalleryListPresenter(dataManager: DataManager): GalleryListContract.Presenter =
             GalleryListPresenter(dataManager)
+
+    @Provides
+    @PresenterScope
+    fun provideCategoryListPresenter(dataManager: DataManager): CategoryListContract.Presenter =
+            CategoryListPresenter(dataManager)
+
+    @Provides
+    @PresenterScope
+    fun provideCategoryEditPresenter(dataManager: DataManager): CategoryEditContract.Presenter =
+            CategoryEditPresenter(dataManager)
 }

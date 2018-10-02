@@ -1,7 +1,5 @@
 package com.furianrt.mydiary.data
 
-import android.util.Log
-import com.furianrt.mydiary.LOG_TAG
 import com.furianrt.mydiary.data.api.Forecast
 import com.furianrt.mydiary.data.api.WeatherApiService
 import com.furianrt.mydiary.data.model.*
@@ -37,11 +35,6 @@ class DataManagerImp(private val mDatabase: NoteDatabase,
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
 
-    override fun insertTagsForNote(noteId: String, tags: List<MyTag>): Completable =
-            Completable.fromAction { mDatabase.noteTagDao().insertTagsForNote(noteId, tags) }
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-
     override fun insertImage(image: MyImage): Completable =
             Completable.fromAction { mDatabase.imageDao().insert(image) }
                     .subscribeOn(Schedulers.io())
@@ -59,6 +52,11 @@ class DataManagerImp(private val mDatabase: NoteDatabase,
 
     override fun insertHeaderImage(headerImages: List<MyHeaderImage>): Completable =
             Completable.fromAction { mDatabase.headerImageDao().insert(headerImages) }
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+
+    override fun insertCategory(category: MyCategory): Single<Long> =
+            Single.fromCallable { mDatabase.categoryDao().insert(category) }
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
 
@@ -82,6 +80,11 @@ class DataManagerImp(private val mDatabase: NoteDatabase,
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
 
+    override fun updateCategory(category: MyCategory): Completable =
+            Completable.fromAction { mDatabase.categoryDao().update(category) }
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+
     override fun deleteTag(tag: MyTag): Completable =
             Completable.fromAction { mDatabase.tagDao().delete(tag) }
                     .subscribeOn(Schedulers.io())
@@ -92,12 +95,11 @@ class DataManagerImp(private val mDatabase: NoteDatabase,
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
 
-    override fun deleteNotes(notes: List<MyNote>): Completable {
-        Log.e(LOG_TAG, "deleteNotes")
-        return Completable.fromAction { mDatabase.noteDao().delete(notes) }
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-    }
+    override fun deleteNotes(notes: List<MyNote>): Completable =
+            Completable.fromAction { mDatabase.noteDao().delete(notes) }
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+
 
     override fun deleteImages(images: List<MyImage>): Completable =
             Completable.fromAction { mDatabase.imageDao().delete(images) }
@@ -106,6 +108,16 @@ class DataManagerImp(private val mDatabase: NoteDatabase,
 
     override fun deleteNoteTag(noteTag: NoteTag): Completable =
             Completable.fromAction { mDatabase.noteTagDao().delete(noteTag) }
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+
+    override fun deleteCategory(category: MyCategory): Completable =
+            Completable.fromAction { mDatabase.categoryDao().delete(category) }
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+
+    override fun replaceNoteTags(noteId: String, tags: List<MyTag>): Completable =
+            Completable.fromAction { mDatabase.noteTagDao().replaceNoteTags(noteId, tags) }
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
 
@@ -129,7 +141,7 @@ class DataManagerImp(private val mDatabase: NoteDatabase,
                     .getAllNotes()
                     .observeOn(AndroidSchedulers.mainThread())
 
-    override fun getTagsForNote(noteId: Long): Flowable<List<MyTag>> =
+    override fun getTagsForNote(noteId: String): Flowable<List<MyTag>> =
             mDatabase.noteTagDao()
                     .getTagsForNote(noteId)
                     .subscribeOn(Schedulers.io())
@@ -157,6 +169,12 @@ class DataManagerImp(private val mDatabase: NoteDatabase,
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
 
+    override fun getAllCategories(): Flowable<List<MyCategory>> =
+            mDatabase.categoryDao()
+                    .getAllCategories()
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+
     override fun findNote(noteId: String): Maybe<MyNote> =
             mDatabase.noteDao()
                     .findNote(noteId)
@@ -165,6 +183,12 @@ class DataManagerImp(private val mDatabase: NoteDatabase,
 
     override fun getForecast(lat: Double, lon: Double): Single<Forecast> =
             mWeatherApi.getForecast(lat, lon)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+
+    override fun getCategory(categoryId: Long): Single<MyCategory> =
+            mDatabase.categoryDao()
+                    .getCategory(categoryId)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
 
@@ -189,11 +213,6 @@ class DataManagerImp(private val mDatabase: NoteDatabase,
     override fun getNotesWithProp(): Flowable<List<MyNoteWithProp>> =
             mDatabase.noteDao()
                     .getNotesWithProp()
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-
-    override fun getTags(tagIds: List<Long>): Single<List<MyTag>> =
-            Single.fromCallable { mDatabase.tagDao().getTags(tagIds) }
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
 

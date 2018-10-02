@@ -14,8 +14,8 @@ fun getDayOfWeek(time: Long): String {
     return spf.format(Date(time))
 }
 
-fun getFullDayOfWeek(time: Long): String {
-    val spf = SimpleDateFormat("EEEE", Locale.getDefault())
+fun formatTime(time: Long): String {
+    val spf = SimpleDateFormat("EEE, dd MMM, yyyy", Locale.getDefault())
     return spf.format(Date(time))
 }
 

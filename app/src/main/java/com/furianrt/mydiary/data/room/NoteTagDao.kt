@@ -9,11 +9,6 @@ import io.reactivex.Flowable
 @Dao
 abstract class NoteTagDao {
 
-    @Transaction
-    open fun insertTagsForNote(noteId: String, tags: List<MyTag>) {
-        for (tag in tags) insert(NoteTag(noteId, tag.id))
-    }
-
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     abstract fun insert(noteTag: NoteTag)
 
@@ -25,9 +20,17 @@ abstract class NoteTagDao {
 
     @Query("SELECT Tags.* FROM Tags " +
             "INNER JOIN NoteTag ON Tags.id_tag = NoteTag.id_tag WHERE id_note = :noteId")
-    abstract fun getTagsForNote(noteId: Long): Flowable<List<MyTag>>
+    abstract fun getTagsForNote(noteId: String): Flowable<List<MyTag>>
 
     @Query("SELECT Notes.* FROM Notes " +
             "INNER JOIN NoteTag ON Notes.id_note = NoteTag.id_note WHERE id_tag = :tagId")
     abstract fun getNotesWithTag(tagId: Long): Flowable<List<MyNote>>
+
+    @Transaction
+    open fun replaceNoteTags(noteId: String, tags: List<MyTag>) {
+        deleteAllTagsForNote(noteId)
+        for (tag in tags) {
+            insert(NoteTag(noteId, tag.id))
+        }
+    }
 }

@@ -15,8 +15,6 @@ interface DataManager {
 
     fun insertTag(tag: MyTag): Single<Long>
 
-    fun insertTagsForNote(noteId: String, tags: List<MyTag>): Completable
-
     fun insertImage(image: MyImage): Completable
 
     fun insertImages(images: List<MyImage>): Completable
@@ -25,11 +23,15 @@ interface DataManager {
 
     fun insertHeaderImage(headerImages: List<MyHeaderImage>): Completable
 
+    fun insertCategory(category: MyCategory): Single<Long>
+
     fun updateNote(note: MyNote): Completable
 
     fun updateTag(tag: MyTag): Completable
 
     fun updateImages(images: List<MyImage>): Completable
+
+    fun updateCategory(category: MyCategory): Completable
 
     fun deleteTag(tag: MyTag): Completable
 
@@ -47,17 +49,25 @@ interface DataManager {
 
     fun deleteAllHeaderImages(): Completable
 
+    fun deleteCategory(category: MyCategory): Completable
+
     fun getAllNotes(): Flowable<List<MyNote>>
 
-    fun getTagsForNote(noteId: Long): Flowable<List<MyTag>>
+    fun getTagsForNote(noteId: String): Flowable<List<MyTag>>
 
     fun getNotesWithTag(tagId: Long): Flowable<List<MyNote>>
+
+    fun replaceNoteTags(noteId: String, tags: List<MyTag>): Completable
 
     fun getAllTags(): Single<List<MyTag>>
 
     fun getForecast(lat: Double, lon: Double): Single<Forecast>
 
     fun getMood(moodId: Int): Single<MyMood>
+
+    fun getCategory(categoryId: Long): Single<MyCategory>
+
+    fun getAllCategories(): Flowable<List<MyCategory>>
 
     fun getAllMoods(): Single<List<MyMood>>
 
@@ -72,8 +82,6 @@ interface DataManager {
     //fun getImageFromStorage(imageName: String) : Single<File>
 
     fun getNotesWithProp(): Flowable<List<MyNoteWithProp>>
-
-    fun getTags(tagIds: List<Long>): Single<List<MyTag>>
 
     fun getHeaderImages(): Flowable<List<MyHeaderImage>>
 

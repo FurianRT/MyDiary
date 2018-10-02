@@ -26,7 +26,7 @@ class MainListAdapter(
         HeaderItemDecoration.StickyHeaderInterface {
 
     override fun bindHeaderData(header: View, headerPosition: Int) {
-        if (headerPosition == androidx.recyclerview.widget.RecyclerView.NO_POSITION) {
+        if (headerPosition == RecyclerView.NO_POSITION) {
             header.layoutParams.height = 0
         }
 
@@ -53,7 +53,7 @@ class MainListAdapter(
     override fun getHeaderPositionForItem(itemPosition: Int): Int =
             (itemPosition downTo 0)
                     .map { Pair(isHeader(it), it) }
-                    .firstOrNull { it.first }?.second ?: androidx.recyclerview.widget.RecyclerView.NO_POSITION
+                    .firstOrNull { it.first }?.second ?: RecyclerView.NO_POSITION
 
     override fun getHeaderLayout(headerPosition: Int): Int {
         return R.layout.activity_main_list_header
@@ -74,7 +74,7 @@ class MainListAdapter(
         fun onMainListItemLongClick(note: MyNoteWithProp, position: Int)
     }
 
-    abstract class MyViewHolder(itemView: View) : androidx.recyclerview.widget.RecyclerView.ViewHolder(itemView) {
+    abstract class MyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         abstract fun bind(item: MainListItem)
     }
 

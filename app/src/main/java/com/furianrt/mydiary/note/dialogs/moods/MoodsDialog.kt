@@ -5,16 +5,15 @@ import android.app.AlertDialog
 import android.app.Dialog
 import android.content.DialogInterface
 import android.os.Bundle
-import android.util.Log
+import androidx.fragment.app.DialogFragment
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.furianrt.mydiary.LOG_TAG
 import com.furianrt.mydiary.R
 import com.furianrt.mydiary.data.model.MyMood
 import kotlinx.android.synthetic.main.dialog_moods.view.*
 import javax.inject.Inject
 
-class MoodsDialog : androidx.fragment.app.DialogFragment(), MoodsDialogContract.View,
+class MoodsDialog : DialogFragment(), MoodsDialogContract.View,
         MoodsDialogListAdapter.OnMoodListInteractionListener {
 
     @Inject
@@ -33,8 +32,7 @@ class MoodsDialog : androidx.fragment.app.DialogFragment(), MoodsDialogContract.
 
         mPresenter.attachView(this)
 
-        val inflater = activity?.layoutInflater
-        val view = inflater?.inflate(R.layout.dialog_moods, null)
+        val view = activity?.layoutInflater?.inflate(R.layout.dialog_moods, null)
 
         mAdapter = MoodsDialogListAdapter(emptyList(), this)
 
@@ -57,7 +55,6 @@ class MoodsDialog : androidx.fragment.app.DialogFragment(), MoodsDialogContract.
     }
 
     override fun showMoods(moods: List<MyMood>) {
-        Log.e(LOG_TAG, "" + moods.size)
         mAdapter.moods = moods
         mAdapter.notifyDataSetChanged()
     }

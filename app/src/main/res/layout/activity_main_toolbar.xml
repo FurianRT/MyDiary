@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/app_bar_layout"
     android:layout_width="match_parent"
-    android:layout_height="200dp"
+    android:layout_height="250dp"
     android:fitsSystemWindows="true"
     app:expanded="false"
     app:layout_behavior="com.furianrt.mydiary.general.AppBarLayoutBehavior"
@@ -33,7 +33,7 @@
 
         <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="5dp"
+            android:layout_height="7dp"
             android:layout_gravity="bottom"
             android:background="@color/colorAccent"
             android:fitsSystemWindows="true"

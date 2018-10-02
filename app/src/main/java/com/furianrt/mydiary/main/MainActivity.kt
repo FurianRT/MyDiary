@@ -133,8 +133,7 @@ class MainActivity : AppCompatActivity(), MainActivityContract.View,
         fab_delete.setOnClickListener(this)
         fab_folder.setOnClickListener(this)
         fab_place.setOnClickListener(this)
-
-        fab_toolbar_main.setOnClickListener(this)
+        image_toolbar_main.setOnClickListener(this)
 
         list_main.apply {
             layoutManager = androidx.recyclerview.widget.LinearLayoutManager(this@MainActivity)
@@ -146,7 +145,7 @@ class MainActivity : AppCompatActivity(), MainActivityContract.View,
     override fun onClick(v: View?) {
         when (v?.id) {
             R.id.fab_delete -> mPresenter.onMenuDeleteClick()
-            R.id.fab_toolbar_main -> mPresenter.onButtonSetMainImageClick()
+            R.id.image_toolbar_main -> mPresenter.onButtonSetMainImageClick()
             R.id.fab_menu -> mPresenter.onFabMenuClick()
         }
     }

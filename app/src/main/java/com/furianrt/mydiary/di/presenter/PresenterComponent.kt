@@ -5,6 +5,9 @@ import com.furianrt.mydiary.gallery.fragments.list.GalleryListFragment
 import com.furianrt.mydiary.gallery.fragments.pager.GalleryPagerFragment
 import com.furianrt.mydiary.main.MainActivity
 import com.furianrt.mydiary.note.NoteActivity
+import com.furianrt.mydiary.note.dialogs.categories.CategoriesDialog
+import com.furianrt.mydiary.note.dialogs.categories.edit.CategoryEditFragment
+import com.furianrt.mydiary.note.dialogs.categories.list.CategoryListFragment
 import com.furianrt.mydiary.note.dialogs.moods.MoodsDialog
 import com.furianrt.mydiary.note.dialogs.tags.TagsDialog
 import com.furianrt.mydiary.note.fragments.notefragment.NoteFragment
@@ -35,4 +38,10 @@ interface PresenterComponent {
     fun inject(fragment: GalleryListFragment)
 
     fun inject(dialog: MoodsDialog)
+
+    fun inject(dialog: CategoriesDialog)
+
+    fun inject(fragment: CategoryListFragment)
+
+    fun inject(fragment: CategoryEditFragment)
 }

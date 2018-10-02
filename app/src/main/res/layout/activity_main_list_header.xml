@@ -7,7 +7,7 @@
         android:id="@+id/text_date"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:gravity="center_vertical|end"
+        android:gravity="center_vertical|start"
         android:paddingStart="16dp"
         android:paddingEnd="16dp"
         android:textSize="7pt" />

@@ -69,5 +69,10 @@
     <string name="choose_all_images">Выбрать все картинки</string>
     <string name="no_mood">Нет настроения</string>
     <string name="add_image">Добавить картинку</string>
+    <string name="no_category">Нет категории</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="category_name">Название</string>
 
 </resources>
