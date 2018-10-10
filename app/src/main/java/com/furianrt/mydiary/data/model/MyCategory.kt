@@ -9,21 +9,25 @@ import androidx.room.PrimaryKey
 
 @Entity(tableName = "Categories")
 data class MyCategory(
-        @ColumnInfo(name = "id_category") @PrimaryKey(autoGenerate = true) var id: Long,
-        @ColumnInfo(name = "name_category") var name: String,
-        @ColumnInfo(name = "color") var color: Int = Color.BLUE
+        @ColumnInfo(name = "name_category") var name: String = "",
+        @ColumnInfo(name = "color") var color: Int = DEFAULT_COLOR
 ) : Parcelable {
+
+    @ColumnInfo(name = "id_category")
+    @PrimaryKey(autoGenerate = true)
+    var id: Long = 0
 
     @Suppress("NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
     constructor(parcel: Parcel) : this(
-            parcel.readLong(),
             parcel.readString(),
-            parcel.readInt())
+            parcel.readInt()) {
+        id = parcel.readLong()
+    }
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
-        parcel.writeLong(id)
         parcel.writeString(name)
         parcel.writeInt(color)
+        parcel.writeLong(id)
     }
 
     override fun describeContents(): Int {
@@ -31,6 +35,9 @@ data class MyCategory(
     }
 
     companion object CREATOR : Parcelable.Creator<MyCategory> {
+
+        const val DEFAULT_COLOR = Color.GREEN
+
         override fun createFromParcel(parcel: Parcel): MyCategory {
             return MyCategory(parcel)
         }

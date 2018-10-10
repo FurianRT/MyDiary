@@ -56,6 +56,10 @@ interface NoteFragmentContract {
         fun showMoodsDialog(moods: List<MyMood>)
 
         fun showCategoriesDialog(noteId: String)
+
+        fun hideLocation()
+
+        fun hideMood()
     }
 
     interface Presenter : BasePresenter<View> {
@@ -76,7 +80,7 @@ interface NoteFragmentContract {
 
         fun setNote(note: MyNoteWithProp)
 
-        fun onViewCreated(mode: Mode, locationEnabled: Boolean, networkAvailable: Boolean)
+        fun onViewStart(mode: Mode, locationEnabled: Boolean, networkAvailable: Boolean)
 
         fun onAddImageButtonClick()
 

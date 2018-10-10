@@ -15,13 +15,13 @@
         android:layout_gravity="center"
         android:scaleType="centerCrop"
         tools:ignore="ContentDescription"
-        tools:src="@color/colorAccent" />
+        tools:src="?attr/colorAccent" />
 
     <FrameLayout
         android:id="@+id/layout_selection"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/colorAccent"
+        android:background="?attr/colorAccent"
         android:alpha="0.4">
 
         <ImageView

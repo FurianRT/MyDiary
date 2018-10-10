@@ -11,31 +11,33 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <include
-            layout="@layout/activity_main_toolbar"/>
+        <include layout="@layout/activity_main_toolbar" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/list_main"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             app:layout_behavior="@string/appbar_scrolling_view_behavior"
-            tools:listItem ="@layout/activity_main_list_content"/>
+            tools:listItem="@layout/activity_main_list_content" />
 
         <com.furian.fab.FloatingActionMenu
             android:id="@+id/fab_menu"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|end"
+            android:layout_marginEnd="16dp"
             android:layout_marginBottom="16dp"
-            android:layout_marginEnd="16dp">
+            app:menu_colorNormal="?attr/colorAccent"
+            app:menu_colorPressed="?attr/colorAccent"
+            app:menu_colorRipple="@color/transparent">
 
             <com.furian.fab.FloatingActionButton
                 android:id="@+id/fab_place"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:src="@drawable/ic_fab_place"
-                app:fab_colorNormal="@color/colorPrimary"
-                app:fab_colorPressed="@color/colorAccent"
+                app:fab_colorNormal="?attr/colorPrimary"
+                app:fab_colorPressed="?attr/colorAccent"
                 app:fab_colorRipple="@color/transparent" />
 
             <com.furian.fab.FloatingActionButton
@@ -43,8 +45,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:src="@drawable/ic_fab_folder"
-                app:fab_colorNormal="@color/colorPrimary"
-                app:fab_colorPressed="@color/colorAccent"
+                app:fab_colorNormal="?attr/colorPrimary"
+                app:fab_colorPressed="?attr/colorAccent"
                 app:fab_colorRipple="@color/transparent" />
 
             <com.furian.fab.FloatingActionButton
@@ -52,8 +54,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:src="@drawable/ic_fab_delete"
-                app:fab_colorNormal="@color/colorPrimary"
-                app:fab_colorPressed="@color/colorAccent"
+                app:fab_colorNormal="?attr/colorPrimary"
+                app:fab_colorPressed="?attr/colorAccent"
                 app:fab_colorRipple="@color/transparent" />
 
         </com.furian.fab.FloatingActionMenu>

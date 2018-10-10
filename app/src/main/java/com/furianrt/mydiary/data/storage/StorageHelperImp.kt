@@ -33,7 +33,7 @@ class StorageHelperImp(private val context: Context) : StorageHelper {
 
         val bmOptions = BitmapFactory.Options()
         val bitmap = BitmapFactory.decodeFile(sourcePath, bmOptions)
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 20, fos)
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 18, fos)
         fos.flush()
         fos.close()
 

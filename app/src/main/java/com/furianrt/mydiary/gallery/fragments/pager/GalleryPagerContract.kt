@@ -15,7 +15,7 @@ interface GalleryPagerContract {
 
     interface Presenter : BasePresenter<View> {
 
-        fun onViewCreate()
+        fun onViewStart()
 
         fun setNoteId(noteId: String)
 

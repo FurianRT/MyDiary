@@ -13,4 +13,97 @@
     <color name="black">#000000</color>
     <color name="transparent_grey">#B3313333</color>
     <color name="transparent_black">#CC000000</color>
+
+
+    <color name="r1">#C62828</color>
+    <color name="r11">#B71C1C</color>
+    <color name="r2">#E53935</color>
+    <color name="r3">#C2185B</color>
+    <color name="r31">#880E4F</color>
+    <color name="r4">#FF4081</color>
+    <color name="r5">#AD1457</color>
+    <color name="r51">#880E4F</color>
+    <color name="r6">#D81B60</color>
+    <color name="r7">#D84315</color>
+    <color name="r71">#BF360C</color>
+    <color name="p1">#6A1B9A</color>
+    <color name="p11">#4A148C</color>
+    <color name="p2">#9C27B0</color>
+    <color name="p3">#D500F9</color>
+    <color name="b1">#5E35B1</color>
+    <color name="b11">#311B92</color>
+    <color name="b2">#283593</color>
+    <color name="b21">#311B92</color>
+    <color name="b3">#1565C0</color>
+    <color name="b31">#0D47A1</color>
+    <color name="b4">#01579B</color>
+    <color name="b41">#0D47A1</color>
+    <color name="b5">#0288D1</color>
+    <color name="b51">#0277BD</color>
+    <color name="g1">#006064</color>
+    <color name="g2">#00838F</color>
+    <color name="g3">#00796B</color>
+    <color name="g4">#2E7D32</color>
+    <color name="g41">#1B5E20</color>
+    <color name="g5">#43A047</color>
+    <color name="g6">#558B2F</color>
+    <color name="g61">#33691E</color>
+    <color name="e1">#827717</color>
+    <color name="e2">#FFB74D</color>
+    <color name="e21">#FF9800</color>
+    <color name="e3">#FB8C00</color>
+    <color name="e31">#EF6C00</color>
+    <color name="e4">#EF6C00</color>
+    <color name="e41">#E65100</color>
+    <color name="e5">#FFD600</color>
+    <color name="e51">#FFAB00</color>
+    <color name="br1">#4E342E</color>
+    <color name="br11">#3E2723</color>
+    <color name="br2">#6D4C41</color>
+    <color name="gr1">#424242</color>
+    <color name="gr11">#212121</color>
+    <color name="gr2">#616161</color>
+    <color name="gr21">#424242</color>
+    <color name="u1">#455A64</color>
+    <color name="u11">#37474F</color>
+    <color name="u2">#546E7A</color>
+    <color name="u3">#78909C</color>
+
+    <integer-array name="colors">
+        <item>@color/r1</item>
+        <item>@color/r2</item>
+        <item>@color/r3</item>
+        <item>@color/r4</item>
+        <item>@color/r5</item>
+        <item>@color/r6</item>
+        <item>@color/r7</item>
+        <item>@color/p1</item>
+        <item>@color/p2</item>
+        <item>@color/p3</item>
+        <item>@color/b1</item>
+        <item>@color/b2</item>
+        <item>@color/b3</item>
+        <item>@color/b4</item>
+        <item>@color/b5</item>
+        <item>@color/g1</item>
+        <item>@color/g2</item>
+        <item>@color/g3</item>
+        <item>@color/g4</item>
+        <item>@color/g5</item>
+        <item>@color/g6</item>
+        <item>@color/e1</item>
+        <item>@color/e2</item>
+        <item>@color/e3</item>
+        <item>@color/e4</item>
+        <item>@color/e5</item>
+        <item>@color/br1</item>
+        <item>@color/br2</item>
+        <item>@color/gr1</item>
+        <item>@color/gr2</item>
+        <item>@color/u1</item>
+        <item>@color/u2</item>
+        <item>@color/u3</item>
+        <item>@color/black</item>
+    </integer-array>
+
 </resources>

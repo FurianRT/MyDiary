@@ -10,40 +10,62 @@ import com.furianrt.mydiary.data.model.MyCategory
 import kotlinx.android.synthetic.main.fragment_category_edit.view.*
 import javax.inject.Inject
 
-private const val ARG_CATEGORY = "category"
+private const val ARG_CATEGORY_ID = "category_ID"
+private const val BUNDLE_CATEGORY_NAME = "category_name"
+private const val BUNDLE_CATEGORY_COLOR = "category_color"
 
 class CategoryEditFragment : Fragment(), View.OnClickListener, CategoryEditContract.View {
 
     @Inject
     lateinit var mPresenter: CategoryEditContract.Presenter
 
-    private lateinit var mCategory: MyCategory
+    private var mCategoryId: Long = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         getPresenterComponent(context!!).inject(this)
-        mCategory = arguments?.getParcelable(ARG_CATEGORY) ?: MyCategory(0, "")
+        mCategoryId = arguments?.getLong(ARG_CATEGORY_ID) ?: 0
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_category_edit, container, false)
 
-        mPresenter.attachView(this)
+        view.apply {
+            color_picker_category.addSVBar(svbar_category)
+            color_picker_category.showOldCenterColor = false
+            button_category_back.setOnClickListener { fragmentManager?.popBackStack() }
+            button_category_done.setOnClickListener(this@CategoryEditFragment)
+        }
 
-        setupUi(view)
+        mPresenter.attachView(this)
 
         return view
     }
 
-    private fun setupUi(view: View) {
-        view.apply {
-            button_category_back.setOnClickListener { fragmentManager?.popBackStack() }
-            button_category_done.setOnClickListener(this@CategoryEditFragment)
-            edit_category.setText(mCategory.name)
-            color_picker_category.color = mCategory.color
-            color_picker_category.addSVBar(svbar_category)
-            color_picker_category.showOldCenterColor = false
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        if (savedInstanceState != null) {
+            view.edit_category.setText(savedInstanceState.getString(BUNDLE_CATEGORY_NAME, ""))
+            view.color_picker_category.color =
+                    savedInstanceState.getInt(BUNDLE_CATEGORY_COLOR, MyCategory.DEFAULT_COLOR)
+        } else {
+            mPresenter.loadCategory(mCategoryId)
+        }
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        view?.let {
+            outState.putString(BUNDLE_CATEGORY_NAME, it.edit_category.text.toString())
+            outState.putInt(BUNDLE_CATEGORY_COLOR, it.color_picker_category.color)
+        }
+    }
+
+    override fun showCategory(category: MyCategory) {
+        view?.apply {
+            edit_category.setText(category.name)
+            color_picker_category.color = category.color
         }
     }
 
@@ -51,9 +73,11 @@ class CategoryEditFragment : Fragment(), View.OnClickListener, CategoryEditContr
         when (v.id) {
             R.id.button_category_done ->
                 view?.let {
-                    mCategory.color = it.color_picker_category.color
-                    mCategory.name = it.edit_category.text?.toString() ?: ""
-                    mPresenter.onButtonDoneClick(mCategory)
+                    val color = it.color_picker_category.color
+                    val name = it.edit_category.text?.toString() ?: ""
+                    val category = MyCategory(name, color)
+                    category.id = mCategoryId
+                    mPresenter.onButtonDoneClick(category)
                 }
         }
     }
@@ -72,10 +96,10 @@ class CategoryEditFragment : Fragment(), View.OnClickListener, CategoryEditContr
         val TAG = CategoryEditFragment::class.toString()
 
         @JvmStatic
-        fun newInstance(category: MyCategory) =
+        fun newInstance(categoryId: Long) =
                 CategoryEditFragment().apply {
                     arguments = Bundle().apply {
-                        putParcelable(ARG_CATEGORY, category)
+                        putLong(ARG_CATEGORY_ID, categoryId)
                     }
                 }
     }

@@ -8,5 +8,5 @@ interface WeatherApiService {
 
     @GET("weather")
     fun getForecast(@Query("lat") lat: Double,
-                    @Query("lon") lon: Double): Single<Forecast>
+                    @Query("lon") lon: Double): Single<Forecast?>
 }

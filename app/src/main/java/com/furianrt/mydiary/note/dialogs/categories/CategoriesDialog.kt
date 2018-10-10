@@ -3,6 +3,7 @@ package com.furianrt.mydiary.note.dialogs.categories
 import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.app.Dialog
+import android.content.DialogInterface
 import android.os.Bundle
 import android.view.*
 import androidx.fragment.app.DialogFragment
@@ -12,7 +13,6 @@ import com.furianrt.mydiary.note.dialogs.categories.edit.CategoryEditFragment
 import com.furianrt.mydiary.note.dialogs.categories.list.CategoryListFragment
 import com.furianrt.mydiary.note.fragments.notefragment.inTransaction
 import javax.inject.Inject
-
 
 private const val ARG_NOTE_ID = "noteId"
 
@@ -53,9 +53,9 @@ class CategoriesDialog : DialogFragment(), CategoriesDialogContract.View {
 
     @SuppressLint("InflateParams")
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        mPresenter.attachView(this)
-
         mView = activity?.layoutInflater?.inflate(R.layout.dialog_categories, null)
+
+        mPresenter.attachView(this)
 
         val dialog = AlertDialog.Builder(context)
                 .setView(mView)
@@ -102,8 +102,9 @@ class CategoriesDialog : DialogFragment(), CategoriesDialogContract.View {
                 or WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM)
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
+    override fun onDismiss(dialog: DialogInterface?) {
+        super.onDismiss(dialog)
+        mListener = null
         mPresenter.detachView()
     }
 

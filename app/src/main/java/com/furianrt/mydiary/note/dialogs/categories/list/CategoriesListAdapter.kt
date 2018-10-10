@@ -26,17 +26,17 @@ class CategoriesListAdapter(
         holder.bind(getItem(position))
     }
 
-    inner class CategoriesDialogViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView),
+    inner class CategoriesDialogViewHolder(private val mView: View) : RecyclerView.ViewHolder(mView),
             View.OnClickListener, PopupMenu.OnMenuItemClickListener {
 
         private lateinit var mCategory: MyCategory
 
         fun bind(category: MyCategory) {
             mCategory = category
-            itemView.apply {
+            mView.apply {
                 setOnClickListener(this@CategoriesDialogViewHolder)
-                text_item_category.text = mCategory.name
-                layout_category_color.setBackgroundColor(mCategory.color)
+                text_item_category.text = category.name
+                layout_category_color.setBackgroundColor(category.color)
                 button_category_more.setOnClickListener {
                     val popup = PopupMenu(it.context, it)
                     popup.setOnMenuItemClickListener(this@CategoriesDialogViewHolder)

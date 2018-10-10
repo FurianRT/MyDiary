@@ -29,7 +29,7 @@ interface GalleryListContract {
 
         fun setNoteId(noteId: String)
 
-        fun onViewCreate()
+        fun onViewStart()
 
         fun onStop(images: List<MyImage>)
 
@@ -42,5 +42,7 @@ interface GalleryListContract {
         fun onSaveInstanceState(): MutableList<MyImage>
 
         fun onRestoreInstanceState(selectedImages: MutableList<MyImage>?)
+
+        fun onCabCloseSelection()
     }
 }

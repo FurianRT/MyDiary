@@ -13,7 +13,7 @@ class GalleryListAdapter(
         private var mItems: MutableList<GalleryListItem>,
         var listener: OnListItemClickListener,
         recyclerView: androidx.recyclerview.widget.RecyclerView,
-        var selectedItems: MutableList<MyImage> = ArrayList()
+        var selectedImages: MutableList<MyImage> = ArrayList()
 ) : DragSortAdapter<GalleryListAdapter.GalleryListViewHolder>(recyclerView) {
 
     fun getImages(): List<MyImage> = mItems.asSequence()
@@ -34,6 +34,15 @@ class GalleryListAdapter(
                 }
             }
         }
+    }
+
+    fun deactivateSelection() {
+        for (i in 0 until mItems.size) {
+            if (selectedImages.contains(mItems[i].image)) {
+                notifyItemChanged(i)
+            }
+        }
+        selectedImages.clear()
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): GalleryListViewHolder {
@@ -92,7 +101,7 @@ class GalleryListAdapter(
         }
 
         private fun selectItem() {
-            if (selectedItems.contains(mImage)) {
+            if (selectedImages.contains(mImage)) {
                 mView.layout_selection.visibility = View.VISIBLE
             } else {
                 mView.layout_selection.visibility = View.INVISIBLE

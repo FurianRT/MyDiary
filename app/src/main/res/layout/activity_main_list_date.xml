@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     app:cardBackgroundColor="@color/transparent"
@@ -18,34 +19,34 @@
             android:id="@+id/text_day_of_week"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/colorAccent"
             android:gravity="center"
-            android:paddingEnd="2dp"
             android:paddingStart="2dp"
-            android:text="Mon"
+            android:paddingEnd="2dp"
             android:textColor="@color/white"
             android:textSize="7pt"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            android:background="?attr/colorAccent"
+            tools:text="Mon" />
 
         <TextView
             android:id="@+id/text_day"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="center"
-            android:text="22"
             android:background="@color/white"
+            android:gravity="center"
             android:textSize="7pt"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            tools:text="22" />
 
         <TextView
             android:id="@+id/text_time"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="center"
             android:background="@color/white"
-            android:text="20:00"
+            android:gravity="center"
             android:textSize="6pt"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            tools:text="20:00" />
 
     </LinearLayout>
 </androidx.cardview.widget.CardView>

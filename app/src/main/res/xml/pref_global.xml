@@ -1,0 +1,121 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <PreferenceCategory
+        android:key="theme"
+        android:title="Тема">
+
+        <com.woalk.apps.lib.colorpicker.ColorPreference
+            android:defaultValue="@color/blue"
+            android:key="color_primary"
+            android:summary="В основном определяет цвет тулбара"
+            android:title="Первичный цвет"
+            app:picker_allowCustomColor="false"
+            app:picker_colors="@array/colors"
+            app:picker_columns="5" />
+
+        <com.woalk.apps.lib.colorpicker.ColorPreference
+            android:defaultValue="@color/blue"
+            android:key="color_accent"
+            android:summary="Цвет переключателей и кнопок"
+            android:title="Вторичный цвет"
+            app:picker_allowCustomColor="false"
+            app:picker_colors="@array/colors"
+            app:picker_columns="5" />
+
+        <ListPreference
+            android:defaultValue="16"
+            android:entries="@array/pref_font_size_titles"
+            android:entryValues="@array/pref_font_size_values"
+            android:key="font_size"
+            android:negativeButtonText="@null"
+            android:positiveButtonText="@null"
+            android:summary="%s"
+            android:title="Размер шрифта" />
+
+        <com.woalk.apps.lib.colorpicker.ColorPreference
+            android:defaultValue="@color/blue"
+            android:key="font_color"
+            android:summary="Указать цвет шрифта"
+            android:title="Цвет шрифта"
+            app:picker_allowCustomColor="false"
+            app:picker_colors="@array/colors"
+            app:picker_columns="5" />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:key="notes"
+        android:title="Заметки">
+
+        <SwitchPreference
+            android:defaultValue="true"
+            android:key="weather_activation"
+            android:summaryOff="Включить проказ погоды"
+            android:summaryOn="Отключить показ погоды"
+            android:title="Погода" />
+
+        <ListPreference
+            android:defaultValue="0"
+            android:dependency="weather_activation"
+            android:entries="@array/pref_weather_units_titles"
+            android:entryValues="@array/pref_weather_units_values"
+            android:key="weather_units"
+            android:negativeButtonText="@null"
+            android:positiveButtonText="@null"
+            android:summary="%s"
+            android:title="Единицы измерения погоды" />
+
+        <SwitchPreference
+            android:defaultValue="true"
+            android:key="mood_activation"
+            android:summaryOff="Включить проказ настроения"
+            android:summaryOn="Отключить показ настроения"
+            android:title="Настроение" />
+
+        <SwitchPreference
+            android:defaultValue="true"
+            android:key="map_activation"
+            android:summaryOff="Включить определение местонахождения"
+            android:summaryOn="Отключить определение местонахождения"
+            android:title="Местонахождение" />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:key="protection"
+        android:title="Защита">
+
+        <SwitchPreference
+            android:defaultValue="false"
+            android:key="security_key"
+            android:summaryOff="Включить защиту приложения графическим ключем"
+            android:summaryOn="Отключить защиту приложения графическим ключем"
+            android:title="Графический ключ" />
+
+        <EditTextPreference
+            android:capitalize="words"
+            android:defaultValue="@string/pref_default_display_name"
+            android:dependency="security_key"
+            android:inputType="textCapWords"
+            android:key="security_email"
+            android:maxLines="1"
+            android:selectAllOnFocus="true"
+            android:singleLine="true"
+            android:summary="Используется для сброса графического ключа"
+            android:title="Email для сброса ключа" />
+
+        <ListPreference
+            android:defaultValue="0"
+            android:dependency="security_key"
+            android:entries="@array/pref_key_frequency_titles"
+            android:entryValues="@array/pref_key_frequency_values"
+            android:key="security_time"
+            android:negativeButtonText="@null"
+            android:positiveButtonText="@null"
+            android:summary="%s"
+            android:title="Время до запроса ключа" />
+
+    </PreferenceCategory>
+
+</PreferenceScreen>

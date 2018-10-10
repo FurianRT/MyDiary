@@ -15,8 +15,6 @@ class MediaLoader : AlbumLoader {
         GlideApp.with(imageView!!.context)
                 .load(url)
                 .placeholder(R.drawable.ic_image)
-                .override(250, 250)
-                .centerCrop()
                 .into(imageView)
     }
 }

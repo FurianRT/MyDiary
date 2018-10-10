@@ -53,10 +53,6 @@ class GalleryListFragment : androidx.fragment.app.Fragment(), GalleryListAdapter
                               savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_gallery_list, container, false)
 
-        mPresenter.attachView(this)
-
-        mPresenter.onViewCreate()
-
         view.apply {
             val orientation = context!!.resources.configuration.orientation
             if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
@@ -76,6 +72,12 @@ class GalleryListFragment : androidx.fragment.app.Fragment(), GalleryListAdapter
         return view
     }
 
+    override fun onStart() {
+        super.onStart()
+        mPresenter.attachView(this)
+        mPresenter.onViewStart()
+    }
+
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         outState.putParcelable(BUNDLE_RECYCLER_VIEW_STATE,
@@ -92,16 +94,16 @@ class GalleryListFragment : androidx.fragment.app.Fragment(), GalleryListAdapter
         }
 
         if (mAdapter.getImages().isEmpty()) {
-            mAdapter.selectedItems = selectedImages.toMutableList()
+            mAdapter.selectedImages = selectedImages.toMutableList()
         } else {
-            mAdapter.selectedItems.clear()
+            mAdapter.selectedImages.clear()
         }
 
         mAdapter.submitList(images)
     }
 
     override fun selectItems(items: MutableList<MyImage>) {
-        mAdapter.selectedItems.addAll(items)
+        mAdapter.selectedImages.addAll(items)
         for (item in items) {
             mAdapter.notifyItemChanged(mAdapter.getImages().indexOf(item))
         }
@@ -148,7 +150,7 @@ class GalleryListFragment : androidx.fragment.app.Fragment(), GalleryListAdapter
     }
 
     override fun onDestroyActionMode(mode: ActionMode?) {
-
+        mPresenter.onCabCloseSelection()
     }
 
     override fun activateSelection() {
@@ -158,16 +160,16 @@ class GalleryListFragment : androidx.fragment.app.Fragment(), GalleryListAdapter
 
     override fun deactivateSelection() {
         mSelectionActive = false
-        mAdapter.selectedItems.clear()
+        mAdapter.deactivateSelection()
     }
 
     override fun selectItem(image: MyImage) {
-        mAdapter.selectedItems.add(image)
+        mAdapter.selectedImages.add(image)
         mAdapter.notifyItemChanged(mAdapter.getImages().indexOf(image))
     }
 
     override fun deselectItem(image: MyImage) {
-        mAdapter.selectedItems.remove(image)
+        mAdapter.selectedImages.remove(image)
         mAdapter.notifyItemChanged(mAdapter.getImages().indexOf(image))
     }
 
@@ -185,14 +187,10 @@ class GalleryListFragment : androidx.fragment.app.Fragment(), GalleryListAdapter
         }
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        mPresenter.detachView()
-    }
-
     override fun onStop() {
         super.onStop()
         mPresenter.onStop(mAdapter.getImages())
+        mPresenter.detachView()
     }
 
     companion object {

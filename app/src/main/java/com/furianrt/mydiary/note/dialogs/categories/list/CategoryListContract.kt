@@ -19,7 +19,7 @@ interface CategoryListContract {
 
     interface Presenter : BasePresenter<View> {
 
-        fun onViewCreate()
+        fun onViewStart()
 
         fun onAddCategoryButtonClick()
 

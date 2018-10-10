@@ -3,6 +3,7 @@ package com.furianrt.mydiary.note.fragments.notefragment.edit
 import android.content.Context
 import android.os.Bundle
 import android.view.*
+import androidx.fragment.app.Fragment
 import com.furianrt.mydiary.R
 import com.furianrt.mydiary.data.model.MyNote
 import com.furianrt.mydiary.note.fragments.notefragment.ARG_NOTE
@@ -16,7 +17,7 @@ const val ARG_POSITION = "position"
 
 enum class ClickedView { TITLE, CONTENT }
 
-class NoteEditFragment : androidx.fragment.app.Fragment(), NoteEditFragmentContract.View {
+class NoteEditFragment : Fragment(), NoteEditFragmentContract.View {
 
     private lateinit var mNote: MyNote
     private var mClickedView: ClickedView? = null
@@ -44,8 +45,6 @@ class NoteEditFragment : androidx.fragment.app.Fragment(), NoteEditFragmentContr
                               savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_note_edit, container, false)
 
-        mPresenter.attachView(this)
-
         view.apply {
             edit_note_title.setText(mNote.title)
             edit_note_content.setText(mNote.content)
@@ -72,6 +71,11 @@ class NoteEditFragment : androidx.fragment.app.Fragment(), NoteEditFragmentContr
                 }
             }
         }
+    }
+
+    override fun onStart() {
+        super.onStart()
+        mPresenter.attachView(this)
     }
 
     override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
@@ -124,13 +128,8 @@ class NoteEditFragment : androidx.fragment.app.Fragment(), NoteEditFragmentContr
         mListener?.onNoteFragmentEditModeDisabled()
         (parentFragment as? NoteFragment)?.enableActionBarExpanding(false, false)
         mPresenter.onStop(mNote, noteTitle, noteContent)
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
         mPresenter.detachView()
     }
-
 
     interface OnNoteFragmentInteractionListener {
 
@@ -140,6 +139,9 @@ class NoteEditFragment : androidx.fragment.app.Fragment(), NoteEditFragmentContr
     }
 
     companion object {
+
+        val TAG = NoteEditFragment::class.toString()
+
         @JvmStatic
         fun newInstance(note: MyNote, clickedView: ClickedView?, clickPosition: Int) =
                 NoteEditFragment().apply {

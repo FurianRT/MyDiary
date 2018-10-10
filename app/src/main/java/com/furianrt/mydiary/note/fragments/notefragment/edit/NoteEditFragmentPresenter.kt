@@ -16,7 +16,7 @@ class NoteEditFragmentPresenter(private val mDataManager: DataManager)
         note.content = noteContent
         mDataManager.findNote(note.id)
                 .doOnComplete { mDataManager.insertNote(note).subscribe() }
-                .doOnSuccess { mDataManager.updateNote(note).subscribe() }
+                .doOnSuccess { mDataManager.updateNoteText(note.id, noteTitle, noteContent).subscribe() }
                 .subscribe()
         // }
     }

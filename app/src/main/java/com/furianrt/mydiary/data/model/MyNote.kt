@@ -23,7 +23,7 @@ data class MyNote(
     var moodId: Int = 0
 
     @ColumnInfo(name = "location")
-    var locationId: Long = 0
+    var locationName: String? = null
 
     @ColumnInfo(name = "category")
     var categoryId: Long = 0
@@ -41,7 +41,7 @@ data class MyNote(
             parcel.readInt(),
             parcel.readFloat()) {
         moodId = parcel.readInt()
-        locationId = parcel.readLong()
+        locationName = parcel.readString()
         categoryId = parcel.readLong()
     }
 
@@ -54,7 +54,7 @@ data class MyNote(
         parcel.writeInt(textColor)
         parcel.writeFloat(textSize)
         parcel.writeInt(moodId)
-        parcel.writeLong(locationId)
+        parcel.writeString(locationName)
         parcel.writeLong(categoryId)
     }
 
@@ -71,4 +71,6 @@ data class MyNote(
             return arrayOfNulls(size)
         }
     }
+
+
 }

@@ -32,9 +32,9 @@ interface MainActivityContract {
 
         fun updateItemSelection(selectedNotes: ArrayList<MyNoteWithProp>)
 
-        fun refreshTags()
-
         fun showEmptyHeaderImage()
+
+        fun showSettingsView()
     }
 
     interface Presenter : BasePresenter<View> {
@@ -43,7 +43,7 @@ interface MainActivityContract {
 
         fun onHeaderImagesPicked(imageUrls: List<String>)
 
-        fun onViewCreate()
+        fun onViewStart()
 
         fun onButtonSetMainImageClick()
 
@@ -61,6 +61,6 @@ interface MainActivityContract {
 
         fun onMenuAllNotesClick()
 
-        fun onNotePagerViewFinished()
+        fun onButtonSettingsClick()
     }
 }

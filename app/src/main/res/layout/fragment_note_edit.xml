@@ -13,14 +13,15 @@
         android:background="@color/grey"
         android:hint="@string/title"
         android:imeOptions="flagNoExtractUi"
-        android:inputType="text"
+        android:inputType="textCapSentences"
         android:padding="8dp"
         android:textColor="@color/black"
         android:textSize="8pt"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="Autofill" />
 
     <EditText
         android:id="@+id/edit_note_content"
@@ -30,14 +31,15 @@
         android:gravity="top|start"
         android:hint="@string/content"
         android:imeOptions="flagNoExtractUi"
-        android:inputType="textMultiLine"
+        android:inputType="textMultiLine|textCapSentences"
         android:minHeight="130dp"
         android:padding="8dp"
         android:textColor="@color/black"
         android:textSize="8pt"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/edit_note_title" />
+        app:layout_constraintTop_toBottomOf="@id/edit_note_title"
+        tools:ignore="Autofill" />
 
     <View
         android:layout_width="0dp"

@@ -1,30 +1,23 @@
 package com.furianrt.mydiary.note
 
 import com.furianrt.mydiary.data.DataManager
-import com.furianrt.mydiary.data.model.MyNote
 import com.furianrt.mydiary.data.model.MyNoteWithProp
 import com.furianrt.mydiary.utils.generateUniqueId
+import io.reactivex.disposables.CompositeDisposable
 
 class NoteActivityPresenter(private val mDataManager: DataManager) : NoteActivityContract.Presenter {
 
     private var mView: NoteActivityContract.View? = null
-
-    override fun addNote(note: MyNote) {
-        mDataManager.insertNote(note)
-                .subscribe()
-    }
-
-    override fun deleteNote(note: MyNote) {
-        mDataManager.deleteNote(note)
-                .subscribe()
-    }
+    private val mCompositeDisposable = CompositeDisposable()
 
     override fun loadNotes(mode: Mode) {
         if (mode == Mode.ADD) {
             mView?.showNotes(listOf(MyNoteWithProp(generateUniqueId())))
         } else if (mode == Mode.READ) {
-            mDataManager.getNotesWithProp()
+            val disposable = mDataManager.getAllNotesWithProp()
                     .subscribe { mView?.showNotes(it) }
+
+            mCompositeDisposable.add(disposable)
         }
     }
 
@@ -33,6 +26,7 @@ class NoteActivityPresenter(private val mDataManager: DataManager) : NoteActivit
     }
 
     override fun detachView() {
+        mCompositeDisposable.clear()
         mView = null
     }
 }

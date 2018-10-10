@@ -60,13 +60,18 @@ class DataManagerImp(private val mDatabase: NoteDatabase,
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
 
-    override fun addLocation(location: MyLocation): Single<Long> =
-            Single.fromCallable { mDatabase.locationDao().insert(location) }
+    override fun addLocation(location: MyLocation): Completable =
+            Completable.fromAction { mDatabase.locationDao().insert(location) }
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
 
     override fun updateNote(note: MyNote): Completable =
             Completable.fromAction { mDatabase.noteDao().update(note) }
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+
+    override fun updateNoteText(noteId: String, title: String, content: String): Completable =
+            Completable.fromAction { mDatabase.noteDao().updateNoteText(noteId, title, content) }
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
 
@@ -147,6 +152,18 @@ class DataManagerImp(private val mDatabase: NoteDatabase,
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
 
+    override fun getNoteWithProp(noteId: String): Flowable<MyNoteWithProp> =
+            mDatabase.noteDao()
+                    .getNoteWithProp(noteId)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+
+    override fun getNote(noteId: String): Flowable<MyNote> =
+            mDatabase.noteDao()
+                    .getNote(noteId)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+
     override fun getNotesWithTag(tagId: Long): Flowable<List<MyNote>> =
             mDatabase.noteTagDao()
                     .getNotesWithTag(tagId)
@@ -181,12 +198,12 @@ class DataManagerImp(private val mDatabase: NoteDatabase,
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
 
-    override fun getForecast(lat: Double, lon: Double): Single<Forecast> =
+    override fun getForecast(lat: Double, lon: Double): Single<Forecast?> =
             mWeatherApi.getForecast(lat, lon)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
 
-    override fun getCategory(categoryId: Long): Single<MyCategory> =
+    override fun getCategory(categoryId: Long): Maybe<MyCategory> =
             mDatabase.categoryDao()
                     .getCategory(categoryId)
                     .subscribeOn(Schedulers.io())
@@ -204,15 +221,9 @@ class DataManagerImp(private val mDatabase: NoteDatabase,
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
 
-    /*override fun getImageFromStorage(imageName: String): Single<File> =
-            Single.fromCallable { mStorage.getFile(imageName) }
-                    .map { file -> MyImage(file.name, file.path, image.noteId) }
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())*/
-
-    override fun getNotesWithProp(): Flowable<List<MyNoteWithProp>> =
+    override fun getAllNotesWithProp(): Flowable<List<MyNoteWithProp>> =
             mDatabase.noteDao()
-                    .getNotesWithProp()
+                    .getAllNotesWithProp()
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
 
@@ -225,4 +236,10 @@ class DataManagerImp(private val mDatabase: NoteDatabase,
             mDatabase.headerImageDao().getHeaderImages()
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
+
+    override fun isWeatherEnabled(): Boolean = mPrefs.isWeatherEnabled()
+
+    override fun isLocationEnabled(): Boolean = mPrefs.isMapEnabled()
+
+    override fun isMoodEnabled(): Boolean = mPrefs.isMoodEnabled()
 }

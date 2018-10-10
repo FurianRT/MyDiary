@@ -27,6 +27,8 @@ interface DataManager {
 
     fun updateNote(note: MyNote): Completable
 
+    fun updateNoteText(noteId: String, title: String, content: String): Completable
+
     fun updateTag(tag: MyTag): Completable
 
     fun updateImages(images: List<MyImage>): Completable
@@ -57,15 +59,19 @@ interface DataManager {
 
     fun getNotesWithTag(tagId: Long): Flowable<List<MyNote>>
 
+    fun getNoteWithProp(noteId: String): Flowable<MyNoteWithProp>
+
+    fun getNote(noteId: String): Flowable<MyNote>
+
     fun replaceNoteTags(noteId: String, tags: List<MyTag>): Completable
 
     fun getAllTags(): Single<List<MyTag>>
 
-    fun getForecast(lat: Double, lon: Double): Single<Forecast>
+    fun getForecast(lat: Double, lon: Double): Single<Forecast?>
 
     fun getMood(moodId: Int): Single<MyMood>
 
-    fun getCategory(categoryId: Long): Single<MyCategory>
+    fun getCategory(categoryId: Long): Maybe<MyCategory>
 
     fun getAllCategories(): Flowable<List<MyCategory>>
 
@@ -79,11 +85,15 @@ interface DataManager {
 
     fun getImagesForNote(noteId: String): Flowable<List<MyImage>>
 
-    //fun getImageFromStorage(imageName: String) : Single<File>
-
-    fun getNotesWithProp(): Flowable<List<MyNoteWithProp>>
+    fun getAllNotesWithProp(): Flowable<List<MyNoteWithProp>>
 
     fun getHeaderImages(): Flowable<List<MyHeaderImage>>
 
-    fun addLocation(location: MyLocation): Single<Long>
+    fun addLocation(location: MyLocation): Completable
+
+    fun isWeatherEnabled(): Boolean
+
+    fun isLocationEnabled(): Boolean
+
+    fun isMoodEnabled(): Boolean
 }

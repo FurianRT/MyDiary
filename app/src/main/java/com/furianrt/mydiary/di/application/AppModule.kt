@@ -12,6 +12,7 @@ import com.furianrt.mydiary.R
 import com.furianrt.mydiary.data.DataManager
 import com.furianrt.mydiary.data.DataManagerImp
 import com.furianrt.mydiary.data.api.WeatherApiService
+import com.furianrt.mydiary.data.model.MyCategory
 import com.furianrt.mydiary.data.prefs.PreferencesHelper
 import com.furianrt.mydiary.data.prefs.PreferencesHelperImp
 import com.furianrt.mydiary.data.room.NoteDatabase
@@ -42,14 +43,9 @@ class AppModule(private val app: Application) {
     fun provideStorageHelper(context: Context) : StorageHelper = StorageHelperImp(context)
 
     @Provides
-    @PreferenceInfo
     @AppScope
-    fun providePrefFolderName() = "myPreferences"
-
-    @Provides
-    @AppScope
-    fun providePreferencesHelper(context: Context, @PreferenceInfo name: String): PreferencesHelper =
-            PreferencesHelperImp(context, name)
+    fun providePreferencesHelper(context: Context): PreferencesHelper =
+            PreferencesHelperImp(context)
 
     @Provides
     @DatabaseInfo
@@ -154,7 +150,7 @@ class AppModule(private val app: Application) {
         val categoryNames = app.resources.getStringArray(R.array.categories)
         for (categoryName in categoryNames) {
             cv.put("name_category", categoryName)
-            cv.put("color", -0xffff01)
+            cv.put("color", MyCategory.DEFAULT_COLOR)
             db.insert("Categories", 0, cv)
         }
         cv.clear()

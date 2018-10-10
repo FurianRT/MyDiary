@@ -1,14 +1,17 @@
 package com.furianrt.mydiary.note
 
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
+import androidx.fragment.app.FragmentStatePagerAdapter
 import com.furianrt.mydiary.data.model.MyNoteWithProp
 import com.furianrt.mydiary.note.fragments.notefragment.NoteFragment
 
-class NoteActivityPagerAdapter(fm: androidx.fragment.app.FragmentManager, private val mode: Mode)
-    : androidx.fragment.app.FragmentStatePagerAdapter(fm) {
+class NoteActivityPagerAdapter(fm: FragmentManager, private val mode: Mode)
+    : FragmentStatePagerAdapter(fm) {
 
     var list: List<MyNoteWithProp> = ArrayList()
 
-    override fun getItem(position: Int): androidx.fragment.app.Fragment = NoteFragment.newInstance(list[position], mode)
+    override fun getItem(position: Int): Fragment = NoteFragment.newInstance(list[position], mode)
 
     override fun getCount(): Int = list.count()
 }

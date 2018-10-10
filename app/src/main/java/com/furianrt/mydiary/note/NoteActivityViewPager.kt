@@ -3,8 +3,9 @@ package com.furianrt.mydiary.note
 import android.content.Context
 import android.util.AttributeSet
 import android.view.MotionEvent
+import androidx.viewpager.widget.ViewPager
 
-class NoteActivityViewPager : androidx.viewpager.widget.ViewPager {
+class NoteActivityViewPager : ViewPager {
 
     var swipeEnabled = true
 

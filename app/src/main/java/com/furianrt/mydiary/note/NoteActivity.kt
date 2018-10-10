@@ -3,7 +3,9 @@ package com.furianrt.mydiary.note
 import android.os.Bundle
 import android.util.Log
 import android.view.Menu
-import androidx.appcompat.app.AppCompatActivity
+import android.view.WindowManager
+import androidx.viewpager.widget.ViewPager
+import com.furianrt.mydiary.BaseActivity
 import com.furianrt.mydiary.LOG_TAG
 import com.furianrt.mydiary.R
 import com.furianrt.mydiary.data.model.MyNoteWithProp
@@ -16,13 +18,14 @@ const val EXTRA_MODE = "mode"
 
 enum class Mode { ADD, READ }
 
-class NoteActivity : AppCompatActivity(), NoteActivityContract.View,
+class NoteActivity : BaseActivity(), NoteActivityContract.View,
         NoteEditFragment.OnNoteFragmentInteractionListener {
 
     @Inject
     lateinit var mPresenter: NoteActivityContract.Presenter
 
     private var mPagerPosition = 0
+    private var mMode = Mode.ADD
 
     private lateinit var mPagerAdapter: NoteActivityPagerAdapter
 
@@ -30,19 +33,22 @@ class NoteActivity : AppCompatActivity(), NoteActivityContract.View,
         super.onCreate(savedInstanceState)
         getPresenterComponent(this).inject(this)
         setContentView(R.layout.activity_note)
-
-        mPresenter.attachView(this)
+        window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN)
 
         mPagerPosition = savedInstanceState?.getInt(EXTRA_CLICKED_NOTE_POSITION, 0)
                 ?: intent.getIntExtra(EXTRA_CLICKED_NOTE_POSITION, 0)
 
-        val mode = intent.getSerializableExtra(EXTRA_MODE) as Mode
+        mMode = intent.getSerializableExtra(EXTRA_MODE) as Mode
 
-        mPagerAdapter = NoteActivityPagerAdapter(supportFragmentManager, mode)
+        mPagerAdapter = NoteActivityPagerAdapter(supportFragmentManager, mMode)
 
         setupUi()
+    }
 
-        mPresenter.loadNotes(mode)
+    override fun onStart() {
+        super.onStart()
+        mPresenter.attachView(this)
+        mPresenter.loadNotes(mMode)
     }
 
     private fun setupUi() {
@@ -53,7 +59,7 @@ class NoteActivity : AppCompatActivity(), NoteActivityContract.View,
 
 
         pager_note.adapter = mPagerAdapter
-        pager_note.addOnPageChangeListener(object : androidx.viewpager.widget.ViewPager.OnPageChangeListener {
+        pager_note.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
             override fun onPageScrollStateChanged(p0: Int) {
 
             }
@@ -80,7 +86,7 @@ class NoteActivity : AppCompatActivity(), NoteActivityContract.View,
 
     override fun showNotes(notes: List<MyNoteWithProp>) {
         mPagerAdapter.list = notes
-        Log.e(LOG_TAG, "notify")
+        Log.e(LOG_TAG, "note_list_notify")
         mPagerAdapter.notifyDataSetChanged()
         pager_note.setCurrentItem(mPagerPosition, false)
     }
@@ -98,8 +104,8 @@ class NoteActivity : AppCompatActivity(), NoteActivityContract.View,
         return true
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
+    override fun onStop() {
+        super.onStop()
         mPresenter.detachView()
     }
 

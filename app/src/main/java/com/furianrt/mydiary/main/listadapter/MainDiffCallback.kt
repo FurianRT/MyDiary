@@ -6,7 +6,9 @@ class MainDiffCallback : DiffUtil.ItemCallback<MainListItem>() {
 
     override fun areContentsTheSame(oldItem: MainListItem, newItem: MainListItem): Boolean {
         if (oldItem is MainContentItem && newItem is MainContentItem)
-            return oldItem.note == newItem.note
+            return oldItem.note == newItem.note &&
+                    oldItem.note.images == newItem.note.images &&
+                    oldItem.note.tags == newItem.note.tags
         if (oldItem is MainHeaderItem && newItem is MainHeaderItem)
             return oldItem.time == newItem.time
         return oldItem == newItem

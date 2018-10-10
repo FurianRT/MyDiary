@@ -70,6 +70,7 @@ class MoodsDialog : DialogFragment(), MoodsDialogContract.View,
 
     override fun onDismiss(dialog: DialogInterface?) {
         super.onDismiss(dialog)
+        mListener = null
         mPresenter.detachView()
     }
 

@@ -1,11 +1,11 @@
 package com.furianrt.mydiary.main.listadapter
 
+import android.graphics.Color
+import android.graphics.PorterDuff
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.annotation.ColorRes
-import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.furianrt.mydiary.LOG_TAG
@@ -20,15 +20,17 @@ import kotlinx.android.synthetic.main.activity_main_list_header.view.*
 import java.util.*
 
 class MainListAdapter(
-        var listener: OnMainListItemInteractionListener?,
         var selectedNotes: ArrayList<MyNoteWithProp> = ArrayList()
 ) : ListAdapter<MainListItem, MainListAdapter.MyViewHolder>(MainDiffCallback()),
         HeaderItemDecoration.StickyHeaderInterface {
+
+    var listener: OnMainListItemInteractionListener? = null
 
     override fun bindHeaderData(header: View, headerPosition: Int) {
         if (headerPosition == RecyclerView.NO_POSITION) {
             header.layoutParams.height = 0
         }
+        Log.e(LOG_TAG, "bindHeaderData $headerPosition")
 
         val time = (getItem(headerPosition) as MainHeaderItem).time
         val date = getMonth(time).toUpperCase(Locale.getDefault()) + ", " + getYear(time)
@@ -50,10 +52,13 @@ class MainListAdapter(
         return getItem(itemPosition) is MainHeaderItem
     }
 
-    override fun getHeaderPositionForItem(itemPosition: Int): Int =
-            (itemPosition downTo 0)
-                    .map { Pair(isHeader(it), it) }
-                    .firstOrNull { it.first }?.second ?: RecyclerView.NO_POSITION
+    override fun getHeaderPositionForItem(itemPosition: Int): Int {
+        val i = (itemPosition downTo 0)
+                .map { Pair(isHeader(it), it) }
+                .firstOrNull { it.first }?.second ?: RecyclerView.NO_POSITION
+        Log.e(LOG_TAG, "getHeaderPositionForItem $i")
+        return i
+    }
 
     override fun getHeaderLayout(headerPosition: Int): Int {
         return R.layout.activity_main_list_header
@@ -99,16 +104,19 @@ class MainListAdapter(
 
         override fun bind(item: MainListItem) {
             mContentItem = item as MainContentItem
-            Log.e(LOG_TAG, mContentItem.note.images.map { it.url }.toString())
             val time = mContentItem.note.note.time
             mView.apply {
                 setOnClickListener(this@ContentViewHolder)
                 setOnLongClickListener(this@ContentViewHolder)
                 text_day_of_week.text = getDayOfWeek(time)
+                val categoryColor = mContentItem.note.category?.color
+                categoryColor?.let { text_day_of_week.setBackgroundColor(it) }
                 text_day.text = getDay(time)
                 text_time.text = getTime(time)
                 text_tags.text = mContentItem.note.tags.size.toString()
                 text_images.text = mContentItem.note.images.size.toString()
+                text_category.text = mContentItem.note.category?.name
+                image_sync.setColorFilter(getThemeAccentColor(mView.context), PorterDuff.Mode.SRC_IN)
 
                 if (mContentItem.note.images.isEmpty()) {
                     image_main_list.setImageDrawable(null)
@@ -128,7 +136,7 @@ class MainListAdapter(
                 }
                 text_note_content.text = mContentItem.note.note.content
 
-                selectItem(mContentItem.note, R.color.colorAccent, R.color.white)
+                selectItem(mContentItem.note)
             }
         }
 
@@ -141,12 +149,12 @@ class MainListAdapter(
             return true
         }
 
-        private fun selectItem(note: MyNoteWithProp, @ColorRes firstColor: Int,@ColorRes secondColor: Int) {
+        private fun selectItem(note: MyNoteWithProp) {
             val cardView = mView as androidx.cardview.widget.CardView
             if (selectedNotes.contains(note)) {
-                cardView.setCardBackgroundColor(ContextCompat.getColor(mView.context!!, firstColor))
+                cardView.setCardBackgroundColor(getThemeAccentColor(mView.context))
             } else {
-                cardView.setCardBackgroundColor(ContextCompat.getColor(mView.context!!, secondColor))
+                cardView.setCardBackgroundColor(Color.WHITE)
             }
         }
     }

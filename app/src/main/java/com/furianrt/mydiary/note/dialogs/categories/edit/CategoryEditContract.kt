@@ -9,6 +9,8 @@ interface CategoryEditContract {
     interface View : BaseView {
 
         fun close()
+
+        fun showCategory(category: MyCategory)
     }
 
     interface Presenter : BasePresenter<View> {
@@ -16,5 +18,7 @@ interface CategoryEditContract {
         fun onViewCreate()
 
         fun onButtonDoneClick(category: MyCategory)
+
+        fun loadCategory(categoryId: Long)
     }
 }

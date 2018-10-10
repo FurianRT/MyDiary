@@ -35,7 +35,7 @@ class CategoryListPresenter(
         mView?.showEditView(category)
     }
 
-    override fun onViewCreate() {
+    override fun onViewStart() {
         val disposable = mDataManager.getAllCategories()
                 .subscribe { categories -> mView?.showCategories(categories) }
 

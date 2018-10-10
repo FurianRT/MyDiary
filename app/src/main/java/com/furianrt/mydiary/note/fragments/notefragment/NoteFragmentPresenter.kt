@@ -56,18 +56,10 @@ class NoteFragmentPresenter(private val mDataManager: DataManager) : NoteFragmen
         mView?.showCategoriesDialog(mNote.note.id)
     }
 
-    private fun getForecast(location: MyLocation) {
-        val disposable = mDataManager.getForecast(location.lat, location.lon)
-                .subscribe({ forecast ->
-                    mNote.note.forecast = forecast
-                    mView?.showForecast(forecast)
-                }, { error -> error.printStackTrace() })
-        mCompositeDisposable.add(disposable)
-    }
-
     override fun onNoteTagsChanged(tags: List<MyTag>) {
         val disposable = mDataManager.replaceNoteTags(mNote.note.id, tags)
                 .subscribe()
+
         mCompositeDisposable.add(disposable)
     }
 
@@ -81,47 +73,28 @@ class NoteFragmentPresenter(private val mDataManager: DataManager) : NoteFragmen
 
     override fun getNote() = mNote
 
-    override fun onViewCreated(mode: Mode, locationEnabled: Boolean, networkAvailable: Boolean) {
+    override fun onViewStart(mode: Mode, locationEnabled: Boolean, networkAvailable: Boolean) {
         loadNoteImages(mNote.note.id)
 
         val location = mNote.location
         if (location != null) {
-            mView?.showLocation(location)
-            val forecast = mNote.note.forecast
-            if (forecast != null) {
-                mView?.showForecast(forecast)
-            } else if (mode == Mode.ADD) {
-                getForecast(location)
+            if (mDataManager.isLocationEnabled()) {
+                mView?.showLocation(location)
+            }
+            if (mDataManager.isWeatherEnabled()) {
+                val forecast = mNote.note.forecast
+                if (forecast != null) {
+                    mView?.showForecast(forecast)
+                } else if (mode == Mode.ADD) {
+                    addForecast(location)
+                }
             }
         } else if (mode == Mode.ADD) {
             findLocation(locationEnabled, networkAvailable)
         }
 
+        loadNote(mNote.note.id)
         loadTags(mNote.note.id)
-        loadNoteMood(mNote.note.moodId)
-        loadNoteCategory(mNote.note.categoryId)
-    }
-
-    private fun loadNoteCategory(categoryId: Long) {
-        if (categoryId == 0L) {
-            mView?.showNoCategoryMessage()
-            return
-        }
-        val disposable = mDataManager.getCategory(categoryId)
-                .subscribe { category -> mView?.showCategory(category) }
-
-        mCompositeDisposable.add(disposable)
-    }
-
-    private fun loadNoteMood(moodId: Int) {
-        if (moodId == 0) {
-            mView?.showNoMoodMessage()
-            return
-        }
-        val disposable = mDataManager.getMood(moodId)
-                .subscribe { mood -> mView?.showMood(mood) }
-
-        mCompositeDisposable.add(disposable)
     }
 
     private fun loadNoteImages(noteId: String) {
@@ -136,6 +109,32 @@ class NoteFragmentPresenter(private val mDataManager: DataManager) : NoteFragmen
                 }
 
         mCompositeDisposable.add(disposable)
+    }
+
+    private fun loadNote(noteId: String) {
+        val disposable = mDataManager.getNoteWithProp(noteId)
+                .subscribe { note ->
+                    mNote = note
+                    showNoteProp(note)
+                }
+
+        mCompositeDisposable.add(disposable)
+    }
+
+    private fun showNoteProp(note: MyNoteWithProp) {
+        val category = note.category
+        if (category != null) {
+            mView?.showCategory(category)
+        } else {
+            mView?.showNoCategoryMessage()
+        }
+
+        val mood = note.mood
+        if (mood != null && mDataManager.isMoodEnabled()) {
+            mView?.showMood(mood)
+        } else {
+            mView?.showNoMoodMessage()
+        }
     }
 
     private fun findLocation(locationEnabled: Boolean, networkAvailable: Boolean) {
@@ -158,17 +157,39 @@ class NoteFragmentPresenter(private val mDataManager: DataManager) : NoteFragmen
             val address = addresses[0].getAddressLine(0)
             if (address != null) {
                 val location = MyLocation(address, latitude, longitude)
-                mNote.location = location
                 addLocation(location)
-                mView?.showLocation(location)
-                getForecast(location)
+                addForecast(location)
             }
         }
     }
 
+    private fun addForecast(location: MyLocation) {
+        val disposable = mDataManager.getForecast(location.lat, location.lon)
+                .onErrorReturn { null }
+                .flatMapCompletable { forecast ->
+                    mNote.note.forecast = forecast
+                    return@flatMapCompletable mDataManager.updateNote(mNote.note)
+                }
+                .subscribe {
+                    val forecast = mNote.note.forecast
+                    if (forecast != null && mDataManager.isWeatherEnabled()) {
+                        mView?.showForecast(forecast)
+                    }
+                }
+
+        mCompositeDisposable.add(disposable)
+    }
+
     private fun addLocation(location: MyLocation) {
+        mNote.note.locationName = location.name
+        mNote.location = location
         val disposable = mDataManager.addLocation(location)
-                .subscribe { id -> mNote.note.locationId = id }
+                .andThen(mDataManager.updateNote(mNote.note))
+                .subscribe {
+                    if (mDataManager.isLocationEnabled()) {
+                        mView?.showLocation(location)
+                    }
+                }
 
         mCompositeDisposable.add(disposable)
     }
@@ -231,7 +252,7 @@ class NoteFragmentPresenter(private val mDataManager: DataManager) : NoteFragmen
     override fun onMoodPicked(mood: MyMood) {
         mNote.note.moodId = mood.id
         val disposable = mDataManager.updateNote(mNote.note)
-                .subscribe { mView?.showMood(mood) }
+                .subscribe()
 
         mCompositeDisposable.add(disposable)
     }

@@ -1,5 +1,7 @@
 package com.furianrt.mydiary.main
 
+import android.util.Log
+import com.furianrt.mydiary.LOG_TAG
 import com.furianrt.mydiary.data.DataManager
 import com.furianrt.mydiary.data.model.MyHeaderImage
 import com.furianrt.mydiary.data.model.MyNoteWithProp
@@ -53,7 +55,7 @@ class MainActivityPresenter(private val mDataManager: DataManager) : MainActivit
     }
 
     override fun onMenuAllNotesClick() {
-        val disposable = mDataManager.getNotesWithProp()
+        val disposable = mDataManager.getAllNotesWithProp()
                 .first(ArrayList())
                 .subscribe { notes ->
                     mSelectedNotes = ArrayList(notes)
@@ -63,7 +65,7 @@ class MainActivityPresenter(private val mDataManager: DataManager) : MainActivit
         mCompositeDisposable.add(disposable)
     }
 
-    override fun onViewCreate() {
+    override fun onViewStart() {
         loadNotes()
         loadHeaderImages()
     }
@@ -102,7 +104,7 @@ class MainActivityPresenter(private val mDataManager: DataManager) : MainActivit
     }
 
     private fun loadNotes() {
-        val disposable = mDataManager.getNotesWithProp()
+        val disposable = mDataManager.getAllNotesWithProp()
                 .map { formatNotes(toMap(it)) }
                 .subscribe { mView?.showNotes(it, mSelectedNotes) }
 
@@ -140,6 +142,7 @@ class MainActivityPresenter(private val mDataManager: DataManager) : MainActivit
     }
 
     override fun onFabMenuClick() {
+        Log.e(LOG_TAG, "onFabMenuClick")
         if (mSelectedNotes.isEmpty()) {
             mView?.showViewNewNote()
         } else {
@@ -177,10 +180,6 @@ class MainActivityPresenter(private val mDataManager: DataManager) : MainActivit
         }
     }
 
-    override fun onNotePagerViewFinished() {
-        mView?.refreshTags()
-    }
-
     private fun selectListItem(note: MyNoteWithProp) {
         when {
             mSelectedNotes.contains(note) && mSelectedNotes.size == 1 -> {
@@ -194,9 +193,13 @@ class MainActivityPresenter(private val mDataManager: DataManager) : MainActivit
     }
 
     private fun openNotePagerView(note: MyNoteWithProp) {
-        val disposable = mDataManager.getNotesWithProp()
+        val disposable = mDataManager.getAllNotesWithProp()
                 .first(ArrayList())
                 .subscribe { notes -> mView?.openNotePager(notes.indexOf(note)) }
         mCompositeDisposable.add(disposable)
+    }
+
+    override fun onButtonSettingsClick() {
+        mView?.showSettingsView()
     }
 }

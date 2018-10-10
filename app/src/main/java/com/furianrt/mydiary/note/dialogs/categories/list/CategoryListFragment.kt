@@ -2,6 +2,7 @@ package com.furianrt.mydiary.note.dialogs.categories.list
 
 
 import android.os.Bundle
+import android.os.Parcelable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,10 +14,12 @@ import com.furianrt.mydiary.R
 import com.furianrt.mydiary.data.model.MyCategory
 import com.furianrt.mydiary.note.dialogs.categories.edit.CategoryEditFragment
 import com.furianrt.mydiary.note.fragments.notefragment.inTransaction
+import kotlinx.android.synthetic.main.fragment_category_list.*
 import kotlinx.android.synthetic.main.fragment_category_list.view.*
 import javax.inject.Inject
 
 private const val ARG_NOTE_ID = "noteId"
+private const val BUNDLE_RECYCLER_VIEW_STATE = "recyclerState"
 
 class CategoryListFragment : Fragment(), View.OnClickListener,
         CategoriesListAdapter.OnCategoryListInteractionListener, CategoryListContract.View {
@@ -26,24 +29,35 @@ class CategoryListFragment : Fragment(), View.OnClickListener,
 
     private val mListAdapter = CategoriesListAdapter(this)
     private lateinit var mNoteId: String
+    private var mRecyclerViewState: Parcelable? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         getPresenterComponent(context!!).inject(this)
         mNoteId = arguments?.getString(ARG_NOTE_ID) ?: throw IllegalArgumentException()
+        mRecyclerViewState = savedInstanceState?.getParcelable(BUNDLE_RECYCLER_VIEW_STATE)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_category_list, container, false)
 
-        mPresenter.attachView(this)
 
         setupUi(view)
 
-        mPresenter.onViewCreate()
 
         return view
+    }
+
+    override fun onStart() {
+        super.onStart()
+        mPresenter.attachView(this)
+        mPresenter.onViewStart()
+    }
+
+    override fun onStop() {
+        super.onStop()
+        mPresenter.detachView()
     }
 
     private fun setupUi(view: View?) {
@@ -62,19 +76,18 @@ class CategoryListFragment : Fragment(), View.OnClickListener,
         fragmentManager?.apply {
             if (findFragmentByTag(CategoryEditFragment.TAG) == null) {
                 inTransaction {
-                    add(R.id.container_categories, CategoryEditFragment(), CategoryEditFragment.TAG)
+                    replace(R.id.container_categories, CategoryEditFragment(), CategoryEditFragment.TAG)
                     addToBackStack(null)
                 }
             }
         }
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        mPresenter.detachView()
-    }
-
     override fun showCategories(categories: List<MyCategory>) {
+        mRecyclerViewState?.let {
+            list_categories.layoutManager?.onRestoreInstanceState(mRecyclerViewState)
+            mRecyclerViewState = null
+        }
         mListAdapter.submitList(categories)
     }
 
@@ -100,12 +113,18 @@ class CategoryListFragment : Fragment(), View.OnClickListener,
         fragmentManager?.apply {
             if (findFragmentByTag(CategoryEditFragment.TAG) == null) {
                 inTransaction {
-                    add(R.id.container_categories, CategoryEditFragment.newInstance(category),
+                    replace(R.id.container_categories, CategoryEditFragment.newInstance(category.id),
                             CategoryEditFragment.TAG)
                     addToBackStack(null)
                 }
             }
         }
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putParcelable(BUNDLE_RECYCLER_VIEW_STATE,
+                view?.list_categories?.layoutManager?.onSaveInstanceState())
     }
 
     override fun close() {

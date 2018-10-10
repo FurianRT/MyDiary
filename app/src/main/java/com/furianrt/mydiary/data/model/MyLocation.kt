@@ -8,27 +8,21 @@ import androidx.room.PrimaryKey
 
 @Entity(tableName = "Locations")
 data class MyLocation(
-        @ColumnInfo(name = "name_location") var name: String,
+        @PrimaryKey(autoGenerate = false) @ColumnInfo(name = "name_location") var name: String,
         @ColumnInfo(name = "lat") var lat: Double,
         @ColumnInfo(name = "lon") var lon: Double
 ) : Parcelable {
 
-    @ColumnInfo(name = "id_location")
-    @PrimaryKey(autoGenerate = true)
-    var id: Long = 0
-
+    @Suppress("NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
     constructor(parcel: Parcel) : this(
-            parcel.readString()!!,
+            parcel.readString(),
             parcel.readDouble(),
-            parcel.readDouble()) {
-        id = parcel.readLong()
-    }
+            parcel.readDouble())
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeString(name)
         parcel.writeDouble(lat)
         parcel.writeDouble(lon)
-        parcel.writeLong(id)
     }
 
     override fun describeContents(): Int {
@@ -44,4 +38,5 @@ data class MyLocation(
             return arrayOfNulls(size)
         }
     }
+
 }

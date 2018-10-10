@@ -4,6 +4,354 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+        <item name="actionModeBackground">@color/colorPrimaryDark</item>
+        <item name="windowActionModeOverlay">true</item>
+    </style>
+
+    <style name="OverlayPrimaryColorR1">
+        <item name="colorPrimary">@color/r1</item>
+        <item name="colorPrimaryDark">@color/r11</item>
+        <item name="actionModeBackground">@color/r11</item>
+    </style>
+
+    <style name="OverlayPrimaryColorR2">
+        <item name="colorPrimary">@color/r2</item>
+        <item name="colorPrimaryDark">@color/r1</item>
+        <item name="actionModeBackground">@color/r1</item>
+    </style>
+
+    <style name="OverlayPrimaryColorR3">
+        <item name="colorPrimary">@color/r3</item>
+        <item name="colorPrimaryDark">@color/r31</item>
+        <item name="actionModeBackground">@color/r31</item>
+    </style>
+
+    <style name="OverlayPrimaryColorR4">
+        <item name="colorPrimary">@color/r4</item>
+        <item name="colorPrimaryDark">@color/r3</item>
+        <item name="actionModeBackground">@color/r3</item>
+    </style>
+
+    <style name="OverlayPrimaryColorR5">
+        <item name="colorPrimary">@color/r5</item>
+        <item name="colorPrimaryDark">@color/r51</item>
+        <item name="actionModeBackground">@color/r51</item>
+    </style>
+
+    <style name="OverlayPrimaryColorR6">
+        <item name="colorPrimary">@color/r6</item>
+        <item name="colorPrimaryDark">@color/r5</item>
+        <item name="actionModeBackground">@color/r5</item>
+    </style>
+
+    <style name="OverlayPrimaryColorR7">
+        <item name="colorPrimary">@color/r7</item>
+        <item name="colorPrimaryDark">@color/r71</item>
+        <item name="actionModeBackground">@color/r71</item>
+    </style>
+
+    <style name="OverlayPrimaryColorP1">
+        <item name="colorPrimary">@color/p1</item>
+        <item name="colorPrimaryDark">@color/p11</item>
+        <item name="actionModeBackground">@color/p11</item>
+    </style>
+
+    <style name="OverlayPrimaryColorP2">
+        <item name="colorPrimary">@color/p2</item>
+        <item name="colorPrimaryDark">@color/p1</item>
+        <item name="actionModeBackground">@color/p1</item>
+    </style>
+
+    <style name="OverlayPrimaryColorP3">
+        <item name="colorPrimary">@color/p3</item>
+        <item name="colorPrimaryDark">@color/p2</item>
+        <item name="actionModeBackground">@color/p2</item>
+    </style>
+
+    <style name="OverlayPrimaryColorB1">
+        <item name="colorPrimary">@color/b1</item>
+        <item name="colorPrimaryDark">@color/b11</item>
+        <item name="actionModeBackground">@color/b11</item>
+    </style>
+
+    <style name="OverlayPrimaryColorB2">
+        <item name="colorPrimary">@color/b2</item>
+        <item name="colorPrimaryDark">@color/b21</item>
+        <item name="actionModeBackground">@color/b21</item>
+    </style>
+
+    <style name="OverlayPrimaryColorB3">
+        <item name="colorPrimary">@color/b3</item>
+        <item name="colorPrimaryDark">@color/b31</item>
+        <item name="actionModeBackground">@color/b31</item>
+    </style>
+
+    <style name="OverlayPrimaryColorB4">
+        <item name="colorPrimary">@color/b4</item>
+        <item name="colorPrimaryDark">@color/b41</item>
+        <item name="actionModeBackground">@color/b41</item>
+    </style>
+
+    <style name="OverlayPrimaryColorB5">
+        <item name="colorPrimary">@color/b5</item>
+        <item name="colorPrimaryDark">@color/b51</item>
+        <item name="actionModeBackground">@color/b51</item>
+    </style>
+
+    <style name="OverlayPrimaryColorG1">
+        <item name="colorPrimary">@color/g1</item>
+        <item name="colorPrimaryDark">@color/g1</item>
+        <item name="actionModeBackground">@color/g1</item>
+    </style>
+
+    <style name="OverlayPrimaryColorG2">
+        <item name="colorPrimary">@color/g2</item>
+        <item name="colorPrimaryDark">@color/g1</item>
+        <item name="actionModeBackground">@color/g1</item>
+    </style>
+
+    <style name="OverlayPrimaryColorG3">
+        <item name="colorPrimary">@color/g3</item>
+        <item name="colorPrimaryDark">@color/g1</item>
+        <item name="actionModeBackground">@color/g1</item>
+    </style>
+
+    <style name="OverlayPrimaryColorG4">
+        <item name="colorPrimary">@color/g4</item>
+        <item name="colorPrimaryDark">@color/g41</item>
+        <item name="actionModeBackground">@color/g41</item>
+    </style>
+
+    <style name="OverlayPrimaryColorG5">
+        <item name="colorPrimary">@color/g5</item>
+        <item name="colorPrimaryDark">@color/g4</item>
+        <item name="actionModeBackground">@color/g4</item>
+    </style>
+
+    <style name="OverlayPrimaryColorG6">
+        <item name="colorPrimary">@color/g6</item>
+        <item name="colorPrimaryDark">@color/g61</item>
+        <item name="actionModeBackground">@color/g61</item>
+    </style>
+
+    <style name="OverlayPrimaryColorE1">
+        <item name="colorPrimary">@color/e1</item>
+        <item name="colorPrimaryDark">@color/e1</item>
+        <item name="actionModeBackground">@color/e1</item>
+    </style>
+
+    <style name="OverlayPrimaryColorE2">
+        <item name="colorPrimary">@color/e2</item>
+        <item name="colorPrimaryDark">@color/e21</item>
+        <item name="actionModeBackground">@color/e21</item>
+    </style>
+
+    <style name="OverlayPrimaryColorE3">
+        <item name="colorPrimary">@color/e3</item>
+        <item name="colorPrimaryDark">@color/e31</item>
+        <item name="actionModeBackground">@color/e31</item>
+    </style>
+
+    <style name="OverlayPrimaryColorE4">
+        <item name="colorPrimary">@color/e4</item>
+        <item name="colorPrimaryDark">@color/e41</item>
+        <item name="actionModeBackground">@color/e41</item>
+    </style>
+
+    <style name="OverlayPrimaryColorE5">
+        <item name="colorPrimary">@color/e5</item>
+        <item name="colorPrimaryDark">@color/e51</item>
+        <item name="actionModeBackground">@color/e51</item>
+    </style>
+
+    <style name="OverlayPrimaryColorBr1">
+        <item name="colorPrimary">@color/br1</item>
+        <item name="colorPrimaryDark">@color/br11</item>
+        <item name="actionModeBackground">@color/br11</item>
+    </style>
+
+    <style name="OverlayPrimaryColorBr2">
+        <item name="colorPrimary">@color/br2</item>
+        <item name="colorPrimaryDark">@color/br1</item>
+        <item name="actionModeBackground">@color/br1</item>
+    </style>
+
+    <style name="OverlayPrimaryColorGr1">
+        <item name="colorPrimary">@color/gr1</item>
+        <item name="colorPrimaryDark">@color/gr11</item>
+        <item name="actionModeBackground">@color/gr11</item>
+    </style>
+
+    <style name="OverlayPrimaryColorGr2">
+        <item name="colorPrimary">@color/gr2</item>
+        <item name="colorPrimaryDark">@color/gr21</item>
+        <item name="actionModeBackground">@color/gr21</item>
+    </style>
+
+    <style name="OverlayPrimaryColorU1">
+        <item name="colorPrimary">@color/u1</item>
+        <item name="colorPrimaryDark">@color/u11</item>
+        <item name="actionModeBackground">@color/u11</item>
+    </style>
+
+    <style name="OverlayPrimaryColorU2">
+        <item name="colorPrimary">@color/u2</item>
+        <item name="colorPrimaryDark">@color/u1</item>
+        <item name="actionModeBackground">@color/u1</item>
+    </style>
+
+    <style name="OverlayPrimaryColorU3">
+        <item name="colorPrimary">@color/u3</item>
+        <item name="colorPrimaryDark">@color/u2</item>
+        <item name="actionModeBackground">@color/u2</item>
+    </style>
+
+    <style name="OverlayPrimaryColorBlack">
+        <item name="colorPrimary">@color/black</item>
+        <item name="colorPrimaryDark">@color/black</item>
+        <item name="actionModeBackground">@color/black</item>
+    </style>
+
+    <style name="OverlayAccentColorR1">
+        <item name="colorAccent">@color/r1</item>
+    </style>
+
+    <style name="OverlayAccentColorR2">
+        <item name="colorAccent">@color/r2</item>
+    </style>
+
+    <style name="OverlayAccentColorR3">
+        <item name="colorAccent">@color/r3</item>
+    </style>
+
+    <style name="OverlayAccentColorR4">
+        <item name="colorAccent">@color/r4</item>
+    </style>
+
+    <style name="OverlayAccentColorR5">
+        <item name="colorAccent">@color/r5</item>
+    </style>
+
+    <style name="OverlayAccentColorR6">
+        <item name="colorAccent">@color/r6</item>
+    </style>
+
+    <style name="OverlayAccentColorR7">
+        <item name="colorAccent">@color/r7</item>
+    </style>
+
+    <style name="OverlayAccentColorP1">
+        <item name="colorAccent">@color/p1</item>
+    </style>
+
+    <style name="OverlayAccentColorP2">
+        <item name="colorAccent">@color/p2</item>
+    </style>
+
+    <style name="OverlayAccentColorP3">
+        <item name="colorAccent">@color/p3</item>
+    </style>
+
+    <style name="OverlayAccentColorB1">
+        <item name="colorAccent">@color/b1</item>
+    </style>
+
+    <style name="OverlayAccentColorB2">
+        <item name="colorAccent">@color/b2</item>
+    </style>
+
+    <style name="OverlayAccentColorB3">
+        <item name="colorAccent">@color/b3</item>
+    </style>
+
+    <style name="OverlayAccentColorB4">
+        <item name="colorAccent">@color/b4</item>
+    </style>
+
+    <style name="OverlayAccentColorB5">
+        <item name="colorAccent">@color/b5</item>
+    </style>
+
+    <style name="OverlayAccentColorG1">
+        <item name="colorAccent">@color/g1</item>
+    </style>
+
+    <style name="OverlayAccentColorG2">
+        <item name="colorAccent">@color/g2</item>
+    </style>
+
+    <style name="OverlayAccentColorG3">
+        <item name="colorAccent">@color/g3</item>
+    </style>
+
+    <style name="OverlayAccentColorG4">
+        <item name="colorAccent">@color/g4</item>
+    </style>
+
+    <style name="OverlayAccentColorG5">
+        <item name="colorAccent">@color/g5</item>
+    </style>
+
+    <style name="OverlayAccentColorG6">
+        <item name="colorAccent">@color/g6</item>
+    </style>
+
+    <style name="OverlayAccentColorE1">
+        <item name="colorAccent">@color/e1</item>
+    </style>
+
+    <style name="OverlayAccentColorE2">
+        <item name="colorAccent">@color/e2</item>
+    </style>
+
+    <style name="OverlayAccentColorE3">
+        <item name="colorAccent">@color/e3</item>
+    </style>
+
+    <style name="OverlayAccentColorE4">
+        <item name="colorAccent">@color/e4</item>
+    </style>
+
+    <style name="OverlayAccentColorE5">
+        <item name="colorAccent">@color/e5</item>
+    </style>
+
+    <style name="OverlayAccentColorBr1">
+        <item name="colorAccent">@color/br1</item>
+    </style>
+
+    <style name="OverlayAccentColorBr2">
+        <item name="colorAccent">@color/br2</item>
+    </style>
+
+    <style name="OverlayAccentColorGr1">
+        <item name="colorAccent">@color/gr1</item>
+    </style>
+
+    <style name="OverlayAccentColorGr2">
+        <item name="colorAccent">@color/gr2</item>
+    </style>
+
+    <style name="OverlayAccentColorU1">
+        <item name="colorAccent">@color/u1</item>
+    </style>
+
+    <style name="OverlayAccentColorU2">
+        <item name="colorAccent">@color/u2</item>
+    </style>
+
+    <style name="OverlayAccentColorU3">
+        <item name="colorAccent">@color/u3</item>
+    </style>
+
+    <style name="OverlayAccentColorBlack">
+        <item name="colorAccent">@color/black</item>
+    </style>
+
+    <style name="SettingsTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
 
         <item name="windowActionModeOverlay">true</item>
     </style>

@@ -20,7 +20,7 @@ class GalleryPagerPresenter(
         mView = null
     }
 
-    override fun onViewCreate() {
+    override fun onViewStart() {
         loadImages(mNoteId)
     }
 

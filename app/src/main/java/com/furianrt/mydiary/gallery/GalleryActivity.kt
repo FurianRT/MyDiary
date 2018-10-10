@@ -1,7 +1,7 @@
 package com.furianrt.mydiary.gallery
 
 import android.os.Bundle
-import androidx.appcompat.app.AppCompatActivity
+import com.furianrt.mydiary.BaseActivity
 import com.furianrt.mydiary.R
 import com.furianrt.mydiary.gallery.fragments.list.GalleryListFragment
 import com.furianrt.mydiary.gallery.fragments.pager.GalleryPagerFragment
@@ -12,7 +12,7 @@ import javax.inject.Inject
 const val EXTRA_POSITION = "position"
 const val EXTRA_NOTE_ID = "noteId"
 
-class GalleryActivity : AppCompatActivity(), GalleryActivityContract.View {
+class GalleryActivity : BaseActivity(), GalleryActivityContract.View {
 
     @Inject
     lateinit var mPresenter: GalleryActivityContract.Presenter
@@ -21,8 +21,6 @@ class GalleryActivity : AppCompatActivity(), GalleryActivityContract.View {
         super.onCreate(savedInstanceState)
         getPresenterComponent(this).inject(this)
         setContentView(R.layout.activity_gallery)
-
-        mPresenter.attachView(this)
 
         setupUi()
     }
@@ -46,13 +44,18 @@ class GalleryActivity : AppCompatActivity(), GalleryActivityContract.View {
         }
     }
 
+    override fun onStart() {
+        super.onStart()
+        mPresenter.attachView(this)
+    }
+
+    override fun onStop() {
+        super.onStop()
+        mPresenter.detachView()
+    }
+
     override fun onSupportNavigateUp(): Boolean {
         onBackPressed()
         return true
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        mPresenter.detachView()
     }
 }

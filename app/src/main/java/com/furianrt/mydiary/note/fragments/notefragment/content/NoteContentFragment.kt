@@ -1,13 +1,11 @@
 package com.furianrt.mydiary.note.fragments.notefragment.content
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import com.furianrt.mydiary.LOG_TAG
 import com.furianrt.mydiary.R
 import com.furianrt.mydiary.data.model.MyNote
 import com.furianrt.mydiary.note.NoteActivity
@@ -38,8 +36,6 @@ class NoteContentFragment : androidx.fragment.app.Fragment(), NoteContentFragmen
                               savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_note_content, container, false)
 
-        mPresenter.attachView(this)
-
         view.apply {
             val title = mNote.title
             if (title.isEmpty()) {
@@ -56,7 +52,6 @@ class NoteContentFragment : androidx.fragment.app.Fragment(), NoteContentFragmen
     }
 
     override fun showNote(note: MyNote) {
-        Log.e(LOG_TAG, "FragmentContent.showNote()")
         mNote = note
         view?.let {
             val title = mNote.title
@@ -69,8 +64,13 @@ class NoteContentFragment : androidx.fragment.app.Fragment(), NoteContentFragmen
         }
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
+    override fun onStart() {
+        super.onStart()
+        mPresenter.attachView(this)
+    }
+
+    override fun onStop() {
+        super.onStop()
         mPresenter.detachView()
     }
 
@@ -107,11 +107,11 @@ class NoteContentFragment : androidx.fragment.app.Fragment(), NoteContentFragmen
         }
 
         fragmentManager?.let {
-            if (it.findFragmentByTag(NoteEditFragment::class.toString()) == null) {
+            if (it.findFragmentByTag(NoteEditFragment.TAG) == null) {
                 it.inTransaction {
                     replace(R.id.container_note_edit,
                             NoteEditFragment.newInstance(mNote, clickedView, touchPosition),
-                            NoteEditFragment::class.toString())
+                            NoteEditFragment.TAG)
                     addToBackStack(null)
                 }
             }
@@ -119,8 +119,11 @@ class NoteContentFragment : androidx.fragment.app.Fragment(), NoteContentFragmen
     }
 
     companion object {
+
+        val TAG = NoteContentFragment::class.toString()
+
         @JvmStatic
-        fun newInstance(note: MyNote?) =
+        fun newInstance(note: MyNote) =
                 NoteContentFragment().apply {
                     arguments = Bundle().apply {
                         putParcelable(ARG_NOTE, note)

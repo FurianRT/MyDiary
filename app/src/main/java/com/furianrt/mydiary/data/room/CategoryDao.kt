@@ -3,7 +3,7 @@ package com.furianrt.mydiary.data.room
 import androidx.room.*
 import com.furianrt.mydiary.data.model.MyCategory
 import io.reactivex.Flowable
-import io.reactivex.Single
+import io.reactivex.Maybe
 
 @Dao
 interface CategoryDao {
@@ -18,7 +18,7 @@ interface CategoryDao {
     fun delete(category: MyCategory)
 
     @Query("SELECT * FrOM Categories WHERE id_category = :categoryId")
-    fun getCategory(categoryId: Long): Single<MyCategory>
+    fun getCategory(categoryId: Long): Maybe<MyCategory>
 
     @Query("SELECT * FROM Categories")
     fun getAllCategories(): Flowable<List<MyCategory>>

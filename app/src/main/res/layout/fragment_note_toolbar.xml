@@ -13,7 +13,7 @@
         android:id="@+id/collapsing_toolbar_note"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:contentScrim="@color/colorPrimary"
+        app:contentScrim="?attr/colorPrimary"
         app:expandedTitleMarginStart="48dp"
         app:layout_scrollFlags="scroll|exitUntilCollapsed">
 
@@ -28,6 +28,7 @@
             android:id="@+id/toolbar_note_fragment"
             android:layout_width="match_parent"
             android:layout_height="?android:attr/actionBarSize"
+            android:fitsSystemWindows="true"
             app:layout_collapseMode="pin">
 
         </androidx.appcompat.widget.Toolbar>

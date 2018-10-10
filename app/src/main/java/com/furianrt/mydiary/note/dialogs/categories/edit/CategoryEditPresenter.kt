@@ -33,4 +33,12 @@ class CategoryEditPresenter(private val mDataManager: DataManager) : CategoryEdi
 
         mCompositeDisposable.add(disposable)
     }
+
+    override fun loadCategory(categoryId: Long) {
+        val disposable = mDataManager.getCategory(categoryId)
+                .defaultIfEmpty(MyCategory())
+                .subscribe { category -> mView?.showCategory(category) }
+
+        mCompositeDisposable.add(disposable)
+    }
 }

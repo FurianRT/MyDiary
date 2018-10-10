@@ -34,11 +34,7 @@ class GalleryPagerFragment : androidx.fragment.app.Fragment(), GalleryPagerContr
                               savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_gallery_pager, container, false)
 
-        mPresenter.attachView(this)
-
         setupUi(view)
-
-        mPresenter.onViewCreate()
 
         return view
     }
@@ -59,6 +55,17 @@ class GalleryPagerFragment : androidx.fragment.app.Fragment(), GalleryPagerContr
                 mPagerPosition = position
             }
         })
+    }
+
+    override fun onStart() {
+        super.onStart()
+        mPresenter.attachView(this)
+        mPresenter.onViewStart()
+    }
+
+    override fun onStop() {
+        super.onStop()
+        mPresenter.detachView()
     }
 
     override fun showImages(images: List<MyImage>) {
@@ -92,11 +99,6 @@ class GalleryPagerFragment : androidx.fragment.app.Fragment(), GalleryPagerContr
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         outState.putInt(ARG_POSITION, view!!.pager_gallery.currentItem)
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        mPresenter.detachView()
     }
 
     companion object {

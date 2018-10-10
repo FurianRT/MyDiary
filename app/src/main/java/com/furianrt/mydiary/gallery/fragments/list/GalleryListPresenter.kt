@@ -45,7 +45,7 @@ class GalleryListPresenter(private val mDataManager: DataManager) : GalleryListC
         mNoteId = noteId
     }
 
-    override fun onViewCreate() {
+    override fun onViewStart() {
         loadImages(mNoteId)
     }
 
@@ -82,7 +82,7 @@ class GalleryListPresenter(private val mDataManager: DataManager) : GalleryListC
     }
 
     override fun onCabSelectAllButtonClick() {
-        mDataManager.getImagesForNote(mNoteId)
+        val disposable = mDataManager.getImagesForNote(mNoteId)
                 .first(emptyList())
                 .subscribe { images ->
                     val list = images.toMutableList()
@@ -90,10 +90,16 @@ class GalleryListPresenter(private val mDataManager: DataManager) : GalleryListC
                     mSelectedImages.addAll(list)
                     mView?.selectItems(list)
                 }
+        mCompositeDisposable.add(disposable)
     }
 
     override fun onRestoreInstanceState(selectedImages: MutableList<MyImage>?) {
         selectedImages?.let { mSelectedImages = selectedImages }
+    }
+
+    override fun onCabCloseSelection() {
+        mSelectedImages.clear()
+        mView?.deactivateSelection()
     }
 
     override fun onSaveInstanceState() = mSelectedImages

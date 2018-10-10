@@ -6,6 +6,7 @@ import android.app.Dialog
 import android.content.DialogInterface
 import android.graphics.Color
 import android.os.Bundle
+import android.os.Parcelable
 import android.view.View
 import android.widget.EditText
 import android.widget.ImageView
@@ -13,16 +14,19 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.furianrt.mydiary.R
 import com.furianrt.mydiary.data.model.MyTag
+import kotlinx.android.synthetic.main.dialog_tags.*
 import kotlinx.android.synthetic.main.dialog_tags.view.*
 import javax.inject.Inject
 
 private const val ARG_TAGS = "tags"
+private const val BUNDLE_RECYCLER_VIEW_STATE = "recyclerState"
 
 class TagsDialog : androidx.fragment.app.DialogFragment(), TagsDialogListAdapter.OnTagChangedListener,
         TagsDialogContract.View {
 
     private val mListAdapter = TagsDialogListAdapter(this)
     private var mListener: OnTagsDialogInteractionListener? = null
+    private var mRecyclerViewState: Parcelable? = null
 
     @Inject
     lateinit var mPresenter: TagsDialogContract.Presenter
@@ -44,6 +48,7 @@ class TagsDialog : androidx.fragment.app.DialogFragment(), TagsDialogListAdapter
         getPresenterComponent(context!!).inject(this)
         super.onCreate(savedInstanceState)
         val tags: ArrayList<MyTag> = if (savedInstanceState != null) {
+            mRecyclerViewState = savedInstanceState.getParcelable(BUNDLE_RECYCLER_VIEW_STATE)
             savedInstanceState.getParcelableArrayList(ARG_TAGS)!!
         } else {
             arguments?.getParcelableArrayList(ARG_TAGS)!!
@@ -73,11 +78,14 @@ class TagsDialog : androidx.fragment.app.DialogFragment(), TagsDialogListAdapter
 
     override fun onDismiss(dialog: DialogInterface?) {
         super.onDismiss(dialog)
+        mListener = null
         mPresenter.detachView()
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
         outState.putParcelableArrayList(ARG_TAGS, mPresenter.getTags())
+        outState.putParcelable(BUNDLE_RECYCLER_VIEW_STATE,
+                view?.list_tags?.layoutManager?.onSaveInstanceState())
         super.onSaveInstanceState(outState)
     }
 
@@ -95,6 +103,10 @@ class TagsDialog : androidx.fragment.app.DialogFragment(), TagsDialogListAdapter
 
     override fun showTags(tags: MutableList<MyTag>) {
         mListAdapter.submitList(tags.toMutableList())
+        mRecyclerViewState?.let {
+            list_tags.layoutManager?.onRestoreInstanceState(mRecyclerViewState)
+            mRecyclerViewState = null
+        }
     }
 
     private fun initUiElements(view: View?) {

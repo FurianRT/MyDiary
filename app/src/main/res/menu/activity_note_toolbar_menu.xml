@@ -24,26 +24,32 @@
         app:showAsAction="always" />
 
     <item
-        android:id="@+id/menu_date"
+        android:id="@+id/menu_appearance"
         android:orderInCategory="4"
+        android:title="@string/appearance"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/menu_date"
+        android:orderInCategory="5"
         android:title="@string/date"
         app:showAsAction="never" />
 
     <item
         android:id="@+id/menu_time"
-        android:orderInCategory="5"
+        android:orderInCategory="6"
         android:title="@string/time"
         app:showAsAction="never" />
 
     <item
         android:id="@+id/menu_share"
-        android:orderInCategory="6"
+        android:orderInCategory="7"
         android:title="@string/share"
         app:showAsAction="never" />
 
     <item
         android:id="@+id/menu_delete"
-        android:orderInCategory="7"
+        android:orderInCategory="8"
         android:title="@string/delete"
         app:showAsAction="never" />
 
