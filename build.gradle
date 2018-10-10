@@ -2,11 +2,11 @@
 
 buildscript {
     ext.kotlin_version = '1.2.71'
-    ext.support_version = '28.0.0'
-    ext.arch_version = '1.1.1'
+    ext.support_version = '1.0.0'
+    ext.room_version = '2.0.0'
     ext.dagger_version = '2.13'
     ext.retrofit_version = '2.4.0'
-    ext.play_services_version = '15.0.1'
+    ext.play_services_version = '16.0.0'
     ext.glide_version = '4.8.0'
     repositories {
         google()
