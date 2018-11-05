@@ -2,13 +2,11 @@ package com.furianrt.mydiary.main.listadapter
 
 import android.graphics.Color
 import android.graphics.PorterDuff
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.furianrt.mydiary.LOG_TAG
 import com.furianrt.mydiary.R
 import com.furianrt.mydiary.data.model.MyNoteWithProp
 import com.furianrt.mydiary.general.GlideApp
@@ -30,7 +28,6 @@ class MainListAdapter(
         if (headerPosition == RecyclerView.NO_POSITION) {
             header.layoutParams.height = 0
         }
-        Log.e(LOG_TAG, "bindHeaderData $headerPosition")
 
         val time = (getItem(headerPosition) as MainHeaderItem).time
         val date = getMonth(time).toUpperCase(Locale.getDefault()) + ", " + getYear(time)
@@ -52,25 +49,18 @@ class MainListAdapter(
         return getItem(itemPosition) is MainHeaderItem
     }
 
-    override fun getHeaderPositionForItem(itemPosition: Int): Int {
-        val i = (itemPosition downTo 0)
-                .map { Pair(isHeader(it), it) }
-                .firstOrNull { it.first }?.second ?: RecyclerView.NO_POSITION
-        Log.e(LOG_TAG, "getHeaderPositionForItem $i")
-        return i
-    }
+    override fun getHeaderPositionForItem(itemPosition: Int): Int =
+            (itemPosition downTo 0)
+                    .map { Pair(isHeader(it), it) }
+                    .firstOrNull { it.first }?.second ?: RecyclerView.NO_POSITION
 
-    override fun getHeaderLayout(headerPosition: Int): Int {
-        return R.layout.activity_main_list_header
-    }
+    override fun getHeaderLayout(headerPosition: Int): Int = R.layout.activity_main_list_header
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         holder.bind(getItem(position))
     }
 
-    override fun getItemViewType(position: Int): Int {
-        return getItem(position).getType()
-    }
+    override fun getItemViewType(position: Int): Int = getItem(position).getType()
 
     interface OnMainListItemInteractionListener {
 
@@ -97,8 +87,9 @@ class MainListAdapter(
         }
     }
 
-    inner class ContentViewHolder(private val mView: View) : MyViewHolder(mView), View.OnClickListener,
-            View.OnLongClickListener {
+    inner class ContentViewHolder(
+            private val mView: View
+    ) : MyViewHolder(mView), View.OnClickListener, View.OnLongClickListener {
 
         private lateinit var mContentItem: MainContentItem
 
@@ -110,6 +101,11 @@ class MainListAdapter(
                 setOnLongClickListener(this@ContentViewHolder)
                 text_day_of_week.text = getDayOfWeek(time)
                 val categoryColor = mContentItem.note.category?.color
+                if (categoryColor != null) {
+                    text_day_of_week.setBackgroundColor(categoryColor)
+                } else {
+                    text_day_of_week.setBackgroundColor(Color.BLACK)
+                }
                 categoryColor?.let { text_day_of_week.setBackgroundColor(it) }
                 text_day.text = getDay(time)
                 text_time.text = getTime(time)

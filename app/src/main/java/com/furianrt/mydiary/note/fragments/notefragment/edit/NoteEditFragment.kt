@@ -6,15 +6,14 @@ import android.view.*
 import androidx.fragment.app.Fragment
 import com.furianrt.mydiary.R
 import com.furianrt.mydiary.data.model.MyNote
-import com.furianrt.mydiary.note.fragments.notefragment.ARG_NOTE
 import com.furianrt.mydiary.note.fragments.notefragment.NoteFragment
 import com.furianrt.mydiary.utils.showKeyboard
 import kotlinx.android.synthetic.main.fragment_note_edit.view.*
 import javax.inject.Inject
 
-const val ARG_CLICKED_VIEW = "clickedView"
-const val ARG_POSITION = "position"
-
+private const val ARG_CLICKED_VIEW = "clickedView"
+private const val ARG_NOTE = "note"
+private const val ARG_POSITION = "position"
 enum class ClickedView { TITLE, CONTENT }
 
 class NoteEditFragment : Fragment(), NoteEditFragmentContract.View {
@@ -30,6 +29,7 @@ class NoteEditFragment : Fragment(), NoteEditFragmentContract.View {
     override fun onCreate(savedInstanceState: Bundle?) {
         getPresenterComponent(context!!).inject(this)
         super.onCreate(savedInstanceState)
+        setHasOptionsMenu(true)
         arguments?.apply {
             mNote = this.getParcelable(ARG_NOTE)!!
             mClickedView = this.getSerializable(ARG_CLICKED_VIEW) as? ClickedView
@@ -38,7 +38,6 @@ class NoteEditFragment : Fragment(), NoteEditFragmentContract.View {
         if (savedInstanceState != null) {
             mClickedView = null
         }
-        setHasOptionsMenu(true)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -125,9 +124,10 @@ class NoteEditFragment : Fragment(), NoteEditFragmentContract.View {
         super.onStop()
         val noteTitle = view?.edit_note_title?.text.toString()
         val noteContent = view?.edit_note_content?.text.toString()
+        val noteFragment = (parentFragment as? NoteFragment)
+        noteFragment?.onNoteEditFinished(noteTitle, noteContent)
+        noteFragment?.enableActionBarExpanding(false, false)
         mListener?.onNoteFragmentEditModeDisabled()
-        (parentFragment as? NoteFragment)?.enableActionBarExpanding(false, false)
-        mPresenter.onStop(mNote, noteTitle, noteContent)
         mPresenter.detachView()
     }
 

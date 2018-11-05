@@ -12,12 +12,16 @@ class NoteEditFragmentPresenter(private val mDataManager: DataManager)
 
     override fun onStop(note: MyNote, noteTitle: String, noteContent: String) {
         //if (!note.title.isEmpty() || !note.content.isEmpty()) {
-        note.title = noteTitle
-        note.content = noteContent
-        mDataManager.findNote(note.id)
-                .doOnComplete { mDataManager.insertNote(note).subscribe() }
-                .doOnSuccess { mDataManager.updateNoteText(note.id, noteTitle, noteContent).subscribe() }
-                .subscribe()
+        if (note.title != noteTitle || note.content != noteContent) {
+            note.title = noteTitle
+            note.content = noteContent
+
+            val disposable = mDataManager.updateNoteText(note.id, noteTitle, noteContent)
+                    .subscribe()
+
+            mCompositeDisposable.add(disposable)
+        }
+
         // }
     }
 

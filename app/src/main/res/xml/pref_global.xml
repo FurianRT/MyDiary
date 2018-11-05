@@ -95,7 +95,7 @@
 
         <EditTextPreference
             android:capitalize="words"
-            android:defaultValue="@string/pref_default_display_name"
+            android:defaultValue="dwdwdwd"
             android:dependency="security_key"
             android:inputType="textCapWords"
             android:key="security_email"

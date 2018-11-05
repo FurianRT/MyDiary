@@ -6,6 +6,7 @@ import android.os.Parcelable
 import android.view.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.view.ActionMode
+import androidx.recyclerview.widget.GridLayoutManager
 import com.furianrt.mydiary.R
 import com.furianrt.mydiary.data.model.MyImage
 import com.furianrt.mydiary.gallery.fragments.pager.GalleryPagerFragment
@@ -30,7 +31,7 @@ class GalleryListFragment : androidx.fragment.app.Fragment(), GalleryListAdapter
     private lateinit var mAdapter: GalleryListAdapter
     private var mSelectionActive = false
     private var mRecyclerViewState: Parcelable? = null
-
+    private var mActionMode: ActionMode? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         getPresenterComponent(context!!).inject(this)
@@ -46,7 +47,6 @@ class GalleryListFragment : androidx.fragment.app.Fragment(), GalleryListAdapter
             mSelectionActive = it.getBoolean(BUNDLE_SELECTION_ACTIVE, false)
             mPresenter.onRestoreInstanceState(it.getParcelableArrayList(BUNDLE_SELECTED_IMAGES))
         }
-
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -56,9 +56,9 @@ class GalleryListFragment : androidx.fragment.app.Fragment(), GalleryListAdapter
         view.apply {
             val orientation = context!!.resources.configuration.orientation
             if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
-                list_gallery.layoutManager = androidx.recyclerview.widget.GridLayoutManager(context, HORIZONTAL_LIST_SPAN_COUNT)
+                list_gallery.layoutManager = GridLayoutManager(context, HORIZONTAL_LIST_SPAN_COUNT)
             } else {
-                list_gallery.layoutManager = androidx.recyclerview.widget.GridLayoutManager(context, VERTICAL_LIST_SPAN_COUNT)
+                list_gallery.layoutManager = GridLayoutManager(context, VERTICAL_LIST_SPAN_COUNT)
             }
             mAdapter = GalleryListAdapter(ArrayList(), this@GalleryListFragment, list_gallery)
             list_gallery.adapter = mAdapter
@@ -66,7 +66,7 @@ class GalleryListFragment : androidx.fragment.app.Fragment(), GalleryListAdapter
         }
 
         if (mSelectionActive) {
-            (activity as AppCompatActivity).startSupportActionMode(this)
+            mActionMode = (activity as AppCompatActivity).startSupportActionMode(this)
         }
 
         return view
@@ -136,7 +136,6 @@ class GalleryListFragment : androidx.fragment.app.Fragment(), GalleryListAdapter
     override fun onActionItemClicked(mode: ActionMode?, item: MenuItem?): Boolean {
         return when (item?.itemId) {
             R.id.menu_delete -> {
-                mode?.finish()
                 mPresenter.onCabDeleteButtonClick()
                 true
             }
@@ -155,7 +154,7 @@ class GalleryListFragment : androidx.fragment.app.Fragment(), GalleryListAdapter
 
     override fun activateSelection() {
         mSelectionActive = true
-        (activity as AppCompatActivity).startSupportActionMode(this)
+        mActionMode = (activity as AppCompatActivity).startSupportActionMode(this)
     }
 
     override fun deactivateSelection() {
@@ -177,6 +176,10 @@ class GalleryListFragment : androidx.fragment.app.Fragment(), GalleryListAdapter
         mPresenter.onListItemClick(image, position, mSelectionActive)
     }
 
+    override fun onImagesOrderChange(images: List<MyImage>) {
+        mPresenter.onImagesOrderChange(mAdapter.getImages())
+    }
+
     override fun showViewImagePager(noteId: String, position: Int) {
         val tag = GalleryPagerFragment::class.toString()
         if (fragmentManager?.findFragmentByTag(tag) == null) {
@@ -187,9 +190,12 @@ class GalleryListFragment : androidx.fragment.app.Fragment(), GalleryListAdapter
         }
     }
 
+    override fun closeCab() {
+        mActionMode?.finish()
+    }
+
     override fun onStop() {
         super.onStop()
-        mPresenter.onStop(mAdapter.getImages())
         mPresenter.detachView()
     }
 

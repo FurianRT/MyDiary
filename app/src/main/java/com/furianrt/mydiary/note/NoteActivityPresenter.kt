@@ -1,8 +1,8 @@
 package com.furianrt.mydiary.note
 
 import com.furianrt.mydiary.data.DataManager
+import com.furianrt.mydiary.data.model.MyNote
 import com.furianrt.mydiary.data.model.MyNoteWithProp
-import com.furianrt.mydiary.utils.generateUniqueId
 import io.reactivex.disposables.CompositeDisposable
 
 class NoteActivityPresenter(private val mDataManager: DataManager) : NoteActivityContract.Presenter {
@@ -10,15 +10,22 @@ class NoteActivityPresenter(private val mDataManager: DataManager) : NoteActivit
     private var mView: NoteActivityContract.View? = null
     private val mCompositeDisposable = CompositeDisposable()
 
-    override fun loadNotes(mode: Mode) {
-        if (mode == Mode.ADD) {
-            mView?.showNotes(listOf(MyNoteWithProp(generateUniqueId())))
-        } else if (mode == Mode.READ) {
-            val disposable = mDataManager.getAllNotesWithProp()
-                    .subscribe { mView?.showNotes(it) }
+    override fun loadNotes() {
+        val disposable = mDataManager.getAllNotesWithProp()
+                .subscribe { mView?.showNotes(it) }
 
-            mCompositeDisposable.add(disposable)
-        }
+        mCompositeDisposable.add(disposable)
+    }
+
+    override fun loadNote(noteId: String) {
+        val tempNote = MyNote(noteId, "", "")
+        val disposable = mDataManager.findNote(noteId)
+                .switchIfEmpty(mDataManager.insertNote(tempNote).toSingleDefault(tempNote))
+                .subscribe { note ->
+                    mView?.showNotes(listOf(MyNoteWithProp(note, null, null, null)))
+                }
+
+        mCompositeDisposable.add(disposable)
     }
 
     override fun attachView(view: NoteActivityContract.View) {

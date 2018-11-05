@@ -47,7 +47,7 @@ interface NoteFragmentContract {
 
         fun showNoImages()
 
-        fun showNoteEditView()
+        fun showNoteEditView(note: MyNote)
 
         fun closeView()
 
@@ -60,6 +60,12 @@ interface NoteFragmentContract {
         fun hideLocation()
 
         fun hideMood()
+
+        fun showNoteSettingsView(note: MyNote)
+
+        fun updateNoteAppearance(note: MyNote)
+
+        fun showNoteContent(note: MyNote)
     }
 
     interface Presenter : BasePresenter<View> {
@@ -75,12 +81,6 @@ interface NoteFragmentContract {
         fun onNoteTagsChanged(tags: List<MyTag>)
 
         fun onMapReady()
-
-        fun getNote(): MyNoteWithProp
-
-        fun setNote(note: MyNoteWithProp)
-
-        fun onViewStart(mode: Mode, locationEnabled: Boolean, networkAvailable: Boolean)
 
         fun onAddImageButtonClick()
 
@@ -105,5 +105,15 @@ interface NoteFragmentContract {
         fun onNoCategoryPicked()
 
         fun onCategoryPicked(category: MyCategory)
+
+        fun onAppearanceButtonClick()
+
+        fun loadNote(noteId: String, mode: Mode, locationEnabled: Boolean, networkAvailable: Boolean)
+
+        fun loadTags(noteId: String)
+
+        fun loadImages(noteId: String)
+
+        fun updateNoteText(noteId: String, noteTitle: String, noteContent: String)
     }
 }

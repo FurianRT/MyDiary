@@ -8,7 +8,7 @@ import io.reactivex.Single
 abstract class TagDao {
 
     @Insert
-    abstract fun insert(tag: MyTag): Long
+    abstract fun insert(tag: MyTag)
 
     @Update
     abstract fun update(tag: MyTag)
@@ -17,7 +17,7 @@ abstract class TagDao {
     abstract fun delete(tag: MyTag)
 
     @Query("SELECT * FROM Tags WHERE id_tag = :tagId")
-    abstract fun getTag(tagId: Long): MyTag
+    abstract fun getTag(tagId: String): MyTag
 
     @Query("SELECT * FROM Tags")
     abstract fun getAllTags(): Single<List<MyTag>>

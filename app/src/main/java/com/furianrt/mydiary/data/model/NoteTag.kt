@@ -26,17 +26,17 @@ import androidx.room.ForeignKey
 )
 data class NoteTag(
         @ColumnInfo(name = "id_note", index = true) var noteId: String,
-        @ColumnInfo(name = "id_tag", index = true) var tagId: Long
+        @ColumnInfo(name = "id_tag", index = true) var tagId: String
 ) : Parcelable {
 
     @Suppress("NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
     constructor(parcel: Parcel) : this(
             parcel.readString(),
-            parcel.readLong())
+            parcel.readString())
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeString(noteId)
-        parcel.writeLong(tagId)
+        parcel.writeString(tagId)
     }
 
     override fun describeContents(): Int {

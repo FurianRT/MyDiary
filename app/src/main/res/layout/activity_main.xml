@@ -18,7 +18,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             app:layout_behavior="@string/appbar_scrolling_view_behavior"
-            tools:listItem="@layout/activity_main_list_content" />
+            tools:listitem="@layout/activity_main_list_content" />
 
         <com.furian.fab.FloatingActionMenu
             android:id="@+id/fab_menu"

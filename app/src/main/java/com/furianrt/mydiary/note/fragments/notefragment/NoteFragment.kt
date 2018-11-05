@@ -37,6 +37,7 @@ import com.furianrt.mydiary.note.dialogs.tags.TagsDialog
 import com.furianrt.mydiary.note.fragments.notefragment.content.NoteContentFragment
 import com.furianrt.mydiary.note.fragments.notefragment.edit.ClickedView
 import com.furianrt.mydiary.note.fragments.notefragment.edit.NoteEditFragment
+import com.furianrt.mydiary.settings.note.NoteSettingsActivity
 import com.furianrt.mydiary.utils.*
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationCallback
@@ -63,9 +64,9 @@ inline fun FragmentManager.inTransaction(func: FragmentTransaction.() -> Unit) {
     fragmentTransaction.commit()
 }
 
-const val ARG_NOTE = "note"
-const val ARG_MODE = "mode"
-
+private const val ARG_NOTE_ID = "noteId"
+private const val EXTRA_NOTE = "note"
+private const val ARG_MODE = "mode"
 private const val LOCATION_INTERVAL = 400L
 private const val LOCATION_PERMISSIONS_REQUEST_CODE = 1
 private const val STORAGE_PERMISSIONS_REQUEST_CODE = 2
@@ -85,6 +86,8 @@ class NoteFragment : Fragment(), NoteFragmentContract.View, OnMapReadyCallback,
     private lateinit var mPagerAdapter: NoteFragmentPagerAdapter
     private lateinit var mMode: Mode
     private var mImagePagerPosition = 0
+    private var mIsRecreated = false
+    private lateinit var mNoteId: String
 
     private val mLocationCallback = object : LocationCallback() {
         override fun onLocationResult(result: LocationResult?) {
@@ -99,14 +102,12 @@ class NoteFragment : Fragment(), NoteFragmentContract.View, OnMapReadyCallback,
     override fun onCreate(savedInstanceState: Bundle?) {
         getPresenterComponent(context!!).inject(this)
         super.onCreate(savedInstanceState)
-        val note = (if (savedInstanceState != null) {
-            mImagePagerPosition = savedInstanceState.getInt(BUNDLE_IMAGE_PAGER_POSITION, 0)
-            savedInstanceState.getParcelable<MyNoteWithProp>(ARG_NOTE)
-        } else {
-            arguments?.getParcelable(ARG_NOTE)
-        }) ?: throw IllegalStateException()
 
-        mPresenter.setNote(note)
+        mNoteId = arguments?.getString(ARG_NOTE_ID) ?: throw IllegalArgumentException()
+        savedInstanceState?.let {
+            mImagePagerPosition = it.getInt(BUNDLE_IMAGE_PAGER_POSITION, 0)
+            mIsRecreated = true
+        }
 
         mMode = arguments?.getSerializable(ARG_MODE) as Mode
         setHasOptionsMenu(true)
@@ -127,28 +128,38 @@ class NoteFragment : Fragment(), NoteFragmentContract.View, OnMapReadyCallback,
 
         setupUi(view)
 
-        addFragments(savedInstanceState)
-
         return view
     }
 
     private fun setupUi(view: View) {
         view.apply {
-            val time = mPresenter.getNote().note.time
-            text_date.text = formatTime(time)
-            text_time.text = getTime(time)
             text_mood.setOnClickListener(this@NoteFragment)
             text_category.setOnClickListener(this@NoteFragment)
             layout_tags.setOnClickListener(this@NoteFragment)
             pager_note_image.adapter = mPagerAdapter
             map_touch_event_interceptor.setOnTouchListener { _, _ -> true }
         }
+
+        addFragments()
     }
 
     override fun onStart() {
         super.onStart()
         mPresenter.attachView(this)
-        mPresenter.onViewStart(mMode, isLocationEnabled(context!!), isNetworkAvailable(context!!))
+        mPresenter.loadNote(mNoteId, mMode, isLocationEnabled(context!!), isNetworkAvailable(context!!))
+        mPresenter.loadTags(mNoteId)
+        mPresenter.loadImages(mNoteId)
+    }
+
+    override fun showNoteContent(note: MyNote) {
+        view?.apply {
+            val time = note.time
+            text_date.text = formatTime(time)
+            text_time.text = getTime(time)
+        }
+        val noteContentFragment =
+                childFragmentManager.findFragmentByTag(NoteContentFragment.TAG) as? NoteContentFragment
+        noteContentFragment?.showNote(note)
     }
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
@@ -166,7 +177,24 @@ class NoteFragment : Fragment(), NoteFragmentContract.View, OnMapReadyCallback,
                 mPresenter.onDeleteButtonClick()
                 true
             }
+            R.id.menu_appearance -> {
+                mPresenter.onAppearanceButtonClick()
+                true
+            }
             else -> super.onOptionsItemSelected(item)
+        }
+    }
+
+    override fun showNoteSettingsView(note: MyNote) {
+        val intent = Intent(context, NoteSettingsActivity::class.java)
+        intent.putExtra(EXTRA_NOTE, note)
+        startActivity(intent)
+    }
+
+    override fun updateNoteAppearance(note: MyNote) {
+        view?.let {
+            //it.layout_root_note.setBackgroundColor(note.background)
+
         }
     }
 
@@ -178,6 +206,13 @@ class NoteFragment : Fragment(), NoteFragmentContract.View, OnMapReadyCallback,
 
     fun onToolbarImageClick() {
         mPresenter.onToolbarImageClick()
+    }
+
+    fun onNoteEditFinished(noteTitle: String, noteContent: String) {
+        val noteContentFragment =
+                childFragmentManager.findFragmentByTag(NoteContentFragment.TAG) as? NoteContentFragment
+        noteContentFragment?.showNoteText(noteTitle, noteContent)
+        mPresenter.updateNoteText(mNoteId, noteTitle, noteContent)
     }
 
     override fun showGalleryView(noteId: String) {
@@ -200,23 +235,6 @@ class NoteFragment : Fragment(), NoteFragmentContract.View, OnMapReadyCallback,
             view.map_view.visibility = View.GONE
             view.text_location.visibility = View.GONE
             view.map_touch_event_interceptor.visibility = View.GONE
-        }
-    }
-
-    override fun showNoteEditView() {
-        if (childFragmentManager.findFragmentByTag(NoteEditFragment.TAG) == null) {
-            fragmentManager?.inTransaction {
-                setPrimaryNavigationFragment(this@NoteFragment)
-            }
-            childFragmentManager.inTransaction {
-                val note = mPresenter.getNote().note
-                replace(
-                        R.id.container_note_edit,
-                        NoteEditFragment.newInstance(note, ClickedView.TITLE, note.title.length),
-                        NoteEditFragment.TAG
-                )
-                        .addToBackStack(null)
-            }
         }
     }
 
@@ -257,28 +275,29 @@ class NoteFragment : Fragment(), NoteFragmentContract.View, OnMapReadyCallback,
             layout_tags.removeViews(1, itemCount - 1)
             val image = layout_tags.getChildAt(0) as? ImageView?
             image?.setColorFilter(getColor(context!!, R.color.black), PorterDuff.Mode.SRC_IN)
-
             for (tagName in tagNames) {
-                val card = CardView(context!!)
-                card.elevation = 5f
-                card.radius = 25f
+                layout_tags.addView(wrapTextIntoCardView(tagName))
+            }
+        }
+    }
+
+    private fun wrapTextIntoCardView(text: String) =
+            CardView(context!!).apply {
+                elevation = 5f
+                radius = 25f
                 val params = FrameLayout.LayoutParams(
                         FrameLayout.LayoutParams.WRAP_CONTENT,
                         FrameLayout.LayoutParams.WRAP_CONTENT
                 )
                 params.setMargins(10, 10, 10, 10)
-                card.layoutParams = params
+                layoutParams = params
 
-                val textTag = TextView(context!!)
-                textTag.text = tagName
-                textTag.setTextColor(Color.BLACK)
-                textTag.setPadding(20, 10, 20, 10)
-
-                card.addView(textTag)
-                layout_tags.addView(card)
+                addView(TextView(context).apply {
+                    this.text = text
+                    setTextColor(Color.BLACK)
+                    setPadding(20, 10, 20, 10)
+                })
             }
-        }
-    }
 
     override fun showCategory(category: MyCategory) {
         view?.apply {
@@ -303,7 +322,8 @@ class NoteFragment : Fragment(), NoteFragmentContract.View, OnMapReadyCallback,
         view?.apply {
             text_mood.setTextColor(Color.BLACK)
             text_mood.text = mood.name
-            val smile = resources.getIdentifier(mood.iconName, "drawable", context?.packageName)
+            val smile =
+                    resources.getIdentifier(mood.iconName, "drawable", context?.packageName)
             text_mood.setCompoundDrawablesWithIntrinsicBounds(smile, 0, 0, 0)
         }
     }
@@ -362,7 +382,6 @@ class NoteFragment : Fragment(), NoteFragmentContract.View, OnMapReadyCallback,
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
-        outState.putParcelable(ARG_NOTE, mPresenter.getNote())
         view?.let { outState.putInt(BUNDLE_IMAGE_PAGER_POSITION, it.pager_note_image.currentItem) }
         super.onSaveInstanceState(outState)
     }
@@ -400,25 +419,43 @@ class NoteFragment : Fragment(), NoteFragmentContract.View, OnMapReadyCallback,
     }
 
     fun enableActionBarExpanding(expanded: Boolean, animate: Boolean) {
-        if (mPresenter.getNote().images.isEmpty()) {
+        if (mPagerAdapter.images.isEmpty()) {
             return
         }
         app_bar_layout.setExpanded(expanded, animate)
 
-        val coordParams = app_bar_layout.layoutParams as CoordinatorLayout.LayoutParams
-        (coordParams.behavior as AppBarLayoutBehavior).shouldScroll = true
+        val params = app_bar_layout.layoutParams as CoordinatorLayout.LayoutParams
+        (params.behavior as AppBarLayoutBehavior).shouldScroll = true
     }
 
-    private fun addFragments(savedInstanceState: Bundle?) {
-        if (childFragmentManager.findFragmentByTag(NoteContentFragment.TAG) == null) {
+    private fun addFragments() {
+        if (childFragmentManager.findFragmentByTag(NoteContentFragment.TAG) == null &&
+                childFragmentManager.findFragmentByTag(NoteEditFragment.TAG) == null) {
+
             childFragmentManager.inTransaction {
-                replace(R.id.container_note_edit,
-                        NoteContentFragment.newInstance(mPresenter.getNote().note), NoteContentFragment.TAG)
+                add(R.id.container_note_edit, NoteContentFragment(), NoteContentFragment.TAG)
+            }
+
+            if (mMode == Mode.ADD && !mIsRecreated) {
+                showNoteEditView(MyNote("", "", ""))
             }
         }
+    }
 
-        if (mMode == Mode.ADD && savedInstanceState == null) {
-            showNoteEditView()
+    override fun showNoteEditView(note: MyNote) {
+        if (childFragmentManager.findFragmentByTag(NoteEditFragment.TAG) == null) {
+            fragmentManager?.inTransaction {
+                setPrimaryNavigationFragment(this@NoteFragment)
+            }
+            childFragmentManager.inTransaction {
+                add(
+                        R.id.container_note_edit,
+                        NoteEditFragment.newInstance(note, ClickedView.TITLE,
+                                note.title.length),
+                        NoteEditFragment.TAG
+                )
+                        .addToBackStack(null)
+            }
         }
     }
 
@@ -564,10 +601,10 @@ class NoteFragment : Fragment(), NoteFragmentContract.View, OnMapReadyCallback,
     companion object {
 
         @JvmStatic
-        fun newInstance(note: MyNoteWithProp, mode: Mode) =
+        fun newInstance(noteId: String, mode: Mode) =
                 NoteFragment().apply {
                     arguments = Bundle().apply {
-                        putParcelable(ARG_NOTE, note)
+                        putString(ARG_NOTE_ID, noteId)
                         putSerializable(ARG_MODE, mode)
                     }
                 }

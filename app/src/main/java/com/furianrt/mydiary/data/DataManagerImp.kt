@@ -15,10 +15,12 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 
 @AppScope
-class DataManagerImp(private val mDatabase: NoteDatabase,
-                     private val mPrefs: PreferencesHelper,
-                     private val mStorage: StorageHelper,
-                     private val mWeatherApi: WeatherApiService) : DataManager {
+class DataManagerImp(
+        private val mDatabase: NoteDatabase,
+        private val mPrefs: PreferencesHelper,
+        private val mStorage: StorageHelper,
+        private val mWeatherApi: WeatherApiService
+) : DataManager {
 
     override fun insertNote(note: MyNote): Completable =
             Completable.fromAction { mDatabase.noteDao().insert(note) }
@@ -30,8 +32,8 @@ class DataManagerImp(private val mDatabase: NoteDatabase,
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
 
-    override fun insertTag(tag: MyTag): Single<Long> =
-            Single.fromCallable { mDatabase.tagDao().insert(tag) }
+    override fun insertTag(tag: MyTag): Completable =
+            Completable.fromAction { mDatabase.tagDao().insert(tag) }
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
 

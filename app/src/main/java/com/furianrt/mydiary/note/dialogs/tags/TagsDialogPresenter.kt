@@ -2,6 +2,7 @@ package com.furianrt.mydiary.note.dialogs.tags
 
 import com.furianrt.mydiary.data.DataManager
 import com.furianrt.mydiary.data.model.MyTag
+import com.furianrt.mydiary.utils.generateUniqueId
 import io.reactivex.Completable
 import io.reactivex.disposables.CompositeDisposable
 
@@ -44,14 +45,11 @@ class TagsDialogPresenter(private val mDataManager: DataManager) : TagsDialogCon
             foundedTag.isChecked = true
             mView?.showTags(mTags)
         } else {
-            val tag = MyTag(tagName)
+            val tag = MyTag(generateUniqueId(), tagName)
             tag.isChecked = true
             val disposable = Completable.fromAction { mTags.add(tag) }
                     .andThen(mDataManager.insertTag(tag))
-                    .subscribe { id ->
-                        tag.id = id
-                        mView?.showTags(mTags)
-                    }
+                    .subscribe { mView?.showTags(mTags) }
             mCompositeDisposable.add(disposable)
         }
     }

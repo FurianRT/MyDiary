@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <PreferenceCategory android:title="@string/background">
+
+        <com.woalk.apps.lib.colorpicker.ColorPreference
+            android:title="Цвет фона"
+            android:summary="Цвет заднего плана записи"
+            android:key="note_background"/>
+
+        <com.woalk.apps.lib.colorpicker.ColorPreference
+            android:title="Цвет поверхности с текстом"
+            android:summary="Цвет фона на котором пишется текст записи"
+            android:key="note_text_background"/>
+
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="@string/font">
+
+        <ListPreference
+            android:defaultValue="16"
+            android:entries="@array/pref_font_size_titles"
+            android:entryValues="@array/pref_font_size_values"
+            android:key="font_size_note"
+            android:negativeButtonText="@null"
+            android:positiveButtonText="@null"
+            android:summary="%s"
+            android:title="Размер шрифта"
+            android:persistent="false"/>
+
+        <com.woalk.apps.lib.colorpicker.ColorPreference
+            android:title="Цвет поверхности с текстом"
+            android:summary="Цвет фона на котором пишется текст записи"
+            android:key="note_text_background"/>
+
+    </PreferenceCategory>
+
+</PreferenceScreen>

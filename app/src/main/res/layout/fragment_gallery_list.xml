@@ -4,6 +4,9 @@
     android:id="@+id/list_gallery"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    tools:layoutManager="GridLayoutManager"
+    tools:spanCount="2"
+    tools:listitem="@layout/fragment_gallery_list_item"
     tools:context=".gallery.fragments.list.GalleryListFragment">
 
 </androidx.recyclerview.widget.RecyclerView>

@@ -12,7 +12,7 @@ class GlobalSettingsActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_global_settings)
 
-        setSupportActionBar(toolbar_settings)
+        setSupportActionBar(toolbar_settings_global)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setDisplayShowHomeEnabled(true)
 

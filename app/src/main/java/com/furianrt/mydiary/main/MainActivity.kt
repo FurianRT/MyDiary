@@ -16,6 +16,7 @@ import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.content.ContextCompat
 import androidx.core.view.GravityCompat
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.furianrt.mydiary.BaseActivity
 import com.furianrt.mydiary.LOG_TAG
 import com.furianrt.mydiary.R
@@ -26,7 +27,6 @@ import com.furianrt.mydiary.general.GlideApp
 import com.furianrt.mydiary.general.HeaderItemDecoration
 import com.furianrt.mydiary.main.listadapter.MainListAdapter
 import com.furianrt.mydiary.main.listadapter.MainListItem
-import com.furianrt.mydiary.note.EXTRA_MODE
 import com.furianrt.mydiary.note.Mode
 import com.furianrt.mydiary.note.NoteActivity
 import com.furianrt.mydiary.settings.global.GlobalSettingsActivity
@@ -42,8 +42,8 @@ import pub.devrel.easypermissions.EasyPermissions
 import java.util.*
 import javax.inject.Inject
 
-const val EXTRA_CLICKED_NOTE_POSITION = "notePosition"
-
+private const val EXTRA_CLICKED_NOTE_POSITION = "notePosition"
+private const val EXTRA_MODE = "mode"
 private const val BUNDLE_RECYCLER_VIEW_STATE = "recyclerState"
 private const val BUNDLE_SELECTED_LIST_ITEMS = "selectedListItems"
 private const val STORAGE_PERMISSIONS_REQUEST_CODE = 1
@@ -58,6 +58,7 @@ class MainActivity : BaseActivity(), MainActivityContract.View,
     private val mAdapter = MainListAdapter()
     private var mRecyclerViewState: Parcelable? = null
     private var mBackPressCount = 0
+    private var mNeedToOpenActionBar = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -68,6 +69,9 @@ class MainActivity : BaseActivity(), MainActivityContract.View,
             mRecyclerViewState = it.getParcelable(BUNDLE_RECYCLER_VIEW_STATE)
             val selectedListItems = it.getParcelableArrayList<MyNoteWithProp>(BUNDLE_SELECTED_LIST_ITEMS)
             mPresenter.onRestoreInstanceState(selectedListItems)
+            if (selectedListItems != null && selectedListItems.isNotEmpty()) {
+                activateSelection()
+            }
         }
 
         setupUi()
@@ -75,20 +79,26 @@ class MainActivity : BaseActivity(), MainActivityContract.View,
 
     override fun onStart() {
         super.onStart()
-        Log.e(LOG_TAG, "onStart_main")
         mPresenter.attachView(this)
         mAdapter.listener = this
         mPresenter.onViewStart()
     }
 
     override fun showHeaderImages(images: List<MyHeaderImage>) {
-        enableActionBarExpanding()
+        Log.e(LOG_TAG, "showHeaderImages")
+        if (mNeedToOpenActionBar) {
+            enableActionBarExpanding()
+        }
+
+        mNeedToOpenActionBar = true
+
         GlideApp.with(this)
                 .load(images.first().url)
                 .into(image_toolbar_main)
     }
 
     override fun showEmptyHeaderImage() {
+        Log.e(LOG_TAG, "showEmptyHeaderImage")
         disableActionBarExpanding()
     }
 
@@ -142,7 +152,7 @@ class MainActivity : BaseActivity(), MainActivityContract.View,
         image_toolbar_main.setOnClickListener(this)
 
         list_main.apply {
-            layoutManager = androidx.recyclerview.widget.LinearLayoutManager(this@MainActivity)
+            layoutManager = LinearLayoutManager(this@MainActivity)
             addItemDecoration(HeaderItemDecoration(this, mAdapter))
             adapter = mAdapter
         }
@@ -191,6 +201,7 @@ class MainActivity : BaseActivity(), MainActivityContract.View,
     }
 
     override fun showViewNewNote() {
+        mPresenter.detachView()
         val intent = Intent(this, NoteActivity::class.java)
         intent.putExtra(EXTRA_MODE, Mode.ADD)
         startActivity(intent)
@@ -235,7 +246,10 @@ class MainActivity : BaseActivity(), MainActivityContract.View,
                 .afterFilterVisibility(false)
                 .camera(true)
                 .widget(widget)
-                .onResult { albImg -> mPresenter.onHeaderImagesPicked(albImg.map { it.path }) }
+                .onResult { albImg ->
+                    if (albImg.isNotEmpty()) mNeedToOpenActionBar = true
+                    mPresenter.onHeaderImagesPicked(albImg.map { it.path })
+                }
                 .start()
     }
 
@@ -251,12 +265,9 @@ class MainActivity : BaseActivity(), MainActivityContract.View,
         Log.e(LOG_TAG, "main_show_notes")
 
         mAdapter.submitList(notes.toMutableList())
-        if (notes.isEmpty()) {
-            list_main.invalidateItemDecorations()
-        }
         mAdapter.selectedNotes = selectedNotes
         mRecyclerViewState?.let {
-            list_main.layoutManager?.onRestoreInstanceState(mRecyclerViewState)
+            list_main.layoutManager?.onRestoreInstanceState(it)
             mRecyclerViewState = null
         }
     }
@@ -316,6 +327,7 @@ class MainActivity : BaseActivity(), MainActivityContract.View,
 
     override fun onPause() {
         super.onPause()
+        mNeedToOpenActionBar = false
         mBackPressCount = 0
     }
 

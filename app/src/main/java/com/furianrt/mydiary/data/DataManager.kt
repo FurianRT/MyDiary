@@ -13,7 +13,7 @@ interface DataManager {
 
     fun insertNoteTag(noteTag: NoteTag): Completable
 
-    fun insertTag(tag: MyTag): Single<Long>
+    fun insertTag(tag: MyTag): Completable
 
     fun insertImage(image: MyImage): Completable
 

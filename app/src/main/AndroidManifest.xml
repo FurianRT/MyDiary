@@ -31,10 +31,8 @@
             android:value="AIzaSyBqIaX5gl6vGr0C5xZA29CKXoYyJPW2pxI" />
 
         <activity android:name=".gallery.GalleryActivity" />
-        <activity
-            android:name=".settings.note.NoteSettingsActivity"
-            android:label="@string/title_activity_note_settings" />
         <activity android:name=".settings.global.GlobalSettingsActivity"></activity>
+        <activity android:name=".settings.note.NoteSettingsActivity"></activity>
     </application>
 
 </manifest>

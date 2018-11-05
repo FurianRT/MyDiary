@@ -14,6 +14,8 @@ interface NoteActivityContract {
 
     interface Presenter : BasePresenter<View> {
 
-        fun loadNotes(mode: Mode)
+        fun loadNotes()
+
+        fun loadNote(noteId: String)
     }
 }

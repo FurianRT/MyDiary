@@ -1,32 +1,25 @@
 package com.furianrt.mydiary.data.model
 
-import android.graphics.Color
 import android.os.Parcel
 import android.os.Parcelable
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.furianrt.mydiary.data.api.Forecast
+import java.util.*
 
 @Entity(tableName = "Notes")
 data class MyNote(
         @ColumnInfo(name = "id_note") @PrimaryKey(autoGenerate = false) var id: String,
         @ColumnInfo(name = "title") var title: String,
         @ColumnInfo(name = "content") var content: String,
-        @ColumnInfo(name = "time") var time: Long,
-        @ColumnInfo(name = "background_color") var background: Int = Color.LTGRAY,
-        @ColumnInfo(name = "text_color") var textColor: Int = Color.BLACK,
-        @ColumnInfo(name = "text_size") var textSize: Float = 16f
+        @ColumnInfo(name = "time") var time: Long = Date().time,
+        @ColumnInfo(name = "mood") var moodId: Int = 0,
+        @ColumnInfo(name = "category")  var categoryId: Long = 0
 ) : Parcelable {
-
-    @ColumnInfo(name = "mood")
-    var moodId: Int = 0
 
     @ColumnInfo(name = "location")
     var locationName: String? = null
-
-    @ColumnInfo(name = "category")
-    var categoryId: Long = 0
 
     @ColumnInfo(name = "forecast")
     var forecast: Forecast? = null
@@ -38,11 +31,8 @@ data class MyNote(
             parcel.readString(),
             parcel.readLong(),
             parcel.readInt(),
-            parcel.readInt(),
-            parcel.readFloat()) {
-        moodId = parcel.readInt()
+            parcel.readLong()) {
         locationName = parcel.readString()
-        categoryId = parcel.readLong()
     }
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
@@ -50,12 +40,9 @@ data class MyNote(
         parcel.writeString(title)
         parcel.writeString(content)
         parcel.writeLong(time)
-        parcel.writeInt(background)
-        parcel.writeInt(textColor)
-        parcel.writeFloat(textSize)
         parcel.writeInt(moodId)
-        parcel.writeString(locationName)
         parcel.writeLong(categoryId)
+        parcel.writeString(locationName)
     }
 
     override fun describeContents(): Int {
@@ -71,6 +58,4 @@ data class MyNote(
             return arrayOfNulls(size)
         }
     }
-
-
 }

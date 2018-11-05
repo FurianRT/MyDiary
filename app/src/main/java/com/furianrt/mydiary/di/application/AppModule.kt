@@ -18,6 +18,7 @@ import com.furianrt.mydiary.data.prefs.PreferencesHelperImp
 import com.furianrt.mydiary.data.room.NoteDatabase
 import com.furianrt.mydiary.data.storage.StorageHelper
 import com.furianrt.mydiary.data.storage.StorageHelperImp
+import com.furianrt.mydiary.utils.generateUniqueId
 import dagger.Module
 import dagger.Provides
 import okhttp3.Interceptor
@@ -40,7 +41,7 @@ class AppModule(private val app: Application) {
 
     @Provides
     @AppScope
-    fun provideStorageHelper(context: Context) : StorageHelper = StorageHelperImp(context)
+    fun provideStorageHelper(context: Context): StorageHelper = StorageHelperImp(context)
 
     @Provides
     @AppScope
@@ -55,16 +56,16 @@ class AppModule(private val app: Application) {
     @Provides
     @AppScope
     fun provideRoomCallback() = object : RoomDatabase.Callback() {
-                override fun onCreate(db: SupportSQLiteDatabase) {
-                    super.onCreate(db)
-                    setInitialData(db)
-                }
-            }
+        override fun onCreate(db: SupportSQLiteDatabase) {
+            super.onCreate(db)
+            setInitialData(db)
+        }
+    }
 
     @Provides
     @AppScope
     fun provideNoteDatabase(context: Context, @DatabaseInfo databaseName: String,
-                               callback: RoomDatabase.Callback) =
+                            callback: RoomDatabase.Callback) =
             Room.databaseBuilder(context, NoteDatabase::class.java, databaseName)
                     .addCallback(callback)
                     .build()
@@ -80,14 +81,17 @@ class AppModule(private val app: Application) {
     fun provideParamInterceptor(): Interceptor {
         return Interceptor { chain ->
             val original = chain.request()
-            val originalUrl = original.url()
-            val url = originalUrl.newBuilder()
+            val url = original.url()
+                    .newBuilder()
                     .addQueryParameter("appid", app.getString(R.string.weather_api_key))
-                    .addEncodedQueryParameter("units", "metric")
+                    .addQueryParameter("units", "metric")
                     .build()
-            val requestBuilder = original.newBuilder().url(url)
-            val request = requestBuilder.build()
-             chain.proceed(request)
+
+            val request = original.newBuilder()
+                    .url(url)
+                    .build()
+
+            return@Interceptor chain.proceed(request)
         }
     }
 
@@ -142,6 +146,7 @@ class AppModule(private val app: Application) {
 
         val tagNames = app.resources.getStringArray(R.array.tags)
         for (tagName in tagNames) {
+            cv.put("id_tag", generateUniqueId())
             cv.put("name_tag", tagName)
             db.insert("Tags", 0, cv)
         }

@@ -46,7 +46,7 @@ class MainActivityPresenter(private val mDataManager: DataManager) : MainActivit
         val disposable = Flowable.fromIterable(mSelectedNotes)
                 .flatMapSingle { note -> deleteImagesAndNote(note) }
                 .collectInto(mutableListOf<Boolean>()) { l, i -> l.add(i) }
-                .subscribe { temp ->
+                .subscribe { _ ->
                     mSelectedNotes.clear()
                     mView?.deactivateSelection()
                 }
@@ -175,9 +175,6 @@ class MainActivityPresenter(private val mDataManager: DataManager) : MainActivit
 
     override fun onRestoreInstanceState(selectedNotes: ArrayList<MyNoteWithProp>?) {
         selectedNotes?.let { mSelectedNotes = selectedNotes }
-        if (!mSelectedNotes.isEmpty()) {
-            mView?.activateSelection()
-        }
     }
 
     private fun selectListItem(note: MyNoteWithProp) {

@@ -27,6 +27,6 @@
         android:id="@+id/list_moods"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:listItem="@layout/dialog_moods_list_item" />
+        tools:listitem="@layout/dialog_moods_list_item" />
 
 </LinearLayout>

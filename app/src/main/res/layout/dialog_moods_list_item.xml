@@ -1,7 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <TextView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/text_item_mood"
     android:layout_width="match_parent"
     android:drawablePadding="8dp"
+    tools:text="Mood"
+    tools:drawableStart="@drawable/ic_mood_good"
     android:layout_margin="16dp"
     android:layout_height="wrap_content" />

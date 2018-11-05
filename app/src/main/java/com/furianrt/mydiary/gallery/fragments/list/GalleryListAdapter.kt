@@ -66,6 +66,7 @@ class GalleryListAdapter(
         for (i in 0 until mItems.size) {
             mItems[i].image.order = i
         }
+        listener.onImagesOrderChange(getImages())
         return true
     }
 
@@ -112,6 +113,8 @@ class GalleryListAdapter(
     interface OnListItemClickListener {
 
         fun onListItemClick(image: MyImage, position: Int)
+
+        fun onImagesOrderChange(images: List<MyImage>)
     }
 
     class GalleryListItem(val id: Long, val image: MyImage)

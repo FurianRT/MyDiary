@@ -25,7 +25,7 @@
             android:textColor="@color/white"
             android:textSize="7pt"
             android:textStyle="bold"
-            android:background="?attr/colorAccent"
+            tools:background="?attr/colorAccent"
             tools:text="Mon" />
 
         <TextView

@@ -8,23 +8,24 @@ import androidx.room.Ignore
 import androidx.room.PrimaryKey
 
 @Entity(tableName = "Tags")
-data class MyTag(@ColumnInfo(name = "name_tag") var name: String) : Parcelable {
-
-    @ColumnInfo(name = "id_tag")
-    @PrimaryKey(autoGenerate = true)
-    var id: Long = 0
+data class MyTag(
+        @ColumnInfo(name = "id_tag") @PrimaryKey(autoGenerate = false) var id: String,
+        @ColumnInfo(name = "name_tag") var name: String
+) : Parcelable {
 
     @Ignore
     var isChecked: Boolean = false
 
-    constructor(parcel: Parcel) : this(parcel.readString()!!) {
-        id = parcel.readLong()
+    @Suppress("NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
+    constructor(parcel: Parcel) : this(
+            parcel.readString(),
+            parcel.readString()) {
         isChecked = parcel.readByte() != 0.toByte()
     }
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
+        parcel.writeString(id)
         parcel.writeString(name)
-        parcel.writeLong(id)
         parcel.writeByte(if (isChecked) 1 else 0)
     }
 

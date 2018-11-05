@@ -21,6 +21,8 @@ interface GalleryListContract {
         fun selectItem(image: MyImage)
 
         fun selectItems(items: MutableList<MyImage>)
+
+        fun closeCab()
     }
 
     interface Presenter : BasePresenter<View> {
@@ -31,7 +33,7 @@ interface GalleryListContract {
 
         fun onViewStart()
 
-        fun onStop(images: List<MyImage>)
+        fun onImagesOrderChange(images: List<MyImage>)
 
         fun onMultiSelectionButtonClick()
 
