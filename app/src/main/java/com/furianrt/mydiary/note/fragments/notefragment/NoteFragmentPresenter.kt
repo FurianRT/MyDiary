@@ -19,7 +19,7 @@ class NoteFragmentPresenter(private val mDataManager: DataManager) : NoteFragmen
     private var mView: NoteFragmentContract.View? = null
     private val mCompositeDisposable = CompositeDisposable()
 
-    private lateinit var mNote: MyNoteWithProp
+    private lateinit var mNote: MyNote
 
     override fun attachView(view: NoteFragmentContract.View) {
         mView = view
@@ -41,7 +41,7 @@ class NoteFragmentPresenter(private val mDataManager: DataManager) : NoteFragmen
         val allTagsObservable = mDataManager.getAllTags()
                 .flatMapObservable { tags -> Observable.fromIterable(tags) }
 
-        val disposable = mDataManager.getTagsForNote(mNote.note.id)
+        val disposable = mDataManager.getTagsForNote(mNote.id)
                 .first(emptyList())
                 .flatMapObservable { tags -> Observable.fromIterable(tags) }
                 .map { tag -> tag.apply { isChecked = true } }
@@ -56,18 +56,18 @@ class NoteFragmentPresenter(private val mDataManager: DataManager) : NoteFragmen
     }
 
     override fun onCategoryFieldClick() {
-        mView?.showCategoriesDialog(mNote.note.id)
+        mView?.showCategoriesDialog(mNote.id)
     }
 
     override fun onNoteTagsChanged(tags: List<MyTag>) {
-        val disposable = mDataManager.replaceNoteTags(mNote.note.id, tags)
+        val disposable = mDataManager.replaceNoteTags(mNote.id, tags)
                 .subscribe()
 
         mCompositeDisposable.add(disposable)
     }
 
     override fun onMapReady() {
-        mNote.location?.let { mView?.zoomMap(it.lat, it.lon) }
+        //mNote.location?.let { mView?.zoomMap(it.lat, it.lon) }
     }
 
     override fun loadImages(noteId: String) {
@@ -100,15 +100,21 @@ class NoteFragmentPresenter(private val mDataManager: DataManager) : NoteFragmen
     override fun loadNote(noteId: String, mode: Mode, locationEnabled: Boolean,
                           networkAvailable: Boolean) {
 
-        val disposable = mDataManager.getNoteWithProp(noteId)
+        val disposable = mDataManager.getNote(noteId)
                 .subscribe { note ->
                     mNote = note
-                    mView?.updateNoteAppearance(mNote.note)
-                    mView?.showNoteContent(note.note)
-                    showNoteMood(note.mood)
-                    showNoteCategory(note.category)
-                    showNoteLocation(note, mode, locationEnabled, networkAvailable)
+                    mView?.showNoteContent(note)
+                    showNoteMood(note.moodId)
+                    showNoteCategory(note.categoryId)
+                    //showNoteLocation(note, mode, locationEnabled, networkAvailable)
                 }
+
+        mCompositeDisposable.add(disposable)
+    }
+
+    override fun loadNoteAppearance(noteId: String) {
+        val disposable = mDataManager.getNoteAppearance(noteId)
+                .subscribe { appearance -> mView?.updateNoteAppearance(appearance) }
 
         mCompositeDisposable.add(disposable)
     }
@@ -136,20 +142,28 @@ class NoteFragmentPresenter(private val mDataManager: DataManager) : NoteFragmen
         }
     }
 
-    private fun showNoteMood(mood: MyMood?) {
-        if (mood != null && mDataManager.isMoodEnabled()) {
-            mView?.showMood(mood)
-        } else {
+    private fun showNoteMood(moodId: Int) {
+        if (moodId == 0 || !mDataManager.isMoodEnabled()) {
             mView?.showNoMoodMessage()
+            return
         }
+
+        val disposable = mDataManager.getMood(moodId)
+                .subscribe { mood -> mView?.showMood(mood) }
+
+        mCompositeDisposable.add(disposable)
     }
 
-    private fun showNoteCategory(category: MyCategory?) {
-        if (category != null) {
-            mView?.showCategory(category)
-        } else {
+    private fun showNoteCategory(categoryId: Long) {
+        if (categoryId == 0L) {
             mView?.showNoCategoryMessage()
+            return
         }
+
+        val disposable = mDataManager.getCategory(categoryId)
+                .subscribe { category -> mView?.showCategory(category) }
+
+        mCompositeDisposable.add(disposable)
     }
 
     private fun findLocation(locationEnabled: Boolean, networkAvailable: Boolean) {
@@ -183,11 +197,11 @@ class NoteFragmentPresenter(private val mDataManager: DataManager) : NoteFragmen
                 .onErrorReturn { null }
                 .flatMapCompletable { forecast ->
                     Log.e(LOG_TAG, "NoteFragmentPresenter.addForecast")
-                    mNote.note.forecast = forecast
-                    return@flatMapCompletable mDataManager.updateNote(mNote.note)
+                    mNote.forecast = forecast
+                    return@flatMapCompletable mDataManager.updateNote(mNote)
                 }
                 .subscribe({
-                    val forecast = mNote.note.forecast
+                    val forecast = mNote.forecast
                     if (forecast != null && mDataManager.isWeatherEnabled()) {
                         mView?.showForecast(forecast)
                     }
@@ -200,9 +214,9 @@ class NoteFragmentPresenter(private val mDataManager: DataManager) : NoteFragmen
 
     private fun addLocation(location: MyLocation) {
         Log.e(LOG_TAG, "NoteFragmentPresenter.addLocation")
-        mNote.note.locationName = location.name
+        mNote.locationName = location.name
         val disposable = mDataManager.addLocation(location)
-                .andThen(mDataManager.updateNote(mNote.note))
+                .andThen(mDataManager.updateNote(mNote))
                 .subscribe {
                     if (mDataManager.isLocationEnabled()) {
                         mView?.showLocation(location)
@@ -223,69 +237,70 @@ class NoteFragmentPresenter(private val mDataManager: DataManager) : NoteFragmen
     override fun onNoteImagesPicked(imageUrls: List<String>) {
         val disposable = Flowable.fromIterable(imageUrls)
                 .map { url ->
-                    val name = mNote.note.id + "_" + generateUniqueId()
-                    return@map MyImage(name, url, mNote.note.id, DateTime.now().millis)
+                    val name = mNote.id + "_" + generateUniqueId()
+                    return@map MyImage(name, url, mNote.id, DateTime.now().millis)
                 }
                 .flatMapSingle { image -> mDataManager.saveImageToStorage(image) }
                 .flatMapCompletable { savedImage -> mDataManager.insertImage(savedImage) }
-                .andThen(mDataManager.getImagesForNote(mNote.note.id))
-                .subscribe { images -> mNote.images = images }
+                .andThen(mDataManager.getImagesForNote(mNote.id))
+                .subscribe()
 
         mCompositeDisposable.add(disposable)
     }
 
     override fun onEditButtonClick() {
-        mView?.showNoteEditView(mNote.note)
+        mView?.showNoteEditView(mNote)
     }
 
     override fun onDeleteButtonClick() {
-        val disposable = Observable.fromIterable(mNote.images)
+        val disposable = mDataManager.getImagesForNote(mNote.id)
+                .flatMapIterable { it }
                 .flatMapSingle { image -> mDataManager.deleteImageFromStorage(image.name) }
                 .collectInto(mutableListOf<Boolean>()) { l, i -> l.add(i) }
-                .flatMapCompletable { mDataManager.deleteNote(mNote.note) }
+                .flatMapCompletable { mDataManager.deleteNote(mNote) }
                 .subscribe { mView?.closeView() }
 
         mCompositeDisposable.add(disposable)
     }
 
     override fun onToolbarImageClick() {
-        mView?.showGalleryView(mNote.note.id)
+        mView?.showGalleryView(mNote.id)
     }
 
     override fun onMoodPicked(mood: MyMood) {
-        mNote.note.moodId = mood.id
-        val disposable = mDataManager.updateNote(mNote.note)
+        mNote.moodId = mood.id
+        val disposable = mDataManager.updateNote(mNote)
                 .subscribe()
 
         mCompositeDisposable.add(disposable)
     }
 
     override fun onNoMoodPicked() {
-        mNote.note.moodId = 0
-        val disposable = mDataManager.updateNote(mNote.note)
+        mNote.moodId = 0
+        val disposable = mDataManager.updateNote(mNote)
                 .subscribe { mView?.showNoMoodMessage() }
 
         mCompositeDisposable.add(disposable)
     }
 
     override fun onCategoryPicked(category: MyCategory) {
-        mNote.note.categoryId = category.id
-        val disposable = mDataManager.updateNote(mNote.note)
+        mNote.categoryId = category.id
+        val disposable = mDataManager.updateNote(mNote)
                 .subscribe { mView?.showCategory(category) }
 
         mCompositeDisposable.add(disposable)
     }
 
     override fun onNoCategoryPicked() {
-        mNote.note.categoryId = 0
-        val disposable = mDataManager.updateNote(mNote.note)
+        mNote.categoryId = 0
+        val disposable = mDataManager.updateNote(mNote)
                 .subscribe { mView?.showNoCategoryMessage() }
 
         mCompositeDisposable.add(disposable)
     }
 
     override fun onAppearanceButtonClick() {
-        mView?.showNoteSettingsView(mNote.note)
+        mView?.showNoteSettingsView(mNote)
     }
 
     override fun updateNoteText(noteId: String, noteTitle: String, noteContent: String) {

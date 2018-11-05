@@ -11,6 +11,7 @@ import androidx.fragment.app.Fragment
 import com.furianrt.mydiary.LOG_TAG
 import com.furianrt.mydiary.R
 import com.furianrt.mydiary.data.model.MyNote
+import com.furianrt.mydiary.data.model.MyNoteAppearance
 import com.furianrt.mydiary.note.NoteActivity
 import com.furianrt.mydiary.note.fragments.notefragment.edit.ClickedView
 import com.furianrt.mydiary.note.fragments.notefragment.edit.NoteEditFragment
@@ -18,11 +19,10 @@ import com.furianrt.mydiary.note.fragments.notefragment.inTransaction
 import kotlinx.android.synthetic.main.fragment_note_content.view.*
 import javax.inject.Inject
 
-private const val BUNDLE_NOTE = "note"
-
 class NoteContentFragment : Fragment(), NoteContentFragmentContract.View {
 
     private lateinit var mNote: MyNote
+    private lateinit var mAppearance: MyNoteAppearance
     private var mTouchPosition = 0
 
     @Inject
@@ -69,6 +69,17 @@ class NoteContentFragment : Fragment(), NoteContentFragmentContract.View {
         }
     }
 
+    fun setAppearance(appearance: MyNoteAppearance) {
+        mAppearance = appearance
+        /*view?.apply {
+            text_note_title.setTextColor(mAppearance.textColor)
+            text_note_title.textSize = mAppearance.textSize
+            text_note_content.setTextColor(mAppearance.textColor)
+            text_note_content.textSize = mAppearance.textSize
+            layout_note_content_root.setBackgroundColor(mAppearance.textBackground)
+        }*/
+    }
+
     override fun onStart() {
         super.onStart()
         mPresenter.attachView(this)
@@ -113,7 +124,7 @@ class NoteContentFragment : Fragment(), NoteContentFragmentContract.View {
             if (it.findFragmentByTag(NoteEditFragment.TAG) == null) {
                 it.inTransaction {
                     add(R.id.container_note_edit,
-                            NoteEditFragment.newInstance(mNote, clickedView, touchPosition),
+                            NoteEditFragment.newInstance(mNote, mAppearance, clickedView, touchPosition),
                             NoteEditFragment.TAG)
                     addToBackStack(null)
                 }

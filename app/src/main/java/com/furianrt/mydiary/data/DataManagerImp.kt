@@ -62,6 +62,11 @@ class DataManagerImp(
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
 
+    override fun insertAppearance(appearance: MyNoteAppearance): Completable =
+            Completable.fromAction { mDatabase.appearanceDao().insert(appearance) }
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+
     override fun addLocation(location: MyLocation): Completable =
             Completable.fromAction { mDatabase.locationDao().insert(location) }
                     .subscribeOn(Schedulers.io())
@@ -194,6 +199,12 @@ class DataManagerImp(
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
 
+    override fun getNoteAppearance(noteId: String): Flowable<MyNoteAppearance> =
+            mDatabase.appearanceDao()
+                    .getNoteAppearance(noteId)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+
     override fun findNote(noteId: String): Maybe<MyNote> =
             mDatabase.noteDao()
                     .findNote(noteId)
@@ -244,4 +255,12 @@ class DataManagerImp(
     override fun isLocationEnabled(): Boolean = mPrefs.isMapEnabled()
 
     override fun isMoodEnabled(): Boolean = mPrefs.isMoodEnabled()
+
+    override fun getTextColor(): Int = mPrefs.getTextColor()
+
+    override fun getTextSize(): Float = mPrefs.getTextSize()
+
+    override fun getNoteBackgroundColor(): Int = mPrefs.getNoteBackgroundColor()
+
+    override fun getNoteTextBackgroundColor(): Int = mPrefs.getNoteTextBackgroundColor()
 }

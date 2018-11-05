@@ -8,7 +8,6 @@ import android.provider.Settings.SettingNotFoundException
 import com.google.android.gms.common.ConnectionResult
 import com.google.android.gms.common.GoogleApiAvailability
 
-
 const val PLAY_SERVICES_RESOLUTION_REQUEST = 3223
 
 fun isGoogleServiesAvailable(activity: Activity): Boolean {
@@ -39,5 +38,5 @@ fun isLocationEnabled(context: Context): Boolean {
         return false
     }
 
-    return locationMode !== Settings.Secure.LOCATION_MODE_OFF
+    return locationMode != Settings.Secure.LOCATION_MODE_OFF
 }

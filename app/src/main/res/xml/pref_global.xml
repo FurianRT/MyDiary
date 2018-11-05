@@ -6,7 +6,7 @@
         android:title="Тема">
 
         <com.woalk.apps.lib.colorpicker.ColorPreference
-            android:defaultValue="@color/blue"
+            android:defaultValue="@color/colorPrimary"
             android:key="color_primary"
             android:summary="В основном определяет цвет тулбара"
             android:title="Первичный цвет"
@@ -15,10 +15,28 @@
             app:picker_columns="5" />
 
         <com.woalk.apps.lib.colorpicker.ColorPreference
-            android:defaultValue="@color/blue"
+            android:defaultValue="@color/colorAccent"
             android:key="color_accent"
             android:summary="Цвет переключателей и кнопок"
             android:title="Вторичный цвет"
+            app:picker_allowCustomColor="false"
+            app:picker_colors="@array/colors"
+            app:picker_columns="5" />
+
+        <com.woalk.apps.lib.colorpicker.ColorPreference
+            android:defaultValue="@color/grey_light"
+            android:key="note_background_color"
+            android:summary="Цвет заднего плана заметки"
+            android:title="Фон заметки"
+            app:picker_allowCustomColor="false"
+            app:picker_colors="@array/colors"
+            app:picker_columns="5" />
+
+        <com.woalk.apps.lib.colorpicker.ColorPreference
+            android:defaultValue="@color/white"
+            android:key="note_text_background_color"
+            android:summary="Цвет полотна, на котором пишется текст заметки"
+            android:title="Фон текста заметки"
             app:picker_allowCustomColor="false"
             app:picker_colors="@array/colors"
             app:picker_columns="5" />
@@ -34,7 +52,7 @@
             android:title="Размер шрифта" />
 
         <com.woalk.apps.lib.colorpicker.ColorPreference
-            android:defaultValue="@color/blue"
+            android:defaultValue="@color/black"
             android:key="font_color"
             android:summary="Указать цвет шрифта"
             android:title="Цвет шрифта"

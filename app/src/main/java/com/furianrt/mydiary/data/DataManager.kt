@@ -25,6 +25,8 @@ interface DataManager {
 
     fun insertCategory(category: MyCategory): Single<Long>
 
+    fun insertAppearance(appearance: MyNoteAppearance): Completable
+
     fun updateNote(note: MyNote): Completable
 
     fun updateNoteText(noteId: String, title: String, content: String): Completable
@@ -63,8 +65,6 @@ interface DataManager {
 
     fun getNote(noteId: String): Flowable<MyNote>
 
-    fun replaceNoteTags(noteId: String, tags: List<MyTag>): Completable
-
     fun getAllTags(): Single<List<MyTag>>
 
     fun getForecast(lat: Double, lon: Double): Single<Forecast?>
@@ -76,6 +76,10 @@ interface DataManager {
     fun getAllCategories(): Flowable<List<MyCategory>>
 
     fun getAllMoods(): Single<List<MyMood>>
+
+    fun getNoteAppearance(noteId: String): Flowable<MyNoteAppearance>
+
+    fun replaceNoteTags(noteId: String, tags: List<MyTag>): Completable
 
     fun findNote(noteId: String): Maybe<MyNote>
 
@@ -96,4 +100,12 @@ interface DataManager {
     fun isLocationEnabled(): Boolean
 
     fun isMoodEnabled(): Boolean
+
+    fun getTextColor(): Int
+
+    fun getTextSize(): Float
+
+    fun getNoteBackgroundColor(): Int
+
+    fun getNoteTextBackgroundColor(): Int
 }

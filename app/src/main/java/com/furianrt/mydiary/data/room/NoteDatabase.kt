@@ -6,8 +6,8 @@ import androidx.room.TypeConverters
 import com.furianrt.mydiary.data.model.*
 
 @Database(
-        entities = [MyNote::class, MyCategory::class, MyTag::class, MyLocation::class,
-            NoteTag::class, MyImage::class, MyHeaderImage::class, MyMood::class],
+        entities = [MyNote::class, MyCategory::class, MyTag::class, MyLocation::class, MyMood::class,
+            NoteTag::class, MyImage::class, MyHeaderImage::class, MyNoteAppearance::class],
         version = 1,
         exportSchema = false
 )
@@ -29,4 +29,6 @@ abstract class NoteDatabase : RoomDatabase() {
     abstract fun headerImageDao(): HeaderImageDao
 
     abstract fun moodDao(): MoodDao
+
+    abstract fun appearanceDao(): AppearanceDao
 }

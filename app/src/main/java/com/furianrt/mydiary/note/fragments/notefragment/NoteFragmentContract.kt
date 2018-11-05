@@ -63,7 +63,7 @@ interface NoteFragmentContract {
 
         fun showNoteSettingsView(note: MyNote)
 
-        fun updateNoteAppearance(note: MyNote)
+        fun updateNoteAppearance(appearance: MyNoteAppearance)
 
         fun showNoteContent(note: MyNote)
     }
@@ -109,6 +109,8 @@ interface NoteFragmentContract {
         fun onAppearanceButtonClick()
 
         fun loadNote(noteId: String, mode: Mode, locationEnabled: Boolean, networkAvailable: Boolean)
+
+        fun loadNoteAppearance(noteId: String)
 
         fun loadTags(noteId: String)
 

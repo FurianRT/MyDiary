@@ -79,6 +79,7 @@ class MainActivity : BaseActivity(), MainActivityContract.View,
 
     override fun onStart() {
         super.onStart()
+        Log.e(LOG_TAG, "onStart_main")
         mPresenter.attachView(this)
         mAdapter.listener = this
         mPresenter.onViewStart()

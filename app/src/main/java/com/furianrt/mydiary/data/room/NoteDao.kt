@@ -36,12 +36,14 @@ abstract class NoteDao {
     @Transaction
     @Query("SELECT * FROM Notes LEFT JOIN Moods ON mood = id_mood " +
             "LEFT JOIN Locations ON location = name_location " +
+            "LEFT JOIN NoteAppearances ON id_note = id_appearance " +
             "LEFT JOIN Categories ON category = id_category WHERE id_note =:noteId")
     abstract fun getNoteWithProp(noteId: String): Flowable<MyNoteWithProp>
 
     @Transaction
     @Query("SELECT * FROM Notes LEFT JOIN Moods ON mood = id_mood " +
             "LEFT JOIN Locations ON location = name_location " +
+            "LEFT JOIN NoteAppearances ON id_note = id_appearance " +
             "LEFT JOIN Categories ON category = id_category ORDER BY time DESC")
     abstract fun getAllNotesWithProp(): Flowable<List<MyNoteWithProp>>
 }

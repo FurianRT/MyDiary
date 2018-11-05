@@ -90,13 +90,13 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:minHeight="130dp"
                     android:orientation="vertical">
 
                     <FrameLayout
                         android:id="@+id/container_note_edit"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content" />
+                        android:layout_height="wrap_content"
+                        android:minHeight="130dp" />
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -109,9 +109,9 @@
                             android:id="@+id/text_mood"
                             android:layout_width="wrap_content"
                             android:layout_height="match_parent"
+                            android:layout_marginEnd="16dp"
                             android:drawableStart="@drawable/ic_smile"
                             android:drawablePadding="4dp"
-                            android:layout_marginEnd="16dp"
                             android:gravity="center"
                             android:text="@string/choose_mood" />
 
@@ -148,8 +148,8 @@
                 android:layout_height="0dp"
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="16dp"
-                android:paddingBottom="8dp"
                 android:layout_marginEnd="16dp"
+                android:paddingBottom="8dp"
                 app:alignItems="center"
                 app:flexWrap="wrap"
                 app:justifyContent="flex_start"

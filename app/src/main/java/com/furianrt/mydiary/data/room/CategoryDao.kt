@@ -17,7 +17,7 @@ interface CategoryDao {
     @Delete
     fun delete(category: MyCategory)
 
-    @Query("SELECT * FrOM Categories WHERE id_category = :categoryId")
+    @Query("SELECT * FROM Categories WHERE id_category = :categoryId")
     fun getCategory(categoryId: Long): Maybe<MyCategory>
 
     @Query("SELECT * FROM Categories")

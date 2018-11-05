@@ -9,6 +9,7 @@ import android.location.Geocoder
 import android.os.Bundle
 import android.os.Looper
 import android.preference.PreferenceManager
+import android.util.Log
 import android.view.*
 import android.widget.FrameLayout
 import android.widget.ImageView
@@ -21,6 +22,7 @@ import androidx.core.content.ContextCompat.getColor
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
+import com.furianrt.mydiary.LOG_TAG
 import com.furianrt.mydiary.R
 import com.furianrt.mydiary.data.api.Forecast
 import com.furianrt.mydiary.data.model.*
@@ -147,6 +149,7 @@ class NoteFragment : Fragment(), NoteFragmentContract.View, OnMapReadyCallback,
         super.onStart()
         mPresenter.attachView(this)
         mPresenter.loadNote(mNoteId, mMode, isLocationEnabled(context!!), isNetworkAvailable(context!!))
+        mPresenter.loadNoteAppearance(mNoteId)
         mPresenter.loadTags(mNoteId)
         mPresenter.loadImages(mNoteId)
     }
@@ -191,11 +194,14 @@ class NoteFragment : Fragment(), NoteFragmentContract.View, OnMapReadyCallback,
         startActivity(intent)
     }
 
-    override fun updateNoteAppearance(note: MyNote) {
-        view?.let {
-            //it.layout_root_note.setBackgroundColor(note.background)
-
+    override fun updateNoteAppearance(appearance: MyNoteAppearance) {
+        view?.apply {
+            //layout_root_note.setBackgroundColor(appearance.background)
+            //card_note_edit.setCardBackgroundColor(appearance.textBackground)
         }
+        val noteContentFragment =
+                childFragmentManager.findFragmentByTag(NoteContentFragment.TAG) as? NoteContentFragment
+        noteContentFragment?.setAppearance(appearance)
     }
 
     private fun removeEditFragment() {
@@ -412,6 +418,7 @@ class NoteFragment : Fragment(), NoteFragmentContract.View, OnMapReadyCallback,
     }
 
     fun disableActionBarExpanding(animate: Boolean) {
+        Log.e(LOG_TAG, "NoteFragment.disableActionBarExpanding")
         app_bar_layout.setExpanded(false, animate)
 
         val coordParams = app_bar_layout.layoutParams as CoordinatorLayout.LayoutParams
@@ -419,6 +426,7 @@ class NoteFragment : Fragment(), NoteFragmentContract.View, OnMapReadyCallback,
     }
 
     fun enableActionBarExpanding(expanded: Boolean, animate: Boolean) {
+        Log.e(LOG_TAG, "NoteFragment.enableActionBarExpanding")
         if (mPagerAdapter.images.isEmpty()) {
             return
         }
@@ -450,9 +458,12 @@ class NoteFragment : Fragment(), NoteFragmentContract.View, OnMapReadyCallback,
             childFragmentManager.inTransaction {
                 add(
                         R.id.container_note_edit,
-                        NoteEditFragment.newInstance(note, ClickedView.TITLE,
-                                note.title.length),
-                        NoteEditFragment.TAG
+                        NoteEditFragment.newInstance(
+                                note,
+                                MyNoteAppearance(note.id),
+                                ClickedView.TITLE,
+                                note.title.length
+                        ), NoteEditFragment.TAG
                 )
                         .addToBackStack(null)
             }
@@ -580,6 +591,7 @@ class NoteFragment : Fragment(), NoteFragmentContract.View, OnMapReadyCallback,
     }
 
     override fun showImages(images: List<MyImage>) {
+        Log.e(LOG_TAG, "NoteFragment.showImages")
         mPagerAdapter.images = images
         mPagerAdapter.notifyDataSetChanged()
         view?.pager_note_image?.setCurrentItem(mImagePagerPosition, false)
@@ -589,6 +601,7 @@ class NoteFragment : Fragment(), NoteFragmentContract.View, OnMapReadyCallback,
     }
 
     override fun showNoImages() {
+        Log.e(LOG_TAG, "NoteFragment.showNoImages")
         mPagerAdapter.images = emptyList()
         mPagerAdapter.notifyDataSetChanged()
         disableActionBarExpanding(false)
