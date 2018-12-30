@@ -4,12 +4,10 @@ import com.furianrt.mydiary.data.DataManager
 import com.furianrt.mydiary.data.model.MyTag
 import com.furianrt.mydiary.utils.generateUniqueId
 import io.reactivex.Completable
-import io.reactivex.disposables.CompositeDisposable
 
 class TagsDialogPresenter(private val mDataManager: DataManager) : TagsDialogContract.Presenter {
 
     private var mView: TagsDialogContract.View? = null
-    private val mCompositeDisposable = CompositeDisposable()
 
     private lateinit var mTags: ArrayList<MyTag>
 
@@ -18,7 +16,7 @@ class TagsDialogPresenter(private val mDataManager: DataManager) : TagsDialogCon
     }
 
     override fun detachView() {
-        mCompositeDisposable.clear()
+        super.detachView()
         mView = null
     }
 
@@ -47,24 +45,21 @@ class TagsDialogPresenter(private val mDataManager: DataManager) : TagsDialogCon
         } else {
             val tag = MyTag(generateUniqueId(), tagName)
             tag.isChecked = true
-            val disposable = Completable.fromAction { mTags.add(tag) }
+            addDisposable(Completable.fromAction { mTags.add(tag) }
                     .andThen(mDataManager.insertTag(tag))
-                    .subscribe { mView?.showTags(mTags) }
-            mCompositeDisposable.add(disposable)
+                    .subscribe { mView?.showTags(mTags) })
         }
     }
 
     override fun onButtonDeleteTagClicked(tag: MyTag) {
-        val disposable = Completable.fromCallable { mTags.remove(tag) }
+        addDisposable(Completable.fromCallable { mTags.remove(tag) }
                 .andThen(mDataManager.deleteTag(tag))
-                .subscribe { mView?.showTags(mTags) }
-        mCompositeDisposable.add(disposable)
+                .subscribe { mView?.showTags(mTags) })
     }
 
     override fun onButtonEditTagClicked(tag: MyTag) {
-        val disposable = Completable.fromAction { mTags.find { it.id == tag.id }?.name = tag.name }
+        addDisposable(Completable.fromAction { mTags.find { it.id == tag.id }?.name = tag.name }
                 .andThen(mDataManager.updateTag(tag))
-                .subscribe { mView?.showTags(mTags) }
-        mCompositeDisposable.add(disposable)
+                .subscribe { mView?.showTags(mTags) })
     }
 }

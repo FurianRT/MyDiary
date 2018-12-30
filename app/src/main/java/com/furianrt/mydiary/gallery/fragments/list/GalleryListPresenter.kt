@@ -2,12 +2,10 @@ package com.furianrt.mydiary.gallery.fragments.list
 
 import com.furianrt.mydiary.data.DataManager
 import com.furianrt.mydiary.data.model.MyImage
-import io.reactivex.disposables.CompositeDisposable
 
 class GalleryListPresenter(private val mDataManager: DataManager) : GalleryListContract.Presenter {
 
     private var mView: GalleryListContract.View? = null
-    private val mCompositeDisposable = CompositeDisposable()
     private lateinit var mNoteId: String
     private var mSelectedImages: MutableList<MyImage> = ArrayList()
 
@@ -16,7 +14,7 @@ class GalleryListPresenter(private val mDataManager: DataManager) : GalleryListC
     }
 
     override fun detachView() {
-        mCompositeDisposable.clear()
+        super.detachView()
         mView = null
     }
 
@@ -50,21 +48,17 @@ class GalleryListPresenter(private val mDataManager: DataManager) : GalleryListC
     }
 
     private fun loadImages(noteId: String) {
-        val disposable = mDataManager.getImagesForNote(noteId)
+        addDisposable(mDataManager.getImagesForNote(noteId)
                 .subscribe { images ->
                     var i = 0
                     images.forEach { it.order = i++ }
                     mView?.showImages(images, mSelectedImages)
-                }
-
-        mCompositeDisposable.add(disposable)
+                })
     }
 
     override fun onImagesOrderChange(images: List<MyImage>) {
-        val disposable = mDataManager.updateImages(images)
-                .subscribe()
-
-        mCompositeDisposable.add(disposable)
+        addDisposable(mDataManager.updateImages(images)
+                .subscribe())
     }
 
     override fun onMultiSelectionButtonClick() {
@@ -72,24 +66,19 @@ class GalleryListPresenter(private val mDataManager: DataManager) : GalleryListC
     }
 
     override fun onCabDeleteButtonClick() {
-        val disposable = mDataManager.deleteImages(mSelectedImages)
-                .subscribe {
-                    mView?.closeCab()
-                }
-
-        mCompositeDisposable.add(disposable)
+        addDisposable(mDataManager.deleteImages(mSelectedImages)
+                .subscribe { mView?.closeCab() })
     }
 
     override fun onCabSelectAllButtonClick() {
-        val disposable = mDataManager.getImagesForNote(mNoteId)
+        addDisposable(mDataManager.getImagesForNote(mNoteId)
                 .first(emptyList())
                 .subscribe { images ->
                     val list = images.toMutableList()
                     list.removeAll(mSelectedImages)
                     mSelectedImages.addAll(list)
                     mView?.selectItems(list)
-                }
-        mCompositeDisposable.add(disposable)
+                })
     }
 
     override fun onRestoreInstanceState(selectedImages: MutableList<MyImage>?) {

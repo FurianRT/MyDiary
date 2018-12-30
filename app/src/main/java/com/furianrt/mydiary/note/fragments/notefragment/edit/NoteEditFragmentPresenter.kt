@@ -2,13 +2,11 @@ package com.furianrt.mydiary.note.fragments.notefragment.edit
 
 import com.furianrt.mydiary.data.DataManager
 import com.furianrt.mydiary.data.model.MyNote
-import io.reactivex.disposables.CompositeDisposable
 
 class NoteEditFragmentPresenter(private val mDataManager: DataManager)
     : NoteEditFragmentContract.Presenter {
 
     private var mView: NoteEditFragmentContract.View? = null
-    private val mCompositeDisposable = CompositeDisposable()
 
     override fun onStop(note: MyNote, noteTitle: String, noteContent: String) {
         //if (!note.title.isEmpty() || !note.content.isEmpty()) {
@@ -16,10 +14,9 @@ class NoteEditFragmentPresenter(private val mDataManager: DataManager)
             note.title = noteTitle
             note.content = noteContent
 
-            val disposable = mDataManager.updateNoteText(note.id, noteTitle, noteContent)
-                    .subscribe()
+            addDisposable(mDataManager.updateNoteText(note.id, noteTitle, noteContent)
+                    .subscribe())
 
-            mCompositeDisposable.add(disposable)
         }
 
         // }
@@ -37,7 +34,7 @@ class NoteEditFragmentPresenter(private val mDataManager: DataManager)
     }
 
     override fun detachView() {
-        mCompositeDisposable.clear()
+        super.detachView()
         mView = null
     }
 }

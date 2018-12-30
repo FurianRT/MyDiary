@@ -1,8 +1,19 @@
 package com.furianrt.mydiary
 
-interface BasePresenter<in T : BaseView> {
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.disposables.Disposable
 
-    fun attachView(view: T)
+abstract class BasePresenter<in T : BaseView> {
 
-    fun detachView()
+    private val mCompositeDisposable = CompositeDisposable()
+
+    fun addDisposable(disposable: Disposable) {
+        mCompositeDisposable.add(disposable)
+    }
+
+    abstract fun attachView(view: T)
+
+    open fun detachView() {
+        mCompositeDisposable.clear()
+    }
 }

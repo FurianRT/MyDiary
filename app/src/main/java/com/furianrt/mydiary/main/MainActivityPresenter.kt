@@ -12,7 +12,6 @@ import com.furianrt.mydiary.utils.generateUniqueId
 import io.reactivex.Flowable
 import io.reactivex.Observable
 import io.reactivex.Single
-import io.reactivex.disposables.CompositeDisposable
 import org.joda.time.DateTime
 import java.util.*
 import kotlin.Comparator
@@ -23,7 +22,6 @@ private const val HEADER_IMAGE_NAME = "header_image"
 class MainActivityPresenter(private val mDataManager: DataManager) : MainActivityContract.Presenter {
 
     private var mView: MainActivityContract.View? = null
-    private val mCompositeDisposable = CompositeDisposable()
     private var mSelectedNotes = ArrayList<MyNoteWithProp>()
 
     override fun attachView(view: MainActivityContract.View) {
@@ -31,7 +29,7 @@ class MainActivityPresenter(private val mDataManager: DataManager) : MainActivit
     }
 
     override fun detachView() {
-        mCompositeDisposable.clear()
+        super.detachView()
         mView = null
     }
 
@@ -42,27 +40,24 @@ class MainActivityPresenter(private val mDataManager: DataManager) : MainActivit
                     .flatMap { mDataManager.deleteNote(note.note).toSingleDefault(true) }
 
     override fun onMenuDeleteClick() {
-        val disposable = Flowable.fromIterable(mSelectedNotes)
+        addDisposable(Flowable.fromIterable(mSelectedNotes)
                 .flatMapSingle { note -> deleteImagesAndNote(note) }
                 .collectInto(mutableListOf<Boolean>()) { l, i -> l.add(i) }
                 .ignoreElement()
                 .subscribe {
                     mSelectedNotes.clear()
                     mView?.deactivateSelection()
-                }
-
-        mCompositeDisposable.add(disposable)
+                })
     }
 
     override fun onMenuAllNotesClick() {
-        val disposable = mDataManager.getAllNotesWithProp()
+        addDisposable(mDataManager.getAllNotesWithProp()
                 .first(ArrayList())
                 .subscribe { notes ->
                     mSelectedNotes = ArrayList(notes)
                     mView?.activateSelection()
                     mView?.updateItemSelection(mSelectedNotes)
-                }
-        mCompositeDisposable.add(disposable)
+                })
     }
 
     override fun onViewStart() {
@@ -75,7 +70,7 @@ class MainActivityPresenter(private val mDataManager: DataManager) : MainActivit
     }
 
     override fun onHeaderImagesPicked(imageUrls: List<String>) {
-        val disposable = mDataManager.getHeaderImages()
+        addDisposable(mDataManager.getHeaderImages()
                 .first(emptyList())
                 .flatMapObservable { images -> Observable.fromIterable(images) }
                 .defaultIfEmpty(MyHeaderImage("oops", "oops"))
@@ -85,30 +80,24 @@ class MainActivityPresenter(private val mDataManager: DataManager) : MainActivit
                 .map { url -> MyHeaderImage(HEADER_IMAGE_NAME + "_" + generateUniqueId(), url) }
                 .flatMapSingle { image -> mDataManager.saveHeaderImageToStorage(image) }
                 .flatMapCompletable { savedImage -> mDataManager.insertHeaderImage(savedImage) }
-                .subscribe()
-
-        mCompositeDisposable.add(disposable)
+                .subscribe())
     }
 
     private fun loadHeaderImages() {
-        val disposable = mDataManager.getHeaderImages()
+        addDisposable(mDataManager.getHeaderImages()
                 .subscribe { images ->
                     if (images.isEmpty()) {
                         mView?.showEmptyHeaderImage()
                     } else {
                         mView?.showHeaderImages(images)
                     }
-                }
-
-        mCompositeDisposable.add(disposable)
+                })
     }
 
     private fun loadNotes() {
-        val disposable = mDataManager.getAllNotesWithProp()
+        addDisposable(mDataManager.getAllNotesWithProp()
                 .map { formatNotes(toMap(it)) }
-                .subscribe { mView?.showNotes(it, mSelectedNotes) }
-
-        mCompositeDisposable.add(disposable)
+                .subscribe { mView?.showNotes(it, mSelectedNotes) })
     }
 
     private fun toMap(notes: List<MyNoteWithProp>): Map<Long, ArrayList<MyNoteWithProp>> {
@@ -190,10 +179,9 @@ class MainActivityPresenter(private val mDataManager: DataManager) : MainActivit
     }
 
     private fun openNotePagerView(note: MyNoteWithProp) {
-        val disposable = mDataManager.getAllNotesWithProp()
+        addDisposable(mDataManager.getAllNotesWithProp()
                 .first(ArrayList())
-                .subscribe { notes -> mView?.openNotePager(notes.indexOf(note)) }
-        mCompositeDisposable.add(disposable)
+                .subscribe { notes -> mView?.openNotePager(notes.indexOf(note)) })
     }
 
     override fun onButtonSettingsClick() {

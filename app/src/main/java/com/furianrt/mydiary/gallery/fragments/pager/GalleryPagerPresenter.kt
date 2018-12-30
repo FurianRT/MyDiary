@@ -1,14 +1,12 @@
 package com.furianrt.mydiary.gallery.fragments.pager
 
 import com.furianrt.mydiary.data.DataManager
-import io.reactivex.disposables.CompositeDisposable
 
 class GalleryPagerPresenter(
         private val mDataManager: DataManager
 ) : GalleryPagerContract.Presenter {
 
     private var mView: GalleryPagerContract.View? = null
-    private val mCompositeDisposable = CompositeDisposable()
     private lateinit var mNoteId: String
 
     override fun attachView(view: GalleryPagerContract.View) {
@@ -16,7 +14,7 @@ class GalleryPagerPresenter(
     }
 
     override fun detachView() {
-        mCompositeDisposable.clear()
+        super.detachView()
         mView = null
     }
 
@@ -25,10 +23,8 @@ class GalleryPagerPresenter(
     }
 
     private fun loadImages(noteId: String) {
-        val disposable = mDataManager.getImagesForNote(noteId)
-                .subscribe { images -> mView?.showImages(images) }
-
-        mCompositeDisposable.add(disposable)
+        addDisposable(mDataManager.getImagesForNote(noteId)
+                .subscribe { images -> mView?.showImages(images) })
     }
 
     override fun onListModeButtonClick() {
