@@ -16,6 +16,7 @@ import com.furianrt.mydiary.note.NoteActivity
 import com.furianrt.mydiary.note.fragments.notefragment.edit.ClickedView
 import com.furianrt.mydiary.note.fragments.notefragment.edit.NoteEditFragment
 import com.furianrt.mydiary.note.fragments.notefragment.inTransaction
+import kotlinx.android.synthetic.main.fragment_note_content.*
 import kotlinx.android.synthetic.main.fragment_note_content.view.*
 import javax.inject.Inject
 
@@ -130,6 +131,11 @@ class NoteContentFragment : Fragment(), NoteContentFragmentContract.View {
                 }
             }
         }
+    }
+
+    fun updateNoteText(title: String, content: String) {
+        text_note_title.text = title
+        text_note_content.text = content
     }
 
     companion object {

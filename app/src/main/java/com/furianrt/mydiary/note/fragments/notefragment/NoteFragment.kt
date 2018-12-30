@@ -611,6 +611,12 @@ class NoteFragment : Fragment(), NoteFragmentContract.View, OnMapReadyCallback,
         activity?.finish()
     }
 
+    fun onNoteTextChange(title: String, content: String) {
+        childFragmentManager.findFragmentByTag(NoteContentFragment::class.toString())?.let {
+            (it as NoteContentFragment).updateNoteText(title, content)
+        }
+    }
+
     companion object {
 
         @JvmStatic

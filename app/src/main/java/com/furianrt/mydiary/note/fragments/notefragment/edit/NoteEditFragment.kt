@@ -2,6 +2,8 @@ package com.furianrt.mydiary.note.fragments.notefragment.edit
 
 import android.content.Context
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.*
 import androidx.fragment.app.Fragment
 import com.furianrt.mydiary.R
@@ -26,6 +28,18 @@ class NoteEditFragment : Fragment(), NoteEditFragmentContract.View {
     private var mClickedView: ClickedView? = null
     private var mClickPosition = 0
     private var mListener: OnNoteFragmentInteractionListener? = null
+    private val mTextChangeListener = object : TextWatcher {
+        override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+        override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+        override fun afterTextChanged(s: Editable?) {
+            view?.let {
+                (parentFragment as NoteFragment).onNoteTextChange(
+                        it.edit_note_title.text.toString(),
+                        it.edit_note_content.text.toString()
+                )
+            }
+        }
+    }
 
     @Inject
     lateinit var mPresenter: NoteEditFragmentContract.Presenter
@@ -51,9 +65,11 @@ class NoteEditFragment : Fragment(), NoteEditFragmentContract.View {
 
         view.apply {
             edit_note_title.setText(mNote.title)
+            edit_note_title.addTextChangedListener(mTextChangeListener)
             //edit_note_title.setTextColor(mAppearance.textColor)
             //edit_note_title.textSize = mAppearance.textSize
             edit_note_content.setText(mNote.content)
+            edit_note_content.addTextChangedListener(mTextChangeListener)
             //edit_note_content.setTextColor(mAppearance.textColor)
             //edit_note_content.textSize = mAppearance.textSize
             //layout_note_edit_root.setBackgroundColor(mAppearance.textColor)
@@ -122,6 +138,12 @@ class NoteEditFragment : Fragment(), NoteEditFragmentContract.View {
     override fun onDetach() {
         super.onDetach()
         mListener = null
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        view?.edit_note_title?.removeTextChangedListener(mTextChangeListener)
+        view?.edit_note_content?.removeTextChangedListener(mTextChangeListener)
     }
 
     override fun onResume() {

@@ -1,5 +1,6 @@
 package com.furianrt.mydiary.note
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.util.AttributeSet
 import android.view.MotionEvent
@@ -13,6 +14,7 @@ class NoteActivityViewPager : ViewPager {
 
     constructor(context: Context, attrs: AttributeSet) : super(context, attrs)
 
+    @SuppressLint("ClickableViewAccessibility")
     override fun onTouchEvent(ev: MotionEvent?): Boolean {
         return if (swipeEnabled) {
             super.onTouchEvent(ev)
