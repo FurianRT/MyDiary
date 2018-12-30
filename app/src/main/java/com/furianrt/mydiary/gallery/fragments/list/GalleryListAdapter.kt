@@ -3,42 +3,50 @@ package com.furianrt.mydiary.gallery.fragments.list
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ItemTouchHelper
+import androidx.recyclerview.widget.RecyclerView
 import com.furianrt.mydiary.R
 import com.furianrt.mydiary.data.model.MyImage
 import com.furianrt.mydiary.general.GlideApp
-import com.makeramen.dragsortadapter.DragSortAdapter
+import com.furianrt.mydiary.utils.animateScale
 import kotlinx.android.synthetic.main.fragment_gallery_list_item.view.*
 
 class GalleryListAdapter(
-        private var mItems: MutableList<GalleryListItem>,
         var listener: OnListItemClickListener,
-        recyclerView: androidx.recyclerview.widget.RecyclerView,
+        recyclerView: RecyclerView,
         var selectedImages: MutableList<MyImage> = ArrayList()
-) : DragSortAdapter<GalleryListAdapter.GalleryListViewHolder>(recyclerView) {
+) : RecyclerView.Adapter<GalleryListAdapter.GalleryListViewHolder>() {
 
-    fun getImages(): List<MyImage> = mItems.asSequence()
-            .map { it.image }
-            .toList()
+    companion object {
+        private const val ITEM_DRAGGING_SCALE = 1.03f
+        private const val ITEM_DEFAULT_SCALE = 1f
+        private const val ITEM_SCALE_DURATION = 100L
+    }
+
+    private val mItemTouchHelper: ItemTouchHelper
+
+    init {
+        val callback = ItemTouchHelperCallback(this)
+        mItemTouchHelper = ItemTouchHelper(callback)
+        mItemTouchHelper.attachToRecyclerView(recyclerView)
+    }
+
+    private var mList: MutableList<MyImage> = mutableListOf()
+
+    fun getImages(): List<MyImage> = mList
 
     fun submitList(list: List<MyImage>) {
-        if (mItems.isEmpty()) {
-            mItems = list.asSequence()
-                    .map { GalleryListAdapter.GalleryListItem(it.order.toLong(), it) }
-                    .toMutableList()
-            notifyItemRangeInserted(0, list.size)
-        } else {
-            for (i in mItems.size - 1 downTo 0) {
-                if (list.find { it.name == mItems[i].image.name } == null) {
-                    mItems.removeAt(i)
-                    notifyItemRemoved(i)
-                }
-            }
-        }
+        val diffCallback = GalleryListDiffCallback(mList, list)
+        val diffResult = DiffUtil.calculateDiff(diffCallback)
+        mList.clear()
+        mList.addAll(list)
+        diffResult.dispatchUpdatesTo(this)
     }
 
     fun deactivateSelection() {
-        for (i in 0 until mItems.size) {
-            if (selectedImages.contains(mItems[i].image)) {
+        for (i in 0 until mList.size) {
+            if (selectedImages.contains(mList[i])) {
                 notifyItemChanged(i)
             }
         }
@@ -46,55 +54,45 @@ class GalleryListAdapter(
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): GalleryListViewHolder {
-        val inflater = LayoutInflater.from(parent.context)
-        val view = inflater.inflate(R.layout.fragment_gallery_list_item, parent, false)
-        return GalleryListViewHolder(this, view)
+        val view = LayoutInflater.from(parent.context)
+                .inflate(R.layout.fragment_gallery_list_item, parent, false)
+        return GalleryListViewHolder(view)
     }
 
     override fun onBindViewHolder(holder: GalleryListViewHolder, position: Int) {
-        holder.bind(mItems[position])
+        holder.bind(mList[position])
     }
 
-    override fun getPositionForId(id: Long) = mItems.indexOf(mItems.find { it.id == id })
+    override fun getItemCount() = mList.size
 
-    override fun getItemCount() = mItems.size
-
-    override fun getItemId(position: Int) = mItems[position].id
-
-    override fun move(fromPosition: Int, toPosition: Int): Boolean {
-        mItems.add(toPosition, mItems.removeAt(fromPosition))
-        for (i in 0 until mItems.size) {
-            mItems[i].image.order = i
+    fun onItemMove(fromPosition: Int, toPosition: Int) {
+        if (fromPosition < 0 || toPosition < 0 || fromPosition >= mList.size || toPosition >= mList.size) {
+            return
         }
-        listener.onImagesOrderChange(getImages())
-        return true
+        mList.add(toPosition, mList.removeAt(fromPosition))
+        notifyItemMoved(fromPosition, toPosition)
+    }
+
+    fun onItemDismiss(position: Int) {
+        mList.removeAt(position)
+        notifyItemRemoved(position)
     }
 
     inner class GalleryListViewHolder(
-            adapter: DragSortAdapter<GalleryListAdapter.GalleryListViewHolder>,
-            private val mView: View
-    ) : ViewHolder(adapter, mView), View.OnLongClickListener, View.OnClickListener {
+            view: View
+    ) : RecyclerView.ViewHolder(view), View.OnClickListener {
 
         private lateinit var mImage: MyImage
 
-        fun bind(item: GalleryListItem) {
-            mImage = item.image
-            mView.apply {
-                setOnLongClickListener(this@GalleryListViewHolder)
-                setOnClickListener(this@GalleryListViewHolder)
-
-                GlideApp.with(mView)
-                        .load(mImage.url)
-                        .override(550, 400)
-                        .into(image_gallery_item)
-            }
+        fun bind(item: MyImage) {
+             mImage = item
+            itemView.setOnClickListener(this)
+            GlideApp.with(itemView)
+                    .load(mImage.url)
+                    .override(550, 400)
+                    .into(itemView.image_gallery_item)
 
             selectItem()
-        }
-
-        override fun onLongClick(v: View?): Boolean {
-            startDrag()
-            return true
         }
 
         override fun onClick(v: View?) {
@@ -103,10 +101,22 @@ class GalleryListAdapter(
 
         private fun selectItem() {
             if (selectedImages.contains(mImage)) {
-                mView.layout_selection.visibility = View.VISIBLE
+                itemView.layout_selection.visibility = View.VISIBLE
             } else {
-                mView.layout_selection.visibility = View.INVISIBLE
+                itemView.layout_selection.visibility = View.INVISIBLE
             }
+        }
+
+        fun onItemClear() {
+            itemView.animateScale(ITEM_DRAGGING_SCALE, ITEM_DEFAULT_SCALE, ITEM_SCALE_DURATION)
+            for (i in 0 until mList.size) {
+                mList[i].order = i
+            }
+            listener.onImagesOrderChange(mList)
+        }
+
+        fun onItemSelected() {
+            itemView.animateScale(ITEM_DEFAULT_SCALE, ITEM_DRAGGING_SCALE, ITEM_SCALE_DURATION)
         }
     }
 
@@ -116,6 +126,4 @@ class GalleryListAdapter(
 
         fun onImagesOrderChange(images: List<MyImage>)
     }
-
-    class GalleryListItem(val id: Long, val image: MyImage)
 }

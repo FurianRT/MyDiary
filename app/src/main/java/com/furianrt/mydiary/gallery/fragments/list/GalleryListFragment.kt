@@ -60,7 +60,7 @@ class GalleryListFragment : androidx.fragment.app.Fragment(), GalleryListAdapter
             } else {
                 list_gallery.layoutManager = GridLayoutManager(context, VERTICAL_LIST_SPAN_COUNT)
             }
-            mAdapter = GalleryListAdapter(ArrayList(), this@GalleryListFragment, list_gallery)
+            mAdapter = GalleryListAdapter(this@GalleryListFragment, list_gallery)
             list_gallery.adapter = mAdapter
             list_gallery.itemAnimator = FadeInUpAnimator()
         }

@@ -66,17 +66,17 @@ class NoteEditFragment : Fragment(), NoteEditFragmentContract.View {
         super.onViewCreated(view, savedInstanceState)
         view.apply {
             when (mClickedView) {
-                null -> activity?.currentFocus?.postDelayed({ showKeyboard(context) }, 400)
+                null -> activity?.currentFocus?.postDelayed({ edit_note_title.showKeyboard() }, 400)
                 ClickedView.TITLE -> {
                     edit_note_title.requestFocus()
                     edit_note_title.setSelection(mClickPosition)
-                    edit_note_title.postDelayed({ showKeyboard(context) }, 400)
+                    edit_note_title.postDelayed({ edit_note_title.showKeyboard() }, 400)
 
                 }
                 ClickedView.CONTENT -> {
                     edit_note_content.requestFocus()
                     edit_note_content.setSelection(mClickPosition)
-                    edit_note_content.postDelayed({ showKeyboard(context) }, 400)
+                    edit_note_content.postDelayed({ edit_note_content.showKeyboard() }, 400)
                 }
             }
         }
