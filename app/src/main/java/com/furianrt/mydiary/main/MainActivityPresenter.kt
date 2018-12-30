@@ -35,18 +35,18 @@ class MainActivityPresenter(private val mDataManager: DataManager) : MainActivit
         mView = null
     }
 
-    private fun deleteImagesAndNote(note: MyNoteWithProp): Single<Boolean> {
-        return Flowable.fromIterable(note.images)
-                .flatMapSingle { image -> mDataManager.deleteImageFromStorage(image.name) }
-                .collectInto(mutableListOf<Boolean>()) { l, i -> l.add(i) }
-                .flatMap { mDataManager.deleteNote(note.note).toSingleDefault(true) }
-    }
+    private fun deleteImagesAndNote(note: MyNoteWithProp): Single<Boolean> =
+            Flowable.fromIterable(note.images)
+                    .flatMapSingle { image -> mDataManager.deleteImageFromStorage(image.name) }
+                    .collectInto(mutableListOf<Boolean>()) { l, i -> l.add(i) }
+                    .flatMap { mDataManager.deleteNote(note.note).toSingleDefault(true) }
 
     override fun onMenuDeleteClick() {
         val disposable = Flowable.fromIterable(mSelectedNotes)
                 .flatMapSingle { note -> deleteImagesAndNote(note) }
                 .collectInto(mutableListOf<Boolean>()) { l, i -> l.add(i) }
-                .subscribe { _ ->
+                .ignoreElement()
+                .subscribe {
                     mSelectedNotes.clear()
                     mView?.deactivateSelection()
                 }

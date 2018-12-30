@@ -242,7 +242,6 @@ class NoteFragmentPresenter(private val mDataManager: DataManager) : NoteFragmen
                 }
                 .flatMapSingle { image -> mDataManager.saveImageToStorage(image) }
                 .flatMapCompletable { savedImage -> mDataManager.insertImage(savedImage) }
-                .andThen(mDataManager.getImagesForNote(mNote.id))
                 .subscribe()
 
         mCompositeDisposable.add(disposable)
@@ -254,7 +253,8 @@ class NoteFragmentPresenter(private val mDataManager: DataManager) : NoteFragmen
 
     override fun onDeleteButtonClick() {
         val disposable = mDataManager.getImagesForNote(mNote.id)
-                .flatMapIterable { it }
+                .first(emptyList())
+                .flatMapObservable { Observable.fromIterable(it) }
                 .flatMapSingle { image -> mDataManager.deleteImageFromStorage(image.name) }
                 .collectInto(mutableListOf<Boolean>()) { l, i -> l.add(i) }
                 .flatMapCompletable { mDataManager.deleteNote(mNote) }

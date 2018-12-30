@@ -9,13 +9,12 @@ import java.io.FileNotFoundException
 import java.io.FileOutputStream
 
 
-class StorageHelperImp(private val context: Context) : StorageHelper {
+class StorageHelperImp(context: Context) : StorageHelper {
 
     private val mDirectory = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES)
 
-    @Suppress("RECEIVER_NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
     override fun getFile(fileName: String): File {
-        val files = mDirectory.listFiles { file -> file.name.startsWith(fileName) }
+        val files = mDirectory!!.listFiles { file -> file.name.startsWith(fileName) }
 
         if (files.isEmpty()) {
             throw FileNotFoundException()
