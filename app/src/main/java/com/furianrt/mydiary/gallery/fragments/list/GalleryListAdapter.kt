@@ -96,7 +96,7 @@ class GalleryListAdapter(
         }
 
         override fun onClick(v: View?) {
-            listener.onListItemClick(mImage, mImage.order)
+            listener.onListItemClick(mImage, adapterPosition)
         }
 
         private fun selectItem() {

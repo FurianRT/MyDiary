@@ -1,7 +1,5 @@
 package com.furianrt.mydiary.gallery.fragments.list
 
-import android.util.Log
-import com.furianrt.mydiary.LOG_TAG
 import com.furianrt.mydiary.data.DataManager
 import com.furianrt.mydiary.data.model.MyImage
 import io.reactivex.disposables.CompositeDisposable
@@ -74,7 +72,6 @@ class GalleryListPresenter(private val mDataManager: DataManager) : GalleryListC
     }
 
     override fun onCabDeleteButtonClick() {
-        Log.e(LOG_TAG, mSelectedImages.toString())
         val disposable = mDataManager.deleteImages(mSelectedImages)
                 .subscribe {
                     mView?.closeCab()
