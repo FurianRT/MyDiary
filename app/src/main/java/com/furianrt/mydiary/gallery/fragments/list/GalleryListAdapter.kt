@@ -19,9 +19,9 @@ class GalleryListAdapter(
 ) : RecyclerView.Adapter<GalleryListAdapter.GalleryListViewHolder>() {
 
     companion object {
-        private const val ITEM_DRAGGING_SCALE = 1.03f
+        private const val ITEM_DRAGGING_SCALE = 1.04f
         private const val ITEM_DEFAULT_SCALE = 1f
-        private const val ITEM_SCALE_DURATION = 100L
+        private const val ITEM_SCALE_DURATION = 250L
     }
 
     private val mItemTouchHelper: ItemTouchHelper

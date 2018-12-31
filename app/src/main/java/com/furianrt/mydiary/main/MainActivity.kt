@@ -35,6 +35,7 @@ import com.furianrt.mydiary.utils.getThemePrimaryDarkColor
 import com.google.android.material.appbar.AppBarLayout
 import com.yanzhenjie.album.Album
 import com.yanzhenjie.album.api.widget.Widget
+import jp.wasabeef.recyclerview.animators.LandingAnimator
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.activity_main_toolbar.*
 import pub.devrel.easypermissions.AfterPermissionGranted
@@ -156,6 +157,7 @@ class MainActivity : BaseActivity(), MainActivityContract.View,
             layoutManager = LinearLayoutManager(this@MainActivity)
             addItemDecoration(HeaderItemDecoration(this, mAdapter))
             adapter = mAdapter
+            itemAnimator = LandingAnimator()
         }
     }
 
