@@ -14,13 +14,6 @@ import com.furianrt.mydiary.utils.showKeyboard
 import kotlinx.android.synthetic.main.fragment_note_edit.view.*
 import javax.inject.Inject
 
-private const val ARG_CLICKED_VIEW = "clickedView"
-private const val ARG_NOTE = "note"
-private const val ARG_APPEARANCE = "appearance"
-private const val ARG_POSITION = "position"
-
-enum class ClickedView { TITLE, CONTENT }
-
 class NoteEditFragment : Fragment(), NoteEditFragmentContract.View {
 
     private lateinit var mNote: MyNote
@@ -172,9 +165,15 @@ class NoteEditFragment : Fragment(), NoteEditFragmentContract.View {
         fun onNoteFragmentEditModeDisabled()
     }
 
+    enum class ClickedView { TITLE, CONTENT }
+
     companion object {
 
         val TAG = NoteEditFragment::class.toString()
+        private const val ARG_CLICKED_VIEW = "clickedView"
+        private const val ARG_NOTE = "note"
+        private const val ARG_APPEARANCE = "appearance"
+        private const val ARG_POSITION = "position"
 
         @JvmStatic
         fun newInstance(note: MyNote, appearance: MyNoteAppearance, clickedView: ClickedView?,

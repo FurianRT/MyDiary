@@ -4,7 +4,7 @@ import com.furianrt.mydiary.data.DataManager
 
 class GalleryPagerPresenter(
         private val mDataManager: DataManager
-) : GalleryPagerContract.Presenter {
+) : GalleryPagerContract.Presenter() {
 
     private var mView: GalleryPagerContract.View? = null
     private lateinit var mNoteId: String

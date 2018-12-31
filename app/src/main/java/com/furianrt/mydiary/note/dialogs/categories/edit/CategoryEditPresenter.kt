@@ -3,7 +3,7 @@ package com.furianrt.mydiary.note.dialogs.categories.edit
 import com.furianrt.mydiary.data.DataManager
 import com.furianrt.mydiary.data.model.MyCategory
 
-class CategoryEditPresenter(private val mDataManager: DataManager) : CategoryEditContract.Presenter {
+class CategoryEditPresenter(private val mDataManager: DataManager) : CategoryEditContract.Presenter() {
 
     private var mView: CategoryEditContract.View? = null
 

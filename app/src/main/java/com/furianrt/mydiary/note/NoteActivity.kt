@@ -14,14 +14,16 @@ import com.furianrt.mydiary.utils.generateUniqueId
 import kotlinx.android.synthetic.main.activity_note.*
 import javax.inject.Inject
 
-private const val EXTRA_MODE = "mode"
-private const val BUNDLE_NOTE_ID = "noteId"
-private const val EXTRA_CLICKED_NOTE_POSITION = "notePosition"
-
 enum class Mode { ADD, READ }
 
 class NoteActivity : BaseActivity(), NoteActivityContract.View,
         NoteEditFragment.OnNoteFragmentInteractionListener {
+
+    companion object {
+        const val EXTRA_MODE = "mode"
+        private const val BUNDLE_NOTE_ID = "noteId"
+        const val EXTRA_CLICKED_NOTE_POSITION = "notePosition"
+    }
 
     @Inject
     lateinit var mPresenter: NoteActivityContract.Presenter

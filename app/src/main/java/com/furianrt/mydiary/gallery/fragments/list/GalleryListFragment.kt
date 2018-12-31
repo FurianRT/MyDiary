@@ -15,13 +15,6 @@ import jp.wasabeef.recyclerview.animators.FadeInUpAnimator
 import kotlinx.android.synthetic.main.fragment_gallery_list.view.*
 import javax.inject.Inject
 
-private const val ARG_NOTE_ID = "noteId"
-private const val VERTICAL_LIST_SPAN_COUNT = 2
-private const val HORIZONTAL_LIST_SPAN_COUNT = 3
-private const val BUNDLE_SELECTION_ACTIVE = "selectionActive"
-private const val BUNDLE_SELECTED_IMAGES = "selectedImages"
-private const val BUNDLE_RECYCLER_VIEW_STATE = "recyclerState"
-
 class GalleryListFragment : androidx.fragment.app.Fragment(), GalleryListAdapter.OnListItemClickListener,
         GalleryListContract.View, ActionMode.Callback {
 
@@ -200,6 +193,14 @@ class GalleryListFragment : androidx.fragment.app.Fragment(), GalleryListAdapter
     }
 
     companion object {
+
+        private const val ARG_NOTE_ID = "noteId"
+        private const val VERTICAL_LIST_SPAN_COUNT = 2
+        private const val HORIZONTAL_LIST_SPAN_COUNT = 3
+        private const val BUNDLE_SELECTION_ACTIVE = "selectionActive"
+        private const val BUNDLE_SELECTED_IMAGES = "selectedImages"
+        private const val BUNDLE_RECYCLER_VIEW_STATE = "recyclerState"
+
         @JvmStatic
         fun newInstance(noteId: String) =
                 GalleryListFragment().apply {

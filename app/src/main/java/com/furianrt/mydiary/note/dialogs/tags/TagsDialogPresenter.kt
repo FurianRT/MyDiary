@@ -5,7 +5,7 @@ import com.furianrt.mydiary.data.model.MyTag
 import com.furianrt.mydiary.utils.generateUniqueId
 import io.reactivex.Completable
 
-class TagsDialogPresenter(private val mDataManager: DataManager) : TagsDialogContract.Presenter {
+class TagsDialogPresenter(private val mDataManager: DataManager) : TagsDialogContract.Presenter() {
 
     private var mView: TagsDialogContract.View? = null
 

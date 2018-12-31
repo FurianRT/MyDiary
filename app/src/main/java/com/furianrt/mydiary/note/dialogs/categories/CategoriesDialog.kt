@@ -14,8 +14,6 @@ import com.furianrt.mydiary.note.dialogs.categories.list.CategoryListFragment
 import com.furianrt.mydiary.note.fragments.notefragment.inTransaction
 import javax.inject.Inject
 
-private const val ARG_NOTE_ID = "noteId"
-
 class CategoriesDialog : DialogFragment(), CategoriesDialogContract.View {
 
     @Inject
@@ -28,6 +26,7 @@ class CategoriesDialog : DialogFragment(), CategoriesDialogContract.View {
     companion object {
 
         val TAG = CategoriesDialog::class.toString()
+        private const val ARG_NOTE_ID = "noteId"
 
         @JvmStatic
         fun newInstance(noteId: String) =

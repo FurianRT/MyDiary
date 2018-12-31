@@ -4,7 +4,7 @@ import com.furianrt.mydiary.data.DataManager
 
 class CategoriesDialogPresenter(
         private val mDataManager: DataManager
-) : CategoriesDialogContract.Presenter {
+) : CategoriesDialogContract.Presenter() {
 
     private var mView: CategoriesDialogContract.View? = null
 

@@ -13,7 +13,7 @@ import io.reactivex.Flowable
 import io.reactivex.Observable
 import org.joda.time.DateTime
 
-class NoteFragmentPresenter(private val mDataManager: DataManager) : NoteFragmentContract.Presenter {
+class NoteFragmentPresenter(private val mDataManager: DataManager) : NoteFragmentContract.Presenter() {
 
     private var mView: NoteFragmentContract.View? = null
 

@@ -3,7 +3,7 @@ package com.furianrt.mydiary.gallery.fragments.list
 import com.furianrt.mydiary.data.DataManager
 import com.furianrt.mydiary.data.model.MyImage
 
-class GalleryListPresenter(private val mDataManager: DataManager) : GalleryListContract.Presenter {
+class GalleryListPresenter(private val mDataManager: DataManager) : GalleryListContract.Presenter() {
 
     private var mView: GalleryListContract.View? = null
     private lateinit var mNoteId: String

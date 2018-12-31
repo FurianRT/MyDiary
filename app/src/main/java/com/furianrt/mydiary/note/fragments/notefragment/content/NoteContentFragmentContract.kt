@@ -8,7 +8,7 @@ interface NoteContentFragmentContract {
     interface View : BaseView {
     }
 
-    interface Presenter : BasePresenter<View> {
+    abstract class Presenter : BasePresenter<View>() {
 
     }
 }

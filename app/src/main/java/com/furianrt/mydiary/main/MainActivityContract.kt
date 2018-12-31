@@ -37,30 +37,30 @@ interface MainActivityContract {
         fun showSettingsView()
     }
 
-    interface Presenter : BasePresenter<View> {
+    abstract class Presenter : BasePresenter<View>() {
 
-        fun onMainListItemClick(note: MyNoteWithProp, position: Int)
+        abstract fun onMainListItemClick(note: MyNoteWithProp, position: Int)
 
-        fun onHeaderImagesPicked(imageUrls: List<String>)
+        abstract fun onHeaderImagesPicked(imageUrls: List<String>)
 
-        fun onViewStart()
+        abstract fun onViewStart()
 
-        fun onButtonSetMainImageClick()
+        abstract fun onButtonSetMainImageClick()
 
-        fun onStoragePermissionsGranted()
+        abstract fun onStoragePermissionsGranted()
 
-        fun onMainListItemLongClick(note: MyNoteWithProp, position: Int)
+        abstract fun onMainListItemLongClick(note: MyNoteWithProp, position: Int)
 
-        fun onSaveInstanceState(): ArrayList<MyNoteWithProp>?
+        abstract fun onSaveInstanceState(): ArrayList<MyNoteWithProp>?
 
-        fun onRestoreInstanceState(selectedNotes: ArrayList<MyNoteWithProp>?)
+        abstract fun onRestoreInstanceState(selectedNotes: ArrayList<MyNoteWithProp>?)
 
-        fun onFabMenuClick()
+        abstract fun onFabMenuClick()
 
-        fun onMenuDeleteClick()
+        abstract fun onMenuDeleteClick()
 
-        fun onMenuAllNotesClick()
+        abstract fun onMenuAllNotesClick()
 
-        fun onButtonSettingsClick()
+        abstract fun onButtonSettingsClick()
     }
 }

@@ -10,10 +10,6 @@ import com.furianrt.mydiary.data.model.MyCategory
 import kotlinx.android.synthetic.main.fragment_category_edit.view.*
 import javax.inject.Inject
 
-private const val ARG_CATEGORY_ID = "category_ID"
-private const val BUNDLE_CATEGORY_NAME = "category_name"
-private const val BUNDLE_CATEGORY_COLOR = "category_color"
-
 class CategoryEditFragment : Fragment(), View.OnClickListener, CategoryEditContract.View {
 
     @Inject
@@ -94,6 +90,10 @@ class CategoryEditFragment : Fragment(), View.OnClickListener, CategoryEditContr
     companion object {
 
         val TAG = CategoryEditFragment::class.toString()
+
+        private const val ARG_CATEGORY_ID = "category_ID"
+        private const val BUNDLE_CATEGORY_NAME = "category_name"
+        private const val BUNDLE_CATEGORY_COLOR = "category_color"
 
         @JvmStatic
         fun newInstance(categoryId: Long) =

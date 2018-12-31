@@ -2,7 +2,7 @@ package com.furianrt.mydiary.note.dialogs.moods
 
 import com.furianrt.mydiary.data.DataManager
 
-class MoodsDialogPresenter(private val mDataManager: DataManager) : MoodsDialogContract.Presenter {
+class MoodsDialogPresenter(private val mDataManager: DataManager) : MoodsDialogContract.Presenter() {
 
     private var mView: MoodsDialogContract.View? = null
 

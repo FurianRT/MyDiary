@@ -1,6 +1,5 @@
 package com.furianrt.mydiary.note.dialogs.categories.list
 
-
 import android.os.Bundle
 import android.os.Parcelable
 import android.view.LayoutInflater
@@ -17,9 +16,6 @@ import com.furianrt.mydiary.note.fragments.notefragment.inTransaction
 import kotlinx.android.synthetic.main.fragment_category_list.*
 import kotlinx.android.synthetic.main.fragment_category_list.view.*
 import javax.inject.Inject
-
-private const val ARG_NOTE_ID = "noteId"
-private const val BUNDLE_RECYCLER_VIEW_STATE = "recyclerState"
 
 class CategoryListFragment : Fragment(), View.OnClickListener,
         CategoriesListAdapter.OnCategoryListInteractionListener, CategoryListContract.View {
@@ -134,6 +130,8 @@ class CategoryListFragment : Fragment(), View.OnClickListener,
     companion object {
 
         val TAG = CategoryListFragment::class.toString()
+        private const val ARG_NOTE_ID = "noteId"
+        private const val BUNDLE_RECYCLER_VIEW_STATE = "recyclerState"
 
         @JvmStatic
         fun newInstance(noteId: String) =

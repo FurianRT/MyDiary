@@ -10,8 +10,8 @@ interface CategoriesDialogContract {
         fun showViewCategoryList(noteId: String)
     }
 
-    interface Presenter : BasePresenter<View> {
+    abstract class Presenter : BasePresenter<View>() {
 
-        fun onViewCreate(noteId: String)
+        abstract fun onViewCreate(noteId: String)
     }
 }

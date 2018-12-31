@@ -5,7 +5,7 @@ import com.furianrt.mydiary.data.model.MyNote
 import com.furianrt.mydiary.data.model.MyNoteAppearance
 import com.furianrt.mydiary.data.model.MyNoteWithProp
 
-class NoteActivityPresenter(private val mDataManager: DataManager) : NoteActivityContract.Presenter {
+class NoteActivityPresenter(private val mDataManager: DataManager) : NoteActivityContract.Presenter() {
 
     private var mView: NoteActivityContract.View? = null
 

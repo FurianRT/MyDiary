@@ -11,8 +11,8 @@ interface MoodsDialogContract {
         fun showMoods(moods: List<MyMood>)
     }
 
-    interface Presenter : BasePresenter<View> {
+    abstract class Presenter : BasePresenter<View>() {
 
-        fun onViewCreate()
+        abstract fun onViewCreate()
     }
 }

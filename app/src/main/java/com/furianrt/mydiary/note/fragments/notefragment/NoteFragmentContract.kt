@@ -68,54 +68,54 @@ interface NoteFragmentContract {
         fun showNoteContent(note: MyNote)
     }
 
-    interface Presenter : BasePresenter<View> {
+    abstract class Presenter : BasePresenter<View>() {
 
-        fun onTagsFieldClick()
+        abstract fun onTagsFieldClick()
 
-        fun onLocationReceived(result: LocationResult)
+        abstract fun onLocationReceived(result: LocationResult)
 
-        fun onLocationPermissionsGranted()
+        abstract fun onLocationPermissionsGranted()
 
-        fun onAddressFound(addresses: List<Address>, latitude: Double, longitude: Double)
+        abstract fun onAddressFound(addresses: List<Address>, latitude: Double, longitude: Double)
 
-        fun onNoteTagsChanged(tags: List<MyTag>)
+        abstract fun onNoteTagsChanged(tags: List<MyTag>)
 
-        fun onMapReady()
+        abstract fun onMapReady()
 
-        fun onAddImageButtonClick()
+        abstract fun onAddImageButtonClick()
 
-        fun onStoragePermissionsGranted()
+        abstract fun onStoragePermissionsGranted()
 
-        fun onNoteImagesPicked(imageUrls: List<String>)
+        abstract fun onNoteImagesPicked(imageUrls: List<String>)
 
-        fun onEditButtonClick()
+        abstract fun onEditButtonClick()
 
-        fun onDeleteButtonClick()
+        abstract fun onDeleteButtonClick()
 
-        fun onToolbarImageClick()
+        abstract fun onToolbarImageClick()
 
-        fun onMoodFieldClick()
+        abstract fun onMoodFieldClick()
 
-        fun onMoodPicked(mood: MyMood)
+        abstract fun onMoodPicked(mood: MyMood)
 
-        fun onNoMoodPicked()
+        abstract fun onNoMoodPicked()
 
-        fun onCategoryFieldClick()
+        abstract fun onCategoryFieldClick()
 
-        fun onNoCategoryPicked()
+        abstract fun onNoCategoryPicked()
 
-        fun onCategoryPicked(category: MyCategory)
+        abstract fun onCategoryPicked(category: MyCategory)
 
-        fun onAppearanceButtonClick()
+        abstract fun onAppearanceButtonClick()
 
-        fun loadNote(noteId: String, mode: Mode, locationEnabled: Boolean, networkAvailable: Boolean)
+        abstract fun loadNote(noteId: String, mode: Mode, locationEnabled: Boolean, networkAvailable: Boolean)
 
-        fun loadNoteAppearance(noteId: String)
+        abstract fun loadNoteAppearance(noteId: String)
 
-        fun loadTags(noteId: String)
+        abstract fun loadTags(noteId: String)
 
-        fun loadImages(noteId: String)
+        abstract fun loadImages(noteId: String)
 
-        fun updateNoteText(noteId: String, noteTitle: String, noteContent: String)
+        abstract fun updateNoteText(noteId: String, noteTitle: String, noteContent: String)
     }
 }

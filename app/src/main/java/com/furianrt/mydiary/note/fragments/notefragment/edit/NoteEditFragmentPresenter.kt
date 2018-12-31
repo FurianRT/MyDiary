@@ -4,7 +4,7 @@ import com.furianrt.mydiary.data.DataManager
 import com.furianrt.mydiary.data.model.MyNote
 
 class NoteEditFragmentPresenter(private val mDataManager: DataManager)
-    : NoteEditFragmentContract.Presenter {
+    : NoteEditFragmentContract.Presenter() {
 
     private var mView: NoteEditFragmentContract.View? = null
 

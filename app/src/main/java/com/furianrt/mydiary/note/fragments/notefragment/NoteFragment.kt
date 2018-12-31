@@ -27,8 +27,6 @@ import com.furianrt.mydiary.R
 import com.furianrt.mydiary.data.api.Forecast
 import com.furianrt.mydiary.data.model.*
 import com.furianrt.mydiary.data.prefs.PreferencesHelper
-import com.furianrt.mydiary.gallery.EXTRA_NOTE_ID
-import com.furianrt.mydiary.gallery.EXTRA_POSITION
 import com.furianrt.mydiary.gallery.GalleryActivity
 import com.furianrt.mydiary.general.AppBarLayoutBehavior
 import com.furianrt.mydiary.general.GlideApp
@@ -37,7 +35,6 @@ import com.furianrt.mydiary.note.dialogs.categories.CategoriesDialog
 import com.furianrt.mydiary.note.dialogs.moods.MoodsDialog
 import com.furianrt.mydiary.note.dialogs.tags.TagsDialog
 import com.furianrt.mydiary.note.fragments.notefragment.content.NoteContentFragment
-import com.furianrt.mydiary.note.fragments.notefragment.edit.ClickedView
 import com.furianrt.mydiary.note.fragments.notefragment.edit.NoteEditFragment
 import com.furianrt.mydiary.settings.note.NoteSettingsActivity
 import com.furianrt.mydiary.utils.*
@@ -65,15 +62,6 @@ inline fun FragmentManager.inTransaction(func: FragmentTransaction.() -> Unit) {
     fragmentTransaction.func()
     fragmentTransaction.commit()
 }
-
-private const val ARG_NOTE_ID = "noteId"
-private const val EXTRA_NOTE = "note"
-private const val ARG_MODE = "mode"
-private const val LOCATION_INTERVAL = 400L
-private const val LOCATION_PERMISSIONS_REQUEST_CODE = 1
-private const val STORAGE_PERMISSIONS_REQUEST_CODE = 2
-private const val ZOOM = 15f
-private const val BUNDLE_IMAGE_PAGER_POSITION = "imagePagerPosition"
 
 class NoteFragment : Fragment(), NoteFragmentContract.View, OnMapReadyCallback,
         TagsDialog.OnTagsDialogInteractionListener, View.OnClickListener, MoodsDialog.OnMoodsDialogInteractionListener, CategoriesDialog.OnCategoriesDialogInteractionListener {
@@ -190,7 +178,7 @@ class NoteFragment : Fragment(), NoteFragmentContract.View, OnMapReadyCallback,
 
     override fun showNoteSettingsView(note: MyNote) {
         val intent = Intent(context, NoteSettingsActivity::class.java)
-        intent.putExtra(EXTRA_NOTE, note)
+        intent.putExtra(NoteSettingsActivity.EXTRA_NOTE, note)
         startActivity(intent)
     }
 
@@ -223,8 +211,8 @@ class NoteFragment : Fragment(), NoteFragmentContract.View, OnMapReadyCallback,
 
     override fun showGalleryView(noteId: String) {
         val intent = Intent(context, GalleryActivity::class.java)
-        intent.putExtra(EXTRA_POSITION, view!!.pager_note_image.currentItem)
-        intent.putExtra(EXTRA_NOTE_ID, noteId)
+        intent.putExtra(GalleryActivity.EXTRA_POSITION, view!!.pager_note_image.currentItem)
+        intent.putExtra(GalleryActivity.EXTRA_NOTE_ID, noteId)
         startActivity(intent)
     }
 
@@ -461,7 +449,7 @@ class NoteFragment : Fragment(), NoteFragmentContract.View, OnMapReadyCallback,
                         NoteEditFragment.newInstance(
                                 note,
                                 MyNoteAppearance(note.id),
-                                ClickedView.TITLE,
+                                NoteEditFragment.ClickedView.TITLE,
                                 note.title.length
                         ), NoteEditFragment.TAG
                 )
@@ -618,6 +606,14 @@ class NoteFragment : Fragment(), NoteFragmentContract.View, OnMapReadyCallback,
     }
 
     companion object {
+
+        private const val ARG_NOTE_ID = "noteId"
+        private const val ARG_MODE = "mode"
+        private const val LOCATION_INTERVAL = 400L
+        private const val LOCATION_PERMISSIONS_REQUEST_CODE = 1
+        private const val STORAGE_PERMISSIONS_REQUEST_CODE = 2
+        private const val ZOOM = 15f
+        private const val BUNDLE_IMAGE_PAGER_POSITION = "imagePagerPosition"
 
         @JvmStatic
         fun newInstance(noteId: String, mode: Mode) =

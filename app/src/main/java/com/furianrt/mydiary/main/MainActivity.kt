@@ -42,15 +42,15 @@ import pub.devrel.easypermissions.EasyPermissions
 import java.util.*
 import javax.inject.Inject
 
-private const val EXTRA_CLICKED_NOTE_POSITION = "notePosition"
-private const val EXTRA_MODE = "mode"
-private const val BUNDLE_RECYCLER_VIEW_STATE = "recyclerState"
-private const val BUNDLE_SELECTED_LIST_ITEMS = "selectedListItems"
-private const val STORAGE_PERMISSIONS_REQUEST_CODE = 1
-private const val ACTIVITY_SETTING_REQUEST_CODE = 2
-
 class MainActivity : BaseActivity(), MainActivityContract.View,
         MainListAdapter.OnMainListItemInteractionListener, View.OnClickListener {
+
+    companion object {
+        private const val BUNDLE_RECYCLER_VIEW_STATE = "recyclerState"
+        private const val BUNDLE_SELECTED_LIST_ITEMS = "selectedListItems"
+        private const val STORAGE_PERMISSIONS_REQUEST_CODE = 1
+        private const val ACTIVITY_SETTING_REQUEST_CODE = 2
+    }
 
     @Inject
     lateinit var mPresenter: MainActivityContract.Presenter
@@ -204,7 +204,7 @@ class MainActivity : BaseActivity(), MainActivityContract.View,
     override fun showViewNewNote() {
         mPresenter.detachView()
         val intent = Intent(this, NoteActivity::class.java)
-        intent.putExtra(EXTRA_MODE, Mode.ADD)
+        intent.putExtra(NoteActivity.EXTRA_MODE, Mode.ADD)
         startActivity(intent)
     }
 
@@ -301,8 +301,8 @@ class MainActivity : BaseActivity(), MainActivityContract.View,
 
     override fun openNotePager(position: Int) {
         val intent = Intent(this, NoteActivity::class.java)
-        intent.putExtra(EXTRA_CLICKED_NOTE_POSITION, position)
-        intent.putExtra(EXTRA_MODE, Mode.READ)
+        intent.putExtra(NoteActivity.EXTRA_CLICKED_NOTE_POSITION, position)
+        intent.putExtra(NoteActivity.EXTRA_MODE, Mode.READ)
         startActivity(intent)
     }
 

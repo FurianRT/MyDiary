@@ -2,6 +2,8 @@ package com.furianrt.mydiary.gallery.fragments.pager
 
 import android.os.Bundle
 import android.view.*
+import androidx.fragment.app.Fragment
+import androidx.viewpager.widget.ViewPager
 import com.furianrt.mydiary.R
 import com.furianrt.mydiary.data.model.MyImage
 import com.furianrt.mydiary.gallery.fragments.list.GalleryListFragment
@@ -9,10 +11,7 @@ import com.furianrt.mydiary.note.fragments.notefragment.inTransaction
 import kotlinx.android.synthetic.main.fragment_gallery_pager.view.*
 import javax.inject.Inject
 
-private const val ARG_POSITION = "position"
-private const val ARG_NOTE_ID = "noteId"
-
-class GalleryPagerFragment : androidx.fragment.app.Fragment(), GalleryPagerContract.View {
+class GalleryPagerFragment : Fragment(), GalleryPagerContract.View {
 
     @Inject
     lateinit var mPresenter: GalleryPagerContract.Presenter
@@ -42,15 +41,9 @@ class GalleryPagerFragment : androidx.fragment.app.Fragment(), GalleryPagerContr
     private fun setupUi(view: View) {
         mPagerAdapter = GalleryPagerAdapter(ArrayList(), childFragmentManager)
         view.pager_gallery.adapter = mPagerAdapter
-        view.pager_gallery.addOnPageChangeListener(object : androidx.viewpager.widget.ViewPager.OnPageChangeListener {
-            override fun onPageScrollStateChanged(p0: Int) {
-
-            }
-
-            override fun onPageScrolled(p0: Int, p1: Float, p2: Int) {
-
-            }
-
+        view.pager_gallery.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
+            override fun onPageScrollStateChanged(p0: Int) {}
+            override fun onPageScrolled(p0: Int, p1: Float, p2: Int) {}
             override fun onPageSelected(position: Int) {
                 mPagerPosition = position
             }
@@ -102,6 +95,10 @@ class GalleryPagerFragment : androidx.fragment.app.Fragment(), GalleryPagerContr
     }
 
     companion object {
+
+        private const val ARG_POSITION = "position"
+        private const val ARG_NOTE_ID = "noteId"
+
         @JvmStatic
         fun newInstance(noteId: String, position: Int) =
                 GalleryPagerFragment().apply {

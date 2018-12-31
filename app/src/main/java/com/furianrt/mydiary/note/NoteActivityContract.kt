@@ -12,10 +12,10 @@ interface NoteActivityContract {
 
     }
 
-    interface Presenter : BasePresenter<View> {
+    abstract class Presenter : BasePresenter<View>() {
 
-        fun loadNotes()
+        abstract fun loadNotes()
 
-        fun loadNote(noteId: String)
+        abstract fun loadNote(noteId: String)
     }
 }

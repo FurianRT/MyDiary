@@ -13,12 +13,12 @@ interface GalleryPagerContract {
         fun showListImagesView(noteId: String)
     }
 
-    interface Presenter : BasePresenter<View> {
+    abstract class Presenter : BasePresenter<View>() {
 
-        fun onViewStart()
+        abstract fun onViewStart()
 
-        fun setNoteId(noteId: String)
+        abstract fun setNoteId(noteId: String)
 
-        fun onListModeButtonClick()
+        abstract fun onListModeButtonClick()
     }
 }

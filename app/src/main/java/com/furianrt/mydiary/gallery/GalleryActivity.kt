@@ -9,10 +9,12 @@ import com.furianrt.mydiary.note.fragments.notefragment.inTransaction
 import kotlinx.android.synthetic.main.activity_gallery.*
 import javax.inject.Inject
 
-const val EXTRA_POSITION = "position"
-const val EXTRA_NOTE_ID = "noteId"
-
 class GalleryActivity : BaseActivity(), GalleryActivityContract.View {
+
+    companion object {
+        const val EXTRA_POSITION = "position"
+        const val EXTRA_NOTE_ID = "noteId"
+    }
 
     @Inject
     lateinit var mPresenter: GalleryActivityContract.Presenter

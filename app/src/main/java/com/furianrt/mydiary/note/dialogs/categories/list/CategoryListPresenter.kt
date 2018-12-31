@@ -5,7 +5,7 @@ import com.furianrt.mydiary.data.model.MyCategory
 
 class CategoryListPresenter(
         private val mDataManager: DataManager
-) : CategoryListContract.Presenter {
+) : CategoryListContract.Presenter() {
 
     private var mView: CategoryListContract.View? = null
 

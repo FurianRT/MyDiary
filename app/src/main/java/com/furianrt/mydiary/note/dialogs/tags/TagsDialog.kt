@@ -18,9 +18,6 @@ import kotlinx.android.synthetic.main.dialog_tags.*
 import kotlinx.android.synthetic.main.dialog_tags.view.*
 import javax.inject.Inject
 
-private const val ARG_TAGS = "tags"
-private const val BUNDLE_RECYCLER_VIEW_STATE = "recyclerState"
-
 class TagsDialog : androidx.fragment.app.DialogFragment(), TagsDialogListAdapter.OnTagChangedListener,
         TagsDialogContract.View {
 
@@ -34,6 +31,8 @@ class TagsDialog : androidx.fragment.app.DialogFragment(), TagsDialogListAdapter
     companion object {
 
         val TAG = TagsDialog::class.toString()
+        private const val ARG_TAGS = "tags"
+        private const val BUNDLE_RECYCLER_VIEW_STATE = "recyclerState"
 
         @JvmStatic
         fun newInstance(tags: ArrayList<MyTag>) =

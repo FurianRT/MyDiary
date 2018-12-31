@@ -25,26 +25,26 @@ interface GalleryListContract {
         fun closeCab()
     }
 
-    interface Presenter : BasePresenter<View> {
+    abstract class Presenter : BasePresenter<View>() {
 
-        fun onListItemClick(image: MyImage, position: Int, selectionActive: Boolean)
+        abstract fun onListItemClick(image: MyImage, position: Int, selectionActive: Boolean)
 
-        fun setNoteId(noteId: String)
+        abstract fun setNoteId(noteId: String)
 
-        fun onViewStart()
+        abstract fun onViewStart()
 
-        fun onImagesOrderChange(images: List<MyImage>)
+        abstract fun onImagesOrderChange(images: List<MyImage>)
 
-        fun onMultiSelectionButtonClick()
+        abstract fun onMultiSelectionButtonClick()
 
-        fun onCabDeleteButtonClick()
+        abstract fun onCabDeleteButtonClick()
 
-        fun onCabSelectAllButtonClick()
+        abstract fun onCabSelectAllButtonClick()
 
-        fun onSaveInstanceState(): MutableList<MyImage>
+        abstract fun onSaveInstanceState(): MutableList<MyImage>
 
-        fun onRestoreInstanceState(selectedImages: MutableList<MyImage>?)
+        abstract fun onRestoreInstanceState(selectedImages: MutableList<MyImage>?)
 
-        fun onCabCloseSelection()
+        abstract fun onCabCloseSelection()
     }
 }

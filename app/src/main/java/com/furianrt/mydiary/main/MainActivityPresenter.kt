@@ -17,9 +17,11 @@ import java.util.*
 import kotlin.Comparator
 import kotlin.collections.ArrayList
 
-private const val HEADER_IMAGE_NAME = "header_image"
+class MainActivityPresenter(private val mDataManager: DataManager) : MainActivityContract.Presenter() {
 
-class MainActivityPresenter(private val mDataManager: DataManager) : MainActivityContract.Presenter {
+    companion object {
+        private const val HEADER_IMAGE_NAME = "header_image"
+    }
 
     private var mView: MainActivityContract.View? = null
     private var mSelectedNotes = ArrayList<MyNoteWithProp>()

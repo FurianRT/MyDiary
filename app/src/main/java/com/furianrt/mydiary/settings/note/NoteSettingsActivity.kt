@@ -7,9 +7,11 @@ import com.furianrt.mydiary.R
 import com.furianrt.mydiary.data.model.MyNote
 import kotlinx.android.synthetic.main.activity_note_settings.*
 
-private const val EXTRA_NOTE = "note"
-
 class NoteSettingsActivity : BaseActivity() {
+
+    companion object {
+        const val EXTRA_NOTE = "note"
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

@@ -13,7 +13,6 @@ import com.furianrt.mydiary.R
 import com.furianrt.mydiary.data.model.MyNote
 import com.furianrt.mydiary.data.model.MyNoteAppearance
 import com.furianrt.mydiary.note.NoteActivity
-import com.furianrt.mydiary.note.fragments.notefragment.edit.ClickedView
 import com.furianrt.mydiary.note.fragments.notefragment.edit.NoteEditFragment
 import com.furianrt.mydiary.note.fragments.notefragment.inTransaction
 import kotlinx.android.synthetic.main.fragment_note_content.*
@@ -106,17 +105,17 @@ class NoteContentFragment : Fragment(), NoteContentFragmentContract.View {
         view.text_note_title.setOnTouchListener(onTouchListener)
         view.text_note_title.setOnClickListener {
             (activity as NoteActivity).savePagerPosition()
-            showEditFragment(ClickedView.TITLE, mTouchPosition)
+            showEditFragment(NoteEditFragment.ClickedView.TITLE, mTouchPosition)
         }
 
         view.text_note_content.setOnTouchListener(onTouchListener)
         view.text_note_content.setOnClickListener {
             (activity as NoteActivity).savePagerPosition()
-            showEditFragment(ClickedView.CONTENT, mTouchPosition)
+            showEditFragment(NoteEditFragment.ClickedView.CONTENT, mTouchPosition)
         }
     }
 
-    private fun showEditFragment(clickedView: ClickedView, touchPosition: Int) {
+    private fun showEditFragment(clickedView: NoteEditFragment.ClickedView, touchPosition: Int) {
         activity?.supportFragmentManager?.inTransaction {
             this.setPrimaryNavigationFragment(parentFragment)
         }

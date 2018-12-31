@@ -9,8 +9,7 @@ interface GalleryActivityContract {
 
     }
 
-    interface Presenter : BasePresenter<View> {
-
+    abstract class Presenter : BasePresenter<View>() {
 
     }
 }

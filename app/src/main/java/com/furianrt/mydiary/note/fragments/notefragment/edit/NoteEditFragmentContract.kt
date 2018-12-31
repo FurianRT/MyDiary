@@ -12,12 +12,12 @@ interface NoteEditFragmentContract {
 
     }
 
-    interface Presenter : BasePresenter<View> {
+    abstract class Presenter : BasePresenter<View>() {
 
-        fun onStop(note: MyNote, noteTitle: String, noteContent: String)
+        abstract fun onStop(note: MyNote, noteTitle: String, noteContent: String)
 
-        fun deleteNote(note: MyNote)
+        abstract fun deleteNote(note: MyNote)
 
-        fun onDoneButtonClick()
+        abstract fun onDoneButtonClick()
     }
 }

@@ -13,12 +13,12 @@ interface CategoryEditContract {
         fun showCategory(category: MyCategory)
     }
 
-    interface Presenter : BasePresenter<View> {
+    abstract class Presenter : BasePresenter<View>() {
 
-        fun onViewCreate()
+        abstract fun onViewCreate()
 
-        fun onButtonDoneClick(category: MyCategory)
+        abstract fun onButtonDoneClick(category: MyCategory)
 
-        fun loadCategory(categoryId: Long)
+        abstract fun loadCategory(categoryId: Long)
     }
 }
