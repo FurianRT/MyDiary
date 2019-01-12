@@ -80,4 +80,8 @@ class MoodsDialog : DialogFragment(), MoodsDialogContract.View,
 
         fun onNoMoodPicked()
     }
+
+    companion object {
+        val TAG = MoodsDialog::class.toString()
+    }
 }

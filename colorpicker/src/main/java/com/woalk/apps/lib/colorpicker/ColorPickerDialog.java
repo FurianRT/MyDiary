@@ -24,6 +24,7 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
@@ -43,6 +44,7 @@ public class ColorPickerDialog extends DialogFragment implements ColorPickerSwat
 
     public static final int SIZE_LARGE = 1;
     public static final int SIZE_SMALL = 2;
+    public static final String TAG = "ColorDialogTag";
 
     protected AlertDialog mAlertDialog;
 
@@ -173,6 +175,7 @@ public class ColorPickerDialog extends DialogFragment implements ColorPickerSwat
      */
     public void setOnColorSelectedListener(ColorPickerSwatch.OnColorSelectedListener listener) {
         mListener = listener;
+        Log.e("ttt", "setOnColorSelectedListener");
     }
 
     @Override

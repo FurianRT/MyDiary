@@ -13,6 +13,7 @@ import com.furianrt.mydiary.note.dialogs.tags.TagsDialog
 import com.furianrt.mydiary.note.fragments.notefragment.NoteFragment
 import com.furianrt.mydiary.note.fragments.notefragment.content.NoteContentFragment
 import com.furianrt.mydiary.note.fragments.notefragment.edit.NoteEditFragment
+import com.furianrt.mydiary.settings.note.NoteSettingsFragment
 import dagger.Subcomponent
 
 @PresenterScope
@@ -44,4 +45,6 @@ interface PresenterComponent {
     fun inject(fragment: CategoryListFragment)
 
     fun inject(fragment: CategoryEditFragment)
+
+    fun inject(fragment: NoteSettingsFragment)
 }

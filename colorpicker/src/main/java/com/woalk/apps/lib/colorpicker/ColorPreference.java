@@ -1,6 +1,7 @@
 package com.woalk.apps.lib.colorpicker;
 
 import android.app.Activity;
+import android.app.Fragment;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Color;
@@ -33,7 +34,6 @@ public class ColorPreference extends Preference implements ColorPickerSwatch.OnC
 
     public ColorPreference(Context context, AttributeSet attrs) {
         super(context, attrs);
-
         TypedArray a = context.getTheme().obtainStyledAttributes(attrs, R.styleable
                 .ColorPreference, 0, 0);
         try {
@@ -61,7 +61,9 @@ public class ColorPreference extends Preference implements ColorPickerSwatch.OnC
     @Override
     protected View onCreateView(ViewGroup parent) {
         View s = super.onCreateView(parent);
-        mColorView = new View(getContext());
+        if (mColorView == null) {
+            mColorView = new View(getContext());
+        }
         int size = (int) dpToPx(48);
         mColorView.setLayoutParams(new ViewGroup.LayoutParams(size, size));
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -73,6 +75,7 @@ public class ColorPreference extends Preference implements ColorPickerSwatch.OnC
         ViewGroup w = (ViewGroup) s.findViewById(android.R.id.widget_frame);
         w.setVisibility(View.VISIBLE);
         w.addView(mColorView);
+
         return s;
     }
 
@@ -100,7 +103,7 @@ public class ColorPreference extends Preference implements ColorPickerSwatch.OnC
         ColorPickerDialog d = ColorPickerDialog.newInstance(mTitle, colors, mCurrentValue, mColumns,
                 ColorPickerDialog.SIZE_SMALL, mAllowCustomColor);
         d.setOnColorSelectedListener(this);
-        d.show(((Activity) getContext()).getFragmentManager(), null);
+        d.show(((Activity) getContext()).getFragmentManager(), getKey());
     }
 
     @Override
@@ -109,6 +112,10 @@ public class ColorPreference extends Preference implements ColorPickerSwatch.OnC
 
         mCurrentValue = color;
 
+        if (mColorView == null) {
+            mColorView = new View(getContext());
+        }
+
         // Update shown color
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             ((ShapeDrawable) mColorView.getBackground()).getPaint().setColor(mCurrentValue);
@@ -116,6 +123,8 @@ public class ColorPreference extends Preference implements ColorPickerSwatch.OnC
         } else {
             mColorView.setBackgroundColor(mCurrentValue);
         }
+
+        callChangeListener(color);
     }
 
     @Override
@@ -140,6 +149,12 @@ public class ColorPreference extends Preference implements ColorPickerSwatch.OnC
 
     @Override
     protected void onRestoreInstanceState(Parcelable state) {
+        Fragment dialog = ((Activity) getContext())
+                .getFragmentManager()
+                .findFragmentByTag(getKey());
+        if (dialog != null) {
+            ((ColorPickerDialog) dialog).setOnColorSelectedListener(this);
+        }
         // Check whether we saved the state in onSaveInstanceState
         if (state == null || !state.getClass().equals(SavedState.class)) {
             // Didn't save the state, so call superclass
@@ -151,10 +166,15 @@ public class ColorPreference extends Preference implements ColorPickerSwatch.OnC
         SavedState myState = (SavedState) state;
         super.onRestoreInstanceState(myState.getSuperState());
 
+
         // Update own values
         mCurrentValue = myState.current;
         mColors = myState.colors;
         mColumns = myState.columns;
+
+        if (mColorView == null) {
+            mColorView = new View(getContext());
+        }
 
         // Update shown color
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -212,6 +232,7 @@ public class ColorPreference extends Preference implements ColorPickerSwatch.OnC
     /**
      * Convert a dp size to pixel.
      * Useful for specifying view sizes in code.
+     *
      * @param dp The size in density-independent pixels.
      * @return {@code px} - The size in generic pixels (density-dependent).
      */

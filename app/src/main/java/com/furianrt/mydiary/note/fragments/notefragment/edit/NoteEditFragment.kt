@@ -10,6 +10,7 @@ import com.furianrt.mydiary.R
 import com.furianrt.mydiary.data.model.MyNote
 import com.furianrt.mydiary.data.model.MyNoteAppearance
 import com.furianrt.mydiary.note.fragments.notefragment.NoteFragment
+import com.furianrt.mydiary.note.fragments.notefragment.content.NoteContentFragment
 import com.furianrt.mydiary.utils.showKeyboard
 import kotlinx.android.synthetic.main.fragment_note_edit.view.*
 import javax.inject.Inject
@@ -56,16 +57,19 @@ class NoteEditFragment : Fragment(), NoteEditFragmentContract.View {
                               savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_note_edit, container, false)
 
+        fragmentManager?.findFragmentByTag(NoteContentFragment.TAG)?.let {
+            (it as NoteContentFragment).setVisibility(View.INVISIBLE)
+        }
+
         view.apply {
             edit_note_title.setText(mNote.title)
             edit_note_title.addTextChangedListener(mTextChangeListener)
-            //edit_note_title.setTextColor(mAppearance.textColor)
-            //edit_note_title.textSize = mAppearance.textSize
+            edit_note_title.setTextColor(mAppearance.textColor)
+            edit_note_title.textSize = mAppearance.textSize.toFloat()
             edit_note_content.setText(mNote.content)
             edit_note_content.addTextChangedListener(mTextChangeListener)
-            //edit_note_content.setTextColor(mAppearance.textColor)
-            //edit_note_content.textSize = mAppearance.textSize
-            //layout_note_edit_root.setBackgroundColor(mAppearance.textColor)
+            edit_note_content.setTextColor(mAppearance.textColor)
+            edit_note_content.textSize = mAppearance.textSize.toFloat()
         }
 
         return view
@@ -135,6 +139,9 @@ class NoteEditFragment : Fragment(), NoteEditFragmentContract.View {
 
     override fun onDestroy() {
         super.onDestroy()
+        fragmentManager?.findFragmentByTag(NoteContentFragment.TAG)?.let {
+            (it as NoteContentFragment).setVisibility(View.VISIBLE)
+        }
         view?.edit_note_title?.removeTextChangedListener(mTextChangeListener)
         view?.edit_note_content?.removeTextChangedListener(mTextChangeListener)
     }

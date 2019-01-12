@@ -37,6 +37,8 @@ interface DataManager {
 
     fun updateCategory(category: MyCategory): Completable
 
+    fun updateAppearance(appearance: MyNoteAppearance): Completable
+
     fun deleteTag(tag: MyTag): Completable
 
     fun deleteNote(note: MyNote): Completable

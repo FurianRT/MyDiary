@@ -169,6 +169,7 @@ class NoteFragment : Fragment(), NoteFragmentContract.View, OnMapReadyCallback,
                 true
             }
             R.id.menu_appearance -> {
+                removeEditFragment()
                 mPresenter.onAppearanceButtonClick()
                 true
             }
@@ -176,16 +177,22 @@ class NoteFragment : Fragment(), NoteFragmentContract.View, OnMapReadyCallback,
         }
     }
 
-    override fun showNoteSettingsView(note: MyNote) {
+    override fun showNoteSettingsView(noteId: String) {
         val intent = Intent(context, NoteSettingsActivity::class.java)
-        intent.putExtra(NoteSettingsActivity.EXTRA_NOTE, note)
+        intent.putExtra(NoteSettingsActivity.EXTRA_NOTE_ID, noteId)
         startActivity(intent)
     }
 
     override fun updateNoteAppearance(appearance: MyNoteAppearance) {
         view?.apply {
-            //layout_root_note.setBackgroundColor(appearance.background)
-            //card_note_edit.setCardBackgroundColor(appearance.textBackground)
+            layout_root_note.setBackgroundColor(appearance.background)
+            card_note_edit.setCardBackgroundColor(appearance.textBackground)
+            text_mood.setTextColor(appearance.textColor)
+            text_location.setTextColor(appearance.textColor)
+            text_date.setTextColor(appearance.textColor)
+            text_time.setTextColor(appearance.textColor)
+            text_temp.setTextColor(appearance.textColor)
+            text_category.setTextColor(appearance.textColor)
         }
         val noteContentFragment =
                 childFragmentManager.findFragmentByTag(NoteContentFragment.TAG) as? NoteContentFragment
@@ -296,7 +303,8 @@ class NoteFragment : Fragment(), NoteFragmentContract.View, OnMapReadyCallback,
     override fun showCategory(category: MyCategory) {
         view?.apply {
             text_category.text = category.name
-            text_category.setTextColor(Color.BLACK)
+            text_category.alpha = 1f
+            image_folder.alpha = 1f
             image_folder.setColorFilter(category.color, PorterDuff.Mode.SRC_IN)
             layout_category_color.setCardBackgroundColor(category.color)
             layout_category_color.visibility = View.VISIBLE
@@ -306,40 +314,44 @@ class NoteFragment : Fragment(), NoteFragmentContract.View, OnMapReadyCallback,
     override fun showNoCategoryMessage() {
         view?.apply {
             text_category.text = getString(R.string.choose_category)
-            image_folder.setColorFilter(getColor(context!!, R.color.grey_dark), PorterDuff.Mode.SRC_IN)
-            text_category.setTextColor(getColor(context!!, R.color.grey_dark))
+            text_category.alpha = 0.5f
+            image_folder.alpha = 0.5f
+            image_folder.setColorFilter(Color.BLACK, PorterDuff.Mode.SRC_IN)
             layout_category_color.visibility = View.GONE
         }
     }
 
     override fun showMood(mood: MyMood) {
         view?.apply {
-            text_mood.setTextColor(Color.BLACK)
+            text_mood.alpha = 1f
             text_mood.text = mood.name
-            val smile =
-                    resources.getIdentifier(mood.iconName, "drawable", context?.packageName)
-            text_mood.setCompoundDrawablesWithIntrinsicBounds(smile, 0, 0, 0)
+            val smile = resources.getIdentifier(mood.iconName, "drawable", context?.packageName)
+            image_mood.clearColorFilter()
+            image_mood.setImageResource(smile)
+            image_mood.alpha = 1f
         }
     }
 
     override fun showNoMoodMessage() {
         view?.apply {
             text_mood.text = getString(R.string.choose_mood)
-            text_mood.setTextColor(getColor(context!!, R.color.grey_dark))
-            text_mood.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_smile, 0, 0, 0)
+            text_mood.alpha = 0.5f
+            image_mood.alpha = 0.5f
+            image_mood.setImageResource(R.drawable.ic_smile)
+            image_mood.setColorFilter(Color.BLACK, PorterDuff.Mode.SRC_IN)
         }
     }
 
     override fun showMoodsDialog(moods: List<MyMood>) {
         val dialog = MoodsDialog()
         dialog.setOnMoodsDialogInteractionListener(this)
-        dialog.show(activity?.supportFragmentManager, MoodsDialog::class.toString())
+        dialog.show(activity?.supportFragmentManager, MoodsDialog.TAG)
     }
 
     override fun showLocation(location: MyLocation) {
         view?.apply {
             text_location.text = location.name
-            text_location.setTextColor(getColor(context!!, R.color.black))
+            text_location.alpha = 1f
             map_touch_event_interceptor.visibility = View.VISIBLE
             map_view.apply {
                 visibility = View.VISIBLE
@@ -388,7 +400,7 @@ class NoteFragment : Fragment(), NoteFragmentContract.View, OnMapReadyCallback,
             tagsDialog?.setOnTagChangedListener(this)
 
             val moodsDialog =
-                    fragmentManager?.findFragmentByTag(MoodsDialog::class.toString()) as MoodsDialog?
+                    fragmentManager?.findFragmentByTag(MoodsDialog.TAG) as MoodsDialog?
             moodsDialog?.setOnMoodsDialogInteractionListener(this)
 
             val categoriesDialog =
@@ -600,7 +612,7 @@ class NoteFragment : Fragment(), NoteFragmentContract.View, OnMapReadyCallback,
     }
 
     fun onNoteTextChange(title: String, content: String) {
-        childFragmentManager.findFragmentByTag(NoteContentFragment::class.toString())?.let {
+        childFragmentManager.findFragmentByTag(NoteContentFragment.TAG)?.let {
             (it as NoteContentFragment).updateNoteText(title, content)
         }
     }

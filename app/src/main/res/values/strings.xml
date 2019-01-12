@@ -120,6 +120,13 @@
     <string name="pref_title_add_friends_to_messages">Add friends to messages</string>
     <string name="background">Фон</string>
     <string name="font">Шрифт</string>
+    <string name="note_background_summary">Цвет заднего плана записи</string>
+    <string name="note_background_title">Цвет фона</string>
+    <string name="note_text_background_summary">Цвет фона на котором пишется текст записи</string>
+    <string name="note_text_background_title">Цвет поверхности с текстом</string>
+    <string name="note_font_size_title">Размер шрифта</string>
+    <string name="note_font_color_title">Цвет шрифта</string>
+    <string name="note_font_color_summary">Цвет шрифта и некоторых других надписей</string>
     <string-array name="pref_example_list_titles">
         <item>Always</item>
         <item>When possible</item>

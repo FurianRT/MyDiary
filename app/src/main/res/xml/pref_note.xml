@@ -1,37 +1,49 @@
 <?xml version="1.0" encoding="utf-8"?>
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <PreferenceCategory android:title="@string/background">
 
         <com.woalk.apps.lib.colorpicker.ColorPreference
-            android:title="Цвет фона"
-            android:summary="Цвет заднего плана записи"
-            android:key="note_background"/>
+            android:key="note_background"
+            android:summary="@string/note_background_summary"
+            android:title="@string/note_background_title"
+            app:picker_allowCustomColor="false"
+            app:picker_colors="@array/colors"
+            android:persistent="false"
+            app:picker_columns="5"/>
 
         <com.woalk.apps.lib.colorpicker.ColorPreference
-            android:title="Цвет поверхности с текстом"
-            android:summary="Цвет фона на котором пишется текст записи"
-            android:key="note_text_background"/>
+            android:key="note_text_background"
+            android:summary="@string/note_text_background_summary"
+            android:title="@string/note_text_background_title"
+            app:picker_allowCustomColor="false"
+            app:picker_colors="@array/colors"
+            android:persistent="false"
+            app:picker_columns="5"/>
 
     </PreferenceCategory>
 
     <PreferenceCategory android:title="@string/font">
 
         <ListPreference
-            android:defaultValue="16"
             android:entries="@array/pref_font_size_titles"
             android:entryValues="@array/pref_font_size_values"
             android:key="font_size_note"
             android:negativeButtonText="@null"
+            android:persistent="false"
             android:positiveButtonText="@null"
             android:summary="%s"
-            android:title="Размер шрифта"
-            android:persistent="false"/>
+            android:title="@string/note_font_size_title" />
 
         <com.woalk.apps.lib.colorpicker.ColorPreference
-            android:title="Цвет поверхности с текстом"
-            android:summary="Цвет фона на котором пишется текст записи"
-            android:key="note_text_background"/>
+            android:key="note_text_color"
+            android:summary="@string/note_font_color_summary"
+            android:title="@string/note_font_color_title"
+            app:picker_allowCustomColor="false"
+            app:picker_colors="@array/colors"
+            android:persistent="false"
+            app:picker_columns="5" />
 
     </PreferenceCategory>
 

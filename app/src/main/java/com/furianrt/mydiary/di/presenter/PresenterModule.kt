@@ -28,6 +28,8 @@ import com.furianrt.mydiary.note.fragments.notefragment.content.NoteContentFragm
 import com.furianrt.mydiary.note.fragments.notefragment.content.NoteContentFragmentPresenter
 import com.furianrt.mydiary.note.fragments.notefragment.edit.NoteEditFragmentContract
 import com.furianrt.mydiary.note.fragments.notefragment.edit.NoteEditFragmentPresenter
+import com.furianrt.mydiary.settings.note.NoteSettingsContract
+import com.furianrt.mydiary.settings.note.NoteSettingsPresenter
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import dagger.Module
@@ -105,4 +107,9 @@ class PresenterModule(private val context: Context) {
     @PresenterScope
     fun provideCategoryEditPresenter(dataManager: DataManager): CategoryEditContract.Presenter =
             CategoryEditPresenter(dataManager)
+
+    @Provides
+    @PresenterScope
+    fun provideNoteSettingsPresenter(dataManager: DataManager): NoteSettingsContract.Presenter =
+            NoteSettingsPresenter(dataManager)
 }

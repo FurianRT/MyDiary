@@ -36,7 +36,7 @@ dependencies {
     implementation "androidx.preference:preference:$support_version"
     implementation "com.google.android.material:material:$support_version"
 
-    implementation 'androidx.constraintlayout:constraintlayout:2.0.0-alpha2'
+    implementation 'androidx.constraintlayout:constraintlayout:2.0.0-alpha3'
 
     implementation 'com.google.android:flexbox:1.1.0'
 
@@ -69,11 +69,11 @@ dependencies {
 
     implementation 'net.danlew:android.joda:2.9.9.4'
 
-    implementation 'jp.wasabeef:recyclerview-animators:2.3.0'
+    implementation 'jp.wasabeef:recyclerview-animators:3.0.0'
 
     implementation 'com.larswerkman:HoloColorPicker:1.5'
 
     testImplementation 'junit:junit:4.12'
-    androidTestImplementation 'androidx.test:runner:1.1.0'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.0'
+    androidTestImplementation 'androidx.test:runner:1.1.1'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.1'
 }

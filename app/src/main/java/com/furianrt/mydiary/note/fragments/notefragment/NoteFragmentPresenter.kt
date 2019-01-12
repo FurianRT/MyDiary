@@ -264,7 +264,7 @@ class NoteFragmentPresenter(private val mDataManager: DataManager) : NoteFragmen
     }
 
     override fun onAppearanceButtonClick() {
-        mView?.showNoteSettingsView(mNote)
+        mView?.showNoteSettingsView(mNote.id)
     }
 
     override fun updateNoteText(noteId: String, noteTitle: String, noteContent: String) {

@@ -97,6 +97,11 @@ class DataManagerImp(
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
 
+    override fun updateAppearance(appearance: MyNoteAppearance): Completable =
+            Completable.fromAction { mDatabase.appearanceDao().update(appearance) }
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+
     override fun deleteTag(tag: MyTag): Completable =
             Completable.fromAction { mDatabase.tagDao().delete(tag) }
                     .subscribeOn(Schedulers.io())

@@ -71,13 +71,13 @@ class NoteContentFragment : Fragment(), NoteContentFragmentContract.View {
 
     fun setAppearance(appearance: MyNoteAppearance) {
         mAppearance = appearance
-        /*view?.apply {
+        view?.apply {
             text_note_title.setTextColor(mAppearance.textColor)
-            text_note_title.textSize = mAppearance.textSize
+            text_note_title.textSize = mAppearance.textSize.toFloat()
             text_note_content.setTextColor(mAppearance.textColor)
-            text_note_content.textSize = mAppearance.textSize
+            text_note_content.textSize = mAppearance.textSize.toFloat()
             layout_note_content_root.setBackgroundColor(mAppearance.textBackground)
-        }*/
+        }
     }
 
     override fun onStart() {
@@ -135,6 +135,10 @@ class NoteContentFragment : Fragment(), NoteContentFragmentContract.View {
     fun updateNoteText(title: String, content: String) {
         text_note_title.text = title
         text_note_content.text = content
+    }
+
+    fun setVisibility(visibility: Int) {
+        layout_note_content_root.visibility = visibility
     }
 
     companion object {

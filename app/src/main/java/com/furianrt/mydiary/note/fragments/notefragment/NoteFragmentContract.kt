@@ -61,7 +61,7 @@ interface NoteFragmentContract {
 
         fun hideMood()
 
-        fun showNoteSettingsView(note: MyNote)
+        fun showNoteSettingsView(noteId: String)
 
         fun updateNoteAppearance(appearance: MyNoteAppearance)
 
