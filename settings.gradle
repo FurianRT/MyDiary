@@ -1,1 +1,1 @@
-include ':app', ':fab', ':colorpicker'
+include ':app', ':fab', ':colorpicker', ':colorpickercustom'
