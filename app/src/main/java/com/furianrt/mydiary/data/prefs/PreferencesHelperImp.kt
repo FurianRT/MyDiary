@@ -37,4 +37,7 @@ class PreferencesHelperImp(val context: Context) : PreferencesHelper {
     override fun getNoteTextBackgroundColor(): Int =
             mPrefs.getInt(PreferencesHelper.NOTE_TEXT_BACKGROUND_COLOR,
                     ContextCompat.getColor(context, R.color.white))
+
+    override fun getTimeFormat(): Int =
+            mPrefs.getString(PreferencesHelper.TIME_FORMAT, "1")!!.toInt()
 }

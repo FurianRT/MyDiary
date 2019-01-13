@@ -18,6 +18,8 @@ interface PreferencesHelper {
 
     fun getNoteTextBackgroundColor(): Int
 
+    fun getTimeFormat(): Int
+
     companion object {
         const val COLOR_PRIMARY = "color_primary"
         const val COLOR_ACCENT = "color_accent"
@@ -29,6 +31,7 @@ interface PreferencesHelper {
         const val TEXT_SIZE = "all_notes_text_size"
         const val NOTE_BACKGROUND_COLOR = "all_notes_background_color"
         const val NOTE_TEXT_BACKGROUND_COLOR = "all_notes_text_background_color"
+        const val TIME_FORMAT = "time_format"
         const val SECURITY_AVAILABILITY = "security_key"
         const val SECURITY_EMAIL = "security_email"
         const val SECURITY_TIME = "security_time"

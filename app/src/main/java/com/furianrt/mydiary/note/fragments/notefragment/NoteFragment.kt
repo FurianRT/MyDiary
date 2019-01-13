@@ -143,15 +143,17 @@ class NoteFragment : Fragment(), NoteFragmentContract.View, OnMapReadyCallback,
         mPresenter.loadImages(mNoteId)
     }
 
-    override fun showNoteContent(note: MyNote) {
-        view?.apply {
-            val time = note.time
-            text_date.text = formatTime(time)
-            text_time.text = getTime(time)
-        }
+    override fun showNoteText(note: MyNote) {
         val noteContentFragment =
                 childFragmentManager.findFragmentByTag(NoteContentFragment.TAG) as? NoteContentFragment
         noteContentFragment?.showNote(note)
+    }
+
+    override fun showDateAndTime(time: Long, is24TimeFormat: Boolean) {
+        view?.apply {
+            text_date.text = formatTime(time)
+            text_time.text = getTime(time, is24TimeFormat)
+        }
     }
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
@@ -644,6 +646,11 @@ class NoteFragment : Fragment(), NoteFragmentContract.View, OnMapReadyCallback,
             accentColor = fetchPrimaryColor()
             setOkColor(fetchAccentColor())
             setCancelColor(fetchAccentColor())
+            activity?.let {
+                setOkText(it.getString(R.string.time_picker_okay))
+                setCancelText(it.getString(R.string.time_picker_cancel))
+            }
+            setLocale(Locale.ENGLISH)
         }.show(fragmentManager, "timePicker")
     }
 

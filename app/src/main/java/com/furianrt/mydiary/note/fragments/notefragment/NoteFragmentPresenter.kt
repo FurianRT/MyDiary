@@ -92,7 +92,9 @@ class NoteFragmentPresenter(private val mDataManager: DataManager) : NoteFragmen
         addDisposable(mDataManager.getNote(noteId)
                 .subscribe { note ->
                     mNote = note
-                    mView?.showNoteContent(note)
+                    mView?.showNoteText(note)
+                    val is24TimeFormat = mDataManager.getTimeFormat() == DataManager.TIME_FORMAT_24
+                    mView?.showDateAndTime(note.time, is24TimeFormat)
                     showNoteMood(note.moodId)
                     showNoteCategory(note.categoryId)
                     //showNoteLocation(note, mode, locationEnabled, networkAvailable)
@@ -302,7 +304,8 @@ class NoteFragmentPresenter(private val mDataManager: DataManager) : NoteFragmen
     override fun onTimeFieldClick() {
         val date = Calendar.getInstance()
                 .apply { timeInMillis = mNote.time }
-        mView?.showTimePicker(date.get(Calendar.HOUR_OF_DAY), date.get(Calendar.MINUTE), true)
+        val is24HourMode = mDataManager.getTimeFormat() == DataManager.TIME_FORMAT_24
+        mView?.showTimePicker(date.get(Calendar.HOUR_OF_DAY), date.get(Calendar.MINUTE), is24HourMode)
     }
 
     override fun onTimeSelected(hourOfDay: Int, minute: Int) {

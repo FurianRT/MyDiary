@@ -110,4 +110,11 @@ interface DataManager {
     fun getNoteBackgroundColor(): Int
 
     fun getNoteTextBackgroundColor(): Int
+
+    fun getTimeFormat(): Int
+
+    companion object {
+        const val TIME_FORMAT_12 = 0
+        const val TIME_FORMAT_24 = 1
+    }
 }

@@ -189,4 +189,7 @@ class MainActivityPresenter(private val mDataManager: DataManager) : MainActivit
     override fun onButtonSettingsClick() {
         mView?.showSettingsView()
     }
+
+    override fun is24TimeFormat(): Boolean =
+            mDataManager.getTimeFormat() == DataManager.TIME_FORMAT_24
 }

@@ -56,7 +56,7 @@ class MainActivity : BaseActivity(), MainActivityContract.View,
     @Inject
     lateinit var mPresenter: MainActivityContract.Presenter
 
-    private val mAdapter = MainListAdapter()
+    private lateinit var mAdapter: MainListAdapter
     private var mRecyclerViewState: Parcelable? = null
     private var mBackPressCount = 0
     private var mNeedToOpenActionBar = true
@@ -152,6 +152,8 @@ class MainActivity : BaseActivity(), MainActivityContract.View,
         fab_folder.setOnClickListener(this)
         fab_place.setOnClickListener(this)
         image_toolbar_main.setOnClickListener(this)
+
+        mAdapter = MainListAdapter(is24TimeFormat = mPresenter.is24TimeFormat())
 
         list_main.apply {
             layoutManager = LinearLayoutManager(this@MainActivity)

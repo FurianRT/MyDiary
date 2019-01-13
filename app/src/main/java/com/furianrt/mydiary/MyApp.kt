@@ -51,6 +51,7 @@ class MyApp : Application() {
 * добавить подсказки для drag and prop и другого
 * добавить notifications
 * добавить appsFlyerEvents
+* добавить пейзашную дайли картинку
 *
 * */
 

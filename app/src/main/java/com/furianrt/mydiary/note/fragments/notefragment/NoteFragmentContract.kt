@@ -38,9 +38,10 @@ interface NoteFragmentContract {
         fun hideMood()
         fun showNoteSettingsView(noteId: String)
         fun updateNoteAppearance(appearance: MyNoteAppearance)
-        fun showNoteContent(note: MyNote)
+        fun showNoteText(note: MyNote)
         fun showDatePicker(calendar: Calendar)
         fun showTimePicker(hourOfDay: Int, minute: Int, is24HourMode: Boolean)
+        fun showDateAndTime(time: Long, is24TimeFormat: Boolean)
     }
 
     abstract class Presenter : BasePresenter<View>() {

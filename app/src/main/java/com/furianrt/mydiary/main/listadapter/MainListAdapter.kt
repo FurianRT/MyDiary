@@ -18,7 +18,8 @@ import kotlinx.android.synthetic.main.activity_main_list_header.view.*
 import java.util.*
 
 class MainListAdapter(
-        var selectedNotes: ArrayList<MyNoteWithProp> = ArrayList()
+        var selectedNotes: ArrayList<MyNoteWithProp> = ArrayList(),
+        val is24TimeFormat: Boolean
 ) : ListAdapter<MainListItem, MainListAdapter.MyViewHolder>(MainDiffCallback()),
         HeaderItemDecoration.StickyHeaderInterface {
 
@@ -108,7 +109,7 @@ class MainListAdapter(
                 }
                 categoryColor?.let { text_day_of_week.setBackgroundColor(it) }
                 text_day.text = getDay(time)
-                text_time.text = getTime(time)
+                text_time.text = getTime(time, is24TimeFormat)
                 text_tags.text = mContentItem.note.tags.size.toString()
                 text_images.text = mContentItem.note.images.size.toString()
                 text_category.text = mContentItem.note.category?.name

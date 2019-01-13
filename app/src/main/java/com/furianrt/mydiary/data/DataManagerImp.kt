@@ -268,4 +268,6 @@ class DataManagerImp(
     override fun getNoteBackgroundColor(): Int = mPrefs.getNoteBackgroundColor()
 
     override fun getNoteTextBackgroundColor(): Int = mPrefs.getNoteTextBackgroundColor()
+
+    override fun getTimeFormat(): Int = mPrefs.getTimeFormat()
 }

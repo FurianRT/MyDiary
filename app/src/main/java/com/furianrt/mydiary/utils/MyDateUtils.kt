@@ -31,8 +31,11 @@ fun getYear(time: Long): String {
 
 }
 
-fun getTime(time: Long): String {
-    val spf = SimpleDateFormat("HH:mm", Locale.getDefault())
-    return spf.format(Date(time))
-
+fun getTime(time: Long, is24TimeFormat: Boolean): String {
+    val spf = if (is24TimeFormat) {
+        SimpleDateFormat("HH:mm", Locale.ENGLISH)
+    } else {
+        SimpleDateFormat("hh:mm a", Locale.ENGLISH)
+    }
+    return spf.format(Date(time)).toLowerCase()
 }
