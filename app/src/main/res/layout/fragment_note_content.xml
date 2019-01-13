@@ -24,6 +24,7 @@
         android:id="@+id/text_note_content"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginTop="1dp"
         android:gravity="top|start"
         android:minHeight="130dp"
         android:padding="8dp"

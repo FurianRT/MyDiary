@@ -5,8 +5,7 @@ import android.app.Fragment;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Color;
-import android.graphics.drawable.ShapeDrawable;
-import android.graphics.drawable.shapes.OvalShape;
+import android.graphics.drawable.GradientDrawable;
 import android.os.Build;
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -67,8 +66,8 @@ public class ColorPreference extends Preference implements ColorPickerSwatch.OnC
         int size = (int) dpToPx(48);
         mColorView.setLayoutParams(new ViewGroup.LayoutParams(size, size));
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            mColorView.setBackground(new ShapeDrawable(new OvalShape()));
-            ((ShapeDrawable) mColorView.getBackground()).getPaint().setColor(mCurrentValue);
+            mColorView.setBackground(getContext().getDrawable(R.drawable.color_preview));
+            ((GradientDrawable) mColorView.getBackground()).setColor(mCurrentValue);
         } else {
             mColorView.setBackgroundColor(mCurrentValue);
         }
@@ -118,7 +117,7 @@ public class ColorPreference extends Preference implements ColorPickerSwatch.OnC
 
         // Update shown color
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            ((ShapeDrawable) mColorView.getBackground()).getPaint().setColor(mCurrentValue);
+            ((GradientDrawable) mColorView.getBackground()).setColor(mCurrentValue);
             mColorView.invalidate();
         } else {
             mColorView.setBackgroundColor(mCurrentValue);
@@ -178,8 +177,8 @@ public class ColorPreference extends Preference implements ColorPickerSwatch.OnC
 
         // Update shown color
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            mColorView.setBackground(new ShapeDrawable(new OvalShape()));
-            ((ShapeDrawable) mColorView.getBackground()).getPaint().setColor(mCurrentValue);
+            mColorView.setBackground(getContext().getDrawable(R.drawable.color_preview));
+            ((GradientDrawable) mColorView.getBackground()).setColor(mCurrentValue);
         } else {
             mColorView.setBackgroundColor(mCurrentValue);
         }

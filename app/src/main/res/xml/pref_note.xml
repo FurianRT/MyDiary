@@ -4,23 +4,19 @@
 
     <PreferenceCategory android:title="@string/background">
 
-        <com.woalk.apps.lib.colorpicker.ColorPreference
+        <com.rarepebble.colorpicker.ColorPreference
             android:key="note_background"
             android:summary="@string/note_background_summary"
             android:title="@string/note_background_title"
-            app:picker_allowCustomColor="false"
-            app:picker_colors="@array/colors"
-            android:persistent="false"
-            app:picker_columns="5"/>
+            app:colorpicker_showHex="false"
+            android:persistent="false" />
 
-        <com.woalk.apps.lib.colorpicker.ColorPreference
+        <com.rarepebble.colorpicker.ColorPreference
             android:key="note_text_background"
             android:summary="@string/note_text_background_summary"
             android:title="@string/note_text_background_title"
-            app:picker_allowCustomColor="false"
-            app:picker_colors="@array/colors"
             android:persistent="false"
-            app:picker_columns="5"/>
+            app:colorpicker_showHex="false"/>
 
     </PreferenceCategory>
 
@@ -36,14 +32,12 @@
             android:summary="%s"
             android:title="@string/note_font_size_title" />
 
-        <com.woalk.apps.lib.colorpicker.ColorPreference
+        <com.rarepebble.colorpicker.ColorPreference
             android:key="note_text_color"
             android:summary="@string/note_font_color_summary"
             android:title="@string/note_font_color_title"
-            app:picker_allowCustomColor="false"
-            app:picker_colors="@array/colors"
-            android:persistent="false"
-            app:picker_columns="5" />
+            app:colorpicker_showHex="false"
+            android:persistent="false" />
 
     </PreferenceCategory>
 

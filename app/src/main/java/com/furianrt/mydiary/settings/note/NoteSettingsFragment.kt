@@ -6,7 +6,7 @@ import android.preference.Preference
 import android.preference.PreferenceFragment
 import com.furianrt.mydiary.R
 import com.furianrt.mydiary.data.model.MyNoteAppearance
-import com.woalk.apps.lib.colorpicker.ColorPreference
+import com.rarepebble.colorpicker.ColorPreference
 import javax.inject.Inject
 
 class NoteSettingsFragment : PreferenceFragment(), NoteSettingsContract.View {
@@ -17,9 +17,18 @@ class NoteSettingsFragment : PreferenceFragment(), NoteSettingsContract.View {
     private val mPreferenceListener = Preference.OnPreferenceChangeListener { preference, value ->
         when {
             preference.key == TEXT_SIZE -> mPresenter.onTextSizeChange((value as String).toInt())
-            preference.key == TEXT_COLOR -> mPresenter.onTextColorChange(value as Int)
-            preference.key == BACKGROUND_COLOR -> mPresenter.onBackgroundColorChange(value as Int)
-            preference.key == TEXT_BACKGROUND_COLOR -> mPresenter.onBackgroundTextColorChange(value as Int)
+            preference.key == TEXT_COLOR -> {
+                (preference as ColorPreference).setDefaultValue(value)
+                mPresenter.onTextColorChange(value as Int)
+            }
+            preference.key == BACKGROUND_COLOR -> {
+                (preference as ColorPreference).setDefaultValue(value)
+                mPresenter.onBackgroundColorChange(value as Int)
+            }
+            preference.key == TEXT_BACKGROUND_COLOR -> {
+                (preference as ColorPreference).setDefaultValue(value)
+                mPresenter.onBackgroundTextColorChange(value as Int)
+            }
         }
         return@OnPreferenceChangeListener true
     }
@@ -43,9 +52,9 @@ class NoteSettingsFragment : PreferenceFragment(), NoteSettingsContract.View {
         (findPreference(TEXT_SIZE) as ListPreference).apply {
             setValueIndex(this.findIndexOfValue(appearance.textSize.toString()))
         }
-        (findPreference(TEXT_COLOR) as ColorPreference).onColorSelected(appearance.textColor)
-        (findPreference(BACKGROUND_COLOR) as ColorPreference).onColorSelected(appearance.background)
-        (findPreference(TEXT_BACKGROUND_COLOR) as ColorPreference).onColorSelected(appearance.textBackground)
+        (findPreference(TEXT_COLOR) as ColorPreference).setDefaultValue(appearance.textColor)
+        (findPreference(BACKGROUND_COLOR) as ColorPreference).setDefaultValue(appearance.background)
+        (findPreference(TEXT_BACKGROUND_COLOR) as ColorPreference).setDefaultValue(appearance.textBackground)
     }
 
     override fun onDestroy() {

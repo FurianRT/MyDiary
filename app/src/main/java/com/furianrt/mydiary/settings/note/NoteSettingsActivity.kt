@@ -1,7 +1,6 @@
 package com.furianrt.mydiary.settings.note
 
 import android.os.Bundle
-import android.preference.PreferenceManager
 import com.furianrt.mydiary.BaseActivity
 import com.furianrt.mydiary.R
 import kotlinx.android.synthetic.main.activity_note_settings.*
@@ -23,8 +22,6 @@ class NoteSettingsActivity : BaseActivity() {
         setSupportActionBar(toolbar_settings_note)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setDisplayShowHomeEnabled(true)
-
-        PreferenceManager.setDefaultValues(this, R.xml.pref_note, false)
     }
 
     private fun addSettingsFragment(noteId: String) {

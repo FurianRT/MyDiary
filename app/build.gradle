@@ -28,6 +28,7 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation project(path: ':fab')
     implementation project(path: ':colorpicker')
+    implementation project(path: ':colorpickercustom')
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 
     implementation "androidx.recyclerview:recyclerview:$support_version"
