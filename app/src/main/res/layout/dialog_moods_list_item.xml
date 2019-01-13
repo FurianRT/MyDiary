@@ -3,8 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/text_item_mood"
     android:layout_width="match_parent"
-    android:drawablePadding="8dp"
-    tools:text="Mood"
-    tools:drawableStart="@drawable/ic_mood_good"
+    android:layout_height="wrap_content"
     android:layout_margin="16dp"
-    android:layout_height="wrap_content" />
+    android:drawablePadding="8dp"
+    tools:drawableStart="@drawable/ic_mood_good"
+    tools:text="Mood" />
