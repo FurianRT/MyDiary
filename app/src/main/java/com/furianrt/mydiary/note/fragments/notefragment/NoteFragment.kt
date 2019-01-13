@@ -120,8 +120,8 @@ class NoteFragment : Fragment(), NoteFragmentContract.View, OnMapReadyCallback,
         mPagerAdapter = NoteFragmentPagerAdapter(childFragmentManager)
 
         view.apply {
-            text_mood.setOnClickListener(this@NoteFragment)
-            text_category.setOnClickListener(this@NoteFragment)
+            layout_mood.setOnClickListener(this@NoteFragment)
+            layout_category.setOnClickListener(this@NoteFragment)
             layout_tags.setOnClickListener(this@NoteFragment)
             text_date.setOnClickListener(this@NoteFragment)
             text_time.setOnClickListener(this@NoteFragment)
@@ -483,8 +483,8 @@ class NoteFragment : Fragment(), NoteFragmentContract.View, OnMapReadyCallback,
         removeEditFragment()
         when (v.id) {
             R.id.layout_tags -> mPresenter.onTagsFieldClick()
-            R.id.text_mood -> mPresenter.onMoodFieldClick()
-            R.id.text_category -> mPresenter.onCategoryFieldClick()
+            R.id.layout_mood -> mPresenter.onMoodFieldClick()
+            R.id.layout_category -> mPresenter.onCategoryFieldClick()
             R.id.text_date -> mPresenter.onDateFieldClick()
             R.id.text_time -> mPresenter.onTimeFieldClick()
         }

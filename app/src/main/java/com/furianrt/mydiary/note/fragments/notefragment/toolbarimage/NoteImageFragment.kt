@@ -32,7 +32,9 @@ class NoteImageFragment : androidx.fragment.app.Fragment() {
                 .load(mImage?.url)
                 .into(view.image_note)
 
-        view.image_note.setOnClickListener { (parentFragment as NoteFragment).onToolbarImageClick() }
+        view.layout_toolbar_image_root.setOnClickListener {
+            (parentFragment as NoteFragment).onToolbarImageClick()
+        }
 
         return view
     }
