@@ -185,14 +185,14 @@ class NoteFragment : Fragment(), NoteFragmentContract.View, OnMapReadyCallback,
 
     override fun updateNoteAppearance(appearance: MyNoteAppearance) {
         view?.apply {
-            layout_root_note.setBackgroundColor(appearance.background)
-            card_note_edit.setCardBackgroundColor(appearance.textBackground)
-            text_mood.setTextColor(appearance.textColor)
-            text_location.setTextColor(appearance.textColor)
-            text_date.setTextColor(appearance.textColor)
-            text_time.setTextColor(appearance.textColor)
-            text_temp.setTextColor(appearance.textColor)
-            text_category.setTextColor(appearance.textColor)
+            appearance.background?.let { layout_root_note.setBackgroundColor(it) }
+            appearance.textBackground?.let { card_note_edit.setCardBackgroundColor(it) }
+            appearance.textColor?.let { text_mood.setTextColor(it) }
+            appearance.textColor?.let { text_location.setTextColor(it) }
+            appearance.textColor?.let { text_date.setTextColor(it) }
+            appearance.textColor?.let { text_time.setTextColor(it) }
+            appearance.textColor?.let { text_temp.setTextColor(it) }
+            appearance.textColor?.let { text_category.setTextColor(it) }
         }
         val noteContentFragment =
                 childFragmentManager.findFragmentByTag(NoteContentFragment.TAG) as? NoteContentFragment
@@ -456,16 +456,12 @@ class NoteFragment : Fragment(), NoteFragmentContract.View, OnMapReadyCallback,
                 setPrimaryNavigationFragment(this@NoteFragment)
             }
             childFragmentManager.inTransaction {
-                add(
-                        R.id.container_note_edit,
+                add(R.id.container_note_edit,
                         NoteEditFragment.newInstance(
-                                note,
-                                MyNoteAppearance(note.id),
+                                note, MyNoteAppearance(note.id),
                                 NoteEditFragment.ClickedView.TITLE,
                                 note.title.length
-                        ), NoteEditFragment.TAG
-                )
-                        .addToBackStack(null)
+                        ), NoteEditFragment.TAG).addToBackStack(null)
             }
         }
     }

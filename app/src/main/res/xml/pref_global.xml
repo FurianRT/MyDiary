@@ -3,13 +3,13 @@
 
     <PreferenceCategory
         android:key="theme"
-        android:title="Тема">
+        android:title="@string/settings_theme_title">
 
         <com.woalk.apps.lib.colorpicker.ColorPreference
             android:defaultValue="@color/colorPrimary"
             android:key="color_primary"
-            android:summary="В основном определяет цвет тулбара"
-            android:title="Первичный цвет"
+            android:summary="@string/primary_color_settings_summary"
+            android:title="@string/primary_color_settings_title"
             app:picker_allowCustomColor="false"
             app:picker_colors="@array/colors"
             app:picker_columns="5" />
@@ -17,61 +17,55 @@
         <com.woalk.apps.lib.colorpicker.ColorPreference
             android:defaultValue="@color/colorAccent"
             android:key="color_accent"
-            android:summary="Цвет переключателей и кнопок"
-            android:title="Вторичный цвет"
+            android:summary="@string/accent_color_settings_summary"
+            android:title="@string/accent_color_settings_title"
             app:picker_allowCustomColor="false"
             app:picker_colors="@array/colors"
             app:picker_columns="5" />
 
-        <com.woalk.apps.lib.colorpicker.ColorPreference
+        <com.rarepebble.colorpicker.ColorPreference
             android:defaultValue="@color/grey_light"
-            android:key="note_background_color"
-            android:summary="Цвет заднего плана заметки"
-            android:title="Фон заметки"
-            app:picker_allowCustomColor="false"
-            app:picker_colors="@array/colors"
-            app:picker_columns="5" />
+            android:key="all_notes_background_color"
+            android:summary="@string/all_notes_background_settings_summary"
+            android:title="@string/all_notes_background_settings_title"
+            app:colorpicker_showHex="false" />
 
-        <com.woalk.apps.lib.colorpicker.ColorPreference
+        <com.rarepebble.colorpicker.ColorPreference
             android:defaultValue="@color/white"
-            android:key="note_text_background_color"
-            android:summary="Цвет полотна, на котором пишется текст заметки"
-            android:title="Фон текста заметки"
-            app:picker_allowCustomColor="false"
-            app:picker_colors="@array/colors"
-            app:picker_columns="5" />
+            android:key="all_notes_text_background_color"
+            android:summary="@string/all_notes_text_background_settings_summary"
+            android:title="@string/all_notes_text_background_settings_title"
+            app:colorpicker_showHex="false" />
 
         <ListPreference
             android:defaultValue="16"
             android:entries="@array/pref_font_size_titles"
             android:entryValues="@array/pref_font_size_values"
-            android:key="font_size"
+            android:key="all_notes_text_size"
             android:negativeButtonText="@null"
             android:positiveButtonText="@null"
             android:summary="%s"
-            android:title="Размер шрифта" />
+            android:title="@string/all_notes_text_size_settings_title" />
 
-        <com.woalk.apps.lib.colorpicker.ColorPreference
+        <com.rarepebble.colorpicker.ColorPreference
             android:defaultValue="@color/black"
-            android:key="font_color"
-            android:summary="Указать цвет шрифта"
-            android:title="Цвет шрифта"
-            app:picker_allowCustomColor="false"
-            app:picker_colors="@array/colors"
-            app:picker_columns="5" />
+            android:key="all_notes_text_color"
+            android:summary="@string/all_notes_text_color_settings_summary"
+            android:title="@string/all_notes_text_color_settings_title"
+            app:colorpicker_showHex="false" />
 
     </PreferenceCategory>
 
     <PreferenceCategory
         android:key="notes"
-        android:title="Заметки">
+        android:title="@string/settings_title_notes">
 
         <SwitchPreference
             android:defaultValue="true"
             android:key="weather_activation"
-            android:summaryOff="Включить проказ погоды"
-            android:summaryOn="Отключить показ погоды"
-            android:title="Погода" />
+            android:summaryOff="@string/weather_activation_settings_off"
+            android:summaryOn="@string/weather_activation_settings_on"
+            android:title="@string/weather_activation_settings_title" />
 
         <ListPreference
             android:defaultValue="0"
@@ -82,34 +76,34 @@
             android:negativeButtonText="@null"
             android:positiveButtonText="@null"
             android:summary="%s"
-            android:title="Единицы измерения погоды" />
+            android:title="@string/weather_units_settings_title" />
 
         <SwitchPreference
             android:defaultValue="true"
             android:key="mood_activation"
-            android:summaryOff="Включить проказ настроения"
-            android:summaryOn="Отключить показ настроения"
-            android:title="Настроение" />
+            android:summaryOff="@string/mood_activation_settings_off"
+            android:summaryOn="@string/mood_activation_settings_on"
+            android:title="@string/mood_activation_settings_title" />
 
         <SwitchPreference
             android:defaultValue="true"
             android:key="map_activation"
-            android:summaryOff="Включить определение местонахождения"
-            android:summaryOn="Отключить определение местонахождения"
-            android:title="Местонахождение" />
+            android:summaryOff="@string/map_activation_settings_off"
+            android:summaryOn="@string/map_activation_settings_on"
+            android:title="@string/map_activation_settings_title" />
 
     </PreferenceCategory>
 
     <PreferenceCategory
         android:key="protection"
-        android:title="Защита">
+        android:title="@string/settings_title_protection">
 
         <SwitchPreference
             android:defaultValue="false"
             android:key="security_key"
-            android:summaryOff="Включить защиту приложения графическим ключем"
-            android:summaryOn="Отключить защиту приложения графическим ключем"
-            android:title="Графический ключ" />
+            android:summaryOff="@string/security_key_settings_off"
+            android:summaryOn="@string/security_key_settings_on"
+            android:title="@string/security_key_settings_title" />
 
         <EditTextPreference
             android:capitalize="words"
@@ -120,8 +114,8 @@
             android:maxLines="1"
             android:selectAllOnFocus="true"
             android:singleLine="true"
-            android:summary="Используется для сброса графического ключа"
-            android:title="Email для сброса ключа" />
+            android:summary="@string/security_email_settings_summary"
+            android:title="@string/security_email_settings_title" />
 
         <ListPreference
             android:defaultValue="0"
@@ -132,7 +126,7 @@
             android:negativeButtonText="@null"
             android:positiveButtonText="@null"
             android:summary="%s"
-            android:title="Время до запроса ключа" />
+            android:title="@string/security_time_settings_title" />
 
     </PreferenceCategory>
 

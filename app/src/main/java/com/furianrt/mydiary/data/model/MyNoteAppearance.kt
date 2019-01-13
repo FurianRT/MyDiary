@@ -1,6 +1,5 @@
 package com.furianrt.mydiary.data.model
 
-import android.graphics.Color
 import android.os.Parcel
 import android.os.Parcelable
 import androidx.room.ColumnInfo
@@ -21,25 +20,25 @@ import androidx.room.PrimaryKey
 )
 data class MyNoteAppearance(
         @ColumnInfo(name = "id_appearance") @PrimaryKey(autoGenerate = false) var appearanceId: String,
-        @ColumnInfo(name = "background_color") var background: Int = Color.WHITE,
-        @ColumnInfo(name = "text_background_color") var textBackground: Int = Color.WHITE,
-        @ColumnInfo(name = "text_color") var textColor: Int = Color.BLACK,
-        @ColumnInfo(name = "text_size") var textSize: Int = 16
+        @ColumnInfo(name = "background_color") var background: Int? = null,
+        @ColumnInfo(name = "text_background_color") var textBackground: Int? = null,
+        @ColumnInfo(name = "text_color") var textColor: Int? = null,
+        @ColumnInfo(name = "text_size") var textSize: Int? = null
 ) : Parcelable {
 
     constructor(parcel: Parcel) : this(
             parcel.readString() ?: "",
-            parcel.readInt(),
-            parcel.readInt(),
-            parcel.readInt(),
-            parcel.readInt())
+            parcel.readValue(Int::class.java.classLoader) as? Int,
+            parcel.readValue(Int::class.java.classLoader) as? Int,
+            parcel.readValue(Int::class.java.classLoader) as? Int,
+            parcel.readValue(Int::class.java.classLoader) as? Int)
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeString(appearanceId)
-        parcel.writeInt(background)
-        parcel.writeInt(textBackground)
-        parcel.writeInt(textColor)
-        parcel.writeInt(textSize)
+        parcel.writeValue(background)
+        parcel.writeValue(textBackground)
+        parcel.writeValue(textColor)
+        parcel.writeValue(textSize)
     }
 
     override fun describeContents(): Int {
@@ -55,6 +54,4 @@ data class MyNoteAppearance(
             return arrayOfNulls(size)
         }
     }
-
-
 }

@@ -100,7 +100,15 @@ class NoteFragmentPresenter(private val mDataManager: DataManager) : NoteFragmen
 
     override fun loadNoteAppearance(noteId: String) {
         addDisposable(mDataManager.getNoteAppearance(noteId)
-                .subscribe { appearance -> mView?.updateNoteAppearance(appearance) })
+                .subscribe { appearance ->
+                    appearance.textSize = appearance.textSize ?: mDataManager.getTextSize()
+                    appearance.textColor = appearance.textColor ?: mDataManager.getTextColor()
+                    appearance.background =
+                            appearance.background ?: mDataManager.getNoteBackgroundColor()
+                    appearance.textBackground =
+                            appearance.textBackground ?: mDataManager.getNoteTextBackgroundColor()
+                    mView?.updateNoteAppearance(appearance)
+                })
     }
 
     private fun showForecast(forecast: Forecast?, location: MyLocation, mode: Mode) {

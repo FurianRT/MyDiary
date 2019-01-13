@@ -18,6 +18,12 @@ class NoteSettingsPresenter(
                 .firstElement()
                 .subscribe { appearance ->
                     mAppearance = appearance
+                    mAppearance.textSize = mAppearance.textSize ?: mDataManager.getTextSize()
+                    mAppearance.textColor = mAppearance.textColor ?: mDataManager.getTextColor()
+                    mAppearance.background =
+                            mAppearance.background ?: mDataManager.getNoteBackgroundColor()
+                    mAppearance.textBackground =
+                            mAppearance.textBackground ?: mDataManager.getNoteTextBackgroundColor()
                     Log.e(LOG_TAG, "getNoteAppearance")
                     mView?.updateSettings(mAppearance)
                 })

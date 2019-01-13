@@ -263,7 +263,7 @@ class DataManagerImp(
 
     override fun getTextColor(): Int = mPrefs.getTextColor()
 
-    override fun getTextSize(): Float = mPrefs.getTextSize()
+    override fun getTextSize(): Int = mPrefs.getTextSize()
 
     override fun getNoteBackgroundColor(): Int = mPrefs.getNoteBackgroundColor()
 

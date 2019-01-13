@@ -127,6 +127,36 @@
     <string name="note_font_size_title">Размер шрифта</string>
     <string name="note_font_color_title">Цвет шрифта</string>
     <string name="note_font_color_summary">Цвет шрифта и некоторых других надписей</string>
+    <string name="primary_color_settings_summary">В основном определяет цвет тулбара</string>
+    <string name="primary_color_settings_title">Первичный цвет</string>
+    <string name="accent_color_settings_title">Вторичный цвет</string>
+    <string name="accent_color_settings_summary">Цвет переключателей и кнопок</string>
+    <string name="all_notes_background_settings_summary">Цвет заднего плана заметки</string>
+    <string name="all_notes_background_settings_title">Фон заметки</string>
+    <string name="settings_theme_title">Тема</string>
+    <string name="all_notes_text_background_settings_summary">Цвет полотна, на котором пишется текст заметки</string>
+    <string name="all_notes_text_background_settings_title">Фон текста заметки</string>
+    <string name="all_notes_text_size_settings_title">Размер шрифта</string>
+    <string name="all_notes_text_color_settings_summary">Указать цвет шрифта</string>
+    <string name="all_notes_text_color_settings_title">Цвет шрифта</string>
+    <string name="settings_title_notes">Заметки</string>
+    <string name="settings_title_protection">Защита</string>
+    <string name="weather_activation_settings_off">Включить проказ погоды</string>
+    <string name="weather_activation_settings_on">Отключить показ погоды</string>
+    <string name="weather_activation_settings_title">Погода</string>
+    <string name="weather_units_settings_title">Единицы измерения погоды</string>
+    <string name="mood_activation_settings_off">Включить проказ настроения</string>
+    <string name="mood_activation_settings_on">Отключить показ настроения</string>
+    <string name="mood_activation_settings_title">Настроение</string>
+    <string name="map_activation_settings_off">Включить определение местонахождения</string>
+    <string name="map_activation_settings_on">Отключить определение местонахождения</string>
+    <string name="map_activation_settings_title">Местонахождение</string>
+    <string name="security_key_settings_off">Включить защиту приложения графическим ключем</string>
+    <string name="security_key_settings_on">Отключить защиту приложения графическим ключем</string>
+    <string name="security_key_settings_title">Графический ключ</string>
+    <string name="security_email_settings_summary">Используется для сброса графического ключа</string>
+    <string name="security_email_settings_title">Email для сброса ключа</string>
+    <string name="security_time_settings_title">Время до запроса ключа</string>
     <string-array name="pref_example_list_titles">
         <item>Always</item>
         <item>When possible</item>

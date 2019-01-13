@@ -105,7 +105,7 @@ interface DataManager {
 
     fun getTextColor(): Int
 
-    fun getTextSize(): Float
+    fun getTextSize(): Int
 
     fun getNoteBackgroundColor(): Int
 

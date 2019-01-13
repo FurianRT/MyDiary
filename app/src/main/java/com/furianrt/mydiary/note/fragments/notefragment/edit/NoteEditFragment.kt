@@ -64,12 +64,12 @@ class NoteEditFragment : Fragment(), NoteEditFragmentContract.View {
         view.apply {
             edit_note_title.setText(mNote.title)
             edit_note_title.addTextChangedListener(mTextChangeListener)
-            edit_note_title.setTextColor(mAppearance.textColor)
-            edit_note_title.textSize = mAppearance.textSize.toFloat()
+            mAppearance.textColor?.let { edit_note_title.setTextColor(it) }
+            mAppearance.textSize?.let { edit_note_title.textSize = it.toFloat() }
             edit_note_content.setText(mNote.content)
             edit_note_content.addTextChangedListener(mTextChangeListener)
-            edit_note_content.setTextColor(mAppearance.textColor)
-            edit_note_content.textSize = mAppearance.textSize.toFloat()
+            mAppearance.textColor?.let { edit_note_content.setTextColor(it) }
+            mAppearance.textSize?.let { edit_note_content.textSize = it.toFloat() }
         }
 
         return view

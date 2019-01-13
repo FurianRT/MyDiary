@@ -5,7 +5,7 @@ import android.preference.PreferenceManager
 import androidx.core.content.ContextCompat
 import com.furianrt.mydiary.R
 
-private const val DEFAULT_TEXT_SIZE = 16f
+private const val DEFAULT_TEXT_SIZE = "16"
 
 class PreferencesHelperImp(val context: Context) : PreferencesHelper {
 
@@ -27,8 +27,8 @@ class PreferencesHelperImp(val context: Context) : PreferencesHelper {
             mPrefs.getInt(PreferencesHelper.TEXT_COLOR,
                     ContextCompat.getColor(context, R.color.black))
 
-    override fun getTextSize(): Float =
-            mPrefs.getFloat(PreferencesHelper.TEXT_SIZE, DEFAULT_TEXT_SIZE)
+    override fun getTextSize(): Int =
+            mPrefs.getString(PreferencesHelper.TEXT_SIZE, DEFAULT_TEXT_SIZE)!!.toInt()
 
     override fun getNoteBackgroundColor(): Int =
             mPrefs.getInt(PreferencesHelper.NOTE_BACKGROUND_COLOR,

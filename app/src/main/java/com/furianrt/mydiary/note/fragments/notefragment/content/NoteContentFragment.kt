@@ -72,11 +72,11 @@ class NoteContentFragment : Fragment(), NoteContentFragmentContract.View {
     fun setAppearance(appearance: MyNoteAppearance) {
         mAppearance = appearance
         view?.apply {
-            text_note_title.setTextColor(mAppearance.textColor)
-            text_note_title.textSize = mAppearance.textSize.toFloat()
-            text_note_content.setTextColor(mAppearance.textColor)
-            text_note_content.textSize = mAppearance.textSize.toFloat()
-            layout_note_content_root.setBackgroundColor(mAppearance.textBackground)
+            mAppearance.textColor?.let { text_note_title.setTextColor(it) }
+            mAppearance.textSize?.let { text_note_title.textSize = it.toFloat() }
+            mAppearance.textColor?.let { text_note_content.setTextColor(it) }
+            mAppearance.textSize?.let { text_note_content.textSize = it.toFloat() }
+            mAppearance.textBackground?.let { layout_note_content_root.setBackgroundColor(it) }
         }
     }
 
