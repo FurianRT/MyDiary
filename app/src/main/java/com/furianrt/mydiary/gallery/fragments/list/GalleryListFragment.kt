@@ -1,18 +1,26 @@
 package com.furianrt.mydiary.gallery.fragments.list
 
+import android.Manifest
 import android.content.res.Configuration
 import android.os.Bundle
 import android.os.Parcelable
 import android.view.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.view.ActionMode
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.GridLayoutManager
 import com.furianrt.mydiary.R
 import com.furianrt.mydiary.data.model.MyImage
 import com.furianrt.mydiary.gallery.fragments.pager.GalleryPagerFragment
 import com.furianrt.mydiary.note.fragments.notefragment.inTransaction
+import com.furianrt.mydiary.utils.getThemePrimaryColor
+import com.furianrt.mydiary.utils.getThemePrimaryDarkColor
+import com.yanzhenjie.album.Album
+import com.yanzhenjie.album.api.widget.Widget
 import jp.wasabeef.recyclerview.animators.FadeInUpAnimator
 import kotlinx.android.synthetic.main.fragment_gallery_list.view.*
+import pub.devrel.easypermissions.AfterPermissionGranted
+import pub.devrel.easypermissions.EasyPermissions
 import javax.inject.Inject
 
 class GalleryListFragment : androidx.fragment.app.Fragment(), GalleryListAdapter.OnListItemClickListener,
@@ -113,6 +121,10 @@ class GalleryListFragment : androidx.fragment.app.Fragment(), GalleryListAdapter
                 mPresenter.onMultiSelectionButtonClick()
                 true
             }
+            R.id.menu_add_image -> {
+                mPresenter.onAddImageButtonClick()
+                true
+            }
             else -> super.onOptionsItemSelected(item)
         }
     }
@@ -183,6 +195,46 @@ class GalleryListFragment : androidx.fragment.app.Fragment(), GalleryListAdapter
         }
     }
 
+    override fun requestStoragePermissions() {
+        val readExtStorage = Manifest.permission.READ_EXTERNAL_STORAGE
+        val camera = Manifest.permission.CAMERA
+        if (EasyPermissions.hasPermissions(context!!, readExtStorage, camera)) {
+            mPresenter.onStoragePermissionsGranted()
+        } else {
+            EasyPermissions.requestPermissions(this,
+                    getString(R.string.storage_permission_request),
+                    STORAGE_PERMISSIONS_REQUEST_CODE, readExtStorage, camera)
+        }
+    }
+
+    @AfterPermissionGranted(STORAGE_PERMISSIONS_REQUEST_CODE)
+    override fun showImageExplorer() {
+        val widget = Widget.newDarkBuilder(context)
+                .statusBarColor(getThemePrimaryDarkColor(context!!))
+                .toolBarColor(getThemePrimaryColor(context!!))
+                .navigationBarColor(ContextCompat.getColor(context!!, R.color.black))
+                .title(R.string.album)
+                .build()
+
+        Album.image(this)
+                .multipleChoice()
+                .columnCount(3)
+                .filterMimeType {
+                    when (it) {
+                        "jpeg" -> true
+                        "jpg " -> true
+                        else -> false
+                    }
+                }
+                .afterFilterVisibility(false)
+                .camera(true)
+                .widget(widget)
+                .onResult { albImage ->
+                    mPresenter.onNoteImagesPicked(albImage.map { it.path })
+                }
+                .start()
+    }
+
     override fun closeCab() {
         mActionMode?.finish()
     }
@@ -200,6 +252,7 @@ class GalleryListFragment : androidx.fragment.app.Fragment(), GalleryListAdapter
         private const val BUNDLE_SELECTION_ACTIVE = "selectionActive"
         private const val BUNDLE_SELECTED_IMAGES = "selectedImages"
         private const val BUNDLE_RECYCLER_VIEW_STATE = "recyclerState"
+        private const val STORAGE_PERMISSIONS_REQUEST_CODE = 1
 
         @JvmStatic
         fun newInstance(noteId: String) =

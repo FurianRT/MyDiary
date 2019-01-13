@@ -48,6 +48,9 @@ class MyApp : Application() {
 * баг после быстрого закрытия заметки (некликабельные вью)
 * исправить обновление категории после редактирования
 * кликабельные итемы android:background="?android:selectableItemBackground"
+* добавить подсказки для drag and prop и другого
+* добавить notifications
+* добавить appsFlyerEvents
 *
 * */
 

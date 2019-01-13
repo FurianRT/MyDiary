@@ -2,6 +2,9 @@ package com.furianrt.mydiary.gallery.fragments.list
 
 import com.furianrt.mydiary.data.DataManager
 import com.furianrt.mydiary.data.model.MyImage
+import com.furianrt.mydiary.utils.generateUniqueId
+import io.reactivex.Flowable
+import org.joda.time.DateTime
 
 class GalleryListPresenter(private val mDataManager: DataManager) : GalleryListContract.Presenter() {
 
@@ -91,4 +94,23 @@ class GalleryListPresenter(private val mDataManager: DataManager) : GalleryListC
     }
 
     override fun onSaveInstanceState() = mSelectedImages
+
+    override fun onAddImageButtonClick() {
+        mView?.requestStoragePermissions()
+    }
+
+    override fun onStoragePermissionsGranted() {
+        mView?.showImageExplorer()
+    }
+
+    override fun onNoteImagesPicked(imageUrls: List<String>) {
+        addDisposable(Flowable.fromIterable(imageUrls)
+                .map { url ->
+                    val name = mNoteId + "_" + generateUniqueId()
+                    return@map MyImage(name, url, mNoteId, DateTime.now().millis)
+                }
+                .flatMapSingle { image -> mDataManager.saveImageToStorage(image) }
+                .flatMapCompletable { savedImage -> mDataManager.insertImage(savedImage) }
+                .subscribe())
+    }
 }
