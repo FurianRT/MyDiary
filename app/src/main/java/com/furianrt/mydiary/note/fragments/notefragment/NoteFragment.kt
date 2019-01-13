@@ -10,6 +10,7 @@ import android.os.Bundle
 import android.os.Looper
 import android.preference.PreferenceManager
 import android.util.Log
+import android.util.TypedValue
 import android.view.*
 import android.widget.FrameLayout
 import android.widget.ImageView
@@ -46,6 +47,8 @@ import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.model.LatLng
+import com.wdullaer.materialdatetimepicker.date.DatePickerDialog
+import com.wdullaer.materialdatetimepicker.time.TimePickerDialog
 import com.yanzhenjie.album.Album
 import com.yanzhenjie.album.api.widget.Widget
 import kotlinx.android.synthetic.main.fragment_note.view.*
@@ -64,7 +67,7 @@ inline fun FragmentManager.inTransaction(func: FragmentTransaction.() -> Unit) {
 }
 
 class NoteFragment : Fragment(), NoteFragmentContract.View, OnMapReadyCallback,
-        TagsDialog.OnTagsDialogInteractionListener, View.OnClickListener, MoodsDialog.OnMoodsDialogInteractionListener, CategoriesDialog.OnCategoriesDialogInteractionListener {
+        TagsDialog.OnTagsDialogInteractionListener, View.OnClickListener, MoodsDialog.OnMoodsDialogInteractionListener, CategoriesDialog.OnCategoriesDialogInteractionListener, DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener {
 
     @Inject
     lateinit var mFusedLocationClient: FusedLocationProviderClient
@@ -116,21 +119,19 @@ class NoteFragment : Fragment(), NoteFragmentContract.View, OnMapReadyCallback,
 
         mPagerAdapter = NoteFragmentPagerAdapter(childFragmentManager)
 
-        setupUi(view)
-
-        return view
-    }
-
-    private fun setupUi(view: View) {
         view.apply {
             text_mood.setOnClickListener(this@NoteFragment)
             text_category.setOnClickListener(this@NoteFragment)
             layout_tags.setOnClickListener(this@NoteFragment)
+            text_date.setOnClickListener(this@NoteFragment)
+            text_time.setOnClickListener(this@NoteFragment)
             pager_note_image.adapter = mPagerAdapter
             map_touch_event_interceptor.setOnTouchListener { _, _ -> true }
         }
 
         addFragments()
+
+        return view
     }
 
     override fun onStart() {
@@ -171,6 +172,16 @@ class NoteFragment : Fragment(), NoteFragmentContract.View, OnMapReadyCallback,
             R.id.menu_appearance -> {
                 removeEditFragment()
                 mPresenter.onAppearanceButtonClick()
+                true
+            }
+            R.id.menu_date -> {
+                removeEditFragment()
+                mPresenter.onDateFieldClick()
+                true
+            }
+            R.id.menu_time -> {
+                removeEditFragment()
+                mPresenter.onTimeFieldClick()
                 true
             }
             else -> super.onOptionsItemSelected(item)
@@ -472,6 +483,8 @@ class NoteFragment : Fragment(), NoteFragmentContract.View, OnMapReadyCallback,
             R.id.layout_tags -> mPresenter.onTagsFieldClick()
             R.id.text_mood -> mPresenter.onMoodFieldClick()
             R.id.text_category -> mPresenter.onCategoryFieldClick()
+            R.id.text_date -> mPresenter.onDateFieldClick()
+            R.id.text_time -> mPresenter.onTimeFieldClick()
         }
     }
 
@@ -611,6 +624,49 @@ class NoteFragment : Fragment(), NoteFragmentContract.View, OnMapReadyCallback,
         childFragmentManager.findFragmentByTag(NoteContentFragment.TAG)?.let {
             (it as NoteContentFragment).updateNoteText(title, content)
         }
+    }
+
+    override fun showDatePicker(calendar: Calendar) {
+        DatePickerDialog.newInstance(this, calendar).apply {
+            accentColor = fetchPrimaryColor()
+            val accentColor = fetchAccentColor()
+            setOkColor(accentColor)
+            setCancelColor(accentColor)
+        }.show(fragmentManager, "datePicker")
+    }
+
+    override fun onDateSet(view: DatePickerDialog?, year: Int, monthOfYear: Int, dayOfMonth: Int) {
+        mPresenter.onDateSelected(year, monthOfYear, dayOfMonth)
+    }
+
+    override fun showTimePicker(hourOfDay: Int, minute: Int, is24HourMode: Boolean) {
+        TimePickerDialog.newInstance(this, hourOfDay, minute, is24HourMode).apply {
+            accentColor = fetchPrimaryColor()
+            setOkColor(fetchAccentColor())
+            setCancelColor(fetchAccentColor())
+        }.show(fragmentManager, "timePicker")
+    }
+
+    override fun onTimeSet(view: TimePickerDialog?, hourOfDay: Int, minute: Int, second: Int) {
+        mPresenter.onTimeSelected(hourOfDay, minute)
+    }
+
+    private fun fetchPrimaryColor(): Int {
+        val typedValue = TypedValue()
+        val a =
+                activity!!.obtainStyledAttributes(typedValue.data, intArrayOf(R.attr.colorPrimary))
+        val color = a.getColor(0, 0)
+        a.recycle()
+        return color
+    }
+
+    private fun fetchAccentColor(): Int {
+        val typedValue = TypedValue()
+        val a =
+                activity!!.obtainStyledAttributes(typedValue.data, intArrayOf(R.attr.colorAccent))
+        val color = a.getColor(0, 0)
+        a.recycle()
+        return color
     }
 
     companion object {

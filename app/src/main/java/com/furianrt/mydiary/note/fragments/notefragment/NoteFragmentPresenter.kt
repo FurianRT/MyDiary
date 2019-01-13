@@ -12,6 +12,7 @@ import com.google.android.gms.location.LocationResult
 import io.reactivex.Flowable
 import io.reactivex.Observable
 import org.joda.time.DateTime
+import java.util.*
 
 class NoteFragmentPresenter(private val mDataManager: DataManager) : NoteFragmentContract.Presenter() {
 
@@ -277,6 +278,41 @@ class NoteFragmentPresenter(private val mDataManager: DataManager) : NoteFragmen
 
     override fun updateNoteText(noteId: String, noteTitle: String, noteContent: String) {
         addDisposable(mDataManager.updateNoteText(noteId, noteTitle, noteContent)
+                .subscribe())
+    }
+
+    override fun onDateFieldClick() {
+        val calendar = Calendar.getInstance()
+        calendar.timeInMillis = mNote.time
+        mView?.showDatePicker(calendar)
+    }
+
+    override fun onDateSelected(year: Int, monthOfYear: Int, dayOfMonth: Int) {
+        val date = Calendar.getInstance().apply {
+            timeInMillis = mNote.time
+            set(Calendar.YEAR, year)
+            set(Calendar.MONTH, monthOfYear)
+            set(Calendar.DAY_OF_MONTH, dayOfMonth)
+        }
+        mNote.time = date.timeInMillis
+        addDisposable(mDataManager.updateNote(mNote)
+                .subscribe())
+    }
+
+    override fun onTimeFieldClick() {
+        val date = Calendar.getInstance()
+                .apply { timeInMillis = mNote.time }
+        mView?.showTimePicker(date.get(Calendar.HOUR_OF_DAY), date.get(Calendar.MINUTE), true)
+    }
+
+    override fun onTimeSelected(hourOfDay: Int, minute: Int) {
+        val date = Calendar.getInstance().apply {
+            timeInMillis = mNote.time
+            set(Calendar.HOUR_OF_DAY, hourOfDay)
+            set(Calendar.MINUTE, minute)
+        }
+        mNote.time = date.timeInMillis
+        addDisposable(mDataManager.updateNote(mNote)
                 .subscribe())
     }
 }
