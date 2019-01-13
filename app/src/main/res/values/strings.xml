@@ -43,7 +43,6 @@
     <string name="choose_location">Выберите локацию</string>
 
     <string name="add_tag">Добавить тег</string>
-    <string name="unknown_address">Неизвестный адрес</string>
 
     <string name="open">Открыть</string>
     <string name="close">Закрыть</string>
@@ -114,10 +113,6 @@
         <item>600</item>
     </string-array>
 
-    <string name="pref_title_display_name">Display name</string>
-    <string name="pref_default_display_name">John Smith</string>
-
-    <string name="pref_title_add_friends_to_messages">Add friends to messages</string>
     <string name="background">Фон</string>
     <string name="font">Шрифт</string>
     <string name="note_background_summary">Цвет заднего плана записи</string>
@@ -157,29 +152,6 @@
     <string name="security_email_settings_summary">Используется для сброса графического ключа</string>
     <string name="security_email_settings_title">Email для сброса ключа</string>
     <string name="security_time_settings_title">Время до запроса ключа</string>
-    <string-array name="pref_example_list_titles">
-        <item>Always</item>
-        <item>When possible</item>
-        <item>Never</item>
-    </string-array>
-    <string-array name="pref_example_list_values">
-        <item>1</item>
-        <item>0</item>
-        <item>-1</item>
-    </string-array>
-
-    <string-array name="list_preference_entries">
-        <item>Entry 1</item>
-        <item>Entry 2</item>
-        <item>Entry 3</item>
-    </string-array>
-
-    <string-array name="list_preference_entry_values">
-        <item>1</item>
-        <item>2</item>
-        <item>3</item>
-    </string-array>
-
-    <string-array name="multi_select_list_preference_default_value" />
+    <string name="voice">Голос</string>
 
 </resources>

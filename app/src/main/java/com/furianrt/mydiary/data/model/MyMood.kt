@@ -16,10 +16,9 @@ data class MyMood(
     @ColumnInfo(name = "id_mood")
     var id: Int = 0
 
-    @Suppress("NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
     constructor(parcel: Parcel) : this(
-            parcel.readString(),
-            parcel.readString()) {
+            parcel.readString() ?: "",
+            parcel.readString() ?: "") {
         id = parcel.readInt()
     }
 

@@ -17,9 +17,8 @@ data class MyCategory(
     @PrimaryKey(autoGenerate = true)
     var id: Long = 0
 
-    @Suppress("NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
     constructor(parcel: Parcel) : this(
-            parcel.readString(),
+            parcel.readString() ?: "",
             parcel.readInt()) {
         id = parcel.readLong()
     }

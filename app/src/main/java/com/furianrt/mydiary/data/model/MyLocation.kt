@@ -13,9 +13,8 @@ data class MyLocation(
         @ColumnInfo(name = "lon") var lon: Double
 ) : Parcelable {
 
-    @Suppress("NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
     constructor(parcel: Parcel) : this(
-            parcel.readString(),
+            parcel.readString() ?: "",
             parcel.readDouble(),
             parcel.readDouble())
 

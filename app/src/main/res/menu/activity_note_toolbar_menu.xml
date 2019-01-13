@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android"
+<menu xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
@@ -13,7 +14,7 @@
         android:id="@+id/menu_mic"
         android:icon="@drawable/ic_microphone"
         android:orderInCategory="2"
-        android:title="@string/edit"
+        android:title="@string/voice"
         app:showAsAction="always" />
 
     <item
@@ -21,7 +22,8 @@
         android:icon="@drawable/ic_image_white"
         android:orderInCategory="3"
         android:title="@string/image"
-        app:showAsAction="always" />
+        app:showAsAction="always"
+        tools:ignore="AlwaysShowAction" />
 
     <item
         android:id="@+id/menu_appearance"

@@ -24,11 +24,10 @@ data class MyNote(
     @ColumnInfo(name = "forecast")
     var forecast: Forecast? = null
 
-    @Suppress("NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
     constructor(parcel: Parcel) : this(
-            parcel.readString(),
-            parcel.readString(),
-            parcel.readString(),
+            parcel.readString() ?: "",
+            parcel.readString() ?: "",
+            parcel.readString() ?: "",
             parcel.readLong(),
             parcel.readInt(),
             parcel.readLong()) {

@@ -8,6 +8,4 @@ import androidx.room.PrimaryKey
 data class MyHeaderImage(
         @PrimaryKey(autoGenerate = false) @ColumnInfo(name = "name") var name: String,
         @ColumnInfo(name = "url") var url: String
-) {
-
-}
+)

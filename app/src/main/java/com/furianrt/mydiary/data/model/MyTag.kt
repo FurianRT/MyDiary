@@ -16,10 +16,9 @@ data class MyTag(
     @Ignore
     var isChecked: Boolean = false
 
-    @Suppress("NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
     constructor(parcel: Parcel) : this(
-            parcel.readString(),
-            parcel.readString()) {
+            parcel.readString() ?: "",
+            parcel.readString() ?: "") {
         isChecked = parcel.readByte() != 0.toByte()
     }
 

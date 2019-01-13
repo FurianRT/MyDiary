@@ -4,5 +4,4 @@ import javax.inject.Qualifier
 
 @Qualifier
 @Retention(AnnotationRetention.RUNTIME)
-annotation class PreferenceInfo {
-}
+annotation class PreferenceInfo
