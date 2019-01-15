@@ -465,16 +465,9 @@ class NoteFragment : Fragment(), NoteFragmentContract.View, OnMapReadyCallback,
 
     override fun showNoteEditView(note: MyNote) {
         if (childFragmentManager.findFragmentByTag(NoteEditFragment.TAG) == null) {
-            fragmentManager?.inTransaction {
-                setPrimaryNavigationFragment(this@NoteFragment)
-            }
-            childFragmentManager.inTransaction {
-                add(R.id.container_note_edit,
-                        NoteEditFragment.newInstance(
-                                note, MyNoteAppearance(note.id),
-                                NoteEditFragment.ClickedView.TITLE,
-                                note.title.length
-                        ), NoteEditFragment.TAG).addToBackStack(null)
+            childFragmentManager.findFragmentByTag(NoteContentFragment.TAG)?.let {
+                (it as NoteContentFragment)
+                        .showEditFragment(NoteEditFragment.ClickedView.TITLE, note.title.length)
             }
         }
     }

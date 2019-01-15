@@ -115,7 +115,7 @@ class NoteContentFragment : Fragment(), NoteContentFragmentContract.View {
         }
     }
 
-    private fun showEditFragment(clickedView: NoteEditFragment.ClickedView, touchPosition: Int) {
+    fun showEditFragment(clickedView: NoteEditFragment.ClickedView, touchPosition: Int) {
         activity?.supportFragmentManager?.inTransaction {
             this.setPrimaryNavigationFragment(parentFragment)
         }
