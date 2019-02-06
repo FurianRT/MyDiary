@@ -37,6 +37,7 @@
         android:id="@+id/list_categories"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:scrollbars="vertical"
         tools:listitem="@layout/fragment_category_list_item" />
 
 </LinearLayout>

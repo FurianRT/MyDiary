@@ -6,8 +6,10 @@ import androidx.fragment.app.FragmentStatePagerAdapter
 import com.furianrt.mydiary.data.model.MyNoteWithProp
 import com.furianrt.mydiary.note.fragments.notefragment.NoteFragment
 
-class NoteActivityPagerAdapter(fm: FragmentManager, private val mode: Mode)
-    : FragmentStatePagerAdapter(fm) {
+class NoteActivityPagerAdapter(
+        fm: FragmentManager,
+        private val mode: NoteActivity.Companion.Mode
+) : FragmentStatePagerAdapter(fm) {
 
     var list: List<MyNoteWithProp> = ArrayList()
 

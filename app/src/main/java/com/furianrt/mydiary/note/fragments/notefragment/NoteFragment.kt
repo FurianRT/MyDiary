@@ -31,7 +31,7 @@ import com.furianrt.mydiary.data.prefs.PreferencesHelper
 import com.furianrt.mydiary.gallery.GalleryActivity
 import com.furianrt.mydiary.general.AppBarLayoutBehavior
 import com.furianrt.mydiary.general.GlideApp
-import com.furianrt.mydiary.note.Mode
+import com.furianrt.mydiary.note.NoteActivity
 import com.furianrt.mydiary.note.dialogs.categories.CategoriesDialog
 import com.furianrt.mydiary.note.dialogs.moods.MoodsDialog
 import com.furianrt.mydiary.note.dialogs.tags.TagsDialog
@@ -77,7 +77,7 @@ class NoteFragment : Fragment(), NoteFragmentContract.View, OnMapReadyCallback,
 
     private var mGoogleMap: GoogleMap? = null
     private lateinit var mPagerAdapter: NoteFragmentPagerAdapter
-    private lateinit var mMode: Mode
+    private lateinit var mMode: NoteActivity.Companion.Mode
     private var mImagePagerPosition = 0
     private var mIsRecreated = false
     private lateinit var mNoteId: String
@@ -102,7 +102,7 @@ class NoteFragment : Fragment(), NoteFragmentContract.View, OnMapReadyCallback,
             mIsRecreated = true
         }
 
-        mMode = arguments?.getSerializable(ARG_MODE) as Mode
+        mMode = arguments?.getSerializable(ARG_MODE) as NoteActivity.Companion.Mode
         setHasOptionsMenu(true)
     }
 
@@ -125,6 +125,7 @@ class NoteFragment : Fragment(), NoteFragmentContract.View, OnMapReadyCallback,
             layout_tags.setOnClickListener(this@NoteFragment)
             text_date.setOnClickListener(this@NoteFragment)
             text_time.setOnClickListener(this@NoteFragment)
+            fab_add_image.setOnClickListener(this@NoteFragment)
             pager_note_image.adapter = mPagerAdapter
             map_touch_event_interceptor.setOnTouchListener { _, _ -> true }
         }
@@ -240,7 +241,7 @@ class NoteFragment : Fragment(), NoteFragmentContract.View, OnMapReadyCallback,
         val isMoodEnabled = PreferenceManager.getDefaultSharedPreferences(context)
                 .getBoolean(PreferencesHelper.MOOD_AVAILABILITY, true)
         if (!isMoodEnabled) {
-            view.text_mood.visibility = View.GONE
+            view.layout_mood.visibility = View.GONE
         }
 
         val isMapEnabled = PreferenceManager.getDefaultSharedPreferences(context)
@@ -450,14 +451,12 @@ class NoteFragment : Fragment(), NoteFragmentContract.View, OnMapReadyCallback,
     }
 
     private fun addFragments() {
-        if (childFragmentManager.findFragmentByTag(NoteContentFragment.TAG) == null &&
-                childFragmentManager.findFragmentByTag(NoteEditFragment.TAG) == null) {
-
+        if (childFragmentManager.findFragmentByTag(NoteContentFragment.TAG) == null) {
             childFragmentManager.inTransaction {
                 add(R.id.container_note_edit, NoteContentFragment(), NoteContentFragment.TAG)
             }
 
-            if (mMode == Mode.ADD && !mIsRecreated) {
+            if (mMode == NoteActivity.Companion.Mode.ADD && !mIsRecreated) {
                 showNoteEditView(MyNote("", "", ""))
             }
         }
@@ -480,6 +479,10 @@ class NoteFragment : Fragment(), NoteFragmentContract.View, OnMapReadyCallback,
             R.id.layout_category -> mPresenter.onCategoryFieldClick()
             R.id.text_date -> mPresenter.onDateFieldClick()
             R.id.text_time -> mPresenter.onTimeFieldClick()
+            R.id.fab_add_image -> {
+                removeEditFragment()
+                mPresenter.onAddImageButtonClick()
+            }
         }
     }
 
@@ -680,7 +683,7 @@ class NoteFragment : Fragment(), NoteFragmentContract.View, OnMapReadyCallback,
         private const val BUNDLE_IMAGE_PAGER_POSITION = "imagePagerPosition"
 
         @JvmStatic
-        fun newInstance(noteId: String, mode: Mode) =
+        fun newInstance(noteId: String, mode: NoteActivity.Companion.Mode) =
                 NoteFragment().apply {
                     arguments = Bundle().apply {
                         putString(ARG_NOTE_ID, noteId)

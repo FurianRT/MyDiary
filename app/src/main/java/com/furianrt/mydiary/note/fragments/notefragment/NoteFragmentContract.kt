@@ -5,7 +5,7 @@ import com.furianrt.mydiary.BasePresenter
 import com.furianrt.mydiary.BaseView
 import com.furianrt.mydiary.data.api.Forecast
 import com.furianrt.mydiary.data.model.*
-import com.furianrt.mydiary.note.Mode
+import com.furianrt.mydiary.note.NoteActivity
 import com.google.android.gms.location.LocationResult
 import java.util.*
 
@@ -64,7 +64,7 @@ interface NoteFragmentContract {
         abstract fun onNoCategoryPicked()
         abstract fun onCategoryPicked(category: MyCategory)
         abstract fun onAppearanceButtonClick()
-        abstract fun loadNote(noteId: String, mode: Mode, locationEnabled: Boolean, networkAvailable: Boolean)
+        abstract fun loadNote(noteId: String, mode: NoteActivity.Companion.Mode, locationEnabled: Boolean, networkAvailable: Boolean)
         abstract fun loadNoteAppearance(noteId: String)
         abstract fun loadTags(noteId: String)
         abstract fun loadImages(noteId: String)

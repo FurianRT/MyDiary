@@ -6,7 +6,7 @@ import com.furianrt.mydiary.LOG_TAG
 import com.furianrt.mydiary.data.DataManager
 import com.furianrt.mydiary.data.api.Forecast
 import com.furianrt.mydiary.data.model.*
-import com.furianrt.mydiary.note.Mode
+import com.furianrt.mydiary.note.NoteActivity
 import com.furianrt.mydiary.utils.generateUniqueId
 import com.google.android.gms.location.LocationResult
 import io.reactivex.Flowable
@@ -87,7 +87,7 @@ class NoteFragmentPresenter(private val mDataManager: DataManager) : NoteFragmen
                 })
     }
 
-    override fun loadNote(noteId: String, mode: Mode, locationEnabled: Boolean,
+    override fun loadNote(noteId: String, mode: NoteActivity.Companion.Mode, locationEnabled: Boolean,
                           networkAvailable: Boolean) {
         addDisposable(mDataManager.getNote(noteId)
                 .subscribe { note ->
@@ -114,17 +114,17 @@ class NoteFragmentPresenter(private val mDataManager: DataManager) : NoteFragmen
                 })
     }
 
-    private fun showForecast(forecast: Forecast?, location: MyLocation, mode: Mode) {
+    private fun showForecast(forecast: Forecast?, location: MyLocation, mode: NoteActivity.Companion.Mode) {
         if (mDataManager.isWeatherEnabled()) {
             if (forecast != null) {
                 mView?.showForecast(forecast)
-            } else if (mode == Mode.ADD) {
+            } else if (mode == NoteActivity.Companion.Mode.ADD) {
                 addForecast(location)
             }
         }
     }
 
-    private fun showNoteLocation(note: MyNoteWithProp, mode: Mode, locationEnabled: Boolean,
+    private fun showNoteLocation(note: MyNoteWithProp, mode: NoteActivity.Companion.Mode, locationEnabled: Boolean,
                                  networkAvailable: Boolean) {
         val location = note.location
         if (location != null) {
@@ -132,7 +132,7 @@ class NoteFragmentPresenter(private val mDataManager: DataManager) : NoteFragmen
                 mView?.showLocation(location)
             }
             showForecast(note.note.forecast, location, mode)
-        } else if (mode == Mode.ADD) {
+        } else if (mode == NoteActivity.Companion.Mode.ADD) {
             findLocation(locationEnabled, networkAvailable)
         }
     }
@@ -148,13 +148,15 @@ class NoteFragmentPresenter(private val mDataManager: DataManager) : NoteFragmen
     }
 
     private fun showNoteCategory(categoryId: Long) {
-        if (categoryId == 0L) {
-            mView?.showNoCategoryMessage()
-            return
-        }
-
-        addDisposable(mDataManager.getCategory(categoryId)
-                .subscribe { category -> mView?.showCategory(category) })
+        addDisposable(mDataManager.getAllCategories()
+                .subscribe { categories ->
+                    val category = categories.find { it.id == categoryId }
+                    if (category == null) {
+                        mView?.showNoCategoryMessage()
+                    } else {
+                        mView?.showCategory(category)
+                    }
+                })
     }
 
     private fun findLocation(locationEnabled: Boolean, networkAvailable: Boolean) {

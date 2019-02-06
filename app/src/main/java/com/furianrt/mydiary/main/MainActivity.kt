@@ -27,7 +27,6 @@ import com.furianrt.mydiary.general.GlideApp
 import com.furianrt.mydiary.general.HeaderItemDecoration
 import com.furianrt.mydiary.main.listadapter.MainListAdapter
 import com.furianrt.mydiary.main.listadapter.MainListItem
-import com.furianrt.mydiary.note.Mode
 import com.furianrt.mydiary.note.NoteActivity
 import com.furianrt.mydiary.settings.global.GlobalSettingsActivity
 import com.furianrt.mydiary.utils.getThemePrimaryColor
@@ -208,7 +207,7 @@ class MainActivity : BaseActivity(), MainActivityContract.View,
     override fun showViewNewNote() {
         mPresenter.detachView()
         val intent = Intent(this, NoteActivity::class.java)
-        intent.putExtra(NoteActivity.EXTRA_MODE, Mode.ADD)
+        intent.putExtra(NoteActivity.EXTRA_MODE, NoteActivity.Companion.Mode.ADD)
         startActivity(intent)
     }
 
@@ -306,7 +305,7 @@ class MainActivity : BaseActivity(), MainActivityContract.View,
     override fun openNotePager(position: Int) {
         val intent = Intent(this, NoteActivity::class.java)
         intent.putExtra(NoteActivity.EXTRA_CLICKED_NOTE_POSITION, position)
-        intent.putExtra(NoteActivity.EXTRA_MODE, Mode.READ)
+        intent.putExtra(NoteActivity.EXTRA_MODE, NoteActivity.Companion.Mode.READ)
         startActivity(intent)
     }
 

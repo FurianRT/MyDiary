@@ -16,9 +16,6 @@ abstract class TagDao {
     @Delete
     abstract fun delete(tag: MyTag)
 
-    @Query("SELECT * FROM Tags WHERE id_tag = :tagId")
-    abstract fun getTag(tagId: String): MyTag
-
     @Query("SELECT * FROM Tags")
     abstract fun getAllTags(): Single<List<MyTag>>
 }

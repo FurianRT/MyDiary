@@ -1,10 +1,8 @@
 apply plugin: 'com.android.application'
-
 apply plugin: 'kotlin-android'
-
 apply plugin: 'kotlin-android-extensions'
-
 apply plugin: 'kotlin-kapt'
+apply plugin: 'com.google.gms.google-services'
 
 android {
     compileSdkVersion 28
@@ -37,11 +35,11 @@ dependencies {
 
     implementation "androidx.recyclerview:recyclerview:$support_version"
     implementation "androidx.cardview:cardview:$support_version"
-    implementation "androidx.appcompat:appcompat:$support_version"
+    implementation "androidx.appcompat:appcompat:1.0.2"
     implementation "androidx.preference:preference:$support_version"
     implementation "com.google.android.material:material:$support_version"
 
-    implementation 'androidx.constraintlayout:constraintlayout:2.0.0-alpha2'
+    implementation 'androidx.constraintlayout:constraintlayout:2.0.0-alpha3'
 
     implementation 'com.google.android:flexbox:1.1.0'
 
@@ -79,6 +77,11 @@ dependencies {
     implementation 'com.larswerkman:HoloColorPicker:1.5'
 
     implementation 'com.wdullaer:materialdatetimepicker:4.1.0'
+
+    implementation 'com.google.firebase:firebase-core:16.0.6'
+    implementation 'com.google.firebase:firebase-storage:16.0.5'
+    implementation 'com.google.firebase:firebase-auth:16.1.0'
+    implementation 'com.google.firebase:firebase-firestore:18.0.0'
 
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test:runner:1.1.1'
