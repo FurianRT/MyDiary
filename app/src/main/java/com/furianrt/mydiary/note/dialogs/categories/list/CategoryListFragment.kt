@@ -129,7 +129,7 @@ class CategoryListFragment : Fragment(), View.OnClickListener,
 
     companion object {
 
-        val TAG = CategoryListFragment::class.toString()
+        const val TAG = "CategoryListFragment"
         private const val ARG_NOTE_ID = "noteId"
         private const val BUNDLE_RECYCLER_VIEW_STATE = "recyclerState"
 

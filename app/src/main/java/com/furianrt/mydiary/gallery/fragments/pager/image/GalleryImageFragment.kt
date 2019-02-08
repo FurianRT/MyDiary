@@ -9,8 +9,6 @@ import com.furianrt.mydiary.data.model.MyImage
 import com.furianrt.mydiary.general.GlideApp
 import kotlinx.android.synthetic.main.fragment_gallery_image.view.*
 
-private const val ARG_IMAGE = "image"
-
 class GalleryImageFragment : androidx.fragment.app.Fragment() {
 
     private var mImage: MyImage? = null
@@ -36,6 +34,9 @@ class GalleryImageFragment : androidx.fragment.app.Fragment() {
     }
 
     companion object {
+
+        private const val ARG_IMAGE = "image"
+
         @JvmStatic
         fun newInstance(image: MyImage) =
                 GalleryImageFragment().apply {

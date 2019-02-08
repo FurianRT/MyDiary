@@ -28,6 +28,10 @@ import com.furianrt.mydiary.note.fragments.notefragment.content.NoteContentFragm
 import com.furianrt.mydiary.note.fragments.notefragment.content.NoteContentFragmentPresenter
 import com.furianrt.mydiary.note.fragments.notefragment.edit.NoteEditFragmentContract
 import com.furianrt.mydiary.note.fragments.notefragment.edit.NoteEditFragmentPresenter
+import com.furianrt.mydiary.premium.PremiumContract
+import com.furianrt.mydiary.premium.PremiumPresenter
+import com.furianrt.mydiary.profile.ProfileContract
+import com.furianrt.mydiary.profile.ProfilePresenter
 import com.furianrt.mydiary.settings.note.NoteSettingsContract
 import com.furianrt.mydiary.settings.note.NoteSettingsPresenter
 import com.google.android.gms.location.FusedLocationProviderClient
@@ -112,4 +116,14 @@ class PresenterModule(private val context: Context) {
     @PresenterScope
     fun provideNoteSettingsPresenter(dataManager: DataManager): NoteSettingsContract.Presenter =
             NoteSettingsPresenter(dataManager)
+
+    @Provides
+    @PresenterScope
+    fun providePremiumPresenter(dataManager: DataManager): PremiumContract.Presenter =
+            PremiumPresenter(dataManager)
+
+    @Provides
+    @PresenterScope
+    fun provideProfilePresenter(dataManager: DataManager): ProfileContract.Presenter =
+            ProfilePresenter(dataManager)
 }

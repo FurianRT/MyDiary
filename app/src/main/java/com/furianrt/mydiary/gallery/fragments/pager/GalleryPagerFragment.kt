@@ -84,8 +84,7 @@ class GalleryPagerFragment : Fragment(), GalleryPagerContract.View {
 
     override fun showListImagesView(noteId: String) {
         fragmentManager?.inTransaction {
-            val tag = GalleryListFragment::class.toString()
-            replace(R.id.container_gallery, GalleryListFragment.newInstance(noteId), tag)
+            replace(R.id.container_gallery, GalleryListFragment.newInstance(noteId), GalleryListFragment.TAG)
         }
     }
 
@@ -96,6 +95,7 @@ class GalleryPagerFragment : Fragment(), GalleryPagerContract.View {
 
     companion object {
 
+        const val TAG = "GalleryPagerFragment"
         private const val ARG_POSITION = "position"
         private const val ARG_NOTE_ID = "noteId"
 

@@ -2,7 +2,6 @@ package com.furianrt.mydiary.note.fragments.notefragment
 
 import android.location.Address
 import android.util.Log
-import com.furianrt.mydiary.LOG_TAG
 import com.furianrt.mydiary.data.DataManager
 import com.furianrt.mydiary.data.api.Forecast
 import com.furianrt.mydiary.data.model.*
@@ -16,22 +15,15 @@ import java.util.*
 
 class NoteFragmentPresenter(private val mDataManager: DataManager) : NoteFragmentContract.Presenter() {
 
-    private var mView: NoteFragmentContract.View? = null
-
     private lateinit var mNote: MyNote
 
-    override fun attachView(view: NoteFragmentContract.View) {
-        mView = view
-    }
-
-    override fun detachView() {
-        super.detachView()
-        mView = null
+    companion object {
+        private const val TAG = "NoteFragmentPresenter"
     }
 
     override fun onMoodFieldClick() {
         addDisposable(mDataManager.getAllMoods()
-                .subscribe { moods -> mView?.showMoodsDialog(moods) })
+                .subscribe { moods -> view?.showMoodsDialog(moods) })
 
     }
 
@@ -48,11 +40,11 @@ class NoteFragmentPresenter(private val mDataManager: DataManager) : NoteFragmen
                     val foundedTag = list.find { it.id == tag.id }
                     if (foundedTag == null) list.add(tag)
                 }
-                .subscribe { tags -> mView?.showTagsDialog(tags) })
+                .subscribe { tags -> view?.showTagsDialog(tags) })
     }
 
     override fun onCategoryFieldClick() {
-        mView?.showCategoriesDialog(mNote.id)
+        view?.showCategoriesDialog(mNote.id)
     }
 
     override fun onNoteTagsChanged(tags: List<MyTag>) {
@@ -61,16 +53,16 @@ class NoteFragmentPresenter(private val mDataManager: DataManager) : NoteFragmen
     }
 
     override fun onMapReady() {
-        //mNote.location?.let { mView?.zoomMap(it.lat, it.lon) }
+        //mNote.location?.let { view?.zoomMap(it.lat, it.lon) }
     }
 
     override fun loadImages(noteId: String) {
         addDisposable(mDataManager.getImagesForNote(noteId)
                 .subscribe { images ->
                     if (images.isEmpty()) {
-                        mView?.showNoImages()
+                        view?.showNoImages()
                     } else {
-                        mView?.showImages(images.sortedBy { it.order })
+                        view?.showImages(images.sortedBy { it.order })
                     }
                 })
     }
@@ -80,9 +72,9 @@ class NoteFragmentPresenter(private val mDataManager: DataManager) : NoteFragmen
                 .defaultIfEmpty(emptyList())
                 .subscribe { tags ->
                     if (tags.isEmpty()) {
-                        mView?.showNoTagsMessage()
+                        view?.showNoTagsMessage()
                     } else {
-                        mView?.showTagNames(tags.map { it.name })
+                        view?.showTagNames(tags.map { it.name })
                     }
                 })
     }
@@ -92,9 +84,9 @@ class NoteFragmentPresenter(private val mDataManager: DataManager) : NoteFragmen
         addDisposable(mDataManager.getNote(noteId)
                 .subscribe { note ->
                     mNote = note
-                    mView?.showNoteText(note)
+                    view?.showNoteText(note)
                     val is24TimeFormat = mDataManager.getTimeFormat() == DataManager.TIME_FORMAT_24
-                    mView?.showDateAndTime(note.time, is24TimeFormat)
+                    view?.showDateAndTime(note.time, is24TimeFormat)
                     showNoteMood(note.moodId)
                     showNoteCategory(note.categoryId)
                     //showNoteLocation(note, mode, locationEnabled, networkAvailable)
@@ -110,14 +102,14 @@ class NoteFragmentPresenter(private val mDataManager: DataManager) : NoteFragmen
                             appearance.background ?: mDataManager.getNoteBackgroundColor()
                     appearance.textBackground =
                             appearance.textBackground ?: mDataManager.getNoteTextBackgroundColor()
-                    mView?.updateNoteAppearance(appearance)
+                    view?.updateNoteAppearance(appearance)
                 })
     }
 
     private fun showForecast(forecast: Forecast?, location: MyLocation, mode: NoteActivity.Companion.Mode) {
         if (mDataManager.isWeatherEnabled()) {
             if (forecast != null) {
-                mView?.showForecast(forecast)
+                view?.showForecast(forecast)
             } else if (mode == NoteActivity.Companion.Mode.ADD) {
                 addForecast(location)
             }
@@ -129,7 +121,7 @@ class NoteFragmentPresenter(private val mDataManager: DataManager) : NoteFragmen
         val location = note.location
         if (location != null) {
             if (mDataManager.isLocationEnabled()) {
-                mView?.showLocation(location)
+                view?.showLocation(location)
             }
             showForecast(note.note.forecast, location, mode)
         } else if (mode == NoteActivity.Companion.Mode.ADD) {
@@ -139,12 +131,12 @@ class NoteFragmentPresenter(private val mDataManager: DataManager) : NoteFragmen
 
     private fun showNoteMood(moodId: Int) {
         if (moodId == 0 || !mDataManager.isMoodEnabled()) {
-            mView?.showNoMoodMessage()
+            view?.showNoMoodMessage()
             return
         }
 
         addDisposable(mDataManager.getMood(moodId)
-                .subscribe { mood -> mView?.showMood(mood) })
+                .subscribe { mood -> view?.showMood(mood) })
     }
 
     private fun showNoteCategory(categoryId: Long) {
@@ -152,26 +144,26 @@ class NoteFragmentPresenter(private val mDataManager: DataManager) : NoteFragmen
                 .subscribe { categories ->
                     val category = categories.find { it.id == categoryId }
                     if (category == null) {
-                        mView?.showNoCategoryMessage()
+                        view?.showNoCategoryMessage()
                     } else {
-                        mView?.showCategory(category)
+                        view?.showCategory(category)
                     }
                 })
     }
 
     private fun findLocation(locationEnabled: Boolean, networkAvailable: Boolean) {
         if (locationEnabled && networkAvailable) {
-            mView?.requestLocationPermissions()
+            view?.requestLocationPermissions()
         }
     }
 
     override fun onLocationPermissionsGranted() {
-        mView?.requestLocation()
+        view?.requestLocation()
     }
 
     override fun onLocationReceived(result: LocationResult) {
         val lastLocation = result.lastLocation
-        mView?.findAddress(lastLocation.latitude, lastLocation.longitude)
+        view?.findAddress(lastLocation.latitude, lastLocation.longitude)
     }
 
     override fun onAddressFound(addresses: List<Address>, latitude: Double, longitude: Double) {
@@ -189,38 +181,38 @@ class NoteFragmentPresenter(private val mDataManager: DataManager) : NoteFragmen
         addDisposable(mDataManager.getForecast(location.lat, location.lon)
                 .onErrorReturn { null }
                 .flatMapCompletable { forecast ->
-                    Log.e(LOG_TAG, "NoteFragmentPresenter.addForecast")
+                    Log.e(TAG, "addForecast")
                     mNote.forecast = forecast
                     return@flatMapCompletable mDataManager.updateNote(mNote)
                 }
                 .subscribe({
                     val forecast = mNote.forecast
                     if (forecast != null && mDataManager.isWeatherEnabled()) {
-                        mView?.showForecast(forecast)
+                        view?.showForecast(forecast)
                     }
                 }, { error ->
-                    Log.i(LOG_TAG, "Could't load weather: ${error.stackTrace}")
+                    Log.i(TAG, "Could't load weather: ${error.stackTrace}")
                 }))
     }
 
     private fun addLocation(location: MyLocation) {
-        Log.e(LOG_TAG, "NoteFragmentPresenter.addLocation")
+        Log.e(TAG, "addLocation")
         mNote.locationName = location.name
         addDisposable(mDataManager.addLocation(location)
                 .andThen(mDataManager.updateNote(mNote))
                 .subscribe {
                     if (mDataManager.isLocationEnabled()) {
-                        mView?.showLocation(location)
+                        view?.showLocation(location)
                     }
                 })
     }
 
     override fun onAddImageButtonClick() {
-        mView?.requestStoragePermissions()
+        view?.requestStoragePermissions()
     }
 
     override fun onStoragePermissionsGranted() {
-        mView?.showImageExplorer()
+        view?.showImageExplorer()
     }
 
     override fun onNoteImagesPicked(imageUrls: List<String>) {
@@ -235,7 +227,7 @@ class NoteFragmentPresenter(private val mDataManager: DataManager) : NoteFragmen
     }
 
     override fun onEditButtonClick() {
-        mView?.showNoteEditView(mNote)
+        view?.showNoteEditView(mNote)
     }
 
     override fun onDeleteButtonClick() {
@@ -245,11 +237,11 @@ class NoteFragmentPresenter(private val mDataManager: DataManager) : NoteFragmen
                 .flatMapSingle { image -> mDataManager.deleteImageFromStorage(image.name) }
                 .collectInto(mutableListOf<Boolean>()) { l, i -> l.add(i) }
                 .flatMapCompletable { mDataManager.deleteNote(mNote) }
-                .subscribe { mView?.closeView() })
+                .subscribe { view?.closeView() })
     }
 
     override fun onToolbarImageClick() {
-        mView?.showGalleryView(mNote.id)
+        view?.showGalleryView(mNote.id)
     }
 
     override fun onMoodPicked(mood: MyMood) {
@@ -261,23 +253,23 @@ class NoteFragmentPresenter(private val mDataManager: DataManager) : NoteFragmen
     override fun onNoMoodPicked() {
         mNote.moodId = 0
         addDisposable(mDataManager.updateNote(mNote)
-                .subscribe { mView?.showNoMoodMessage() })
+                .subscribe { view?.showNoMoodMessage() })
     }
 
     override fun onCategoryPicked(category: MyCategory) {
         mNote.categoryId = category.id
         addDisposable(mDataManager.updateNote(mNote)
-                .subscribe { mView?.showCategory(category) })
+                .subscribe { view?.showCategory(category) })
     }
 
     override fun onNoCategoryPicked() {
         mNote.categoryId = 0
         addDisposable(mDataManager.updateNote(mNote)
-                .subscribe { mView?.showNoCategoryMessage() })
+                .subscribe { view?.showNoCategoryMessage() })
     }
 
     override fun onAppearanceButtonClick() {
-        mView?.showNoteSettingsView(mNote.id)
+        view?.showNoteSettingsView(mNote.id)
     }
 
     override fun updateNoteText(noteId: String, noteTitle: String, noteContent: String) {
@@ -288,7 +280,7 @@ class NoteFragmentPresenter(private val mDataManager: DataManager) : NoteFragmen
     override fun onDateFieldClick() {
         val calendar = Calendar.getInstance()
         calendar.timeInMillis = mNote.time
-        mView?.showDatePicker(calendar)
+        view?.showDatePicker(calendar)
     }
 
     override fun onDateSelected(year: Int, monthOfYear: Int, dayOfMonth: Int) {
@@ -307,7 +299,7 @@ class NoteFragmentPresenter(private val mDataManager: DataManager) : NoteFragmen
         val date = Calendar.getInstance()
                 .apply { timeInMillis = mNote.time }
         val is24HourMode = mDataManager.getTimeFormat() == DataManager.TIME_FORMAT_24
-        mView?.showTimePicker(date.get(Calendar.HOUR_OF_DAY), date.get(Calendar.MINUTE), is24HourMode)
+        view?.showTimePicker(date.get(Calendar.HOUR_OF_DAY), date.get(Calendar.MINUTE), is24HourMode)
     }
 
     override fun onTimeSelected(hourOfDay: Int, minute: Int) {

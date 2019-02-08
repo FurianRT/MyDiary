@@ -8,24 +8,14 @@ import org.joda.time.DateTime
 
 class GalleryListPresenter(private val mDataManager: DataManager) : GalleryListContract.Presenter() {
 
-    private var mView: GalleryListContract.View? = null
     private lateinit var mNoteId: String
     private var mSelectedImages: MutableList<MyImage> = ArrayList()
-
-    override fun attachView(view: GalleryListContract.View) {
-        mView = view
-    }
-
-    override fun detachView() {
-        super.detachView()
-        mView = null
-    }
 
     override fun onListItemClick(image: MyImage, position: Int, selectionActive: Boolean) {
         if (selectionActive) {
             selectListItem(image)
         } else {
-            mView?.showViewImagePager(image.noteId, position)
+            view?.showViewImagePager(image.noteId, position)
         }
     }
 
@@ -33,11 +23,11 @@ class GalleryListPresenter(private val mDataManager: DataManager) : GalleryListC
         when {
             mSelectedImages.contains(image) -> {
                 mSelectedImages.remove(image)
-                mView?.deselectItem(image)
+                view?.deselectItem(image)
             }
             else -> {
                 mSelectedImages.add(image)
-                mView?.selectItem(image)
+                view?.selectItem(image)
             }
         }
     }
@@ -55,7 +45,7 @@ class GalleryListPresenter(private val mDataManager: DataManager) : GalleryListC
                 .subscribe { images ->
                     var i = 0
                     images.forEach { it.order = i++ }
-                    mView?.showImages(images, mSelectedImages)
+                    view?.showImages(images, mSelectedImages)
                 })
     }
 
@@ -65,12 +55,12 @@ class GalleryListPresenter(private val mDataManager: DataManager) : GalleryListC
     }
 
     override fun onMultiSelectionButtonClick() {
-        mView?.activateSelection()
+        view?.activateSelection()
     }
 
     override fun onCabDeleteButtonClick() {
         addDisposable(mDataManager.deleteImages(mSelectedImages)
-                .subscribe { mView?.closeCab() })
+                .subscribe { view?.closeCab() })
     }
 
     override fun onCabSelectAllButtonClick() {
@@ -80,7 +70,7 @@ class GalleryListPresenter(private val mDataManager: DataManager) : GalleryListC
                     val list = images.toMutableList()
                     list.removeAll(mSelectedImages)
                     mSelectedImages.addAll(list)
-                    mView?.selectItems(list)
+                    view?.selectItems(list)
                 })
     }
 
@@ -90,17 +80,17 @@ class GalleryListPresenter(private val mDataManager: DataManager) : GalleryListC
 
     override fun onCabCloseSelection() {
         mSelectedImages.clear()
-        mView?.deactivateSelection()
+        view?.deactivateSelection()
     }
 
     override fun onSaveInstanceState() = mSelectedImages
 
     override fun onAddImageButtonClick() {
-        mView?.requestStoragePermissions()
+        view?.requestStoragePermissions()
     }
 
     override fun onStoragePermissionsGranted() {
-        mView?.showImageExplorer()
+        view?.showImageExplorer()
     }
 
     override fun onNoteImagesPicked(imageUrls: List<String>) {

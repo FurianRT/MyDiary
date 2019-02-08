@@ -7,25 +7,14 @@ import io.reactivex.Completable
 
 class TagsDialogPresenter(private val mDataManager: DataManager) : TagsDialogContract.Presenter() {
 
-    private var mView: TagsDialogContract.View? = null
-
     private lateinit var mTags: ArrayList<MyTag>
-
-    override fun attachView(view: TagsDialogContract.View) {
-        mView = view
-    }
-
-    override fun detachView() {
-        super.detachView()
-        mView = null
-    }
 
     override fun setTags(tags: ArrayList<MyTag>) {
         mTags = tags
     }
 
     override fun onViewCreate() {
-        mView?.showTags(mTags)
+        view?.showTags(mTags)
     }
 
     override fun getTags() = mTags
@@ -33,7 +22,7 @@ class TagsDialogPresenter(private val mDataManager: DataManager) : TagsDialogCon
     override fun onTagClicked(tag: MyTag) {
         mTags.find { it.id == tag.id }
                 ?.isChecked = tag.isChecked
-        mView?.showTags(mTags)
+        view?.showTags(mTags)
     }
 
     override fun onButtonAddTagClicked(tagName: String) {
@@ -41,25 +30,25 @@ class TagsDialogPresenter(private val mDataManager: DataManager) : TagsDialogCon
         val foundedTag = mTags.find { it.name == tagName }
         if (foundedTag != null) {
             foundedTag.isChecked = true
-            mView?.showTags(mTags)
+            view?.showTags(mTags)
         } else {
             val tag = MyTag(generateUniqueId(), tagName)
             tag.isChecked = true
             addDisposable(Completable.fromAction { mTags.add(tag) }
                     .andThen(mDataManager.insertTag(tag))
-                    .subscribe { mView?.showTags(mTags) })
+                    .subscribe { view?.showTags(mTags) })
         }
     }
 
     override fun onButtonDeleteTagClicked(tag: MyTag) {
         addDisposable(Completable.fromCallable { mTags.remove(tag) }
                 .andThen(mDataManager.deleteTag(tag))
-                .subscribe { mView?.showTags(mTags) })
+                .subscribe { view?.showTags(mTags) })
     }
 
     override fun onButtonEditTagClicked(tag: MyTag) {
         addDisposable(Completable.fromAction { mTags.find { it.id == tag.id }?.name = tag.name }
                 .andThen(mDataManager.updateTag(tag))
-                .subscribe { mView?.showTags(mTags) })
+                .subscribe { view?.showTags(mTags) })
     }
 }

@@ -82,6 +82,6 @@ class MoodsDialog : DialogFragment(), MoodsDialogContract.View,
     }
 
     companion object {
-        val TAG = MoodsDialog::class.toString()
+        const val TAG = "MoodsDialog"
     }
 }

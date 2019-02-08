@@ -89,8 +89,7 @@ class CategoryEditFragment : Fragment(), View.OnClickListener, CategoryEditContr
 
     companion object {
 
-        val TAG = CategoryEditFragment::class.toString()
-
+        const val TAG = "CategoryEditFragment"
         private const val ARG_CATEGORY_ID = "category_ID"
         private const val BUNDLE_CATEGORY_NAME = "category_name"
         private const val BUNDLE_CATEGORY_COLOR = "category_color"

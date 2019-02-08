@@ -23,7 +23,6 @@ import androidx.core.content.ContextCompat.getColor
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
-import com.furianrt.mydiary.LOG_TAG
 import com.furianrt.mydiary.R
 import com.furianrt.mydiary.data.api.Forecast
 import com.furianrt.mydiary.data.model.*
@@ -432,7 +431,7 @@ class NoteFragment : Fragment(), NoteFragmentContract.View, OnMapReadyCallback,
     }
 
     fun disableActionBarExpanding(animate: Boolean) {
-        Log.e(LOG_TAG, "NoteFragment.disableActionBarExpanding")
+        Log.e(TAG, "disableActionBarExpanding")
         app_bar_layout.setExpanded(false, animate)
 
         val coordParams = app_bar_layout.layoutParams as CoordinatorLayout.LayoutParams
@@ -440,7 +439,7 @@ class NoteFragment : Fragment(), NoteFragmentContract.View, OnMapReadyCallback,
     }
 
     fun enableActionBarExpanding(expanded: Boolean, animate: Boolean) {
-        Log.e(LOG_TAG, "NoteFragment.enableActionBarExpanding")
+        Log.e(TAG, "enableActionBarExpanding")
         if (mPagerAdapter.images.isEmpty()) {
             return
         }
@@ -598,7 +597,7 @@ class NoteFragment : Fragment(), NoteFragmentContract.View, OnMapReadyCallback,
     }
 
     override fun showImages(images: List<MyImage>) {
-        Log.e(LOG_TAG, "NoteFragment.showImages")
+        Log.e(TAG, "showImages")
         mPagerAdapter.images = images
         mPagerAdapter.notifyDataSetChanged()
         view?.pager_note_image?.setCurrentItem(mImagePagerPosition, false)
@@ -608,7 +607,7 @@ class NoteFragment : Fragment(), NoteFragmentContract.View, OnMapReadyCallback,
     }
 
     override fun showNoImages() {
-        Log.e(LOG_TAG, "NoteFragment.showNoImages")
+        Log.e(TAG, "showNoImages")
         mPagerAdapter.images = emptyList()
         mPagerAdapter.notifyDataSetChanged()
         disableActionBarExpanding(false)
@@ -674,6 +673,7 @@ class NoteFragment : Fragment(), NoteFragmentContract.View, OnMapReadyCallback,
 
     companion object {
 
+        const val TAG = "NoteFragment"
         private const val ARG_NOTE_ID = "noteId"
         private const val ARG_MODE = "mode"
         private const val LOCATION_INTERVAL = 400L

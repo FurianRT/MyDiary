@@ -25,7 +25,7 @@ class CategoriesDialog : DialogFragment(), CategoriesDialogContract.View {
 
     companion object {
 
-        val TAG = CategoriesDialog::class.toString()
+        const val TAG = "CategoriesDialog"
         private const val ARG_NOTE_ID = "noteId"
 
         @JvmStatic

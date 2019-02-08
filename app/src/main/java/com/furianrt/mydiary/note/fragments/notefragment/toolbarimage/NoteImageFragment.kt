@@ -1,6 +1,5 @@
 package com.furianrt.mydiary.note.fragments.notefragment.toolbarimage
 
-
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -10,8 +9,6 @@ import com.furianrt.mydiary.data.model.MyImage
 import com.furianrt.mydiary.general.GlideApp
 import com.furianrt.mydiary.note.fragments.notefragment.NoteFragment
 import kotlinx.android.synthetic.main.fragment_note_image.view.*
-
-private const val ARG_NOTE_IMAGE = "noteImage"
 
 class NoteImageFragment : androidx.fragment.app.Fragment() {
 
@@ -40,6 +37,9 @@ class NoteImageFragment : androidx.fragment.app.Fragment() {
     }
 
     companion object {
+
+        private const val ARG_NOTE_IMAGE = "noteImage"
+
         @JvmStatic
         fun newInstance(image: MyImage) =
                 NoteImageFragment().apply {

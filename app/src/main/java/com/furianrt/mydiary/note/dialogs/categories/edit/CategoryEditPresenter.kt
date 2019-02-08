@@ -5,17 +5,6 @@ import com.furianrt.mydiary.data.model.MyCategory
 
 class CategoryEditPresenter(private val mDataManager: DataManager) : CategoryEditContract.Presenter() {
 
-    private var mView: CategoryEditContract.View? = null
-
-    override fun attachView(view: CategoryEditContract.View) {
-        mView = view
-    }
-
-    override fun detachView() {
-        super.detachView()
-        mView = null
-    }
-
     override fun onViewCreate() {
 
     }
@@ -24,16 +13,16 @@ class CategoryEditPresenter(private val mDataManager: DataManager) : CategoryEdi
         addDisposable(if (category.id == 0L) {
             mDataManager.insertCategory(category)
                     .ignoreElement()
-                    .subscribe { mView?.close() }
+                    .subscribe { view?.close() }
         } else {
             mDataManager.updateCategory(category)
-                    .subscribe { mView?.close() }
+                    .subscribe { view?.close() }
         })
     }
 
     override fun loadCategory(categoryId: Long) {
         addDisposable(mDataManager.getCategory(categoryId)
                 .defaultIfEmpty(MyCategory())
-                .subscribe { category -> mView?.showCategory(category) })
+                .subscribe { category -> view?.showCategory(category) })
     }
 }

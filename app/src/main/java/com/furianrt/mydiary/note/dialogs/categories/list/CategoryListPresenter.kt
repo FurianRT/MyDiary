@@ -7,19 +7,8 @@ class CategoryListPresenter(
         private val mDataManager: DataManager
 ) : CategoryListContract.Presenter() {
 
-    private var mView: CategoryListContract.View? = null
-
-    override fun attachView(view: CategoryListContract.View) {
-        mView = view
-    }
-
-    override fun detachView() {
-        super.detachView()
-        mView = null
-    }
-
     override fun onAddCategoryButtonClick() {
-        mView?.showViewAddCategory()
+        view?.showViewAddCategory()
     }
 
     override fun onDeleteCategoryButtonClick(category: MyCategory) {
@@ -28,12 +17,12 @@ class CategoryListPresenter(
     }
 
     override fun onEditCategoryButtonClick(category: MyCategory) {
-        mView?.showEditView(category)
+        view?.showEditView(category)
     }
 
     override fun onViewStart() {
         addDisposable(mDataManager.getAllCategories()
-                .subscribe { categories -> mView?.showCategories(categories) })
+                .subscribe { categories -> view?.showCategories(categories) })
     }
 
     override fun onCategoryClick(category: MyCategory, noteId: String) {
@@ -42,6 +31,6 @@ class CategoryListPresenter(
                     note.categoryId = category.id
                     return@flatMapCompletable mDataManager.updateNote(note)
                 }
-                .subscribe { mView?.close() })
+                .subscribe { view?.close() })
     }
 }

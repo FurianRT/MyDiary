@@ -18,7 +18,6 @@ import androidx.core.content.ContextCompat
 import androidx.core.view.GravityCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.furianrt.mydiary.BaseActivity
-import com.furianrt.mydiary.LOG_TAG
 import com.furianrt.mydiary.R
 import com.furianrt.mydiary.data.model.MyHeaderImage
 import com.furianrt.mydiary.data.model.MyNoteWithProp
@@ -46,6 +45,7 @@ class MainActivity : BaseActivity(), MainActivityContract.View,
         MainListAdapter.OnMainListItemInteractionListener, View.OnClickListener {
 
     companion object {
+        private const val TAG = "MainActivity"
         private const val BUNDLE_RECYCLER_VIEW_STATE = "recyclerState"
         private const val BUNDLE_SELECTED_LIST_ITEMS = "selectedListItems"
         private const val STORAGE_PERMISSIONS_REQUEST_CODE = 1
@@ -79,14 +79,14 @@ class MainActivity : BaseActivity(), MainActivityContract.View,
 
     override fun onStart() {
         super.onStart()
-        Log.e(LOG_TAG, "onStart_main")
+        Log.e(TAG, "onStart")
         mPresenter.attachView(this)
         mAdapter.listener = this
         mPresenter.onViewStart()
     }
 
     override fun showHeaderImages(images: List<MyHeaderImage>) {
-        Log.e(LOG_TAG, "showHeaderImages")
+        Log.e(TAG, "showHeaderImages")
         if (mNeedToOpenActionBar) {
             enableActionBarExpanding()
         }
@@ -99,7 +99,7 @@ class MainActivity : BaseActivity(), MainActivityContract.View,
     }
 
     override fun showEmptyHeaderImage() {
-        Log.e(LOG_TAG, "showEmptyHeaderImage")
+        Log.e(TAG, "showEmptyHeaderImage")
         disableActionBarExpanding()
     }
 
@@ -266,7 +266,7 @@ class MainActivity : BaseActivity(), MainActivityContract.View,
     }
 
     override fun showNotes(notes: List<MainListItem>, selectedNotes: ArrayList<MyNoteWithProp>) {
-        Log.e(LOG_TAG, "main_show_notes")
+        Log.e(TAG, "showNotes")
 
         mAdapter.submitList(notes.toMutableList())
         mAdapter.selectedNotes = selectedNotes
@@ -284,7 +284,7 @@ class MainActivity : BaseActivity(), MainActivityContract.View,
         val vibrator = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
         if (vibrator.hasVibrator()) {
             @Suppress("DEPRECATION")
-            vibrator.vibrate(40L)
+            vibrator.vibrate(30L)
         }
         mPresenter.onMainListItemLongClick(note, position)
     }
@@ -337,7 +337,7 @@ class MainActivity : BaseActivity(), MainActivityContract.View,
 
     override fun onStop() {
         super.onStop()
-        Log.e(LOG_TAG, "onStop_main")
+        Log.e(TAG, "onStop")
         mAdapter.listener = null
         mPresenter.detachView()
     }

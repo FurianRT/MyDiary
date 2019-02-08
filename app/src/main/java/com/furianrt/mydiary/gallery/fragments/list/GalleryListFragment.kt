@@ -246,6 +246,7 @@ class GalleryListFragment : androidx.fragment.app.Fragment(), GalleryListAdapter
 
     companion object {
 
+        const val TAG = "GalleryListFragment"
         private const val ARG_NOTE_ID = "noteId"
         private const val VERTICAL_LIST_SPAN_COUNT = 2
         private const val HORIZONTAL_LIST_SPAN_COUNT = 3

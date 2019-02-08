@@ -35,13 +35,12 @@ class GalleryActivity : BaseActivity(), GalleryActivityContract.View {
 
         val position = intent.getIntExtra(EXTRA_POSITION, 0)
         val noteId = intent.getStringExtra(EXTRA_NOTE_ID)
-        val pagerTag = GalleryPagerFragment::class.toString()
-        val listTag = GalleryListFragment::class.toString()
-        if (supportFragmentManager.findFragmentByTag(pagerTag) == null
-                && supportFragmentManager.findFragmentByTag(listTag) == null) {
+        if (supportFragmentManager.findFragmentByTag(GalleryPagerFragment.TAG) == null
+                && supportFragmentManager.findFragmentByTag(GalleryListFragment.TAG) == null) {
 
             supportFragmentManager.inTransaction {
-                add(R.id.container_gallery, GalleryPagerFragment.newInstance(noteId, position), pagerTag)
+                add(R.id.container_gallery, GalleryPagerFragment.newInstance(noteId, position),
+                        GalleryPagerFragment.TAG)
             }
         }
     }

@@ -176,7 +176,7 @@ class NoteEditFragment : Fragment(), NoteEditFragmentContract.View {
 
     companion object {
 
-        val TAG = NoteEditFragment::class.toString()
+        const val TAG = "NoteEditFragment"
         private const val ARG_CLICKED_VIEW = "clickedView"
         private const val ARG_NOTE = "note"
         private const val ARG_APPEARANCE = "appearance"

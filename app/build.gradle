@@ -39,7 +39,7 @@ dependencies {
     implementation "androidx.preference:preference:$support_version"
     implementation "com.google.android.material:material:$support_version"
 
-    implementation 'androidx.constraintlayout:constraintlayout:2.0.0-alpha3'
+    implementation 'androidx.constraintlayout:constraintlayout:2.0.0-alpha2'
 
     implementation 'com.google.android:flexbox:1.1.0'
 
@@ -82,6 +82,8 @@ dependencies {
     implementation 'com.google.firebase:firebase-storage:16.0.5'
     implementation 'com.google.firebase:firebase-auth:16.1.0'
     implementation 'com.google.firebase:firebase-firestore:18.0.0'
+
+    implementation 'com.github.applikeysolutions:cosmocalendar:1.0.4'
 
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test:runner:1.1.1'

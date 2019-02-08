@@ -1,7 +1,6 @@
 package com.furianrt.mydiary.main
 
 import android.util.Log
-import com.furianrt.mydiary.LOG_TAG
 import com.furianrt.mydiary.data.DataManager
 import com.furianrt.mydiary.data.model.MyHeaderImage
 import com.furianrt.mydiary.data.model.MyNoteWithProp
@@ -20,20 +19,11 @@ import kotlin.collections.ArrayList
 class MainActivityPresenter(private val mDataManager: DataManager) : MainActivityContract.Presenter() {
 
     companion object {
+        private const val TAG = "MainActivityPresenter"
         private const val HEADER_IMAGE_NAME = "header_image"
     }
 
-    private var mView: MainActivityContract.View? = null
     private var mSelectedNotes = ArrayList<MyNoteWithProp>()
-
-    override fun attachView(view: MainActivityContract.View) {
-        mView = view
-    }
-
-    override fun detachView() {
-        super.detachView()
-        mView = null
-    }
 
     private fun deleteImagesAndNote(note: MyNoteWithProp): Single<Boolean> =
             Flowable.fromIterable(note.images)
@@ -48,7 +38,7 @@ class MainActivityPresenter(private val mDataManager: DataManager) : MainActivit
                 .ignoreElement()
                 .subscribe {
                     mSelectedNotes.clear()
-                    mView?.deactivateSelection()
+                    view?.deactivateSelection()
                 })
     }
 
@@ -57,8 +47,8 @@ class MainActivityPresenter(private val mDataManager: DataManager) : MainActivit
                 .first(ArrayList())
                 .subscribe { notes ->
                     mSelectedNotes = ArrayList(notes)
-                    mView?.activateSelection()
-                    mView?.updateItemSelection(mSelectedNotes)
+                    view?.activateSelection()
+                    view?.updateItemSelection(mSelectedNotes)
                 })
     }
 
@@ -68,7 +58,7 @@ class MainActivityPresenter(private val mDataManager: DataManager) : MainActivit
     }
 
     override fun onStoragePermissionsGranted() {
-        mView?.showImageExplorer()
+        view?.showImageExplorer()
     }
 
     override fun onHeaderImagesPicked(imageUrls: List<String>) {
@@ -89,9 +79,9 @@ class MainActivityPresenter(private val mDataManager: DataManager) : MainActivit
         addDisposable(mDataManager.getHeaderImages()
                 .subscribe { images ->
                     if (images.isEmpty()) {
-                        mView?.showEmptyHeaderImage()
+                        view?.showEmptyHeaderImage()
                     } else {
-                        mView?.showHeaderImages(images)
+                        view?.showHeaderImages(images)
                     }
                 })
     }
@@ -99,7 +89,7 @@ class MainActivityPresenter(private val mDataManager: DataManager) : MainActivit
     private fun loadNotes() {
         addDisposable(mDataManager.getAllNotesWithProp()
                 .map { formatNotes(toMap(it)) }
-                .subscribe { mView?.showNotes(it, mSelectedNotes) })
+                .subscribe { view?.showNotes(it, mSelectedNotes) })
     }
 
     private fun toMap(notes: List<MyNoteWithProp>): Map<Long, ArrayList<MyNoteWithProp>> {
@@ -133,18 +123,18 @@ class MainActivityPresenter(private val mDataManager: DataManager) : MainActivit
     }
 
     override fun onFabMenuClick() {
-        Log.e(LOG_TAG, "onFabMenuClick")
+        Log.e(TAG, "onFabMenuClick")
         if (mSelectedNotes.isEmpty()) {
-            mView?.showViewNewNote()
+            view?.showViewNewNote()
         } else {
             mSelectedNotes.clear()
-            mView?.deactivateSelection()
-            mView?.updateItemSelection(mSelectedNotes)
+            view?.deactivateSelection()
+            view?.updateItemSelection(mSelectedNotes)
         }
     }
 
     override fun onButtonSetMainImageClick() {
-        mView?.requestStoragePermissions()
+        view?.requestStoragePermissions()
     }
 
     override fun onMainListItemClick(note: MyNoteWithProp, position: Int) {
@@ -157,7 +147,7 @@ class MainActivityPresenter(private val mDataManager: DataManager) : MainActivit
 
     override fun onMainListItemLongClick(note: MyNoteWithProp, position: Int) {
         if (mSelectedNotes.isEmpty()) {
-            mView?.activateSelection()
+            view?.activateSelection()
         }
         selectListItem(note)
     }
@@ -172,22 +162,22 @@ class MainActivityPresenter(private val mDataManager: DataManager) : MainActivit
         when {
             mSelectedNotes.contains(note) && mSelectedNotes.size == 1 -> {
                 mSelectedNotes.remove(note)
-                mView?.deactivateSelection()
+                view?.deactivateSelection()
             }
             mSelectedNotes.contains(note) -> mSelectedNotes.remove(note)
             else -> mSelectedNotes.add(note)
         }
-        mView?.updateItemSelection(mSelectedNotes)
+        view?.updateItemSelection(mSelectedNotes)
     }
 
     private fun openNotePagerView(note: MyNoteWithProp) {
         addDisposable(mDataManager.getAllNotesWithProp()
                 .first(ArrayList())
-                .subscribe { notes -> mView?.openNotePager(notes.indexOf(note)) })
+                .subscribe { notes -> view?.openNotePager(notes.indexOf(note)) })
     }
 
     override fun onButtonSettingsClick() {
-        mView?.showSettingsView()
+        view?.showSettingsView()
     }
 
     override fun is24TimeFormat(): Boolean =

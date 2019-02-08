@@ -7,7 +7,6 @@ import android.util.Log
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.sqlite.db.SupportSQLiteDatabase
-import com.furianrt.mydiary.LOG_TAG
 import com.furianrt.mydiary.R
 import com.furianrt.mydiary.data.DataManager
 import com.furianrt.mydiary.data.DataManagerImp
@@ -31,9 +30,11 @@ import retrofit2.converter.gson.GsonConverterFactory
 @Module
 class AppModule(private val app: Application) {
 
-    @Provides
-    @AppScope
-    fun provideApplication() = app
+    companion object {
+        private const val TAG = "AppModule"
+        private const val DATABASE_NAME = "Notes.db"
+        private const val WEATHER_BASE_URL = "https://api.openweathermap.org/data/2.5/"
+    }
 
     @Provides
     @AppScope
@@ -51,7 +52,7 @@ class AppModule(private val app: Application) {
     @Provides
     @DatabaseInfo
     @AppScope
-    fun provideDatabaseName() = "Notes.db"
+    fun provideDatabaseName() = DATABASE_NAME
 
     @Provides
     @AppScope
@@ -98,7 +99,7 @@ class AppModule(private val app: Application) {
     @Provides
     @AppScope
     fun provideHttpLoggingInterceptor(): HttpLoggingInterceptor {
-        val logging = HttpLoggingInterceptor { message -> Log.e(LOG_TAG, message) }
+        val logging = HttpLoggingInterceptor { message -> Log.e(TAG, message) }
         return logging.setLevel(HttpLoggingInterceptor.Level.BASIC)
     }
 
@@ -115,7 +116,7 @@ class AppModule(private val app: Application) {
     fun provideRetrofit(okHttpClient: OkHttpClient): Retrofit =
             Retrofit.Builder()
                     .client(okHttpClient)
-                    .baseUrl("https://api.openweathermap.org/data/2.5/")
+                    .baseUrl(WEATHER_BASE_URL)
                     .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                     .addConverterFactory(GsonConverterFactory.create())
                     .build()

@@ -13,6 +13,8 @@ import com.furianrt.mydiary.note.dialogs.tags.TagsDialog
 import com.furianrt.mydiary.note.fragments.notefragment.NoteFragment
 import com.furianrt.mydiary.note.fragments.notefragment.content.NoteContentFragment
 import com.furianrt.mydiary.note.fragments.notefragment.edit.NoteEditFragment
+import com.furianrt.mydiary.premium.PremiumFragment
+import com.furianrt.mydiary.profile.ProfileFragment
 import com.furianrt.mydiary.settings.note.NoteSettingsFragment
 import dagger.Subcomponent
 
@@ -21,30 +23,19 @@ import dagger.Subcomponent
 interface PresenterComponent {
 
     fun inject(activity: MainActivity)
-
     fun inject(activity: NoteActivity)
-
-    fun inject(fragment: NoteContentFragment)
-
-    fun inject(fragment: NoteEditFragment)
-
-    fun inject(fragment: NoteFragment)
-
-    fun inject(dialog: TagsDialog)
-
     fun inject(activity: GalleryActivity)
-
-    fun inject(fragment: GalleryPagerFragment)
-
-    fun inject(fragment: GalleryListFragment)
-
     fun inject(dialog: MoodsDialog)
-
     fun inject(dialog: CategoriesDialog)
-
+    fun inject(dialog: TagsDialog)
+    fun inject(fragment: NoteContentFragment)
+    fun inject(fragment: NoteEditFragment)
+    fun inject(fragment: NoteFragment)
+    fun inject(fragment: GalleryPagerFragment)
+    fun inject(fragment: GalleryListFragment)
     fun inject(fragment: CategoryListFragment)
-
     fun inject(fragment: CategoryEditFragment)
-
     fun inject(fragment: NoteSettingsFragment)
+    fun inject(fragment: PremiumFragment)
+    fun inject(fragment: ProfileFragment)
 }

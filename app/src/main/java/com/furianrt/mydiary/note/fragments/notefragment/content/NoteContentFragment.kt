@@ -8,7 +8,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.fragment.app.Fragment
-import com.furianrt.mydiary.LOG_TAG
 import com.furianrt.mydiary.R
 import com.furianrt.mydiary.data.model.MyNote
 import com.furianrt.mydiary.data.model.MyNoteAppearance
@@ -43,7 +42,7 @@ class NoteContentFragment : Fragment(), NoteContentFragmentContract.View {
     }
 
     fun showNote(note: MyNote) {
-        Log.e(LOG_TAG, "NoteContentFragment.showNote()")
+        Log.e(TAG, "showNote")
         mNote = note
         view?.apply {
             val title = mNote.title
@@ -142,6 +141,6 @@ class NoteContentFragment : Fragment(), NoteContentFragmentContract.View {
     }
 
     companion object {
-        val TAG = NoteContentFragment::class.toString()
+        const val TAG = "NoteContentFragment"
     }
 }

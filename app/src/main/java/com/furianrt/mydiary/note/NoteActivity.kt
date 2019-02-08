@@ -6,7 +6,6 @@ import android.view.Menu
 import android.view.WindowManager
 import androidx.viewpager.widget.ViewPager
 import com.furianrt.mydiary.BaseActivity
-import com.furianrt.mydiary.LOG_TAG
 import com.furianrt.mydiary.R
 import com.furianrt.mydiary.data.model.MyNoteWithProp
 import com.furianrt.mydiary.note.fragments.notefragment.edit.NoteEditFragment
@@ -18,10 +17,11 @@ class NoteActivity : BaseActivity(), NoteActivityContract.View,
         NoteEditFragment.OnNoteFragmentInteractionListener {
 
     companion object {
+        private const val TAG = "NoteActivity"
+        private const val BUNDLE_NOTE_ID = "noteId"
+
         const val EXTRA_MODE = "mode"
         const val EXTRA_CLICKED_NOTE_POSITION = "notePosition"
-
-        private const val BUNDLE_NOTE_ID = "noteId"
 
         enum class Mode { ADD, READ }
     }
@@ -104,7 +104,7 @@ class NoteActivity : BaseActivity(), NoteActivityContract.View,
 
     override fun showNotes(notes: List<MyNoteWithProp>) {
         mPagerAdapter.list = notes
-        Log.e(LOG_TAG, "note_list_notify")
+        Log.e(TAG, "note_list_notify")
         mPagerAdapter.notifyDataSetChanged()
         pager_note.setCurrentItem(mPagerPosition, false)
     }

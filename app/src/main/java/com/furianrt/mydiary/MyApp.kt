@@ -10,8 +10,6 @@ import com.yanzhenjie.album.AlbumConfig
 import net.danlew.android.joda.JodaTimeAndroid
 import java.util.*
 
-const val LOG_TAG = "myTag"
-
 class MyApp : Application() {
 
     val component: AppComponent = DaggerAppComponent.builder()

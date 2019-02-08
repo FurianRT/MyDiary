@@ -1,7 +1,6 @@
 package com.furianrt.mydiary.settings.note
 
 import android.util.Log
-import com.furianrt.mydiary.LOG_TAG
 import com.furianrt.mydiary.data.DataManager
 import com.furianrt.mydiary.data.model.MyNoteAppearance
 
@@ -9,7 +8,9 @@ class NoteSettingsPresenter(
         private val mDataManager: DataManager
 ) : NoteSettingsContract.Presenter() {
 
-    private var mView: NoteSettingsContract.View? = null
+    companion object {
+        private const val TAG = "NoteSettingsPresenter"
+    }
 
     private lateinit var mAppearance: MyNoteAppearance
 
@@ -24,8 +25,8 @@ class NoteSettingsPresenter(
                             mAppearance.background ?: mDataManager.getNoteBackgroundColor()
                     mAppearance.textBackground =
                             mAppearance.textBackground ?: mDataManager.getNoteTextBackgroundColor()
-                    Log.e(LOG_TAG, "getNoteAppearance")
-                    mView?.updateSettings(mAppearance)
+                    Log.e(TAG, "getNoteAppearance")
+                    view?.updateSettings(mAppearance)
                 })
     }
 
@@ -51,14 +52,5 @@ class NoteSettingsPresenter(
         mAppearance.textBackground = color
         addDisposable(mDataManager.updateAppearance(mAppearance)
                 .subscribe())
-    }
-
-    override fun attachView(view: NoteSettingsContract.View) {
-        mView = view
-    }
-
-    override fun detachView() {
-        super.detachView()
-        mView = null
     }
 }

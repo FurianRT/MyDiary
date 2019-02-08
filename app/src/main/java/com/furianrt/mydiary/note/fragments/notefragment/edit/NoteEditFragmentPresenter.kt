@@ -6,8 +6,6 @@ import com.furianrt.mydiary.data.model.MyNote
 class NoteEditFragmentPresenter(private val mDataManager: DataManager)
     : NoteEditFragmentContract.Presenter() {
 
-    private var mView: NoteEditFragmentContract.View? = null
-
     override fun onStop(note: MyNote, noteTitle: String, noteContent: String) {
         //if (!note.title.isEmpty() || !note.content.isEmpty()) {
         if (note.title != noteTitle || note.content != noteContent) {
@@ -26,15 +24,6 @@ class NoteEditFragmentPresenter(private val mDataManager: DataManager)
     }
 
     override fun onDoneButtonClick() {
-        mView?.closeView()
-    }
-
-    override fun attachView(view: NoteEditFragmentContract.View) {
-        mView = view
-    }
-
-    override fun detachView() {
-        super.detachView()
-        mView = null
+        view?.closeView()
     }
 }

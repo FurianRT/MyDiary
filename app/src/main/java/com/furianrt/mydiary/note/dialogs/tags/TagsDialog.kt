@@ -30,7 +30,7 @@ class TagsDialog : androidx.fragment.app.DialogFragment(), TagsDialogListAdapter
 
     companion object {
 
-        val TAG = TagsDialog::class.toString()
+        const val TAG = "TagsDialog"
         private const val ARG_TAGS = "tags"
         private const val BUNDLE_RECYCLER_VIEW_STATE = "recyclerState"
 
