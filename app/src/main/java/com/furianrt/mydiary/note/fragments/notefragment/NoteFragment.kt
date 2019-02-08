@@ -602,7 +602,7 @@ class NoteFragment : Fragment(), NoteFragmentContract.View, OnMapReadyCallback,
         mPagerAdapter.notifyDataSetChanged()
         view?.pager_note_image?.setCurrentItem(mImagePagerPosition, false)
         if (childFragmentManager.findFragmentByTag(NoteEditFragment::class.toString()) == null) {
-            enableActionBarExpanding(true, true)
+            enableActionBarExpanding(expanded = true, animate = true)
         }
     }
 

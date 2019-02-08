@@ -160,7 +160,7 @@ class NoteEditFragment : Fragment(), NoteEditFragmentContract.View {
         val noteContent = view?.edit_note_content?.text.toString()
         val noteFragment = (parentFragment as? NoteFragment)
         noteFragment?.onNoteEditFinished(noteTitle, noteContent)
-        noteFragment?.enableActionBarExpanding(false, false)
+        noteFragment?.enableActionBarExpanding(expanded = false, animate = false)
         mListener?.onNoteFragmentEditModeDisabled()
         mPresenter.detachView()
     }

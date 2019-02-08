@@ -115,7 +115,7 @@ class MainActivityPresenter(private val mDataManager: DataManager) : MainActivit
         for (date in notes.keys) {
             val header = MainHeaderItem(date)
             list.add(header)
-            for (note in notes[date]!!) {
+            for (note in notes.getValue(date)) {
                 list.add(MainContentItem(note))
             }
         }
