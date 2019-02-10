@@ -7,10 +7,6 @@ class NoteContentFragmentPresenter(private val mDataManager: DataManager)
 
     private var mTouchPosition = 0
 
-    override fun onEditButtonClick() {
-        view?.showNoteEditViewForTitleEnd()
-    }
-
     override fun onTouchPositionChange(touchPosition: Int) {
         mTouchPosition = touchPosition
     }

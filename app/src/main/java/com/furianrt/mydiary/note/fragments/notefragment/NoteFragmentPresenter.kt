@@ -309,4 +309,8 @@ class NoteFragmentPresenter(private val mDataManager: DataManager) : NoteFragmen
         addDisposable(mDataManager.updateNote(mNote)
                 .subscribe())
     }
+
+    override fun onEditButtonClick() {
+        view?.shoNoteEditView()
+    }
 }

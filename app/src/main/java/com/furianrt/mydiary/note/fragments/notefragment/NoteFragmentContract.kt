@@ -41,6 +41,7 @@ interface NoteFragmentContract {
         fun showDatePicker(calendar: Calendar)
         fun showTimePicker(hourOfDay: Int, minute: Int, is24HourMode: Boolean)
         fun showDateAndTime(time: Long, is24TimeFormat: Boolean)
+        fun shoNoteEditView()
     }
 
     abstract class Presenter : BasePresenter<View>() {
@@ -71,5 +72,6 @@ interface NoteFragmentContract {
         abstract fun onTimeFieldClick()
         abstract fun onDateSelected(year: Int, monthOfYear: Int, dayOfMonth: Int)
         abstract fun onTimeSelected(hourOfDay: Int, minute: Int)
+        abstract fun onEditButtonClick()
     }
 }

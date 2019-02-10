@@ -25,7 +25,6 @@ class NoteContentFragment : Fragment(), NoteContentFragmentContract.View {
     override fun onCreate(savedInstanceState: Bundle?) {
         getPresenterComponent(context!!).inject(this)
         super.onCreate(savedInstanceState)
-        setHasOptionsMenu(true)
         arguments?.let {
             mMode = (it.getSerializable(ARG_MODE) as? NoteActivity.Companion.Mode?)
                     ?: throw IllegalArgumentException()
@@ -46,27 +45,16 @@ class NoteContentFragment : Fragment(), NoteContentFragmentContract.View {
             }
             return@OnTouchListener false
         }
-
         view.text_note_title.setOnTouchListener(onTouchListener)
-        view.text_note_title.setOnClickListener {
-            (activity as NoteActivity).savePagerPosition()
-            mPresenter.onTitleClick()
-
-        }
-
+        view.text_note_title.setOnClickListener { mPresenter.onTitleClick() }
         view.text_note_content.setOnTouchListener(onTouchListener)
-        view.text_note_content.setOnClickListener {
-            (activity as NoteActivity).savePagerPosition()
-            mPresenter.onContentClick()
-        }
+        view.text_note_content.setOnClickListener { mPresenter.onContentClick() }
 
         return view
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        Log.e(TAG, (mMode == NoteActivity.Companion.Mode.ADD).toString())
-
         if (mMode == NoteActivity.Companion.Mode.ADD && savedInstanceState == null) {
             showNoteEditViewForTitleEnd()
         }
@@ -94,21 +82,10 @@ class NoteContentFragment : Fragment(), NoteContentFragmentContract.View {
             appearance.textSize?.let { text_note_content.textSize = it.toFloat() }
             appearance.textBackground?.let { layout_note_content_root.setBackgroundColor(it) }
         }
-
         fragmentManager?.let { manager ->
             manager.findFragmentByTag(NoteEditFragment.TAG)?.let {
                 (it as NoteEditFragment).setAppearance(appearance)
             }
-        }
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-        return when (item?.itemId) {
-            R.id.menu_edit -> {
-                mPresenter.onEditButtonClick()
-                true
-            }
-            else -> super.onOptionsItemSelected(item)
         }
     }
 
@@ -137,25 +114,24 @@ class NoteContentFragment : Fragment(), NoteContentFragmentContract.View {
     }
 
     private fun showNoteEditView(clickedView: NoteEditFragment.ClickedView, touchPosition: Int) {
-        activity?.supportFragmentManager?.inTransaction {
-            this.setPrimaryNavigationFragment(parentFragment)
-        }
-
-        fragmentManager?.let { manager ->
-            var editFragment = manager.findFragmentByTag(NoteEditFragment.TAG) as? NoteEditFragment
-            if (editFragment == null) {
-                editFragment = NoteEditFragment.newInstance(
-                        view!!.text_note_title.text.toString(),
-                        view!!.text_note_content.text.toString(),
-                        clickedView,
-                        touchPosition,
-                        mAppearance
-                )
-                manager.inTransaction {
-                    add(R.id.container_note_edit, editFragment, NoteEditFragment.TAG)
-                    addToBackStack(null)
-                }
+        (activity as NoteActivity).savePagerPosition()
+        if (fragmentManager?.findFragmentByTag(NoteEditFragment.TAG) == null) {
+            activity?.supportFragmentManager?.inTransaction {
+                this.setPrimaryNavigationFragment(parentFragment)
             }
+            fragmentManager?.let { manager ->
+                    val editFragment = NoteEditFragment.newInstance(
+                            view!!.text_note_title.text.toString(),
+                            view!!.text_note_content.text.toString(),
+                            clickedView,
+                            touchPosition,
+                            mAppearance
+                    )
+                    manager.inTransaction {
+                        add(R.id.container_note_edit, editFragment, NoteEditFragment.TAG)
+                        addToBackStack(null)
+                    }
+                }
         }
     }
 

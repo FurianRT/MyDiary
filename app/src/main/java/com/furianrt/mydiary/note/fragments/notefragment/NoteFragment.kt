@@ -180,7 +180,17 @@ class NoteFragment : Fragment(), NoteFragmentContract.View, OnMapReadyCallback,
                 mPresenter.onTimeFieldClick()
                 true
             }
+            R.id.menu_edit -> {
+                mPresenter.onEditButtonClick()
+                true
+            }
             else -> super.onOptionsItemSelected(item)
+        }
+    }
+
+    override fun shoNoteEditView() {
+        childFragmentManager.findFragmentByTag(NoteContentFragment.TAG)?.let {
+            (it as NoteContentFragment).showNoteEditViewForTitleEnd()
         }
     }
 

@@ -12,8 +12,6 @@ interface NoteContentFragmentContract {
     }
 
     abstract class Presenter : BasePresenter<View>() {
-
-        abstract fun onEditButtonClick()
         abstract fun onTouchPositionChange(touchPosition: Int)
         abstract fun onTitleClick()
         abstract fun onContentClick()
