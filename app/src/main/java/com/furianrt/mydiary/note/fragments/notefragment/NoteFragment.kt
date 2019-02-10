@@ -78,7 +78,6 @@ class NoteFragment : Fragment(), NoteFragmentContract.View, OnMapReadyCallback,
     private lateinit var mPagerAdapter: NoteFragmentPagerAdapter
     private lateinit var mMode: NoteActivity.Companion.Mode
     private var mImagePagerPosition = 0
-    private var mIsRecreated = false
     private lateinit var mNoteId: String
 
     private val mLocationCallback = object : LocationCallback() {
@@ -98,7 +97,6 @@ class NoteFragment : Fragment(), NoteFragmentContract.View, OnMapReadyCallback,
         mNoteId = arguments?.getString(ARG_NOTE_ID) ?: throw IllegalArgumentException()
         savedInstanceState?.let {
             mImagePagerPosition = it.getInt(BUNDLE_IMAGE_PAGER_POSITION, 0)
-            mIsRecreated = true
         }
 
         mMode = arguments?.getSerializable(ARG_MODE) as NoteActivity.Companion.Mode
@@ -143,14 +141,10 @@ class NoteFragment : Fragment(), NoteFragmentContract.View, OnMapReadyCallback,
         mPresenter.loadImages(mNoteId)
     }
 
-    override fun showNoteText(note: MyNote) {
+    override fun showNoteText(title: String, content: String) {
         val noteContentFragment =
                 childFragmentManager.findFragmentByTag(NoteContentFragment.TAG) as? NoteContentFragment
-        noteContentFragment?.showNote(note)
-
-        if (mMode == NoteActivity.Companion.Mode.ADD && !mIsRecreated) {
-            showNoteEditView(MyNote("", "", ""))
-        }
+        noteContentFragment?.showNoteText(title, content)
     }
 
     override fun showDateAndTime(time: Long, is24TimeFormat: Boolean) {
@@ -165,10 +159,6 @@ class NoteFragment : Fragment(), NoteFragmentContract.View, OnMapReadyCallback,
             R.id.menu_image -> {
                 removeEditFragment()
                 mPresenter.onAddImageButtonClick()
-                true
-            }
-            R.id.menu_edit -> {
-                mPresenter.onEditButtonClick()
                 true
             }
             R.id.menu_delete -> {
@@ -211,14 +201,14 @@ class NoteFragment : Fragment(), NoteFragmentContract.View, OnMapReadyCallback,
             appearance.textColor?.let { text_temp.setTextColor(it) }
             appearance.textColor?.let { text_category.setTextColor(it) }
         }
-        val noteContentFragment =
-                childFragmentManager.findFragmentByTag(NoteContentFragment.TAG) as? NoteContentFragment
-        noteContentFragment?.setAppearance(appearance)
+        childFragmentManager.findFragmentByTag(NoteContentFragment.TAG)?.let {
+            (it as NoteContentFragment).setAppearance(appearance)
+        }
     }
 
     private fun removeEditFragment() {
-        if (childFragmentManager.findFragmentByTag(NoteEditFragment.TAG) != null) {
-            childFragmentManager.popBackStack()
+        childFragmentManager.findFragmentByTag(NoteContentFragment.TAG)?.let {
+            (it as NoteContentFragment).removeEditFragment()
         }
     }
 
@@ -456,19 +446,7 @@ class NoteFragment : Fragment(), NoteFragmentContract.View, OnMapReadyCallback,
     private fun addFragments() {
         if (childFragmentManager.findFragmentByTag(NoteContentFragment.TAG) == null) {
             childFragmentManager.inTransaction {
-                add(R.id.container_note_edit, NoteContentFragment(), NoteContentFragment.TAG)
-            }
-        }
-    }
-
-    override fun showNoteEditView(note: MyNote) {
-        Log.e(TAG, "showNoteEditView 1")
-        if (childFragmentManager.findFragmentByTag(NoteEditFragment.TAG) == null) {
-            Log.e(TAG, "showNoteEditView 1.1")
-            childFragmentManager.findFragmentByTag(NoteContentFragment.TAG)?.let {
-                Log.e(TAG, "showNoteEditView 2")
-                (it as NoteContentFragment)
-                        .showEditFragment(NoteEditFragment.ClickedView.TITLE, note.title.length)
+                add(R.id.container_note_edit, NoteContentFragment.newInstance(mMode), NoteContentFragment.TAG)
             }
         }
     }
@@ -604,7 +582,7 @@ class NoteFragment : Fragment(), NoteFragmentContract.View, OnMapReadyCallback,
         mPagerAdapter.images = images
         mPagerAdapter.notifyDataSetChanged()
         view?.pager_note_image?.setCurrentItem(mImagePagerPosition, false)
-        if (childFragmentManager.findFragmentByTag(NoteEditFragment::class.toString()) == null) {
+        if (childFragmentManager.findFragmentByTag(NoteEditFragment.TAG) == null) {
             enableActionBarExpanding(expanded = true, animate = true)
         }
     }

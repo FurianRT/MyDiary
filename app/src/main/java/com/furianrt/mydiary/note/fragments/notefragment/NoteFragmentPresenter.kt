@@ -84,7 +84,7 @@ class NoteFragmentPresenter(private val mDataManager: DataManager) : NoteFragmen
         addDisposable(mDataManager.getNote(noteId)
                 .subscribe { note ->
                     mNote = note
-                    view?.showNoteText(note)
+                    view?.showNoteText(note.title, note.content)
                     val is24TimeFormat = mDataManager.getTimeFormat() == DataManager.TIME_FORMAT_24
                     view?.showDateAndTime(note.time, is24TimeFormat)
                     showNoteMood(note.moodId)
@@ -226,10 +226,6 @@ class NoteFragmentPresenter(private val mDataManager: DataManager) : NoteFragmen
                 .subscribe())
     }
 
-    override fun onEditButtonClick() {
-        view?.showNoteEditView(mNote)
-    }
-
     override fun onDeleteButtonClick() {
         addDisposable(mDataManager.getImagesForNote(mNote.id)
                 .first(emptyList())
@@ -273,6 +269,7 @@ class NoteFragmentPresenter(private val mDataManager: DataManager) : NoteFragmen
     }
 
     override fun updateNoteText(noteId: String, noteTitle: String, noteContent: String) {
+        //todo добавить условие
         addDisposable(mDataManager.updateNoteText(noteId, noteTitle, noteContent)
                 .subscribe())
     }

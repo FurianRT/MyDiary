@@ -131,8 +131,8 @@
     <string name="note_text_background_summary">Цвет фона на котором пишется текст записи</string>
     <string name="note_text_background_title">Цвет поверхности с текстом</string>
     <string name="note_font_size_title">Размер шрифта</string>
-    <string name="note_font_color_title">Цвет шрифта</string>
-    <string name="note_font_color_summary">Цвет шрифта и некоторых других надписей</string>
+    <string name="note_font_color_title">Цвет текста</string>
+    <string name="note_font_color_summary">Цвет текста и некоторых других надписей</string>
     <string name="primary_color_settings_summary">В основном определяет цвет тулбара</string>
     <string name="primary_color_settings_title">Первичный цвет</string>
     <string name="accent_color_settings_title">Вторичный цвет</string>
@@ -143,8 +143,8 @@
     <string name="all_notes_text_background_settings_summary">Цвет полотна, на котором пишется текст заметки</string>
     <string name="all_notes_text_background_settings_title">Фон текста заметки</string>
     <string name="all_notes_text_size_settings_title">Размер шрифта</string>
-    <string name="all_notes_text_color_settings_summary">Указать цвет шрифта</string>
-    <string name="all_notes_text_color_settings_title">Цвет шрифта</string>
+    <string name="all_notes_text_color_settings_summary">Указать цвет текста</string>
+    <string name="all_notes_text_color_settings_title">Цвет текста</string>
     <string name="settings_title_notes">Заметки</string>
     <string name="settings_title_protection">Защита</string>
     <string name="weather_activation_settings_off">Включить проказ погоды</string>

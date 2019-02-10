@@ -5,9 +5,9 @@ import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.*
+import androidx.core.graphics.ColorUtils
 import androidx.fragment.app.Fragment
 import com.furianrt.mydiary.R
-import com.furianrt.mydiary.data.model.MyNote
 import com.furianrt.mydiary.data.model.MyNoteAppearance
 import com.furianrt.mydiary.note.fragments.notefragment.NoteFragment
 import com.furianrt.mydiary.note.fragments.notefragment.content.NoteContentFragment
@@ -17,10 +17,11 @@ import javax.inject.Inject
 
 class NoteEditFragment : Fragment(), NoteEditFragmentContract.View {
 
-    private lateinit var mNote: MyNote
-    private lateinit var mAppearance: MyNoteAppearance
     private var mClickedView: ClickedView? = null
     private var mClickPosition = 0
+    private var mNoteTitle = ""
+    private var mNoteContent = ""
+    private var mAppearance: MyNoteAppearance? = null
     private var mListener: OnNoteFragmentInteractionListener? = null
     private val mTextChangeListener = object : TextWatcher {
         override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
@@ -43,10 +44,11 @@ class NoteEditFragment : Fragment(), NoteEditFragmentContract.View {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
         arguments?.apply {
-            mNote = getParcelable(ARG_NOTE)!!
-            mAppearance = getParcelable(ARG_APPEARANCE)!!
-            mClickedView = getSerializable(ARG_CLICKED_VIEW) as? ClickedView
+            mNoteTitle = getString(ARG_NOTE_TITLE, "")
+            mNoteContent = getString(ARG_NOTE_CONTENT, "")
+            mClickedView = getSerializable(ARG_CLICKED_VIEW) as? ClickedView?
             mClickPosition = getInt(ARG_POSITION)
+            mAppearance = getParcelable(ARG_APPEARANCE) as? MyNoteAppearance?
         }
         if (savedInstanceState != null) {
             mClickedView = null
@@ -61,25 +63,19 @@ class NoteEditFragment : Fragment(), NoteEditFragmentContract.View {
             (it as NoteContentFragment).setVisibility(View.INVISIBLE)
         }
 
-        view.apply {
-            edit_note_title.setText(mNote.title)
-            edit_note_title.addTextChangedListener(mTextChangeListener)
-            mAppearance.textColor?.let { edit_note_title.setTextColor(it) }
-            mAppearance.textSize?.let { edit_note_title.textSize = it.toFloat() }
-            edit_note_content.setText(mNote.content)
-            edit_note_content.addTextChangedListener(mTextChangeListener)
-            mAppearance.textColor?.let { edit_note_content.setTextColor(it) }
-            mAppearance.textSize?.let { edit_note_content.textSize = it.toFloat() }
-        }
+        view.edit_note_title.setText(mNoteTitle)
+        view.edit_note_content.setText(mNoteContent)
+        view.edit_note_title.addTextChangedListener(mTextChangeListener)
+        view.edit_note_content.addTextChangedListener(mTextChangeListener)
 
         return view
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        mAppearance?.let { setAppearance(it) }
         view.apply {
             when (mClickedView) {
-                null -> activity?.currentFocus?.postDelayed({ edit_note_title.showKeyboard() }, 400)
                 ClickedView.TITLE -> {
                     edit_note_title.requestFocus()
                     edit_note_title.setSelection(mClickPosition)
@@ -149,9 +145,7 @@ class NoteEditFragment : Fragment(), NoteEditFragmentContract.View {
     override fun onResume() {
         super.onResume()
         mListener?.onNoteFragmentEditModeEnabled()
-        if (mNote.id.isNotEmpty()) {
-            (parentFragment as? NoteFragment)?.disableActionBarExpanding(true)
-        }
+        (parentFragment as? NoteFragment)?.disableActionBarExpanding(true)
     }
 
     override fun onStop() {
@@ -163,6 +157,19 @@ class NoteEditFragment : Fragment(), NoteEditFragmentContract.View {
         noteFragment?.enableActionBarExpanding(expanded = false, animate = false)
         mListener?.onNoteFragmentEditModeDisabled()
         mPresenter.detachView()
+    }
+
+    fun setAppearance(appearance: MyNoteAppearance) {
+        appearance.textColor?.let {
+            view?.edit_note_title?.setTextColor(it)
+            view?.edit_note_content?.setTextColor(it)
+            view?.edit_note_title?.setHintTextColor(ColorUtils.setAlphaComponent(it, 50))
+            view?.edit_note_content?.setHintTextColor(ColorUtils.setAlphaComponent(it, 50))
+        }
+        appearance.textSize?.let {
+            view?.edit_note_title?.textSize = it.toFloat()
+            view?.edit_note_content?.textSize = it.toFloat()
+        }
     }
 
     interface OnNoteFragmentInteractionListener {
@@ -178,20 +185,21 @@ class NoteEditFragment : Fragment(), NoteEditFragmentContract.View {
 
         const val TAG = "NoteEditFragment"
         private const val ARG_CLICKED_VIEW = "clickedView"
-        private const val ARG_NOTE = "note"
-        private const val ARG_APPEARANCE = "appearance"
         private const val ARG_POSITION = "position"
+        private const val ARG_NOTE_TITLE = "noteTitle"
+        private const val ARG_NOTE_CONTENT = "noteContent"
+        private const val ARG_APPEARANCE = "noteAppearance"
 
         @JvmStatic
-        fun newInstance(note: MyNote, appearance: MyNoteAppearance, clickedView: ClickedView?,
-                        clickPosition: Int) =
-
+        fun newInstance(noteTitle: String, noteContent: String, clickedView: ClickedView?,
+                        clickPosition: Int, appearance: MyNoteAppearance?) =
                 NoteEditFragment().apply {
                     arguments = Bundle().apply {
-                        putParcelable(ARG_NOTE, note)
-                        putParcelable(ARG_APPEARANCE, appearance)
                         putSerializable(ARG_CLICKED_VIEW, clickedView)
                         putInt(ARG_POSITION, clickPosition)
+                        putString(ARG_NOTE_TITLE, noteTitle)
+                        putString(ARG_NOTE_CONTENT, noteContent)
+                        appearance?.let { putParcelable(ARG_APPEARANCE, it) }
                     }
                 }
     }
