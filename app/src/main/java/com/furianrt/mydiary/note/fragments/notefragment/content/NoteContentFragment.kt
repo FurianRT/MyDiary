@@ -160,8 +160,9 @@ class NoteContentFragment : Fragment(), NoteContentFragmentContract.View {
     }
 
     fun removeEditFragment() {
-        childFragmentManager.findFragmentByTag(NoteEditFragment.TAG)?.let {
-            childFragmentManager.popBackStack()
+        fragmentManager?.findFragmentByTag(NoteEditFragment.TAG)?.let {
+            Log.e(TAG, "removeEditFragment")
+            fragmentManager?.popBackStack()
         }
     }
 
