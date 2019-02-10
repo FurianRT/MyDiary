@@ -1,6 +1,10 @@
 package com.furianrt.mydiary.di.presenter
 
 import android.content.Context
+import com.furianrt.mydiary.authentication.login.LoginContract
+import com.furianrt.mydiary.authentication.login.LoginPresenter
+import com.furianrt.mydiary.authentication.registration.RegistrationContract
+import com.furianrt.mydiary.authentication.registration.RegistrationPresenter
 import com.furianrt.mydiary.data.DataManager
 import com.furianrt.mydiary.gallery.GalleryActivityContract
 import com.furianrt.mydiary.gallery.GalleryActivityPresenter
@@ -126,4 +130,14 @@ class PresenterModule(private val context: Context) {
     @PresenterScope
     fun provideProfilePresenter(dataManager: DataManager): ProfileContract.Presenter =
             ProfilePresenter(dataManager)
+
+    @Provides
+    @PresenterScope
+    fun provideRegistrationPresenter(dataManager: DataManager): RegistrationContract.Presenter =
+            RegistrationPresenter(dataManager)
+
+    @Provides
+    @PresenterScope
+    fun provideLoginPresenter(dataManager: DataManager): LoginContract.Presenter =
+            LoginPresenter(dataManager)
 }

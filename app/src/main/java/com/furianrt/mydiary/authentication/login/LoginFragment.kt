@@ -1,29 +1,31 @@
-package com.furianrt.mydiary.profile
+package com.furianrt.mydiary.authentication.login
 
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+
 import com.furianrt.mydiary.R
 import javax.inject.Inject
 
-class ProfileFragment : Fragment(), ProfileContract.View {
+class LoginFragment : Fragment(), LoginContract.View {
 
     companion object {
-        const val TAG = "ProfileFragment"
+        const val TAG = "LoginFragment"
     }
 
     @Inject
-    lateinit var mPresenter: ProfileContract.Presenter
+    lateinit var mPresenter: LoginContract.Presenter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         getPresenterComponent(context!!).inject(this)
         super.onCreate(savedInstanceState)
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val view =  inflater.inflate(R.layout.fragment_profile, container, false)
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
+                              savedInstanceState: Bundle?): View? {
+        val view =  inflater.inflate(R.layout.fragment_registration, container, false)
 
         return view
     }

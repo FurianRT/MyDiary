@@ -182,4 +182,9 @@ class MainActivityPresenter(private val mDataManager: DataManager) : MainActivit
 
     override fun is24TimeFormat(): Boolean =
             mDataManager.getTimeFormat() == DataManager.TIME_FORMAT_24
+
+    override fun onButtonSyncClick() {
+        //todo проверка на наличие премиума
+        view?.showPremiumView()
+    }
 }

@@ -1,7 +1,7 @@
 package com.furianrt.mydiary.note.dialogs.moods
 
 import android.annotation.SuppressLint
-import android.app.AlertDialog
+import androidx.appcompat.app.AlertDialog
 import android.app.Dialog
 import android.content.DialogInterface
 import android.os.Bundle
@@ -45,7 +45,7 @@ class MoodsDialog : DialogFragment(), MoodsDialogContract.View,
 
         mPresenter.onViewCreate()
 
-        return AlertDialog.Builder(context)
+        return AlertDialog.Builder(context!!)
                 .setView(view)
                 .setPositiveButton(getString(R.string.close), null)
                 .setNegativeButton(getString(R.string.no_mood)) { _, _ ->

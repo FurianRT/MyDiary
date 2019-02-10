@@ -115,6 +115,7 @@ class NoteContentFragment : Fragment(), NoteContentFragmentContract.View {
     }
 
     fun showEditFragment(clickedView: NoteEditFragment.ClickedView, touchPosition: Int) {
+        Log.e(TAG, "showNoteEditView 3")
         activity?.supportFragmentManager?.inTransaction {
             this.setPrimaryNavigationFragment(parentFragment)
         }
@@ -122,6 +123,7 @@ class NoteContentFragment : Fragment(), NoteContentFragmentContract.View {
         fragmentManager?.let {
             if (it.findFragmentByTag(NoteEditFragment.TAG) == null) {
                 it.inTransaction {
+                    Log.e(TAG, "showNoteEditView 4")
                     add(R.id.container_note_edit,
                             NoteEditFragment.newInstance(mNote, mAppearance, clickedView, touchPosition),
                             NoteEditFragment.TAG)

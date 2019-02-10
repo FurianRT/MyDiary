@@ -11,6 +11,7 @@ import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.coordinatorlayout.widget.CoordinatorLayout
@@ -19,6 +20,8 @@ import androidx.core.view.GravityCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.furianrt.mydiary.BaseActivity
 import com.furianrt.mydiary.R
+import com.furianrt.mydiary.authentication.login.LoginFragment
+import com.furianrt.mydiary.authentication.registration.RegistrationFragment
 import com.furianrt.mydiary.data.model.MyHeaderImage
 import com.furianrt.mydiary.data.model.MyNoteWithProp
 import com.furianrt.mydiary.general.AppBarLayoutBehavior
@@ -27,15 +30,22 @@ import com.furianrt.mydiary.general.HeaderItemDecoration
 import com.furianrt.mydiary.main.listadapter.MainListAdapter
 import com.furianrt.mydiary.main.listadapter.MainListItem
 import com.furianrt.mydiary.note.NoteActivity
+import com.furianrt.mydiary.note.fragments.notefragment.inTransaction
+import com.furianrt.mydiary.premium.PremiumFragment
+import com.furianrt.mydiary.profile.ProfileFragment
 import com.furianrt.mydiary.settings.global.GlobalSettingsActivity
 import com.furianrt.mydiary.utils.getThemePrimaryColor
 import com.furianrt.mydiary.utils.getThemePrimaryDarkColor
+import com.furianrt.mydiary.utils.hideKeyboard
 import com.google.android.material.appbar.AppBarLayout
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.yanzhenjie.album.Album
 import com.yanzhenjie.album.api.widget.Widget
 import jp.wasabeef.recyclerview.animators.LandingAnimator
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.activity_main_toolbar.*
+import kotlinx.android.synthetic.main.bottom_sheet_main.*
+import kotlinx.android.synthetic.main.nav_header_main.view.*
 import pub.devrel.easypermissions.AfterPermissionGranted
 import pub.devrel.easypermissions.EasyPermissions
 import java.util.*
@@ -48,6 +58,8 @@ class MainActivity : BaseActivity(), MainActivityContract.View,
         private const val TAG = "MainActivity"
         private const val BUNDLE_RECYCLER_VIEW_STATE = "recyclerState"
         private const val BUNDLE_SELECTED_LIST_ITEMS = "selectedListItems"
+        private const val BUNDLE_ROOT_LAYOUT_OFFSET = "rootLayoutOffset"
+        private const val BUNDLE_BOTTOM_SHEET_STATE = "bottomSheetState"
         private const val STORAGE_PERMISSIONS_REQUEST_CODE = 1
         private const val ACTIVITY_SETTING_REQUEST_CODE = 2
     }
@@ -57,6 +69,7 @@ class MainActivity : BaseActivity(), MainActivityContract.View,
 
     private lateinit var mAdapter: MainListAdapter
     private var mRecyclerViewState: Parcelable? = null
+    private lateinit var mBottomSheet: BottomSheetBehaviorMain<LinearLayout>
     private var mBackPressCount = 0
     private var mNeedToOpenActionBar = true
 
@@ -65,6 +78,27 @@ class MainActivity : BaseActivity(), MainActivityContract.View,
         getPresenterComponent(this).inject(this)
         setContentView(R.layout.activity_main)
 
+        mBottomSheet = BottomSheetBehaviorMain.from(bottom_sheet_main)
+        mBottomSheet.setBottomSheetCallback(object: BottomSheetBehavior.BottomSheetCallback() {
+            override fun onSlide(bottomSheet: View, slideOffset: Float) {}
+            override fun onStateChanged(bottomSheet: View, newState: Int) {
+                if (newState == BottomSheetBehavior.STATE_COLLAPSED) {
+                    supportFragmentManager.findFragmentByTag(PremiumFragment.TAG)?.let {
+                        supportFragmentManager.inTransaction { remove(it) }
+                    }
+                    supportFragmentManager.findFragmentByTag(RegistrationFragment.TAG)?.let {
+                        supportFragmentManager.inTransaction { remove(it) }
+                    }
+                    supportFragmentManager.findFragmentByTag(LoginFragment.TAG)?.let {
+                        supportFragmentManager.inTransaction { remove(it) }
+                    }
+                    supportFragmentManager.findFragmentByTag(ProfileFragment.TAG)?.let {
+                        supportFragmentManager.inTransaction { remove(it) }
+                    }
+                }
+            }
+        })
+
         savedInstanceState?.let {
             mRecyclerViewState = it.getParcelable(BUNDLE_RECYCLER_VIEW_STATE)
             val selectedListItems = it.getParcelableArrayList<MyNoteWithProp>(BUNDLE_SELECTED_LIST_ITEMS)
@@ -72,6 +106,8 @@ class MainActivity : BaseActivity(), MainActivityContract.View,
             if (selectedListItems != null && selectedListItems.isNotEmpty()) {
                 activateSelection()
             }
+            layout_main_root.translationX = it.getFloat(BUNDLE_ROOT_LAYOUT_OFFSET, 0f)
+            mBottomSheet.state = it.getInt(BUNDLE_BOTTOM_SHEET_STATE, BottomSheetBehavior.STATE_COLLAPSED)
         }
 
         setupUi()
@@ -138,11 +174,16 @@ class MainActivity : BaseActivity(), MainActivityContract.View,
     private fun setupUi() {
         setSupportActionBar(toolbar_main)
         supportActionBar?.setDisplayShowTitleEnabled(false)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_menu)
 
-        val toggle =
-                ActionBarDrawerToggle(this, drawer, toolbar_main, R.string.open, R.string.close)
-        drawer.addDrawerListener(toggle)
-        toggle.syncState()
+        drawer.addDrawerListener(object :
+                ActionBarDrawerToggle(this, drawer, toolbar_main, R.string.open, R.string.close) {
+            override fun onDrawerSlide(drawerView: View, slideOffset: Float) {
+                super.onDrawerSlide(drawerView, slideOffset)
+                layout_main_root.translationX = slideOffset * drawerView.width
+            }
+        })
 
         fab_menu.setOnClickListener(this)
         fab_menu.setMenuButtonColorRippleResId(R.color.colorPrimary)
@@ -151,6 +192,8 @@ class MainActivity : BaseActivity(), MainActivityContract.View,
         fab_folder.setOnClickListener(this)
         fab_place.setOnClickListener(this)
         image_toolbar_main.setOnClickListener(this)
+        nav_view.getHeaderView(0).button_sync.setOnClickListener(this)
+        button_close_sheet.setOnClickListener(this)
 
         mAdapter = MainListAdapter(is24TimeFormat = mPresenter.is24TimeFormat())
 
@@ -167,6 +210,11 @@ class MainActivity : BaseActivity(), MainActivityContract.View,
             R.id.fab_delete -> mPresenter.onMenuDeleteClick()
             R.id.image_toolbar_main -> mPresenter.onButtonSetMainImageClick()
             R.id.fab_menu -> mPresenter.onFabMenuClick()
+            R.id.button_sync -> mPresenter.onButtonSyncClick()
+            R.id.button_close_sheet -> {
+                BottomSheetBehavior.from(bottom_sheet_main).state = BottomSheetBehavior.STATE_COLLAPSED
+                bottom_sheet_main.postDelayed({ currentFocus?.hideKeyboard() }, 400L)
+            }
         }
     }
 
@@ -184,6 +232,10 @@ class MainActivity : BaseActivity(), MainActivityContract.View,
                 mPresenter.onButtonSettingsClick()
                 true
             }
+            android.R.id.home -> {
+                drawer.openDrawer(drawer, true)
+                true
+            }
             else -> super.onOptionsItemSelected(item)
         }
     }
@@ -191,6 +243,15 @@ class MainActivity : BaseActivity(), MainActivityContract.View,
     override fun showSettingsView() {
         val intent = Intent(this, GlobalSettingsActivity::class.java)
         startActivityForResult(intent, ACTIVITY_SETTING_REQUEST_CODE)
+    }
+
+    override fun showPremiumView() {
+        if (supportFragmentManager.findFragmentByTag(PremiumFragment.TAG) == null) {
+            supportFragmentManager.inTransaction {
+                replace(R.id.main_sheet_container, PremiumFragment(), PremiumFragment.TAG)
+            }
+        }
+        mBottomSheet.state = BottomSheetBehavior.STATE_EXPANDED
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -201,6 +262,8 @@ class MainActivity : BaseActivity(), MainActivityContract.View,
     override fun onSaveInstanceState(outState: Bundle?) {
         outState?.putParcelable(BUNDLE_RECYCLER_VIEW_STATE, list_main.layoutManager?.onSaveInstanceState())
         outState?.putParcelableArrayList(BUNDLE_SELECTED_LIST_ITEMS, mPresenter.onSaveInstanceState())
+        outState?.putFloat(BUNDLE_ROOT_LAYOUT_OFFSET, layout_main_root.translationX)
+        outState?.putInt(BUNDLE_BOTTOM_SHEET_STATE, mBottomSheet.state)
         super.onSaveInstanceState(outState)
     }
 
@@ -318,6 +381,8 @@ class MainActivity : BaseActivity(), MainActivityContract.View,
 
     override fun onBackPressed() {
         when {
+            mBottomSheet.state == BottomSheetBehavior.STATE_EXPANDED ->
+                mBottomSheet.state = BottomSheetBehavior.STATE_COLLAPSED
             drawer.isDrawerOpen(GravityCompat.START) ->
                 drawer.closeDrawer(GravityCompat.START, true)
             fab_menu.isOpened -> {

@@ -1,7 +1,7 @@
 package com.furianrt.mydiary.note.dialogs.categories
 
 import android.annotation.SuppressLint
-import android.app.AlertDialog
+import androidx.appcompat.app.AlertDialog
 import android.app.Dialog
 import android.content.DialogInterface
 import android.os.Bundle
@@ -56,7 +56,7 @@ class CategoriesDialog : DialogFragment(), CategoriesDialogContract.View {
 
         mPresenter.attachView(this)
 
-        val dialog = AlertDialog.Builder(context)
+        val dialog = AlertDialog.Builder(context!!)
                 .setView(mView)
                 .setPositiveButton(getString(R.string.close), null)
                 .setNegativeButton(getString(R.string.no_category)) { _, _ ->

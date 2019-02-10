@@ -12,6 +12,11 @@ fun View.showKeyboard() {
     imm.toggleSoftInput(0, InputMethodManager.SHOW_IMPLICIT)
 }
 
+fun View.hideKeyboard() {
+    val imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+    imm.hideSoftInputFromWindow(windowToken, 0)
+}
+
 fun View.animateScale(from: Float, to: Float, duration: Long) {
     ObjectAnimator.ofPropertyValuesHolder(
             this,

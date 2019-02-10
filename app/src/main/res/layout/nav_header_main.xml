@@ -151,15 +151,13 @@
 
         </LinearLayout>
 
-
-
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <Button
+    <android.widget.Button
         android:id="@+id/button_sync"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:background="@color/colorAccent"
+        android:background="?attr/colorAccent"
         android:drawableStart="@drawable/ic_star"
         android:gravity="center"
         android:paddingStart="16dp"

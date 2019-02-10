@@ -1,7 +1,7 @@
 package com.furianrt.mydiary.note.dialogs.tags
 
 import android.annotation.SuppressLint
-import android.app.AlertDialog
+import androidx.appcompat.app.AlertDialog
 import android.app.Dialog
 import android.content.DialogInterface
 import android.graphics.Color
@@ -65,7 +65,7 @@ class TagsDialog : androidx.fragment.app.DialogFragment(), TagsDialogListAdapter
 
         initUiElements(view)
 
-        return AlertDialog.Builder(context)
+        return AlertDialog.Builder(context!!)
                 .setView(view)
                 .setPositiveButton(getString(R.string.save)) { _, _ ->
                     mListener?.onTagsDialogPositiveButtonClick(

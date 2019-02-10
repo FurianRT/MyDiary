@@ -46,7 +46,7 @@ class NoteActivity : BaseActivity(), NoteActivityContract.View,
 
         if (savedInstanceState != null) {
             mPagerPosition = savedInstanceState.getInt(EXTRA_CLICKED_NOTE_POSITION, 0)
-            mNoteId = savedInstanceState.getString(BUNDLE_NOTE_ID, "ooo")
+            mNoteId = savedInstanceState.getString(BUNDLE_NOTE_ID) ?: throw IllegalArgumentException()
         } else {
             mPagerPosition = intent.getIntExtra(EXTRA_CLICKED_NOTE_POSITION, 0)
             mNoteId = generateUniqueId()

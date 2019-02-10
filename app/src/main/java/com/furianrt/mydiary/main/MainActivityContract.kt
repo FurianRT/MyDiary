@@ -22,6 +22,7 @@ interface MainActivityContract {
         fun updateItemSelection(selectedNotes: ArrayList<MyNoteWithProp>)
         fun showEmptyHeaderImage()
         fun showSettingsView()
+        fun showPremiumView()
     }
 
     abstract class Presenter : BasePresenter<View>() {
@@ -38,5 +39,6 @@ interface MainActivityContract {
         abstract fun onMenuAllNotesClick()
         abstract fun onButtonSettingsClick()
         abstract fun is24TimeFormat(): Boolean
+        abstract fun onButtonSyncClick()
     }
 }

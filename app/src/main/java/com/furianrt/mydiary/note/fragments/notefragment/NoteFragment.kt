@@ -147,6 +147,10 @@ class NoteFragment : Fragment(), NoteFragmentContract.View, OnMapReadyCallback,
         val noteContentFragment =
                 childFragmentManager.findFragmentByTag(NoteContentFragment.TAG) as? NoteContentFragment
         noteContentFragment?.showNote(note)
+
+        if (mMode == NoteActivity.Companion.Mode.ADD && !mIsRecreated) {
+            showNoteEditView(MyNote("", "", ""))
+        }
     }
 
     override fun showDateAndTime(time: Long, is24TimeFormat: Boolean) {
@@ -454,16 +458,15 @@ class NoteFragment : Fragment(), NoteFragmentContract.View, OnMapReadyCallback,
             childFragmentManager.inTransaction {
                 add(R.id.container_note_edit, NoteContentFragment(), NoteContentFragment.TAG)
             }
-
-            if (mMode == NoteActivity.Companion.Mode.ADD && !mIsRecreated) {
-                showNoteEditView(MyNote("", "", ""))
-            }
         }
     }
 
     override fun showNoteEditView(note: MyNote) {
+        Log.e(TAG, "showNoteEditView 1")
         if (childFragmentManager.findFragmentByTag(NoteEditFragment.TAG) == null) {
+            Log.e(TAG, "showNoteEditView 1.1")
             childFragmentManager.findFragmentByTag(NoteContentFragment.TAG)?.let {
+                Log.e(TAG, "showNoteEditView 2")
                 (it as NoteContentFragment)
                         .showEditFragment(NoteEditFragment.ClickedView.TITLE, note.title.length)
             }
