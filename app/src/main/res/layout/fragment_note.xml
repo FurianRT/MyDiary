@@ -18,7 +18,7 @@
         app:layout_anchor="@id/app_bar_layout"
         app:layout_anchorGravity="bottom|end" />
 
-    <androidx.cardview.widget.CardView
+    <com.google.android.material.card.MaterialCardView
         android:id="@+id/layout_category_color"
         android:layout_width="match_parent"
         android:layout_height="5dp"
@@ -94,7 +94,7 @@
                 tools:ignore="ContentDescription"
                 tools:src="@color/grey" />
 
-            <androidx.cardview.widget.CardView
+            <com.google.android.material.card.MaterialCardView
                 android:id="@+id/card_note_edit"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -178,7 +178,7 @@
                         </LinearLayout>
                     </LinearLayout>
                 </LinearLayout>
-            </androidx.cardview.widget.CardView>
+            </com.google.android.material.card.MaterialCardView>
 
             <com.google.android.flexbox.FlexboxLayout
                 android:id="@+id/layout_tags"

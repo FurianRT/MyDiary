@@ -46,6 +46,7 @@ import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.material.card.MaterialCardView
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog
 import com.wdullaer.materialdatetimepicker.time.TimePickerDialog
 import com.yanzhenjie.album.Album
@@ -300,7 +301,7 @@ class NoteFragment : Fragment(), NoteFragmentContract.View, OnMapReadyCallback,
     }
 
     private fun wrapTextIntoCardView(text: String) =
-            CardView(context!!).apply {
+            MaterialCardView(context!!).apply {
                 elevation = 5f
                 radius = 25f
                 val params = FrameLayout.LayoutParams(

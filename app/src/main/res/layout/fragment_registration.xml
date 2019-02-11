@@ -27,9 +27,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:hint="Email"
-                android:textSize="14sp"
                 android:imeOptions="flagNoExtractUi"
-                android:inputType="textEmailAddress" />
+                android:inputType="textEmailAddress"
+                android:textSize="14sp" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -49,9 +49,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:hint="Пароль"
-                android:textSize="14sp"
                 android:imeOptions="flagNoExtractUi"
-                android:inputType="textPassword" />
+                android:inputType="textPassword"
+                android:textSize="14sp" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -72,9 +72,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:hint="Повторите пароль"
-                android:textSize="14sp"
                 android:imeOptions="flagNoExtractUi"
-                android:inputType="textPassword" />
+                android:inputType="textPassword"
+                android:textSize="14sp" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -89,7 +89,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/layout_edit_password_repeat">
 
-            <Button
+            <com.google.android.material.button.MaterialButton
                 style="@style/Widget.MaterialComponents.Button.TextButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -97,7 +97,7 @@
                 android:text="@string/cancel"
                 android:textSize="14sp" />
 
-            <Button
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/button_sign_up"
                 style="@style/Widget.MaterialComponents.Button"
                 android:layout_width="wrap_content"
