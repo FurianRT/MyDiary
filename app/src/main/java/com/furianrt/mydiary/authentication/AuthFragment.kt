@@ -5,7 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.animation.AnimationUtils
+import android.view.animation.AnticipateOvershootInterpolator
 import android.view.animation.OvershootInterpolator
 import androidx.fragment.app.Fragment
 import com.furianrt.mydiary.R
@@ -14,6 +14,7 @@ import com.furianrt.mydiary.authentication.registration.RegistrationFragment
 import com.furianrt.mydiary.main.MainActivity
 import com.furianrt.mydiary.note.fragments.notefragment.inTransaction
 import com.furianrt.mydiary.utils.KeyboardUtils
+import com.furianrt.mydiary.utils.dpToPx
 import com.furianrt.mydiary.utils.hideKeyboard
 import kotlinx.android.synthetic.main.fragment_auth.view.*
 import javax.inject.Inject
@@ -22,6 +23,10 @@ class AuthFragment : Fragment(), AuthContract.View {
 
     companion object {
         const val TAG = "AuthFragment"
+        private const val ANIMATION_BUTTON_DURATION = 500L
+        private const val ANIMATION_BUTTON_START_DELAY = 400L
+        private const val ANIMATION_BUTTON_TRANSLATION_VALUE_DP = 100f
+        private const val ANIMATION_CONTAINER_DURATION = 600L
     }
 
     @Inject
@@ -34,7 +39,7 @@ class AuthFragment : Fragment(), AuthContract.View {
                     it.card_auth_container
                             .animate()
                             .translationY(-it.card_auth_container.y)
-                            .setDuration(600L)
+                            .setDuration(ANIMATION_CONTAINER_DURATION)
                             .setInterpolator(OvershootInterpolator())
                             .setListener(object : Animator.AnimatorListener {
                                 override fun onAnimationRepeat(animation: Animator?) {}
@@ -51,7 +56,7 @@ class AuthFragment : Fragment(), AuthContract.View {
                 view?.card_auth_container
                         ?.animate()
                         ?.translationY(0f)
-                        ?.setDuration(600L)
+                        ?.setDuration(ANIMATION_CONTAINER_DURATION)
                         ?.setInterpolator(OvershootInterpolator())
                         ?.start()
             }
@@ -92,14 +97,11 @@ class AuthFragment : Fragment(), AuthContract.View {
                 addToBackStack(null)
             }
         }
-        view?.card_create_account?.startAnimation(
-                AnimationUtils
-                        .loadAnimation(context, R.anim.to_bottom)
-                        .apply {
-                            startOffset = 300L
-                            fillAfter = true
-                        }
-        )
+        view?.card_create_account?.animate()
+                ?.translationY(dpToPx(ANIMATION_BUTTON_TRANSLATION_VALUE_DP).toFloat())
+                ?.setDuration(ANIMATION_BUTTON_DURATION)
+                ?.setInterpolator(AnticipateOvershootInterpolator())
+                ?.startDelay = ANIMATION_BUTTON_START_DELAY
     }
 
     override fun closeSheet() {
@@ -122,11 +124,10 @@ class AuthFragment : Fragment(), AuthContract.View {
     }
 
     fun onRegistrationFragmentDetach() {
-        view?.card_create_account?.startAnimation(
-                AnimationUtils
-                        .loadAnimation(context, R.anim.from_bottom)
-                        .apply { fillAfter = true }
-        )
+        view?.card_create_account?.animate()
+                ?.translationY(0f)
+                ?.setDuration(ANIMATION_BUTTON_DURATION)
+                ?.interpolator = OvershootInterpolator()
     }
 
     fun isBackStackEmpty() = childFragmentManager.backStackEntryCount == 0

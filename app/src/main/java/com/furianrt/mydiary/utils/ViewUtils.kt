@@ -7,7 +7,7 @@ fun pxToDp(px: Float): Float {
     return px / (densityDpi / 160f)
 }
 
-fun dpToPx(dp: Int): Int {
+fun dpToPx(dp: Float): Int {
     val density = Resources.getSystem().displayMetrics.density
     return Math.round(dp * density)
 }
