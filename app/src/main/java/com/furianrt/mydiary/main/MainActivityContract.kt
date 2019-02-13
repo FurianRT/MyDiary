@@ -9,8 +9,6 @@ import com.furianrt.mydiary.main.listadapter.MainListItem
 interface MainActivityContract {
 
     interface View : BaseView {
-        fun showAdded()
-        fun showDeleted()
         fun showNotes(notes: List<MainListItem>, selectedNotes: ArrayList<MyNoteWithProp>)
         fun openNotePager(position: Int)
         fun showHeaderImages(images: List<MyHeaderImage>)
@@ -23,6 +21,7 @@ interface MainActivityContract {
         fun showEmptyHeaderImage()
         fun showSettingsView()
         fun showPremiumView()
+        fun showLoginView()
     }
 
     abstract class Presenter : BasePresenter<View>() {
@@ -40,5 +39,6 @@ interface MainActivityContract {
         abstract fun onButtonSettingsClick()
         abstract fun is24TimeFormat(): Boolean
         abstract fun onButtonSyncClick()
+        abstract fun onButtonProfileClick()
     }
 }

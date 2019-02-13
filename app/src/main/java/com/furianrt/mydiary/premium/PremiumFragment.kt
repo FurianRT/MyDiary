@@ -6,7 +6,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.furianrt.mydiary.R
-import com.furianrt.mydiary.authentication.registration.RegistrationFragment
+import com.furianrt.mydiary.authentication.AuthFragment
+import com.furianrt.mydiary.main.MainActivity
 import com.furianrt.mydiary.note.fragments.notefragment.inTransaction
 import kotlinx.android.synthetic.main.fragment_premium.view.*
 import javax.inject.Inject
@@ -31,13 +32,15 @@ class PremiumFragment : Fragment(), PremiumContract.View {
 
         view.button_get_premium.setOnClickListener {
             fragmentManager?.let {  manager ->
-                if (manager.findFragmentByTag(RegistrationFragment.TAG) == null) {
+                if (manager.findFragmentByTag(AuthFragment.TAG) == null) {
                     manager.inTransaction {
-                        replace(R.id.main_sheet_container, RegistrationFragment(), RegistrationFragment.TAG)
+                        replace(R.id.main_sheet_container, AuthFragment(), AuthFragment.TAG)
                     }
                 }
             }
         }
+
+        view.button_premium_close.setOnClickListener { mPresenter.onButtonCloseClick() }
 
         return view
     }
@@ -50,5 +53,9 @@ class PremiumFragment : Fragment(), PremiumContract.View {
     override fun onStop() {
         super.onStop()
         mPresenter.detachView()
+    }
+
+    override fun close() {
+        (activity as? MainActivity?)?.closeBottomSheet()
     }
 }

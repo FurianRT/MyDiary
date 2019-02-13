@@ -1,6 +1,8 @@
 package com.furianrt.mydiary.di.presenter
 
 import android.content.Context
+import com.furianrt.mydiary.authentication.AuthContract
+import com.furianrt.mydiary.authentication.AuthPresenter
 import com.furianrt.mydiary.authentication.login.LoginContract
 import com.furianrt.mydiary.authentication.login.LoginPresenter
 import com.furianrt.mydiary.authentication.registration.RegistrationContract
@@ -140,4 +142,9 @@ class PresenterModule(private val context: Context) {
     @PresenterScope
     fun provideLoginPresenter(dataManager: DataManager): LoginContract.Presenter =
             LoginPresenter(dataManager)
+
+    @Provides
+    @PresenterScope
+    fun provideAuthPresenter(dataManager: DataManager): AuthContract.Presenter =
+            AuthPresenter(dataManager)
 }

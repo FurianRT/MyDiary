@@ -2,6 +2,7 @@ package com.furianrt.mydiary.utils
 
 import android.animation.ObjectAnimator
 import android.animation.PropertyValuesHolder
+import android.app.Activity
 import android.content.Context
 import android.view.View
 import android.view.animation.OvershootInterpolator
@@ -15,6 +16,13 @@ fun View.showKeyboard() {
 fun View.hideKeyboard() {
     val imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
     imm.hideSoftInputFromWindow(windowToken, 0)
+}
+
+fun Activity.hideKeyboard() {
+    currentFocus?.let {
+        val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.hideSoftInputFromWindow(it.windowToken, 0)
+    }
 }
 
 fun View.animateScale(from: Float, to: Float, duration: Long) {

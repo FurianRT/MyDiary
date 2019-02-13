@@ -1,5 +1,6 @@
 package com.furianrt.mydiary.di.presenter
 
+import com.furianrt.mydiary.authentication.AuthFragment
 import com.furianrt.mydiary.authentication.login.LoginFragment
 import com.furianrt.mydiary.authentication.registration.RegistrationFragment
 import com.furianrt.mydiary.gallery.GalleryActivity
@@ -42,4 +43,5 @@ interface PresenterComponent {
     fun inject(fragment: ProfileFragment)
     fun inject(fragment: RegistrationFragment)
     fun inject(fragment: LoginFragment)
+    fun inject(fragment: AuthFragment)
 }

@@ -6,7 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.furianrt.mydiary.R
-import com.furianrt.mydiary.utils.KeyboardUtils
+import com.furianrt.mydiary.authentication.AuthFragment
 import kotlinx.android.synthetic.main.fragment_registration.view.*
 import javax.inject.Inject
 
@@ -19,17 +19,6 @@ class RegistrationFragment : Fragment(), RegistrationContract.View {
     @Inject
     lateinit var mPresenter: RegistrationContract.Presenter
 
-    private val mOnKeyboardToggleListener = object : KeyboardUtils.SoftKeyboardToggleListener {
-        override fun onToggleSoftKeyboard(isVisible: Boolean) {
-            if (isVisible) {
-                //обход пуша контекстного меню клавиатурой
-                view?.let {
-                    it.edit_login.postDelayed({ it.edit_login.performClick() }, 200L)
-                }
-            }
-        }
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         getPresenterComponent(context!!).inject(this)
         super.onCreate(savedInstanceState)
@@ -39,9 +28,13 @@ class RegistrationFragment : Fragment(), RegistrationContract.View {
                               savedInstanceState: Bundle?): View? {
         val view =  inflater.inflate(R.layout.fragment_registration, container, false)
 
-        KeyboardUtils.addKeyboardToggleListener(activity!!, mOnKeyboardToggleListener)
+        view.button_cancel.setOnClickListener { mPresenter.onButtonCancelClick() }
 
         return view
+    }
+
+    override fun close() {
+        fragmentManager?.popBackStack()
     }
 
     override fun onStart() {
@@ -54,8 +47,8 @@ class RegistrationFragment : Fragment(), RegistrationContract.View {
         mPresenter.detachView()
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        KeyboardUtils.removeKeyboardToggleListener(mOnKeyboardToggleListener)
+    override fun onDetach() {
+        super.onDetach()
+        (parentFragment as? AuthFragment?)?.onRegistrationFragmentDetach()
     }
 }

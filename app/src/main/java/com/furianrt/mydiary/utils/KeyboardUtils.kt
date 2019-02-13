@@ -1,14 +1,13 @@
 package com.furianrt.mydiary.utils
 
 import android.app.Activity
+import android.content.Context
 import android.graphics.Rect
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
-import android.content.Context
 import android.view.inputmethod.InputMethodManager
-
-import java.util.HashMap
+import java.util.*
 
 class KeyboardUtils(
         activity: Activity,
@@ -16,7 +15,6 @@ class KeyboardUtils(
 ) : ViewTreeObserver.OnGlobalLayoutListener {
     private val mRootView: View =
             (activity.findViewById<View>(android.R.id.content) as ViewGroup).getChildAt(0)
-    private var mPrevValue: Boolean? = null
     private val mScreenDensity: Float
 
     interface SoftKeyboardToggleListener {
@@ -31,9 +29,9 @@ class KeyboardUtils(
         val dp = heightDiff / mScreenDensity
         val isVisible = dp > MAGIC_NUMBER
 
-        if (mCallback != null && (mPrevValue == null || isVisible != mPrevValue)) {
-            mPrevValue = isVisible
-            mCallback!!.onToggleSoftKeyboard(isVisible)
+        if (mCallback != null && isVisible != sPrevValue) {
+            sPrevValue = isVisible
+            mCallback?.onToggleSoftKeyboard(isVisible)
         }
     }
 
@@ -50,6 +48,9 @@ class KeyboardUtils(
     companion object {
         private const val MAGIC_NUMBER = 200
         private val sListenerMap = HashMap<SoftKeyboardToggleListener, KeyboardUtils>()
+        private var sPrevValue = false
+
+        fun isKeyboardVisible() = sPrevValue
 
         fun addKeyboardToggleListener(act: Activity, listener: SoftKeyboardToggleListener) {
             removeKeyboardToggleListener(listener)
@@ -59,14 +60,14 @@ class KeyboardUtils(
         fun removeKeyboardToggleListener(listener: SoftKeyboardToggleListener) {
             if (sListenerMap.containsKey(listener)) {
                 val k = sListenerMap[listener]
-                k!!.removeListener()
+                k?.removeListener()
                 sListenerMap.remove(listener)
             }
         }
 
         fun removeAllKeyboardToggleListeners() {
             for (l in sListenerMap.keys) {
-                sListenerMap[l]!!.removeListener()
+                sListenerMap[l]?.removeListener()
             }
             sListenerMap.clear()
         }

@@ -8,6 +8,47 @@
         <item name="windowActionModeOverlay">true</item>
     </style>
 
+    <style name="SearchViewStyle" parent="Widget.AppCompat.SearchView">
+        <item name="searchIcon">@drawable/ic_add</item>
+        <item name="closeIcon">@drawable/ic_done</item>
+        <item name="searchHintIcon">@null</item>
+        <item name="android:textColorHint">@color/grey</item>
+        <item name="android:editTextColor">@android:color/white</item>
+    </style>
+
+    <style name="AppTheme.Toolbar" parent="ThemeOverlay.AppCompat.ActionBar">
+        <item name="popupTheme">@style/ThemeOverlay.AppCompat.Light</item>
+        <item name="theme">@style/ThemeOverlay.AppCompat.Dark.ActionBar</item>
+    </style>
+
+    <style name="collapsedToolbarLayout" parent="@android:style/TextAppearance.Medium">
+        <item name="android:textColor">@color/white</item>
+    </style>
+
+    <style name="expandedToolbarLayout" parent="@android:style/TextAppearance.Medium">
+        <item name="android:textSize">26sp</item>
+        <item name="android:textColor">@color/white</item>
+    </style>
+
+    <style name="TextAppearance.App.TextInputLayout" parent="@android:style/TextAppearance">
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textSize">11sp</item>
+    </style>
+
+    <style name="TabLayoutStyle" parent="TextAppearance.Design.Tab">
+        <item name="android:textSize">12sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:fontFamily">sans-@-medium</item>
+        <item name="android:letterSpacing">0.07</item>
+    </style>
+
+    <!--<style name="EditTextHint" parent="TextAppearance.AppCompat">
+        <item name="android:textColorHint">@color/white</item>
+        <item name="colorControlNormal">@color/white</item>
+        <item name="colorControlActivated">@color/white</item>
+        <item name="colorControlHighlight">@color/white</item>
+    </style>-->
+
     <style name="OverlayPrimaryColorR1">
         <item name="colorPrimary">@color/r1</item>
         <item name="colorPrimaryDark">@color/r11</item>
@@ -346,33 +387,6 @@
 
     <style name="OverlayAccentColorBlack">
         <item name="colorAccent">@color/black</item>
-    </style>
-
-    <style name="SearchViewStyle" parent="Widget.AppCompat.SearchView">
-        <item name="searchIcon">@drawable/ic_add</item>
-        <item name="closeIcon">@drawable/ic_done</item>
-        <item name="searchHintIcon">@null</item>
-        <item name="android:textColorHint">@color/grey</item>
-        <item name="android:editTextColor">@android:color/white</item>
-    </style>
-
-    <style name="AppTheme.Toolbar" parent="ThemeOverlay.AppCompat.ActionBar">
-        <item name="popupTheme">@style/ThemeOverlay.AppCompat.Light</item>
-        <item name="theme">@style/ThemeOverlay.AppCompat.Dark.ActionBar</item>
-    </style>
-
-    <style name="collapsedToolbarLayout" parent="@android:style/TextAppearance.Medium">
-        <item name="android:textColor">@color/white</item>
-    </style>
-
-    <style name="expandedToolbarLayout" parent="@android:style/TextAppearance.Medium">
-        <item name="android:textSize">26sp</item>
-        <item name="android:textColor">@color/white</item>
-    </style>
-
-    <style name="TextAppearance.App.TextInputLayout" parent="@android:style/TextAppearance">
-        <item name="android:textColor">@color/white</item>
-        <item name="android:textSize">11sp</item>
     </style>
 
 </resources>

@@ -166,5 +166,17 @@
     <string name="voice">Голос</string>
     <string name="time_picker_okay">ОК</string>
     <string name="time_picker_cancel">ОТМЕНА</string>
+    <string name="fragment_authentication_sign_in">Логин</string>
+    <string name="fragment_authentication_sign_up">Регистрация</string>
+    <string name="main_header_button_sync">Синхронизация (PRO)</string>
+    <string name="main_header_today">Сегодня:</string>
+    <string name="main_header_total">Всего:</string>
+    <string name="fragment_registration_email">Email</string>
+    <string name="fragment_registration_password">Пароль</string>
+    <string name="fragment_registration_repeat_password">Повторите пароль</string>
+    <string name="fragment_registration_sign_up">Регистрация</string>
+    <string name="fragment_login_forgot">Не помню</string>
+    <string name="fragment_login_sign_in">Войти</string>
+    <string name="fragment_auth_sign_up">Зарегистрироваться</string>
 
 </resources>

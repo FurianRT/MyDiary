@@ -6,4 +6,7 @@ class RegistrationPresenter(
         private val mDataManager: DataManager
 ) : RegistrationContract.Presenter() {
 
+    override fun onButtonCancelClick() {
+        view?.close()
+    }
 }

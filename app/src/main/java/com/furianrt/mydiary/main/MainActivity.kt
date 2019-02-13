@@ -11,7 +11,7 @@ import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-import android.widget.LinearLayout
+import android.widget.FrameLayout
 import android.widget.Toast
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.coordinatorlayout.widget.CoordinatorLayout
@@ -20,8 +20,7 @@ import androidx.core.view.GravityCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.furianrt.mydiary.BaseActivity
 import com.furianrt.mydiary.R
-import com.furianrt.mydiary.authentication.login.LoginFragment
-import com.furianrt.mydiary.authentication.registration.RegistrationFragment
+import com.furianrt.mydiary.authentication.AuthFragment
 import com.furianrt.mydiary.data.model.MyHeaderImage
 import com.furianrt.mydiary.data.model.MyNoteWithProp
 import com.furianrt.mydiary.general.AppBarLayoutBehavior
@@ -36,7 +35,6 @@ import com.furianrt.mydiary.profile.ProfileFragment
 import com.furianrt.mydiary.settings.global.GlobalSettingsActivity
 import com.furianrt.mydiary.utils.getThemePrimaryColor
 import com.furianrt.mydiary.utils.getThemePrimaryDarkColor
-import com.furianrt.mydiary.utils.hideKeyboard
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.yanzhenjie.album.Album
@@ -69,7 +67,7 @@ class MainActivity : BaseActivity(), MainActivityContract.View,
 
     private lateinit var mAdapter: MainListAdapter
     private var mRecyclerViewState: Parcelable? = null
-    private lateinit var mBottomSheet: BottomSheetBehaviorMain<LinearLayout>
+    private lateinit var mBottomSheet: BottomSheetBehavior<FrameLayout>
     private var mBackPressCount = 0
     private var mNeedToOpenActionBar = true
 
@@ -78,21 +76,22 @@ class MainActivity : BaseActivity(), MainActivityContract.View,
         getPresenterComponent(this).inject(this)
         setContentView(R.layout.activity_main)
 
-        mBottomSheet = BottomSheetBehaviorMain.from(bottom_sheet_main)
-        mBottomSheet.setBottomSheetCallback(object: BottomSheetBehavior.BottomSheetCallback() {
+        mBottomSheet = BottomSheetBehavior.from(main_sheet_container)
+        mBottomSheet.setBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
             override fun onSlide(bottomSheet: View, slideOffset: Float) {}
             override fun onStateChanged(bottomSheet: View, newState: Int) {
                 if (newState == BottomSheetBehavior.STATE_COLLAPSED) {
                     supportFragmentManager.findFragmentByTag(PremiumFragment.TAG)?.let {
-                        supportFragmentManager.inTransaction { remove(it) }
-                    }
-                    supportFragmentManager.findFragmentByTag(RegistrationFragment.TAG)?.let {
-                        supportFragmentManager.inTransaction { remove(it) }
-                    }
-                    supportFragmentManager.findFragmentByTag(LoginFragment.TAG)?.let {
-                        supportFragmentManager.inTransaction { remove(it) }
+                        Log.e(TAG, "PremiumFragment removed")
+                        supportFragmentManager.popBackStack()
                     }
                     supportFragmentManager.findFragmentByTag(ProfileFragment.TAG)?.let {
+                        Log.e(TAG, "ProfileFragment removed")
+                        supportFragmentManager.inTransaction { remove(it) }
+                    }
+                    supportFragmentManager.findFragmentByTag(AuthFragment.TAG)?.let {
+                        Log.e(TAG, "AuthFragment removed")
+                        (it as AuthFragment).clearFocus()
                         supportFragmentManager.inTransaction { remove(it) }
                     }
                 }
@@ -184,16 +183,16 @@ class MainActivity : BaseActivity(), MainActivityContract.View,
                 layout_main_root.translationX = slideOffset * drawerView.width
             }
         })
-
         fab_menu.setOnClickListener(this)
         fab_menu.setMenuButtonColorRippleResId(R.color.colorPrimary)
-
         fab_delete.setOnClickListener(this)
         fab_folder.setOnClickListener(this)
         fab_place.setOnClickListener(this)
         image_toolbar_main.setOnClickListener(this)
         nav_view.getHeaderView(0).button_sync.setOnClickListener(this)
-        button_close_sheet.setOnClickListener(this)
+        nav_view.getHeaderView(0).button_profile_settings.setOnClickListener(this)
+        nav_view.getHeaderView(0).layout_profile_name.setOnClickListener(this)
+        nav_view.getHeaderView(0).image_profile.setOnClickListener(this)
 
         mAdapter = MainListAdapter(is24TimeFormat = mPresenter.is24TimeFormat())
 
@@ -211,10 +210,9 @@ class MainActivity : BaseActivity(), MainActivityContract.View,
             R.id.image_toolbar_main -> mPresenter.onButtonSetMainImageClick()
             R.id.fab_menu -> mPresenter.onFabMenuClick()
             R.id.button_sync -> mPresenter.onButtonSyncClick()
-            R.id.button_close_sheet -> {
-                BottomSheetBehavior.from(bottom_sheet_main).state = BottomSheetBehavior.STATE_COLLAPSED
-                bottom_sheet_main.postDelayed({ currentFocus?.hideKeyboard() }, 400L)
-            }
+            R.id.button_profile_settings -> mPresenter.onButtonProfileClick()
+            R.id.layout_profile_name -> mPresenter.onButtonProfileClick()
+            R.id.image_profile -> mPresenter.onButtonProfileClick()
         }
     }
 
@@ -240,6 +238,16 @@ class MainActivity : BaseActivity(), MainActivityContract.View,
         }
     }
 
+    override fun showLoginView() {
+        if (supportFragmentManager.findFragmentByTag(AuthFragment.TAG) == null) {
+            supportFragmentManager.inTransaction {
+                add(R.id.main_sheet_container, AuthFragment(), AuthFragment.TAG)
+                Log.e(TAG, "AuthFragment added")
+            }
+        }
+        mBottomSheet.state = BottomSheetBehavior.STATE_EXPANDED
+    }
+
     override fun showSettingsView() {
         val intent = Intent(this, GlobalSettingsActivity::class.java)
         startActivityForResult(intent, ACTIVITY_SETTING_REQUEST_CODE)
@@ -248,8 +256,9 @@ class MainActivity : BaseActivity(), MainActivityContract.View,
     override fun showPremiumView() {
         if (supportFragmentManager.findFragmentByTag(PremiumFragment.TAG) == null) {
             supportFragmentManager.inTransaction {
-                replace(R.id.main_sheet_container, PremiumFragment(), PremiumFragment.TAG)
+                add(R.id.main_sheet_container, PremiumFragment(), PremiumFragment.TAG)
             }
+            Log.e(TAG, "PremiumFragment added")
         }
         mBottomSheet.state = BottomSheetBehavior.STATE_EXPANDED
     }
@@ -320,16 +329,8 @@ class MainActivity : BaseActivity(), MainActivityContract.View,
                 .start()
     }
 
-    override fun showAdded() {
-        Toast.makeText(this, "Added", Toast.LENGTH_SHORT).show()
-    }
-
-    override fun showDeleted() {
-        Toast.makeText(this, "Deleted", Toast.LENGTH_SHORT).show()
-    }
-
     override fun showNotes(notes: List<MainListItem>, selectedNotes: ArrayList<MyNoteWithProp>) {
-        Log.e(TAG, "showNotes")
+        Log.i(TAG, "showNotes")
 
         mAdapter.submitList(notes.toMutableList())
         mAdapter.selectedNotes = selectedNotes
@@ -379,8 +380,16 @@ class MainActivity : BaseActivity(), MainActivityContract.View,
         }
     }
 
+    fun closeBottomSheet() {
+        mBottomSheet.state = BottomSheetBehavior.STATE_COLLAPSED
+    }
+
     override fun onBackPressed() {
+        val authFragment =
+                supportFragmentManager.findFragmentByTag(AuthFragment.TAG) as? AuthFragment
         when {
+            authFragment != null && !authFragment.isBackStackEmpty() -> super.onBackPressed()
+            supportFragmentManager.backStackEntryCount > 0 -> super.onBackPressed()
             mBottomSheet.state == BottomSheetBehavior.STATE_EXPANDED ->
                 mBottomSheet.state = BottomSheetBehavior.STATE_COLLAPSED
             drawer.isDrawerOpen(GravityCompat.START) ->

@@ -26,7 +26,7 @@ fun getMonth(time: Long): String {
 }
 
 fun getYear(time: Long): String {
-    val spf = SimpleDateFormat("YYYY", Locale.getDefault())
+    val spf = SimpleDateFormat("yyyy", Locale.getDefault())
     return spf.format(Date(time))
 
 }

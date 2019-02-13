@@ -187,4 +187,9 @@ class MainActivityPresenter(private val mDataManager: DataManager) : MainActivit
         //todo проверка на наличие премиума
         view?.showPremiumView()
     }
+
+    override fun onButtonProfileClick() {
+        //todo различные проверки
+        view?.showLoginView()
+    }
 }
