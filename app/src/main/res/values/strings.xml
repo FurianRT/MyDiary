@@ -178,5 +178,12 @@
     <string name="fragment_login_forgot">Не помню</string>
     <string name="fragment_login_sign_in">Войти</string>
     <string name="fragment_auth_sign_up">Зарегистрироваться</string>
+    <string name="fragment_registration_network_error">Нет интернет соединения</string>
+    <string name="fragment_registration_password_error">Пароли не совпадают</string>
+    <string name="fragment_registration_email_format">Некорректный email</string>
+    <string name="fragment_registration_error_email_exists">Такой email уже зарегистрирован</string>
+    <string name="fragment_registration_error_short_password">Пароль слишком короткий</string>
+    <string name="fragment_registration_empty_password">Введите пароль</string>
+    <string name="fragment_registration_empty_email">Введите email</string>
 
 </resources>

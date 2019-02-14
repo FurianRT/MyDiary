@@ -11,6 +11,7 @@ import com.furianrt.mydiary.utils.generateUniqueId
 import io.reactivex.Flowable
 import io.reactivex.Observable
 import io.reactivex.Single
+import io.reactivex.android.schedulers.AndroidSchedulers
 import org.joda.time.DateTime
 import java.util.*
 import kotlin.Comparator
@@ -36,6 +37,7 @@ class MainActivityPresenter(private val mDataManager: DataManager) : MainActivit
                 .flatMapSingle { note -> deleteImagesAndNote(note) }
                 .collectInto(mutableListOf<Boolean>()) { l, i -> l.add(i) }
                 .ignoreElement()
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe {
                     mSelectedNotes.clear()
                     view?.deactivateSelection()
@@ -45,6 +47,7 @@ class MainActivityPresenter(private val mDataManager: DataManager) : MainActivit
     override fun onMenuAllNotesClick() {
         addDisposable(mDataManager.getAllNotesWithProp()
                 .first(ArrayList())
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { notes ->
                     mSelectedNotes = ArrayList(notes)
                     view?.activateSelection()
@@ -72,11 +75,13 @@ class MainActivityPresenter(private val mDataManager: DataManager) : MainActivit
                 .map { url -> MyHeaderImage(HEADER_IMAGE_NAME + "_" + generateUniqueId(), url) }
                 .flatMapSingle { image -> mDataManager.saveHeaderImageToStorage(image) }
                 .flatMapCompletable { savedImage -> mDataManager.insertHeaderImage(savedImage) }
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe())
     }
 
     private fun loadHeaderImages() {
         addDisposable(mDataManager.getHeaderImages()
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { images ->
                     if (images.isEmpty()) {
                         view?.showEmptyHeaderImage()
@@ -89,6 +94,7 @@ class MainActivityPresenter(private val mDataManager: DataManager) : MainActivit
     private fun loadNotes() {
         addDisposable(mDataManager.getAllNotesWithProp()
                 .map { formatNotes(toMap(it)) }
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { view?.showNotes(it, mSelectedNotes) })
     }
 
@@ -173,6 +179,7 @@ class MainActivityPresenter(private val mDataManager: DataManager) : MainActivit
     private fun openNotePagerView(note: MyNoteWithProp) {
         addDisposable(mDataManager.getAllNotesWithProp()
                 .first(ArrayList())
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { notes -> view?.openNotePager(notes.indexOf(note)) })
     }
 

@@ -1,5 +1,6 @@
 <com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_marginStart="16dp"
@@ -14,27 +15,54 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
+        <ProgressBar
+            android:id="@+id/progressBar"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:visibility="visible" />
+
+        <TextView
+            android:id="@+id/text_error"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="24dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="24dp"
+            android:gravity="center_vertical|end"
+            android:textColor="@color/red"
+            android:textStyle="italic"
+            app:layout_constraintBottom_toTopOf="@+id/textView"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="Ошибка!" />
+
         <TextView
             android:id="@+id/textView"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="24dp"
-            android:layout_marginTop="32dp"
             android:layout_marginEnd="24dp"
-            android:alpha="0.8"
             android:text="@string/fragment_registration_email"
             android:textColor="?attr/colorAccent"
             android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toBottomOf="@+id/text_error" />
 
-        <com.google.android.material.textfield.TextInputLayout
+        <FrameLayout
             android:id="@+id/layout_email"
             android:layout_width="match_parent"
-            android:layout_height="45dp"
+            android:layout_height="34dp"
             android:layout_marginStart="24dp"
+            android:layout_marginTop="8dp"
             android:layout_marginEnd="24dp"
+            android:background="@drawable/background_corner_stroke"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/textView">
@@ -43,15 +71,36 @@
                 android:id="@+id/edit_email"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="@drawable/background_corner_stroke"
+                android:background="@color/transparent"
                 android:imeOptions="flagNoExtractUi"
                 android:inputType="textEmailAddress"
                 android:paddingStart="8dp"
-                android:paddingEnd="8dp"
+                android:paddingEnd="28dp"
                 android:textColor="@color/black"
                 android:textSize="15sp" />
 
-        </com.google.android.material.textfield.TextInputLayout>
+            <ProgressBar
+                android:id="@+id/progress_email"
+                android:layout_width="16dp"
+                android:layout_height="16dp"
+                android:layout_gravity="center_vertical|end"
+                android:layout_marginEnd="4dp"
+                android:visibility="gone"
+                tools:visibility="gone" />
+
+            <ImageView
+                android:id="@+id/image_email"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_gravity="center_vertical|end"
+                android:layout_marginEnd="4dp"
+                android:src="@drawable/ic_done"
+                android:tint="?attr/colorAccent"
+                android:visibility="gone"
+                tools:ignore="ContentDescription"
+                tools:visibility="visible" />
+
+        </FrameLayout>
 
         <TextView
             android:id="@+id/textView1"
@@ -60,7 +109,6 @@
             android:layout_marginStart="24dp"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="24dp"
-            android:alpha="0.8"
             android:text="@string/fragment_registration_password"
             android:textColor="?attr/colorAccent"
             android:textStyle="bold"
@@ -84,7 +132,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:background="@drawable/background_corner_stroke"
-                android:imeOptions="flagNoExtractUi|actionDone"
+                android:imeOptions="flagNoExtractUi"
                 android:inputType="textPassword"
                 android:paddingStart="8dp"
                 android:paddingEnd="8dp"
@@ -100,7 +148,6 @@
             android:layout_marginStart="24dp"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="24dp"
-            android:alpha="0.8"
             android:text="@string/fragment_registration_repeat_password"
             android:textColor="?attr/colorAccent"
             android:textStyle="bold"

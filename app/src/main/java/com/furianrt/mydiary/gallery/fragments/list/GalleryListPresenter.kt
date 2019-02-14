@@ -4,6 +4,7 @@ import com.furianrt.mydiary.data.DataManager
 import com.furianrt.mydiary.data.model.MyImage
 import com.furianrt.mydiary.utils.generateUniqueId
 import io.reactivex.Flowable
+import io.reactivex.android.schedulers.AndroidSchedulers
 import org.joda.time.DateTime
 
 class GalleryListPresenter(private val mDataManager: DataManager) : GalleryListContract.Presenter() {
@@ -42,6 +43,7 @@ class GalleryListPresenter(private val mDataManager: DataManager) : GalleryListC
 
     private fun loadImages(noteId: String) {
         addDisposable(mDataManager.getImagesForNote(noteId)
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { images ->
                     var i = 0
                     images.forEach { it.order = i++ }
@@ -51,6 +53,7 @@ class GalleryListPresenter(private val mDataManager: DataManager) : GalleryListC
 
     override fun onImagesOrderChange(images: List<MyImage>) {
         addDisposable(mDataManager.updateImages(images)
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe())
     }
 
@@ -60,12 +63,14 @@ class GalleryListPresenter(private val mDataManager: DataManager) : GalleryListC
 
     override fun onCabDeleteButtonClick() {
         addDisposable(mDataManager.deleteImages(mSelectedImages)
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { view?.closeCab() })
     }
 
     override fun onCabSelectAllButtonClick() {
         addDisposable(mDataManager.getImagesForNote(mNoteId)
                 .first(emptyList())
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { images ->
                     val list = images.toMutableList()
                     list.removeAll(mSelectedImages)
@@ -101,6 +106,7 @@ class GalleryListPresenter(private val mDataManager: DataManager) : GalleryListC
                 }
                 .flatMapSingle { image -> mDataManager.saveImageToStorage(image) }
                 .flatMapCompletable { savedImage -> mDataManager.insertImage(savedImage) }
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe())
     }
 }

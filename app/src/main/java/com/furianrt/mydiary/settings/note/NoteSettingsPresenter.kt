@@ -3,6 +3,7 @@ package com.furianrt.mydiary.settings.note
 import android.util.Log
 import com.furianrt.mydiary.data.DataManager
 import com.furianrt.mydiary.data.model.MyNoteAppearance
+import io.reactivex.android.schedulers.AndroidSchedulers
 
 class NoteSettingsPresenter(
         private val mDataManager: DataManager
@@ -17,6 +18,7 @@ class NoteSettingsPresenter(
     override fun onViewCreate(noteId: String?) {
         addDisposable(mDataManager.getNoteAppearance(noteId ?: throw IllegalArgumentException())
                 .firstElement()
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { appearance ->
                     mAppearance = appearance
                     mAppearance.textSize = mAppearance.textSize ?: mDataManager.getTextSize()
@@ -33,24 +35,28 @@ class NoteSettingsPresenter(
     override fun onTextSizeChange(size: Int) {
         mAppearance.textSize = size
         addDisposable(mDataManager.updateAppearance(mAppearance)
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe())
     }
 
     override fun onTextColorChange(color: Int) {
         mAppearance.textColor = color
         addDisposable(mDataManager.updateAppearance(mAppearance)
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe())
     }
 
     override fun onBackgroundColorChange(color: Int) {
         mAppearance.background = color
         addDisposable(mDataManager.updateAppearance(mAppearance)
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe())
     }
 
     override fun onBackgroundTextColorChange(color: Int) {
         mAppearance.textBackground = color
         addDisposable(mDataManager.updateAppearance(mAppearance)
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe())
     }
 }

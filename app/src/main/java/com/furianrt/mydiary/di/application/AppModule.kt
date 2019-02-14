@@ -11,6 +11,8 @@ import com.furianrt.mydiary.R
 import com.furianrt.mydiary.data.DataManager
 import com.furianrt.mydiary.data.DataManagerImp
 import com.furianrt.mydiary.data.api.WeatherApiService
+import com.furianrt.mydiary.data.cloud.CloudHelper
+import com.furianrt.mydiary.data.cloud.CloudHelperImp
 import com.furianrt.mydiary.data.model.MyCategory
 import com.furianrt.mydiary.data.prefs.PreferencesHelper
 import com.furianrt.mydiary.data.prefs.PreferencesHelperImp
@@ -18,8 +20,12 @@ import com.furianrt.mydiary.data.room.NoteDatabase
 import com.furianrt.mydiary.data.storage.StorageHelper
 import com.furianrt.mydiary.data.storage.StorageHelperImp
 import com.furianrt.mydiary.utils.generateUniqueId
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.storage.FirebaseStorage
 import dagger.Module
 import dagger.Provides
+import io.reactivex.Scheduler
+import io.reactivex.schedulers.Schedulers
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -50,6 +56,19 @@ class AppModule(private val app: Application) {
             PreferencesHelperImp(context)
 
     @Provides
+    @AppScope
+    fun provideCloudHelper(firestore: FirebaseFirestore, firebaseStorage: FirebaseStorage): CloudHelper =
+            CloudHelperImp(firestore, firebaseStorage)
+
+    @Provides
+    @AppScope
+    fun provideFirestore() = FirebaseFirestore.getInstance()
+
+    @Provides
+    @AppScope
+    fun provideFirebaseStorage() = FirebaseStorage.getInstance()
+
+    @Provides
     @DatabaseInfo
     @AppScope
     fun provideDatabaseName() = DATABASE_NAME
@@ -73,9 +92,14 @@ class AppModule(private val app: Application) {
 
     @Provides
     @AppScope
+    fun provideRxScheduler(): Scheduler = Schedulers.io()
+
+    @Provides
+    @AppScope
     fun provideDataManager(database: NoteDatabase, prefs: PreferencesHelper, storage: StorageHelper,
-                           weatherApi: WeatherApiService): DataManager =
-            DataManagerImp(database, prefs, storage, weatherApi)
+                           weatherApi: WeatherApiService, cloudHelper: CloudHelper,
+                           rxScheduler: Scheduler): DataManager =
+            DataManagerImp(database, prefs, storage, weatherApi, cloudHelper, rxScheduler)
 
     @Provides
     @AppScope

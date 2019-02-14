@@ -16,7 +16,6 @@ import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
-import androidx.cardview.widget.CardView
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.content.ContextCompat
 import androidx.core.content.ContextCompat.getColor
@@ -136,7 +135,7 @@ class NoteFragment : Fragment(), NoteFragmentContract.View, OnMapReadyCallback,
     override fun onStart() {
         super.onStart()
         mPresenter.attachView(this)
-        mPresenter.loadNote(mNoteId, mMode, isLocationEnabled(context!!), isNetworkAvailable(context!!))
+        mPresenter.loadNote(mNoteId, mMode, context!!.isLocationEnabled(), context!!.isNetworkAvailable())
         mPresenter.loadNoteAppearance(mNoteId)
         mPresenter.loadTags(mNoteId)
         mPresenter.loadImages(mNoteId)

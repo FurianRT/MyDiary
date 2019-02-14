@@ -1,6 +1,7 @@
 package com.furianrt.mydiary.gallery.fragments.pager
 
 import com.furianrt.mydiary.data.DataManager
+import io.reactivex.android.schedulers.AndroidSchedulers
 
 class GalleryPagerPresenter(
         private val mDataManager: DataManager
@@ -14,6 +15,7 @@ class GalleryPagerPresenter(
 
     private fun loadImages(noteId: String) {
         addDisposable(mDataManager.getImagesForNote(noteId)
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { images -> view?.showImages(images) })
     }
 

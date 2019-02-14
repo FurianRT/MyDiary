@@ -5,9 +5,11 @@ import android.preference.PreferenceManager
 import androidx.core.content.ContextCompat
 import com.furianrt.mydiary.R
 
-private const val DEFAULT_TEXT_SIZE = "16"
-
 class PreferencesHelperImp(val context: Context) : PreferencesHelper {
+
+    companion object {
+        private const val DEFAULT_TEXT_SIZE = "16"
+    }
 
     private val mPrefs = PreferenceManager.getDefaultSharedPreferences(context)
 

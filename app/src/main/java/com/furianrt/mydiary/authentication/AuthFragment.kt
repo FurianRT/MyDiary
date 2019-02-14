@@ -27,6 +27,7 @@ class AuthFragment : Fragment(), AuthContract.View {
         private const val ANIMATION_BUTTON_START_DELAY = 400L
         private const val ANIMATION_BUTTON_TRANSLATION_VALUE_DP = 100f
         private const val ANIMATION_CONTAINER_DURATION = 600L
+        private const val BUNDLE_CREATE_BUTTON_TRANSLATION_Y = "createButtonTranslationY"
     }
 
     @Inject
@@ -77,6 +78,10 @@ class AuthFragment : Fragment(), AuthContract.View {
         view.button_auth_close.setOnClickListener { mPresenter.onButtonCloseClick() }
         view.button_create_account.setOnClickListener { mPresenter.onButtonCreateAccountClick() }
 
+        savedInstanceState?.let {
+            view.button_create_account.translationY = it.getFloat(BUNDLE_CREATE_BUTTON_TRANSLATION_Y, 0f)
+        }
+
         if (childFragmentManager.findFragmentByTag(LoginFragment.TAG) == null) {
             childFragmentManager.inTransaction {
                 add(R.id.card_auth_container, LoginFragment(), LoginFragment.TAG)
@@ -84,6 +89,13 @@ class AuthFragment : Fragment(), AuthContract.View {
         }
 
         return view
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        view?.let {
+            outState.putFloat(BUNDLE_CREATE_BUTTON_TRANSLATION_Y, it.button_create_account.translationY)
+        }
+        super.onSaveInstanceState(outState)
     }
 
     override fun showRegistrationView() {

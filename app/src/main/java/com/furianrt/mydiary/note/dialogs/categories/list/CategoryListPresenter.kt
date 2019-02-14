@@ -2,6 +2,7 @@ package com.furianrt.mydiary.note.dialogs.categories.list
 
 import com.furianrt.mydiary.data.DataManager
 import com.furianrt.mydiary.data.model.MyCategory
+import io.reactivex.android.schedulers.AndroidSchedulers
 
 class CategoryListPresenter(
         private val mDataManager: DataManager
@@ -13,6 +14,7 @@ class CategoryListPresenter(
 
     override fun onDeleteCategoryButtonClick(category: MyCategory) {
         addDisposable(mDataManager.deleteCategory(category)
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe())
     }
 
@@ -22,6 +24,7 @@ class CategoryListPresenter(
 
     override fun onViewStart() {
         addDisposable(mDataManager.getAllCategories()
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { categories -> view?.showCategories(categories) })
     }
 
@@ -31,6 +34,7 @@ class CategoryListPresenter(
                     note.categoryId = category.id
                     return@flatMapCompletable mDataManager.updateNote(note)
                 }
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { view?.close() })
     }
 }
