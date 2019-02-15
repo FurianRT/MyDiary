@@ -21,6 +21,7 @@ import com.furianrt.mydiary.data.storage.StorageHelper
 import com.furianrt.mydiary.data.storage.StorageHelperImp
 import com.furianrt.mydiary.utils.generateUniqueId
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.FirebaseFirestoreSettings
 import com.google.firebase.storage.FirebaseStorage
 import dagger.Module
 import dagger.Provides
@@ -62,7 +63,14 @@ class AppModule(private val app: Application) {
 
     @Provides
     @AppScope
-    fun provideFirestore() = FirebaseFirestore.getInstance()
+    fun provideFirestore() = FirebaseFirestore
+            .getInstance()
+            .apply {
+                firestoreSettings = FirebaseFirestoreSettings.Builder(firestoreSettings)
+                        .setPersistenceEnabled(false)
+                        .build()
+            }
+
 
     @Provides
     @AppScope

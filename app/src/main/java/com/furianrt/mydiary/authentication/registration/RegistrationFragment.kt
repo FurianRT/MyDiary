@@ -44,6 +44,7 @@ class RegistrationFragment : Fragment(), RegistrationContract.View {
         view.edit_email.setOnFocusChangeListener { _, hasFocus ->
             mPresenter.onEmailFocusChange(view.edit_email.text.toString(), hasFocus)
         }
+        view.view_alpha.setOnTouchListener { _, _ -> true }
         return view
     }
 
@@ -124,11 +125,13 @@ class RegistrationFragment : Fragment(), RegistrationContract.View {
     }
 
     override fun showLoading() {
-
+        view?.view_alpha?.visibility = View.VISIBLE
+        view?.progress_sign_up?.visibility = View.VISIBLE
     }
 
     override fun hideLoading() {
-
+        view?.view_alpha?.visibility = View.GONE
+        view?.progress_sign_up?.visibility = View.GONE
     }
 
     override fun close() {

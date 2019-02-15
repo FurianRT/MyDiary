@@ -15,17 +15,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <ProgressBar
-            android:id="@+id/progressBar"
-            style="?android:attr/progressBarStyleHorizontal"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:visibility="gone"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:visibility="visible" />
-
         <TextView
             android:id="@+id/text_error"
             android:layout_width="0dp"
@@ -213,6 +202,29 @@
             app:layout_constraintTop_toBottomOf="@+id/layout_password_repeat"
             app:rippleColor="?attr/colorPrimaryDark" />
 
+        <View
+            android:id="@+id/view_alpha"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:background="@color/transparent_white"
+            android:elevation="2dp"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <ProgressBar
+        android:id="@+id/progress_sign_up"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="top"
+        android:elevation="3dp"
+        android:indeterminateOnly="true"
+        android:visibility="gone"
+        tools:visibility="visible" />
 
 </com.google.android.material.card.MaterialCardView>

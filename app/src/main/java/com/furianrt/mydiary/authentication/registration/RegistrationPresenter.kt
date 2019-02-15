@@ -29,60 +29,38 @@ class RegistrationPresenter(
                 v.showErrorNetworkConnection()
                 return
             }
-            if (email.isEmpty()) {
-                v.showErrorEmptyEmail()
-                return
-            }
-            if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-                v.showErrorEmailFormat()
-                return
-            }
-            if (password.isEmpty()) {
-                v.showErrorEmptyPassword()
-                return
-            }
-            if (passwordRepeat.isEmpty()) {
-                v.showErrorEmptyPasswordRepeat()
-                return
-            }
-            if (password.length < PASSWORD_MIN_LENGTH) {
-                v.showErrorShortPassword()
-                return
-            }
-            if (password != passwordRepeat) {
-                v.showErrorPassword()
-                return
-            }
-            v.clearEmailMessages()
-            v.showLoading()
-            addDisposable(mDataManager.isProfileExists(email)
-                    .flatMap { exists ->
-                        return@flatMap if (exists) {
-                            throw ProfileExistsException()
-                        } else {
-                            hashPassword(password)
+            if (validateEmail(email) && validatePassword(password, passwordRepeat)) {
+                v.clearEmailMessages()
+                v.showLoading()
+                addDisposable(mDataManager.isProfileExists(email)
+                        .flatMap { exists ->
+                            return@flatMap if (exists) {
+                                throw ProfileExistsException()
+                            } else {
+                                hashPassword(password)
+                            }
                         }
-                    }
-                    .flatMapCompletable { passwordHash ->
-                        val profile = MyProfile(email, passwordHash)
-                        return@flatMapCompletable Completable.merge(listOf(
-                                mDataManager.createProfile(profile),
-                                mDataManager.saveProfile(profile)
-                        ))
-                    }
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe({
-                        v.hideLoading()
-                        v.showMessageSuccessRegistration()
-                    }, {
-                        v.hideLoading()
-                        if (it is ProfileExistsException) {
-                            v.showErrorEmailExists()
-                        } else {
-                            it.printStackTrace()
-                            v.showErrorNetworkConnection()
+                        .flatMapCompletable { passwordHash ->
+                            val profile = MyProfile(email, passwordHash)
+                            return@flatMapCompletable Completable.merge(listOf(
+                                    mDataManager.createProfile(profile),
+                                    mDataManager.saveProfile(profile)
+                            ))
                         }
-                    }))
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe({
+                            v.hideLoading()
+                            v.showMessageSuccessRegistration()
+                        }, {
+                            v.hideLoading()
+                            if (it is ProfileExistsException) {
+                                v.showErrorEmailExists()
+                            } else {
+                                it.printStackTrace()
+                                v.showErrorNetworkConnection()
+                            }
+                        }))
+            }
 
         }
     }
@@ -95,30 +73,60 @@ class RegistrationPresenter(
                     v.showErrorNetworkConnection()
                     return
                 }
-                if (email.isEmpty()) {
-                    v.showErrorEmptyEmail()
-                    return
+                if (validateEmail(email)) {
+                    v.showLoadingEmail()
+                    addDisposable(mDataManager.isProfileExists(email)
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .subscribe({ exists ->
+                                v.hideLoadingEmail()
+                                if (exists) {
+                                    v.showErrorEmailExists()
+                                } else {
+                                    v.showMessageCorrectEmail()
+                                }
+                            }, {
+                                it.printStackTrace()
+                                v.hideLoadingEmail()
+                                v.showErrorNetworkConnection()
+                            }))
                 }
-                if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-                    v.showErrorEmailFormat()
-                    return
-                }
-                v.showLoadingEmail()
-                addDisposable(mDataManager.isProfileExists(email)
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe({ exists ->
-                            v.hideLoadingEmail()
-                            if (exists) {
-                                v.showErrorEmailExists()
-                            } else {
-                                v.showMessageCorrectEmail()
-                            }
-                        }, {
-                            it.printStackTrace()
-                            v.hideLoadingEmail()
-                            v.showErrorNetworkConnection()
-                        }))
             }
+        }
+    }
+
+    private fun validateEmail(email: String): Boolean {
+        return when {
+            email.isEmpty() -> {
+                view?.showErrorEmptyEmail()
+                return false
+            }
+            !Patterns.EMAIL_ADDRESS.matcher(email).matches() -> {
+                view?.showErrorEmailFormat()
+                return false
+            }
+            else -> true
+        }
+    }
+
+    private fun validatePassword(password: String, passwordRepeat: String): Boolean {
+        return when {
+            password.isEmpty() -> {
+                view?.showErrorEmptyPassword()
+                return false
+            }
+            passwordRepeat.isEmpty() -> {
+                view?.showErrorEmptyPasswordRepeat()
+                return false
+            }
+            password.length < PASSWORD_MIN_LENGTH -> {
+                view?.showErrorShortPassword()
+                return false
+            }
+            password != passwordRepeat -> {
+                view?.showErrorPassword()
+                return false
+            }
+            else -> true
         }
     }
 
