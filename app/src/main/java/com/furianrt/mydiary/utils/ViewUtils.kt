@@ -46,3 +46,10 @@ fun View.animateScale(from: Float, to: Float, duration: Long) {
         interpolator = OvershootInterpolator()
     }.start()
 }
+
+fun View.animateShake(duration: Long) {
+    ObjectAnimator
+            .ofFloat(this, "translationX", 0f, 52f, -26f, 52f, 0f)
+            .setDuration(duration)
+            .start()
+}

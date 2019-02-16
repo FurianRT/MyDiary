@@ -185,5 +185,10 @@
     <string name="fragment_registration_error_short_password">Пароль слишком короткий</string>
     <string name="fragment_registration_empty_password">Введите пароль</string>
     <string name="fragment_registration_empty_email">Введите email</string>
+    <string name="fragment_done_auth_done">Добро пожаловать!</string>
+    <string name="nav_header_main_sing_in">Войти в аккаунт</string>
+    <string name="nav_header_main_anonymous">Аноним</string>
+    <string name="nav_header_main_regular">Премиум статус: нет</string>
+    <string name="nav_header_main_premium">Премиум статус: есть</string>
 
 </resources>

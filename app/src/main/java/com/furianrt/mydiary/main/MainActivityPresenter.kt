@@ -4,6 +4,7 @@ import android.util.Log
 import com.furianrt.mydiary.data.DataManager
 import com.furianrt.mydiary.data.model.MyHeaderImage
 import com.furianrt.mydiary.data.model.MyNoteWithProp
+import com.furianrt.mydiary.data.model.MyProfile
 import com.furianrt.mydiary.main.listadapter.MainContentItem
 import com.furianrt.mydiary.main.listadapter.MainHeaderItem
 import com.furianrt.mydiary.main.listadapter.MainListItem
@@ -25,6 +26,7 @@ class MainActivityPresenter(private val mDataManager: DataManager) : MainActivit
     }
 
     private var mSelectedNotes = ArrayList<MyNoteWithProp>()
+    private var mProfile = MyProfile()
 
     private fun deleteImagesAndNote(note: MyNoteWithProp): Single<Boolean> =
             Flowable.fromIterable(note.images)
@@ -56,6 +58,7 @@ class MainActivityPresenter(private val mDataManager: DataManager) : MainActivit
     }
 
     override fun onViewStart() {
+        loadProfile()
         loadNotes()
         loadHeaderImages()
     }
@@ -77,6 +80,19 @@ class MainActivityPresenter(private val mDataManager: DataManager) : MainActivit
                 .flatMapCompletable { savedImage -> mDataManager.insertHeaderImage(savedImage) }
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe())
+    }
+
+    private fun loadProfile() {
+        addDisposable(mDataManager.getDbProfile()
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe { profile ->
+                    mProfile = profile
+                    if (profile.hasPremium) {
+                        view?.showPremiumProfile(profile)
+                    } else {
+                        view?.showRegularProfile(profile)
+                    }
+                })
     }
 
     private fun loadHeaderImages() {
@@ -196,7 +212,15 @@ class MainActivityPresenter(private val mDataManager: DataManager) : MainActivit
     }
 
     override fun onButtonProfileClick() {
-        //todo различные проверки
-        view?.showLoginView()
+        if (mProfile.email.isEmpty()) {
+            view?.showLoginView()
+        } else {
+            view?.showProfileSettings()
+        }
+    }
+
+    override fun onSignOut() {
+        mProfile = MyProfile()
+        view?.showAnonymousProfile()
     }
 }

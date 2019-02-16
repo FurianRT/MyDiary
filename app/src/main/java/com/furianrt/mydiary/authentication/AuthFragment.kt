@@ -79,7 +79,7 @@ class AuthFragment : Fragment(), AuthContract.View {
         view.button_create_account.setOnClickListener { mPresenter.onButtonCreateAccountClick() }
 
         savedInstanceState?.let {
-            view.button_create_account.translationY = it.getFloat(BUNDLE_CREATE_BUTTON_TRANSLATION_Y, 0f)
+            view.card_create_account.translationY = it.getFloat(BUNDLE_CREATE_BUTTON_TRANSLATION_Y, 0f)
         }
 
         if (childFragmentManager.findFragmentByTag(LoginFragment.TAG) == null) {
@@ -93,7 +93,7 @@ class AuthFragment : Fragment(), AuthContract.View {
 
     override fun onSaveInstanceState(outState: Bundle) {
         view?.let {
-            outState.putFloat(BUNDLE_CREATE_BUTTON_TRANSLATION_Y, it.button_create_account.translationY)
+            outState.putFloat(BUNDLE_CREATE_BUTTON_TRANSLATION_Y, it.card_create_account.translationY)
         }
         super.onSaveInstanceState(outState)
     }
