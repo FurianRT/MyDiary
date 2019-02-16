@@ -27,6 +27,9 @@ interface MainActivityContract {
         fun showPremiumProfile(profile: MyProfile)
         fun showRegularProfile(profile: MyProfile)
         fun showProfileSettings()
+        fun showNotesCountToday(count: Int)
+        fun showImageCount(count: Int)
+        fun showNotesTotal(count: Int)
     }
 
     abstract class Presenter : BasePresenter<View>() {

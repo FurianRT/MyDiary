@@ -44,6 +44,7 @@ import jp.wasabeef.recyclerview.animators.LandingAnimator
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.activity_main_toolbar.*
 import kotlinx.android.synthetic.main.bottom_sheet_main.*
+import kotlinx.android.synthetic.main.nav_header_main.*
 import kotlinx.android.synthetic.main.nav_header_main.view.*
 import pub.devrel.easypermissions.AfterPermissionGranted
 import pub.devrel.easypermissions.EasyPermissions
@@ -327,13 +328,24 @@ class MainActivity : BaseActivity(), MainActivityContract.View,
 
     override fun showNotes(notes: List<MainListItem>, selectedNotes: ArrayList<MyNoteWithProp>) {
         Log.i(TAG, "showNotes")
-
         mAdapter.submitList(notes.toMutableList())
         mAdapter.selectedNotes = selectedNotes
         mRecyclerViewState?.let {
             list_main.layoutManager?.onRestoreInstanceState(it)
             mRecyclerViewState = null
         }
+    }
+
+    override fun showNotesTotal(count: Int) {
+        text_notes_total.text = count.toString()
+    }
+
+    override fun showNotesCountToday(count: Int) {
+        text_notes_today.text = count.toString()
+    }
+
+    override fun showImageCount(count: Int) {
+        text_image_total.text = count.toString()
     }
 
     override fun onMainListItemClick(note: MyNoteWithProp, position: Int) {

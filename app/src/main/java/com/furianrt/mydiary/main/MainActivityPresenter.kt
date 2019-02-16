@@ -13,6 +13,7 @@ import io.reactivex.Flowable
 import io.reactivex.Observable
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
+import net.danlew.android.joda.DateUtils
 import org.joda.time.DateTime
 import java.util.*
 import kotlin.Comparator
@@ -111,7 +112,20 @@ class MainActivityPresenter(private val mDataManager: DataManager) : MainActivit
         addDisposable(mDataManager.getAllNotesWithProp()
                 .map { formatNotes(toMap(it)) }
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { view?.showNotes(it, mSelectedNotes) })
+                .subscribe { items ->
+                    val notes = items
+                            .filter { it is MainContentItem }
+                            .map {
+                                it as MainContentItem
+                                return@map it.note
+                            }
+                    view?.showNotesCountToday(notes
+                            .filter { DateUtils.isToday(DateTime(it.note.time)) }
+                            .size)
+                    view?.showImageCount(notes.sumBy { it.images.size })
+                    view?.showNotesTotal(notes.size)
+                    view?.showNotes(items, mSelectedNotes)
+                })
     }
 
     private fun toMap(notes: List<MyNoteWithProp>): Map<Long, ArrayList<MyNoteWithProp>> {

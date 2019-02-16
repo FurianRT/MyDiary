@@ -168,9 +168,6 @@
     <string name="time_picker_cancel">ОТМЕНА</string>
     <string name="fragment_authentication_sign_in">Логин</string>
     <string name="fragment_authentication_sign_up">Регистрация</string>
-    <string name="main_header_button_sync">Синхронизация (PRO)</string>
-    <string name="main_header_today">Сегодня:</string>
-    <string name="main_header_total">Всего:</string>
     <string name="fragment_registration_email">Email</string>
     <string name="fragment_registration_password">Пароль</string>
     <string name="fragment_registration_repeat_password">Повторите пароль</string>
@@ -190,5 +187,9 @@
     <string name="nav_header_main_anonymous">Аноним</string>
     <string name="nav_header_main_regular">Премиум статус: нет</string>
     <string name="nav_header_main_premium">Премиум статус: есть</string>
+    <string name="nav_header_main_photos">Фото:</string>
+    <string name="nav_header_main_button_sync">Синхронизация (PRO)</string>
+    <string name="nav_header_main_today">Сегодня:</string>
+    <string name="nav_header_main_total">Всего:</string>
 
 </resources>

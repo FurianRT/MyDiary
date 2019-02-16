@@ -49,15 +49,16 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="4dp"
-                android:text="@string/main_header_total"
+                android:text="@string/nav_header_main_total"
                 android:textColor="@color/white"
                 android:textSize="12sp" />
 
             <TextView
+                android:id="@+id/text_notes_total"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="16dp"
-                android:text="23"
+                android:text="0"
                 android:textColor="@color/white"
                 android:textSize="12sp" />
 
@@ -65,15 +66,16 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="4dp"
-                android:text="@string/main_header_today"
+                android:text="@string/nav_header_main_today"
                 android:textColor="@color/white"
                 android:textSize="12sp" />
 
             <TextView
+                android:id="@+id/text_notes_today"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="16dp"
-                android:text="2"
+                android:text="0"
                 android:textColor="@color/white"
                 android:textSize="12sp" />
 
@@ -81,15 +83,16 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="4dp"
-                android:text="Фото:"
+                android:text="@string/nav_header_main_photos"
                 android:textColor="@color/white"
                 android:textSize="12sp" />
 
             <TextView
+                android:id="@+id/text_image_total"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="4dp"
-                android:text="32"
+                android:text="0"
                 android:textColor="@color/white"
                 android:textSize="12sp" />
 
@@ -165,7 +168,7 @@
         android:gravity="center"
         android:paddingStart="16dp"
         android:paddingEnd="16dp"
-        android:text="@string/main_header_button_sync"
+        android:text="@string/nav_header_main_button_sync"
         android:textAllCaps="false"
         android:textColor="@color/white"
         android:textSize="15sp"
