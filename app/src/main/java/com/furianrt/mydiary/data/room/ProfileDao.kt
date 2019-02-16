@@ -2,7 +2,7 @@ package com.furianrt.mydiary.data.room
 
 import androidx.room.*
 import com.furianrt.mydiary.data.model.MyProfile
-import io.reactivex.Maybe
+import io.reactivex.Observable
 
 @Dao
 abstract class ProfileDao {
@@ -23,6 +23,6 @@ abstract class ProfileDao {
     abstract fun delete()
 
     @Query("SELECT * FROM Profile")
-    abstract fun getProfile(): Maybe<MyProfile>
+    abstract fun getProfile(): Observable<MyProfile>
 
 }

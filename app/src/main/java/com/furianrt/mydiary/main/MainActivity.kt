@@ -23,6 +23,7 @@ import com.furianrt.mydiary.R
 import com.furianrt.mydiary.authentication.AuthFragment
 import com.furianrt.mydiary.data.model.MyHeaderImage
 import com.furianrt.mydiary.data.model.MyNoteWithProp
+import com.furianrt.mydiary.data.model.MyProfile
 import com.furianrt.mydiary.general.AppBarLayoutBehavior
 import com.furianrt.mydiary.general.GlideApp
 import com.furianrt.mydiary.general.HeaderItemDecoration
@@ -50,7 +51,8 @@ import java.util.*
 import javax.inject.Inject
 
 class MainActivity : BaseActivity(), MainActivityContract.View,
-        MainListAdapter.OnMainListItemInteractionListener, View.OnClickListener {
+        MainListAdapter.OnMainListItemInteractionListener, View.OnClickListener,
+        ProfileFragment.OnProfileFragmentInteractionListener {
 
     companion object {
         private const val TAG = "MainActivity"
@@ -110,14 +112,6 @@ class MainActivity : BaseActivity(), MainActivityContract.View,
         }
 
         setupUi()
-    }
-
-    override fun onStart() {
-        super.onStart()
-        Log.e(TAG, "onStart")
-        mPresenter.attachView(this)
-        mAdapter.listener = this
-        mPresenter.onViewStart()
     }
 
     override fun showHeaderImages(images: List<MyHeaderImage>) {
@@ -195,13 +189,10 @@ class MainActivity : BaseActivity(), MainActivityContract.View,
         nav_view.getHeaderView(0).image_profile.setOnClickListener(this)
 
         mAdapter = MainListAdapter(is24TimeFormat = mPresenter.is24TimeFormat())
-
-        list_main.apply {
-            layoutManager = LinearLayoutManager(this@MainActivity)
-            addItemDecoration(HeaderItemDecoration(this, mAdapter))
-            adapter = mAdapter
-            itemAnimator = LandingAnimator()
-        }
+        list_main.layoutManager = LinearLayoutManager(this)
+        list_main.addItemDecoration(HeaderItemDecoration(list_main, mAdapter))
+        list_main.adapter = mAdapter
+        list_main.itemAnimator = LandingAnimator()
     }
 
     override fun onClick(v: View?) {
@@ -238,19 +229,24 @@ class MainActivity : BaseActivity(), MainActivityContract.View,
         }
     }
 
-    override fun showLoginView() {
-        if (supportFragmentManager.findFragmentByTag(AuthFragment.TAG) == null) {
+    override fun showProfileSettings() {
+        if (supportFragmentManager.findFragmentByTag(ProfileFragment.TAG) == null) {
             supportFragmentManager.inTransaction {
-                add(R.id.main_sheet_container, AuthFragment(), AuthFragment.TAG)
-                Log.e(TAG, "AuthFragment added")
+                replace(R.id.main_sheet_container, ProfileFragment(), ProfileFragment.TAG)
+                Log.e(TAG, "ProfileFragment added")
             }
         }
         mBottomSheet.state = BottomSheetBehavior.STATE_EXPANDED
     }
 
-    override fun showSettingsView() {
-        val intent = Intent(this, GlobalSettingsActivity::class.java)
-        startActivityForResult(intent, ACTIVITY_SETTING_REQUEST_CODE)
+    override fun showLoginView() {
+        if (supportFragmentManager.findFragmentByTag(AuthFragment.TAG) == null) {
+            supportFragmentManager.inTransaction {
+                replace(R.id.main_sheet_container, AuthFragment(), AuthFragment.TAG)
+                Log.e(TAG, "AuthFragment added")
+            }
+        }
+        mBottomSheet.state = BottomSheetBehavior.STATE_EXPANDED
     }
 
     override fun showPremiumView() {
@@ -373,11 +369,40 @@ class MainActivity : BaseActivity(), MainActivityContract.View,
         startActivity(intent)
     }
 
+    override fun showSettingsView() {
+        val intent = Intent(this, GlobalSettingsActivity::class.java)
+        startActivityForResult(intent, ACTIVITY_SETTING_REQUEST_CODE)
+    }
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == ACTIVITY_SETTING_REQUEST_CODE) {
             recreate()
         }
+    }
+
+    override fun onSignOut() {
+        mPresenter.onSignOut()
+    }
+
+    override fun showAnonymousProfile() {
+        nav_view.getHeaderView(0).text_email.text = getString(R.string.nav_header_main_anonymous)
+        nav_view.getHeaderView(0).text_profile_description.text =
+                getString(R.string.nav_header_main_sing_in)
+    }
+
+    override fun showRegularProfile(profile: MyProfile) {
+        //todo Добавить загрузку картинки профиля
+        nav_view.getHeaderView(0).text_email.text = profile.email
+        nav_view.getHeaderView(0).text_profile_description.text =
+                getString(R.string.nav_header_main_regular)
+    }
+
+    override fun showPremiumProfile(profile: MyProfile) {
+        //todo Добавить загрузку картинки профиля
+        nav_view.getHeaderView(0).text_email.text = profile.email
+        nav_view.getHeaderView(0).text_profile_description.text =
+                getString(R.string.nav_header_main_premium)
     }
 
     fun closeBottomSheet() {
@@ -401,6 +426,14 @@ class MainActivity : BaseActivity(), MainActivityContract.View,
                 Toast.makeText(this, getString(R.string.click_again_to_exit), Toast.LENGTH_SHORT).show()
             else -> super.onBackPressed()
         }
+    }
+
+    override fun onStart() {
+        super.onStart()
+        Log.e(TAG, "onStart")
+        mPresenter.attachView(this)
+        mAdapter.listener = this
+        mPresenter.onViewStart()
     }
 
     override fun onPause() {

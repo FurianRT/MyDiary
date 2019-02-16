@@ -5,13 +5,16 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.furianrt.mydiary.R
 import com.furianrt.mydiary.authentication.AuthFragment
+import com.furianrt.mydiary.authentication.done.DoneAuthFragment
+import com.furianrt.mydiary.note.fragments.notefragment.inTransaction
 import com.furianrt.mydiary.utils.getThemeAccentColor
 import com.furianrt.mydiary.utils.isNetworkAvailable
+import com.google.android.material.bottomsheet.BottomSheetBehavior
+import kotlinx.android.synthetic.main.bottom_sheet_main.*
 import kotlinx.android.synthetic.main.fragment_registration.view.*
 import javax.inject.Inject
 
@@ -19,6 +22,7 @@ class RegistrationFragment : Fragment(), RegistrationContract.View {
 
     companion object {
         const val TAG = "RegistrationFragment"
+        private const val CLOSE_AFTER_DONE_DELAY = 2200L
     }
 
     @Inject
@@ -73,7 +77,19 @@ class RegistrationFragment : Fragment(), RegistrationContract.View {
     }
 
     override fun showMessageSuccessRegistration() {
-        Toast.makeText(context, "Регистрация успешна!", Toast.LENGTH_SHORT).show()
+        fragmentManager?.let {
+            if (it.findFragmentByTag(DoneAuthFragment.TAG) == null) {
+                it.inTransaction {
+                    setCustomAnimations(R.anim.from_top, R.anim.from_top)
+                    add(R.id.card_auth_container, DoneAuthFragment(), DoneAuthFragment.TAG)
+                }
+            }
+        }
+        activity?.let {
+            it.main_sheet_container.postDelayed({
+                BottomSheetBehavior.from(it.main_sheet_container).state = BottomSheetBehavior.STATE_COLLAPSED
+            }, CLOSE_AFTER_DONE_DELAY)
+        }
     }
 
     override fun showErrorShortPassword() {

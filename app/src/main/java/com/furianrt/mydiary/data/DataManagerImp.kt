@@ -183,7 +183,7 @@ class DataManagerImp(
                     .getNoteAppearance(noteId)
                     .subscribeOn(mRxScheduler)
 
-    override fun getDbProfile(): Maybe<MyProfile> =
+    override fun getDbProfile(): Observable<MyProfile> =
             mDatabase.profileDao()
                     .getProfile()
                     .subscribeOn(mRxScheduler)

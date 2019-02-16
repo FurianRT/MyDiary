@@ -2,10 +2,7 @@ package com.furianrt.mydiary.data
 
 import com.furianrt.mydiary.data.api.Forecast
 import com.furianrt.mydiary.data.model.*
-import io.reactivex.Completable
-import io.reactivex.Flowable
-import io.reactivex.Maybe
-import io.reactivex.Single
+import io.reactivex.*
 
 interface DataManager {
 
@@ -54,7 +51,7 @@ interface DataManager {
     fun getImagesForNote(noteId: String): Flowable<List<MyImage>>
     fun getAllNotesWithProp(): Flowable<List<MyNoteWithProp>>
     fun getHeaderImages(): Flowable<List<MyHeaderImage>>
-    fun getDbProfile(): Maybe<MyProfile>
+    fun getDbProfile(): Observable<MyProfile>
     fun getCloudProfile(email: String): Maybe<MyProfile>
     fun getTextColor(): Int
     fun getTextSize(): Int

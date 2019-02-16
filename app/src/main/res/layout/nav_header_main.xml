@@ -136,19 +136,21 @@
             app:layout_constraintVertical_bias="0.3">
 
             <TextView
+                android:id="@+id/text_email"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="FurianRT@gmail.com"
+                android:text="@string/nav_header_main_anonymous"
                 android:textColor="@color/white"
                 android:textSize="13sp"
                 android:textStyle="bold" />
 
             <TextView
+                android:id="@+id/text_profile_description"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="fwFIeangwignwie"
                 android:textColor="@color/white"
-                android:textSize="12sp" />
+                android:textSize="12sp"
+                android:text="@string/nav_header_main_sing_in"/>
 
         </LinearLayout>
 

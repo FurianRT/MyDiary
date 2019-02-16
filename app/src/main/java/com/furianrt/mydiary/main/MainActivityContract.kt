@@ -4,6 +4,7 @@ import com.furianrt.mydiary.BasePresenter
 import com.furianrt.mydiary.BaseView
 import com.furianrt.mydiary.data.model.MyHeaderImage
 import com.furianrt.mydiary.data.model.MyNoteWithProp
+import com.furianrt.mydiary.data.model.MyProfile
 import com.furianrt.mydiary.main.listadapter.MainListItem
 
 interface MainActivityContract {
@@ -22,6 +23,10 @@ interface MainActivityContract {
         fun showSettingsView()
         fun showPremiumView()
         fun showLoginView()
+        fun showAnonymousProfile()
+        fun showPremiumProfile(profile: MyProfile)
+        fun showRegularProfile(profile: MyProfile)
+        fun showProfileSettings()
     }
 
     abstract class Presenter : BasePresenter<View>() {
@@ -40,5 +45,6 @@ interface MainActivityContract {
         abstract fun is24TimeFormat(): Boolean
         abstract fun onButtonSyncClick()
         abstract fun onButtonProfileClick()
+        abstract fun onSignOut()
     }
 }
