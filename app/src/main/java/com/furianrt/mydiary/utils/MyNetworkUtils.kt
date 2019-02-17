@@ -4,18 +4,15 @@ import android.app.Activity
 import android.content.Context
 import android.net.ConnectivityManager
 import android.provider.Settings
-import android.provider.Settings.SettingNotFoundException
 import com.google.android.gms.common.ConnectionResult
 import com.google.android.gms.common.GoogleApiAvailability
 
-const val PLAY_SERVICES_RESOLUTION_REQUEST = 3223
-
-fun Activity.isGoogleServiesAvailable(): Boolean {
+fun Activity.isGoogleServiesAvailable(resolutionCode: Int): Boolean {
     val googleApiAvailability = GoogleApiAvailability.getInstance()
     val status = googleApiAvailability.isGooglePlayServicesAvailable(this)
     if (status != ConnectionResult.SUCCESS) {
         if (googleApiAvailability.isUserResolvableError(status)) {
-            googleApiAvailability.getErrorDialog(this, status, PLAY_SERVICES_RESOLUTION_REQUEST)
+            googleApiAvailability.getErrorDialog(this, status, resolutionCode)
                     .show()
         }
         return false
@@ -30,13 +27,13 @@ fun Context.isNetworkAvailable(): Boolean {
 }
 
 fun Context.isLocationEnabled(): Boolean {
-    val locationMode: Int
     try {
-        locationMode = Settings.Secure.getInt(contentResolver, Settings.Secure.LOCATION_MODE)
-    } catch (e: SettingNotFoundException) {
+        val locationMode = Settings.Secure.getInt(contentResolver, Settings.Secure.LOCATION_MODE)
+        if (locationMode == Settings.Secure.LOCATION_MODE_HIGH_ACCURACY) {
+            return true
+        }
+    } catch (e: Settings.SettingNotFoundException) {
         e.printStackTrace()
-        return false
     }
-
-    return locationMode != Settings.Secure.LOCATION_MODE_OFF
+    return false
 }
