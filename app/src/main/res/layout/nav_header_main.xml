@@ -29,18 +29,18 @@
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:background="#40000000"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintTop_toTopOf="parent"/>
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <LinearLayout
             android:id="@+id/layout_diary_progress"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:background="#59000000"
             android:gravity="center"
             android:padding="4dp"
-            android:background="#59000000"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent">
@@ -142,6 +142,8 @@
                 android:id="@+id/text_email"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:maxLines="1"
                 android:text="@string/nav_header_main_anonymous"
                 android:textColor="@color/white"
                 android:textSize="13sp"
@@ -151,9 +153,10 @@
                 android:id="@+id/text_profile_description"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="1dp"
+                android:text="@string/nav_header_main_sing_in"
                 android:textColor="@color/white"
-                android:textSize="12sp"
-                android:text="@string/nav_header_main_sing_in"/>
+                android:textSize="12sp" />
 
         </LinearLayout>
 

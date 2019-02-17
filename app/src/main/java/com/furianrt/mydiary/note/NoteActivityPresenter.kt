@@ -17,7 +17,7 @@ class NoteActivityPresenter(
     }
 
     override fun loadNote(noteId: String) {
-        val tempNote = MyNote(noteId, "", "")
+        val tempNote = MyNote(noteId)
         val noteAppearance = MyNoteAppearance(tempNote.id)
         addDisposable(mDataManager.findNote(noteId)
                 .switchIfEmpty(mDataManager.insertNote(tempNote)

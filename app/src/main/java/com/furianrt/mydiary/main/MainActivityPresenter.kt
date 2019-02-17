@@ -120,7 +120,7 @@ class MainActivityPresenter(private val mDataManager: DataManager) : MainActivit
                                 return@map it.note
                             }
                     view?.showNotesCountToday(notes
-                            .filter { DateUtils.isToday(DateTime(it.note.time)) }
+                            .filter { DateUtils.isToday(DateTime(it.note.creationTime)) }
                             .size)
                     view?.showImageCount(notes.sumBy { it.images.size })
                     view?.showNotesTotal(notes.size)
@@ -221,8 +221,13 @@ class MainActivityPresenter(private val mDataManager: DataManager) : MainActivit
             mDataManager.getTimeFormat() == DataManager.TIME_FORMAT_24
 
     override fun onButtonSyncClick() {
-        //todo проверка на наличие премиума
-        view?.showPremiumView()
+        when {
+            mProfile.email.isEmpty() -> view?.showLoginView()
+            mProfile.hasPremium -> {
+                //todo синхронизация
+            }
+            else -> view?.showPremiumView()
+        }
     }
 
     override fun onButtonProfileClick() {
