@@ -19,19 +19,20 @@ data class MyNoteWithProp(
 
     @Relation(entity = NoteTag::class, parentColumn = "id_note", entityColumn = "id_note",
             projection = ["id_tag"])
-    var tags: List<String> = ArrayList()
+    var tags: List<String> = arrayListOf()
 
     @Relation(entity = MyImage::class, parentColumn = "id_note", entityColumn = "id_note")
-    var images: List<MyImage> = ArrayList()
-        get() = field.sortedBy { it.order }
+    var images: List<MyImage> = arrayListOf()
 
     @Suppress("NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
     constructor(parcel: Parcel) : this(
             parcel.readParcelable(MyNote::class.java.classLoader),
             parcel.readParcelable(MyMood::class.java.classLoader),
             parcel.readParcelable(MyLocation::class.java.classLoader),
-            parcel.readParcelable(MyCategory::class.java.classLoader)) {
+            parcel.readParcelable(MyCategory::class.java.classLoader),
+            parcel.readParcelable(MyNoteAppearance::class.java.classLoader)) {
         tags = parcel.createStringArrayList()
+        images = parcel.createTypedArrayList(MyImage.CREATOR)
     }
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
@@ -39,7 +40,9 @@ data class MyNoteWithProp(
         parcel.writeParcelable(mood, flags)
         parcel.writeParcelable(location, flags)
         parcel.writeParcelable(category, flags)
+        parcel.writeParcelable(appearance, flags)
         parcel.writeStringList(tags)
+        parcel.writeTypedList(images)
     }
 
     override fun describeContents(): Int {
@@ -55,4 +58,6 @@ data class MyNoteWithProp(
             return arrayOfNulls(size)
         }
     }
+
+
 }

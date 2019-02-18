@@ -22,19 +22,16 @@ data class MyImage(
         @PrimaryKey(autoGenerate = false) @ColumnInfo(name = "name") var name: String,
         @ColumnInfo(name = "url") var url: String,
         @ColumnInfo(name = "id_note", index = true) var noteId: String,
-        @ColumnInfo(name = "time_added", index = true) var addedTime: Long
+        @ColumnInfo(name = "time_added", index = true) var addedTime: Long,
+        @ColumnInfo(name = "order") var order: Int = 0
 ) : Parcelable {
-
-    @ColumnInfo(name = "order")
-    var order: Int = 0
 
     constructor(parcel: Parcel) : this(
             parcel.readString() ?: "",
             parcel.readString() ?: "",
             parcel.readString() ?: "",
-            parcel.readLong()) {
-        order = parcel.readInt()
-    }
+            parcel.readLong(),
+            parcel.readInt())
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeString(name)

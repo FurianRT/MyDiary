@@ -71,8 +71,7 @@ class CategoryEditFragment : Fragment(), View.OnClickListener, CategoryEditContr
                 view?.let {
                     val color = it.color_picker_category.color
                     val name = it.edit_category.text?.toString() ?: ""
-                    val category = MyCategory(name, color)
-                    category.id = mCategoryId
+                    val category = MyCategory(mCategoryId, name, color)
                     mPresenter.onButtonDoneClick(category)
                 }
         }

@@ -1,10 +1,10 @@
 package com.furianrt.mydiary.data.model
 
-import android.os.Parcel
 import android.os.Parcelable
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
+import kotlinx.android.parcel.Parcelize
 
 @Entity(
         tableName = "NoteTag",
@@ -24,31 +24,8 @@ import androidx.room.ForeignKey
             )
         ]
 )
+@Parcelize
 data class NoteTag(
         @ColumnInfo(name = "id_note", index = true) var noteId: String,
         @ColumnInfo(name = "id_tag", index = true) var tagId: String
-) : Parcelable {
-
-    constructor(parcel: Parcel) : this(
-            parcel.readString() ?: "",
-            parcel.readString() ?: "")
-
-    override fun writeToParcel(parcel: Parcel, flags: Int) {
-        parcel.writeString(noteId)
-        parcel.writeString(tagId)
-    }
-
-    override fun describeContents(): Int {
-        return 0
-    }
-
-    companion object CREATOR : Parcelable.Creator<NoteTag> {
-        override fun createFromParcel(parcel: Parcel): NoteTag {
-            return NoteTag(parcel)
-        }
-
-        override fun newArray(size: Int): Array<NoteTag?> {
-            return arrayOfNulls(size)
-        }
-    }
-}
+) : Parcelable
