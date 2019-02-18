@@ -100,7 +100,6 @@ class DataManagerImp(
             Completable.fromAction { mDatabase.noteDao().delete(notes) }
                     .subscribeOn(mRxScheduler)
 
-
     override fun deleteImages(images: List<MyImage>): Completable =
             Completable.fromAction { mDatabase.imageDao().delete(images) }
                     .subscribeOn(mRxScheduler)

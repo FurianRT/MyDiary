@@ -8,14 +8,12 @@ import java.io.File
 import java.io.FileNotFoundException
 import java.io.FileOutputStream
 
-
 class StorageHelperImp(context: Context) : StorageHelper {
 
     private val mDirectory = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES)
 
     override fun getFile(fileName: String): File {
         val files = mDirectory!!.listFiles { file -> file.name.startsWith(fileName) }
-
         if (files.isEmpty()) {
             throw FileNotFoundException()
         } else {
@@ -27,15 +25,10 @@ class StorageHelperImp(context: Context) : StorageHelper {
 
     override fun copyImageToStorage(sourcePath: String, destFileName: String): File {
         val destFile = File(mDirectory, "$destFileName.jpg")
-
         val fos = FileOutputStream(destFile)
-
-        val bmOptions = BitmapFactory.Options()
-        val bitmap = BitmapFactory.decodeFile(sourcePath, bmOptions)
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 18, fos)
+        BitmapFactory.decodeFile(sourcePath).compress(Bitmap.CompressFormat.JPEG, 18, fos)
         fos.flush()
         fos.close()
-
         return destFile
     }
 }

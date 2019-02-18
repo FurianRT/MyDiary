@@ -15,6 +15,5 @@ data class MyTag(
         @Ignore var isChecked: Boolean = false
 ) : Parcelable {
 
-    @Ignore
     constructor(id: String, name: String) : this(id, name, false)
 }
