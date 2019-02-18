@@ -31,8 +31,8 @@ data class MyNoteWithProp(
             parcel.readParcelable(MyLocation::class.java.classLoader),
             parcel.readParcelable(MyCategory::class.java.classLoader),
             parcel.readParcelable(MyNoteAppearance::class.java.classLoader)) {
-        tags = parcel.createStringArrayList()
-        images = parcel.createTypedArrayList(MyImage.CREATOR)
+        parcel.readStringList(tags)
+        parcel.readList(images, MyImage::class.java.classLoader)
     }
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
@@ -58,6 +58,4 @@ data class MyNoteWithProp(
             return arrayOfNulls(size)
         }
     }
-
-
 }
