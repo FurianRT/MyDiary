@@ -20,11 +20,19 @@ data class MyNoteWithProp(
     constructor(id: String) : this(MyNote(id, "", ""))
 
     @IgnoredOnParcel
-    @Relation(entity = NoteTag::class, parentColumn = "id_note", entityColumn = "id_note",
-            projection = ["id_tag"])
+    @Relation(
+            entity = NoteTag::class,
+            parentColumn = "id_note",
+            entityColumn = "id_note",
+            projection = ["id_tag"]
+    )
     var tags: List<String> = arrayListOf()
 
     @IgnoredOnParcel
-    @Relation(entity = MyImage::class, parentColumn = "id_note", entityColumn = "id_note")
+    @Relation(
+            entity = MyImage::class,
+            parentColumn = "id_note",
+            entityColumn = "id_note"
+    )
     var images: List<MyImage> = arrayListOf()
 }
