@@ -3,10 +3,9 @@ package com.furianrt.mydiary.data.api
 import android.os.Parcel
 import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
-import java.io.Serializable
 
 data class Forecast(
-        @SerializedName("weather") val weather: ArrayList<Weather>,
+        @SerializedName("weather") val weather: List<Weather>,
         @SerializedName("main") val main: Main,
         @SerializedName("wind") val wind: Wind,
         @SerializedName("id") val id: Int,

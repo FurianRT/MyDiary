@@ -35,7 +35,7 @@ interface MainActivityContract {
     abstract class Presenter : BasePresenter<View>() {
         abstract fun onMainListItemClick(note: MyNoteWithProp, position: Int)
         abstract fun onHeaderImagesPicked(imageUrls: List<String>)
-        abstract fun onViewStart()
+        abstract fun onViewResume()
         abstract fun onButtonSetMainImageClick()
         abstract fun onStoragePermissionsGranted()
         abstract fun onMainListItemLongClick(note: MyNoteWithProp, position: Int)

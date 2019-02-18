@@ -274,7 +274,6 @@ class MainActivity : BaseActivity(), MainActivityContract.View,
     }
 
     override fun showViewNewNote() {
-        mPresenter.detachView()
         val intent = Intent(this, NoteActivity::class.java)
         intent.putExtra(NoteActivity.EXTRA_MODE, NoteActivity.Companion.Mode.ADD)
         startActivity(intent)
@@ -442,22 +441,24 @@ class MainActivity : BaseActivity(), MainActivityContract.View,
 
     override fun onStart() {
         super.onStart()
-        Log.e(TAG, "onStart")
-        mPresenter.attachView(this)
         mAdapter.listener = this
-        mPresenter.onViewStart()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        mPresenter.attachView(this)
+        mPresenter.onViewResume()
     }
 
     override fun onPause() {
         super.onPause()
         mNeedToOpenActionBar = false
         mBackPressCount = 0
+        mPresenter.detachView()
     }
 
     override fun onStop() {
         super.onStop()
-        Log.e(TAG, "onStop")
         mAdapter.listener = null
-        mPresenter.detachView()
     }
 }

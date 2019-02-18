@@ -58,7 +58,7 @@ class MainActivityPresenter(private val mDataManager: DataManager) : MainActivit
                 })
     }
 
-    override fun onViewStart() {
+    override fun onViewResume() {
         loadProfile()
         loadNotes()
         loadHeaderImages()
@@ -159,7 +159,7 @@ class MainActivityPresenter(private val mDataManager: DataManager) : MainActivit
     }
 
     override fun onFabMenuClick() {
-        Log.e(TAG, "onFabMenuClick")
+        Log.e(TAG, "onFabMenuClick " + (view == null).toString())
         if (mSelectedNotes.isEmpty()) {
             view?.showViewNewNote()
         } else {
