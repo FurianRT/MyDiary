@@ -12,4 +12,8 @@ class ProfilePresenter(
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { view?.showSignOut() })
     }
+
+    override fun onButtonCloseClick() {
+        view?.close()
+    }
 }

@@ -1,12 +1,6 @@
 package com.furianrt.mydiary.di.presenter
 
 import android.content.Context
-import com.furianrt.mydiary.main.fragments.authentication.AuthContract
-import com.furianrt.mydiary.main.fragments.authentication.AuthPresenter
-import com.furianrt.mydiary.main.fragments.authentication.login.LoginContract
-import com.furianrt.mydiary.main.fragments.authentication.login.LoginPresenter
-import com.furianrt.mydiary.main.fragments.authentication.registration.RegistrationContract
-import com.furianrt.mydiary.main.fragments.authentication.registration.RegistrationPresenter
 import com.furianrt.mydiary.data.DataManager
 import com.furianrt.mydiary.gallery.GalleryActivityContract
 import com.furianrt.mydiary.gallery.GalleryActivityPresenter
@@ -16,6 +10,18 @@ import com.furianrt.mydiary.gallery.fragments.pager.GalleryPagerContract
 import com.furianrt.mydiary.gallery.fragments.pager.GalleryPagerPresenter
 import com.furianrt.mydiary.main.MainActivityContract
 import com.furianrt.mydiary.main.MainActivityPresenter
+import com.furianrt.mydiary.main.fragments.authentication.AuthContract
+import com.furianrt.mydiary.main.fragments.authentication.AuthPresenter
+import com.furianrt.mydiary.main.fragments.authentication.login.LoginContract
+import com.furianrt.mydiary.main.fragments.authentication.login.LoginPresenter
+import com.furianrt.mydiary.main.fragments.authentication.registration.RegistrationContract
+import com.furianrt.mydiary.main.fragments.authentication.registration.RegistrationPresenter
+import com.furianrt.mydiary.main.fragments.imagesettings.ImageSettingsContract
+import com.furianrt.mydiary.main.fragments.imagesettings.ImageSettingsPresenter
+import com.furianrt.mydiary.main.fragments.premium.PremiumContract
+import com.furianrt.mydiary.main.fragments.premium.PremiumPresenter
+import com.furianrt.mydiary.main.fragments.profile.ProfileContract
+import com.furianrt.mydiary.main.fragments.profile.ProfilePresenter
 import com.furianrt.mydiary.note.NoteActivityContract
 import com.furianrt.mydiary.note.NoteActivityPresenter
 import com.furianrt.mydiary.note.dialogs.categories.CategoriesDialogContract
@@ -34,10 +40,6 @@ import com.furianrt.mydiary.note.fragments.notefragment.content.NoteContentFragm
 import com.furianrt.mydiary.note.fragments.notefragment.content.NoteContentFragmentPresenter
 import com.furianrt.mydiary.note.fragments.notefragment.edit.NoteEditFragmentContract
 import com.furianrt.mydiary.note.fragments.notefragment.edit.NoteEditFragmentPresenter
-import com.furianrt.mydiary.main.fragments.premium.PremiumContract
-import com.furianrt.mydiary.main.fragments.premium.PremiumPresenter
-import com.furianrt.mydiary.main.fragments.profile.ProfileContract
-import com.furianrt.mydiary.main.fragments.profile.ProfilePresenter
 import com.furianrt.mydiary.settings.note.NoteSettingsContract
 import com.furianrt.mydiary.settings.note.NoteSettingsPresenter
 import com.google.android.gms.location.FusedLocationProviderClient
@@ -147,4 +149,9 @@ class PresenterModule(private val context: Context) {
     @PresenterScope
     fun provideAuthPresenter(dataManager: DataManager): AuthContract.Presenter =
             AuthPresenter(dataManager)
+
+    @Provides
+    @PresenterScope
+    fun provideImageSettingsPresenter(dataManager: DataManager): ImageSettingsContract.Presenter =
+            ImageSettingsPresenter(dataManager)
 }

@@ -20,19 +20,20 @@ import androidx.core.view.GravityCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.furianrt.mydiary.BaseActivity
 import com.furianrt.mydiary.R
-import com.furianrt.mydiary.main.fragments.authentication.AuthFragment
 import com.furianrt.mydiary.data.model.MyHeaderImage
 import com.furianrt.mydiary.data.model.MyNoteWithProp
 import com.furianrt.mydiary.data.model.MyProfile
 import com.furianrt.mydiary.general.AppBarLayoutBehavior
 import com.furianrt.mydiary.general.GlideApp
 import com.furianrt.mydiary.general.HeaderItemDecoration
+import com.furianrt.mydiary.main.fragments.authentication.AuthFragment
+import com.furianrt.mydiary.main.fragments.imagesettings.ImageSettingsFragment
+import com.furianrt.mydiary.main.fragments.premium.PremiumFragment
+import com.furianrt.mydiary.main.fragments.profile.ProfileFragment
 import com.furianrt.mydiary.main.listadapter.MainListAdapter
 import com.furianrt.mydiary.main.listadapter.MainListItem
 import com.furianrt.mydiary.note.NoteActivity
 import com.furianrt.mydiary.note.fragments.notefragment.inTransaction
-import com.furianrt.mydiary.main.fragments.premium.PremiumFragment
-import com.furianrt.mydiary.main.fragments.profile.ProfileFragment
 import com.furianrt.mydiary.settings.global.GlobalSettingsActivity
 import com.furianrt.mydiary.utils.getThemePrimaryColor
 import com.furianrt.mydiary.utils.getThemePrimaryDarkColor
@@ -45,7 +46,6 @@ import jp.wasabeef.recyclerview.animators.LandingAnimator
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.activity_main_toolbar.*
 import kotlinx.android.synthetic.main.bottom_sheet_main.*
-import kotlinx.android.synthetic.main.nav_header_main.*
 import kotlinx.android.synthetic.main.nav_header_main.view.*
 import pub.devrel.easypermissions.AfterPermissionGranted
 import pub.devrel.easypermissions.EasyPermissions
@@ -54,7 +54,8 @@ import javax.inject.Inject
 
 class MainActivity : BaseActivity(), MainActivityContract.View,
         MainListAdapter.OnMainListItemInteractionListener, View.OnClickListener,
-        ProfileFragment.OnProfileFragmentInteractionListener {
+        ProfileFragment.OnProfileFragmentInteractionListener,
+        ImageSettingsFragment.OnImageSettingsInteractionListener {
 
     companion object {
         private const val TAG = "MainActivity"
@@ -96,6 +97,10 @@ class MainActivity : BaseActivity(), MainActivityContract.View,
                     supportFragmentManager.findFragmentByTag(AuthFragment.TAG)?.let {
                         Log.e(TAG, "AuthFragment removed")
                         (it as AuthFragment).clearFocus()
+                        supportFragmentManager.inTransaction { remove(it) }
+                    }
+                    supportFragmentManager.findFragmentByTag(ImageSettingsFragment.TAG)?.let {
+                        Log.e(TAG, "ImageSettingsFragment removed")
                         supportFragmentManager.inTransaction { remove(it) }
                     }
                 }
@@ -232,7 +237,13 @@ class MainActivity : BaseActivity(), MainActivityContract.View,
     }
 
     override fun showViewImageSettings() {
-
+        if (supportFragmentManager.findFragmentByTag(ImageSettingsFragment.TAG) == null) {
+            supportFragmentManager.inTransaction {
+                replace(R.id.main_sheet_container, ImageSettingsFragment(), ImageSettingsFragment.TAG)
+                Log.e(TAG, "ImageSettingsFragment added")
+            }
+        }
+        mBottomSheet.state = BottomSheetBehavior.STATE_EXPANDED
     }
 
     override fun setSortDesc() {

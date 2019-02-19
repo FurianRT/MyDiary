@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.furianrt.mydiary.R
+import com.furianrt.mydiary.main.MainActivity
 import kotlinx.android.synthetic.main.fragment_profile.view.*
 import javax.inject.Inject
 
@@ -30,12 +31,17 @@ class ProfileFragment : Fragment(), ProfileContract.View {
         val view = inflater.inflate(R.layout.fragment_profile, container, false)
 
         view.button_sign_out.setOnClickListener { mPresenter.onButtonSignOutClick() }
+        view.button_profile_close.setOnClickListener { mPresenter.onButtonCloseClick() }
 
         return view
     }
 
     override fun showSignOut() {
         mListener?.onSignOut()
+    }
+
+    override fun close() {
+        (activity as? MainActivity?)?.closeBottomSheet()
     }
 
     override fun onStart() {
