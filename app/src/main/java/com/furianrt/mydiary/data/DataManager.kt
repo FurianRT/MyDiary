@@ -65,7 +65,7 @@ interface DataManager {
     fun saveProfile(profile: MyProfile): Completable
     fun addLocation(location: MyLocation): Completable
     fun createProfile(profile: MyProfile): Completable
-    fun loadHeaderImages(page: Int = 1, perPage: Int = 20): Single<ImageResponse>
+    fun loadHeaderImages(page: Int = 1, perPage: Int = 20): Single<List<MyHeaderImage>>
 
     companion object {
         const val TIME_FORMAT_12 = 0

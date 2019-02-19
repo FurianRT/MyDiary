@@ -1,12 +1,12 @@
 package com.furianrt.mydiary.di.presenter
 
 import android.content.Context
-import com.furianrt.mydiary.authentication.AuthContract
-import com.furianrt.mydiary.authentication.AuthPresenter
-import com.furianrt.mydiary.authentication.login.LoginContract
-import com.furianrt.mydiary.authentication.login.LoginPresenter
-import com.furianrt.mydiary.authentication.registration.RegistrationContract
-import com.furianrt.mydiary.authentication.registration.RegistrationPresenter
+import com.furianrt.mydiary.main.fragments.authentication.AuthContract
+import com.furianrt.mydiary.main.fragments.authentication.AuthPresenter
+import com.furianrt.mydiary.main.fragments.authentication.login.LoginContract
+import com.furianrt.mydiary.main.fragments.authentication.login.LoginPresenter
+import com.furianrt.mydiary.main.fragments.authentication.registration.RegistrationContract
+import com.furianrt.mydiary.main.fragments.authentication.registration.RegistrationPresenter
 import com.furianrt.mydiary.data.DataManager
 import com.furianrt.mydiary.gallery.GalleryActivityContract
 import com.furianrt.mydiary.gallery.GalleryActivityPresenter
@@ -34,10 +34,10 @@ import com.furianrt.mydiary.note.fragments.notefragment.content.NoteContentFragm
 import com.furianrt.mydiary.note.fragments.notefragment.content.NoteContentFragmentPresenter
 import com.furianrt.mydiary.note.fragments.notefragment.edit.NoteEditFragmentContract
 import com.furianrt.mydiary.note.fragments.notefragment.edit.NoteEditFragmentPresenter
-import com.furianrt.mydiary.premium.PremiumContract
-import com.furianrt.mydiary.premium.PremiumPresenter
-import com.furianrt.mydiary.profile.ProfileContract
-import com.furianrt.mydiary.profile.ProfilePresenter
+import com.furianrt.mydiary.main.fragments.premium.PremiumContract
+import com.furianrt.mydiary.main.fragments.premium.PremiumPresenter
+import com.furianrt.mydiary.main.fragments.profile.ProfileContract
+import com.furianrt.mydiary.main.fragments.profile.ProfilePresenter
 import com.furianrt.mydiary.settings.note.NoteSettingsContract
 import com.furianrt.mydiary.settings.note.NoteSettingsPresenter
 import com.google.android.gms.location.FusedLocationProviderClient

@@ -1,4 +1,4 @@
-package com.furianrt.mydiary.profile
+package com.furianrt.mydiary.main.fragments.profile
 
 import android.content.Context
 import android.os.Bundle

@@ -1,4 +1,4 @@
-package com.furianrt.mydiary.premium
+package com.furianrt.mydiary.main.fragments.premium
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -6,7 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.furianrt.mydiary.R
-import com.furianrt.mydiary.authentication.AuthFragment
+import com.furianrt.mydiary.main.fragments.authentication.AuthFragment
 import com.furianrt.mydiary.main.MainActivity
 import com.furianrt.mydiary.note.fragments.notefragment.inTransaction
 import kotlinx.android.synthetic.main.fragment_premium.view.*

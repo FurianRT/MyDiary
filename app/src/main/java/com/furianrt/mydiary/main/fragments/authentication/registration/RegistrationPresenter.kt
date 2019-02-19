@@ -1,4 +1,4 @@
-package com.furianrt.mydiary.authentication.registration
+package com.furianrt.mydiary.main.fragments.authentication.registration
 
 import android.util.Patterns
 import com.furianrt.mydiary.data.DataManager

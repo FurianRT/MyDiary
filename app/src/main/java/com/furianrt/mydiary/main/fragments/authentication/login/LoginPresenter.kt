@@ -1,4 +1,4 @@
-package com.furianrt.mydiary.authentication.login
+package com.furianrt.mydiary.main.fragments.authentication.login
 
 import com.furianrt.mydiary.data.DataManager
 import com.furianrt.mydiary.data.model.MyProfile

@@ -1,4 +1,4 @@
-package com.furianrt.mydiary.authentication.registration
+package com.furianrt.mydiary.main.fragments.authentication.registration
 
 import com.furianrt.mydiary.BasePresenter
 import com.furianrt.mydiary.BaseView

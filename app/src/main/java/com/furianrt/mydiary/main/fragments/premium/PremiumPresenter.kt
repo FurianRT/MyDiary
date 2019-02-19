@@ -1,4 +1,4 @@
-package com.furianrt.mydiary.premium
+package com.furianrt.mydiary.main.fragments.premium
 
 import com.furianrt.mydiary.data.DataManager
 

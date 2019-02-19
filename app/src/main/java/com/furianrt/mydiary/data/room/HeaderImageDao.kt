@@ -10,7 +10,7 @@ import io.reactivex.Flowable
 @Dao
 interface HeaderImageDao {
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
     fun insert(headerImage: MyHeaderImage): Long
 
     @Query("SELECT * FROM HeaderImages")

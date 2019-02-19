@@ -2,8 +2,8 @@ package com.furianrt.mydiary.data
 
 import com.furianrt.mydiary.data.api.forecast.Forecast
 import com.furianrt.mydiary.data.api.forecast.WeatherApiService
+import com.furianrt.mydiary.data.api.images.Image
 import com.furianrt.mydiary.data.api.images.ImageApiService
-import com.furianrt.mydiary.data.api.images.ImageResponse
 import com.furianrt.mydiary.data.cloud.CloudHelper
 import com.furianrt.mydiary.data.model.*
 import com.furianrt.mydiary.data.prefs.PreferencesHelper
@@ -11,6 +11,7 @@ import com.furianrt.mydiary.data.room.NoteDatabase
 import com.furianrt.mydiary.data.storage.StorageHelper
 import com.furianrt.mydiary.di.application.AppScope
 import io.reactivex.*
+import org.joda.time.DateTime
 
 @AppScope
 class DataManagerImp(
@@ -22,6 +23,9 @@ class DataManagerImp(
         private val mCloud: CloudHelper,
         private val mRxScheduler: Scheduler  //Для тестов. Когда-нибудь они появятся.
 ) : DataManager {
+
+    private fun Image.toMyHeaderImage(): MyHeaderImage =
+            MyHeaderImage(id, largeImageURL, DateTime.now().millis)
 
     override fun insertNote(note: MyNote): Completable =
             Completable.fromAction { mDatabase.noteDao().insert(note) }
@@ -221,6 +225,7 @@ class DataManagerImp(
 
     override fun getHeaderImages(): Flowable<List<MyHeaderImage>> =
             mDatabase.headerImageDao().getHeaderImages()
+                    .map { it.sortedByDescending { image -> image.addedTime } }
                     .subscribeOn(mRxScheduler)
 
     override fun createProfile(profile: MyProfile): Completable =
@@ -253,7 +258,12 @@ class DataManagerImp(
 
     override fun getTimeFormat(): Int = mPrefs.getTimeFormat()
 
-    override fun loadHeaderImages(page: Int, perPage: Int): Single<ImageResponse> =
-            mImageApi.getImage()
+    override fun loadHeaderImages(page: Int, perPage: Int): Single<List<MyHeaderImage>> =
+            mImageApi.getImages()
+                    .map {
+                        it.images
+                                .map { image -> image.toMyHeaderImage() }
+                                .sortedByDescending { image -> image.addedTime }
+                    }
                     .subscribeOn(mRxScheduler)
 }

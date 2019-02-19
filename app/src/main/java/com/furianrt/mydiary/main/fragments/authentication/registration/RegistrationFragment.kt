@@ -1,4 +1,4 @@
-package com.furianrt.mydiary.authentication.registration
+package com.furianrt.mydiary.main.fragments.authentication.registration
 
 import android.graphics.PorterDuff
 import android.os.Bundle
@@ -8,8 +8,8 @@ import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.furianrt.mydiary.R
-import com.furianrt.mydiary.authentication.AuthFragment
-import com.furianrt.mydiary.authentication.done.DoneAuthFragment
+import com.furianrt.mydiary.main.fragments.authentication.AuthFragment
+import com.furianrt.mydiary.main.fragments.authentication.done.DoneAuthFragment
 import com.furianrt.mydiary.note.fragments.notefragment.inTransaction
 import com.furianrt.mydiary.utils.getThemeAccentColor
 import com.furianrt.mydiary.utils.isNetworkAvailable

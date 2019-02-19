@@ -1,4 +1,4 @@
-package com.furianrt.mydiary.authentication
+package com.furianrt.mydiary.main.fragments.authentication
 
 import com.furianrt.mydiary.data.DataManager
 

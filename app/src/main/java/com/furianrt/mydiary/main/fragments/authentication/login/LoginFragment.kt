@@ -1,4 +1,4 @@
-package com.furianrt.mydiary.authentication.login
+package com.furianrt.mydiary.main.fragments.authentication.login
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -6,7 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.furianrt.mydiary.R
-import com.furianrt.mydiary.authentication.done.DoneAuthFragment
+import com.furianrt.mydiary.main.fragments.authentication.done.DoneAuthFragment
 import com.furianrt.mydiary.note.fragments.notefragment.inTransaction
 import com.furianrt.mydiary.utils.animateShake
 import com.furianrt.mydiary.utils.isNetworkAvailable

@@ -1,17 +1,17 @@
-package com.furianrt.mydiary.premium
+package com.furianrt.mydiary.main.fragments.authentication
 
 import com.furianrt.mydiary.BasePresenter
 import com.furianrt.mydiary.BaseView
 
-interface PremiumContract {
+interface AuthContract {
 
     interface View : BaseView {
-        fun close()
-
+        fun closeSheet()
+        fun showRegistrationView()
     }
 
     abstract class Presenter : BasePresenter<View>() {
         abstract fun onButtonCloseClick()
-
+        abstract fun onButtonCreateAccountClick()
     }
 }

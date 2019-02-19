@@ -2,8 +2,6 @@ package com.furianrt.mydiary.main
 
 import android.util.Log
 import com.furianrt.mydiary.data.DataManager
-import com.furianrt.mydiary.data.api.images.Image
-import com.furianrt.mydiary.data.model.MyHeaderImage
 import com.furianrt.mydiary.data.model.MyNoteWithProp
 import com.furianrt.mydiary.data.model.MyProfile
 import com.furianrt.mydiary.main.listadapter.MainContentItem
@@ -22,9 +20,6 @@ import kotlin.collections.ArrayList
 class MainActivityPresenter(
         private val mDataManager: DataManager
 ) : MainActivityContract.Presenter() {
-
-    private fun Image.toMyHeaderImage(): MyHeaderImage =
-            MyHeaderImage(id, largeImageURL, DateTime.now().millis)
 
     companion object {
         private const val TAG = "MainActivityPresenter"
@@ -101,32 +96,38 @@ class MainActivityPresenter(
                 })
     }
 
-    private fun loadHeaderImage() {
+    private fun loadHeaderImage() {     //todo порефакторить
         addDisposable(mDataManager.getHeaderImages()
                 .firstOrError()
                 .flatMap { dbImages ->
-                    if (dbImages.isEmpty() || !DateUtils.isToday(DateTime(dbImages.first().addedTime))) {
-                        return@flatMap mDataManager.loadHeaderImages()
-                                .map { imageResponse ->
-                                    val image = imageResponse.images
-                                            .map { it.toMyHeaderImage() }
-                                            .find { !dbImages.contains(it) }
-                                    return@map image
-                                            ?: imageResponse.images.first().toMyHeaderImage()
+                    return@flatMap if (dbImages.isNotEmpty() && DateUtils.isToday(DateTime(dbImages.first().addedTime))) {
+                        Single.just(dbImages.first())
+                    } else if (dbImages.isNotEmpty() && view?.networkAvailable() == false) {
+                        Single.just(dbImages.first())
+                    } else if (dbImages.isEmpty() && view?.networkAvailable() == true) {
+                        mDataManager.loadHeaderImages()
+                                .map { it.first() }
+                                .flatMap { mDataManager.insertHeaderImage(it) }
+                                .flatMap { mDataManager.getHeaderImages().firstOrError() }
+                                .map { it.first() }
+                    } else if (dbImages.isNotEmpty() && view?.networkAvailable() == true) {
+                        mDataManager.loadHeaderImages()
+                                .onErrorReturn { dbImages }
+                                .map { list ->
+                                    list.find { apiImage ->
+                                        dbImages.find { it.id == apiImage.id } == null
+                                    } ?: dbImages.first()
                                 }
                                 .flatMap { mDataManager.insertHeaderImage(it) }
-                                .flatMap {
-                                    mDataManager.getHeaderImages()
-                                            .map { it.sortedBy { image -> image.addedTime }.first() }
-                                            .firstOrError()
-                                }
+                                .flatMap { mDataManager.getHeaderImages().firstOrError() }
+                                .map { it.first() }
                     } else {
-                        return@flatMap Single.just(dbImages.first())
+                        throw Exception()
                     }
                 }
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({ image ->
-                    view?.showHeaderImage(image)
+                .subscribe({
+                    view?.showHeaderImage(it)
                 }, { error ->
                     error.printStackTrace()
                     view?.showEmptyHeaderImage()
@@ -212,7 +213,8 @@ class MainActivityPresenter(
     }
 
     override fun onButtonSetMainImageClick() {
-        view?.requestStoragePermissions()
+        view?.showViewImageSettings()
+        //view?.requestStoragePermissions()
     }
 
     override fun onMainListItemClick(note: MyNoteWithProp, position: Int) {

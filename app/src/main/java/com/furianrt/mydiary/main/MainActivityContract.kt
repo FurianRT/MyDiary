@@ -23,6 +23,7 @@ interface MainActivityContract {
         fun showSettingsView()
         fun showPremiumView()
         fun showLoginView()
+        fun networkAvailable(): Boolean
         fun showAnonymousProfile()
         fun showPremiumProfile(profile: MyProfile)
         fun showRegularProfile(profile: MyProfile)
@@ -32,6 +33,7 @@ interface MainActivityContract {
         fun showNotesTotal(count: Int)
         fun setSortDesc()
         fun setSortAsc()
+        fun showViewImageSettings()
     }
 
     abstract class Presenter : BasePresenter<View>() {

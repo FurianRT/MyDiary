@@ -1,4 +1,4 @@
-package com.furianrt.mydiary.authentication.done
+package com.furianrt.mydiary.main.fragments.authentication.done
 
 import android.os.Bundle
 import android.view.LayoutInflater

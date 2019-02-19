@@ -1,4 +1,4 @@
-package com.furianrt.mydiary.profile
+package com.furianrt.mydiary.main.fragments.profile
 
 import com.furianrt.mydiary.BasePresenter
 import com.furianrt.mydiary.BaseView

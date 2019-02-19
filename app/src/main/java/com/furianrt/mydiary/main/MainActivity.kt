@@ -20,7 +20,7 @@ import androidx.core.view.GravityCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.furianrt.mydiary.BaseActivity
 import com.furianrt.mydiary.R
-import com.furianrt.mydiary.authentication.AuthFragment
+import com.furianrt.mydiary.main.fragments.authentication.AuthFragment
 import com.furianrt.mydiary.data.model.MyHeaderImage
 import com.furianrt.mydiary.data.model.MyNoteWithProp
 import com.furianrt.mydiary.data.model.MyProfile
@@ -31,11 +31,12 @@ import com.furianrt.mydiary.main.listadapter.MainListAdapter
 import com.furianrt.mydiary.main.listadapter.MainListItem
 import com.furianrt.mydiary.note.NoteActivity
 import com.furianrt.mydiary.note.fragments.notefragment.inTransaction
-import com.furianrt.mydiary.premium.PremiumFragment
-import com.furianrt.mydiary.profile.ProfileFragment
+import com.furianrt.mydiary.main.fragments.premium.PremiumFragment
+import com.furianrt.mydiary.main.fragments.profile.ProfileFragment
 import com.furianrt.mydiary.settings.global.GlobalSettingsActivity
 import com.furianrt.mydiary.utils.getThemePrimaryColor
 import com.furianrt.mydiary.utils.getThemePrimaryDarkColor
+import com.furianrt.mydiary.utils.isNetworkAvailable
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.yanzhenjie.album.Album
@@ -179,7 +180,7 @@ class MainActivity : BaseActivity(), MainActivityContract.View,
         fab_delete.setOnClickListener(this)
         fab_folder.setOnClickListener(this)
         fab_place.setOnClickListener(this)
-        //image_toolbar_main.setOnClickListener(this)
+        image_toolbar_main.setOnClickListener(this)
         nav_view.getHeaderView(0).button_sync.setOnClickListener(this)
         nav_view.getHeaderView(0).button_profile_settings.setOnClickListener(this)
         nav_view.getHeaderView(0).layout_profile_name.setOnClickListener(this)
@@ -195,7 +196,7 @@ class MainActivity : BaseActivity(), MainActivityContract.View,
     override fun onClick(v: View?) {
         when (v?.id) {
             R.id.fab_delete -> mPresenter.onMenuDeleteClick()
-            //R.id.image_toolbar_main -> mPresenter.onButtonSetMainImageClick()
+            R.id.image_toolbar_main -> mPresenter.onButtonSetMainImageClick()
             R.id.fab_menu -> mPresenter.onFabMenuClick()
             R.id.button_sync -> mPresenter.onButtonSyncClick()
             R.id.button_profile_settings -> mPresenter.onButtonProfileClick()
@@ -228,6 +229,10 @@ class MainActivity : BaseActivity(), MainActivityContract.View,
             }
             else -> super.onOptionsItemSelected(item)
         }
+    }
+
+    override fun showViewImageSettings() {
+
     }
 
     override fun setSortDesc() {
@@ -345,15 +350,15 @@ class MainActivity : BaseActivity(), MainActivityContract.View,
     }
 
     override fun showNotesTotal(count: Int) {
-        text_notes_total.text = count.toString()
+        nav_view.getHeaderView(0).text_notes_total.text = count.toString()
     }
 
     override fun showNotesCountToday(count: Int) {
-        text_notes_today.text = count.toString()
+        nav_view.getHeaderView(0).text_notes_today.text = count.toString()
     }
 
     override fun showImageCount(count: Int) {
-        text_image_total.text = count.toString()
+        nav_view.getHeaderView(0).text_image_total.text = count.toString()
     }
 
     override fun onMainListItemClick(note: MyNoteWithProp, position: Int) {
@@ -447,6 +452,8 @@ class MainActivity : BaseActivity(), MainActivityContract.View,
             else -> super.onBackPressed()
         }
     }
+
+    override fun networkAvailable() = isNetworkAvailable()
 
     override fun onStart() {
         super.onStart()
