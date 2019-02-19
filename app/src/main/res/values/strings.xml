@@ -3,6 +3,7 @@
     <string name="app_name">MyDiary</string>
 
     <string name="weather_api_key">d173aae09c9fc47e1ef98019e91cfd06</string>
+    <string name="image_api_key">11653844-2c33293b7478245ac1b4c25c9</string>
 
     <string name="location_permission_request">Приложению требуется разрешение для определения
         местоположения вашей новой записи</string>

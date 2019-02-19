@@ -23,7 +23,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
 import com.furianrt.mydiary.R
-import com.furianrt.mydiary.data.api.Forecast
+import com.furianrt.mydiary.data.api.forecast.Forecast
 import com.furianrt.mydiary.data.model.*
 import com.furianrt.mydiary.data.prefs.PreferencesHelper
 import com.furianrt.mydiary.gallery.GalleryActivity

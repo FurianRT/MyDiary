@@ -3,7 +3,7 @@ package com.furianrt.mydiary.note.fragments.notefragment
 import android.location.Address
 import android.util.Log
 import com.furianrt.mydiary.data.DataManager
-import com.furianrt.mydiary.data.api.Forecast
+import com.furianrt.mydiary.data.api.forecast.Forecast
 import com.furianrt.mydiary.data.model.*
 import com.furianrt.mydiary.note.NoteActivity
 import com.furianrt.mydiary.utils.generateUniqueId

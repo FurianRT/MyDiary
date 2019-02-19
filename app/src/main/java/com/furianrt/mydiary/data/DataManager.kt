@@ -1,6 +1,7 @@
 package com.furianrt.mydiary.data
 
-import com.furianrt.mydiary.data.api.Forecast
+import com.furianrt.mydiary.data.api.forecast.Forecast
+import com.furianrt.mydiary.data.api.images.ImageResponse
 import com.furianrt.mydiary.data.model.*
 import io.reactivex.*
 
@@ -11,8 +12,7 @@ interface DataManager {
     fun insertTag(tag: MyTag): Completable
     fun insertImage(image: MyImage): Completable
     fun insertImages(images: List<MyImage>): Completable
-    fun insertHeaderImage(headerImage: MyHeaderImage): Completable
-    fun insertHeaderImage(headerImages: List<MyHeaderImage>): Completable
+    fun insertHeaderImage(headerImage: MyHeaderImage): Single<Long>
     fun insertCategory(category: MyCategory): Single<Long>
     fun insertAppearance(appearance: MyNoteAppearance): Completable
     fun updateNote(note: MyNote): Completable
@@ -29,7 +29,6 @@ interface DataManager {
     fun deleteNoteTag(noteTag: NoteTag): Completable
     fun deleteAllTagsForNote(noteId: String): Completable
     fun deleteImageFromStorage(fileName: String): Single<Boolean>
-    fun deleteAllHeaderImages(): Completable
     fun deleteCategory(category: MyCategory): Completable
     fun deleteProfile(): Completable
     fun isWeatherEnabled(): Boolean
@@ -61,10 +60,10 @@ interface DataManager {
     fun replaceNoteTags(noteId: String, tags: List<MyTag>): Completable
     fun findNote(noteId: String): Maybe<MyNote>
     fun saveImageToStorage(image: MyImage): Single<MyImage>
-    fun saveHeaderImageToStorage(headerImage: MyHeaderImage): Single<MyHeaderImage>
     fun saveProfile(profile: MyProfile): Completable
     fun addLocation(location: MyLocation): Completable
     fun createProfile(profile: MyProfile): Completable
+    fun loadHeaderImages(page: Int = 1, perPage: Int = 20): Single<ImageResponse>
 
     companion object {
         const val TIME_FORMAT_12 = 0

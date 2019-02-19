@@ -4,7 +4,7 @@ import android.os.Parcelable
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.furianrt.mydiary.data.api.Forecast
+import com.furianrt.mydiary.data.api.forecast.Forecast
 import kotlinx.android.parcel.Parcelize
 import org.joda.time.DateTime
 

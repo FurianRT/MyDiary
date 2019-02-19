@@ -12,7 +12,7 @@ interface MainActivityContract {
     interface View : BaseView {
         fun showNotes(notes: List<MainListItem>, selectedNotes: ArrayList<MyNoteWithProp>)
         fun openNotePager(position: Int)
-        fun showHeaderImages(images: List<MyHeaderImage>)
+        fun showHeaderImage(image: MyHeaderImage)
         fun requestStoragePermissions()
         fun showViewNewNote()
         fun showImageExplorer()

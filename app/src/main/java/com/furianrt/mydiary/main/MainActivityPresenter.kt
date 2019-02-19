@@ -2,15 +2,14 @@ package com.furianrt.mydiary.main
 
 import android.util.Log
 import com.furianrt.mydiary.data.DataManager
+import com.furianrt.mydiary.data.api.images.Image
 import com.furianrt.mydiary.data.model.MyHeaderImage
 import com.furianrt.mydiary.data.model.MyNoteWithProp
 import com.furianrt.mydiary.data.model.MyProfile
 import com.furianrt.mydiary.main.listadapter.MainContentItem
 import com.furianrt.mydiary.main.listadapter.MainHeaderItem
 import com.furianrt.mydiary.main.listadapter.MainListItem
-import com.furianrt.mydiary.utils.generateUniqueId
 import io.reactivex.Flowable
-import io.reactivex.Observable
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import net.danlew.android.joda.DateUtils
@@ -19,7 +18,12 @@ import java.util.*
 import kotlin.Comparator
 import kotlin.collections.ArrayList
 
-class MainActivityPresenter(private val mDataManager: DataManager) : MainActivityContract.Presenter() {
+class MainActivityPresenter(
+        private val mDataManager: DataManager
+) : MainActivityContract.Presenter() {
+
+    private fun Image.toMyHeaderImage(): MyHeaderImage =
+            MyHeaderImage(id, largeImageURL, DateTime.now().millis)
 
     companion object {
         private const val TAG = "MainActivityPresenter"
@@ -61,15 +65,15 @@ class MainActivityPresenter(private val mDataManager: DataManager) : MainActivit
     override fun onViewResume() {
         loadProfile()
         loadNotes()
-        loadHeaderImages()
+        loadHeaderImage()
     }
 
     override fun onStoragePermissionsGranted() {
         view?.showImageExplorer()
     }
 
-    override fun onHeaderImagesPicked(imageUrls: List<String>) {
-        addDisposable(mDataManager.getHeaderImages()
+    override fun onHeaderImagesPicked(imageUrls: List<String>) {    //todo добавить настройки выбора картинки
+        /*addDisposable(mDataManager.getHeaderImages()
                 .first(emptyList())
                 .flatMapObservable { images -> Observable.fromIterable(images) }
                 .defaultIfEmpty(MyHeaderImage("oops", "oops"))
@@ -80,7 +84,7 @@ class MainActivityPresenter(private val mDataManager: DataManager) : MainActivit
                 .flatMapSingle { image -> mDataManager.saveHeaderImageToStorage(image) }
                 .flatMapCompletable { savedImage -> mDataManager.insertHeaderImage(savedImage) }
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe())
+                .subscribe())*/
     }
 
     private fun loadProfile() {
@@ -96,16 +100,39 @@ class MainActivityPresenter(private val mDataManager: DataManager) : MainActivit
                 })
     }
 
-    private fun loadHeaderImages() {
+    private fun loadHeaderImage() {
         addDisposable(mDataManager.getHeaderImages()
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { images ->
-                    if (images.isEmpty()) {
-                        view?.showEmptyHeaderImage()
+                .firstOrError()
+                .flatMap { dbImages ->
+                    if (dbImages.isEmpty() || !DateUtils.isToday(DateTime(dbImages.first().addedTime))) {
+                        return@flatMap mDataManager.loadHeaderImages()
+                                .map { imageResponse ->
+                                    var image: MyHeaderImage? = null
+                                    imageResponse.images.forEach { i ->
+                                        val tempImage = i.toMyHeaderImage()
+                                        if (!dbImages.contains(tempImage)) {
+                                            image = tempImage
+                                        }
+                                    }
+                                    return@map image ?: imageResponse.images.first().toMyHeaderImage()
+                                }
+                                .flatMap { mDataManager.insertHeaderImage(it) }
+                                .flatMap {
+                                    mDataManager.getHeaderImages()
+                                            .map { list -> list.sortedBy { it.addedTime }.first() }
+                                            .firstOrError()
+                                }
                     } else {
-                        view?.showHeaderImages(images)
+                        return@flatMap Single.just(dbImages.first())
                     }
-                })
+                }
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe({ image ->
+                    view?.showHeaderImage(image)
+                }, { error ->
+                    error.printStackTrace()
+                    view?.showEmptyHeaderImage()
+                }))
     }
 
     private fun loadNotes() {

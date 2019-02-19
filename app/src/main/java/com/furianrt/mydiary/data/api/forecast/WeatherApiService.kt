@@ -1,4 +1,4 @@
-package com.furianrt.mydiary.data.api
+package com.furianrt.mydiary.data.api.forecast
 
 import io.reactivex.Single
 import retrofit2.http.GET

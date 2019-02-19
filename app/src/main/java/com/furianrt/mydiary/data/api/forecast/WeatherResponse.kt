@@ -1,4 +1,4 @@
-package com.furianrt.mydiary.data.api
+package com.furianrt.mydiary.data.api.forecast
 
 import android.os.Parcelable
 import com.google.gson.annotations.SerializedName

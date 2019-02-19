@@ -115,16 +115,14 @@ class MainActivity : BaseActivity(), MainActivityContract.View,
         setupUi()
     }
 
-    override fun showHeaderImages(images: List<MyHeaderImage>) {
-        Log.e(TAG, "showHeaderImages")
+    override fun showHeaderImage(image: MyHeaderImage) {
+        Log.e(TAG, "showHeaderImage")
         if (mNeedToOpenActionBar) {
             enableActionBarExpanding()
         }
-
         mNeedToOpenActionBar = true
-
         GlideApp.with(this)
-                .load(images.first().url)
+                .load(image.url)
                 .into(image_toolbar_main)
     }
 
@@ -183,7 +181,7 @@ class MainActivity : BaseActivity(), MainActivityContract.View,
         fab_delete.setOnClickListener(this)
         fab_folder.setOnClickListener(this)
         fab_place.setOnClickListener(this)
-        image_toolbar_main.setOnClickListener(this)
+        //image_toolbar_main.setOnClickListener(this)
         nav_view.getHeaderView(0).button_sync.setOnClickListener(this)
         nav_view.getHeaderView(0).button_profile_settings.setOnClickListener(this)
         nav_view.getHeaderView(0).layout_profile_name.setOnClickListener(this)
@@ -199,7 +197,7 @@ class MainActivity : BaseActivity(), MainActivityContract.View,
     override fun onClick(v: View?) {
         when (v?.id) {
             R.id.fab_delete -> mPresenter.onMenuDeleteClick()
-            R.id.image_toolbar_main -> mPresenter.onButtonSetMainImageClick()
+            //R.id.image_toolbar_main -> mPresenter.onButtonSetMainImageClick()
             R.id.fab_menu -> mPresenter.onFabMenuClick()
             R.id.button_sync -> mPresenter.onButtonSyncClick()
             R.id.button_profile_settings -> mPresenter.onButtonProfileClick()

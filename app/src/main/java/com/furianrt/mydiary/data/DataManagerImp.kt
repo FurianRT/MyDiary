@@ -1,7 +1,9 @@
 package com.furianrt.mydiary.data
 
-import com.furianrt.mydiary.data.api.Forecast
-import com.furianrt.mydiary.data.api.WeatherApiService
+import com.furianrt.mydiary.data.api.forecast.Forecast
+import com.furianrt.mydiary.data.api.forecast.WeatherApiService
+import com.furianrt.mydiary.data.api.images.ImageApiService
+import com.furianrt.mydiary.data.api.images.ImageResponse
 import com.furianrt.mydiary.data.cloud.CloudHelper
 import com.furianrt.mydiary.data.model.*
 import com.furianrt.mydiary.data.prefs.PreferencesHelper
@@ -16,6 +18,7 @@ class DataManagerImp(
         private val mPrefs: PreferencesHelper,
         private val mStorage: StorageHelper,
         private val mWeatherApi: WeatherApiService,
+        private val mImageApi: ImageApiService,
         private val mCloud: CloudHelper,
         private val mRxScheduler: Scheduler  //Для тестов. Когда-нибудь они появятся.
 ) : DataManager {
@@ -40,12 +43,8 @@ class DataManagerImp(
             Completable.fromAction { mDatabase.imageDao().insert(images) }
                     .subscribeOn(mRxScheduler)
 
-    override fun insertHeaderImage(headerImage: MyHeaderImage): Completable =
-            Completable.fromAction { mDatabase.headerImageDao().insert(headerImage) }
-                    .subscribeOn(mRxScheduler)
-
-    override fun insertHeaderImage(headerImages: List<MyHeaderImage>): Completable =
-            Completable.fromAction { mDatabase.headerImageDao().insert(headerImages) }
+    override fun insertHeaderImage(headerImage: MyHeaderImage): Single<Long> =
+            Single.fromCallable { mDatabase.headerImageDao().insert(headerImage) }
                     .subscribeOn(mRxScheduler)
 
     override fun insertCategory(category: MyCategory): Single<Long> =
@@ -128,10 +127,6 @@ class DataManagerImp(
             Single.fromCallable { mStorage.deleteFile(fileName) }
                     .subscribeOn(mRxScheduler)
 
-    override fun deleteAllHeaderImages(): Completable =
-            Completable.fromAction { mDatabase.headerImageDao().deleteAll() }
-                    .subscribeOn(mRxScheduler)
-
     override fun getAllNotes(): Flowable<List<MyNote>> =
             mDatabase.noteDao()
                     .getAllNotes()
@@ -211,11 +206,6 @@ class DataManagerImp(
                     .map { file -> MyImage(file.name, file.path, image.noteId, image.addedTime) }
                     .subscribeOn(mRxScheduler)
 
-    override fun saveHeaderImageToStorage(headerImage: MyHeaderImage): Single<MyHeaderImage> =
-            Single.fromCallable { mStorage.copyImageToStorage(headerImage.url, headerImage.name) }
-                    .map { file -> MyHeaderImage(file.name, file.path) }
-                    .subscribeOn(mRxScheduler)
-
     override fun saveProfile(profile: MyProfile): Completable =
             Completable.fromAction { mDatabase.profileDao().save(profile) }
                     .subscribeOn(mRxScheduler)
@@ -256,4 +246,8 @@ class DataManagerImp(
     override fun getNoteTextBackgroundColor(): Int = mPrefs.getNoteTextBackgroundColor()
 
     override fun getTimeFormat(): Int = mPrefs.getTimeFormat()
+
+    override fun loadHeaderImages(page: Int, perPage: Int): Single<ImageResponse> =
+            mImageApi.getImage()
+                    .subscribeOn(mRxScheduler)
 }

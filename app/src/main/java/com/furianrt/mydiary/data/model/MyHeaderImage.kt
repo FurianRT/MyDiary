@@ -9,6 +9,7 @@ import kotlinx.android.parcel.Parcelize
 @Parcelize
 @Entity(tableName = "HeaderImages")
 data class MyHeaderImage(
-        @PrimaryKey(autoGenerate = false) @ColumnInfo(name = "name") var name: String,
-        @ColumnInfo(name = "url") var url: String
+        @PrimaryKey(autoGenerate = false) @ColumnInfo(name = "id") var id: Int,
+        @ColumnInfo(name = "url") var url: String,
+        @ColumnInfo(name = "added_time") var addedTime: Long
 ): Parcelable
