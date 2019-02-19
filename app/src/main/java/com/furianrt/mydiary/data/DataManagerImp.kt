@@ -233,6 +233,12 @@ class DataManagerImp(
 
     override fun isMoodEnabled(): Boolean = mPrefs.isMoodEnabled()
 
+    override fun isSortDesc(): Boolean = mPrefs.isSortDesc()
+
+    override fun setSortDesc(desc: Boolean) {
+        mPrefs.setSortDesc(desc)
+    }
+
     override fun isProfileExists(email: String): Single<Boolean> =
             mCloud.isProfileExists(email)
                     .subscribeOn(mRxScheduler)

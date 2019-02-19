@@ -24,7 +24,7 @@ abstract class NoteDao {
     @Delete
     abstract fun delete(notes: List<MyNote>)
 
-    @Query("SELECT * FROM Notes ORDER BY time DESC")
+    @Query("SELECT * FROM Notes")
     abstract fun getAllNotes(): Flowable<List<MyNote>>
 
     @Query("SELECT * FROM Notes WHERE id_note =:noteId")

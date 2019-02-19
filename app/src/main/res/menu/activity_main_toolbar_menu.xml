@@ -16,7 +16,7 @@
 
     <item
         android:id="@+id/menu_sort"
-        android:title="@string/search"
+        android:title="@string/sort_new_first"
         app:showAsAction="never" />
 
     <item

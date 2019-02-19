@@ -10,6 +10,7 @@ import com.furianrt.mydiary.main.listadapter.MainContentItem
 import com.furianrt.mydiary.main.listadapter.MainHeaderItem
 import com.furianrt.mydiary.main.listadapter.MainListItem
 import io.reactivex.Flowable
+import io.reactivex.Observable
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import net.danlew.android.joda.DateUtils
@@ -107,19 +108,16 @@ class MainActivityPresenter(
                     if (dbImages.isEmpty() || !DateUtils.isToday(DateTime(dbImages.first().addedTime))) {
                         return@flatMap mDataManager.loadHeaderImages()
                                 .map { imageResponse ->
-                                    var image: MyHeaderImage? = null
-                                    imageResponse.images.forEach { i ->
-                                        val tempImage = i.toMyHeaderImage()
-                                        if (!dbImages.contains(tempImage)) {
-                                            image = tempImage
-                                        }
-                                    }
-                                    return@map image ?: imageResponse.images.first().toMyHeaderImage()
+                                    val image = imageResponse.images
+                                            .map { it.toMyHeaderImage() }
+                                            .find { !dbImages.contains(it) }
+                                    return@map image
+                                            ?: imageResponse.images.first().toMyHeaderImage()
                                 }
                                 .flatMap { mDataManager.insertHeaderImage(it) }
                                 .flatMap {
                                     mDataManager.getHeaderImages()
-                                            .map { list -> list.sortedBy { it.addedTime }.first() }
+                                            .map { it.sortedBy { image -> image.addedTime }.first() }
                                             .firstOrError()
                                 }
                     } else {
@@ -136,16 +134,18 @@ class MainActivityPresenter(
     }
 
     private fun loadNotes() {
+        if (mDataManager.isSortDesc()) {
+            view?.setSortAsc()
+        } else {
+            view?.setSortDesc()
+        }
         addDisposable(mDataManager.getAllNotesWithProp()
                 .map { formatNotes(toMap(it)) }
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { items ->
                     val notes = items
                             .filter { it is MainContentItem }
-                            .map {
-                                it as MainContentItem
-                                return@map it.note
-                            }
+                            .map { (it as MainContentItem).note }
                     view?.showNotesCountToday(notes
                             .filter { DateUtils.isToday(DateTime(it.note.creationTime)) }
                             .size)
@@ -156,13 +156,18 @@ class MainActivityPresenter(
     }
 
     private fun toMap(notes: List<MyNoteWithProp>): Map<Long, ArrayList<MyNoteWithProp>> {
-        val map = TreeMap<Long, ArrayList<MyNoteWithProp>>(Comparator<Long> { p0, p1 -> p1.compareTo(p0) })
+        val map = TreeMap<Long, ArrayList<MyNoteWithProp>>(Comparator<Long> { p0, p1 ->
+            return@Comparator if (mDataManager.isSortDesc()) {
+                p1.compareTo(p0)
+            } else {
+                p0.compareTo(p1)
+            }
+        })
         for (note in notes) {
             val dateTime = DateTime(note.note.time).dayOfMonth()
                     .withMinimumValue()
                     .withTimeAtStartOfDay()
                     .withMillisOfDay(0)
-
             var value = map[dateTime.millis]
             if (value == null) {
                 value = ArrayList()
@@ -178,7 +183,12 @@ class MainActivityPresenter(
         for (date in notes.keys) {
             val header = MainHeaderItem(date)
             list.add(header)
-            for (note in notes.getValue(date)) {
+            val values = if (mDataManager.isSortDesc()) {
+                notes.getValue(date).sortedByDescending { it.note.time }
+            } else {
+                notes.getValue(date).sortedBy { it.note.time }
+            }
+            for (note in values) {
                 list.add(MainContentItem(note))
             }
         }
@@ -194,6 +204,11 @@ class MainActivityPresenter(
             view?.deactivateSelection()
             view?.updateItemSelection(mSelectedNotes)
         }
+    }
+
+    override fun onButtonSortClick() {
+        mDataManager.setSortDesc(!mDataManager.isSortDesc())
+        loadNotes()
     }
 
     override fun onButtonSetMainImageClick() {
@@ -235,7 +250,15 @@ class MainActivityPresenter(
 
     private fun openNotePagerView(note: MyNoteWithProp) {
         addDisposable(mDataManager.getAllNotesWithProp()
-                .first(ArrayList())
+                .firstOrError()
+                .flatMapObservable { Observable.fromIterable(it) }
+                .toSortedList { o1, o2 ->
+                    return@toSortedList if (mDataManager.isSortDesc()) {
+                        o2.note.time.compareTo(o1.note.time)
+                    } else {
+                        o1.note.time.compareTo(o2.note.time)
+                    }
+                }
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { notes -> view?.openNotePager(notes.indexOf(note)) })
     }

@@ -4,6 +4,7 @@ import com.furianrt.mydiary.data.DataManager
 import com.furianrt.mydiary.data.model.MyNote
 import com.furianrt.mydiary.data.model.MyNoteAppearance
 import com.furianrt.mydiary.data.model.MyNoteWithProp
+import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 
 class NoteActivityPresenter(
@@ -12,8 +13,17 @@ class NoteActivityPresenter(
 
     override fun loadNotes() {
         addDisposable(mDataManager.getAllNotesWithProp()
+                .firstOrError()
+                .flatMapObservable { Observable.fromIterable(it) }
+                .toSortedList { o1, o2 ->
+                    return@toSortedList if (mDataManager.isSortDesc()) {
+                        o2.note.time.compareTo(o1.note.time)
+                    } else {
+                        o1.note.time.compareTo(o2.note.time)
+                    }
+                }
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { view?.showNotes(it) })
+                .subscribe { notes -> view?.showNotes(notes) })
     }
 
     override fun loadNote(noteId: String) {

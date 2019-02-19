@@ -42,4 +42,11 @@ class PreferencesHelperImp(val context: Context) : PreferencesHelper {
 
     override fun getTimeFormat(): Int =
             mPrefs.getString(PreferencesHelper.TIME_FORMAT, "1")!!.toInt()
+
+    override fun isSortDesc(): Boolean =
+            mPrefs.getBoolean(PreferencesHelper.IS_NOTE_SORT_DESC, true)
+
+    override fun setSortDesc(desc: Boolean) {
+        mPrefs.edit().putBoolean(PreferencesHelper.IS_NOTE_SORT_DESC, desc).apply()
+    }
 }

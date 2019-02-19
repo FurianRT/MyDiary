@@ -57,6 +57,8 @@ interface DataManager {
     fun getNoteBackgroundColor(): Int
     fun getNoteTextBackgroundColor(): Int
     fun getTimeFormat(): Int
+    fun isSortDesc(): Boolean
+    fun setSortDesc(desc: Boolean)
     fun replaceNoteTags(noteId: String, tags: List<MyTag>): Completable
     fun findNote(noteId: String): Maybe<MyNote>
     fun saveImageToStorage(image: MyImage): Single<MyImage>

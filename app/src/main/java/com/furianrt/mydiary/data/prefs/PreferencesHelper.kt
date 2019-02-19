@@ -3,22 +3,16 @@ package com.furianrt.mydiary.data.prefs
 interface PreferencesHelper {
 
     fun isWeatherEnabled(): Boolean
-
     fun getWeatherUnits(): Int
-
     fun isMapEnabled(): Boolean
-
     fun isMoodEnabled(): Boolean
-
     fun getTextColor(): Int
-
     fun getTextSize(): Int
-
     fun getNoteBackgroundColor(): Int
-
     fun getNoteTextBackgroundColor(): Int
-
     fun getTimeFormat(): Int
+    fun isSortDesc(): Boolean
+    fun setSortDesc(desc: Boolean)
 
     companion object {
         const val COLOR_PRIMARY = "color_primary"
@@ -35,5 +29,6 @@ interface PreferencesHelper {
         const val SECURITY_AVAILABILITY = "security_key"
         const val SECURITY_EMAIL = "security_email"
         const val SECURITY_TIME = "security_time"
+        const val IS_NOTE_SORT_DESC = "is_note_sort_desc"
     }
 }

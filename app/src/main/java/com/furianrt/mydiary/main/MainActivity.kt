@@ -73,12 +73,12 @@ class MainActivity : BaseActivity(), MainActivityContract.View,
     private lateinit var mBottomSheet: BottomSheetBehavior<FrameLayout>
     private var mBackPressCount = 0
     private var mNeedToOpenActionBar = true
+    private var mMenu: Menu? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         getPresenterComponent(this).inject(this)
         setContentView(R.layout.activity_main)
-
         mBottomSheet = BottomSheetBehavior.from(main_sheet_container)
         mBottomSheet.setBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
             override fun onSlide(bottomSheet: View, slideOffset: Float) {}
@@ -100,7 +100,6 @@ class MainActivity : BaseActivity(), MainActivityContract.View,
                 }
             }
         })
-
         savedInstanceState?.let {
             mRecyclerViewState = it.getParcelable(BUNDLE_RECYCLER_VIEW_STATE)
             val selectedListItems = it.getParcelableArrayList<MyNoteWithProp>(BUNDLE_SELECTED_LIST_ITEMS)
@@ -111,7 +110,6 @@ class MainActivity : BaseActivity(), MainActivityContract.View,
             layout_main_root.translationX = it.getFloat(BUNDLE_ROOT_LAYOUT_OFFSET, 0f)
             mBottomSheet.state = it.getInt(BUNDLE_BOTTOM_SHEET_STATE, BottomSheetBehavior.STATE_COLLAPSED)
         }
-
         setupUi()
     }
 
@@ -220,12 +218,24 @@ class MainActivity : BaseActivity(), MainActivityContract.View,
                 mPresenter.onButtonSettingsClick()
                 true
             }
+            R.id.menu_sort -> {
+                mPresenter.onButtonSortClick()
+                true
+            }
             android.R.id.home -> {
                 drawer.openDrawer(drawer, true)
                 true
             }
             else -> super.onOptionsItemSelected(item)
         }
+    }
+
+    override fun setSortDesc() {
+        mMenu?.findItem(R.id.menu_sort)?.setTitle(R.string.sort_new_first)
+    }
+
+    override fun setSortAsc() {
+        mMenu?.findItem(R.id.menu_sort)?.setTitle(R.string.sort_old_first)
     }
 
     override fun showProfileSettings() {
@@ -259,6 +269,7 @@ class MainActivity : BaseActivity(), MainActivityContract.View,
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        mMenu = menu
         menuInflater.inflate(R.menu.activity_main_toolbar_menu, menu)
         return super.onCreateOptionsMenu(menu)
     }

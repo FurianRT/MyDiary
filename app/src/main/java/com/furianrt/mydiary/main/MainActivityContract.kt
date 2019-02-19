@@ -30,6 +30,8 @@ interface MainActivityContract {
         fun showNotesCountToday(count: Int)
         fun showImageCount(count: Int)
         fun showNotesTotal(count: Int)
+        fun setSortDesc()
+        fun setSortAsc()
     }
 
     abstract class Presenter : BasePresenter<View>() {
@@ -49,5 +51,6 @@ interface MainActivityContract {
         abstract fun onButtonSyncClick()
         abstract fun onButtonProfileClick()
         abstract fun onSignOut()
+        abstract fun onButtonSortClick()
     }
 }
