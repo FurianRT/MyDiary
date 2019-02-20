@@ -34,13 +34,14 @@ interface MainActivityContract {
         fun setSortDesc()
         fun setSortAsc()
         fun showViewImageSettings()
+        fun showImageOptions()
     }
 
     abstract class Presenter : BasePresenter<View>() {
         abstract fun onMainListItemClick(note: MyNoteWithProp, position: Int)
         abstract fun onHeaderImagesPicked(imageUrls: List<String>)
         abstract fun onViewResume()
-        abstract fun onButtonSetMainImageClick()
+        abstract fun onMainImageClick()
         abstract fun onStoragePermissionsGranted()
         abstract fun onMainListItemLongClick(note: MyNoteWithProp, position: Int)
         abstract fun onSaveInstanceState(): ArrayList<MyNoteWithProp>?
@@ -54,5 +55,6 @@ interface MainActivityContract {
         abstract fun onButtonProfileClick()
         abstract fun onSignOut()
         abstract fun onButtonSortClick()
+        abstract fun onButtonImageSettingsClick()
     }
 }

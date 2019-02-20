@@ -80,7 +80,7 @@ class RegistrationFragment : Fragment(), RegistrationContract.View {
         fragmentManager?.let {
             if (it.findFragmentByTag(DoneAuthFragment.TAG) == null) {
                 it.inTransaction {
-                    setCustomAnimations(R.anim.from_top, R.anim.from_top)
+                    setCustomAnimations(R.anim.scale_up, R.anim.scale_up)
                     add(R.id.card_auth_container, DoneAuthFragment(), DoneAuthFragment.TAG)
                 }
             }

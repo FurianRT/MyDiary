@@ -11,6 +11,8 @@ import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.view.animation.AlphaAnimation
+import android.view.animation.Animation
 import android.widget.FrameLayout
 import android.widget.Toast
 import androidx.appcompat.app.ActionBarDrawerToggle
@@ -65,6 +67,9 @@ class MainActivity : BaseActivity(), MainActivityContract.View,
         private const val BUNDLE_BOTTOM_SHEET_STATE = "bottomSheetState"
         private const val STORAGE_PERMISSIONS_REQUEST_CODE = 1
         private const val ACTIVITY_SETTING_REQUEST_CODE = 2
+        private const val ITEM_LONG_CLICK_VIBRATION_DURATION = 30L
+        private const val ANIMATION_IMAGE_SETTINGS_FADE_OUT_DURATION = 350L
+        private const val ANIMATION_IMAGE_SETTINGS_FADE_OUT_OFFSET = 2000L
     }
 
     @Inject
@@ -186,6 +191,7 @@ class MainActivity : BaseActivity(), MainActivityContract.View,
         fab_folder.setOnClickListener(this)
         fab_place.setOnClickListener(this)
         image_toolbar_main.setOnClickListener(this)
+        button_main_image_settings.setOnClickListener(this)
         nav_view.getHeaderView(0).button_sync.setOnClickListener(this)
         nav_view.getHeaderView(0).button_profile_settings.setOnClickListener(this)
         nav_view.getHeaderView(0).layout_profile_name.setOnClickListener(this)
@@ -201,12 +207,13 @@ class MainActivity : BaseActivity(), MainActivityContract.View,
     override fun onClick(v: View?) {
         when (v?.id) {
             R.id.fab_delete -> mPresenter.onMenuDeleteClick()
-            R.id.image_toolbar_main -> mPresenter.onButtonSetMainImageClick()
+            R.id.image_toolbar_main -> mPresenter.onMainImageClick()
             R.id.fab_menu -> mPresenter.onFabMenuClick()
             R.id.button_sync -> mPresenter.onButtonSyncClick()
             R.id.button_profile_settings -> mPresenter.onButtonProfileClick()
             R.id.layout_profile_name -> mPresenter.onButtonProfileClick()
             R.id.image_profile -> mPresenter.onButtonProfileClick()
+            R.id.button_main_image_settings -> mPresenter.onButtonImageSettingsClick()
         }
     }
 
@@ -217,7 +224,7 @@ class MainActivity : BaseActivity(), MainActivityContract.View,
                 true
             }
             R.id.menu_image -> {
-                mPresenter.onButtonSetMainImageClick()
+                mPresenter.onButtonImageSettingsClick()
                 true
             }
             R.id.menu_settings -> {
@@ -234,6 +241,21 @@ class MainActivity : BaseActivity(), MainActivityContract.View,
             }
             else -> super.onOptionsItemSelected(item)
         }
+    }
+
+    override fun showImageOptions() {
+        layout_main_image_settings.visibility = View.VISIBLE
+        layout_main_image_settings.startAnimation(AlphaAnimation(1f, 0f).apply {
+            duration = ANIMATION_IMAGE_SETTINGS_FADE_OUT_DURATION
+            startOffset = ANIMATION_IMAGE_SETTINGS_FADE_OUT_OFFSET
+            setAnimationListener(object : Animation.AnimationListener {
+                override fun onAnimationRepeat(animation: Animation?) {}
+                override fun onAnimationStart(animation: Animation?) {}
+                override fun onAnimationEnd(animation: Animation?) {
+                    layout_main_image_settings.visibility = View.GONE
+                }
+            })
+        })
     }
 
     override fun showViewImageSettings() {
@@ -380,7 +402,7 @@ class MainActivity : BaseActivity(), MainActivityContract.View,
         val vibrator = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
         if (vibrator.hasVibrator()) {
             @Suppress("DEPRECATION")
-            vibrator.vibrate(30L)
+            vibrator.vibrate(ITEM_LONG_CLICK_VIBRATION_DURATION)
         }
         mPresenter.onMainListItemLongClick(note, position)
     }

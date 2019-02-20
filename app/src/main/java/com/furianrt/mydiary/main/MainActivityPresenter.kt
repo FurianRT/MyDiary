@@ -212,9 +212,13 @@ class MainActivityPresenter(
         loadNotes()
     }
 
-    override fun onButtonSetMainImageClick() {
-        view?.showViewImageSettings()
+    override fun onMainImageClick() {
+        view?.showImageOptions()
         //view?.requestStoragePermissions()
+    }
+
+    override fun onButtonImageSettingsClick() {
+        view?.showViewImageSettings()
     }
 
     override fun onMainListItemClick(note: MyNoteWithProp, position: Int) {
