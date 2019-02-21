@@ -233,6 +233,8 @@ class AppModule(private val app: Application) {
         for (tagName in tagNames) {
             cv.put("id_tag", generateUniqueId())
             cv.put("name_tag", tagName)
+            cv.put("is_tag_sync", false)
+            cv.put("is_tag_deleted", false)
             db.insert("Tags", 0, cv)
         }
         cv.clear()
@@ -240,6 +242,8 @@ class AppModule(private val app: Application) {
         for (categoryName in categoryNames) {
             cv.put("name_category", categoryName)
             cv.put("color", MyCategory.DEFAULT_COLOR)
+            cv.put("is_category_sync", false)
+            cv.put("is_category_deleted", false)
             db.insert("Categories", 0, cv)
         }
         cv.clear()

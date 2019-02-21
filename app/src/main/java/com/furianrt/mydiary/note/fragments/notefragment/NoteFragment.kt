@@ -20,8 +20,6 @@ import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.content.ContextCompat
 import androidx.core.content.ContextCompat.getColor
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentManager
-import androidx.fragment.app.FragmentTransaction
 import com.furianrt.mydiary.R
 import com.furianrt.mydiary.data.api.forecast.Forecast
 import com.furianrt.mydiary.data.model.*
@@ -59,14 +57,34 @@ import java.io.IOException
 import java.util.*
 import javax.inject.Inject
 
-inline fun FragmentManager.inTransaction(func: FragmentTransaction.() -> Unit) {
-    val fragmentTransaction = beginTransaction()
-    fragmentTransaction.func()
-    fragmentTransaction.commit()
-}
-
 class NoteFragment : Fragment(), NoteFragmentContract.View, OnMapReadyCallback,
-        TagsDialog.OnTagsDialogInteractionListener, View.OnClickListener, MoodsDialog.OnMoodsDialogInteractionListener, CategoriesDialog.OnCategoriesDialogInteractionListener, DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener {
+        TagsDialog.OnTagsDialogInteractionListener, View.OnClickListener,
+        MoodsDialog.OnMoodsDialogInteractionListener,
+        CategoriesDialog.OnCategoriesDialogInteractionListener,
+        DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener {
+
+    companion object {
+        const val TAG = "NoteFragment"
+        private const val ARG_NOTE_ID = "noteId"
+        private const val ARG_MODE = "mode"
+        private const val LOCATION_INTERVAL = 400L
+        private const val LOCATION_PERMISSIONS_REQUEST_CODE = 1
+        private const val STORAGE_PERMISSIONS_REQUEST_CODE = 2
+        private const val ZOOM = 15f
+        private const val BUNDLE_IMAGE_PAGER_POSITION = "imagePagerPosition"
+        private const val BASE_WEATHER_IMAGE_URL = "http://openweathermap.org/img/w/"
+        private const val TIME_PICKER_TAG = "timePicker"
+        private const val DATE_PICKER_TAG = "datePicker"
+
+        @JvmStatic
+        fun newInstance(noteId: String, mode: NoteActivity.Companion.Mode) =
+                NoteFragment().apply {
+                    arguments = Bundle().apply {
+                        putString(ARG_NOTE_ID, noteId)
+                        putSerializable(ARG_MODE, mode)
+                    }
+                }
+    }
 
     @Inject
     lateinit var mFusedLocationClient: FusedLocationProviderClient
@@ -490,7 +508,7 @@ class NoteFragment : Fragment(), NoteFragmentContract.View, OnMapReadyCallback,
 
     override fun showForecast(forecast: Forecast) {
         view?.apply {
-            val url = "http://openweathermap.org/img/w/" + forecast.weather[0].icon + ".png"
+            val url = BASE_WEATHER_IMAGE_URL + forecast.weather[0].icon + ".png"
             GlideApp.with(this)
                     .load(url)
                     .into(image_weather)
@@ -620,7 +638,7 @@ class NoteFragment : Fragment(), NoteFragmentContract.View, OnMapReadyCallback,
             val accentColor = fetchAccentColor()
             setOkColor(accentColor)
             setCancelColor(accentColor)
-        }.show(fragmentManager, "datePicker")
+        }.show(fragmentManager, DATE_PICKER_TAG)
     }
 
     override fun onDateSet(view: DatePickerDialog?, year: Int, monthOfYear: Int, dayOfMonth: Int) {
@@ -637,7 +655,7 @@ class NoteFragment : Fragment(), NoteFragmentContract.View, OnMapReadyCallback,
                 setCancelText(it.getString(R.string.time_picker_cancel))
             }
             setLocale(Locale.ENGLISH)
-        }.show(fragmentManager, "timePicker")
+        }.show(fragmentManager, TIME_PICKER_TAG)
     }
 
     override fun onTimeSet(view: TimePickerDialog?, hourOfDay: Int, minute: Int, second: Int) {
@@ -660,26 +678,5 @@ class NoteFragment : Fragment(), NoteFragmentContract.View, OnMapReadyCallback,
         val color = a.getColor(0, 0)
         a.recycle()
         return color
-    }
-
-    companion object {
-
-        const val TAG = "NoteFragment"
-        private const val ARG_NOTE_ID = "noteId"
-        private const val ARG_MODE = "mode"
-        private const val LOCATION_INTERVAL = 400L
-        private const val LOCATION_PERMISSIONS_REQUEST_CODE = 1
-        private const val STORAGE_PERMISSIONS_REQUEST_CODE = 2
-        private const val ZOOM = 15f
-        private const val BUNDLE_IMAGE_PAGER_POSITION = "imagePagerPosition"
-
-        @JvmStatic
-        fun newInstance(noteId: String, mode: NoteActivity.Companion.Mode) =
-                NoteFragment().apply {
-                    arguments = Bundle().apply {
-                        putString(ARG_NOTE_ID, noteId)
-                        putSerializable(ARG_MODE, mode)
-                    }
-                }
     }
 }

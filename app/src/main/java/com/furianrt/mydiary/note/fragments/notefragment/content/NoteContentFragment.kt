@@ -2,14 +2,18 @@ package com.furianrt.mydiary.note.fragments.notefragment.content
 
 import android.os.Bundle
 import android.util.Log
-import android.view.*
+import android.view.LayoutInflater
+import android.view.MotionEvent
+import android.view.View
+import android.view.ViewGroup
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import com.furianrt.mydiary.R
 import com.furianrt.mydiary.data.model.MyNoteAppearance
 import com.furianrt.mydiary.note.NoteActivity
+import com.furianrt.mydiary.note.fragments.notefragment.NoteFragment
 import com.furianrt.mydiary.note.fragments.notefragment.edit.NoteEditFragment
-import com.furianrt.mydiary.note.fragments.notefragment.inTransaction
+import com.furianrt.mydiary.utils.inTransaction
 import kotlinx.android.synthetic.main.fragment_note_content.*
 import kotlinx.android.synthetic.main.fragment_note_content.view.*
 import javax.inject.Inject
@@ -56,7 +60,8 @@ class NoteContentFragment : Fragment(), NoteContentFragmentContract.View {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         if (mMode == NoteActivity.Companion.Mode.ADD && savedInstanceState == null) {
-            showNoteEditViewForTitleEnd()
+            (parentFragment as? NoteFragment)?.disableActionBarExpanding(false)
+            showNoteEditView(NoteEditFragment.ClickedView.TITLE, view.text_note_title.text.length)
         }
     }
 
@@ -100,14 +105,17 @@ class NoteContentFragment : Fragment(), NoteContentFragmentContract.View {
     }
 
     override fun showNoteEditViewForTitle(touchPosition: Int) {
+        (parentFragment as? NoteFragment)?.disableActionBarExpanding(true)
         showNoteEditView(NoteEditFragment.ClickedView.TITLE, touchPosition)
     }
 
     override fun showNoteEditViewForContent(touchPosition: Int) {
+        (parentFragment as? NoteFragment)?.disableActionBarExpanding(true)
         showNoteEditView(NoteEditFragment.ClickedView.CONTENT, touchPosition)
     }
 
     override fun showNoteEditViewForTitleEnd() {
+        (parentFragment as? NoteFragment)?.disableActionBarExpanding(true)
         view?.let {
             showNoteEditView(NoteEditFragment.ClickedView.TITLE, it.text_note_title.text.length)
         }

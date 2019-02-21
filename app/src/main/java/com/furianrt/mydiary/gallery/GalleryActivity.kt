@@ -5,7 +5,7 @@ import com.furianrt.mydiary.BaseActivity
 import com.furianrt.mydiary.R
 import com.furianrt.mydiary.gallery.fragments.list.GalleryListFragment
 import com.furianrt.mydiary.gallery.fragments.pager.GalleryPagerFragment
-import com.furianrt.mydiary.note.fragments.notefragment.inTransaction
+import com.furianrt.mydiary.utils.inTransaction
 import kotlinx.android.synthetic.main.activity_gallery.*
 import javax.inject.Inject
 

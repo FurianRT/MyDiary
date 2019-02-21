@@ -274,14 +274,12 @@ class MainActivityPresenter(
     }
 
     override fun is24TimeFormat(): Boolean =
-            mDataManager.getTimeFormat() == DataManager.TIME_FORMAT_24
+            mDataManager.is24TimeFormat()
 
     override fun onButtonSyncClick() {
         when {
             mProfile.email.isEmpty() -> view?.showLoginView()
-            mProfile.hasPremium -> {
-                //todo синхронизация
-            }
+            mProfile.hasPremium -> view?.startSyncService()
             else -> view?.showPremiumView()
         }
     }

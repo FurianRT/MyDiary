@@ -10,7 +10,7 @@ interface PreferencesHelper {
     fun getTextSize(): Int
     fun getNoteBackgroundColor(): Int
     fun getNoteTextBackgroundColor(): Int
-    fun getTimeFormat(): Int
+    fun is24TimeFormat(): Boolean
     fun isSortDesc(): Boolean
     fun setSortDesc(desc: Boolean)
 

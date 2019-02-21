@@ -1,6 +1,9 @@
 package com.furianrt.mydiary.data.room
 
-import androidx.room.*
+import androidx.room.Dao
+import androidx.room.Insert
+import androidx.room.Query
+import androidx.room.Update
 import com.furianrt.mydiary.data.model.MyTag
 import io.reactivex.Single
 
@@ -13,9 +16,9 @@ abstract class TagDao {
     @Update
     abstract fun update(tag: MyTag)
 
-    @Delete
-    abstract fun delete(tag: MyTag)
+    @Query("UPDATE Tags SET is_tag_deleted = 1 WHERE id_tag = :tagId")
+    abstract fun delete(tagId: String)
 
-    @Query("SELECT * FROM Tags")
+    @Query("SELECT * FROM Tags WHERE is_tag_deleted = 0")
     abstract fun getAllTags(): Single<List<MyTag>>
 }

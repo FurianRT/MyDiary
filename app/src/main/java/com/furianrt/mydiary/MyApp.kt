@@ -1,6 +1,9 @@
 package com.furianrt.mydiary
 
 import android.app.Application
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.os.Build
 import com.furianrt.mydiary.di.application.AppComponent
 import com.furianrt.mydiary.di.application.AppModule
 import com.furianrt.mydiary.di.application.DaggerAppComponent
@@ -12,18 +15,35 @@ import java.util.*
 
 class MyApp : Application() {
 
+    companion object {
+        const val NOTIFICATION_CHANNEL_ID = "sync_channel"
+        const val NOTIFICATION_CHANNEL_NAME = "Synchronization"
+    }
+
     val component: AppComponent = DaggerAppComponent.builder()
             .appModule(AppModule(this))
             .build()
 
     override fun onCreate() {
         super.onCreate()
+        createNotificationChannel()
         JodaTimeAndroid.init(this)
-
         Album.initialize(AlbumConfig.newBuilder(this)
                 .setAlbumLoader(MediaLoader())
                 .setLocale(Locale.getDefault())
                 .build())
+    }
+
+    private fun createNotificationChannel() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val serviceChannel = NotificationChannel(
+                    NOTIFICATION_CHANNEL_ID,
+                    NOTIFICATION_CHANNEL_NAME,
+                    NotificationManager.IMPORTANCE_DEFAULT
+            )
+            val manager = getSystemService(NotificationManager::class.java)
+            manager.createNotificationChannel(serviceChannel)
+        }
     }
 }
 
@@ -45,11 +65,12 @@ class MyApp : Application() {
 * добавить подсказки для drag and prop и другого
 * добавить notifications
 * добавить appsFlyerEvents
-* добавить пейзашную дайли картинку
+* добавить настройки дейли картинки
 * добавить настройки внешнего вида основного экрана
 * полностью переделать дизайн главного экрана
 * добавить анимацию ошибок аутентификации
-* добавить заглушку на пустые состояния листов
+* исправить ошибку соединения при регистрации
+* добавить заглушку на пустые состояния списков
 *
 * */
 

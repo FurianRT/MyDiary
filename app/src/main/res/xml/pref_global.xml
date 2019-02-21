@@ -79,7 +79,7 @@
             android:title="@string/weather_units_settings_title" />
 
         <ListPreference
-            android:defaultValue="1"
+            android:defaultValue="true"
             android:entries="@array/pref_time_format_titles"
             android:entryValues="@array/pref_time_format_values"
             android:key="time_format"

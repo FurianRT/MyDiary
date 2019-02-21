@@ -9,13 +9,13 @@ import android.view.animation.AnticipateOvershootInterpolator
 import android.view.animation.OvershootInterpolator
 import androidx.fragment.app.Fragment
 import com.furianrt.mydiary.R
+import com.furianrt.mydiary.main.MainActivity
 import com.furianrt.mydiary.main.fragments.authentication.login.LoginFragment
 import com.furianrt.mydiary.main.fragments.authentication.registration.RegistrationFragment
-import com.furianrt.mydiary.main.MainActivity
-import com.furianrt.mydiary.note.fragments.notefragment.inTransaction
 import com.furianrt.mydiary.utils.KeyboardUtils
 import com.furianrt.mydiary.utils.dpToPx
 import com.furianrt.mydiary.utils.hideKeyboard
+import com.furianrt.mydiary.utils.inTransaction
 import kotlinx.android.synthetic.main.fragment_auth.view.*
 import javax.inject.Inject
 

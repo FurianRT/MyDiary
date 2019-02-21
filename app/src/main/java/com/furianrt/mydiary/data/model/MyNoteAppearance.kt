@@ -24,5 +24,6 @@ data class MyNoteAppearance(
         @ColumnInfo(name = "background_color") var background: Int? = null,
         @ColumnInfo(name = "text_background_color") var textBackground: Int? = null,
         @ColumnInfo(name = "text_color") var textColor: Int? = null,
-        @ColumnInfo(name = "text_size") var textSize: Int? = null
+        @ColumnInfo(name = "text_size") var textSize: Int? = null,
+        @ColumnInfo(name = "is_appearance_sync") var isSync: Boolean = false
 ) : Parcelable

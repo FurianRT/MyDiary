@@ -1,12 +1,10 @@
 package com.furianrt.mydiary.data
 
 import com.furianrt.mydiary.data.api.forecast.Forecast
-import com.furianrt.mydiary.data.api.images.ImageResponse
 import com.furianrt.mydiary.data.model.*
 import io.reactivex.*
 
 interface DataManager {
-
     fun insertNote(note: MyNote): Completable
     fun insertNoteTag(noteTag: NoteTag): Completable
     fun insertTag(tag: MyTag): Completable
@@ -37,8 +35,6 @@ interface DataManager {
     fun isProfileExists(email: String): Single<Boolean>
     fun getAllNotes(): Flowable<List<MyNote>>
     fun getTagsForNote(noteId: String): Flowable<List<MyTag>>
-    fun getNotesWithTag(tagId: Long): Flowable<List<MyNote>>
-    fun getNoteWithProp(noteId: String): Flowable<MyNoteWithProp>
     fun getNote(noteId: String): Flowable<MyNote>
     fun getAllTags(): Single<List<MyTag>>
     fun getForecast(lat: Double, lon: Double): Single<Forecast?>
@@ -56,7 +52,7 @@ interface DataManager {
     fun getTextSize(): Int
     fun getNoteBackgroundColor(): Int
     fun getNoteTextBackgroundColor(): Int
-    fun getTimeFormat(): Int
+    fun is24TimeFormat(): Boolean
     fun isSortDesc(): Boolean
     fun setSortDesc(desc: Boolean)
     fun replaceNoteTags(noteId: String, tags: List<MyTag>): Completable
@@ -66,9 +62,4 @@ interface DataManager {
     fun addLocation(location: MyLocation): Completable
     fun createProfile(profile: MyProfile): Completable
     fun loadHeaderImages(page: Int = 1, perPage: Int = 20): Single<List<MyHeaderImage>>
-
-    companion object {
-        const val TIME_FORMAT_12 = 0
-        const val TIME_FORMAT_24 = 1
-    }
 }

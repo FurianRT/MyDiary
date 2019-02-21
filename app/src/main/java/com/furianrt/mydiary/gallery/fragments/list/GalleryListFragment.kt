@@ -12,9 +12,9 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.furianrt.mydiary.R
 import com.furianrt.mydiary.data.model.MyImage
 import com.furianrt.mydiary.gallery.fragments.pager.GalleryPagerFragment
-import com.furianrt.mydiary.note.fragments.notefragment.inTransaction
 import com.furianrt.mydiary.utils.getThemePrimaryColor
 import com.furianrt.mydiary.utils.getThemePrimaryDarkColor
+import com.furianrt.mydiary.utils.inTransaction
 import com.yanzhenjie.album.Album
 import com.yanzhenjie.album.api.widget.Widget
 import jp.wasabeef.recyclerview.animators.FadeInUpAnimator
@@ -186,11 +186,10 @@ class GalleryListFragment : androidx.fragment.app.Fragment(), GalleryListAdapter
     }
 
     override fun showViewImagePager(noteId: String, position: Int) {
-        val tag = GalleryPagerFragment::class.toString()
-        if (fragmentManager?.findFragmentByTag(tag) == null) {
+        if (fragmentManager?.findFragmentByTag(GalleryPagerFragment.TAG) == null) {
             fragmentManager?.inTransaction {
                 replace(R.id.container_gallery,
-                        GalleryPagerFragment.newInstance(noteId, position), tag)
+                        GalleryPagerFragment.newInstance(noteId, position), GalleryPagerFragment.TAG)
             }
         }
     }

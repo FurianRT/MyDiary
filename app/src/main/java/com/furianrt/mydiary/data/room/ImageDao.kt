@@ -21,9 +21,11 @@ abstract class ImageDao {
         images.forEach { update(it) }
     }
 
-    @Delete
-    abstract fun delete(images: List<MyImage>)
+    @Query("UPDATE Images SET is_image_deleted = 1 WHERE name IN (:imageIds)")
+    abstract fun delete(imageIds: List<String>)
 
-    @Query("SELECT * FROM Images WHERE id_note = :noteId ORDER BY `order` ASC, time_added DESC")
+    @Query("SELECT * FROM Images " +
+            "WHERE id_note_image = :noteId AND is_image_deleted = 0 " +
+            "ORDER BY `order` ASC, time_added DESC")
     abstract fun getImagesForNote(noteId: String): Flowable<List<MyImage>>
 }

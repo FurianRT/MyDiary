@@ -18,32 +18,28 @@ abstract class NoteDao {
     @Query("UPDATE Notes SET title = :title, content = :content WHERE id_note = :noteId")
     abstract fun updateNoteText(noteId: String, title: String, content: String)
 
-    @Delete
-    abstract fun delete(note: MyNote)
+    @Query("UPDATE Notes SET is_note_deleted = 1 WHERE id_note = :noteId")
+    abstract fun delete(noteId: String)
 
-    @Delete
-    abstract fun delete(notes: List<MyNote>)
+    @Query("UPDATE Notes SET is_note_deleted = 1 WHERE id_note IN (:noteIds)")
+    abstract fun delete(noteIds: List<String>)
 
-    @Query("SELECT * FROM Notes")
+    @Query("SELECT * FROM Notes WHERE is_note_deleted = 0")
     abstract fun getAllNotes(): Flowable<List<MyNote>>
 
-    @Query("SELECT * FROM Notes WHERE id_note =:noteId")
+    @Query("SELECT * FROM Notes WHERE id_note =:noteId AND is_note_deleted = 0")
     abstract fun findNote(noteId: String): Maybe<MyNote>
 
-    @Query("SELECT * FROM Notes WHERE id_note =:noteId")
+    @Query("SELECT * FROM Notes WHERE id_note =:noteId AND is_note_deleted = 0")
     abstract fun getNote(noteId: String): Flowable<MyNote>
 
     @Transaction
-    @Query("SELECT * FROM Notes LEFT JOIN Moods ON mood = id_mood " +
-            "LEFT JOIN Locations ON location = name_location " +
+    @Query("SELECT * FROM Notes " +
+            "LEFT JOIN Moods ON mood = id_mood AND is_note_deleted = 0 " +
+            "LEFT JOIN Locations ON location = name_location AND is_location_deleted = 0 " +
             "LEFT JOIN NoteAppearances ON id_note = id_appearance " +
-            "LEFT JOIN Categories ON category = id_category WHERE id_note =:noteId")
-    abstract fun getNoteWithProp(noteId: String): Flowable<MyNoteWithProp>
-
-    @Transaction
-    @Query("SELECT * FROM Notes LEFT JOIN Moods ON mood = id_mood " +
-            "LEFT JOIN Locations ON location = name_location " +
-            "LEFT JOIN NoteAppearances ON id_note = id_appearance " +
-            "LEFT JOIN Categories ON category = id_category ORDER BY time DESC")
+            "LEFT JOIN Categories ON category = id_category AND is_category_deleted = 0 " +
+            "WHERE is_note_deleted = 0 " +
+            "ORDER BY time DESC")
     abstract fun getAllNotesWithProp(): Flowable<List<MyNoteWithProp>>
 }

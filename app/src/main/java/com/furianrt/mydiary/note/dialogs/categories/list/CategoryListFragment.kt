@@ -12,7 +12,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.furianrt.mydiary.R
 import com.furianrt.mydiary.data.model.MyCategory
 import com.furianrt.mydiary.note.dialogs.categories.edit.CategoryEditFragment
-import com.furianrt.mydiary.note.fragments.notefragment.inTransaction
+import com.furianrt.mydiary.utils.inTransaction
 import kotlinx.android.synthetic.main.fragment_category_list.*
 import kotlinx.android.synthetic.main.fragment_category_list.view.*
 import javax.inject.Inject

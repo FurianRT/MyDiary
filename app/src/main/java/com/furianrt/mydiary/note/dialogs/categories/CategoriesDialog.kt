@@ -1,17 +1,17 @@
 package com.furianrt.mydiary.note.dialogs.categories
 
 import android.annotation.SuppressLint
-import androidx.appcompat.app.AlertDialog
 import android.app.Dialog
 import android.content.DialogInterface
 import android.os.Bundle
 import android.view.*
+import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
 import com.furianrt.mydiary.R
 import com.furianrt.mydiary.data.model.MyCategory
 import com.furianrt.mydiary.note.dialogs.categories.edit.CategoryEditFragment
 import com.furianrt.mydiary.note.dialogs.categories.list.CategoryListFragment
-import com.furianrt.mydiary.note.fragments.notefragment.inTransaction
+import com.furianrt.mydiary.utils.inTransaction
 import javax.inject.Inject
 
 class CategoriesDialog : DialogFragment(), CategoriesDialogContract.View {

@@ -1,90 +1,49 @@
 package com.furianrt.mydiary.service
 
-import android.app.IntentService
+import android.app.PendingIntent
+import android.app.Service
 import android.content.Intent
-import android.content.Context
+import android.os.IBinder
+import androidx.core.app.NotificationCompat
+import com.furianrt.mydiary.MyApp
+import com.furianrt.mydiary.main.MainActivity
+import javax.inject.Inject
 
-// TODO: Rename actions, choose action names that describe tasks that this
-// IntentService can perform, e.g. ACTION_FETCH_NEW_ITEMS
-private const val ACTION_FOO = "com.furianrt.mydiary.service.action.FOO"
-private const val ACTION_BAZ = "com.furianrt.mydiary.service.action.BAZ"
-
-// TODO: Rename parameters
-private const val EXTRA_PARAM1 = "com.furianrt.mydiary.service.extra.PARAM1"
-private const val EXTRA_PARAM2 = "com.furianrt.mydiary.service.extra.PARAM2"
-
-/**
- * An [IntentService] subclass for handling asynchronous task requests in
- * a service on a separate handler thread.
- * TODO: Customize class - update intent actions, extra parameters and static
- * helper methods.
- */
-class SyncService : IntentService("SyncService") {
-
-    override fun onHandleIntent(intent: Intent?) {
-        when (intent?.action) {
-            ACTION_FOO -> {
-                val param1 = intent.getStringExtra(EXTRA_PARAM1)
-                val param2 = intent.getStringExtra(EXTRA_PARAM2)
-                handleActionFoo(param1, param2)
-            }
-            ACTION_BAZ -> {
-                val param1 = intent.getStringExtra(EXTRA_PARAM1)
-                val param2 = intent.getStringExtra(EXTRA_PARAM2)
-                handleActionBaz(param1, param2)
-            }
-        }
-    }
-
-    /**
-     * Handle action Foo in the provided background thread with the provided
-     * parameters.
-     */
-    private fun handleActionFoo(param1: String, param2: String) {
-        TODO("Handle action Foo")
-    }
-
-    /**
-     * Handle action Baz in the provided background thread with the provided
-     * parameters.
-     */
-    private fun handleActionBaz(param1: String, param2: String) {
-        TODO("Handle action Baz")
-    }
+class SyncService : Service(), SyncContract.View {
 
     companion object {
-        /**
-         * Starts this service to perform action Foo with the given parameters. If
-         * the service is already performing a task this action will be queued.
-         *
-         * @see IntentService
-         */
-        // TODO: Customize helper method
-        @JvmStatic
-        fun startActionFoo(context: Context, param1: String, param2: String) {
-            val intent = Intent(context, SyncService::class.java).apply {
-                action = ACTION_FOO
-                putExtra(EXTRA_PARAM1, param1)
-                putExtra(EXTRA_PARAM2, param2)
-            }
-            context.startService(intent)
-        }
+        const val TAG = "SyncService"
+        private const val FOREGROUNG_ID = 1
+    }
 
-        /**
-         * Starts this service to perform action Baz with the given parameters. If
-         * the service is already performing a task this action will be queued.
-         *
-         * @see IntentService
-         */
-        // TODO: Customize helper method
-        @JvmStatic
-        fun startActionBaz(context: Context, param1: String, param2: String) {
-            val intent = Intent(context, SyncService::class.java).apply {
-                action = ACTION_BAZ
-                putExtra(EXTRA_PARAM1, param1)
-                putExtra(EXTRA_PARAM2, param2)
-            }
-            context.startService(intent)
-        }
+    @Inject
+    lateinit var mPresenter: SyncContract.Presenter
+
+    override fun onCreate() {
+        getPresenterComponent(this).inject(this)
+        super.onCreate()
+        mPresenter.attachView(this)
+    }
+
+    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        val notificationIntent = Intent(this, MainActivity::class.java)
+        val pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0)
+        val notification = NotificationCompat.Builder(this, MyApp.NOTIFICATION_CHANNEL_ID)
+                .setContentText("Test Title")
+                .setContentText("Test, Text")
+                .setContentIntent(pendingIntent)
+                .build()
+        startForeground(FOREGROUNG_ID, notification)
+        mPresenter.onStartCommand()
+        return Service.START_NOT_STICKY
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        mPresenter.detachView()
+    }
+
+    override fun onBind(intent: Intent?): IBinder? {
+        return null
     }
 }

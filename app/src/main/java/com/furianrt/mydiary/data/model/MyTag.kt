@@ -12,7 +12,9 @@ import kotlinx.android.parcel.Parcelize
 data class MyTag(
         @ColumnInfo(name = "id_tag") @PrimaryKey(autoGenerate = false) var id: String,
         @ColumnInfo(name = "name_tag") var name: String,
-        @Ignore var isChecked: Boolean = false
+        @Ignore var isChecked: Boolean = false,
+        @ColumnInfo(name = "is_tag_sync") var isSync: Boolean = false,
+        @ColumnInfo(name = "is_tag_deleted") var idDeleted: Boolean = false
 ) : Parcelable {
 
     constructor(id: String, name: String) : this(id, name, false)

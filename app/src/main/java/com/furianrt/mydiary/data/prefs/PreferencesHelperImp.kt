@@ -40,8 +40,8 @@ class PreferencesHelperImp(val context: Context) : PreferencesHelper {
             mPrefs.getInt(PreferencesHelper.NOTE_TEXT_BACKGROUND_COLOR,
                     ContextCompat.getColor(context, R.color.white))
 
-    override fun getTimeFormat(): Int =
-            mPrefs.getString(PreferencesHelper.TIME_FORMAT, "1")!!.toInt()
+    override fun is24TimeFormat(): Boolean =
+            mPrefs.getString(PreferencesHelper.TIME_FORMAT, "true")!!.toBoolean()
 
     override fun isSortDesc(): Boolean =
             mPrefs.getBoolean(PreferencesHelper.IS_NOTE_SORT_DESC, true)

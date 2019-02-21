@@ -19,6 +19,8 @@ abstract class BaseActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState, persistentState)
     }
 
+    // Похоже, что динамическое создание стиля в андроиде не предусмотрено,
+    // поэтому приходится хардкодить этот бред
     private fun applyStyleToTheme() {
         val colorPrimary = PreferenceManager
                 .getDefaultSharedPreferences(this)

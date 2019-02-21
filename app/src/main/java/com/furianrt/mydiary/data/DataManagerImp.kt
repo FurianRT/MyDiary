@@ -92,19 +92,19 @@ class DataManagerImp(
                     .subscribeOn(mRxScheduler)
 
     override fun deleteTag(tag: MyTag): Completable =
-            Completable.fromAction { mDatabase.tagDao().delete(tag) }
+            Completable.fromAction { mDatabase.tagDao().delete(tag.id) }
                     .subscribeOn(mRxScheduler)
 
     override fun deleteNote(note: MyNote): Completable =
-            Completable.fromAction { mDatabase.noteDao().delete(note) }
+            Completable.fromAction { mDatabase.noteDao().delete(note.id) }
                     .subscribeOn(mRxScheduler)
 
     override fun deleteNotes(notes: List<MyNote>): Completable =
-            Completable.fromAction { mDatabase.noteDao().delete(notes) }
+            Completable.fromAction { mDatabase.noteDao().delete(notes.map { it.id }) }
                     .subscribeOn(mRxScheduler)
 
     override fun deleteImages(images: List<MyImage>): Completable =
-            Completable.fromAction { mDatabase.imageDao().delete(images) }
+            Completable.fromAction { mDatabase.imageDao().delete(images.map { it.name }) }
                     .subscribeOn(mRxScheduler)
 
     override fun deleteNoteTag(noteTag: NoteTag): Completable =
@@ -112,7 +112,7 @@ class DataManagerImp(
                     .subscribeOn(mRxScheduler)
 
     override fun deleteCategory(category: MyCategory): Completable =
-            Completable.fromAction { mDatabase.categoryDao().delete(category) }
+            Completable.fromAction { mDatabase.categoryDao().delete(category.id.toString()) }
                     .subscribeOn(mRxScheduler)
 
     override fun deleteProfile(): Completable =
@@ -141,19 +141,9 @@ class DataManagerImp(
                     .getTagsForNote(noteId)
                     .subscribeOn(mRxScheduler)
 
-    override fun getNoteWithProp(noteId: String): Flowable<MyNoteWithProp> =
-            mDatabase.noteDao()
-                    .getNoteWithProp(noteId)
-                    .subscribeOn(mRxScheduler)
-
     override fun getNote(noteId: String): Flowable<MyNote> =
             mDatabase.noteDao()
                     .getNote(noteId)
-                    .subscribeOn(mRxScheduler)
-
-    override fun getNotesWithTag(tagId: Long): Flowable<List<MyNote>> =
-            mDatabase.noteTagDao()
-                    .getNotesWithTag(tagId)
                     .subscribeOn(mRxScheduler)
 
     override fun getMood(moodId: Int): Single<MyMood> =
@@ -256,7 +246,7 @@ class DataManagerImp(
 
     override fun getNoteTextBackgroundColor(): Int = mPrefs.getNoteTextBackgroundColor()
 
-    override fun getTimeFormat(): Int = mPrefs.getTimeFormat()
+    override fun is24TimeFormat(): Boolean = mPrefs.is24TimeFormat()
 
     override fun loadHeaderImages(page: Int, perPage: Int): Single<List<MyHeaderImage>> =
             mImageApi.getImages()

@@ -104,8 +104,8 @@
     </string-array>
 
     <string-array name="pref_time_format_values">
-        <item>0</item>
-        <item>1</item>
+        <item>false</item>
+        <item>true</item>
     </string-array>
 
     <string-array name="pref_key_frequency_titles">

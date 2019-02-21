@@ -35,10 +35,11 @@ import com.furianrt.mydiary.main.fragments.profile.ProfileFragment
 import com.furianrt.mydiary.main.listadapter.MainListAdapter
 import com.furianrt.mydiary.main.listadapter.MainListItem
 import com.furianrt.mydiary.note.NoteActivity
-import com.furianrt.mydiary.note.fragments.notefragment.inTransaction
+import com.furianrt.mydiary.service.SyncService
 import com.furianrt.mydiary.settings.global.GlobalSettingsActivity
 import com.furianrt.mydiary.utils.getThemePrimaryColor
 import com.furianrt.mydiary.utils.getThemePrimaryDarkColor
+import com.furianrt.mydiary.utils.inTransaction
 import com.furianrt.mydiary.utils.isNetworkAvailable
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.bottomsheet.BottomSheetBehavior
@@ -126,9 +127,7 @@ class MainActivity : BaseActivity(), MainActivityContract.View,
 
     override fun showHeaderImage(image: MyHeaderImage) {
         Log.e(TAG, "showHeaderImage")
-        if (mNeedToOpenActionBar) {
-            enableActionBarExpanding()
-        }
+        enableActionBarExpanding(mNeedToOpenActionBar)
         mNeedToOpenActionBar = true
         GlideApp.with(this)
                 .load(image.url)
@@ -152,7 +151,7 @@ class MainActivity : BaseActivity(), MainActivityContract.View,
         (coordParams.behavior as AppBarLayoutBehavior).shouldScroll = false
     }
 
-    private fun enableActionBarExpanding() {
+    private fun enableActionBarExpanding(expand: Boolean) {
         val appBarParams = collapsing_toolbar_main.layoutParams as AppBarLayout.LayoutParams
         val orientation = resources.configuration.orientation
         if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
@@ -166,7 +165,9 @@ class MainActivity : BaseActivity(), MainActivityContract.View,
             collapsing_toolbar_main.layoutParams = appBarParams
         }
 
-        app_bar_layout.setExpanded(true)
+        if (expand) {
+            app_bar_layout.setExpanded(true)
+        }
 
         val coordParams = app_bar_layout.layoutParams as CoordinatorLayout.LayoutParams
         (coordParams.behavior as AppBarLayoutBehavior).shouldScroll = true
@@ -484,6 +485,11 @@ class MainActivity : BaseActivity(), MainActivityContract.View,
                 Toast.makeText(this, getString(R.string.click_again_to_exit), Toast.LENGTH_SHORT).show()
             else -> super.onBackPressed()
         }
+    }
+
+    override fun startSyncService() {
+        val serviceIntent = Intent(this, SyncService::class.java)
+        ContextCompat.startForegroundService(this, serviceIntent)
     }
 
     override fun networkAvailable() = isNetworkAvailable()

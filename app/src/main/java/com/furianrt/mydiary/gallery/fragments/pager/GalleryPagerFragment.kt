@@ -7,7 +7,7 @@ import androidx.viewpager.widget.ViewPager
 import com.furianrt.mydiary.R
 import com.furianrt.mydiary.data.model.MyImage
 import com.furianrt.mydiary.gallery.fragments.list.GalleryListFragment
-import com.furianrt.mydiary.note.fragments.notefragment.inTransaction
+import com.furianrt.mydiary.utils.inTransaction
 import kotlinx.android.synthetic.main.fragment_gallery_pager.view.*
 import javax.inject.Inject
 

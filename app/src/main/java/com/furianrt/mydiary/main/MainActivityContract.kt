@@ -35,6 +35,7 @@ interface MainActivityContract {
         fun setSortAsc()
         fun showViewImageSettings()
         fun showImageOptions()
+        fun startSyncService()
     }
 
     abstract class Presenter : BasePresenter<View>() {

@@ -40,6 +40,8 @@ import com.furianrt.mydiary.note.fragments.notefragment.content.NoteContentFragm
 import com.furianrt.mydiary.note.fragments.notefragment.content.NoteContentFragmentPresenter
 import com.furianrt.mydiary.note.fragments.notefragment.edit.NoteEditFragmentContract
 import com.furianrt.mydiary.note.fragments.notefragment.edit.NoteEditFragmentPresenter
+import com.furianrt.mydiary.service.SyncContract
+import com.furianrt.mydiary.service.SyncPresenter
 import com.furianrt.mydiary.settings.note.NoteSettingsContract
 import com.furianrt.mydiary.settings.note.NoteSettingsPresenter
 import com.google.android.gms.location.FusedLocationProviderClient
@@ -154,4 +156,9 @@ class PresenterModule(private val context: Context) {
     @PresenterScope
     fun provideImageSettingsPresenter(dataManager: DataManager): ImageSettingsContract.Presenter =
             ImageSettingsPresenter(dataManager)
+
+    @Provides
+    @PresenterScope
+    fun provideSyncPresenter(dataManager: DataManager): SyncContract.Presenter =
+            SyncPresenter(dataManager)
 }

@@ -11,5 +11,7 @@ import kotlinx.android.parcel.Parcelize
 data class MyLocation(
         @PrimaryKey(autoGenerate = false) @ColumnInfo(name = "name_location") var name: String,
         @ColumnInfo(name = "lat") var lat: Double,
-        @ColumnInfo(name = "lon") var lon: Double
+        @ColumnInfo(name = "lon") var lon: Double,
+        @ColumnInfo(name = "is_location_sync") var isSync: Boolean = false,
+        @ColumnInfo(name = "is_location_deleted") var idDeleted: Boolean = false
 ) : Parcelable

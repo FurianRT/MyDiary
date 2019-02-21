@@ -27,5 +27,6 @@ import kotlinx.android.parcel.Parcelize
 @Parcelize
 data class NoteTag(
         @ColumnInfo(name = "id_note", index = true) var noteId: String,
-        @ColumnInfo(name = "id_tag", index = true) var tagId: String
+        @ColumnInfo(name = "id_tag", index = true) var tagId: String,
+        @ColumnInfo(name = "is_notetag_deleted") var isDeleted: Boolean = false
 ) : Parcelable

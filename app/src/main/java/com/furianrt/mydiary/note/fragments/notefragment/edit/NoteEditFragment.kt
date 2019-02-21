@@ -145,7 +145,7 @@ class NoteEditFragment : Fragment(), NoteEditFragmentContract.View {
     override fun onResume() {
         super.onResume()
         mListener?.onNoteFragmentEditModeEnabled()
-        (parentFragment as? NoteFragment)?.disableActionBarExpanding(true)
+        //(parentFragment as? NoteFragment)?.disableActionBarExpanding(false)
     }
 
     override fun onStop() {
