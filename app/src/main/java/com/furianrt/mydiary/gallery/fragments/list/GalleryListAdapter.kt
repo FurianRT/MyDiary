@@ -1,5 +1,6 @@
 package com.furianrt.mydiary.gallery.fragments.list
 
+import android.net.Uri
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -88,7 +89,7 @@ class GalleryListAdapter(
              mImage = item
             itemView.setOnClickListener(this)
             GlideApp.with(itemView)
-                    .load(mImage.url)
+                    .load(Uri.parse(mImage.uri))
                     .override(550, 400)
                     .into(itemView.image_gallery_item)
 

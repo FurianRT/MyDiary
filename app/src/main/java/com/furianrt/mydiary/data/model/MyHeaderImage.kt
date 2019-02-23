@@ -17,7 +17,7 @@ data class MyHeaderImage(
     companion object {
         const val TABLE_NAME = "HeaderImages"
         const val FIELD_ID= "id"
-        const val FIELD_URL = "url"
+        const val FIELD_URL = "uri"
         const val FIELD_ADDED_TIME = "added_time"
     }
 }

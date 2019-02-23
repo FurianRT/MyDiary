@@ -2,6 +2,7 @@ package com.furianrt.mydiary.main.listadapter
 
 import android.graphics.Color
 import android.graphics.PorterDuff
+import android.net.Uri
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -119,7 +120,7 @@ class MainListAdapter(
                     image_main_list.setImageDrawable(null)
                 } else {
                     GlideApp.with(itemView)
-                            .load(mContentItem.note.images[0].url)
+                            .load(Uri.parse(mContentItem.note.images[0].uri))
                             .override(200, 200)
                             .into(image_main_list)
                 }

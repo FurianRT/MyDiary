@@ -76,7 +76,7 @@ class MainActivityPresenter(
                 .flatMapSingle { image -> mDataManager.deleteImageFromStorage(image.name) }
                 .flatMapCompletable { mDataManager.deleteAllHeaderImages() }
                 .andThen(Observable.fromIterable(imageUrls))
-                .map { url -> MyHeaderImage(HEADER_IMAGE_NAME + "_" + generateUniqueId(), url) }
+                .map { uri -> MyHeaderImage(HEADER_IMAGE_NAME + "_" + generateUniqueId(), uri) }
                 .flatMapSingle { image -> mDataManager.saveHeaderImageToStorage(image) }
                 .flatMapCompletable { savedImage -> mDataManager.insertHeaderImage(savedImage) }
                 .observeOn(AndroidSchedulers.mainThread())

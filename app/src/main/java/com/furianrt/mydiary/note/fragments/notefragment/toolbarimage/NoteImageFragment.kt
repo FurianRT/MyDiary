@@ -1,5 +1,6 @@
 package com.furianrt.mydiary.note.fragments.notefragment.toolbarimage
 
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -26,7 +27,7 @@ class NoteImageFragment : androidx.fragment.app.Fragment() {
         val view = inflater.inflate(R.layout.fragment_note_image, container, false)
 
         GlideApp.with(this)
-                .load(mImage?.url)
+                .load(Uri.parse(mImage?.uri))
                 .into(view.image_note)
 
         view.layout_toolbar_image_root.setOnClickListener {

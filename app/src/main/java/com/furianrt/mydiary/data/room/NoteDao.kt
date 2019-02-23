@@ -7,43 +7,40 @@ import io.reactivex.Flowable
 import io.reactivex.Maybe
 
 @Dao
-abstract class NoteDao {
+interface NoteDao {
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    abstract fun insert(note: MyNote)
+    fun insert(note: MyNote)
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    abstract fun insert(notes: List<MyNote>)
+    fun insert(notes: List<MyNote>)
 
     @Update
-    abstract fun update(note: MyNote)
+    fun update(note: MyNote)
 
     @Update
-    abstract fun updateSync(notes: List<MyNote>)
+    fun update(notes: List<MyNote>)
 
     @Query("UPDATE Notes SET title = :title, content = :content, is_note_sync = 0 WHERE id_note = :noteId")
-    abstract fun updateNoteText(noteId: String, title: String, content: String)
+    fun updateNoteText(noteId: String, title: String, content: String)
 
     @Query("UPDATE Notes SET is_note_deleted = 1 WHERE id_note = :noteId")
-    abstract fun delete(noteId: String)
-
-    @Query("UPDATE Notes SET is_note_deleted = 1 WHERE id_note IN (:noteIds)")
-    abstract fun delete(noteIds: List<String>)
+    fun delete(noteId: String)
 
     @Query("DELETE FROM Notes WHERE is_note_deleted = 1")
-    abstract fun cleanup()
+    fun cleanup()
 
     @Query("SELECT * FROM Notes WHERE is_note_deleted = 1")
-    abstract fun getDeletedNotes(): Flowable<List<MyNote>>
+    fun getDeletedNotes(): Flowable<List<MyNote>>
 
     @Query("SELECT * FROM Notes WHERE is_note_deleted = 0")
-    abstract fun getAllNotes(): Flowable<List<MyNote>>
+    fun getAllNotes(): Flowable<List<MyNote>>
 
     @Query("SELECT * FROM Notes WHERE id_note =:noteId AND is_note_deleted = 0")
-    abstract fun findNote(noteId: String): Maybe<MyNote>
+    fun findNote(noteId: String): Maybe<MyNote>
 
     @Query("SELECT * FROM Notes WHERE id_note =:noteId AND is_note_deleted = 0")
-    abstract fun getNote(noteId: String): Flowable<MyNote>
+    fun getNote(noteId: String): Flowable<MyNote>
 
     @Transaction
     @Query("SELECT * FROM Notes " +
@@ -53,5 +50,5 @@ abstract class NoteDao {
             "LEFT JOIN Categories ON category = id_category AND is_category_deleted = 0 " +
             "WHERE is_note_deleted = 0 " +
             "ORDER BY time DESC")
-    abstract fun getAllNotesWithProp(): Flowable<List<MyNoteWithProp>>
+    fun getAllNotesWithProp(): Flowable<List<MyNoteWithProp>>
 }

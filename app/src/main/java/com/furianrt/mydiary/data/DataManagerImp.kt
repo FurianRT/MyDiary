@@ -97,8 +97,12 @@ class DataManagerImp(
 
     override fun updateImages(images: List<MyImage>): Completable =
             Completable.fromAction {
-                mDatabase.imageDao().updateAll(images.map { it.apply { isSync = false } })
+                mDatabase.imageDao().update(images.map { it.apply { isSync = false } })
             }.subscribeOn(mRxScheduler)
+
+    override fun updateImagesSync(images: List<MyImage>): Completable =
+            Completable.fromAction { mDatabase.imageDao().update(images) }
+                    .subscribeOn(mRxScheduler)
 
     override fun updateCategory(category: MyCategory): Completable =
             Completable.fromAction { mDatabase.categoryDao().update(category.apply { isSync = false }) }
@@ -113,23 +117,23 @@ class DataManagerImp(
                     .subscribeOn(mRxScheduler)
 
     override fun updateNotesSync(notes: List<MyNote>): Completable =
-            Completable.fromAction { mDatabase.noteDao().updateSync(notes) }
+            Completable.fromAction { mDatabase.noteDao().update(notes) }
                     .subscribeOn(mRxScheduler)
 
     override fun updateAppearancesSync(appearances: List<MyNoteAppearance>): Completable =
-            Completable.fromAction { mDatabase.appearanceDao().updateSync(appearances) }
+            Completable.fromAction { mDatabase.appearanceDao().update(appearances) }
                     .subscribeOn(mRxScheduler)
 
     override fun updateCategoriesSync(categories: List<MyCategory>): Completable =
-            Completable.fromAction { mDatabase.categoryDao().updateSync(categories) }
+            Completable.fromAction { mDatabase.categoryDao().update(categories) }
                     .subscribeOn(mRxScheduler)
 
     override fun updateNoteTagsSync(noteTags: List<NoteTag>): Completable =
-            Completable.fromAction { mDatabase.noteTagDao().updateSync(noteTags) }
+            Completable.fromAction { mDatabase.noteTagDao().update(noteTags) }
                     .subscribeOn(mRxScheduler)
 
     override fun updateTagsSync(tags: List<MyTag>): Completable =
-            Completable.fromAction { mDatabase.tagDao().updateSync(tags) }
+            Completable.fromAction { mDatabase.tagDao().update(tags) }
                     .subscribeOn(mRxScheduler)
 
     override fun deleteTag(tag: MyTag): Completable =
@@ -141,11 +145,12 @@ class DataManagerImp(
             Completable.fromAction { mDatabase.noteDao().delete(note.id) }
                     .andThen(Completable.fromAction { mDatabase.noteTagDao().deleteWithNoteId(note.id) })
                     .andThen(Completable.fromAction { mDatabase.appearanceDao().delete(note.id) })
-                    //todo добавить удаление картинки
-                    .subscribeOn(mRxScheduler)
-
-    override fun deleteNotes(notes: List<MyNote>): Completable =
-            Completable.fromAction { mDatabase.noteDao().delete(notes.map { it.id }) }
+                    .andThen(Completable.fromAction { mDatabase.imageDao().delete(note.id) })
+                    .andThen(mDatabase.imageDao().getImagesForNote(note.id))
+                    .flatMapIterable { it }
+                    .flatMapSingle { Single.fromCallable { mStorage.deleteFile(it.name) } }
+                    .collectInto(mutableListOf<Boolean>()) { l, i -> l.add(i) }
+                    .ignoreElement()
                     .subscribeOn(mRxScheduler)
 
     override fun deleteImages(images: List<MyImage>): Completable =
@@ -178,18 +183,27 @@ class DataManagerImp(
 
     override fun cleanupNotes(): Completable =
             Completable.fromAction { mDatabase.noteDao().cleanup() }
+                    .subscribeOn(mRxScheduler)
 
     override fun cleanupNoteTags(): Completable =
             Completable.fromAction { mDatabase.noteTagDao().cleanup() }
+                    .subscribeOn(mRxScheduler)
 
     override fun cleanupAppearances(): Completable =
             Completable.fromAction { mDatabase.appearanceDao().cleanup() }
+                    .subscribeOn(mRxScheduler)
 
     override fun cleanupCategories(): Completable =
             Completable.fromAction { mDatabase.categoryDao().cleanup() }
+                    .subscribeOn(mRxScheduler)
 
     override fun cleanupTags(): Completable =
             Completable.fromAction { mDatabase.tagDao().cleanup() }
+                    .subscribeOn(mRxScheduler)
+
+    override fun cleanupImages(): Completable =
+            Completable.fromAction { mDatabase.imageDao().cleanup() }
+                    .subscribeOn(mRxScheduler)
 
     override fun getAllNotes(): Flowable<List<MyNote>> =
             mDatabase.noteDao()
@@ -224,6 +238,16 @@ class DataManagerImp(
     override fun getAllMoods(): Single<List<MyMood>> =
             mDatabase.moodDao()
                     .getAllMoods()
+                    .subscribeOn(mRxScheduler)
+
+    override fun getAllImages(): Flowable<List<MyImage>> =
+            mDatabase.imageDao()
+                    .getAllImages()
+                    .subscribeOn(mRxScheduler)
+
+    override fun getDeletedImages(): Flowable<List<MyImage>> =
+            mDatabase.imageDao()
+                    .getDeletedImages()
                     .subscribeOn(mRxScheduler)
 
     override fun getAllTags(): Single<List<MyTag>> =
@@ -291,8 +315,8 @@ class DataManagerImp(
                     .subscribeOn(mRxScheduler)
 
     override fun saveImageToStorage(image: MyImage): Single<MyImage> =
-            Single.fromCallable { mStorage.copyImageToStorage(image.url, image.name) }
-                    .map { file -> MyImage(file.name, file.path, image.noteId, image.addedTime) }
+            Single.fromCallable { mStorage.copyImageToStorage(image.uri, image.name) }
+                    .map { file -> MyImage(file.name, file.toURI().toString(), image.noteId, image.addedTime) }
                     .subscribeOn(mRxScheduler)
 
     override fun saveProfile(profile: MyProfile): Completable =
@@ -382,6 +406,12 @@ class DataManagerImp(
                     .flatMapCompletable { mCloud.saveAppearances(appearances, it) }
                     .subscribeOn(mRxScheduler)
 
+    override fun saveImagesInCloud(images: List<MyImage>): Completable =
+            mDatabase.profileDao().getProfile()
+                    .firstOrError()
+                    .flatMapCompletable { mCloud.saveImages(images, it) }
+                    .subscribeOn(mRxScheduler)
+
     override fun deleteNotesFromCloud(notes: List<MyNote>): Completable =
             mDatabase.profileDao().getProfile()
                     .firstOrError()
@@ -412,6 +442,12 @@ class DataManagerImp(
                     .flatMapCompletable { mCloud.deleteAppearances(appearances, it) }
                     .subscribeOn(mRxScheduler)
 
+    override fun deleteImagesFromCloud(images: List<MyImage>): Completable =
+            mDatabase.profileDao().getProfile()
+                    .firstOrError()
+                    .flatMapCompletable { mCloud.deleteImages(images, it) }
+                    .subscribeOn(mRxScheduler)
+
     override fun getAllNotesFromCloud(): Single<List<MyNote>> =
             mDatabase.profileDao().getProfile()
                     .firstOrError()
@@ -440,5 +476,11 @@ class DataManagerImp(
             mDatabase.profileDao().getProfile()
                     .firstOrError()
                     .flatMap { mCloud.getAllNoteTags(it) }
+                    .subscribeOn(mRxScheduler)
+
+    override fun getAllImagesFromCloud(): Single<List<MyImage>> =
+            mDatabase.profileDao().getProfile()
+                    .firstOrError()
+                    .flatMap { mCloud.getAllImages(it) }
                     .subscribeOn(mRxScheduler)
 }

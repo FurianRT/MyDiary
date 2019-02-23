@@ -225,7 +225,7 @@ class AppModule(private val app: Application) {
                 app.resources.getResourceEntryName(R.drawable.ic_mood_great)
         )
         for (i in 0 until moodNames.size) {
-            cv.put(MyMood.TABLE_NAME, moodNames[i])
+            cv.put(MyMood.FIELD_NAME, moodNames[i])
             cv.put(MyMood.FIELD_ICON, moodIcons[i])
             db.insert(MyMood.TABLE_NAME, SQLiteDatabase.CONFLICT_IGNORE, cv)
         }

@@ -1,13 +1,19 @@
 package com.furianrt.mydiary.data.cloud
 
+import android.net.Uri
 import android.util.Log
 import com.furianrt.mydiary.data.model.*
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.storage.FileDownloadTask
 import com.google.firebase.storage.FirebaseStorage
+import com.google.firebase.storage.UploadTask
+import durdinapps.rxfirebase2.RxFirebaseStorage
 import durdinapps.rxfirebase2.RxFirestore
 import io.reactivex.Completable
 import io.reactivex.Maybe
+import io.reactivex.Observable
 import io.reactivex.Single
+import io.reactivex.functions.BiFunction
 
 class CloudHelperImp(
         private val mFirestore: FirebaseFirestore,
@@ -22,6 +28,7 @@ class CloudHelperImp(
         private const val COLLECTION_NOTE_TAGS = "note_tags"
         private const val COLLECTION_TAGS = "tags"
         private const val COLLECTION_APPEARANCES = "appearances"
+        private const val COLLECTION_IMAGES = "images"
     }
 
     override fun isProfileExists(email: String): Single<Boolean> =
@@ -98,6 +105,27 @@ class CloudHelperImp(
                 }
             }
 
+    override fun saveImages(images: List<MyImage>, profile: MyProfile): Completable =
+            RxFirestore.runTransaction(mFirestore) { transaction ->
+                images.forEach { image ->
+                    transaction.set(mFirestore.collection(COLLECTION_USERS)
+                            .document(profile.email)
+                            .collection(COLLECTION_IMAGES)
+                            .document(image.name), image)
+                }
+            }
+                    .andThen(Observable.fromIterable(images))
+                    .flatMapSingle { image ->
+                        RxFirebaseStorage.putFile(mFirebaseStorage.reference
+                                .child(COLLECTION_USERS)
+                                .child(profile.email)
+                                .child(COLLECTION_IMAGES)
+                                .child(image.name), Uri.parse(image.uri))
+                                .retry(3L)
+                    }
+                    .collectInto(mutableListOf<UploadTask.TaskSnapshot>()) { l, i -> l.add(i) }
+                    .ignoreElement()
+
     override fun deleteNotes(notes: List<MyNote>, profile: MyProfile): Completable =
             RxFirestore.runTransaction(mFirestore) { transaction ->
                 notes.forEach { note ->
@@ -150,6 +178,27 @@ class CloudHelperImp(
                 }
             }
 
+    override fun deleteImages(images: List<MyImage>, profile: MyProfile): Completable =
+            RxFirestore.runTransaction(mFirestore) { transaction ->
+                images.forEach { images ->
+                    transaction.delete(mFirestore.collection(COLLECTION_USERS)
+                            .document(profile.email)
+                            .collection(COLLECTION_IMAGES)
+                            .document(images.name))
+                }
+            }
+                    .andThen(Observable.fromIterable(images))
+                    .flatMapSingle { image ->
+                        RxFirebaseStorage.delete(mFirebaseStorage.reference
+                                .child(COLLECTION_USERS)
+                                .child(profile.email)
+                                .child(COLLECTION_IMAGES)
+                                .child(image.name))
+                                .andThen(Single.just(""))
+                    }
+                    .collectInto(mutableListOf<String>()) { l, i -> l.add(i) }
+                    .ignoreElement()
+
     override fun getAllNotes(profile: MyProfile): Single<List<MyNote>> =
             RxFirestore.getCollection(mFirestore.collection(COLLECTION_USERS)
                     .document(profile.email)
@@ -179,4 +228,31 @@ class CloudHelperImp(
                     .document(profile.email)
                     .collection(COLLECTION_NOTE_TAGS), NoteTag::class.java)
                     .toSingle(emptyList())
+
+    override fun getAllImages(profile: MyProfile): Single<List<MyImage>> =
+            RxFirestore.getCollection(mFirestore.collection(COLLECTION_USERS)
+                    .document(profile.email)
+                    .collection(COLLECTION_IMAGES), MyImage::class.java)
+                    .toSingle(emptyList())
+                    .flatMap {
+                        Single.zip(
+                                Single.just(it),
+                                saveImagesToStorage(profile, it),
+                                BiFunction<List<MyImage>, List<FileDownloadTask.TaskSnapshot>, List<MyImage>>
+                                { images, _ -> images }
+                        )
+                    }
+
+    private fun saveImagesToStorage(profile: MyProfile, images: List<MyImage>)
+            : Single<MutableList<FileDownloadTask.TaskSnapshot>> =
+            Observable.fromIterable(images)
+                    .flatMapSingle { image ->
+                        RxFirebaseStorage.getFile(mFirebaseStorage.reference
+                                .child(COLLECTION_USERS)
+                                .child(profile.email)
+                                .child(COLLECTION_IMAGES)
+                                .child(image.name), Uri.parse(image.uri))
+                                .retry(3L)
+                    }
+                    .collectInto(mutableListOf()) { l, i -> l.add(i) }
 }

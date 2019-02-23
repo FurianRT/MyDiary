@@ -6,29 +6,29 @@ import io.reactivex.Flowable
 import io.reactivex.Single
 
 @Dao
-abstract class TagDao {
+interface TagDao {
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    abstract fun insert(tag: MyTag)
+    fun insert(tag: MyTag)
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    abstract fun insert(tag: List<MyTag>)
+    fun insert(tag: List<MyTag>)
 
     @Update
-    abstract fun update(tag: MyTag)
+    fun update(tag: MyTag)
 
     @Update
-    abstract fun updateSync(tags: List<MyTag>)
+    fun update(tags: List<MyTag>)
 
     @Query("UPDATE Tags SET is_tag_deleted = 1 WHERE id_tag = :tagId")
-    abstract fun delete(tagId: String)
+    fun delete(tagId: String)
 
     @Query("SELECT * FROM Tags WHERE is_tag_deleted = 1")
-    abstract fun getDeletedTags(): Flowable<List<MyTag>>
+    fun getDeletedTags(): Flowable<List<MyTag>>
 
     @Query("DELETE FROM Tags WHERE is_tag_deleted = 1")
-    abstract fun cleanup()
+    fun cleanup()
 
     @Query("SELECT * FROM Tags WHERE is_tag_deleted = 0")
-    abstract fun getAllTags(): Single<List<MyTag>>
+    fun getAllTags(): Single<List<MyTag>>
 }

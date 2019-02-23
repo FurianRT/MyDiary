@@ -31,6 +31,7 @@ class SyncPresenter(
                 .andThen(syncCategories())
                 .andThen(syncTags())
                 .andThen(syncNoteTags())
+                .andThen(syncImages())
                 .andThen(cleanup())
                 .subscribe({
                     Log.e(TAG, "Sync finished")
@@ -159,10 +160,32 @@ class SyncPresenter(
                     .andThen(mDataManager.getAllNoteTagsFromCloud())
                     .flatMapCompletable { mDataManager.insertNoteTag(it) }
 
+    private fun syncImages(): Completable =
+            mDataManager.getAllImages()
+                    .first(emptyList())
+                    .map { images -> images.filter { !it.isSync } }
+                    .flatMapCompletable { images ->
+                        Log.e(TAG, "14")
+                        val imagesSync = images.map { it.apply { it.isSync = true } }
+                        return@flatMapCompletable Completable.merge(listOf(
+                                mDataManager.updateImagesSync(imagesSync),
+                                mDataManager.saveImagesInCloud(imagesSync)))
+                    }
+                    .andThen(mDataManager
+                            .getDeletedImages()
+                            .first(emptyList()))
+                    .flatMapCompletable {
+                        Log.e(TAG, "15")
+                        return@flatMapCompletable mDataManager.deleteImagesFromCloud(it)
+                    }
+                    .andThen(mDataManager.getAllImagesFromCloud())
+                    .flatMapCompletable { mDataManager.insertImages(it) }
+
     private fun cleanup(): Completable =
             mDataManager.cleanupNotes()
                     .andThen(mDataManager.cleanupAppearances())
                     .andThen(mDataManager.cleanupCategories())
                     .andThen(mDataManager.cleanupNoteTags())
                     .andThen(mDataManager.cleanupTags())
+                    .andThen(mDataManager.cleanupImages())
 }

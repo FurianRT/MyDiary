@@ -1,5 +1,6 @@
 package com.furianrt.mydiary.gallery.fragments.pager.image
 
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -27,7 +28,7 @@ class GalleryImageFragment : androidx.fragment.app.Fragment() {
         val view = inflater.inflate(R.layout.fragment_gallery_image, container, false)
 
         GlideApp.with(this)
-                .load(mImage?.url)
+                .load(Uri.parse(mImage?.uri))
                 .into(view.image_gallery)
 
         return view

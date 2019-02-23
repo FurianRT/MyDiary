@@ -5,27 +5,34 @@ import com.furianrt.mydiary.data.model.MyImage
 import io.reactivex.Flowable
 
 @Dao
-abstract class ImageDao {
+interface ImageDao {
 
-    @Insert
-    abstract fun insert(image: MyImage)
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    fun insert(image: MyImage)
 
-    @Insert
-    abstract fun insert(images: List<MyImage>)
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    fun insert(images: List<MyImage>)
 
     @Update
-    abstract fun update(image: MyImage)
+    fun update(images: List<MyImage>)
 
-    @Transaction
-    open fun updateAll(images: List<MyImage>) {
-        images.forEach { update(it) }
-    }
+    @Query("UPDATE Images SET is_image_deleted = 1 WHERE id_note_image = :noteId")
+    fun delete(noteId: String)
 
     @Query("UPDATE Images SET is_image_deleted = 1 WHERE name IN (:imageIds)")
-    abstract fun delete(imageIds: List<String>)
+    fun delete(imageIds: List<String>)
+
+    @Query("SELECT * FROM Images WHERE is_image_deleted = 0")
+    fun getAllImages(): Flowable<List<MyImage>>
+
+    @Query("SELECT * FROM Images WHERE is_image_deleted = 1")
+    fun getDeletedImages(): Flowable<List<MyImage>>
 
     @Query("SELECT * FROM Images " +
             "WHERE id_note_image = :noteId AND is_image_deleted = 0 " +
             "ORDER BY `order` ASC, time_added DESC")
-    abstract fun getImagesForNote(noteId: String): Flowable<List<MyImage>>
+    fun getImagesForNote(noteId: String): Flowable<List<MyImage>>
+
+    @Query("DELETE FROM Images WHERE is_image_deleted = 1")
+    fun cleanup()
 }
