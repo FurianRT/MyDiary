@@ -146,7 +146,7 @@ class NoteFragmentPresenter(private val mDataManager: DataManager) : NoteFragmen
                 .subscribe { mood -> view?.showMood(mood) })
     }
 
-    private fun showNoteCategory(categoryId: Long) {
+    private fun showNoteCategory(categoryId: String) {
         addDisposable(mDataManager.getAllCategories()
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { categories ->
@@ -274,7 +274,7 @@ class NoteFragmentPresenter(private val mDataManager: DataManager) : NoteFragmen
     }
 
     override fun onNoCategoryPicked() {
-        mNote.categoryId = 0
+        mNote.categoryId = ""
         addDisposable(mDataManager.updateNote(mNote)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { view?.showNoCategoryMessage() })

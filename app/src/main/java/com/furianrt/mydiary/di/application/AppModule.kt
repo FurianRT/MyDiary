@@ -20,7 +20,6 @@ import com.furianrt.mydiary.data.prefs.PreferencesHelperImp
 import com.furianrt.mydiary.data.room.NoteDatabase
 import com.furianrt.mydiary.data.storage.StorageHelper
 import com.furianrt.mydiary.data.storage.StorageHelperImp
-import com.furianrt.mydiary.utils.generateUniqueId
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.FirebaseFirestoreSettings
 import com.google.firebase.storage.FirebaseStorage
@@ -230,17 +229,18 @@ class AppModule(private val app: Application) {
         }
         cv.clear()
         val tagNames = app.resources.getStringArray(R.array.tags)
-        for (tagName in tagNames) {
-            cv.put("id_tag", generateUniqueId())
-            cv.put("name_tag", tagName)
+        for (i in 0 until tagNames.size) {
+            cv.put("id_tag", "default_tag_$i")
+            cv.put("name_tag", tagNames[i])
             cv.put("is_tag_sync", false)
             cv.put("is_tag_deleted", false)
             db.insert("Tags", 0, cv)
         }
         cv.clear()
         val categoryNames = app.resources.getStringArray(R.array.categories)
-        for (categoryName in categoryNames) {
-            cv.put("name_category", categoryName)
+        for (i in 0 until categoryNames.size) {
+            cv.put("id_category", "default_category_$i")
+            cv.put("name_category", categoryNames[i])
             cv.put("color", MyCategory.DEFAULT_COLOR)
             cv.put("is_category_sync", false)
             cv.put("is_category_deleted", false)

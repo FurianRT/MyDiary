@@ -1,7 +1,6 @@
 package com.furianrt.mydiary.note.dialogs.tags
 
 import android.annotation.SuppressLint
-import androidx.appcompat.app.AlertDialog
 import android.app.Dialog
 import android.content.DialogInterface
 import android.graphics.Color
@@ -10,6 +9,8 @@ import android.os.Parcelable
 import android.view.View
 import android.widget.EditText
 import android.widget.ImageView
+import androidx.appcompat.app.AlertDialog
+import androidx.fragment.app.DialogFragment
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.furianrt.mydiary.R
@@ -18,7 +19,8 @@ import kotlinx.android.synthetic.main.dialog_tags.*
 import kotlinx.android.synthetic.main.dialog_tags.view.*
 import javax.inject.Inject
 
-class TagsDialog : androidx.fragment.app.DialogFragment(), TagsDialogListAdapter.OnTagChangedListener,
+//todo тут все плохо, надо переписать
+class TagsDialog : DialogFragment(), TagsDialogListAdapter.OnTagChangedListener,
         TagsDialogContract.View {
 
     private val mListAdapter = TagsDialogListAdapter(this)

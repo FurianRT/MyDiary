@@ -6,6 +6,7 @@ import com.furianrt.mydiary.BaseView
 interface SyncContract {
 
     interface View : BaseView {
+        fun close()
 
     }
 

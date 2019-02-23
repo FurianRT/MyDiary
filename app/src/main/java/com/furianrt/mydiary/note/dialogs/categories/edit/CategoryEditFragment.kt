@@ -15,12 +15,12 @@ class CategoryEditFragment : Fragment(), View.OnClickListener, CategoryEditContr
     @Inject
     lateinit var mPresenter: CategoryEditContract.Presenter
 
-    private var mCategoryId: Long = 0
+    private var mCategoryId: String = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
         getPresenterComponent(context!!).inject(this)
-        mCategoryId = arguments?.getLong(ARG_CATEGORY_ID) ?: 0
+        super.onCreate(savedInstanceState)
+        arguments?.let { mCategoryId = it.getString(ARG_CATEGORY_ID, "") }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -94,10 +94,10 @@ class CategoryEditFragment : Fragment(), View.OnClickListener, CategoryEditContr
         private const val BUNDLE_CATEGORY_COLOR = "category_color"
 
         @JvmStatic
-        fun newInstance(categoryId: Long) =
+        fun newInstance(categoryId: String) =
                 CategoryEditFragment().apply {
                     arguments = Bundle().apply {
-                        putLong(ARG_CATEGORY_ID, categoryId)
+                        putString(ARG_CATEGORY_ID, categoryId)
                     }
                 }
     }

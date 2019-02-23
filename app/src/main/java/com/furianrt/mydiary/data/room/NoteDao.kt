@@ -9,8 +9,11 @@ import io.reactivex.Maybe
 @Dao
 abstract class NoteDao {
 
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
     abstract fun insert(note: MyNote)
+
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    abstract fun insert(note: List<MyNote>)
 
     @Update
     abstract fun update(note: MyNote)
@@ -23,6 +26,12 @@ abstract class NoteDao {
 
     @Query("UPDATE Notes SET is_note_deleted = 1 WHERE id_note IN (:noteIds)")
     abstract fun delete(noteIds: List<String>)
+
+    @Query("DELETE FROM Notes WHERE is_note_deleted = 1")
+    abstract fun cleanup()
+
+    @Query("SELECT * FROM Notes WHERE is_note_deleted = 1")
+    abstract fun getDeletedNotes(): Flowable<List<MyNote>>
 
     @Query("SELECT * FROM Notes WHERE is_note_deleted = 0")
     abstract fun getAllNotes(): Flowable<List<MyNote>>

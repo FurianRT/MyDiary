@@ -4,6 +4,7 @@ import android.app.PendingIntent
 import android.app.Service
 import android.content.Intent
 import android.os.IBinder
+import android.util.Log
 import androidx.core.app.NotificationCompat
 import com.furianrt.mydiary.MyApp
 import com.furianrt.mydiary.main.MainActivity
@@ -13,7 +14,7 @@ class SyncService : Service(), SyncContract.View {
 
     companion object {
         const val TAG = "SyncService"
-        private const val FOREGROUNG_ID = 1
+        private const val FOREGROUND_ID = 1
     }
 
     @Inject
@@ -29,13 +30,18 @@ class SyncService : Service(), SyncContract.View {
         val notificationIntent = Intent(this, MainActivity::class.java)
         val pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0)
         val notification = NotificationCompat.Builder(this, MyApp.NOTIFICATION_CHANNEL_ID)
-                .setContentText("Test Title")
+                .setContentTitle("Test Title")
                 .setContentText("Test, Text")
                 .setContentIntent(pendingIntent)
                 .build()
-        startForeground(FOREGROUNG_ID, notification)
+        startForeground(FOREGROUND_ID, notification)
         mPresenter.onStartCommand()
         return Service.START_NOT_STICKY
+    }
+
+    override fun close() {
+        Log.e(TAG, "service closed")
+        stopSelf()
     }
 
     override fun onDestroy() {

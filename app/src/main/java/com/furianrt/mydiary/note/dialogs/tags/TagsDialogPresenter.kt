@@ -6,6 +6,8 @@ import com.furianrt.mydiary.utils.generateUniqueId
 import io.reactivex.Completable
 import io.reactivex.android.schedulers.AndroidSchedulers
 
+
+//todo тут все плохо, надо переписать
 class TagsDialogPresenter(private val mDataManager: DataManager) : TagsDialogContract.Presenter() {
 
     private lateinit var mTags: ArrayList<MyTag>

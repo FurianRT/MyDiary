@@ -17,7 +17,7 @@ data class MyNoteWithProp(
 ) : Parcelable {
 
     @Ignore
-    constructor(id: String) : this(MyNote(id, "", ""))
+    constructor(id: String = "") : this(MyNote(id, "", ""))
 
     @IgnoredOnParcel
     @Relation(

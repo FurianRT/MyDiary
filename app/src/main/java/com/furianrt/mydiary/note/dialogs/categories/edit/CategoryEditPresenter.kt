@@ -2,6 +2,7 @@ package com.furianrt.mydiary.note.dialogs.categories.edit
 
 import com.furianrt.mydiary.data.DataManager
 import com.furianrt.mydiary.data.model.MyCategory
+import com.furianrt.mydiary.utils.generateUniqueId
 import io.reactivex.android.schedulers.AndroidSchedulers
 
 class CategoryEditPresenter(private val mDataManager: DataManager) : CategoryEditContract.Presenter() {
@@ -11,9 +12,9 @@ class CategoryEditPresenter(private val mDataManager: DataManager) : CategoryEdi
     }
 
     override fun onButtonDoneClick(category: MyCategory) {
-        addDisposable(if (category.id == 0L) {
+        addDisposable(if (category.id.isEmpty()) {
+            category.id = generateUniqueId()
             mDataManager.insertCategory(category)
-                    .ignoreElement()
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe { view?.close() }
         } else {
@@ -23,9 +24,9 @@ class CategoryEditPresenter(private val mDataManager: DataManager) : CategoryEdi
         })
     }
 
-    override fun loadCategory(categoryId: Long) {
+    override fun loadCategory(categoryId: String) {
         addDisposable(mDataManager.getCategory(categoryId)
-                .defaultIfEmpty(MyCategory())
+                .defaultIfEmpty(MyCategory("", ""))
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { category -> view?.showCategory(category) })
     }

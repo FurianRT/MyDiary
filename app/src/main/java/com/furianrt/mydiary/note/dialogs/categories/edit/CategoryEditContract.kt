@@ -19,6 +19,6 @@ interface CategoryEditContract {
 
         abstract fun onButtonDoneClick(category: MyCategory)
 
-        abstract fun loadCategory(categoryId: Long)
+        abstract fun loadCategory(categoryId: String)
     }
 }

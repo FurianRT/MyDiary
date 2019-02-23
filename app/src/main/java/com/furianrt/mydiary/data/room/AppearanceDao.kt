@@ -7,15 +7,24 @@ import io.reactivex.Flowable
 @Dao
 interface AppearanceDao {
 
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
     fun insert(appearance: MyNoteAppearance)
+
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    fun insert(appearance: List<MyNoteAppearance>)
 
     @Update
     fun update(appearance: MyNoteAppearance)
 
-    @Delete
-    fun delete(appearance: MyNoteAppearance)
+    @Query("UPDATE NoteAppearances SET is_appearance_deleted = 1 WHERE id_appearance = :noteId")
+    fun delete(noteId: String)
+
+    @Query("DELETE FROM NoteAppearances WHERE is_appearance_deleted = 1")
+    fun cleanup()
 
     @Query("SELECT * FROM NoteAppearances WHERE id_appearance = :appearanceId")
     fun getNoteAppearance(appearanceId: String): Flowable<MyNoteAppearance>
+
+    @Query("SELECT * FROM NoteAppearances")
+    fun getAllNoteAppearances(): Flowable<List<MyNoteAppearance>>
 }

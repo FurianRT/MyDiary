@@ -10,7 +10,7 @@ import kotlinx.android.parcel.Parcelize
 @Parcelize
 @Entity(tableName = "Categories")
 data class MyCategory(
-        @ColumnInfo(name = "id_category") @PrimaryKey(autoGenerate = true) var id: Long = 0,
+        @ColumnInfo(name = "id_category") @PrimaryKey(autoGenerate = false) var id: String = "",
         @ColumnInfo(name = "name_category") var name: String = "",
         @ColumnInfo(name = "color") var color: Int = DEFAULT_COLOR,
         @ColumnInfo(name = "is_category_sync") var isSync: Boolean = false,
