@@ -22,7 +22,7 @@ class RegistrationFragment : Fragment(), RegistrationContract.View {
 
     companion object {
         const val TAG = "RegistrationFragment"
-        private const val CLOSE_AFTER_DONE_DELAY = 2200L
+        private const val CLOSE_AFTER_DONE_DELAY = 2000L
     }
 
     @Inject

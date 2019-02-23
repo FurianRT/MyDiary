@@ -19,7 +19,7 @@ class LoginFragment : Fragment(), LoginContract.View {
 
     companion object {
         const val TAG = "LoginFragment"
-        private const val CLOSE_AFTER_DONE_DELAY = 2200L
+        private const val CLOSE_AFTER_DONE_DELAY = 2000L
         private const val SHAKE_DURATION = 400L
     }
 

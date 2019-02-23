@@ -28,6 +28,9 @@ interface AppearanceDao {
     @Query("SELECT * FROM NoteAppearances WHERE id_appearance = :appearanceId")
     fun getNoteAppearance(appearanceId: String): Flowable<MyNoteAppearance>
 
+    @Query("SELECT * FROM NoteAppearances WHERE is_appearance_deleted = 1")
+    fun getDeletedAppearances(): Flowable<List<MyNoteAppearance>>
+
     @Query("SELECT * FROM NoteAppearances")
     fun getAllNoteAppearances(): Flowable<List<MyNoteAppearance>>
 }

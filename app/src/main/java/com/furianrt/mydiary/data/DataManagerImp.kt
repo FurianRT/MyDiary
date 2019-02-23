@@ -246,6 +246,11 @@ class DataManagerImp(
                     .getNoteAppearance(noteId)
                     .subscribeOn(mRxScheduler)
 
+    override fun getDeletedAppearances(): Flowable<List<MyNoteAppearance>> =
+            mDatabase.appearanceDao()
+                    .getDeletedAppearances()
+                    .subscribeOn(mRxScheduler)
+
     override fun getAllNoteAppearances(): Flowable<List<MyNoteAppearance>> =
             mDatabase.appearanceDao()
                     .getAllNoteAppearances()

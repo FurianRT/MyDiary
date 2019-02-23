@@ -63,6 +63,7 @@ interface DataManager {
     fun getAllMoods(): Single<List<MyMood>>
     fun getNoteAppearance(noteId: String): Flowable<MyNoteAppearance>
     fun getAllNoteAppearances(): Flowable<List<MyNoteAppearance>>
+    fun getDeletedAppearances(): Flowable<List<MyNoteAppearance>>
     fun getImagesForNote(noteId: String): Flowable<List<MyImage>>
     fun getAllNotesWithProp(): Flowable<List<MyNoteWithProp>>
     fun getHeaderImages(): Flowable<List<MyHeaderImage>>
