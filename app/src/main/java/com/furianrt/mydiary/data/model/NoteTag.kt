@@ -7,27 +7,36 @@ import androidx.room.ForeignKey
 import kotlinx.android.parcel.Parcelize
 
 @Entity(
-        tableName = "NoteTag",
-        primaryKeys = ["id_tag", "id_note"],
+        tableName = NoteTag.TABLE_NAME,
+        primaryKeys = [NoteTag.FIELD_TAG_ID, NoteTag.FIELD_NOTE_ID],
         foreignKeys = [
             ForeignKey(
                     entity = MyTag::class,
-                    parentColumns = ["id_tag"],
-                    childColumns = ["id_tag"],
+                    parentColumns = [MyTag.FIELD_ID],
+                    childColumns = [NoteTag.FIELD_TAG_ID],
                     onDelete = ForeignKey.CASCADE
             ),
             ForeignKey(
                     entity = MyNote::class,
-                    parentColumns = ["id_note"],
-                    childColumns = ["id_note"],
+                    parentColumns = [MyNote.FIELD_ID],
+                    childColumns = [NoteTag.FIELD_NOTE_ID],
                     onDelete = ForeignKey.CASCADE
             )
         ]
 )
 @Parcelize
 data class NoteTag(
-        @ColumnInfo(name = "id_note", index = true) var noteId: String = "",
-        @ColumnInfo(name = "id_tag", index = true) var tagId: String = "",
-        @ColumnInfo(name = "is_notetag_sync") var isSync: Boolean = false,
-        @ColumnInfo(name = "is_notetag_deleted") var isDeleted: Boolean = false
-) : Parcelable
+        @ColumnInfo(name = FIELD_NOTE_ID, index = true) var noteId: String = "",
+        @ColumnInfo(name = FIELD_TAG_ID, index = true) var tagId: String = "",
+        @ColumnInfo(name = FIELD_IS_SYNC) var isSync: Boolean = false,
+        @ColumnInfo(name = FIELD_IS_DELETED) var isDeleted: Boolean = false
+) : Parcelable {
+
+    companion object {
+        const val TABLE_NAME = "NoteTag"
+        const val FIELD_NOTE_ID = "id_note"
+        const val FIELD_TAG_ID = "id_tag"
+        const val FIELD_IS_SYNC = "is_notetag_sync"
+        const val FIELD_IS_DELETED = "is_notetag_deleted"
+    }
+}

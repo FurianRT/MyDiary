@@ -5,11 +5,10 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.Ignore
 import androidx.room.PrimaryKey
-import com.furianrt.mydiary.data.model.MyTag.Companion.TABLE_NAME
 import kotlinx.android.parcel.Parcelize
 
 @Parcelize
-@Entity(tableName = TABLE_NAME)
+@Entity(tableName = MyTag.TABLE_NAME)
 data class MyTag(
         @ColumnInfo(name = FIELD_ID) @PrimaryKey(autoGenerate = false) var id: String = "",
         @ColumnInfo(name = FIELD_NAME) var name: String = "",

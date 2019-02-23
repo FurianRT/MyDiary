@@ -8,23 +8,35 @@ import androidx.room.PrimaryKey
 import kotlinx.android.parcel.Parcelize
 
 @Entity(
-        tableName = "NoteAppearances",
+        tableName = MyNoteAppearance.TABLE_NAME,
         foreignKeys = [
             ForeignKey(
                     entity = MyNote::class,
-                    parentColumns = ["id_note"],
-                    childColumns = ["id_appearance"],
+                    parentColumns = [MyNote.FIELD_ID],
+                    childColumns = [MyNoteAppearance.FIELD_ID],
                     onDelete = ForeignKey.CASCADE
             )
         ]
 )
 @Parcelize
 data class MyNoteAppearance(
-        @ColumnInfo(name = "id_appearance") @PrimaryKey(autoGenerate = false) var appearanceId: String = "",
-        @ColumnInfo(name = "background_color") var background: Int? = null,
-        @ColumnInfo(name = "text_background_color") var textBackground: Int? = null,
-        @ColumnInfo(name = "text_color") var textColor: Int? = null,
-        @ColumnInfo(name = "text_size") var textSize: Int? = null,
-        @ColumnInfo(name = "is_appearance_deleted") var isDeleted: Boolean = false,
-        @ColumnInfo(name = "is_appearance_sync") var isSync: Boolean = false
-) : Parcelable
+        @ColumnInfo(name = FIELD_ID) @PrimaryKey(autoGenerate = false) var appearanceId: String = "",
+        @ColumnInfo(name = FIELD_BACKGROUND_COLOR) var background: Int? = null,
+        @ColumnInfo(name = FIELD_TEXT_BACKGROUND_COLOR) var textBackground: Int? = null,
+        @ColumnInfo(name = FIELD_TEXT_COLOR) var textColor: Int? = null,
+        @ColumnInfo(name = FIELD_TEXT_SIZE) var textSize: Int? = null,
+        @ColumnInfo(name = FIELD_IS_SYNC) var isSync: Boolean = false,
+        @ColumnInfo(name = FIELD_IS_DELETED) var isDeleted: Boolean = false
+) : Parcelable {
+
+    companion object {
+        const val TABLE_NAME = "NoteAppearances"
+        const val FIELD_ID = "id_appearance"
+        const val FIELD_BACKGROUND_COLOR = "background_color"
+        const val FIELD_TEXT_BACKGROUND_COLOR = "text_background_color"
+        const val FIELD_TEXT_COLOR = "text_color"
+        const val FIELD_TEXT_SIZE = "text_size"
+        const val FIELD_IS_SYNC = "is_appearance_sync"
+        const val FIELD_IS_DELETED = "is_appearance_deleted"
+    }
+}

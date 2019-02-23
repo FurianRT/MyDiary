@@ -4,11 +4,10 @@ import android.os.Parcelable
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.furianrt.mydiary.data.model.MyMood.Companion.TABLE_NAME
 import kotlinx.android.parcel.Parcelize
 
 @Parcelize
-@Entity(tableName = TABLE_NAME)
+@Entity(tableName = MyMood.TABLE_NAME)
 data class MyMood(
         @PrimaryKey(autoGenerate = true) @ColumnInfo(name = FIELD_ID) var id: Int = 0,
         @ColumnInfo(name = FIELD_NAME) var name: String,

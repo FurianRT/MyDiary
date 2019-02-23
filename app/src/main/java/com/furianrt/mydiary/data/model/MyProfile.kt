@@ -7,10 +7,19 @@ import androidx.room.PrimaryKey
 import kotlinx.android.parcel.Parcelize
 
 @Parcelize
-@Entity(tableName = "Profile")
+@Entity(tableName = MyProfile.TABLE_NAME)
 data class MyProfile(
-        @PrimaryKey(autoGenerate = false) @ColumnInfo(name = "email") var email: String = "",
-        @ColumnInfo(name = "password_hash") var passwordHash: String = "",
-        @ColumnInfo(name = "photo_url") var photoUrl: String = "",
-        @ColumnInfo(name = "has_premium") var hasPremium: Boolean = false
-) : Parcelable
+        @PrimaryKey(autoGenerate = false) @ColumnInfo(name = FIELD_EMAIL) var email: String = "",
+        @ColumnInfo(name = FIELD_PASSWORD_HASH) var passwordHash: String = "",
+        @ColumnInfo(name = FIELD_PHOTO_URL) var photoUrl: String = "",
+        @ColumnInfo(name = FIELD_HAS_PREMIUM) var hasPremium: Boolean = false
+) : Parcelable {
+
+    companion object {
+        const val TABLE_NAME = "Profile"
+        const val FIELD_EMAIL = "email"
+        const val FIELD_PASSWORD_HASH = "password_hash"
+        const val FIELD_PHOTO_URL = "photo_url"
+        const val FIELD_HAS_PREMIUM = "has_premium"
+    }
+}

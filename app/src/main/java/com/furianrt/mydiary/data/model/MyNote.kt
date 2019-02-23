@@ -9,17 +9,33 @@ import kotlinx.android.parcel.Parcelize
 import org.joda.time.DateTime
 
 @Parcelize
-@Entity(tableName = "Notes")
+@Entity(tableName = MyNote.TABLE_NAME)
 open class MyNote(
-        @ColumnInfo(name = "id_note") @PrimaryKey(autoGenerate = false) var id: String = "",
-        @ColumnInfo(name = "title") var title: String = "",
-        @ColumnInfo(name = "content") var content: String = "",
-        @ColumnInfo(name = "time") var time: Long = DateTime.now().millis,
-        @ColumnInfo(name = "mood") var moodId: Int = 0,
-        @ColumnInfo(name = "category") var categoryId: String = "",
-        @ColumnInfo(name = "creation_time") var creationTime: Long = DateTime.now().millis,
-        @ColumnInfo(name = "location") var locationName: String? = null,
-        @ColumnInfo(name = "forecast") var forecast: Forecast? = null,
-        @ColumnInfo(name = "is_note_sync") var isSync: Boolean = false,
-        @ColumnInfo(name = "is_note_deleted") var isDeleted: Boolean = false
-) : Parcelable
+        @ColumnInfo(name = FIELD_ID) @PrimaryKey(autoGenerate = false) var id: String = "",
+        @ColumnInfo(name = FIELD_TITLE) var title: String = "",
+        @ColumnInfo(name = FIELD_CONTENT) var content: String = "",
+        @ColumnInfo(name = FIELD_TIME) var time: Long = DateTime.now().millis,
+        @ColumnInfo(name = FIELD_MOOD) var moodId: Int = 0,
+        @ColumnInfo(name = FIELD_CATEGORY) var categoryId: String = "",
+        @ColumnInfo(name = FIELD_CREATION_TIME) var creationTime: Long = DateTime.now().millis,
+        @ColumnInfo(name = FIELD_LOCATION) var locationName: String? = null,
+        @ColumnInfo(name = FIELD_FORECAST) var forecast: Forecast? = null,
+        @ColumnInfo(name = FIELD_IS_SYNC) var isSync: Boolean = false,
+        @ColumnInfo(name = FIELD_IS_DELETED) var isDeleted: Boolean = false
+) : Parcelable {
+
+    companion object {
+        const val TABLE_NAME = "Notes"
+        const val FIELD_ID = "id_note"
+        const val FIELD_TITLE = "title"
+        const val FIELD_CONTENT = "content"
+        const val FIELD_TIME = "time"
+        const val FIELD_MOOD = "mood"
+        const val FIELD_CATEGORY = "category"
+        const val FIELD_CREATION_TIME = "creation_time"
+        const val FIELD_LOCATION = "location"
+        const val FIELD_FORECAST = "forecast"
+        const val FIELD_IS_SYNC = "is_note_sync"
+        const val FIELD_IS_DELETED = "is_note_deleted"
+    }
+}

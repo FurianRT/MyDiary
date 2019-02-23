@@ -8,24 +8,37 @@ import androidx.room.PrimaryKey
 import kotlinx.android.parcel.Parcelize
 
 @Entity(
-        tableName = "Images",
+        tableName = MyImage.TABLE_NAME,
         foreignKeys = [
             ForeignKey(
                     entity = MyNote::class,
-                    parentColumns = ["id_note"],
-                    childColumns = ["id_note_image"],
+                    parentColumns = [MyNote.FIELD_ID],
+                    childColumns = [MyImage.FIELD_ID_NOTE],
                     onDelete = ForeignKey.CASCADE
             )
         ]
 )
 @Parcelize
 data class MyImage(
-        @PrimaryKey(autoGenerate = false) @ColumnInfo(name = "name") var name: String,
-        @ColumnInfo(name = "url") var url: String,
-        @ColumnInfo(name = "id_note_image", index = true) var noteId: String,
-        @ColumnInfo(name = "time_added", index = true) var addedTime: Long,
-        @ColumnInfo(name = "order") var order: Int = 0,
-        @ColumnInfo(name = "is_image_sync") var isSync: Boolean = false,
-        @ColumnInfo(name = "is_image_edited") var isEdited: Boolean = false,
-        @ColumnInfo(name = "is_image_deleted") var isDeleted: Boolean = false
-) : Parcelable
+        @PrimaryKey(autoGenerate = false) @ColumnInfo(name = FIELD_NAME) var name: String,
+        @ColumnInfo(name = FIELD_URL) var url: String,
+        @ColumnInfo(name = FIELD_ID_NOTE, index = true) var noteId: String,
+        @ColumnInfo(name = FIELD_ADDED_TIME, index = true) var addedTime: Long,
+        @ColumnInfo(name = FIELD_ORDER) var order: Int = 0,
+        @ColumnInfo(name = FIELD_IS_SYNC) var isSync: Boolean = false,
+        @ColumnInfo(name = FIELD_IS_EDITED) var isEdited: Boolean = false,
+        @ColumnInfo(name = FIELD_IS_DELETED) var isDeleted: Boolean = false
+) : Parcelable {
+
+    companion object {
+        const val TABLE_NAME = "Images"
+        const val FIELD_NAME = "name"
+        const val FIELD_URL = "url"
+        const val FIELD_ID_NOTE = "id_note_image"
+        const val FIELD_ADDED_TIME = "time_added"
+        const val FIELD_ORDER = "order"
+        const val FIELD_IS_SYNC = "is_image_sync"
+        const val FIELD_IS_EDITED = "is_image_edited"
+        const val FIELD_IS_DELETED = "is_image_deleted"
+    }
+}

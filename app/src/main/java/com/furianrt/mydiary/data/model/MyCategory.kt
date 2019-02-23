@@ -5,11 +5,10 @@ import android.os.Parcelable
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.furianrt.mydiary.data.model.MyCategory.Companion.TABLE_NAME
 import kotlinx.android.parcel.Parcelize
 
 @Parcelize
-@Entity(tableName = TABLE_NAME)
+@Entity(tableName = MyCategory.TABLE_NAME)
 data class MyCategory(
         @ColumnInfo(name = FIELD_ID) @PrimaryKey(autoGenerate = false) var id: String = "",
         @ColumnInfo(name = FIELD_NAME) var name: String = "",

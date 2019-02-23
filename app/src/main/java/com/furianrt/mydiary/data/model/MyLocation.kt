@@ -7,11 +7,21 @@ import androidx.room.PrimaryKey
 import kotlinx.android.parcel.Parcelize
 
 @Parcelize
-@Entity(tableName = "Locations")
+@Entity(tableName = MyLocation.TABLE_NAME)
 data class MyLocation(
-        @PrimaryKey(autoGenerate = false) @ColumnInfo(name = "name_location") var name: String,
-        @ColumnInfo(name = "lat") var lat: Double,
-        @ColumnInfo(name = "lon") var lon: Double,
-        @ColumnInfo(name = "is_location_sync") var isSync: Boolean = false,
-        @ColumnInfo(name = "is_location_deleted") var idDeleted: Boolean = false
-) : Parcelable
+        @PrimaryKey(autoGenerate = false) @ColumnInfo(name = FIELD_NAME) var name: String,
+        @ColumnInfo(name = FIELD_LAT) var lat: Double,
+        @ColumnInfo(name = FIELD_LON) var lon: Double,
+        @ColumnInfo(name = FIELD_IS_SYNC) var isSync: Boolean = false,
+        @ColumnInfo(name = FIELD_IS_DELETED) var idDeleted: Boolean = false
+) : Parcelable {
+
+    companion object {
+        const val TABLE_NAME = "Locations"
+        const val FIELD_NAME = "name_location"
+        const val FIELD_LAT = "lat"
+        const val FIELD_LON = "lon"
+        const val FIELD_IS_SYNC = "is_location_sync"
+        const val FIELD_IS_DELETED = "is_location_deleted"
+    }
+}

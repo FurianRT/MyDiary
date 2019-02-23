@@ -22,8 +22,8 @@ data class MyNoteWithProp(
     @IgnoredOnParcel
     @Relation(
             entity = NoteTag::class,
-            parentColumn = "id_note",
-            entityColumn = "id_note"
+            parentColumn = MyNote.FIELD_ID,
+            entityColumn = NoteTag.FIELD_NOTE_ID
     )
     var tags: List<NoteTag> = arrayListOf()
         get() = field.filter { !it.isDeleted }
@@ -31,8 +31,8 @@ data class MyNoteWithProp(
     @IgnoredOnParcel
     @Relation(
             entity = MyImage::class,
-            parentColumn = "id_note",
-            entityColumn = "id_note_image"
+            parentColumn = MyNote.FIELD_ID,
+            entityColumn = MyImage.FIELD_ID_NOTE
     )
     var images: List<MyImage> = arrayListOf()
         get() = field.filter { !it.isDeleted }.sortedBy { it.order }
