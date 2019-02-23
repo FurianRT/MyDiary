@@ -3,6 +3,7 @@ package com.furianrt.mydiary.di.application
 import android.app.Application
 import android.content.ContentValues
 import android.content.Context
+import android.database.sqlite.SQLiteDatabase
 import android.util.Log
 import androidx.room.Room
 import androidx.room.RoomDatabase
@@ -15,6 +16,8 @@ import com.furianrt.mydiary.data.api.images.ImageApiService
 import com.furianrt.mydiary.data.cloud.CloudHelper
 import com.furianrt.mydiary.data.cloud.CloudHelperImp
 import com.furianrt.mydiary.data.model.MyCategory
+import com.furianrt.mydiary.data.model.MyMood
+import com.furianrt.mydiary.data.model.MyTag
 import com.furianrt.mydiary.data.prefs.PreferencesHelper
 import com.furianrt.mydiary.data.prefs.PreferencesHelperImp
 import com.furianrt.mydiary.data.room.NoteDatabase
@@ -71,7 +74,6 @@ class AppModule(private val app: Application) {
                         .setPersistenceEnabled(false)
                         .build()
             }
-
 
     @Provides
     @AppScope
@@ -223,28 +225,28 @@ class AppModule(private val app: Application) {
                 app.resources.getResourceEntryName(R.drawable.ic_mood_great)
         )
         for (i in 0 until moodNames.size) {
-            cv.put("name_mood", moodNames[i])
-            cv.put("icon_mood", moodIcons[i])
-            db.insert("Moods", 0, cv)
+            cv.put(MyMood.TABLE_NAME, moodNames[i])
+            cv.put(MyMood.FIELD_ICON, moodIcons[i])
+            db.insert(MyMood.TABLE_NAME, SQLiteDatabase.CONFLICT_IGNORE, cv)
         }
         cv.clear()
         val tagNames = app.resources.getStringArray(R.array.tags)
         for (i in 0 until tagNames.size) {
-            cv.put("id_tag", "default_tag_$i")
-            cv.put("name_tag", tagNames[i])
-            cv.put("is_tag_sync", false)
-            cv.put("is_tag_deleted", false)
-            db.insert("Tags", 0, cv)
+            cv.put(MyTag.FIELD_ID, "default_tag_$i")
+            cv.put(MyTag.FIELD_NAME, tagNames[i])
+            cv.put(MyTag.FIELD_IS_SYNC, false)
+            cv.put(MyTag.FIELD_IS_DELETED, false)
+            db.insert(MyTag.TABLE_NAME, SQLiteDatabase.CONFLICT_IGNORE, cv)
         }
         cv.clear()
         val categoryNames = app.resources.getStringArray(R.array.categories)
         for (i in 0 until categoryNames.size) {
-            cv.put("id_category", "default_category_$i")
-            cv.put("name_category", categoryNames[i])
-            cv.put("color", MyCategory.DEFAULT_COLOR)
-            cv.put("is_category_sync", false)
-            cv.put("is_category_deleted", false)
-            db.insert("Categories", 0, cv)
+            cv.put(MyCategory.FIELD_ID, "default_category_$i")
+            cv.put(MyCategory.FIELD_NAME, categoryNames[i])
+            cv.put(MyCategory.FIELD_COLOR, MyCategory.DEFAULT_COLOR)
+            cv.put(MyCategory.FIELD_IS_SYNC, false)
+            cv.put(MyCategory.FIELD_IS_DELETED, false)
+            db.insert(MyCategory.TABLE_NAME, SQLiteDatabase.CONFLICT_IGNORE, cv)
         }
         cv.clear()
     }

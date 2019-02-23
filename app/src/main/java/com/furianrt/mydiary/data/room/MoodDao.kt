@@ -8,7 +8,7 @@ import io.reactivex.Single
 @Dao
 interface MoodDao {
 
-    @Query("SELECT * FrOM Moods WHERE id_mood = :moodId")
+    @Query("SELECT * FROM Moods WHERE id_mood = :moodId")
     fun getMood(moodId: Int): Single<MyMood>
 
     @Query("SELECT * FROM Moods ORDER BY id_mood DESC")

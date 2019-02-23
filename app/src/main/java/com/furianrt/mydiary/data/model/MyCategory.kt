@@ -5,19 +5,26 @@ import android.os.Parcelable
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.furianrt.mydiary.data.model.MyCategory.Companion.TABLE_NAME
 import kotlinx.android.parcel.Parcelize
 
 @Parcelize
-@Entity(tableName = "Categories")
+@Entity(tableName = TABLE_NAME)
 data class MyCategory(
-        @ColumnInfo(name = "id_category") @PrimaryKey(autoGenerate = false) var id: String = "",
-        @ColumnInfo(name = "name_category") var name: String = "",
-        @ColumnInfo(name = "color") var color: Int = DEFAULT_COLOR,
-        @ColumnInfo(name = "is_category_sync") var isSync: Boolean = false,
-        @ColumnInfo(name = "is_category_deleted") var isDeleted: Boolean = false
+        @ColumnInfo(name = FIELD_ID) @PrimaryKey(autoGenerate = false) var id: String = "",
+        @ColumnInfo(name = FIELD_NAME) var name: String = "",
+        @ColumnInfo(name = FIELD_COLOR) var color: Int = DEFAULT_COLOR,
+        @ColumnInfo(name = FIELD_IS_SYNC) var isSync: Boolean = false,
+        @ColumnInfo(name = FIELD_IS_DELETED) var isDeleted: Boolean = false
 ) : Parcelable {
 
     companion object {
         const val DEFAULT_COLOR = Color.BLUE
+        const val TABLE_NAME = "Categories"
+        const val FIELD_ID = "id_category"
+        const val FIELD_NAME = "name_category"
+        const val FIELD_COLOR = "color"
+        const val FIELD_IS_SYNC = "is_category_sync"
+        const val FIELD_IS_DELETED = "is_category_deleted"
     }
 }
