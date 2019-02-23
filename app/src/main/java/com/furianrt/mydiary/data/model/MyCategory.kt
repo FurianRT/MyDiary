@@ -14,7 +14,7 @@ data class MyCategory(
         @ColumnInfo(name = "name_category") var name: String = "",
         @ColumnInfo(name = "color") var color: Int = DEFAULT_COLOR,
         @ColumnInfo(name = "is_category_sync") var isSync: Boolean = false,
-        @ColumnInfo(name = "is_category_deleted") var idDeleted: Boolean = false
+        @ColumnInfo(name = "is_category_deleted") var isDeleted: Boolean = false
 ) : Parcelable {
 
     companion object {

@@ -18,7 +18,7 @@ abstract class NoteDao {
     @Update
     abstract fun update(note: MyNote)
 
-    @Query("UPDATE Notes SET title = :title, content = :content WHERE id_note = :noteId")
+    @Query("UPDATE Notes SET title = :title, content = :content, is_note_sync = 0 WHERE id_note = :noteId")
     abstract fun updateNoteText(noteId: String, title: String, content: String)
 
     @Query("UPDATE Notes SET is_note_deleted = 1 WHERE id_note = :noteId")

@@ -84,7 +84,7 @@ class DataManagerImp(
                     .subscribeOn(mRxScheduler)
 
     override fun updateNote(note: MyNote): Completable =
-            Completable.fromAction { mDatabase.noteDao().update(note) }
+            Completable.fromAction { mDatabase.noteDao().update(note.apply { isSync = false }) }
                     .subscribeOn(mRxScheduler)
 
     override fun updateNoteText(noteId: String, title: String, content: String): Completable =
@@ -92,19 +92,20 @@ class DataManagerImp(
                     .subscribeOn(mRxScheduler)
 
     override fun updateTag(tag: MyTag): Completable =
-            Completable.fromAction { mDatabase.tagDao().update(tag) }
+            Completable.fromAction { mDatabase.tagDao().update(tag.apply { isSync = false }) }
                     .subscribeOn(mRxScheduler)
 
     override fun updateImages(images: List<MyImage>): Completable =
-            Completable.fromAction { mDatabase.imageDao().updateAll(images) }
-                    .subscribeOn(mRxScheduler)
+            Completable.fromAction {
+                mDatabase.imageDao().updateAll(images.map { it.apply { isSync = false } })
+            }.subscribeOn(mRxScheduler)
 
     override fun updateCategory(category: MyCategory): Completable =
-            Completable.fromAction { mDatabase.categoryDao().update(category) }
+            Completable.fromAction { mDatabase.categoryDao().update(category.apply { isSync = false }) }
                     .subscribeOn(mRxScheduler)
 
     override fun updateAppearance(appearance: MyNoteAppearance): Completable =
-            Completable.fromAction { mDatabase.appearanceDao().update(appearance) }
+            Completable.fromAction { mDatabase.appearanceDao().update(appearance.apply { isSync = false }) }
                     .subscribeOn(mRxScheduler)
 
     override fun updateDbProfile(profile: MyProfile): Completable =
