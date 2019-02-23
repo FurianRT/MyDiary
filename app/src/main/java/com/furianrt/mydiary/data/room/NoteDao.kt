@@ -13,10 +13,13 @@ abstract class NoteDao {
     abstract fun insert(note: MyNote)
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    abstract fun insert(note: List<MyNote>)
+    abstract fun insert(notes: List<MyNote>)
 
     @Update
     abstract fun update(note: MyNote)
+
+    @Update
+    abstract fun updateSync(notes: List<MyNote>)
 
     @Query("UPDATE Notes SET title = :title, content = :content, is_note_sync = 0 WHERE id_note = :noteId")
     abstract fun updateNoteText(noteId: String, title: String, content: String)

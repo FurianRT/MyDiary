@@ -112,6 +112,26 @@ class DataManagerImp(
             Completable.fromAction { mDatabase.profileDao().update(profile) }
                     .subscribeOn(mRxScheduler)
 
+    override fun updateNotesSync(notes: List<MyNote>): Completable =
+            Completable.fromAction { mDatabase.noteDao().updateSync(notes) }
+                    .subscribeOn(mRxScheduler)
+
+    override fun updateAppearancesSync(appearances: List<MyNoteAppearance>): Completable =
+            Completable.fromAction { mDatabase.appearanceDao().updateSync(appearances) }
+                    .subscribeOn(mRxScheduler)
+
+    override fun updateCategoriesSync(categories: List<MyCategory>): Completable =
+            Completable.fromAction { mDatabase.categoryDao().updateSync(categories) }
+                    .subscribeOn(mRxScheduler)
+
+    override fun updateNoteTagsSync(noteTags: List<NoteTag>): Completable =
+            Completable.fromAction { mDatabase.noteTagDao().updateSync(noteTags) }
+                    .subscribeOn(mRxScheduler)
+
+    override fun updateTagsSync(tags: List<MyTag>): Completable =
+            Completable.fromAction { mDatabase.tagDao().updateSync(tags) }
+                    .subscribeOn(mRxScheduler)
+
     override fun deleteTag(tag: MyTag): Completable =
             Completable.fromAction { mDatabase.tagDao().delete(tag.id) }
                     .andThen(Completable.fromAction { mDatabase.noteTagDao().deleteWithTagId(tag.id) })

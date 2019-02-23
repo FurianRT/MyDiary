@@ -14,6 +14,9 @@ abstract class NoteTagDao {
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     abstract fun insert(noteTags: List<NoteTag>)
 
+    @Update
+    abstract fun updateSync(noteTags: List<NoteTag>)
+
     @Query("UPDATE NoteTag SET is_notetag_deleted = 1 WHERE id_note = :noteId")
     abstract fun deleteWithNoteId(noteId: String)
 

@@ -17,6 +17,9 @@ abstract class TagDao {
     @Update
     abstract fun update(tag: MyTag)
 
+    @Update
+    abstract fun updateSync(tags: List<MyTag>)
+
     @Query("UPDATE Tags SET is_tag_deleted = 1 WHERE id_tag = :tagId")
     abstract fun delete(tagId: String)
 

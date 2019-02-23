@@ -374,7 +374,7 @@ class MainActivity : BaseActivity(), MainActivityContract.View,
     }
 
     override fun showNotes(notes: List<MainListItem>, selectedNotes: ArrayList<MyNoteWithProp>) {
-        Log.i(TAG, "showNotes")
+        Log.e(TAG, "showNotes")
         mAdapter.submitList(notes.toMutableList())
         mAdapter.selectedNotes = selectedNotes
         mRecyclerViewState?.let {

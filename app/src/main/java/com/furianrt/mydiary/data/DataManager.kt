@@ -25,6 +25,11 @@ interface DataManager {
     fun updateCategory(category: MyCategory): Completable
     fun updateAppearance(appearance: MyNoteAppearance): Completable
     fun updateDbProfile(profile: MyProfile): Completable
+    fun updateNotesSync(notes: List<MyNote>): Completable
+    fun updateAppearancesSync(appearances: List<MyNoteAppearance>): Completable
+    fun updateCategoriesSync(categories: List<MyCategory>): Completable
+    fun updateTagsSync(tags: List<MyTag>): Completable
+    fun updateNoteTagsSync(noteTags: List<NoteTag>): Completable
     fun deleteTag(tag: MyTag): Completable
     fun deleteNote(note: MyNote): Completable
     fun deleteNotes(notes: List<MyNote>): Completable

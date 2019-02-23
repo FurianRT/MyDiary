@@ -62,8 +62,10 @@ class SyncPresenter(
                     .map { notes -> notes.filter { !it.isSync } }
                     .flatMapCompletable { notes ->
                         Log.e(TAG, "4")
-                        return@flatMapCompletable mDataManager.saveNotesInCloud(notes
-                                .map { it.apply { isSync = true } })
+                        val notesSync = notes.map { it.apply { it.isSync = true } }
+                        return@flatMapCompletable Completable.merge(listOf(
+                                mDataManager.updateNotesSync(notesSync),
+                                mDataManager.saveNotesInCloud(notesSync)))
                     }
                     .andThen(mDataManager
                             .getDeletedNotes()
@@ -81,8 +83,10 @@ class SyncPresenter(
                     .map { categories -> categories.filter { !it.isSync } }
                     .flatMapCompletable { categories ->
                         Log.e(TAG, "6")
-                        return@flatMapCompletable mDataManager.saveCategoriesInCloud(categories
-                                .map { it.apply { isSync = true } })
+                        val categoriesSync = categories.map { it.apply { it.isSync = true } }
+                        return@flatMapCompletable Completable.merge(listOf(
+                                mDataManager.updateCategoriesSync(categoriesSync),
+                                mDataManager.saveCategoriesInCloud(categoriesSync)))
                     }
                     .andThen(mDataManager
                             .getDeletedCategories()
@@ -99,8 +103,10 @@ class SyncPresenter(
                     .map { tags -> tags.filter { !it.isSync } }
                     .flatMapCompletable { tags ->
                         Log.e(TAG, "8")
-                        return@flatMapCompletable mDataManager.saveTagsInCloud(tags
-                                .map { it.apply { isSync = true } })
+                        val tagsSync = tags.map { it.apply { it.isSync = true } }
+                        return@flatMapCompletable Completable.merge(listOf(
+                                mDataManager.updateTagsSync(tagsSync),
+                                mDataManager.saveTagsInCloud(tagsSync)))
                     }
                     .andThen(mDataManager
                             .getDeletedTags()
@@ -120,9 +126,11 @@ class SyncPresenter(
                     .andThen(mDataManager.getAllNoteAppearances()
                             .first(emptyList())
                             .map { appearance -> appearance.filter { !it.isSync } })
-                    .flatMapCompletable { appeatances ->
-                        mDataManager.saveAppearancesInCloud(appeatances
-                                .map { it.apply { isSync = true } })
+                    .flatMapCompletable { appearances ->
+                        val appearancesSync = appearances.map { it.apply { it.isSync = true } }
+                        return@flatMapCompletable Completable.merge(listOf(
+                                mDataManager.updateAppearancesSync(appearancesSync),
+                                mDataManager.saveAppearancesInCloud(appearancesSync)))
                     }
                     .andThen(mDataManager.getAllAppearancesFromCloud())
                     .flatMapCompletable { mDataManager.insertAppearance(it) }
@@ -154,8 +162,10 @@ class SyncPresenter(
                     .andThen(mDataManager.getAllNoteTags().first(emptyList()))
                     .map { noteTags -> noteTags.filter { !it.isSync } }
                     .flatMapCompletable { noteTags ->
-                        mDataManager.saveNoteTagsInCloud(noteTags
-                                .map { it.apply { isSync = true } })
+                        val noteTagsSync = noteTags.map { it.apply { it.isSync = true } }
+                        return@flatMapCompletable Completable.merge(listOf(
+                                mDataManager.updateNoteTagsSync(noteTagsSync),
+                                mDataManager.saveNoteTagsInCloud(noteTagsSync)))
                     }
                     .andThen(mDataManager.getAllNoteTagsFromCloud())
                     .flatMapCompletable {
