@@ -8,10 +8,10 @@ import io.reactivex.Maybe
 @Dao
 interface CategoryDao {
 
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insert(category: MyCategory)
 
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insert(category: List<MyCategory>)
 
     @Update

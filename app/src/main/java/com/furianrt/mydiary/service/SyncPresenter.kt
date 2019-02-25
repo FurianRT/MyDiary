@@ -5,6 +5,7 @@ import com.furianrt.mydiary.data.DataManager
 import com.furianrt.mydiary.data.model.MyProfile
 import io.reactivex.Completable
 import io.reactivex.Single
+import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.functions.BiFunction
 
 class SyncPresenter(
@@ -33,6 +34,7 @@ class SyncPresenter(
                 .andThen(syncNoteTags())
                 .andThen(syncImages())
                 .andThen(cleanup())
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({
                     Log.e(TAG, "Sync finished")
                     view?.close()

@@ -10,6 +10,10 @@ import java.io.FileOutputStream
 
 class StorageHelperImp(context: Context) : StorageHelper {
 
+    companion object {
+        private const val COMPRESS_VALUE = 18
+    }
+
     private val mDirectory = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES)
 
     override fun getFile(fileName: String): File {
@@ -23,10 +27,13 @@ class StorageHelperImp(context: Context) : StorageHelper {
 
     override fun deleteFile(fileName: String): Boolean = File(mDirectory, fileName).delete()
 
+    override fun deleteFiles(fileNames: List<String>): Map<String, Boolean> =
+            HashMap<String, Boolean>().apply { fileNames.forEach { this[it] = deleteFile(it) } }
+
     override fun copyImageToStorage(sourcePath: String, destFileName: String): File {
         val destFile = File(mDirectory, "$destFileName.jpg")
         val fos = FileOutputStream(destFile)
-        BitmapFactory.decodeFile(sourcePath).compress(Bitmap.CompressFormat.JPEG, 18, fos)
+        BitmapFactory.decodeFile(sourcePath).compress(Bitmap.CompressFormat.JPEG, COMPRESS_VALUE, fos)
         fos.flush()
         fos.close()
         return destFile

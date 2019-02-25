@@ -136,6 +136,8 @@ class CloudHelperImp(
                             .document(note.id))
                 }
             }
+                    .retry(3L)
+                    .onErrorComplete()
 
     override fun deleteCategories(categories: List<MyCategory>, profile: MyProfile): Completable =
             RxFirestore.runTransaction(mFirestore) { transaction ->
@@ -146,6 +148,8 @@ class CloudHelperImp(
                             .document(category.id))
                 }
             }
+                    .retry(3L)
+                    .onErrorComplete()
 
     override fun deleteNoteTags(noteTags: List<NoteTag>, profile: MyProfile): Completable =
             RxFirestore.runTransaction(mFirestore) { transaction ->
@@ -157,6 +161,8 @@ class CloudHelperImp(
                             .document(noteTag.noteId + noteTag.tagId))
                 }
             }
+                    .retry(3L)
+                    .onErrorComplete()
 
     override fun deleteTags(tags: List<MyTag>, profile: MyProfile): Completable =
             RxFirestore.runTransaction(mFirestore) { transaction ->
@@ -167,6 +173,8 @@ class CloudHelperImp(
                             .document(tag.id))
                 }
             }
+                    .retry(3L)
+                    .onErrorComplete()
 
     override fun deleteAppearances(appearances: List<MyNoteAppearance>, profile: MyProfile): Completable =
             RxFirestore.runTransaction(mFirestore) { transaction ->
@@ -177,6 +185,8 @@ class CloudHelperImp(
                             .document(appearance.appearanceId))
                 }
             }
+                    .retry(3L)
+                    .onErrorComplete()
 
     override fun deleteImages(images: List<MyImage>, profile: MyProfile): Completable =
             RxFirestore.runTransaction(mFirestore) { transaction ->
@@ -187,6 +197,8 @@ class CloudHelperImp(
                             .document(images.name))
                 }
             }
+                    .retry(3L)
+                    .onErrorComplete()
                     .andThen(Observable.fromIterable(images))
                     .flatMapSingle { image ->
                         RxFirebaseStorage.delete(mFirebaseStorage.reference
@@ -194,9 +206,11 @@ class CloudHelperImp(
                                 .child(profile.email)
                                 .child(COLLECTION_IMAGES)
                                 .child(image.name))
-                                .andThen(Single.just(""))
+                                .retry(3L)
+                                .toSingleDefault(true)
+                                .onErrorReturn { false }
                     }
-                    .collectInto(mutableListOf<String>()) { l, i -> l.add(i) }
+                    .collectInto(mutableListOf<Boolean>()) { l, i -> l.add(i) }
                     .ignoreElement()
 
     override fun getAllNotes(profile: MyProfile): Single<List<MyNote>> =

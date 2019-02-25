@@ -3,10 +3,9 @@ package com.furianrt.mydiary.data.model
 import android.os.Parcelable
 import androidx.room.ColumnInfo
 import androidx.room.Entity
-import androidx.room.ForeignKey
 import kotlinx.android.parcel.Parcelize
 
-@Entity(
+/*@Entity(
         tableName = NoteTag.TABLE_NAME,
         primaryKeys = [NoteTag.FIELD_TAG_ID, NoteTag.FIELD_NOTE_ID],
         foreignKeys = [
@@ -23,8 +22,12 @@ import kotlinx.android.parcel.Parcelize
                     onDelete = ForeignKey.CASCADE
             )
         ]
-)
+)*/
 @Parcelize
+@Entity(
+        tableName = NoteTag.TABLE_NAME,
+        primaryKeys = [NoteTag.FIELD_TAG_ID, NoteTag.FIELD_NOTE_ID]
+)
 data class NoteTag(
         @ColumnInfo(name = FIELD_NOTE_ID, index = true) var noteId: String = "",
         @ColumnInfo(name = FIELD_TAG_ID, index = true) var tagId: String = "",

@@ -8,10 +8,10 @@ import io.reactivex.Single
 @Dao
 interface TagDao {
 
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insert(tag: MyTag)
 
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insert(tag: List<MyTag>)
 
     @Update

@@ -147,10 +147,9 @@ class DataManagerImp(
                     .andThen(Completable.fromAction { mDatabase.appearanceDao().delete(note.id) })
                     .andThen(Completable.fromAction { mDatabase.imageDao().delete(note.id) })
                     .andThen(mDatabase.imageDao().getImagesForNote(note.id))
-                    .flatMapIterable { it }
-                    .flatMapSingle { Single.fromCallable { mStorage.deleteFile(it.name) } }
-                    .collectInto(mutableListOf<Boolean>()) { l, i -> l.add(i) }
-                    .ignoreElement()
+                    .first(emptyList())
+                    .map { images -> images.map { it.name } }
+                    .flatMapCompletable { Completable.fromCallable { mStorage.deleteFiles(it) } }
                     .subscribeOn(mRxScheduler)
 
     override fun deleteImages(images: List<MyImage>): Completable =
@@ -369,10 +368,10 @@ class DataManagerImp(
 
     override fun loadHeaderImages(page: Int, perPage: Int): Single<List<MyHeaderImage>> =
             mImageApi.getImages()
-                    .map {
-                        it.images
-                                .map { image -> image.toMyHeaderImage() }
-                                .sortedByDescending { image -> image.addedTime }
+                    .map { response ->
+                        response.images
+                                .map { it.toMyHeaderImage() }
+                                .sortedByDescending { it.addedTime }
                     }
                     .subscribeOn(mRxScheduler)
 

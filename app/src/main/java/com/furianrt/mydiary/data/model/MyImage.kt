@@ -3,11 +3,10 @@ package com.furianrt.mydiary.data.model
 import android.os.Parcelable
 import androidx.room.ColumnInfo
 import androidx.room.Entity
-import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
 import kotlinx.android.parcel.Parcelize
 
-@Entity(
+/*@Entity(
         tableName = MyImage.TABLE_NAME,
         foreignKeys = [
             ForeignKey(
@@ -17,8 +16,9 @@ import kotlinx.android.parcel.Parcelize
                     onDelete = ForeignKey.CASCADE
             )
         ]
-)
+)*/
 @Parcelize
+@Entity(tableName = MyImage.TABLE_NAME)
 data class MyImage(
         @PrimaryKey(autoGenerate = false) @ColumnInfo(name = FIELD_NAME) var name: String = "",
         @ColumnInfo(name = FIELD_URI) var uri: String = "",
@@ -36,7 +36,7 @@ data class MyImage(
         const val FIELD_URI = "uri"
         const val FIELD_ID_NOTE = "id_note_image"
         const val FIELD_ADDED_TIME = "time_added"
-        const val FIELD_ORDER = "order"
+        const val FIELD_ORDER = "image_order"
         const val FIELD_IS_SYNC = "is_image_sync"
         const val FIELD_IS_EDITED = "is_image_edited"
         const val FIELD_IS_DELETED = "is_image_deleted"

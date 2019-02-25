@@ -3,11 +3,10 @@ package com.furianrt.mydiary.data.model
 import android.os.Parcelable
 import androidx.room.ColumnInfo
 import androidx.room.Entity
-import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
 import kotlinx.android.parcel.Parcelize
 
-@Entity(
+/*@Entity(
         tableName = MyNoteAppearance.TABLE_NAME,
         foreignKeys = [
             ForeignKey(
@@ -17,8 +16,9 @@ import kotlinx.android.parcel.Parcelize
                     onDelete = ForeignKey.CASCADE
             )
         ]
-)
+)*/
 @Parcelize
+@Entity(tableName = MyNoteAppearance.TABLE_NAME)
 data class MyNoteAppearance(
         @ColumnInfo(name = FIELD_ID) @PrimaryKey(autoGenerate = false) var appearanceId: String = "",
         @ColumnInfo(name = FIELD_BACKGROUND_COLOR) var background: Int? = null,

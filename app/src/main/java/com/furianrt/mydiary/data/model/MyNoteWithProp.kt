@@ -35,5 +35,7 @@ data class MyNoteWithProp(
             entityColumn = MyImage.FIELD_ID_NOTE
     )
     var images: List<MyImage> = arrayListOf()
-        get() = field.filter { !it.isDeleted }.sortedBy { it.order }
+        get() = field
+                .filter { !it.isDeleted }
+                .sortedWith(compareBy(MyImage::order, MyImage::addedTime))
 }

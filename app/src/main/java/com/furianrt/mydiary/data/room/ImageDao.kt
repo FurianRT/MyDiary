@@ -30,7 +30,7 @@ interface ImageDao {
 
     @Query("SELECT * FROM Images " +
             "WHERE id_note_image = :noteId AND is_image_deleted = 0 " +
-            "ORDER BY `order` ASC, time_added DESC")
+            "ORDER BY image_order ASC, time_added DESC")
     fun getImagesForNote(noteId: String): Flowable<List<MyImage>>
 
     @Query("DELETE FROM Images WHERE is_image_deleted = 1")

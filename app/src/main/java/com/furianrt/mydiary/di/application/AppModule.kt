@@ -141,7 +141,7 @@ class AppModule(private val app: Application) {
                     .addQueryParameter("key", app.getString(R.string.image_api_key))
                     .addQueryParameter("image_type", "photo")
                     .addQueryParameter("orientation", "horizontal")
-                    .addQueryParameter("category", "backgrounds")
+                    .addQueryParameter("travel", "backgrounds")
                     .addQueryParameter("min_width", "1280")
                     .addQueryParameter("min_height", "720")
                     .addQueryParameter("order", "latest")
@@ -234,7 +234,7 @@ class AppModule(private val app: Application) {
         for (i in 0 until tagNames.size) {
             cv.put(MyTag.FIELD_ID, "default_tag_$i")
             cv.put(MyTag.FIELD_NAME, tagNames[i])
-            cv.put(MyTag.FIELD_IS_SYNC, false)
+            cv.put(MyTag.FIELD_IS_SYNC, true)
             cv.put(MyTag.FIELD_IS_DELETED, false)
             db.insert(MyTag.TABLE_NAME, SQLiteDatabase.CONFLICT_IGNORE, cv)
         }
@@ -244,7 +244,7 @@ class AppModule(private val app: Application) {
             cv.put(MyCategory.FIELD_ID, "default_category_$i")
             cv.put(MyCategory.FIELD_NAME, categoryNames[i])
             cv.put(MyCategory.FIELD_COLOR, MyCategory.DEFAULT_COLOR)
-            cv.put(MyCategory.FIELD_IS_SYNC, false)
+            cv.put(MyCategory.FIELD_IS_SYNC, true)
             cv.put(MyCategory.FIELD_IS_DELETED, false)
             db.insert(MyCategory.TABLE_NAME, SQLiteDatabase.CONFLICT_IGNORE, cv)
         }

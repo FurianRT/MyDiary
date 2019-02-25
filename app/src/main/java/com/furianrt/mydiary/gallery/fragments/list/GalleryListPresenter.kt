@@ -46,8 +46,9 @@ class GalleryListPresenter(private val mDataManager: DataManager) : GalleryListC
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { images ->
                     var i = 0
-                    images.forEach { it.order = i++ }
-                    view?.showImages(images, mSelectedImages)
+                    view?.showImages(images
+                            .sortedWith(compareBy(MyImage::order, MyImage::addedTime))
+                            .apply { forEach { it.order = i++ } }, mSelectedImages)
                 })
     }
 

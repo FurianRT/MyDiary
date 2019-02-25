@@ -66,7 +66,7 @@ class NoteFragmentPresenter(private val mDataManager: DataManager) : NoteFragmen
                     if (images.isEmpty()) {
                         view?.showNoImages()
                     } else {
-                        view?.showImages(images.sortedBy { it.order })
+                        view?.showImages(images.sortedWith(compareBy(MyImage::order, MyImage::addedTime)))
                     }
                 })
     }
