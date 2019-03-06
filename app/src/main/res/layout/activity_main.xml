@@ -34,7 +34,7 @@
                 android:layout_marginBottom="16dp"
                 app:menu_colorNormal="?attr/colorAccent"
                 app:menu_colorPressed="?attr/colorAccent"
-                app:menu_colorRipple="@color/transparent">
+                app:menu_colorRipple="?attr/colorPrimary">
 
                 <com.furian.fab.FloatingActionButton
                     android:id="@+id/fab_place"

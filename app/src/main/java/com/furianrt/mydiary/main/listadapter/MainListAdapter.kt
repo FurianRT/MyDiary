@@ -6,6 +6,8 @@ import android.net.Uri
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.cardview.widget.CardView
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.furianrt.mydiary.R
@@ -25,6 +27,7 @@ class MainListAdapter(
         HeaderItemDecoration.StickyHeaderInterface {
 
     var listener: OnMainListItemInteractionListener? = null
+    var hasPremium = false
 
     override fun bindHeaderData(header: View, headerPosition: Int) {
         if (headerPosition == RecyclerView.NO_POSITION) {
@@ -111,10 +114,33 @@ class MainListAdapter(
                 categoryColor?.let { text_day_of_week.setBackgroundColor(it) }
                 text_day.text = getDay(time)
                 text_time.text = getTime(time, is24TimeFormat)
-                text_tags.text = mContentItem.note.tags.size.toString()
-                text_images.text = mContentItem.note.images.size.toString()
-                text_category.text = mContentItem.note.category?.name
-                image_sync.setColorFilter(getThemeAccentColor(mView.context), PorterDuff.Mode.SRC_IN)
+                text_tags.text = mContentItem.note.tags.filter { !it.isDeleted }.size.toString()
+                text_images.text = mContentItem.note.images.filter { !it.isDeleted }.size.toString()
+
+                if (mContentItem.note.category != null) {
+                    text_category.text = mContentItem.note.category?.name
+                    text_category.visibility = View.VISIBLE
+                } else {
+                    text_category.visibility = View.INVISIBLE
+                    text_category.text = ""
+                }
+
+                if (!hasPremium) {
+                    image_sync.visibility = View.INVISIBLE
+                } else {
+                    if (item.note.note.isSync
+                            && item.note.images.find { !it.isSync || it.isDeleted } == null
+                            && item.note.tags.find { !it.isSync || it.isDeleted } == null) {
+                        image_sync.setImageResource(R.drawable.ic_cloud_done)
+                        image_sync.setColorFilter(getThemeAccentColor(mView.context), PorterDuff.Mode.SRC_IN)
+                    } else {
+                        image_sync.setImageResource(R.drawable.ic_cloud_off)
+                        image_sync.setColorFilter(
+                                ContextCompat.getColor(itemView.context, R.color.red),
+                                PorterDuff.Mode.SRC_IN)
+                    }
+                    image_sync.visibility = View.VISIBLE
+                }
 
                 if (mContentItem.note.images.isEmpty()) {
                     image_main_list.setImageDrawable(null)
@@ -148,7 +174,7 @@ class MainListAdapter(
         }
 
         private fun selectItem(note: MyNoteWithProp) {
-            val cardView = mView as androidx.cardview.widget.CardView
+            val cardView = mView as CardView
             if (selectedNotes.contains(note)) {
                 cardView.setCardBackgroundColor(getThemeAccentColor(mView.context))
             } else {

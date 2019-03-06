@@ -28,4 +28,5 @@ interface CloudHelper {
     fun getAllAppearances(profile: MyProfile): Single<List<MyNoteAppearance>>
     fun getAllNoteTags(profile: MyProfile): Single<List<NoteTag>>
     fun getAllImages(profile: MyProfile): Single<List<MyImage>>
+    fun loadImageFiles(profile: MyProfile, images: List<MyImage>): Completable
 }

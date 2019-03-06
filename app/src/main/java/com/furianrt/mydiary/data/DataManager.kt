@@ -105,4 +105,5 @@ interface DataManager {
     fun saveNoteTagsInCloud(noteTags: List<NoteTag>): Completable
     fun saveAppearancesInCloud(appearances: List<MyNoteAppearance>): Completable
     fun saveImagesInCloud(images: List<MyImage>): Completable
+    fun loadImageFiles(images: List<MyImage>): Completable
 }

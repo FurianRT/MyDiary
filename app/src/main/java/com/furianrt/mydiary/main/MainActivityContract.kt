@@ -10,7 +10,7 @@ import com.furianrt.mydiary.main.listadapter.MainListItem
 interface MainActivityContract {
 
     interface View : BaseView {
-        fun showNotes(notes: List<MainListItem>, selectedNotes: ArrayList<MyNoteWithProp>)
+        fun showNotes(notes: List<MainListItem>, selectedNotes: ArrayList<MyNoteWithProp>, hasPremium: Boolean)
         fun openNotePager(position: Int)
         fun showHeaderImage(image: MyHeaderImage)
         fun requestStoragePermissions()

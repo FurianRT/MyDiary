@@ -1,17 +1,15 @@
-package com.furianrt.mydiary.service
+package com.furianrt.mydiary.main.fragments.profile.menu
 
 import com.furianrt.mydiary.BasePresenter
 import com.furianrt.mydiary.BaseView
 
-interface SyncContract {
+interface MenuProfileContract {
 
     interface View : BaseView {
-        fun close()
 
     }
 
     abstract class Presenter : BasePresenter<View>() {
-        abstract fun onStartCommand()
 
     }
 }

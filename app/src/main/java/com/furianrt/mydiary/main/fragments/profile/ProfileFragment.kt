@@ -8,6 +8,8 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.furianrt.mydiary.R
 import com.furianrt.mydiary.main.MainActivity
+import com.furianrt.mydiary.main.fragments.profile.menu.MenuProfileFragment
+import com.furianrt.mydiary.utils.inTransaction
 import kotlinx.android.synthetic.main.fragment_profile.view.*
 import javax.inject.Inject
 
@@ -32,6 +34,12 @@ class ProfileFragment : Fragment(), ProfileContract.View {
 
         view.button_sign_out.setOnClickListener { mPresenter.onButtonSignOutClick() }
         view.button_profile_close.setOnClickListener { mPresenter.onButtonCloseClick() }
+
+        if (childFragmentManager.findFragmentByTag(MenuProfileFragment.TAG) == null) {
+            childFragmentManager.inTransaction {
+                add(R.id.card_profile_container, MenuProfileFragment(), MenuProfileFragment.TAG)
+            }
+        }
 
         return view
     }

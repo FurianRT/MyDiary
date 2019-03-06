@@ -31,6 +31,7 @@ class MainActivityPresenter(
 
     private fun deleteImagesAndNote(note: MyNoteWithProp): Single<Boolean> =
             Flowable.fromIterable(note.images)
+                    .filter { !it.isDeleted }
                     .flatMapSingle { image -> mDataManager.deleteImageFromStorage(image.name) }
                     .collectInto(mutableListOf<Boolean>()) { l, i -> l.add(i) }
                     .flatMap { mDataManager.deleteNote(note.note).toSingleDefault(true) }
@@ -150,9 +151,13 @@ class MainActivityPresenter(
                     view?.showNotesCountToday(notes
                             .filter { DateUtils.isToday(DateTime(it.note.creationTime)) }
                             .size)
-                    view?.showImageCount(notes.sumBy { it.images.size })
+                    view?.showImageCount(notes.sumBy {
+                        it.images
+                                .filter { image -> !image.isDeleted }
+                                .size
+                    })
                     view?.showNotesTotal(notes.size)
-                    view?.showNotes(items, mSelectedNotes)
+                    view?.showNotes(items, mSelectedNotes, mProfile.hasPremium)
                 })
     }
 

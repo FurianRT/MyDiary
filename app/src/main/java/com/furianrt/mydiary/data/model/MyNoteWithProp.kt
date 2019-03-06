@@ -26,7 +26,6 @@ data class MyNoteWithProp(
             entityColumn = NoteTag.FIELD_NOTE_ID
     )
     var tags: List<NoteTag> = arrayListOf()
-        get() = field.filter { !it.isDeleted }
 
     @IgnoredOnParcel
     @Relation(
@@ -35,7 +34,5 @@ data class MyNoteWithProp(
             entityColumn = MyImage.FIELD_ID_NOTE
     )
     var images: List<MyImage> = arrayListOf()
-        get() = field
-                .filter { !it.isDeleted }
-                .sortedWith(compareBy(MyImage::order, MyImage::addedTime))
+        get() = field.sortedWith(compareBy(MyImage::order, MyImage::addedTime))
 }

@@ -1,8 +1,11 @@
 package com.furianrt.mydiary.main
 
 import android.Manifest
+import android.animation.Animator
+import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.content.res.Configuration
 import android.os.Bundle
 import android.os.Parcelable
@@ -19,6 +22,7 @@ import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.content.ContextCompat
 import androidx.core.view.GravityCompat
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.furianrt.mydiary.BaseActivity
 import com.furianrt.mydiary.R
@@ -35,7 +39,8 @@ import com.furianrt.mydiary.main.fragments.profile.ProfileFragment
 import com.furianrt.mydiary.main.listadapter.MainListAdapter
 import com.furianrt.mydiary.main.listadapter.MainListItem
 import com.furianrt.mydiary.note.NoteActivity
-import com.furianrt.mydiary.service.SyncService
+import com.furianrt.mydiary.services.sync.ProgressMessage
+import com.furianrt.mydiary.services.sync.SyncService
 import com.furianrt.mydiary.settings.global.GlobalSettingsActivity
 import com.furianrt.mydiary.utils.getThemePrimaryColor
 import com.furianrt.mydiary.utils.getThemePrimaryDarkColor
@@ -49,6 +54,7 @@ import jp.wasabeef.recyclerview.animators.LandingAnimator
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.activity_main_toolbar.*
 import kotlinx.android.synthetic.main.bottom_sheet_main.*
+import kotlinx.android.synthetic.main.nav_header_main.*
 import kotlinx.android.synthetic.main.nav_header_main.view.*
 import pub.devrel.easypermissions.AfterPermissionGranted
 import pub.devrel.easypermissions.EasyPermissions
@@ -71,6 +77,8 @@ class MainActivity : BaseActivity(), MainActivityContract.View,
         private const val ITEM_LONG_CLICK_VIBRATION_DURATION = 30L
         private const val ANIMATION_IMAGE_SETTINGS_FADE_OUT_DURATION = 350L
         private const val ANIMATION_IMAGE_SETTINGS_FADE_OUT_OFFSET = 2000L
+        private const val ANIMATION_PROGRESS_FADE_OUT_OFFSET = 2000L
+        private const val ANIMATION_PROGRESS_DURATION = 500L
     }
 
     @Inject
@@ -82,6 +90,73 @@ class MainActivity : BaseActivity(), MainActivityContract.View,
     private var mBackPressCount = 0
     private var mNeedToOpenActionBar = true
     private var mMenu: Menu? = null
+    private val mProgressAnimationListener = object : Animator.AnimatorListener {
+        override fun onAnimationRepeat(animation: Animator?) {}
+        override fun onAnimationCancel(animation: Animator?) {}
+        override fun onAnimationStart(animation: Animator?) {}
+        override fun onAnimationEnd(animation: Animator?) {
+            nav_view.getHeaderView(0).progress_sync.visibility = View.GONE
+            button_sync.text = getString(R.string.nav_header_main_button_sync)
+        }
+    }
+    private val mBroadcastReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context?, intent: Intent?) {
+            intent?.getParcelableExtra<ProgressMessage>(SyncService.EXTRA_PROGRESS_MESSAGE)?.let {
+                if (it.hasError) {
+                    nav_view.getHeaderView(0).progress_sync.visibility = View.GONE
+                    nav_view.getHeaderView(0).progress_sync.reset()
+                    button_sync.text = when (it.taskIndex) {
+                        ProgressMessage.PROFILE_CHECK -> getString(R.string.sync_error_profile)
+                        ProgressMessage.SYNC_NOTES -> getString(R.string.sync_error_тщеуы)
+                        ProgressMessage.SYNC_APPEARANCE -> getString(R.string.sync_error_appearance)
+                        ProgressMessage.SYNC_CATEGORIES -> getString(R.string.sync_error_categories)
+                        ProgressMessage.SYNC_TAGS -> getString(R.string.sync_error_tags)
+                        ProgressMessage.SYNC_NOTE_TAGS -> getString(R.string.sync_error_note_tags)
+                        ProgressMessage.SYNC_IMAGES -> getString(R.string.sync_error_images)
+                        ProgressMessage.CLEANUP -> getString(R.string.sync_error_cleanup)
+                        else -> getString(R.string.sync_error)
+                    }
+                    nav_view.getHeaderView(0).progress_sync.finishLoad()
+                    nav_view.getHeaderView(0)
+                            .progress_sync
+                            .animate()
+                            .alpha(0f)
+                            .setDuration(ANIMATION_PROGRESS_DURATION)
+                            .setStartDelay(ANIMATION_PROGRESS_FADE_OUT_OFFSET)
+                            .setListener(mProgressAnimationListener)
+                } else {
+                    if (nav_view.getHeaderView(0).progress_sync.isFinish) {
+                        nav_view.getHeaderView(0).progress_sync.reset()
+                    }
+                    nav_view.getHeaderView(0).progress_sync.alpha = 0.35f
+                    nav_view.getHeaderView(0).progress_sync.visibility = View.VISIBLE
+                    nav_view.getHeaderView(0).progress_sync.progress = it.progress.toFloat()
+                    button_sync.text = when (it.taskIndex) {
+                        ProgressMessage.PROFILE_CHECK -> getString(R.string.sync_profile_check)
+                        ProgressMessage.SYNC_NOTES -> getString(R.string.sync_notes)
+                        ProgressMessage.SYNC_APPEARANCE -> getString(R.string.sync_appearance)
+                        ProgressMessage.SYNC_CATEGORIES -> getString(R.string.sync_categories)
+                        ProgressMessage.SYNC_TAGS -> getString(R.string.sync_tags)
+                        ProgressMessage.SYNC_NOTE_TAGS -> getString(R.string.sync_note_tags)
+                        ProgressMessage.SYNC_IMAGES -> getString(R.string.sync_images)
+                        ProgressMessage.CLEANUP -> getString(R.string.sync_cleanup)
+                        ProgressMessage.SYNC_FINISHED -> {
+                            nav_view.getHeaderView(0).progress_sync.finishLoad()
+                            nav_view.getHeaderView(0)
+                                    .progress_sync
+                                    .animate()
+                                    .alpha(0f)
+                                    .setDuration(ANIMATION_PROGRESS_DURATION)
+                                    .setStartDelay(ANIMATION_PROGRESS_FADE_OUT_OFFSET)
+                                    .setListener(mProgressAnimationListener)
+                            getString(R.string.sync_done)
+                        }
+                        else -> ""
+                    }
+                }
+            }
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -125,54 +200,6 @@ class MainActivity : BaseActivity(), MainActivityContract.View,
         setupUi()
     }
 
-    override fun showHeaderImage(image: MyHeaderImage) {
-        Log.e(TAG, "showHeaderImage")
-        enableActionBarExpanding(mNeedToOpenActionBar)
-        mNeedToOpenActionBar = true
-        GlideApp.with(this)
-                .load(image.url)
-                .into(image_toolbar_main)
-    }
-
-    override fun showEmptyHeaderImage() {
-        Log.e(TAG, "showEmptyHeaderImage")
-        disableActionBarExpanding()
-    }
-
-    private fun disableActionBarExpanding() {
-        val appBarParams = collapsing_toolbar_main.layoutParams as AppBarLayout.LayoutParams
-        appBarParams.scrollFlags = AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL or
-                AppBarLayout.LayoutParams.SCROLL_FLAG_EXIT_UNTIL_COLLAPSED
-        collapsing_toolbar_main.layoutParams = appBarParams
-
-        app_bar_layout.setExpanded(false)
-
-        val coordParams = app_bar_layout.layoutParams as CoordinatorLayout.LayoutParams
-        (coordParams.behavior as AppBarLayoutBehavior).shouldScroll = false
-    }
-
-    private fun enableActionBarExpanding(expand: Boolean) {
-        val appBarParams = collapsing_toolbar_main.layoutParams as AppBarLayout.LayoutParams
-        val orientation = resources.configuration.orientation
-        if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            appBarParams.scrollFlags = AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL or
-                    AppBarLayout.LayoutParams.SCROLL_FLAG_ENTER_ALWAYS or
-                    AppBarLayout.LayoutParams.SCROLL_FLAG_ENTER_ALWAYS_COLLAPSED
-            collapsing_toolbar_main.layoutParams = appBarParams
-        } else {
-            appBarParams.scrollFlags = AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL or
-                    AppBarLayout.LayoutParams.SCROLL_FLAG_EXIT_UNTIL_COLLAPSED
-            collapsing_toolbar_main.layoutParams = appBarParams
-        }
-
-        if (expand) {
-            app_bar_layout.setExpanded(true)
-        }
-
-        val coordParams = app_bar_layout.layoutParams as CoordinatorLayout.LayoutParams
-        (coordParams.behavior as AppBarLayoutBehavior).shouldScroll = true
-    }
-
     private fun setupUi() {
         setSupportActionBar(toolbar_main)
         supportActionBar?.setDisplayShowTitleEnabled(false)
@@ -187,7 +214,6 @@ class MainActivity : BaseActivity(), MainActivityContract.View,
             }
         })
         fab_menu.setOnClickListener(this)
-        fab_menu.setMenuButtonColorRippleResId(R.color.colorPrimary)
         fab_delete.setOnClickListener(this)
         fab_folder.setOnClickListener(this)
         fab_place.setOnClickListener(this)
@@ -203,6 +229,54 @@ class MainActivity : BaseActivity(), MainActivityContract.View,
         list_main.addItemDecoration(HeaderItemDecoration(list_main, mAdapter))
         list_main.adapter = mAdapter
         list_main.itemAnimator = LandingAnimator()
+    }
+
+    override fun showHeaderImage(image: MyHeaderImage) {
+        Log.e(TAG, "showHeaderImage")
+        enableActionBarExpanding(mNeedToOpenActionBar)
+        mNeedToOpenActionBar = true
+        GlideApp.with(this)
+                .load(image.url)
+                .into(image_toolbar_main)
+    }
+
+    override fun showEmptyHeaderImage() {
+        Log.e(TAG, "showEmptyHeaderImage")
+        disableActionBarExpanding()
+    }
+
+    private fun disableActionBarExpanding() {
+        val appBarParams =
+                collapsing_toolbar_main.layoutParams as AppBarLayout.LayoutParams
+        appBarParams.scrollFlags = AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL or
+                AppBarLayout.LayoutParams.SCROLL_FLAG_EXIT_UNTIL_COLLAPSED
+        collapsing_toolbar_main.layoutParams = appBarParams
+        app_bar_layout.setExpanded(false)
+        val coordParams =
+                app_bar_layout.layoutParams as CoordinatorLayout.LayoutParams
+        (coordParams.behavior as AppBarLayoutBehavior).shouldScroll = false
+    }
+
+    private fun enableActionBarExpanding(expand: Boolean) {
+        val appBarParams =
+                collapsing_toolbar_main.layoutParams as AppBarLayout.LayoutParams
+        val orientation = resources.configuration.orientation
+        if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            appBarParams.scrollFlags = AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL or
+                    AppBarLayout.LayoutParams.SCROLL_FLAG_ENTER_ALWAYS or
+                    AppBarLayout.LayoutParams.SCROLL_FLAG_ENTER_ALWAYS_COLLAPSED
+            collapsing_toolbar_main.layoutParams = appBarParams
+        } else {
+            appBarParams.scrollFlags = AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL or
+                    AppBarLayout.LayoutParams.SCROLL_FLAG_EXIT_UNTIL_COLLAPSED
+            collapsing_toolbar_main.layoutParams = appBarParams
+        }
+        if (expand) {
+            app_bar_layout.setExpanded(true)
+        }
+        val coordParams =
+                app_bar_layout.layoutParams as CoordinatorLayout.LayoutParams
+        (coordParams.behavior as AppBarLayoutBehavior).shouldScroll = true
     }
 
     override fun onClick(v: View?) {
@@ -352,7 +426,6 @@ class MainActivity : BaseActivity(), MainActivityContract.View,
                 .navigationBarColor(ContextCompat.getColor(this, R.color.black))
                 .title(R.string.album)
                 .build()
-
         Album.image(this)
                 .singleChoice()
                 .columnCount(3)
@@ -373,8 +446,10 @@ class MainActivity : BaseActivity(), MainActivityContract.View,
                 .start()
     }
 
-    override fun showNotes(notes: List<MainListItem>, selectedNotes: ArrayList<MyNoteWithProp>) {
+    override fun showNotes(notes: List<MainListItem>, selectedNotes: ArrayList<MyNoteWithProp>,
+                           hasPremium: Boolean) {
         Log.e(TAG, "showNotes")
+        mAdapter.hasPremium = hasPremium
         mAdapter.selectedNotes = selectedNotes
         mAdapter.submitList(notes.toMutableList())
         mRecyclerViewState?.let {
@@ -445,12 +520,16 @@ class MainActivity : BaseActivity(), MainActivityContract.View,
     }
 
     override fun showAnonymousProfile() {
+        mAdapter.hasPremium = false
+        mAdapter.notifyDataSetChanged()
         nav_view.getHeaderView(0).text_email.text = getString(R.string.nav_header_main_anonymous)
         nav_view.getHeaderView(0).text_profile_description.text =
                 getString(R.string.nav_header_main_sing_in)
     }
 
     override fun showRegularProfile(profile: MyProfile) {
+        mAdapter.hasPremium = false
+        mAdapter.notifyDataSetChanged()
         //todo Добавить загрузку картинки профиля
         nav_view.getHeaderView(0).text_email.text = profile.email
         nav_view.getHeaderView(0).text_profile_description.text =
@@ -458,6 +537,8 @@ class MainActivity : BaseActivity(), MainActivityContract.View,
     }
 
     override fun showPremiumProfile(profile: MyProfile) {
+        mAdapter.hasPremium = true
+        mAdapter.notifyDataSetChanged()
         //todo Добавить загрузку картинки профиля
         nav_view.getHeaderView(0).text_email.text = profile.email
         nav_view.getHeaderView(0).text_profile_description.text =
@@ -496,6 +577,8 @@ class MainActivity : BaseActivity(), MainActivityContract.View,
 
     override fun onStart() {
         super.onStart()
+        LocalBroadcastManager.getInstance(this)
+                .registerReceiver(mBroadcastReceiver, IntentFilter(Intent.ACTION_SYNC))
         mAdapter.listener = this
     }
 
@@ -514,6 +597,7 @@ class MainActivity : BaseActivity(), MainActivityContract.View,
 
     override fun onStop() {
         super.onStop()
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(mBroadcastReceiver)
         mAdapter.listener = null
     }
 }

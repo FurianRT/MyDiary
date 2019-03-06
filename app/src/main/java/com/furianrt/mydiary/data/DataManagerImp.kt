@@ -106,10 +106,24 @@ class DataManagerImp(
 
     override fun updateCategory(category: MyCategory): Completable =
             Completable.fromAction { mDatabase.categoryDao().update(category.apply { isSync = false }) }
+                    .andThen(mDatabase.noteDao().getAllNotes())
+                    .first(emptyList())
+                    .flatMapObservable { Observable.fromIterable(it) }
+                    .filter { it.categoryId == category.id }
+                    .map { it.apply { it.isSync = false } }
+                    .flatMapSingle {
+                        Completable.fromAction { mDatabase.noteDao().update(it) }
+                                .toSingleDefault(true)
+                    }
+                    .collectInto(mutableListOf<Boolean>()) { l, i -> l.add(i) }
+                    .ignoreElement()
                     .subscribeOn(mRxScheduler)
 
     override fun updateAppearance(appearance: MyNoteAppearance): Completable =
             Completable.fromAction { mDatabase.appearanceDao().update(appearance.apply { isSync = false }) }
+                    .andThen(mDatabase.noteDao().getNote(appearance.appearanceId))
+                    .map { it.apply { it.isSync = false } }
+                    .flatMapCompletable { Completable.fromAction { mDatabase.noteDao().update(it) } }
                     .subscribeOn(mRxScheduler)
 
     override fun updateDbProfile(profile: MyProfile): Completable =
@@ -169,8 +183,10 @@ class DataManagerImp(
                     .subscribeOn(mRxScheduler)
 
     override fun replaceNoteTags(noteId: String, tags: List<MyTag>): Completable =
-            Completable.fromAction { mDatabase.noteTagDao().replaceNoteTags(noteId, tags) }
-                    .subscribeOn(mRxScheduler)
+            Completable.fromAction {
+                mDatabase.noteTagDao()
+                        .replaceNoteTags(noteId, tags.map { it.apply { it.isSync = false } })
+            }.subscribeOn(mRxScheduler)
 
     override fun deleteAllTagsForNote(noteId: String): Completable =
             Completable.fromAction { mDatabase.noteTagDao().deleteAllTagsForNote(noteId) }
@@ -481,5 +497,11 @@ class DataManagerImp(
             mDatabase.profileDao().getProfile()
                     .firstOrError()
                     .flatMap { mCloud.getAllImages(it) }
+                    .subscribeOn(mRxScheduler)
+
+    override fun loadImageFiles(images: List<MyImage>): Completable =
+            mDatabase.profileDao().getProfile()
+                    .firstOrError()
+                    .flatMapCompletable { mCloud.loadImageFiles(it, images) }
                     .subscribeOn(mRxScheduler)
 }

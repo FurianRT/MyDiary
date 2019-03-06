@@ -22,6 +22,10 @@ import com.furianrt.mydiary.main.fragments.premium.PremiumContract
 import com.furianrt.mydiary.main.fragments.premium.PremiumPresenter
 import com.furianrt.mydiary.main.fragments.profile.ProfileContract
 import com.furianrt.mydiary.main.fragments.profile.ProfilePresenter
+import com.furianrt.mydiary.main.fragments.profile.menu.MenuProfileContract
+import com.furianrt.mydiary.main.fragments.profile.menu.MenuProfilePresenter
+import com.furianrt.mydiary.main.fragments.profile.password.PasswordContract
+import com.furianrt.mydiary.main.fragments.profile.password.PasswordPresenter
 import com.furianrt.mydiary.note.NoteActivityContract
 import com.furianrt.mydiary.note.NoteActivityPresenter
 import com.furianrt.mydiary.note.dialogs.categories.CategoriesDialogContract
@@ -40,8 +44,8 @@ import com.furianrt.mydiary.note.fragments.notefragment.content.NoteContentFragm
 import com.furianrt.mydiary.note.fragments.notefragment.content.NoteContentFragmentPresenter
 import com.furianrt.mydiary.note.fragments.notefragment.edit.NoteEditFragmentContract
 import com.furianrt.mydiary.note.fragments.notefragment.edit.NoteEditFragmentPresenter
-import com.furianrt.mydiary.service.SyncContract
-import com.furianrt.mydiary.service.SyncPresenter
+import com.furianrt.mydiary.services.sync.SyncContract
+import com.furianrt.mydiary.services.sync.SyncPresenter
 import com.furianrt.mydiary.settings.note.NoteSettingsContract
 import com.furianrt.mydiary.settings.note.NoteSettingsPresenter
 import com.google.android.gms.location.FusedLocationProviderClient
@@ -161,4 +165,14 @@ class PresenterModule(private val context: Context) {
     @PresenterScope
     fun provideSyncPresenter(dataManager: DataManager): SyncContract.Presenter =
             SyncPresenter(dataManager)
+
+    @Provides
+    @PresenterScope
+    fun providePasswordPresenter(dataManager: DataManager): PasswordContract.Presenter =
+            PasswordPresenter(dataManager)
+
+    @Provides
+    @PresenterScope
+    fun provideMenuProfilePresenter(dataManager: DataManager): MenuProfileContract.Presenter =
+            MenuProfilePresenter(dataManager)
 }

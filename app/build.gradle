@@ -84,14 +84,17 @@ dependencies {
     implementation 'com.github.applikeysolutions:cosmocalendar:1.0.4'
 
     implementation 'com.google.firebase:firebase-core:16.0.7'
-    implementation 'com.google.firebase:firebase-storage:16.0.5'
+    implementation 'com.google.firebase:firebase-storage:16.1.0'
     implementation 'com.google.firebase:firebase-auth:16.1.0'
-    implementation 'com.google.firebase:firebase-firestore:18.0.1'
+    implementation 'com.google.firebase:firebase-firestore:18.1.0'
+    implementation 'com.google.firebase:firebase-messaging:17.4.0'
     implementation 'com.github.FrangSierra:RxFirebase:1.5.6'
 
     implementation 'com.crashlytics.sdk.android:crashlytics:2.9.9'
 
-    implementation "org.mindrot:jbcrypt:0.4"
+    implementation 'org.mindrot:jbcrypt:0.4'
+
+    implementation 'com.jackandphantom.android:circularimageview:1.2.0'
 
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test:runner:1.1.1'

@@ -10,7 +10,7 @@ import org.joda.time.DateTime
 
 @Parcelize
 @Entity(tableName = MyNote.TABLE_NAME)
-open class MyNote(
+data class MyNote(
         @ColumnInfo(name = FIELD_ID) @PrimaryKey(autoGenerate = false) var id: String = "",
         @ColumnInfo(name = FIELD_TITLE) var title: String = "",
         @ColumnInfo(name = FIELD_CONTENT) var content: String = "",

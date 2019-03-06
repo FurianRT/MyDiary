@@ -16,8 +16,10 @@ import java.util.*
 class MyApp : Application() {
 
     companion object {
-        const val NOTIFICATION_CHANNEL_ID = "sync_channel"
-        const val NOTIFICATION_CHANNEL_NAME = "Synchronization"
+        const val NOTIFICATION_SYNC_CHANNEL_ID = "sync_channel"
+        const val NOTIFICATION_SYNC_CHANNEL_NAME = "Synchronization"
+        const val NOTIFICATION_FIREBASE_CHANNEL_ID = "firebase_channel"
+        const val NOTIFICATION_FIREBASE_CHANNEL_NAME = "Info"
     }
 
     val component: AppComponent = DaggerAppComponent.builder()
@@ -26,7 +28,8 @@ class MyApp : Application() {
 
     override fun onCreate() {
         super.onCreate()
-        createNotificationChannel()
+        createNotificationSyncChannel()
+        createNotificationFirebaseChannel()
         JodaTimeAndroid.init(this)
         Album.initialize(AlbumConfig.newBuilder(this)
                 .setAlbumLoader(MediaLoader())
@@ -34,11 +37,23 @@ class MyApp : Application() {
                 .build())
     }
 
-    private fun createNotificationChannel() {
+    private fun createNotificationSyncChannel() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val serviceChannel = NotificationChannel(
-                    NOTIFICATION_CHANNEL_ID,
-                    NOTIFICATION_CHANNEL_NAME,
+                    NOTIFICATION_SYNC_CHANNEL_ID,
+                    NOTIFICATION_SYNC_CHANNEL_NAME,
+                    NotificationManager.IMPORTANCE_LOW
+            ).apply { setSound(null, null) }
+            val manager = getSystemService(NotificationManager::class.java)
+            manager.createNotificationChannel(serviceChannel)
+        }
+    }
+
+    private fun createNotificationFirebaseChannel() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val serviceChannel = NotificationChannel(
+                    NOTIFICATION_FIREBASE_CHANNEL_ID,
+                    NOTIFICATION_FIREBASE_CHANNEL_NAME,
                     NotificationManager.IMPORTANCE_DEFAULT
             )
             val manager = getSystemService(NotificationManager::class.java)

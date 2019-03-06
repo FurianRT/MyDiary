@@ -1,15 +1,9 @@
 <resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
 
-    <string name="app_name">MyDiary</string>
+    <string name="app_name">YourBestDiary</string>
 
     <string name="weather_api_key">d173aae09c9fc47e1ef98019e91cfd06</string>
-    <string name="image_api_key">11653844-2c33293b7478245ac1b4c25c9</string>
-
-    <string name="location_permission_request">Приложению требуется разрешение для определения
-        местоположения вашей новой записи</string>
-    <string name="storage_permission_request">Приложению требуется разрешение
-        для сохранения изображения</string>
-    <string name="time">Время</string>
+    <string name="image_api_key" tools:ignore="TypographyDashes">11653844-2c33293b7478245ac1b4c25c9</string>
 
     <string-array name="tags">
         <item>Мечта</item>
@@ -33,46 +27,6 @@
         <item>Любовь</item>
         <item>План</item>
     </string-array>
-
-    <string name="save">Сохранить</string>
-    <string name="cancel">Отмена</string>
-    <string name="edit">Редактировать</string>
-    <string name="delete">Удалить</string>
-
-    <string name="choose_tags">Выберите теги</string>
-    <string name="choose_category">Категория</string>
-    <string name="choose_mood">Настроение</string>
-    <string name="choose_location">Выберите локацию</string>
-
-    <string name="add_tag">Добавить тег</string>
-
-    <string name="open">Открыть</string>
-    <string name="close">Закрыть</string>
-
-    <string name="album">Альбом</string>
-    <string name="click_again_to_exit">Нажмите еще раз для выхода</string>
-
-    <string name="search">Поиск</string>
-
-    <string name="choose_all_notes">Выбрать все записи</string>
-
-    <string name="settings">Настройки</string>
-
-    <string name="image">Картинка</string>
-    <string name="date">Дата</string>
-    <string name="share">Поделиться</string>
-    <string name="title">Загловок…</string>
-    <string name="content">Остальное…</string>
-
-    <string name="list">Лист</string>
-    <string name="multi_selection">Множественный выбор</string>
-    <string name="choose_all_images">Выбрать все картинки</string>
-    <string name="no_mood">Нет настроения</string>
-    <string name="add_image">Добавить картинку</string>
-    <string name="no_category">Нет категории</string>
-
-    <string name="category_name">Название</string>
-    <string name="appearance">Внешний вид</string>
 
     <string-array name="pref_font_size_titles">
         <item>Мелкий</item>
@@ -125,6 +79,41 @@
         <item>600</item>
     </string-array>
 
+    <string name="location_permission_request">Приложению требуется разрешение для определения
+        местоположения вашей новой записи</string>
+    <string name="storage_permission_request">Приложению требуется разрешение
+        для сохранения изображения</string>
+
+    <string name="time">Время</string>
+    <string name="save">Сохранить</string>
+    <string name="cancel">Отмена</string>
+    <string name="edit">Редактировать</string>
+    <string name="delete">Удалить</string>
+    <string name="choose_tags">Выберите теги</string>
+    <string name="choose_category">Категория</string>
+    <string name="choose_mood">Настроение</string>
+    <string name="choose_location">Выберите локацию</string>
+    <string name="add_tag">Добавить тег</string>
+    <string name="open">Открыть</string>
+    <string name="close">Закрыть</string>
+    <string name="album">Альбом</string>
+    <string name="click_again_to_exit">Нажмите еще раз для выхода</string>
+    <string name="search">Поиск</string>
+    <string name="choose_all_notes">Выбрать все записи</string>
+    <string name="settings">Настройки</string>
+    <string name="image">Картинка</string>
+    <string name="date">Дата</string>
+    <string name="share">Поделиться</string>
+    <string name="title">Загловок…</string>
+    <string name="content">Остальное…</string>
+    <string name="list">Лист</string>
+    <string name="multi_selection">Множественный выбор</string>
+    <string name="choose_all_images">Выбрать все картинки</string>
+    <string name="no_mood">Нет настроения</string>
+    <string name="add_image">Добавить картинку</string>
+    <string name="no_category">Нет категории</string>
+    <string name="category_name">Название</string>
+    <string name="appearance">Внешний вид</string>
     <string name="background">Фон</string>
     <string name="font">Шрифт</string>
     <string name="note_background_summary">Цвет заднего плана записи</string>
@@ -194,5 +183,25 @@
     <string name="nav_header_main_total">Всего:</string>
     <string name="sort_new_first">Сначала новые</string>
     <string name="sort_old_first">Сначала старые</string>
+    <string name="notification_sync_title">Идет синхронизация…</string>
+    <string name="notification_sync_content">Пожалуйста, не отключайтесь от сети</string>
+    <string name="sync_done">Готово!</string>
+    <string name="sync_profile_check">Проверка профиля</string>
+    <string name="sync_notes">Загрузка записей</string>
+    <string name="sync_appearance">Загрузка настроек</string>
+    <string name="sync_categories">Загрузка категорий</string>
+    <string name="sync_tags">Загрузка тэгов</string>
+    <string name="sync_images">Загрузка картинок</string>
+    <string name="sync_cleanup">Завершение</string>
+    <string name="sync_error_profile">Ошибка проверки профиля</string>
+    <string name="sync_error_тщеуы">Ошибка загрузки записей</string>
+    <string name="sync_error_appearance">Ошибка загрузки настроек</string>
+    <string name="sync_error_categories">Ошибка загрузки папок</string>
+    <string name="sync_error_tags">Ошибка загрузки тэгов</string>
+    <string name="sync_error_note_tags">Ошибка загрузки связей</string>
+    <string name="sync_error_images">Ошибка загрузки картинок</string>
+    <string name="sync_error_cleanup">Ошибка очистки</string>
+    <string name="sync_note_tags">Загрузка связей</string>
+    <string name="sync_error">Ошибка!</string>
 
 </resources>

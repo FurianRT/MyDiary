@@ -13,7 +13,6 @@ import io.reactivex.Completable
 import io.reactivex.Maybe
 import io.reactivex.Observable
 import io.reactivex.Single
-import io.reactivex.functions.BiFunction
 
 class CloudHelperImp(
         private val mFirestore: FirebaseFirestore,
@@ -248,17 +247,8 @@ class CloudHelperImp(
                     .document(profile.email)
                     .collection(COLLECTION_IMAGES), MyImage::class.java)
                     .toSingle(emptyList())
-                    .flatMap {
-                        Single.zip(
-                                Single.just(it),
-                                saveImagesToStorage(profile, it),
-                                BiFunction<List<MyImage>, List<FileDownloadTask.TaskSnapshot>, List<MyImage>>
-                                { images, _ -> images }
-                        )
-                    }
 
-    private fun saveImagesToStorage(profile: MyProfile, images: List<MyImage>)
-            : Single<MutableList<FileDownloadTask.TaskSnapshot>> =
+    override fun loadImageFiles(profile: MyProfile, images: List<MyImage>): Completable =
             Observable.fromIterable(images)
                     .flatMapSingle { image ->
                         RxFirebaseStorage.getFile(mFirebaseStorage.reference
@@ -268,5 +258,6 @@ class CloudHelperImp(
                                 .child(image.name), Uri.parse(image.uri))
                                 .retry(3L)
                     }
-                    .collectInto(mutableListOf()) { l, i -> l.add(i) }
+                    .collectInto(mutableListOf<FileDownloadTask.TaskSnapshot>()) { l, i -> l.add(i) }
+                    .ignoreElement()
 }

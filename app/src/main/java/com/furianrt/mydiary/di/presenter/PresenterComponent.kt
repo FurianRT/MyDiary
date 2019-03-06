@@ -10,6 +10,8 @@ import com.furianrt.mydiary.main.fragments.authentication.registration.Registrat
 import com.furianrt.mydiary.main.fragments.imagesettings.ImageSettingsFragment
 import com.furianrt.mydiary.main.fragments.premium.PremiumFragment
 import com.furianrt.mydiary.main.fragments.profile.ProfileFragment
+import com.furianrt.mydiary.main.fragments.profile.menu.MenuProfileFragment
+import com.furianrt.mydiary.main.fragments.profile.password.PasswordFragment
 import com.furianrt.mydiary.note.NoteActivity
 import com.furianrt.mydiary.note.dialogs.categories.CategoriesDialog
 import com.furianrt.mydiary.note.dialogs.categories.edit.CategoryEditFragment
@@ -19,7 +21,7 @@ import com.furianrt.mydiary.note.dialogs.tags.TagsDialog
 import com.furianrt.mydiary.note.fragments.notefragment.NoteFragment
 import com.furianrt.mydiary.note.fragments.notefragment.content.NoteContentFragment
 import com.furianrt.mydiary.note.fragments.notefragment.edit.NoteEditFragment
-import com.furianrt.mydiary.service.SyncService
+import com.furianrt.mydiary.services.sync.SyncService
 import com.furianrt.mydiary.settings.note.NoteSettingsFragment
 import dagger.Subcomponent
 
@@ -48,4 +50,6 @@ interface PresenterComponent {
     fun inject(fragment: AuthFragment)
     fun inject(fragment: ImageSettingsFragment)
     fun inject(service: SyncService)
+    fun inject(fragment: PasswordFragment)
+    fun inject(fragment: MenuProfileFragment)
 }

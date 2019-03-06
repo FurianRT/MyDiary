@@ -65,6 +65,7 @@
             android:layout_height="?android:attr/actionBarSize"
             android:alpha="0.3"
             android:background="?attr/colorPrimary"
+            app:layout_collapseMode="pin"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
