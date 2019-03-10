@@ -84,11 +84,19 @@
     <string name="storage_permission_request">Приложению требуется разрешение
         для сохранения изображения</string>
 
+    <string name="yes">Да</string>
+    <string name="no">Нет</string>
+    <string name="exit">Выйти</string>
+    <string name="change_password">Сменить пароль</string>
     <string name="time">Время</string>
     <string name="save">Сохранить</string>
+    <string name="ok">Ок</string>
     <string name="cancel">Отмена</string>
     <string name="edit">Редактировать</string>
     <string name="delete">Удалить</string>
+    <string name="network_error">Нет интернет соединения</string>
+    <string name="wrong_password">Неверный пароль</string>
+
     <string name="choose_tags">Выберите теги</string>
     <string name="choose_category">Категория</string>
     <string name="choose_mood">Настроение</string>
@@ -154,8 +162,6 @@
     <string name="security_email_settings_title">Email для сброса ключа</string>
     <string name="security_time_settings_title">Время до запроса ключа</string>
     <string name="voice">Голос</string>
-    <string name="time_picker_okay">ОК</string>
-    <string name="time_picker_cancel">ОТМЕНА</string>
     <string name="fragment_authentication_sign_in">Логин</string>
     <string name="fragment_authentication_sign_up">Регистрация</string>
     <string name="fragment_registration_email">Email</string>
@@ -165,7 +171,6 @@
     <string name="fragment_login_forgot">Не помню</string>
     <string name="fragment_login_sign_in">Войти</string>
     <string name="fragment_auth_sign_up">Зарегистрироваться</string>
-    <string name="fragment_registration_network_error">Нет интернет соединения</string>
     <string name="fragment_registration_password_error">Пароли не совпадают</string>
     <string name="fragment_registration_email_format">Некорректный email</string>
     <string name="fragment_registration_error_email_exists">Такой email уже зарегистрирован</string>
@@ -194,7 +199,7 @@
     <string name="sync_images">Загрузка картинок</string>
     <string name="sync_cleanup">Завершение</string>
     <string name="sync_error_profile">Ошибка проверки профиля</string>
-    <string name="sync_error_тщеуы">Ошибка загрузки записей</string>
+    <string name="sync_error_notes">Ошибка загрузки записей</string>
     <string name="sync_error_appearance">Ошибка загрузки настроек</string>
     <string name="sync_error_categories">Ошибка загрузки папок</string>
     <string name="sync_error_tags">Ошибка загрузки тэгов</string>
@@ -203,5 +208,13 @@
     <string name="sync_error_cleanup">Ошибка очистки</string>
     <string name="sync_note_tags">Загрузка связей</string>
     <string name="sync_error">Ошибка!</string>
+    <string name="fragment_menu_profile_about">О профиле</string>
+    <string name="fragment_menu_profile_picture">Картинка профиля</string>
+    <string name="fragment_sign_out_exit">Выйти из профиля?</string>
+    <string name="fragment_password_new_password">Новый пароль</string>
+    <string name="fragment_password_old_password">Старый пароль</string>
+    <string name="fragment_password_enter_old_password">Введите старый пароль</string>
+    <string name="fragment_password_enter_new_password">Введите новый пароль</string>
+    <string name="fragment_password_success_text">Пароль успешно изменен!</string>
 
 </resources>

@@ -1,6 +1,5 @@
 package com.furianrt.mydiary.main.fragments.profile
 
-import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -22,7 +21,6 @@ class ProfileFragment : Fragment(), ProfileContract.View {
     @Inject
     lateinit var mPresenter: ProfileContract.Presenter
 
-    private var mListener: OnProfileFragmentInteractionListener? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         getPresenterComponent(context!!).inject(this)
@@ -32,21 +30,18 @@ class ProfileFragment : Fragment(), ProfileContract.View {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_profile, container, false)
 
-        view.button_sign_out.setOnClickListener { mPresenter.onButtonSignOutClick() }
         view.button_profile_close.setOnClickListener { mPresenter.onButtonCloseClick() }
 
         if (childFragmentManager.findFragmentByTag(MenuProfileFragment.TAG) == null) {
             childFragmentManager.inTransaction {
-                add(R.id.card_profile_container, MenuProfileFragment(), MenuProfileFragment.TAG)
+                add(R.id.profile_container, MenuProfileFragment(), MenuProfileFragment.TAG)
             }
         }
 
         return view
     }
 
-    override fun showSignOut() {
-        mListener?.onSignOut()
-    }
+
 
     override fun close() {
         (activity as? MainActivity?)?.closeBottomSheet()
@@ -62,23 +57,5 @@ class ProfileFragment : Fragment(), ProfileContract.View {
         mPresenter.detachView()
     }
 
-    override fun onAttach(context: Context?) {
-        super.onAttach(context)
-        if (context is OnProfileFragmentInteractionListener) {
-            mListener = context
-        } else {
-            throw RuntimeException(context.toString()
-                    + " must implement OnProfileFragmentInteractionListener")
-        }
-    }
-
-    override fun onDetach() {
-        super.onDetach()
-        mListener = null
-    }
-
-    interface OnProfileFragmentInteractionListener {
-
-        fun onSignOut()
-    }
+    fun isBackStackEmpty() = childFragmentManager.backStackEntryCount == 0
 }

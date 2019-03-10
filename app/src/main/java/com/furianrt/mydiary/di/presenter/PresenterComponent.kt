@@ -12,6 +12,7 @@ import com.furianrt.mydiary.main.fragments.premium.PremiumFragment
 import com.furianrt.mydiary.main.fragments.profile.ProfileFragment
 import com.furianrt.mydiary.main.fragments.profile.menu.MenuProfileFragment
 import com.furianrt.mydiary.main.fragments.profile.password.PasswordFragment
+import com.furianrt.mydiary.main.fragments.profile.signout.SignOutFragment
 import com.furianrt.mydiary.note.NoteActivity
 import com.furianrt.mydiary.note.dialogs.categories.CategoriesDialog
 import com.furianrt.mydiary.note.dialogs.categories.edit.CategoryEditFragment
@@ -52,4 +53,5 @@ interface PresenterComponent {
     fun inject(service: SyncService)
     fun inject(fragment: PasswordFragment)
     fun inject(fragment: MenuProfileFragment)
+    fun inject(fragment: SignOutFragment)
 }

@@ -10,6 +10,7 @@ import androidx.fragment.app.Fragment
 import com.furianrt.mydiary.R
 import com.furianrt.mydiary.main.fragments.authentication.AuthFragment
 import com.furianrt.mydiary.main.fragments.authentication.done.DoneAuthFragment
+import com.furianrt.mydiary.utils.animateShake
 import com.furianrt.mydiary.utils.getThemeAccentColor
 import com.furianrt.mydiary.utils.inTransaction
 import com.furianrt.mydiary.utils.isNetworkAvailable
@@ -22,6 +23,7 @@ class RegistrationFragment : Fragment(), RegistrationContract.View {
 
     companion object {
         const val TAG = "RegistrationFragment"
+        private const val SHAKE_DURATION = 400L
         private const val CLOSE_AFTER_DONE_DELAY = 2000L
     }
 
@@ -55,10 +57,12 @@ class RegistrationFragment : Fragment(), RegistrationContract.View {
     override fun isNetworkAvailable() = context?.isNetworkAvailable() ?: false
 
     override fun showErrorNetworkConnection() {
-        view?.text_error?.text = getString(R.string.fragment_registration_network_error)
+        view?.text_error?.text = getString(R.string.network_error)
     }
 
     override fun showErrorPassword() {
+        view?.layout_password?.animateShake(SHAKE_DURATION)
+        view?.layout_password_repeat?.animateShake(SHAKE_DURATION)
         view?.text_error?.text = getString(R.string.fragment_registration_password_error)
     }
 
@@ -81,7 +85,7 @@ class RegistrationFragment : Fragment(), RegistrationContract.View {
             if (it.findFragmentByTag(DoneAuthFragment.TAG) == null) {
                 it.inTransaction {
                     setCustomAnimations(R.anim.scale_up, R.anim.scale_up)
-                    add(R.id.card_auth_container, DoneAuthFragment(), DoneAuthFragment.TAG)
+                    add(R.id.auth_container, DoneAuthFragment(), DoneAuthFragment.TAG)
                 }
             }
         }
@@ -93,14 +97,17 @@ class RegistrationFragment : Fragment(), RegistrationContract.View {
     }
 
     override fun showErrorShortPassword() {
+        view?.layout_password?.animateShake(SHAKE_DURATION)
         view?.text_error?.text = getString(R.string.fragment_registration_error_short_password)
     }
 
     override fun showErrorEmptyPassword() {
+        view?.layout_password?.animateShake(SHAKE_DURATION)
         view?.text_error?.text = getString(R.string.fragment_registration_empty_password)
     }
 
     override fun showErrorEmptyPasswordRepeat() {
+        view?.layout_password_repeat?.animateShake(SHAKE_DURATION)
         view?.text_error?.text = getString(R.string.fragment_registration_empty_password)
     }
 

@@ -95,10 +95,10 @@ interface DataManager {
     fun replaceNoteTags(noteId: String, tags: List<MyTag>): Completable
     fun findNote(noteId: String): Maybe<MyNote>
     fun addLocation(location: MyLocation): Completable
-    fun createProfile(profile: MyProfile): Completable
+    fun saveProfile(profile: MyProfile): Completable
     fun loadHeaderImages(page: Int = 1, perPage: Int = 20): Single<List<MyHeaderImage>>
     fun saveImageToStorage(image: MyImage): Single<MyImage>
-    fun saveProfile(profile: MyProfile): Completable
+    fun newProfileProfile(profile: MyProfile): Completable
     fun saveNotesInCloud(notes: List<MyNote>): Completable
     fun saveCategoriesInCloud(categories: List<MyCategory>): Completable
     fun saveTagsInCloud(tags: List<MyTag>): Completable

@@ -37,9 +37,9 @@ class AuthFragment : Fragment(), AuthContract.View {
         override fun onToggleSoftKeyboard(isVisible: Boolean) {
             if (isVisible) {
                 view?.let {
-                    it.card_auth_container
+                    it.auth_container
                             .animate()
-                            .translationY(-it.card_auth_container.y)
+                            .translationY(-it.auth_container.y)
                             .setDuration(ANIMATION_CONTAINER_DURATION)
                             .setInterpolator(OvershootInterpolator())
                             .setListener(object : Animator.AnimatorListener {
@@ -48,13 +48,13 @@ class AuthFragment : Fragment(), AuthContract.View {
                                 override fun onAnimationStart(animation: Animator?) {}
                                 override fun onAnimationEnd(animation: Animator?) {
                                     //повторная прорисовка контекстного меню
-                                    it.card_auth_container.requestLayout()   //todo иногда обрезается контекстное меню
+                                    it.auth_container.requestLayout()   //todo иногда обрезается контекстное меню
                                 }
                             })
                             .start()
                 }
             } else {
-                view?.card_auth_container
+                view?.auth_container
                         ?.animate()
                         ?.translationY(0f)
                         ?.setDuration(ANIMATION_CONTAINER_DURATION)
@@ -84,7 +84,7 @@ class AuthFragment : Fragment(), AuthContract.View {
 
         if (childFragmentManager.findFragmentByTag(LoginFragment.TAG) == null) {
             childFragmentManager.inTransaction {
-                add(R.id.card_auth_container, LoginFragment(), LoginFragment.TAG)
+                add(R.id.auth_container, LoginFragment(), LoginFragment.TAG)
             }
         }
 
@@ -105,7 +105,7 @@ class AuthFragment : Fragment(), AuthContract.View {
             }
             childFragmentManager.inTransaction {
                 setCustomAnimations(R.anim.from_right, R.anim.to_left, R.anim.from_left, R.anim.to_right)
-                replace(R.id.card_auth_container, RegistrationFragment(), RegistrationFragment.TAG)
+                replace(R.id.auth_container, RegistrationFragment(), RegistrationFragment.TAG)
                 addToBackStack(null)
             }
         }
@@ -146,6 +146,6 @@ class AuthFragment : Fragment(), AuthContract.View {
 
     fun clearFocus() {
         activity?.hideKeyboard()
-        view?.card_auth_container?.clearFocus()
+        view?.auth_container?.clearFocus()
     }
 }

@@ -8,6 +8,7 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.content.res.Configuration
 import android.os.Bundle
+import android.os.Handler
 import android.os.Parcelable
 import android.os.Vibrator
 import android.util.Log
@@ -36,6 +37,7 @@ import com.furianrt.mydiary.main.fragments.authentication.AuthFragment
 import com.furianrt.mydiary.main.fragments.imagesettings.ImageSettingsFragment
 import com.furianrt.mydiary.main.fragments.premium.PremiumFragment
 import com.furianrt.mydiary.main.fragments.profile.ProfileFragment
+import com.furianrt.mydiary.main.fragments.profile.signout.SignOutFragment
 import com.furianrt.mydiary.main.listadapter.MainListAdapter
 import com.furianrt.mydiary.main.listadapter.MainListItem
 import com.furianrt.mydiary.note.NoteActivity
@@ -63,7 +65,7 @@ import javax.inject.Inject
 
 class MainActivity : BaseActivity(), MainActivityContract.View,
         MainListAdapter.OnMainListItemInteractionListener, View.OnClickListener,
-        ProfileFragment.OnProfileFragmentInteractionListener,
+        SignOutFragment.OnSignOutFragmentInteractionListener,
         ImageSettingsFragment.OnImageSettingsInteractionListener {
 
     companion object {
@@ -79,6 +81,7 @@ class MainActivity : BaseActivity(), MainActivityContract.View,
         private const val ANIMATION_IMAGE_SETTINGS_FADE_OUT_OFFSET = 2000L
         private const val ANIMATION_PROGRESS_FADE_OUT_OFFSET = 2000L
         private const val ANIMATION_PROGRESS_DURATION = 500L
+        private const val BOTTOM_SHEET_EXPAND_DELAY = 200L
     }
 
     @Inject
@@ -90,12 +93,17 @@ class MainActivity : BaseActivity(), MainActivityContract.View,
     private var mBackPressCount = 0
     private var mNeedToOpenActionBar = true
     private var mMenu: Menu? = null
+    private val mHandler = Handler()
+    private val mBottomSheetOpenRunnable: Runnable = Runnable {
+        mBottomSheet.state = BottomSheetBehavior.STATE_EXPANDED
+    }
     private val mProgressAnimationListener = object : Animator.AnimatorListener {
         override fun onAnimationRepeat(animation: Animator?) {}
         override fun onAnimationCancel(animation: Animator?) {}
         override fun onAnimationStart(animation: Animator?) {}
         override fun onAnimationEnd(animation: Animator?) {
             nav_view.getHeaderView(0).progress_sync.visibility = View.GONE
+            nav_view.getHeaderView(0).button_sync.isEnabled = true
             button_sync.text = getString(R.string.nav_header_main_button_sync)
         }
     }
@@ -103,11 +111,9 @@ class MainActivity : BaseActivity(), MainActivityContract.View,
         override fun onReceive(context: Context?, intent: Intent?) {
             intent?.getParcelableExtra<ProgressMessage>(SyncService.EXTRA_PROGRESS_MESSAGE)?.let {
                 if (it.hasError) {
-                    nav_view.getHeaderView(0).progress_sync.visibility = View.GONE
-                    nav_view.getHeaderView(0).progress_sync.reset()
                     button_sync.text = when (it.taskIndex) {
                         ProgressMessage.PROFILE_CHECK -> getString(R.string.sync_error_profile)
-                        ProgressMessage.SYNC_NOTES -> getString(R.string.sync_error_тщеуы)
+                        ProgressMessage.SYNC_NOTES -> getString(R.string.sync_error_notes)
                         ProgressMessage.SYNC_APPEARANCE -> getString(R.string.sync_error_appearance)
                         ProgressMessage.SYNC_CATEGORIES -> getString(R.string.sync_error_categories)
                         ProgressMessage.SYNC_TAGS -> getString(R.string.sync_error_tags)
@@ -116,6 +122,7 @@ class MainActivity : BaseActivity(), MainActivityContract.View,
                         ProgressMessage.CLEANUP -> getString(R.string.sync_error_cleanup)
                         else -> getString(R.string.sync_error)
                     }
+                    nav_view.getHeaderView(0).progress_sync.progress = 100f
                     nav_view.getHeaderView(0).progress_sync.finishLoad()
                     nav_view.getHeaderView(0)
                             .progress_sync
@@ -128,18 +135,27 @@ class MainActivity : BaseActivity(), MainActivityContract.View,
                     if (nav_view.getHeaderView(0).progress_sync.isFinish) {
                         nav_view.getHeaderView(0).progress_sync.reset()
                     }
+                    nav_view.getHeaderView(0).button_sync.isEnabled = false
                     nav_view.getHeaderView(0).progress_sync.alpha = 0.35f
                     nav_view.getHeaderView(0).progress_sync.visibility = View.VISIBLE
                     nav_view.getHeaderView(0).progress_sync.progress = it.progress.toFloat()
                     button_sync.text = when (it.taskIndex) {
-                        ProgressMessage.PROFILE_CHECK -> getString(R.string.sync_profile_check)
-                        ProgressMessage.SYNC_NOTES -> getString(R.string.sync_notes)
-                        ProgressMessage.SYNC_APPEARANCE -> getString(R.string.sync_appearance)
-                        ProgressMessage.SYNC_CATEGORIES -> getString(R.string.sync_categories)
-                        ProgressMessage.SYNC_TAGS -> getString(R.string.sync_tags)
-                        ProgressMessage.SYNC_NOTE_TAGS -> getString(R.string.sync_note_tags)
-                        ProgressMessage.SYNC_IMAGES -> getString(R.string.sync_images)
-                        ProgressMessage.CLEANUP -> getString(R.string.sync_cleanup)
+                        ProgressMessage.PROFILE_CHECK ->
+                            it.progress.toString() + "% " + getString(R.string.sync_profile_check)
+                        ProgressMessage.SYNC_NOTES ->
+                            it.progress.toString() + "% " + getString(R.string.sync_notes)
+                        ProgressMessage.SYNC_APPEARANCE ->
+                            it.progress.toString() + "% " + getString(R.string.sync_appearance)
+                        ProgressMessage.SYNC_CATEGORIES ->
+                            it.progress.toString() + "% " + getString(R.string.sync_categories)
+                        ProgressMessage.SYNC_TAGS ->
+                            it.progress.toString() + "% " + getString(R.string.sync_tags)
+                        ProgressMessage.SYNC_NOTE_TAGS ->
+                            it.progress.toString() + "% " + getString(R.string.sync_note_tags)
+                        ProgressMessage.SYNC_IMAGES ->
+                            it.progress.toString() + "% " + getString(R.string.sync_images)
+                        ProgressMessage.CLEANUP ->
+                            it.progress.toString() + "% " + getString(R.string.sync_cleanup)
                         ProgressMessage.SYNC_FINISHED -> {
                             nav_view.getHeaderView(0).progress_sync.finishLoad()
                             nav_view.getHeaderView(0)
@@ -149,7 +165,7 @@ class MainActivity : BaseActivity(), MainActivityContract.View,
                                     .setDuration(ANIMATION_PROGRESS_DURATION)
                                     .setStartDelay(ANIMATION_PROGRESS_FADE_OUT_OFFSET)
                                     .setListener(mProgressAnimationListener)
-                            getString(R.string.sync_done)
+                            it.progress.toString() + "% " + getString(R.string.sync_done)
                         }
                         else -> ""
                     }
@@ -358,7 +374,7 @@ class MainActivity : BaseActivity(), MainActivityContract.View,
                 Log.e(TAG, "ProfileFragment added")
             }
         }
-        mBottomSheet.state = BottomSheetBehavior.STATE_EXPANDED
+        mHandler.postDelayed(mBottomSheetOpenRunnable, BOTTOM_SHEET_EXPAND_DELAY)
     }
 
     override fun showLoginView() {
@@ -368,7 +384,7 @@ class MainActivity : BaseActivity(), MainActivityContract.View,
                 Log.e(TAG, "AuthFragment added")
             }
         }
-        mBottomSheet.state = BottomSheetBehavior.STATE_EXPANDED
+        mHandler.postDelayed(mBottomSheetOpenRunnable, BOTTOM_SHEET_EXPAND_DELAY)
     }
 
     override fun showPremiumView() {
@@ -378,7 +394,7 @@ class MainActivity : BaseActivity(), MainActivityContract.View,
             }
             Log.e(TAG, "PremiumFragment added")
         }
-        mBottomSheet.state = BottomSheetBehavior.STATE_EXPANDED
+        mHandler.postDelayed(mBottomSheetOpenRunnable, BOTTOM_SHEET_EXPAND_DELAY)
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -552,8 +568,11 @@ class MainActivity : BaseActivity(), MainActivityContract.View,
     override fun onBackPressed() {
         val authFragment =
                 supportFragmentManager.findFragmentByTag(AuthFragment.TAG) as? AuthFragment
+        val profileFragment =
+                supportFragmentManager.findFragmentByTag(ProfileFragment.TAG) as? ProfileFragment
         when {
             authFragment != null && !authFragment.isBackStackEmpty() -> super.onBackPressed()
+            profileFragment != null && !profileFragment.isBackStackEmpty() -> super.onBackPressed()
             supportFragmentManager.backStackEntryCount > 0 -> super.onBackPressed()
             mBottomSheet.state == BottomSheetBehavior.STATE_EXPANDED ->
                 mBottomSheet.state = BottomSheetBehavior.STATE_COLLAPSED
@@ -599,5 +618,6 @@ class MainActivity : BaseActivity(), MainActivityContract.View,
         super.onStop()
         LocalBroadcastManager.getInstance(this).unregisterReceiver(mBroadcastReceiver)
         mAdapter.listener = null
+        mHandler.removeCallbacks(mBottomSheetOpenRunnable)
     }
 }

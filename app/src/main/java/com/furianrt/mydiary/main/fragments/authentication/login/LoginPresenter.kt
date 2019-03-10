@@ -37,7 +37,7 @@ class LoginPresenter(
                     }
                     .flatMapCompletable { isPasswordCorrect ->
                         return@flatMapCompletable if (isPasswordCorrect) {
-                            mDataManager.saveProfile(profile!!)
+                            mDataManager.newProfileProfile(profile!!)
                         } else {
                             throw NoSuchElementException()
                         }
@@ -47,11 +47,11 @@ class LoginPresenter(
                         v.hideLoading()
                         v.showLoginSuccess()
                     }, { error ->
-                        error.printStackTrace()
                         v.hideLoading()
                         if (error is NoSuchElementException) {
                             v.showErrorWrongCredential()
                         } else {
+                            error.printStackTrace()
                             v.showErrorNetworkConnection()
                         }
                     }))

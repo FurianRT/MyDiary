@@ -47,7 +47,7 @@ class CloudHelperImp(
                 return@getDocument it.toObject(MyProfile::class.java)
             }
 
-    override fun createProfile(profile: MyProfile): Completable =
+    override fun saveProfile(profile: MyProfile): Completable =
             RxFirestore.setDocument(
                     mFirestore.collection(COLLECTION_USERS).document(profile.email),
                     profile
@@ -118,6 +118,8 @@ class CloudHelperImp(
                         RxFirebaseStorage.putFile(mFirebaseStorage.reference
                                 .child(COLLECTION_USERS)
                                 .child(profile.email)
+                                .child(COLLECTION_NOTES)
+                                .child(image.noteId)
                                 .child(COLLECTION_IMAGES)
                                 .child(image.name), Uri.parse(image.uri))
                                 .retry(3L)
@@ -203,6 +205,8 @@ class CloudHelperImp(
                         RxFirebaseStorage.delete(mFirebaseStorage.reference
                                 .child(COLLECTION_USERS)
                                 .child(profile.email)
+                                .child(COLLECTION_NOTES)
+                                .child(image.noteId)
                                 .child(COLLECTION_IMAGES)
                                 .child(image.name))
                                 .retry(3L)
@@ -254,6 +258,8 @@ class CloudHelperImp(
                         RxFirebaseStorage.getFile(mFirebaseStorage.reference
                                 .child(COLLECTION_USERS)
                                 .child(profile.email)
+                                .child(COLLECTION_NOTES)
+                                .child(image.noteId)
                                 .child(COLLECTION_IMAGES)
                                 .child(image.name), Uri.parse(image.uri))
                                 .retry(3L)

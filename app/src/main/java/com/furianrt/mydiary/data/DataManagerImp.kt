@@ -334,8 +334,8 @@ class DataManagerImp(
                     .map { file -> MyImage(file.name, file.toURI().toString(), image.noteId, image.addedTime) }
                     .subscribeOn(mRxScheduler)
 
-    override fun saveProfile(profile: MyProfile): Completable =
-            Completable.fromAction { mDatabase.profileDao().save(profile) }
+    override fun newProfileProfile(profile: MyProfile): Completable =
+            Completable.fromAction { mDatabase.profileDao().newProfile(profile) }
                     .subscribeOn(mRxScheduler)
 
     override fun getAllNotesWithProp(): Flowable<List<MyNoteWithProp>> =
@@ -352,8 +352,8 @@ class DataManagerImp(
                     .map { it.sortedByDescending { image -> image.addedTime } }
                     .subscribeOn(mRxScheduler)
 
-    override fun createProfile(profile: MyProfile): Completable =
-            mCloud.createProfile(profile)
+    override fun saveProfile(profile: MyProfile): Completable =
+            mCloud.saveProfile(profile)
                     .subscribeOn(mRxScheduler)
 
     override fun isWeatherEnabled(): Boolean = mPrefs.isWeatherEnabled()

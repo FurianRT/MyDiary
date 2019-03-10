@@ -82,7 +82,7 @@ class LoginFragment : Fragment(), LoginContract.View {
             if (it.findFragmentByTag(DoneAuthFragment.TAG) == null) {
                 it.inTransaction {
                     setCustomAnimations(R.anim.scale_up, R.anim.scale_up)
-                    add(R.id.card_auth_container, DoneAuthFragment(), DoneAuthFragment.TAG)
+                    add(R.id.auth_container, DoneAuthFragment(), DoneAuthFragment.TAG)
                 }
             }
         }

@@ -31,37 +31,8 @@ class RegistrationPresenter(
             }
             if (validateEmail(email) && validatePassword(password, passwordRepeat)) {
                 v.clearEmailMessages()
-                v.showLoading()
-                addDisposable(mDataManager.isProfileExists(email)
-                        .flatMap { exists ->
-                            return@flatMap if (exists) {
-                                throw ProfileExistsException()
-                            } else {
-                                hashPassword(password)
-                            }
-                        }
-                        .flatMapCompletable { passwordHash ->
-                            val profile = MyProfile(email, passwordHash)
-                            return@flatMapCompletable Completable.merge(listOf(
-                                    mDataManager.createProfile(profile),
-                                    mDataManager.saveProfile(profile)
-                            ))
-                        }
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe({
-                            v.hideLoading()
-                            v.showMessageSuccessRegistration()
-                        }, {
-                            v.hideLoading()
-                            if (it is ProfileExistsException) {
-                                v.showErrorEmailExists()
-                            } else {
-                                it.printStackTrace()
-                                v.showErrorNetworkConnection()
-                            }
-                        }))
+                signUp(email, password)
             }
-
         }
     }
 
@@ -92,6 +63,38 @@ class RegistrationPresenter(
                 }
             }
         }
+    }
+
+    private fun signUp(email: String, password: String) {
+        view?.showLoading()
+        addDisposable(mDataManager.isProfileExists(email)
+                .flatMap { exists ->
+                    return@flatMap if (exists) {
+                        throw ProfileExistsException()
+                    } else {
+                        hashPassword(password)
+                    }
+                }
+                .flatMapCompletable { passwordHash ->
+                    val profile = MyProfile(email, passwordHash)
+                    return@flatMapCompletable Completable.concat(listOf(
+                            mDataManager.newProfileProfile(profile),
+                            mDataManager.saveProfile(profile)
+                    ))
+                }
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe({
+                    view?.hideLoading()
+                    view?.showMessageSuccessRegistration()
+                }, {
+                    view?.hideLoading()
+                    if (it is ProfileExistsException) {
+                        view?.showErrorEmailExists()
+                    } else {
+                        it.printStackTrace()
+                        view?.showErrorNetworkConnection()
+                    }
+                }))
     }
 
     private fun validateEmail(email: String): Boolean {

@@ -45,14 +45,14 @@
         android:textColor="@color/white"
         android:textSize="18sp"
         android:textStyle="bold"
-        app:layout_constraintBottom_toTopOf="@+id/card_auth_container"
+        app:layout_constraintBottom_toTopOf="@+id/auth_container"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.55" />
 
     <FrameLayout
-        android:id="@+id/card_auth_container"
+        android:id="@+id/auth_container"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:focusable="true"

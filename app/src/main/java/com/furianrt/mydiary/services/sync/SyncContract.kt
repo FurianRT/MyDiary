@@ -8,11 +8,9 @@ interface SyncContract {
     interface View : BaseView {
         fun close()
         fun sendProgressUpdate(progressMessage: ProgressMessage)
-
     }
 
     abstract class Presenter : BasePresenter<View>() {
         abstract fun onStartCommand()
-
     }
 }

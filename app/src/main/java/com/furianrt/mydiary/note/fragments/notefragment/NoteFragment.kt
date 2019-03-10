@@ -651,8 +651,8 @@ class NoteFragment : Fragment(), NoteFragmentContract.View, OnMapReadyCallback,
             setOkColor(fetchAccentColor())
             setCancelColor(fetchAccentColor())
             activity?.let {
-                setOkText(it.getString(R.string.time_picker_okay))
-                setCancelText(it.getString(R.string.time_picker_cancel))
+                setOkText(it.getString(R.string.ok).toUpperCase())
+                setCancelText(it.getString(R.string.cancel).toUpperCase())
             }
             setLocale(Locale.ENGLISH)
         }.show(fragmentManager, TIME_PICKER_TAG)

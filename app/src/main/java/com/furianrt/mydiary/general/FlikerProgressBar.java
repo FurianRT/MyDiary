@@ -247,8 +247,7 @@ public class FlikerProgressBar extends View implements Runnable {
                 postInvalidate();
                 Thread.sleep(20);
             }
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+        } catch (InterruptedException ignored) {
         }
     }
 

@@ -11,7 +11,7 @@ abstract class ProfileDao {
     abstract fun insert(profile: MyProfile)
 
     @Transaction
-    open fun save(profile: MyProfile) {
+    open fun newProfile(profile: MyProfile) {
         delete()
         insert(profile)
     }

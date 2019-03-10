@@ -1,17 +1,17 @@
-package com.furianrt.mydiary.main.fragments.profile.menu
+package com.furianrt.mydiary.main.fragments.profile.signout
 
 import com.furianrt.mydiary.BasePresenter
 import com.furianrt.mydiary.BaseView
 
-interface MenuProfileContract {
+interface SignOutContract {
 
     interface View : BaseView {
-        fun showSignOutView()
-        fun showPasswordView()
+        fun close()
+        fun returnToMenuView()
     }
 
     abstract class Presenter : BasePresenter<View>() {
         abstract fun onButtonSignOutClick()
-        abstract fun onButtonChangePasswordClick()
+        abstract fun onButtonSignOutCancelClick()
     }
 }

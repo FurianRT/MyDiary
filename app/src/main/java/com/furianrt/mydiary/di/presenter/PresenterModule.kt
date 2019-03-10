@@ -26,6 +26,8 @@ import com.furianrt.mydiary.main.fragments.profile.menu.MenuProfileContract
 import com.furianrt.mydiary.main.fragments.profile.menu.MenuProfilePresenter
 import com.furianrt.mydiary.main.fragments.profile.password.PasswordContract
 import com.furianrt.mydiary.main.fragments.profile.password.PasswordPresenter
+import com.furianrt.mydiary.main.fragments.profile.signout.SignOutContract
+import com.furianrt.mydiary.main.fragments.profile.signout.SignOutPresenter
 import com.furianrt.mydiary.note.NoteActivityContract
 import com.furianrt.mydiary.note.NoteActivityPresenter
 import com.furianrt.mydiary.note.dialogs.categories.CategoriesDialogContract
@@ -175,4 +177,9 @@ class PresenterModule(private val context: Context) {
     @PresenterScope
     fun provideMenuProfilePresenter(dataManager: DataManager): MenuProfileContract.Presenter =
             MenuProfilePresenter(dataManager)
+
+    @Provides
+    @PresenterScope
+    fun provideSignOutPresenter(dataManager: DataManager): SignOutContract.Presenter =
+            SignOutPresenter(dataManager)
 }

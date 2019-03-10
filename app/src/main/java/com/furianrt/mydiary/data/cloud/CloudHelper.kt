@@ -9,7 +9,7 @@ interface CloudHelper {
 
     fun isProfileExists(email: String): Single<Boolean>
     fun getProfile(email: String): Maybe<MyProfile>
-    fun createProfile(profile: MyProfile): Completable
+    fun saveProfile(profile: MyProfile): Completable
     fun saveNotes(notes: List<MyNote>, profile: MyProfile): Completable
     fun saveCategories(categories: List<MyCategory>, profile: MyProfile): Completable
     fun saveTags(tags: List<MyTag>, profile: MyProfile): Completable
