@@ -1,14 +1,18 @@
 package com.furianrt.mydiary.main.fragments.profile.password
 
 import android.os.Bundle
+import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.WindowManager
 import androidx.fragment.app.Fragment
 
 import com.furianrt.mydiary.R
+import com.furianrt.mydiary.main.fragments.profile.ProfileFragment
 import com.furianrt.mydiary.main.fragments.profile.password.success.PasswordSuccessFragment
 import com.furianrt.mydiary.utils.animateShake
+import com.furianrt.mydiary.utils.hideKeyboard
 import com.furianrt.mydiary.utils.inTransaction
 import com.furianrt.mydiary.utils.isNetworkAvailable
 import com.google.android.material.bottomsheet.BottomSheetBehavior
@@ -22,10 +26,22 @@ class PasswordFragment : Fragment(), PasswordContract.View {
         const val TAG = "PasswordFragment"
         private const val SHAKE_DURATION = 400L
         private const val CLOSE_AFTER_DONE_DELAY = 2000L
+        private const val CHANGE_ACTIVITY_FLAG_DELAY = 200L
     }
 
     @Inject
     lateinit var mPresenter: PasswordContract.Presenter
+
+    private val mHandler = Handler()
+    private val mChangeActivityFlag: Runnable = Runnable {
+        activity?.window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN)
+    }
+    private val mOnEditFocusChangeListener: (v: View, hasFocus: Boolean) -> Unit = { _, hasFocus ->
+        if (hasFocus) {
+            (parentFragment as ProfileFragment).pushContainerUp()
+            mHandler.postDelayed(mChangeActivityFlag, CHANGE_ACTIVITY_FLAG_DELAY)
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         getPresenterComponent(context!!).inject(this)
@@ -43,6 +59,12 @@ class PasswordFragment : Fragment(), PasswordContract.View {
             val repeatPassword = view.edit_password_repeat.text?.toString() ?: ""
             mPresenter.onButtonSaveClick(oldPassword, newPassword, repeatPassword)
         }
+        view.edit_old_password.setOnFocusChangeListener(mOnEditFocusChangeListener)
+        view.edit_new_password.setOnFocusChangeListener(mOnEditFocusChangeListener)
+        view.edit_password_repeat.setOnFocusChangeListener(mOnEditFocusChangeListener)
+        view.edit_old_password.setOnClickListener { mOnEditFocusChangeListener.invoke(it, true) }
+        view.edit_new_password.setOnClickListener { mOnEditFocusChangeListener.invoke(it, true) }
+        view.edit_password_repeat.setOnClickListener { mOnEditFocusChangeListener.invoke(it, true) }
         view.view_alpha.setOnTouchListener { _, _ -> true }
 
         return view
@@ -122,6 +144,13 @@ class PasswordFragment : Fragment(), PasswordContract.View {
 
     override fun onStop() {
         super.onStop()
+        mHandler.removeCallbacks(mChangeActivityFlag)
         mPresenter.detachView()
+    }
+
+    override fun onDetach() {
+        super.onDetach()
+        activity?.currentFocus?.hideKeyboard()
+        activity?.currentFocus?.clearFocus()
     }
 }

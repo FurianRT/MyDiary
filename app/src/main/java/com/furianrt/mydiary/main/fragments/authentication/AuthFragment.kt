@@ -51,15 +51,13 @@ class AuthFragment : Fragment(), AuthContract.View {
                                     it.auth_container.requestLayout()   //todo иногда обрезается контекстное меню
                                 }
                             })
-                            .start()
                 }
             } else {
                 view?.auth_container
                         ?.animate()
                         ?.translationY(0f)
                         ?.setDuration(ANIMATION_CONTAINER_DURATION)
-                        ?.setInterpolator(OvershootInterpolator())
-                        ?.start()
+                        ?.interpolator = OvershootInterpolator()
             }
         }
     }

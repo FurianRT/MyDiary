@@ -11,8 +11,8 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_gravity="center"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_gravity="center">
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/button_change_password"
@@ -25,13 +25,14 @@
             android:padding="10dp"
             android:text="@string/change_password"
             android:textColor="?attr/colorAccent"
+            android:textStyle="bold"
             app:backgroundTint="@color/white"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:rippleColor="?attr/colorAccent"
             app:strokeColor="?attr/colorAccent"
-            app:strokeWidth="1dp" />
+            app:strokeWidth="2dp" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/button_profile_image"
@@ -44,13 +45,14 @@
             android:padding="10dp"
             android:text="@string/fragment_menu_profile_picture"
             android:textColor="?attr/colorAccent"
+            android:textStyle="bold"
             app:backgroundTint="@color/white"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/button_change_password"
             app:rippleColor="?attr/colorAccent"
             app:strokeColor="?attr/colorAccent"
-            app:strokeWidth="1dp" />
+            app:strokeWidth="2dp" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/button_about"
@@ -63,13 +65,14 @@
             android:padding="10dp"
             android:text="@string/fragment_menu_profile_about"
             android:textColor="?attr/colorAccent"
+            android:textStyle="bold"
             app:backgroundTint="@color/white"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/button_profile_image"
             app:rippleColor="?attr/colorAccent"
             app:strokeColor="?attr/colorAccent"
-            app:strokeWidth="1dp" />
+            app:strokeWidth="2dp" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/button_sign_out"
@@ -83,6 +86,7 @@
             android:padding="10dp"
             android:text="@string/exit"
             android:textColor="?attr/colorAccent"
+            android:textStyle="bold"
             app:backgroundTint="@color/white"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -90,7 +94,7 @@
             app:layout_constraintTop_toBottomOf="@id/button_about"
             app:rippleColor="?attr/colorAccent"
             app:strokeColor="?attr/colorAccent"
-            app:strokeWidth="1dp" />
+            app:strokeWidth="2dp" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
