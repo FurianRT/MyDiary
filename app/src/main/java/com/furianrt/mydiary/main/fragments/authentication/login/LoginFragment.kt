@@ -74,7 +74,7 @@ class LoginFragment : Fragment(), LoginContract.View {
 
     override fun hideLoading() {
         view?.view_alpha?.visibility = View.GONE
-        view?.progress_sign_in?.visibility = View.GONE
+        view?.progress_sign_in?.visibility = View.INVISIBLE
     }
 
     override fun showLoginSuccess() {

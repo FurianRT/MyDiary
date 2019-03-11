@@ -8,10 +8,12 @@ interface MenuProfileContract {
     interface View : BaseView {
         fun showSignOutView()
         fun showPasswordView()
+        fun showAboutView()
     }
 
     abstract class Presenter : BasePresenter<View>() {
         abstract fun onButtonSignOutClick()
         abstract fun onButtonChangePasswordClick()
+        abstract fun onButtonAboutClick()
     }
 }

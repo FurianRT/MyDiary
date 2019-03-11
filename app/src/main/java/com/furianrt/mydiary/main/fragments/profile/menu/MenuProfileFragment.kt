@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 
 import com.furianrt.mydiary.R
+import com.furianrt.mydiary.main.fragments.profile.about.AboutProfileFragment
 import com.furianrt.mydiary.main.fragments.profile.password.PasswordFragment
 import com.furianrt.mydiary.main.fragments.profile.signout.SignOutFragment
 import com.furianrt.mydiary.utils.inTransaction
@@ -33,6 +34,7 @@ class MenuProfileFragment : Fragment(), MenuProfileContract.View, View.OnClickLi
 
         view.button_sign_out.setOnClickListener(this)
         view.button_change_password.setOnClickListener(this)
+        view.button_about.setOnClickListener(this)
 
         return view
     }
@@ -44,6 +46,15 @@ class MenuProfileFragment : Fragment(), MenuProfileContract.View, View.OnClickLi
         when (v.id) {
             R.id.button_sign_out -> mPresenter.onButtonSignOutClick()
             R.id.button_change_password -> mPresenter.onButtonChangePasswordClick()
+            R.id.button_about -> mPresenter.onButtonAboutClick()
+        }
+    }
+
+    override fun showAboutView() {
+        fragmentManager?.inTransaction {
+            setCustomAnimations(R.anim.from_right, R.anim.to_left, R.anim.from_left, R.anim.to_right)
+            replace(R.id.profile_container, AboutProfileFragment(), AboutProfileFragment.TAG)
+                    .addToBackStack(null)
         }
     }
 

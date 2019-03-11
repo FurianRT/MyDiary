@@ -79,7 +79,7 @@ class PasswordFragment : Fragment(), PasswordContract.View {
 
     override fun hideLoading() {
         view?.view_alpha?.visibility = View.GONE
-        view?.progress_change_password?.visibility = View.GONE
+        view?.progress_change_password?.visibility = View.INVISIBLE
     }
 
     override fun showErrorEmptyOldPassword() {
@@ -131,6 +131,10 @@ class PasswordFragment : Fragment(), PasswordContract.View {
                 BottomSheetBehavior.from(it.main_sheet_container).state = BottomSheetBehavior.STATE_COLLAPSED
             }, CLOSE_AFTER_DONE_DELAY)
         }
+    }
+
+    override fun clearErrorMessage() {
+        view?.text_error?.text = ""
     }
 
     override fun returnToMenuView() {

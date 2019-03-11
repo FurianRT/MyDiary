@@ -98,7 +98,7 @@ interface DataManager {
     fun saveProfile(profile: MyProfile): Completable
     fun loadHeaderImages(page: Int = 1, perPage: Int = 20): Single<List<MyHeaderImage>>
     fun saveImageToStorage(image: MyImage): Single<MyImage>
-    fun newProfileProfile(profile: MyProfile): Completable
+    fun newProfile(profile: MyProfile): Completable
     fun saveNotesInCloud(notes: List<MyNote>): Completable
     fun saveCategoriesInCloud(categories: List<MyCategory>): Completable
     fun saveTagsInCloud(tags: List<MyTag>): Completable

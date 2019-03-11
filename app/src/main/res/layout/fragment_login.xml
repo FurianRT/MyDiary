@@ -160,7 +160,7 @@
         android:layout_gravity="top"
         android:elevation="3dp"
         android:indeterminateOnly="true"
-        android:visibility="gone"
+        android:visibility="invisible"
         tools:visibility="visible" />
 
 </com.google.android.material.card.MaterialCardView>

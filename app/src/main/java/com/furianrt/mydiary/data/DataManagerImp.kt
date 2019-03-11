@@ -334,7 +334,7 @@ class DataManagerImp(
                     .map { file -> MyImage(file.name, file.toURI().toString(), image.noteId, image.addedTime) }
                     .subscribeOn(mRxScheduler)
 
-    override fun newProfileProfile(profile: MyProfile): Completable =
+    override fun newProfile(profile: MyProfile): Completable =
             Completable.fromAction { mDatabase.profileDao().newProfile(profile) }
                     .subscribeOn(mRxScheduler)
 

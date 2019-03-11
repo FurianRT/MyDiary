@@ -104,7 +104,7 @@ class MainActivity : BaseActivity(), MainActivityContract.View,
         override fun onAnimationEnd(animation: Animator?) {
             nav_view.getHeaderView(0).progress_sync.visibility = View.GONE
             nav_view.getHeaderView(0).button_sync.isEnabled = true
-            button_sync.text = getString(R.string.nav_header_main_button_sync)
+            nav_view.getHeaderView(0).button_sync.text = getString(R.string.nav_header_main_button_sync)
         }
     }
     private val mBroadcastReceiver = object : BroadcastReceiver() {
@@ -139,23 +139,15 @@ class MainActivity : BaseActivity(), MainActivityContract.View,
                     nav_view.getHeaderView(0).progress_sync.alpha = 0.35f
                     nav_view.getHeaderView(0).progress_sync.visibility = View.VISIBLE
                     nav_view.getHeaderView(0).progress_sync.progress = it.progress.toFloat()
-                    button_sync.text = when (it.taskIndex) {
-                        ProgressMessage.PROFILE_CHECK ->
-                            it.progress.toString() + "% " + getString(R.string.sync_profile_check)
-                        ProgressMessage.SYNC_NOTES ->
-                            it.progress.toString() + "% " + getString(R.string.sync_notes)
-                        ProgressMessage.SYNC_APPEARANCE ->
-                            it.progress.toString() + "% " + getString(R.string.sync_appearance)
-                        ProgressMessage.SYNC_CATEGORIES ->
-                            it.progress.toString() + "% " + getString(R.string.sync_categories)
-                        ProgressMessage.SYNC_TAGS ->
-                            it.progress.toString() + "% " + getString(R.string.sync_tags)
-                        ProgressMessage.SYNC_NOTE_TAGS ->
-                            it.progress.toString() + "% " + getString(R.string.sync_note_tags)
-                        ProgressMessage.SYNC_IMAGES ->
-                            it.progress.toString() + "% " + getString(R.string.sync_images)
-                        ProgressMessage.CLEANUP ->
-                            it.progress.toString() + "% " + getString(R.string.sync_cleanup)
+                    val progressText = it.progress.toString() + "% " + when (it.taskIndex) {
+                        ProgressMessage.PROFILE_CHECK -> getString(R.string.sync_profile_check)
+                        ProgressMessage.SYNC_NOTES -> getString(R.string.sync_notes)
+                        ProgressMessage.SYNC_APPEARANCE -> getString(R.string.sync_appearance)
+                        ProgressMessage.SYNC_CATEGORIES -> getString(R.string.sync_categories)
+                        ProgressMessage.SYNC_TAGS -> getString(R.string.sync_tags)
+                        ProgressMessage.SYNC_NOTE_TAGS -> getString(R.string.sync_note_tags)
+                        ProgressMessage.SYNC_IMAGES -> getString(R.string.sync_images)
+                        ProgressMessage.CLEANUP -> getString(R.string.sync_cleanup)
                         ProgressMessage.SYNC_FINISHED -> {
                             nav_view.getHeaderView(0).progress_sync.finishLoad()
                             nav_view.getHeaderView(0)
@@ -165,10 +157,11 @@ class MainActivity : BaseActivity(), MainActivityContract.View,
                                     .setDuration(ANIMATION_PROGRESS_DURATION)
                                     .setStartDelay(ANIMATION_PROGRESS_FADE_OUT_OFFSET)
                                     .setListener(mProgressAnimationListener)
-                            it.progress.toString() + "% " + getString(R.string.sync_done)
+                            getString(R.string.sync_done)
                         }
                         else -> ""
                     }
+                    nav_view.getHeaderView(0).button_sync.text = progressText
                 }
             }
         }

@@ -94,6 +94,7 @@
     <string name="cancel">Отмена</string>
     <string name="edit">Редактировать</string>
     <string name="delete">Удалить</string>
+    <string name="back">Назад</string>
     <string name="network_error">Нет интернет соединения</string>
     <string name="wrong_password">Неверный пароль</string>
 
@@ -216,5 +217,10 @@
     <string name="fragment_password_enter_old_password">Введите старый пароль</string>
     <string name="fragment_password_enter_new_password">Введите новый пароль</string>
     <string name="fragment_password_success_text">Пароль успешно изменен!</string>
+    <string name="fragment_about_profile_sync_non">отсутствует</string>
+    <string name="fragment_about_profile_yup">есть</string>
+    <string name="fragment_about_profile_sign_in_date">Дата регистрации:</string>
+    <string name="fragment_about_profile_premium">Премиум:</string>
+    <string name="fragment_about_profile_last_sync">Последняя синхр.:</string>
 
 </resources>

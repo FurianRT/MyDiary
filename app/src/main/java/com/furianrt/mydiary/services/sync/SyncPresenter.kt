@@ -8,6 +8,7 @@ import io.reactivex.Completable
 import io.reactivex.Observable
 import io.reactivex.Single
 import io.reactivex.functions.BiFunction
+import org.joda.time.DateTime
 
 class SyncPresenter(
         private val mDataManager: DataManager
@@ -208,6 +209,14 @@ class SyncPresenter(
                     .andThen(mDataManager.cleanupNoteTags())
                     .andThen(mDataManager.cleanupTags())
                     .andThen(mDataManager.cleanupImages())
+                    .andThen(mDataManager.getDbProfile().firstOrError())
+                    .flatMapCompletable {  profile ->
+                        profile.lastSyncTime = DateTime.now().millis
+                        return@flatMapCompletable Completable.concat(listOf(
+                                mDataManager.saveProfile(profile),
+                                mDataManager.updateDbProfile(profile)
+                        ))
+                    }
                     .andThen(Observable.just(ProgressMessage(ProgressMessage.SYNC_FINISHED, 100)))
                     .onErrorResumeNext(
                             Observable.error(SyncGoneWrongException(ProgressMessage.CLEANUP))

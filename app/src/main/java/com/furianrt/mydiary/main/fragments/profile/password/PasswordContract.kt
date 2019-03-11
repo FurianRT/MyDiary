@@ -18,6 +18,7 @@ interface PasswordContract {
         fun showErrorNetworkConnection()
         fun showErrorShortNewPassword()
         fun showSuccessPasswordChange()
+        fun clearErrorMessage()
     }
 
     abstract class Presenter : BasePresenter<View>() {

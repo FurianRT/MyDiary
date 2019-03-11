@@ -23,6 +23,7 @@ class PasswordPresenter(
     }
 
     override fun onButtonSaveClick(oldPassword: String, newPassword: String, repeatPassword: String) {
+        view?.clearErrorMessage()
         when {
             view?.isNetworkAvailable() != true -> view?.showErrorNetworkConnection()
             oldPassword.isEmpty() -> view?.showErrorEmptyOldPassword()
@@ -75,8 +76,9 @@ class PasswordPresenter(
                         val newProfile = MyProfile(
                                 profile.email,
                                 passwordHash,
-                                profile.registrationTime,
                                 profile.photoUrl,
+                                profile.registrationTime,
+                                profile.lastSyncTime,
                                 profile.hasPremium
                         )
                         return@flatMapCompletable Completable.concat(listOf(

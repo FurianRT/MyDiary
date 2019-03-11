@@ -78,7 +78,7 @@ class RegistrationPresenter(
                 .flatMapCompletable { passwordHash ->
                     val profile = MyProfile(email, passwordHash)
                     return@flatMapCompletable Completable.concat(listOf(
-                            mDataManager.newProfileProfile(profile),
+                            mDataManager.newProfile(profile),
                             mDataManager.saveProfile(profile)
                     ))
                 }

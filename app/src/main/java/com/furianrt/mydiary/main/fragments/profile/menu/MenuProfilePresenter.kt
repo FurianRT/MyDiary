@@ -13,4 +13,8 @@ class MenuProfilePresenter(
     override fun onButtonChangePasswordClick() {
         view?.showPasswordView()
     }
+
+    override fun onButtonAboutClick() {
+        view?.showAboutView()
+    }
 }
