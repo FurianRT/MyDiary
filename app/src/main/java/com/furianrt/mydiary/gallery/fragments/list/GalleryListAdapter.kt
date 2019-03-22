@@ -1,7 +1,11 @@
 package com.furianrt.mydiary.gallery.fragments.list
 
+import android.annotation.SuppressLint
+import android.graphics.Point
+import android.graphics.Rect
 import android.net.Uri
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
@@ -10,61 +14,100 @@ import androidx.recyclerview.widget.RecyclerView
 import com.furianrt.mydiary.R
 import com.furianrt.mydiary.data.model.MyImage
 import com.furianrt.mydiary.general.GlideApp
-import com.furianrt.mydiary.utils.animateScale
+import com.furianrt.mydiary.general.ItemTouchHelperCallback
 import kotlinx.android.synthetic.main.fragment_gallery_list_item.view.*
 
+@SuppressLint("ClickableViewAccessibility")
 class GalleryListAdapter(
-        var listener: OnListItemClickListener,
+        var listener: OnListItemInteractionListener,
         recyclerView: RecyclerView,
+        var trashPoint: Point = Point(),
         var selectedImages: MutableList<MyImage> = ArrayList()
-) : RecyclerView.Adapter<GalleryListAdapter.GalleryListViewHolder>() {
+) : RecyclerView.Adapter<GalleryListAdapter.ViewHolder>() {
 
-    companion object {
-        private const val ITEM_DRAGGING_SCALE = 1.04f
-        private const val ITEM_DEFAULT_SCALE = 1f
-        private const val ITEM_SCALE_DURATION = 250L
+    data class ViewItem(
+            val type: Int,
+            val image: MyImage? = null
+    ) {
+        companion object {
+            const val TYPE_IMAGE = 0
+            const val TYPE_FOOTER = 1
+        }
     }
 
     private val mItemTouchHelper: ItemTouchHelper
+    private var mDraggedItem: View? = null
+    private val mDraggedItemPosition = Rect()
+    private var mIsOverTrash = false
 
     init {
         val callback = ItemTouchHelperCallback(this)
         mItemTouchHelper = ItemTouchHelper(callback)
         mItemTouchHelper.attachToRecyclerView(recyclerView)
+        recyclerView.setOnTouchListener { _, event ->
+            if (event.action == MotionEvent.ACTION_MOVE) {
+                mDraggedItem?.let {
+                    it.getDrawingRect(mDraggedItemPosition)
+                    mDraggedItemPosition.offset(it.x.toInt(), it.y.toInt())
+                    if (mDraggedItemPosition.contains(trashPoint.x, trashPoint.y)) {
+                        if (!mIsOverTrash) {
+                            mIsOverTrash = true
+                            listener.onItemDragOverTrash(it)
+                        }
+                    } else {
+                        if (mIsOverTrash) {
+                            mIsOverTrash = false
+                            listener.onItemDragOutOfTrash(it)
+                        }
+                    }
+                }
+            }
+            return@setOnTouchListener false
+        }
     }
 
-    private var mList: MutableList<MyImage> = mutableListOf()
+    private var mList: MutableList<ViewItem> = mutableListOf()
 
     fun getImages(): List<MyImage> = mList
+            .filter { it.type == ViewItem.TYPE_IMAGE }
+            .map { it.image!! }
 
     fun submitList(list: List<MyImage>) {
-        val diffCallback = GalleryListDiffCallback(mList, list)
+        val newViewItems = list
+                .map { ViewItem(ViewItem.TYPE_IMAGE, it) }
+                .toMutableList()
+                .apply { add(ViewItem(ViewItem.TYPE_FOOTER)) }
+        val diffCallback = GalleryListDiffCallback(mList, newViewItems)
         val diffResult = DiffUtil.calculateDiff(diffCallback)
         mList.clear()
-        mList.addAll(list)
+        mList.addAll(newViewItems)
         diffResult.dispatchUpdatesTo(this)
     }
 
     fun deactivateSelection() {
         for (i in 0 until mList.size) {
-            if (selectedImages.contains(mList[i])) {
+            if (selectedImages.find { it.name == mList[i].image?.name } != null) {
                 notifyItemChanged(i)
             }
         }
         selectedImages.clear()
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): GalleryListViewHolder {
-        val view = LayoutInflater.from(parent.context)
-                .inflate(R.layout.fragment_gallery_list_item, parent, false)
-        return GalleryListViewHolder(view)
-    }
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder =
+            when (viewType) {
+                ViewItem.TYPE_IMAGE -> ViewHolderImage(LayoutInflater.from(parent.context)
+                        .inflate(R.layout.fragment_gallery_list_item, parent, false))
+                else -> ViewHolderFooter(LayoutInflater.from(parent.context)
+                        .inflate(R.layout.fragment_gallery_list_footer, parent, false))
+            }
 
-    override fun onBindViewHolder(holder: GalleryListViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.bind(mList[position])
     }
 
     override fun getItemCount() = mList.size
+
+    override fun getItemViewType(position: Int): Int = mList[position].type
 
     fun onItemMove(fromPosition: Int, toPosition: Int) {
         if (fromPosition < 0 || toPosition < 0 || fromPosition >= mList.size || toPosition >= mList.size) {
@@ -79,52 +122,84 @@ class GalleryListAdapter(
         notifyItemRemoved(position)
     }
 
-    inner class GalleryListViewHolder(
-            view: View
-    ) : RecyclerView.ViewHolder(view), View.OnClickListener {
+    abstract class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+        abstract fun bind(item: ViewItem)
+        abstract fun onItemClear()
+        abstract fun onItemSelected()
+        abstract fun onItemReleased()
+    }
+
+    inner class ViewHolderFooter(view: View) : ViewHolder(view) {
+        override fun bind(item: ViewItem) {
+            itemView.visibility = View.VISIBLE
+        }
+
+        override fun onItemClear() {}
+        override fun onItemSelected() {}
+        override fun onItemReleased() {}
+    }
+
+    inner class ViewHolderImage(view: View) : ViewHolder(view) {
 
         private lateinit var mImage: MyImage
+        private var mIsTrashed = false
 
-        fun bind(item: MyImage) {
-             mImage = item
-            itemView.setOnClickListener(this)
+        override fun bind(item: ViewItem) {
+            mImage = item.image!!
+            itemView.setOnClickListener { listener.onListItemClick(mImage, adapterPosition) }
+            itemView.setOnLongClickListener {
+                mItemTouchHelper.startDrag(this)
+                return@setOnLongClickListener true
+            }
             GlideApp.with(itemView)
                     .load(Uri.parse(mImage.uri))
                     .override(550, 400)
                     .into(itemView.image_gallery_item)
 
-            selectItem()
-        }
-
-        override fun onClick(v: View?) {
-            listener.onListItemClick(mImage, adapterPosition)
-        }
-
-        private fun selectItem() {
-            if (selectedImages.contains(mImage)) {
-                itemView.layout_selection.visibility = View.VISIBLE
+            if (mIsTrashed) {
+                itemView.visibility = View.GONE
             } else {
-                itemView.layout_selection.visibility = View.INVISIBLE
+                itemView.visibility = View.VISIBLE
+                if (selectedImages.find { it.name == mImage.name } != null) {
+                    itemView.layout_selection.visibility = View.VISIBLE
+                } else {
+                    itemView.layout_selection.visibility = View.INVISIBLE
+                }
             }
         }
 
-        fun onItemClear() {
-            itemView.animateScale(ITEM_DRAGGING_SCALE, ITEM_DEFAULT_SCALE, ITEM_SCALE_DURATION)
+        override fun onItemClear() {
             for (i in 0 until mList.size) {
-                mList[i].order = i
+                mList[i].image?.order = i
             }
-            listener.onImagesOrderChange(mList)
+            listener.onListItemDropped(itemView)
+            listener.onImagesOrderChange(mList.filter { it.type == ViewItem.TYPE_IMAGE }.map { it.image!! })
+            mIsTrashed = false
         }
 
-        fun onItemSelected() {
-            itemView.animateScale(ITEM_DEFAULT_SCALE, ITEM_DRAGGING_SCALE, ITEM_SCALE_DURATION)
+        override fun onItemSelected() {
+            mDraggedItem = itemView
+            listener.onListItemStartDrag(itemView)
+        }
+
+        override fun onItemReleased() {
+            if (mIsOverTrash) {
+                mIsTrashed = true
+                mDraggedItem?.visibility = View.GONE
+                listener.onItemTrashed(mImage)
+            }
+            mIsOverTrash = false
+            mDraggedItem = null
         }
     }
 
-    interface OnListItemClickListener {
-
+    interface OnListItemInteractionListener {
         fun onListItemClick(image: MyImage, position: Int)
-
         fun onImagesOrderChange(images: List<MyImage>)
+        fun onListItemStartDrag(item: View)
+        fun onListItemDropped(item: View)
+        fun onItemDragOverTrash(item: View)
+        fun onItemDragOutOfTrash(item: View)
+        fun onItemTrashed(image: MyImage)
     }
 }

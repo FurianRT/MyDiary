@@ -11,12 +11,15 @@ interface GalleryListContract {
         fun showImages(images: List<MyImage>, selectedImages: List<MyImage>)
         fun activateSelection()
         fun deactivateSelection()
-        fun deselectItem(image: MyImage)
-        fun selectItem(image: MyImage)
-        fun selectItems(items: MutableList<MyImage>)
+        fun deselectImage(image: MyImage)
+        fun selectImage(image: MyImage)
+        fun selectImages(images: MutableList<MyImage>)
         fun closeCab()
         fun requestStoragePermissions()
         fun showImageExplorer()
+        fun showEmptyList()
+        fun showLoading()
+        fun hideLoading()
     }
 
     abstract class Presenter : BasePresenter<View>() {
@@ -33,5 +36,6 @@ interface GalleryListContract {
         abstract fun onAddImageButtonClick()
         abstract fun onStoragePermissionsGranted()
         abstract fun onNoteImagesPicked(imageUrls: List<String>)
+        abstract fun onImageDeleted(image: MyImage)
     }
 }

@@ -59,16 +59,6 @@ class NoteActivity : BaseActivity(), NoteActivityContract.View,
         setupUi()
     }
 
-    override fun onStart() {
-        super.onStart()
-        mPresenter.attachView(this)
-        if (mMode == Mode.READ) {
-            mPresenter.loadNotes()
-        } else {
-            mPresenter.loadNote(mNoteId)
-        }
-    }
-
     private fun setupUi() {
         setSupportActionBar(toolbar_note_activity)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
@@ -122,12 +112,22 @@ class NoteActivity : BaseActivity(), NoteActivityContract.View,
         return true
     }
 
-    override fun onStop() {
-        super.onStop()
-        mPresenter.detachView()
-    }
-
     fun savePagerPosition() {
         mPagerPosition = pager_note.currentItem
+    }
+
+    override fun onResume() {
+        super.onResume()
+        mPresenter.attachView(this)
+        if (mMode == Mode.READ) {
+            mPresenter.loadNotes()
+        } else {
+            mPresenter.loadNote(mNoteId)
+        }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        mPresenter.detachView()
     }
 }

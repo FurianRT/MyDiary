@@ -34,69 +34,92 @@ androidExtensions {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
+
+    //Modules
     implementation project(path: ':fab')
     implementation project(path: ':colorpicker')
     implementation project(path: ':colorpickercustom')
+
+    //Kotlin
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 
+    //Android
     implementation "androidx.recyclerview:recyclerview:$support_version"
     implementation "androidx.cardview:cardview:$support_version"
     implementation "androidx.preference:preference:$support_version"
     implementation "com.google.android.material:material:$support_version"
-
-    implementation "androidx.appcompat:appcompat:1.0.2"
-    implementation 'androidx.constraintlayout:constraintlayout:2.0.0-alpha2'
-
+    implementation "androidx.appcompat:appcompat:$compat_version"
+    implementation 'androidx.constraintlayout:constraintlayout:2.0.0-alpha2' //todo в alpha3 баг, пока не повышать
     implementation 'com.google.android:flexbox:1.1.0'
 
+    //Animations
+    implementation 'jp.wasabeef:recyclerview-animators:3.0.0'
+
+    //ORM
     implementation "androidx.room:room-rxjava2:$room_version"
     kapt "androidx.room:room-compiler:$room_version"
 
+    //JSON
     implementation 'com.google.code.gson:gson:2.8.5'
 
+    //Rx
     implementation 'io.reactivex.rxjava2:rxandroid:2.1.0'
 
+    //DI
     implementation "com.google.dagger:dagger:$dagger_version"
     kapt "com.google.dagger:dagger-compiler:$dagger_version"
 
+    //Play services
     implementation 'com.google.android.gms:play-services-maps:16.1.0'
     implementation 'com.google.android.gms:play-services-location:16.0.0'
 
+    //Permissions
     implementation 'pub.devrel:easypermissions:1.3.0'
 
+    //REST
     implementation "com.squareup.retrofit2:retrofit:$retrofit_version"
     implementation "com.squareup.retrofit2:adapter-rxjava2:$retrofit_version"
     implementation "com.squareup.retrofit2:converter-gson:$retrofit_version"
     implementation 'com.squareup.okhttp3:logging-interceptor:3.11.0'
 
+    //Image loading
     implementation "com.github.bumptech.glide:glide:$glide_version"
     kapt "com.github.bumptech.glide:compiler:$glide_version"
 
+    //Picture album
     implementation 'com.yanzhenjie:album:2.1.2'
+
+    //Picture editor
     implementation 'com.yanzhenjie:durban:1.0.1'
 
+    //DateTime
     implementation 'net.danlew:android.joda:2.9.9.4'
 
-    implementation 'jp.wasabeef:recyclerview-animators:3.0.0'
-
+    //DateTime pickers
     implementation 'com.larswerkman:HoloColorPicker:1.5'
     implementation 'com.wdullaer:materialdatetimepicker:4.1.0'
     implementation 'com.github.applikeysolutions:cosmocalendar:1.0.4'
 
-    implementation 'com.google.firebase:firebase-core:16.0.7'
-    implementation 'com.google.firebase:firebase-storage:16.1.0'
-    implementation 'com.google.firebase:firebase-auth:16.1.0'
-    implementation 'com.google.firebase:firebase-firestore:18.1.0'
-    implementation 'com.google.firebase:firebase-messaging:17.4.0'
-    implementation 'com.github.FrangSierra:RxFirebase:1.5.6'
-
-    implementation 'com.crashlytics.sdk.android:crashlytics:2.9.9'
-
-    implementation 'org.mindrot:jbcrypt:0.4'
-
+    //Circular imageview
     implementation 'com.jackandphantom.android:circularimageview:1.2.0'
 
-    testImplementation 'junit:junit:4.12'
+    //Firebase
+    implementation 'com.google.firebase:firebase-core:16.0.8'
+    implementation 'com.google.firebase:firebase-storage:16.1.0'
+    implementation 'com.google.firebase:firebase-firestore:18.1.0'
+    implementation 'com.google.firebase:firebase-messaging:17.4.0'
+
+    //Rx for FirebaseStorage and Firestore
+    implementation 'com.github.FrangSierra:RxFirebase:1.5.6'
+
+    //Crashlytics
+    implementation 'com.crashlytics.sdk.android:crashlytics:2.9.9'
+
+    //Encryption
+    implementation 'org.mindrot:jbcrypt:0.4'
+
+    //Tests
+    testImplementation "junit:junit:$junit_version"
     androidTestImplementation 'androidx.test:runner:1.1.1'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.1'
+    androidTestImplementation "androidx.test.espresso:espresso-core:$espresso_version"
 }

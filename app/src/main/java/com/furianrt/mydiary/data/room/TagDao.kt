@@ -20,7 +20,7 @@ interface TagDao {
     @Update
     fun update(tags: List<MyTag>)
 
-    @Query("UPDATE Tags SET is_tag_deleted = 1 WHERE id_tag = :tagId")
+    @Query("UPDATE Tags SET is_tag_deleted = 1, is_tag_sync = 0 WHERE id_tag = :tagId")
     fun delete(tagId: String)
 
     @Query("SELECT * FROM Tags WHERE is_tag_deleted = 1")

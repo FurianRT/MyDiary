@@ -19,7 +19,7 @@ interface AppearanceDao {
     @Update
     fun update(appearance: List<MyNoteAppearance>)
 
-    @Query("UPDATE NoteAppearances SET is_appearance_deleted = 1 WHERE id_appearance = :noteId")
+    @Query("UPDATE NoteAppearances SET is_appearance_deleted = 1, is_appearance_sync = 0 WHERE id_appearance = :noteId")
     fun delete(noteId: String)
 
     @Query("DELETE FROM NoteAppearances WHERE is_appearance_deleted = 1")

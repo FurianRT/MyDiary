@@ -94,13 +94,13 @@ class NoteContentFragment : Fragment(), NoteContentFragmentContract.View {
         }
     }
 
-    override fun onStart() {
-        super.onStart()
+    override fun onResume() {
+        super.onResume()
         mPresenter.attachView(this)
     }
 
-    override fun onStop() {
-        super.onStop()
+    override fun onPause() {
+        super.onPause()
         mPresenter.detachView()
     }
 

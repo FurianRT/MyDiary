@@ -4,6 +4,7 @@ import com.furianrt.mydiary.data.DataManager
 import com.furianrt.mydiary.data.model.MyImage
 import com.furianrt.mydiary.utils.generateUniqueId
 import io.reactivex.Flowable
+import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import org.joda.time.DateTime
 
@@ -24,11 +25,11 @@ class GalleryListPresenter(private val mDataManager: DataManager) : GalleryListC
         when {
             mSelectedImages.contains(image) -> {
                 mSelectedImages.remove(image)
-                view?.deselectItem(image)
+                view?.deselectImage(image)
             }
             else -> {
                 mSelectedImages.add(image)
-                view?.selectItem(image)
+                view?.selectImage(image)
             }
         }
     }
@@ -45,10 +46,14 @@ class GalleryListPresenter(private val mDataManager: DataManager) : GalleryListC
         addDisposable(mDataManager.getImagesForNote(noteId)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { images ->
-                    var i = 0
-                    view?.showImages(images
-                            .sortedWith(compareBy(MyImage::order, MyImage::addedTime))
-                            .apply { forEach { it.order = i++ } }, mSelectedImages)
+                    if (images.isEmpty()) {
+                        view?.showEmptyList()
+                    } else {
+                        var i = 0
+                        view?.showImages(images
+                                .sortedWith(compareBy(MyImage::order, MyImage::addedTime))
+                                .apply { forEach { it.order = i++ } }, mSelectedImages)
+                    }
                 })
     }
 
@@ -63,9 +68,20 @@ class GalleryListPresenter(private val mDataManager: DataManager) : GalleryListC
     }
 
     override fun onCabDeleteButtonClick() {
-        addDisposable(mDataManager.deleteImages(mSelectedImages)
+        if (mSelectedImages.isEmpty()) {
+            view?.closeCab()
+            return
+        }
+        addDisposable(mDataManager.deleteImage(mSelectedImages)
+                .andThen(Observable.fromIterable(mSelectedImages))
+                .flatMapSingle { mDataManager.deleteImageFromStorage(it.name) }
+                .collectInto(mutableListOf<Boolean>()) { l, i -> l.add(i) }
+                .ignoreElement()
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { view?.closeCab() })
+                .subscribe {
+                    mSelectedImages.clear()
+                    view?.closeCab()
+                })
     }
 
     override fun onCabSelectAllButtonClick() {
@@ -76,7 +92,7 @@ class GalleryListPresenter(private val mDataManager: DataManager) : GalleryListC
                     val list = images.toMutableList()
                     list.removeAll(mSelectedImages)
                     mSelectedImages.addAll(list)
-                    view?.selectItems(list)
+                    view?.selectImages(list)
                 })
     }
 
@@ -108,6 +124,19 @@ class GalleryListPresenter(private val mDataManager: DataManager) : GalleryListC
                 .flatMapSingle { image -> mDataManager.saveImageToStorage(image) }
                 .flatMapCompletable { savedImage -> mDataManager.insertImage(savedImage) }
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe())
+                .subscribe { view?.hideLoading() })
+    }
+
+    override fun onImageDeleted(image: MyImage) {
+        addDisposable(mDataManager.deleteImage(image)
+                .andThen(mDataManager.deleteImageFromStorage(image.name))
+                .ignoreElement()
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe {
+                    mSelectedImages.remove(image)
+                    if (mSelectedImages.isEmpty()) {
+                        view?.closeCab()
+                    }
+                })
     }
 }

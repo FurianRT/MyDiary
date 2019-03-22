@@ -129,8 +129,8 @@ class MainListAdapter(
                     image_sync.visibility = View.INVISIBLE
                 } else {
                     if (item.note.note.isSync
-                            && item.note.images.find { !it.isSync || it.isDeleted } == null
-                            && item.note.tags.find { !it.isSync || it.isDeleted } == null) {
+                            && item.note.images.find { !it.isSync } == null
+                            && item.note.tags.find { !it.isSync } == null) {
                         image_sync.setImageResource(R.drawable.ic_cloud_done)
                         image_sync.setColorFilter(getThemeAccentColor(mView.context), PorterDuff.Mode.SRC_IN)
                     } else {
@@ -141,12 +141,12 @@ class MainListAdapter(
                     }
                     image_sync.visibility = View.VISIBLE
                 }
-
-                if (mContentItem.note.images.isEmpty()) {
+                val notDeletedImages = mContentItem.note.images.filter { !it.isDeleted }
+                if (notDeletedImages.isEmpty()) {
                     image_main_list.setImageDrawable(null)
                 } else {
                     GlideApp.with(itemView)
-                            .load(Uri.parse(mContentItem.note.images[0].uri))
+                            .load(Uri.parse(notDeletedImages.first().uri))
                             .override(200, 200)
                             .into(image_main_list)
                 }

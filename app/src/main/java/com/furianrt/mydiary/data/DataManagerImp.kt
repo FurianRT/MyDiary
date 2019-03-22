@@ -21,7 +21,7 @@ class DataManagerImp(
         private val mWeatherApi: WeatherApiService,
         private val mImageApi: ImageApiService,
         private val mCloud: CloudHelper,
-        private val mRxScheduler: Scheduler  //Для тестов. Когда-нибудь они появятся.
+        private val mRxScheduler: Scheduler
 ) : DataManager {
 
     private fun Image.toMyHeaderImage(): MyHeaderImage =
@@ -159,19 +159,19 @@ class DataManagerImp(
             Completable.fromAction { mDatabase.noteDao().delete(note.id) }
                     .andThen(Completable.fromAction { mDatabase.noteTagDao().deleteWithNoteId(note.id) })
                     .andThen(Completable.fromAction { mDatabase.appearanceDao().delete(note.id) })
-                    .andThen(Completable.fromAction { mDatabase.imageDao().delete(note.id) })
+                    .andThen(Completable.fromAction { mDatabase.imageDao().deleteByNoteId(note.id) })
                     .andThen(mDatabase.imageDao().getImagesForNote(note.id))
                     .first(emptyList())
                     .map { images -> images.map { it.name } }
                     .flatMapCompletable { Completable.fromCallable { mStorage.deleteFiles(it) } }
                     .subscribeOn(mRxScheduler)
 
-    override fun deleteImages(images: List<MyImage>): Completable =
-            Completable.fromAction { mDatabase.imageDao().delete(images.map { it.name }) }
+    override fun deleteImage(image: MyImage): Completable =
+            Completable.fromAction { mDatabase.imageDao().delete(image.name) }
                     .subscribeOn(mRxScheduler)
 
-    override fun deleteNoteTag(noteTag: NoteTag): Completable =
-            Completable.fromAction { mDatabase.noteTagDao().delete(noteTag) }
+    override fun deleteImage(images: List<MyImage>): Completable =
+            Completable.fromAction { mDatabase.imageDao().delete(images.map { it.name }) }
                     .subscribeOn(mRxScheduler)
 
     override fun deleteCategory(category: MyCategory): Completable =
@@ -314,7 +314,7 @@ class DataManagerImp(
             mWeatherApi.getForecast(lat, lon)
                     .subscribeOn(mRxScheduler)
 
-    override fun getCategory(categoryId: String): Maybe<MyCategory> =
+    override fun getCategory(categoryId: String): Single<MyCategory> =
             mDatabase.categoryDao()
                     .getCategory(categoryId)
                     .subscribeOn(mRxScheduler)
@@ -425,6 +425,12 @@ class DataManagerImp(
             mDatabase.profileDao().getProfile()
                     .firstOrError()
                     .flatMapCompletable { mCloud.saveImages(images, it) }
+                    .subscribeOn(mRxScheduler)
+
+    override fun saveImagesFilesInCloud(images: List<MyImage>): Completable =
+            mDatabase.profileDao().getProfile()
+                    .firstOrError()
+                    .flatMapCompletable { mCloud.saveImagesFiles(images, it) }
                     .subscribeOn(mRxScheduler)
 
     override fun deleteNotesFromCloud(notes: List<MyNote>): Completable =

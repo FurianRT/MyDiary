@@ -110,7 +110,7 @@ class MainActivity : BaseActivity(), MainActivityContract.View,
     private val mBroadcastReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
             intent?.getParcelableExtra<ProgressMessage>(SyncService.EXTRA_PROGRESS_MESSAGE)?.let {
-                if (it.hasError) {
+                if (it.hasError) {                              //todo убарть это все отсюда
                     button_sync.text = when (it.taskIndex) {
                         ProgressMessage.PROFILE_CHECK -> getString(R.string.sync_error_profile)
                         ProgressMessage.SYNC_NOTES -> getString(R.string.sync_error_notes)
@@ -207,6 +207,9 @@ class MainActivity : BaseActivity(), MainActivityContract.View,
             mBottomSheet.state = it.getInt(BUNDLE_BOTTOM_SHEET_STATE, BottomSheetBehavior.STATE_COLLAPSED)
         }
         setupUi()
+
+        LocalBroadcastManager.getInstance(this)
+                .registerReceiver(mBroadcastReceiver, IntentFilter(Intent.ACTION_SYNC))
     }
 
     private fun setupUi() {
@@ -505,7 +508,7 @@ class MainActivity : BaseActivity(), MainActivityContract.View,
         mAdapter.notifyDataSetChanged()
     }
 
-    override fun openNotePager(position: Int) {
+    override fun openNotePager(position: Int,  note: MyNoteWithProp) {
         val intent = Intent(this, NoteActivity::class.java)
         intent.putExtra(NoteActivity.EXTRA_CLICKED_NOTE_POSITION, position)
         intent.putExtra(NoteActivity.EXTRA_MODE, NoteActivity.Companion.Mode.READ)
@@ -587,30 +590,24 @@ class MainActivity : BaseActivity(), MainActivityContract.View,
 
     override fun networkAvailable() = isNetworkAvailable()
 
-    override fun onStart() {
-        super.onStart()
-        LocalBroadcastManager.getInstance(this)
-                .registerReceiver(mBroadcastReceiver, IntentFilter(Intent.ACTION_SYNC))
-        mAdapter.listener = this
-    }
-
     override fun onResume() {
         super.onResume()
         mPresenter.attachView(this)
         mPresenter.onViewResume()
+        mAdapter.listener = this
     }
 
     override fun onPause() {
         super.onPause()
         mNeedToOpenActionBar = false
         mBackPressCount = 0
+        mAdapter.listener = null
+        mHandler.removeCallbacks(mBottomSheetOpenRunnable)
         mPresenter.detachView()
     }
 
-    override fun onStop() {
-        super.onStop()
+    override fun onDestroy() {
+        super.onDestroy()
         LocalBroadcastManager.getInstance(this).unregisterReceiver(mBroadcastReceiver)
-        mAdapter.listener = null
-        mHandler.removeCallbacks(mBottomSheetOpenRunnable)
     }
 }

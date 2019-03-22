@@ -17,15 +17,28 @@ import java.util.*
 class NoteFragmentPresenter(private val mDataManager: DataManager) : NoteFragmentContract.Presenter() {
 
     private lateinit var mNote: MyNote
+    private lateinit var mMode: NoteActivity.Companion.Mode
 
     companion object {
         private const val TAG = "NoteFragmentPresenter"
     }
 
+    override fun init(note: MyNote, mode: NoteActivity.Companion.Mode) {
+        mNote = note
+        mMode = mode
+    }
+
+    override fun onViewStart(locationEnabled: Boolean, networkAvailable: Boolean) {
+        loadNote(mNote.id, mMode, locationEnabled, networkAvailable)
+        loadNoteAppearance(mNote.id)
+        loadTags(mNote.id)
+        loadImages(mNote.id)
+        loadNoteCategory()
+    }
+
     override fun onMoodFieldClick() {
         addDisposable(mDataManager.getAllMoods()
                 .subscribe { moods -> view?.showMoodsDialog(moods) })
-
     }
 
     override fun onTagsFieldClick() {
@@ -59,7 +72,7 @@ class NoteFragmentPresenter(private val mDataManager: DataManager) : NoteFragmen
         //mNote.location?.let { view?.zoomMap(it.lat, it.lon) }
     }
 
-    override fun loadImages(noteId: String) {
+    private fun loadImages(noteId: String) {
         addDisposable(mDataManager.getImagesForNote(noteId)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { images ->
@@ -71,7 +84,7 @@ class NoteFragmentPresenter(private val mDataManager: DataManager) : NoteFragmen
                 })
     }
 
-    override fun loadTags(noteId: String) {
+    private fun loadTags(noteId: String) {
         addDisposable(mDataManager.getTagsForNote(noteId)
                 .defaultIfEmpty(emptyList())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -84,7 +97,7 @@ class NoteFragmentPresenter(private val mDataManager: DataManager) : NoteFragmen
                 })
     }
 
-    override fun loadNote(noteId: String, mode: NoteActivity.Companion.Mode, locationEnabled: Boolean,
+    private fun loadNote(noteId: String, mode: NoteActivity.Companion.Mode, locationEnabled: Boolean,
                           networkAvailable: Boolean) {
         addDisposable(mDataManager.getNote(noteId)
                 .observeOn(AndroidSchedulers.mainThread())
@@ -98,7 +111,17 @@ class NoteFragmentPresenter(private val mDataManager: DataManager) : NoteFragmen
                 })
     }
 
-    override fun loadNoteAppearance(noteId: String) {
+    private fun showNoteCategory(categoryId: String) {
+        addDisposable(mDataManager.getCategory(categoryId)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe({ category ->
+                    view?.showCategory(category)
+                }, {
+                    view?.showNoCategoryMessage()
+                }))
+    }
+
+    private fun loadNoteAppearance(noteId: String) {
         addDisposable(mDataManager.getNoteAppearance(noteId)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { appearance ->
@@ -140,23 +163,24 @@ class NoteFragmentPresenter(private val mDataManager: DataManager) : NoteFragmen
             view?.showNoMoodMessage()
             return
         }
-
         addDisposable(mDataManager.getMood(moodId)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { mood -> view?.showMood(mood) })
     }
 
-    private fun showNoteCategory(categoryId: String) {
+    private fun loadNoteCategory() {
         addDisposable(mDataManager.getAllCategories()
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { categories ->
-                    val category = categories.find { it.id == categoryId }
+                .subscribe({ categories ->
+                    val category = categories.find { it.id == mNote.categoryId }
                     if (category == null) {
                         view?.showNoCategoryMessage()
                     } else {
                         view?.showCategory(category)
                     }
-                })
+                }, {
+                    view?.showNoCategoryMessage()
+                }))
     }
 
     private fun findLocation(locationEnabled: Boolean, networkAvailable: Boolean) {
@@ -234,7 +258,7 @@ class NoteFragmentPresenter(private val mDataManager: DataManager) : NoteFragmen
                 .flatMapSingle { image -> mDataManager.saveImageToStorage(image) }
                 .flatMapCompletable { savedImage -> mDataManager.insertImage(savedImage) }
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe())
+                .subscribe { view?.hideLoading() })
     }
 
     override fun onDeleteButtonClick() {
@@ -284,9 +308,9 @@ class NoteFragmentPresenter(private val mDataManager: DataManager) : NoteFragmen
         view?.showNoteSettingsView(mNote.id)
     }
 
-    override fun updateNoteText(noteId: String, noteTitle: String, noteContent: String) {
+    override fun updateNoteText(noteTitle: String, noteContent: String) {
         //todo добавить условие
-        addDisposable(mDataManager.updateNoteText(noteId, noteTitle, noteContent)
+        addDisposable(mDataManager.updateNoteText(mNote.id, noteTitle, noteContent)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe())
     }

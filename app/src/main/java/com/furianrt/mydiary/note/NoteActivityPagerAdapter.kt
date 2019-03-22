@@ -14,7 +14,7 @@ class NoteActivityPagerAdapter(
     var list: List<MyNoteWithProp> = ArrayList()
 
     override fun getItem(position: Int): Fragment =
-            NoteFragment.newInstance(list[position].note.id, mode)
+            NoteFragment.newInstance(list[position].note, mode)
 
     override fun getCount(): Int = list.count()
 }

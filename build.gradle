@@ -6,14 +6,17 @@ buildscript {
     ext.room_version = '2.0.0'
     ext.dagger_version = '2.13'
     ext.retrofit_version = '2.4.0'
-    ext.glide_version = '4.8.0'
+    ext.glide_version = '4.9.0'
+    ext.compat_version = '1.0.2'
+    ext.junit_version = '4.12'
+    ext.espresso_version = '3.1.1'
     repositories {
         google()
         jcenter()
         maven { url 'https://maven.fabric.io/public' }
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.3.1'
+        classpath 'com.android.tools.build:gradle:3.3.2'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.3.21"
         classpath 'com.google.gms:google-services:4.2.0'
         classpath 'io.fabric.tools:gradle:1.27.1'

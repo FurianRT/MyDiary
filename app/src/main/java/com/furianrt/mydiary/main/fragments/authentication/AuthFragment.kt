@@ -71,8 +71,6 @@ class AuthFragment : Fragment(), AuthContract.View {
                               savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_auth, container, false)
 
-        KeyboardUtils.addKeyboardToggleListener(activity!!, mOnKeyboardToggleListener)
-
         view.button_auth_close.setOnClickListener { mPresenter.onButtonCloseClick() }
         view.button_create_account.setOnClickListener { mPresenter.onButtonCreateAccountClick() }
 
@@ -118,19 +116,16 @@ class AuthFragment : Fragment(), AuthContract.View {
         (activity as? MainActivity?)?.closeBottomSheet()
     }
 
-    override fun onStart() {
-        super.onStart()
+    override fun onResume() {
+        super.onResume()
         mPresenter.attachView(this)
+        KeyboardUtils.addKeyboardToggleListener(activity!!, mOnKeyboardToggleListener)
     }
 
-    override fun onStop() {
-        super.onStop()
-        mPresenter.detachView()
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
+    override fun onPause() {
+        super.onPause()
         KeyboardUtils.removeKeyboardToggleListener(mOnKeyboardToggleListener)
+        mPresenter.detachView()
     }
 
     fun onRegistrationFragmentDetach() {

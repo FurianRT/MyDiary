@@ -56,14 +56,14 @@ class AboutProfileFragment : Fragment(), AboutProfileContract.View {
         fragmentManager?.popBackStack()
     }
 
-    override fun onStart() {
-        super.onStart()
+    override fun onResume() {
+        super.onResume()
         mPresenter.attachView(this)
-        mPresenter.onViewStart()
+        mPresenter.onViewResume()
     }
 
-    override fun onStop() {
-        super.onStop()
+    override fun onPause() {
+        super.onPause()
         mPresenter.detachView()
     }
 }

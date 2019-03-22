@@ -33,8 +33,8 @@ interface DataManager {
     fun updateNoteTagsSync(noteTags: List<NoteTag>): Completable
     fun deleteTag(tag: MyTag): Completable
     fun deleteNote(note: MyNote): Completable
-    fun deleteImages(images: List<MyImage>): Completable
-    fun deleteNoteTag(noteTag: NoteTag): Completable
+    fun deleteImage(image: MyImage): Completable
+    fun deleteImage(images: List<MyImage>): Completable
     fun deleteAllTagsForNote(noteId: String): Completable
     fun deleteImageFromStorage(fileName: String): Single<Boolean>
     fun deleteCategory(category: MyCategory): Completable
@@ -60,7 +60,7 @@ interface DataManager {
     fun getDeletedTags(): Flowable<List<MyTag>>
     fun getForecast(lat: Double, lon: Double): Single<Forecast?>
     fun getMood(moodId: Int): Single<MyMood>
-    fun getCategory(categoryId: String): Maybe<MyCategory>
+    fun getCategory(categoryId: String): Single<MyCategory>
     fun getAllCategories(): Flowable<List<MyCategory>>
     fun getDeletedCategories(): Flowable<List<MyCategory>>
     fun getAllMoods(): Single<List<MyMood>>
@@ -105,5 +105,6 @@ interface DataManager {
     fun saveNoteTagsInCloud(noteTags: List<NoteTag>): Completable
     fun saveAppearancesInCloud(appearances: List<MyNoteAppearance>): Completable
     fun saveImagesInCloud(images: List<MyImage>): Completable
+    fun saveImagesFilesInCloud(images: List<MyImage>): Completable
     fun loadImageFiles(images: List<MyImage>): Completable
 }

@@ -11,7 +11,7 @@ interface MainActivityContract {
 
     interface View : BaseView {
         fun showNotes(notes: List<MainListItem>, selectedNotes: ArrayList<MyNoteWithProp>, hasPremium: Boolean)
-        fun openNotePager(position: Int)
+        fun openNotePager(position: Int, note: MyNoteWithProp)
         fun showHeaderImage(image: MyHeaderImage)
         fun requestStoragePermissions()
         fun showViewNewNote()

@@ -16,6 +16,7 @@ interface CloudHelper {
     fun saveNoteTags(noteTags: List<NoteTag>, profile: MyProfile): Completable
     fun saveAppearances(appearances: List<MyNoteAppearance>, profile: MyProfile): Completable
     fun saveImages(images: List<MyImage>, profile: MyProfile): Completable
+    fun saveImagesFiles(images: List<MyImage>, profile: MyProfile): Completable
     fun deleteNotes(notes: List<MyNote>, profile: MyProfile): Completable
     fun deleteCategories(categories: List<MyCategory>, profile: MyProfile): Completable
     fun deleteNoteTags(noteTags: List<NoteTag>, profile: MyProfile): Completable

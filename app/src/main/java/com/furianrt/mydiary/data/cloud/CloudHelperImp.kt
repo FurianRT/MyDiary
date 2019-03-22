@@ -113,7 +113,9 @@ class CloudHelperImp(
                             .document(image.name), image)
                 }
             }
-                    .andThen(Observable.fromIterable(images))
+
+    override fun saveImagesFiles(images: List<MyImage>, profile: MyProfile): Completable =
+            Observable.fromIterable(images)
                     .flatMapSingle { image ->
                         RxFirebaseStorage.putFile(mFirebaseStorage.reference
                                 .child(COLLECTION_USERS)

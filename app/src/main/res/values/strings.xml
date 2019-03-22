@@ -222,5 +222,9 @@
     <string name="fragment_about_profile_sign_in_date">Дата регистрации:</string>
     <string name="fragment_about_profile_premium">Премиум:</string>
     <string name="fragment_about_profile_last_sync">Последняя синхр.:</string>
+    <string name="fragment_gallery_drag_hint">Долгим нажатием можно перемещать и удалять картинки!</string>
+    <string name="gallery_list_empty_state_add_images">Добавить картинки</string>
+    <string name="gallery_list_empty_state_message_part_1">Список картинок пуст?</string>
+    <string name="gallery_list_empty_state_message_part_2">Ничего страшного! Добавьте новые, это просто!</string>
 
 </resources>

@@ -42,6 +42,8 @@ interface NoteFragmentContract {
         fun showTimePicker(hourOfDay: Int, minute: Int, is24HourMode: Boolean)
         fun showDateAndTime(time: Long, is24TimeFormat: Boolean)
         fun shoNoteEditView()
+        fun showLoading()
+        fun hideLoading()
     }
 
     abstract class Presenter : BasePresenter<View>() {
@@ -63,15 +65,13 @@ interface NoteFragmentContract {
         abstract fun onNoCategoryPicked()
         abstract fun onCategoryPicked(category: MyCategory)
         abstract fun onAppearanceButtonClick()
-        abstract fun loadNote(noteId: String, mode: NoteActivity.Companion.Mode, locationEnabled: Boolean, networkAvailable: Boolean)
-        abstract fun loadNoteAppearance(noteId: String)
-        abstract fun loadTags(noteId: String)
-        abstract fun loadImages(noteId: String)
-        abstract fun updateNoteText(noteId: String, noteTitle: String, noteContent: String)
+        abstract fun updateNoteText(noteTitle: String, noteContent: String)
         abstract fun onDateFieldClick()
         abstract fun onTimeFieldClick()
         abstract fun onDateSelected(year: Int, monthOfYear: Int, dayOfMonth: Int)
         abstract fun onTimeSelected(hourOfDay: Int, minute: Int)
         abstract fun onEditButtonClick()
+        abstract fun onViewStart(locationEnabled: Boolean, networkAvailable: Boolean)
+        abstract fun init(note: MyNote, mode: NoteActivity.Companion.Mode)
     }
 }

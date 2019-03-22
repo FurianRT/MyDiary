@@ -53,3 +53,10 @@ fun View.animateShake(duration: Long) {
             .setDuration(duration)
             .start()
 }
+
+fun View.animateAlpha(from: Float, to: Float, duration: Long) {
+    ObjectAnimator
+            .ofPropertyValuesHolder(this, PropertyValuesHolder.ofFloat(View.ALPHA, from, to))
+            .apply { this.duration = duration }
+            .start()
+}

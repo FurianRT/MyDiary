@@ -1,14 +1,17 @@
-package com.furianrt.mydiary.gallery.fragments.list
+package com.furianrt.mydiary.general
 
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
+import com.furianrt.mydiary.gallery.fragments.list.GalleryListAdapter
 
 class ItemTouchHelperCallback(private val adapter: GalleryListAdapter) : ItemTouchHelper.Callback() {
 
+    private var mCurrentHolder: GalleryListAdapter.ViewHolder? = null
+
     override fun isLongPressDragEnabled(): Boolean {
-        return true
+        return false
     }
 
     override fun isItemViewSwipeEnabled(): Boolean {
@@ -43,16 +46,20 @@ class ItemTouchHelperCallback(private val adapter: GalleryListAdapter) : ItemTou
 
     override fun onSelectedChanged(viewHolder: RecyclerView.ViewHolder?, actionState: Int) {
         if (actionState != ItemTouchHelper.ACTION_STATE_IDLE) {
-            if (viewHolder is GalleryListAdapter.GalleryListViewHolder) {
+            if (viewHolder is GalleryListAdapter.ViewHolder) {
                 viewHolder.onItemSelected()
+                mCurrentHolder = viewHolder
             }
+        } else {
+            mCurrentHolder?.onItemReleased()
+            mCurrentHolder = null
         }
         super.onSelectedChanged(viewHolder, actionState)
     }
 
     override fun clearView(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder) {
         super.clearView(recyclerView, viewHolder)
-        if (viewHolder is GalleryListAdapter.GalleryListViewHolder) {
+        if (viewHolder is GalleryListAdapter.ViewHolder) {
             viewHolder.onItemClear()
         }
     }

@@ -50,14 +50,14 @@ class GalleryPagerFragment : Fragment(), GalleryPagerContract.View {
         })
     }
 
-    override fun onStart() {
-        super.onStart()
+    override fun onResume() {
+        super.onResume()
         mPresenter.attachView(this)
         mPresenter.onViewStart()
     }
 
-    override fun onStop() {
-        super.onStop()
+    override fun onPause() {
+        super.onPause()
         mPresenter.detachView()
     }
 

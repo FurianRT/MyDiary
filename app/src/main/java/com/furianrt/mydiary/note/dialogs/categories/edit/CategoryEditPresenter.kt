@@ -26,7 +26,7 @@ class CategoryEditPresenter(private val mDataManager: DataManager) : CategoryEdi
 
     override fun loadCategory(categoryId: String) {
         addDisposable(mDataManager.getCategory(categoryId)
-                .defaultIfEmpty(MyCategory("", ""))
+                .onErrorReturn { MyCategory("", "") }
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { category -> view?.showCategory(category) })
     }

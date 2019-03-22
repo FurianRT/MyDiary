@@ -3,7 +3,7 @@ package com.furianrt.mydiary.data.room
 import androidx.room.*
 import com.furianrt.mydiary.data.model.MyCategory
 import io.reactivex.Flowable
-import io.reactivex.Maybe
+import io.reactivex.Single
 
 @Dao
 interface CategoryDao {
@@ -20,14 +20,14 @@ interface CategoryDao {
     @Update
     fun update(category: List<MyCategory>)
 
-    @Query("UPDATE Categories SET is_category_deleted = 1 WHERE id_category = :categoryId")
+    @Query("UPDATE Categories SET is_category_deleted = 1, is_category_sync = 0 WHERE id_category = :categoryId")
     fun delete(categoryId: String)
 
     @Query("DELETE FROM Categories WHERE is_category_deleted = 1")
     fun cleanup()
 
     @Query("SELECT * FROM Categories WHERE id_category = :categoryId AND is_category_deleted = 0")
-    fun getCategory(categoryId: String): Maybe<MyCategory>
+    fun getCategory(categoryId: String): Single<MyCategory>
 
     @Query("SELECT * FROM Categories WHERE is_category_deleted = 1")
     fun getDeletedCategories(): Flowable<List<MyCategory>>

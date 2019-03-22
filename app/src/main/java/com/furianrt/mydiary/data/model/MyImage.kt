@@ -26,7 +26,7 @@ data class MyImage(
         @ColumnInfo(name = FIELD_ADDED_TIME, index = true) var addedTime: Long = 0L,
         @ColumnInfo(name = FIELD_ORDER) var order: Int = 0,
         @ColumnInfo(name = FIELD_IS_SYNC) var isSync: Boolean = false,
-        @ColumnInfo(name = FIELD_IS_EDITED) var isEdited: Boolean = false,
+        @ColumnInfo(name = FIELD_IS_EDITED) var isEdited: Boolean = true,
         @ColumnInfo(name = FIELD_IS_DELETED) var isDeleted: Boolean = false
 ) : Parcelable {
 

@@ -10,7 +10,6 @@ import android.os.Bundle
 import android.os.Looper
 import android.preference.PreferenceManager
 import android.util.Log
-import android.util.TypedValue
 import android.view.*
 import android.widget.FrameLayout
 import android.widget.ImageView
@@ -65,7 +64,7 @@ class NoteFragment : Fragment(), NoteFragmentContract.View, OnMapReadyCallback,
 
     companion object {
         const val TAG = "NoteFragment"
-        private const val ARG_NOTE_ID = "noteId"
+        private const val ARG_NOTE = "note"
         private const val ARG_MODE = "mode"
         private const val LOCATION_INTERVAL = 400L
         private const val LOCATION_PERMISSIONS_REQUEST_CODE = 1
@@ -77,10 +76,10 @@ class NoteFragment : Fragment(), NoteFragmentContract.View, OnMapReadyCallback,
         private const val DATE_PICKER_TAG = "datePicker"
 
         @JvmStatic
-        fun newInstance(noteId: String, mode: NoteActivity.Companion.Mode) =
+        fun newInstance(note: MyNote, mode: NoteActivity.Companion.Mode) =
                 NoteFragment().apply {
                     arguments = Bundle().apply {
-                        putString(ARG_NOTE_ID, noteId)
+                        putParcelable(ARG_NOTE, note)
                         putSerializable(ARG_MODE, mode)
                     }
                 }
@@ -96,7 +95,6 @@ class NoteFragment : Fragment(), NoteFragmentContract.View, OnMapReadyCallback,
     private lateinit var mPagerAdapter: NoteFragmentPagerAdapter
     private lateinit var mMode: NoteActivity.Companion.Mode
     private var mImagePagerPosition = 0
-    private lateinit var mNoteId: String
 
     private val mLocationCallback = object : LocationCallback() {
         override fun onLocationResult(result: LocationResult?) {
@@ -111,19 +109,25 @@ class NoteFragment : Fragment(), NoteFragmentContract.View, OnMapReadyCallback,
     override fun onCreate(savedInstanceState: Bundle?) {
         getPresenterComponent(context!!).inject(this)
         super.onCreate(savedInstanceState)
-
-        mNoteId = arguments?.getString(ARG_NOTE_ID) ?: throw IllegalArgumentException()
+        val note = arguments?.getParcelable<MyNote>(ARG_NOTE) ?: throw IllegalArgumentException()
+        mMode = arguments?.getSerializable(ARG_MODE) as NoteActivity.Companion.Mode
+        mPresenter.init(note, mMode)
         savedInstanceState?.let {
             mImagePagerPosition = it.getInt(BUNDLE_IMAGE_PAGER_POSITION, 0)
         }
-
-        mMode = arguments?.getSerializable(ARG_MODE) as NoteActivity.Companion.Mode
         setHasOptionsMenu(true)
     }
 
     override fun onResume() {
         super.onResume()
         activity?.window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE)
+        mPresenter.attachView(this)
+        mPresenter.onViewStart(context!!.isLocationEnabled(), context!!.isNetworkAvailable())
+    }
+
+    override fun onPause() {
+        super.onPause()
+        mPresenter.detachView()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -134,29 +138,19 @@ class NoteFragment : Fragment(), NoteFragmentContract.View, OnMapReadyCallback,
 
         mPagerAdapter = NoteFragmentPagerAdapter(childFragmentManager)
 
-        view.apply {
-            layout_mood.setOnClickListener(this@NoteFragment)
-            layout_category.setOnClickListener(this@NoteFragment)
-            layout_tags.setOnClickListener(this@NoteFragment)
-            text_date.setOnClickListener(this@NoteFragment)
-            text_time.setOnClickListener(this@NoteFragment)
-            fab_add_image.setOnClickListener(this@NoteFragment)
-            pager_note_image.adapter = mPagerAdapter
-            map_touch_event_interceptor.setOnTouchListener { _, _ -> true }
-        }
+        view.layout_mood.setOnClickListener(this@NoteFragment)
+        view.layout_category.setOnClickListener(this@NoteFragment)
+        view.layout_tags.setOnClickListener(this@NoteFragment)
+        view.text_date.setOnClickListener(this@NoteFragment)
+        view.text_time.setOnClickListener(this@NoteFragment)
+        view.fab_add_image.setOnClickListener(this@NoteFragment)
+        view.pager_note_image.adapter = mPagerAdapter
+        view.layout_loading.setOnTouchListener { _, _ -> true }
+        view.map_touch_event_interceptor.setOnTouchListener { _, _ -> true }
 
         addFragments()
 
         return view
-    }
-
-    override fun onStart() {
-        super.onStart()
-        mPresenter.attachView(this)
-        mPresenter.loadNote(mNoteId, mMode, context!!.isLocationEnabled(), context!!.isNetworkAvailable())
-        mPresenter.loadNoteAppearance(mNoteId)
-        mPresenter.loadTags(mNoteId)
-        mPresenter.loadImages(mNoteId)
     }
 
     override fun showNoteText(title: String, content: String) {
@@ -248,7 +242,7 @@ class NoteFragment : Fragment(), NoteFragmentContract.View, OnMapReadyCallback,
         val noteContentFragment =
                 childFragmentManager.findFragmentByTag(NoteContentFragment.TAG) as? NoteContentFragment
         noteContentFragment?.showNoteText(noteTitle, noteContent)
-        mPresenter.updateNoteText(mNoteId, noteTitle, noteContent)
+        mPresenter.updateNoteText(noteTitle, noteContent)
     }
 
     override fun showGalleryView(noteId: String) {
@@ -258,7 +252,7 @@ class NoteFragment : Fragment(), NoteFragmentContract.View, OnMapReadyCallback,
         startActivity(intent)
     }
 
-    private fun someTemporaryFunction(view: View) {
+    private fun someTemporaryFunction(view: View) {   //todo убрать костыль
         val isMoodEnabled = PreferenceManager.getDefaultSharedPreferences(context)
                 .getBoolean(PreferencesHelper.MOOD_AVAILABILITY, true)
         if (!isMoodEnabled) {
@@ -530,11 +524,6 @@ class NoteFragment : Fragment(), NoteFragmentContract.View, OnMapReadyCallback,
         mPresenter.onNoteTagsChanged(tags)
     }
 
-    override fun onStop() {
-        super.onStop()
-        mPresenter.detachView()
-    }
-
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>,
                                             grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
@@ -600,9 +589,18 @@ class NoteFragment : Fragment(), NoteFragmentContract.View, OnMapReadyCallback,
                 .widget(widget)
                 .onResult { albImage ->
                     mImagePagerPosition = 0
+                    showLoading()
                     mPresenter.onNoteImagesPicked(albImage.map { it.path })
                 }
                 .start()
+    }
+
+    override fun showLoading() {
+        layout_loading.visibility = View.VISIBLE
+    }
+
+    override fun hideLoading() {
+        layout_loading.visibility = View.GONE
     }
 
     override fun showImages(images: List<MyImage>) {
@@ -634,10 +632,10 @@ class NoteFragment : Fragment(), NoteFragmentContract.View, OnMapReadyCallback,
 
     override fun showDatePicker(calendar: Calendar) {
         DatePickerDialog.newInstance(this, calendar).apply {
-            accentColor = fetchPrimaryColor()
-            val accentColor = fetchAccentColor()
-            setOkColor(accentColor)
-            setCancelColor(accentColor)
+            accentColor = getThemePrimaryColor(context!!)
+            val themeAccentColor = getThemeAccentColor(context!!)
+            setOkColor(themeAccentColor)
+            setCancelColor(themeAccentColor)
         }.show(fragmentManager, DATE_PICKER_TAG)
     }
 
@@ -647,9 +645,10 @@ class NoteFragment : Fragment(), NoteFragmentContract.View, OnMapReadyCallback,
 
     override fun showTimePicker(hourOfDay: Int, minute: Int, is24HourMode: Boolean) {
         TimePickerDialog.newInstance(this, hourOfDay, minute, is24HourMode).apply {
-            accentColor = fetchPrimaryColor()
-            setOkColor(fetchAccentColor())
-            setCancelColor(fetchAccentColor())
+            accentColor = getThemePrimaryColor(context!!)
+            val themeAccentColor = getThemeAccentColor(context!!)
+            setOkColor(themeAccentColor)
+            setCancelColor(themeAccentColor)
             activity?.let {
                 setOkText(it.getString(R.string.ok).toUpperCase())
                 setCancelText(it.getString(R.string.cancel).toUpperCase())
@@ -660,23 +659,5 @@ class NoteFragment : Fragment(), NoteFragmentContract.View, OnMapReadyCallback,
 
     override fun onTimeSet(view: TimePickerDialog?, hourOfDay: Int, minute: Int, second: Int) {
         mPresenter.onTimeSelected(hourOfDay, minute)
-    }
-
-    private fun fetchPrimaryColor(): Int {
-        val typedValue = TypedValue()
-        val a =
-                activity!!.obtainStyledAttributes(typedValue.data, intArrayOf(R.attr.colorPrimary))
-        val color = a.getColor(0, 0)
-        a.recycle()
-        return color
-    }
-
-    private fun fetchAccentColor(): Int {
-        val typedValue = TypedValue()
-        val a =
-                activity!!.obtainStyledAttributes(typedValue.data, intArrayOf(R.attr.colorAccent))
-        val color = a.getColor(0, 0)
-        a.recycle()
-        return color
     }
 }

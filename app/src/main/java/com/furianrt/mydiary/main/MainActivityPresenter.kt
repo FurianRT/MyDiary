@@ -271,7 +271,7 @@ class MainActivityPresenter(
                     }
                 }
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { notes -> view?.openNotePager(notes.indexOf(note)) })
+                .subscribe { notes -> view?.openNotePager(notes.indexOf(note), note) })
     }
 
     override fun onButtonSettingsClick() {
