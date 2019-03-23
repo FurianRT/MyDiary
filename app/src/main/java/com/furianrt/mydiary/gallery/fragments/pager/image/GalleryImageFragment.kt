@@ -5,12 +5,13 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import com.furianrt.mydiary.R
 import com.furianrt.mydiary.data.model.MyImage
 import com.furianrt.mydiary.general.GlideApp
 import kotlinx.android.synthetic.main.fragment_gallery_image.view.*
 
-class GalleryImageFragment : androidx.fragment.app.Fragment() {
+class GalleryImageFragment : Fragment() {
 
     private var mImage: MyImage? = null
 

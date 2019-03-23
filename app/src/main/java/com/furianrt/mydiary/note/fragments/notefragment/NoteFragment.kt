@@ -19,6 +19,7 @@ import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.content.ContextCompat
 import androidx.core.content.ContextCompat.getColor
 import androidx.fragment.app.Fragment
+import androidx.viewpager.widget.ViewPager
 import com.furianrt.mydiary.R
 import com.furianrt.mydiary.data.api.forecast.Forecast
 import com.furianrt.mydiary.data.model.*
@@ -47,6 +48,7 @@ import com.wdullaer.materialdatetimepicker.date.DatePickerDialog
 import com.wdullaer.materialdatetimepicker.time.TimePickerDialog
 import com.yanzhenjie.album.Album
 import com.yanzhenjie.album.api.widget.Widget
+import kotlinx.android.synthetic.main.fragment_note.*
 import kotlinx.android.synthetic.main.fragment_note.view.*
 import kotlinx.android.synthetic.main.fragment_note_toolbar.*
 import kotlinx.android.synthetic.main.fragment_note_toolbar.view.*
@@ -96,6 +98,14 @@ class NoteFragment : Fragment(), NoteFragmentContract.View, OnMapReadyCallback,
     private lateinit var mMode: NoteActivity.Companion.Mode
     private var mImagePagerPosition = 0
 
+    private val mOnPageChangeListener = object : ViewPager.OnPageChangeListener {
+        override fun onPageScrollStateChanged(state: Int) {}
+        override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {}
+        override fun onPageSelected(position: Int) {
+            text_image_position.text = (position + 1).toString()
+        }
+    }
+
     private val mLocationCallback = object : LocationCallback() {
         override fun onLocationResult(result: LocationResult?) {
             super.onLocationResult(result)
@@ -116,18 +126,6 @@ class NoteFragment : Fragment(), NoteFragmentContract.View, OnMapReadyCallback,
             mImagePagerPosition = it.getInt(BUNDLE_IMAGE_PAGER_POSITION, 0)
         }
         setHasOptionsMenu(true)
-    }
-
-    override fun onResume() {
-        super.onResume()
-        activity?.window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE)
-        mPresenter.attachView(this)
-        mPresenter.onViewStart(context!!.isLocationEnabled(), context!!.isNetworkAvailable())
-    }
-
-    override fun onPause() {
-        super.onPause()
-        mPresenter.detachView()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -153,6 +151,20 @@ class NoteFragment : Fragment(), NoteFragmentContract.View, OnMapReadyCallback,
         return view
     }
 
+    override fun onResume() {
+        super.onResume()
+        activity?.window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE)
+        pager_note_image.addOnPageChangeListener(mOnPageChangeListener)
+        mPresenter.attachView(this)
+        mPresenter.onViewStart(context!!.isLocationEnabled(), context!!.isNetworkAvailable())
+    }
+
+    override fun onPause() {
+        super.onPause()
+        pager_note_image.removeOnPageChangeListener(mOnPageChangeListener)
+        mPresenter.detachView()
+    }
+
     override fun showNoteText(title: String, content: String) {
         val noteContentFragment =
                 childFragmentManager.findFragmentByTag(NoteContentFragment.TAG) as? NoteContentFragment
@@ -160,10 +172,8 @@ class NoteFragment : Fragment(), NoteFragmentContract.View, OnMapReadyCallback,
     }
 
     override fun showDateAndTime(time: Long, is24TimeFormat: Boolean) {
-        view?.apply {
-            text_date.text = formatTime(time)
-            text_time.text = getTime(time, is24TimeFormat)
-        }
+        text_date.text = formatTime(time)
+        text_time.text = getTime(time, is24TimeFormat)
     }
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
@@ -269,45 +279,41 @@ class NoteFragment : Fragment(), NoteFragmentContract.View, OnMapReadyCallback,
     }
 
     override fun hideLocation() {
-        view?.text_location?.visibility = View.GONE
+        text_location.visibility = View.GONE
     }
 
     override fun hideMood() {
-        view?.text_mood?.visibility = View.GONE
+        text_mood.visibility = View.GONE
     }
 
     override fun showNoTagsMessage() {
-        view?.apply {
-            val itemCount = layout_tags.flexItemCount
-            layout_tags.removeViews(1, itemCount - 1)
+        val itemCount = layout_tags.flexItemCount
+        layout_tags.removeViews(1, itemCount - 1)
 
-            val image = layout_tags.getChildAt(0) as? ImageView?
-            image?.setColorFilter(getColor(context!!, R.color.grey_dark), PorterDuff.Mode.SRC_IN)
+        val image = layout_tags.getChildAt(0) as? ImageView?
+        image?.setColorFilter(getColor(context!!, R.color.grey_dark), PorterDuff.Mode.SRC_IN)
 
-            val textNoTags = TextView(context!!)
-            textNoTags.setTextColor(getColor(context!!, R.color.grey_dark))
-            textNoTags.setText(R.string.choose_tags)
+        val textNoTags = TextView(context!!)
+        textNoTags.setTextColor(getColor(context!!, R.color.grey_dark))
+        textNoTags.setText(R.string.choose_tags)
 
-            val params = LinearLayout.LayoutParams(
-                    LinearLayout.LayoutParams.WRAP_CONTENT,
-                    LinearLayout.LayoutParams.WRAP_CONTENT
-            )
-            params.marginStart = 16
-            textNoTags.layoutParams = params
+        val params = LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.WRAP_CONTENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+        )
+        params.marginStart = 16
+        textNoTags.layoutParams = params
 
-            layout_tags.addView(textNoTags)
-        }
+        layout_tags.addView(textNoTags)
     }
 
     override fun showTagNames(tagNames: List<String>) {
-        view?.apply {
-            val itemCount = layout_tags.flexItemCount
-            layout_tags.removeViews(1, itemCount - 1)
-            val image = layout_tags.getChildAt(0) as? ImageView?
-            image?.setColorFilter(getColor(context!!, R.color.black), PorterDuff.Mode.SRC_IN)
-            for (tagName in tagNames) {
-                layout_tags.addView(wrapTextIntoCardView(tagName))
-            }
+        val itemCount = layout_tags.flexItemCount
+        layout_tags.removeViews(1, itemCount - 1)
+        val image = layout_tags.getChildAt(0) as? ImageView?
+        image?.setColorFilter(getColor(context!!, R.color.black), PorterDuff.Mode.SRC_IN)
+        for (tagName in tagNames) {
+            layout_tags.addView(wrapTextIntoCardView(tagName))
         }
     }
 
@@ -330,45 +336,37 @@ class NoteFragment : Fragment(), NoteFragmentContract.View, OnMapReadyCallback,
             }
 
     override fun showCategory(category: MyCategory) {
-        view?.apply {
-            text_category.text = category.name
-            text_category.alpha = 1f
-            image_folder.alpha = 1f
-            image_folder.setColorFilter(category.color, PorterDuff.Mode.SRC_IN)
-            layout_category_color.setCardBackgroundColor(category.color)
-            layout_category_color.visibility = View.VISIBLE
-        }
+        text_category.text = category.name
+        text_category.alpha = 1f
+        image_folder.alpha = 1f
+        image_folder.setColorFilter(category.color, PorterDuff.Mode.SRC_IN)
+        layout_category_color.setCardBackgroundColor(category.color)
+        layout_category_color.visibility = View.VISIBLE
     }
 
     override fun showNoCategoryMessage() {
-        view?.apply {
-            text_category.text = getString(R.string.choose_category)
-            text_category.alpha = 0.5f
-            image_folder.alpha = 0.5f
-            image_folder.setColorFilter(Color.BLACK, PorterDuff.Mode.SRC_IN)
-            layout_category_color.visibility = View.GONE
-        }
+        text_category.text = getString(R.string.choose_category)
+        text_category.alpha = 0.5f
+        image_folder.alpha = 0.5f
+        image_folder.setColorFilter(Color.BLACK, PorterDuff.Mode.SRC_IN)
+        layout_category_color.visibility = View.GONE
     }
 
     override fun showMood(mood: MyMood) {
-        view?.apply {
-            text_mood.alpha = 1f
-            text_mood.text = mood.name
-            val smile = resources.getIdentifier(mood.iconName, "drawable", context?.packageName)
-            image_mood.clearColorFilter()
-            image_mood.setImageResource(smile)
-            image_mood.alpha = 1f
-        }
+        text_mood.alpha = 1f
+        text_mood.text = mood.name
+        val smile = resources.getIdentifier(mood.iconName, "drawable", context?.packageName)
+        image_mood.clearColorFilter()
+        image_mood.setImageResource(smile)
+        image_mood.alpha = 1f
     }
 
     override fun showNoMoodMessage() {
-        view?.apply {
-            text_mood.text = getString(R.string.choose_mood)
-            text_mood.alpha = 0.5f
-            image_mood.alpha = 0.5f
-            image_mood.setImageResource(R.drawable.ic_smile)
-            image_mood.setColorFilter(Color.BLACK, PorterDuff.Mode.SRC_IN)
-        }
+        text_mood.text = getString(R.string.choose_mood)
+        text_mood.alpha = 0.5f
+        image_mood.alpha = 0.5f
+        image_mood.setImageResource(R.drawable.ic_smile)
+        image_mood.setColorFilter(Color.BLACK, PorterDuff.Mode.SRC_IN)
     }
 
     override fun showMoodsDialog(moods: List<MyMood>) {
@@ -378,16 +376,14 @@ class NoteFragment : Fragment(), NoteFragmentContract.View, OnMapReadyCallback,
     }
 
     override fun showLocation(location: MyLocation) {
-        view?.apply {
-            text_location.text = location.name
-            text_location.alpha = 1f
-            map_touch_event_interceptor.visibility = View.VISIBLE
-            map_view.apply {
-                visibility = View.VISIBLE
-                onCreate(null)
-                onResume()
-                getMapAsync(this@NoteFragment)
-            }
+        text_location.text = location.name
+        text_location.alpha = 1f
+        map_touch_event_interceptor.visibility = View.VISIBLE
+        map_view.apply {
+            visibility = View.VISIBLE
+            onCreate(null)
+            onResume()
+            getMapAsync(this@NoteFragment)
         }
     }
 
@@ -417,7 +413,7 @@ class NoteFragment : Fragment(), NoteFragmentContract.View, OnMapReadyCallback,
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
-        view?.let { outState.putInt(BUNDLE_IMAGE_PAGER_POSITION, it.pager_note_image.currentItem) }
+        outState.putInt(BUNDLE_IMAGE_PAGER_POSITION, pager_note_image.currentItem)
         super.onSaveInstanceState(outState)
     }
 
@@ -501,15 +497,13 @@ class NoteFragment : Fragment(), NoteFragmentContract.View, OnMapReadyCallback,
     }
 
     override fun showForecast(forecast: Forecast) {
-        view?.apply {
-            val url = BASE_WEATHER_IMAGE_URL + forecast.weather[0].icon + ".png"
-            GlideApp.with(this)
-                    .load(url)
-                    .into(image_weather)
+        val url = BASE_WEATHER_IMAGE_URL + forecast.weather[0].icon + ".png"
+        GlideApp.with(this)
+                .load(url)
+                .into(image_weather)
 
-            val temp = forecast.main.temp.toInt().toString() + " °C"
-            text_temp.text = temp
-        }
+        val temp = forecast.main.temp.toInt().toString() + " °C"
+        text_temp.text = temp
     }
 
     override fun onCategoryPicked(category: MyCategory) {
@@ -605,9 +599,10 @@ class NoteFragment : Fragment(), NoteFragmentContract.View, OnMapReadyCallback,
 
     override fun showImages(images: List<MyImage>) {
         Log.e(TAG, "showImages")
+        text_image_count.text = images.size.toString()
         mPagerAdapter.images = images
         mPagerAdapter.notifyDataSetChanged()
-        view?.pager_note_image?.setCurrentItem(mImagePagerPosition, false)
+        pager_note_image.setCurrentItem(mImagePagerPosition, false)
         if (childFragmentManager.findFragmentByTag(NoteEditFragment.TAG) == null) {
             enableActionBarExpanding(expanded = true, animate = true)
         }
@@ -615,6 +610,7 @@ class NoteFragment : Fragment(), NoteFragmentContract.View, OnMapReadyCallback,
 
     override fun showNoImages() {
         Log.e(TAG, "showNoImages")
+        text_image_count.text = "0"
         mPagerAdapter.images = emptyList()
         mPagerAdapter.notifyDataSetChanged()
         disableActionBarExpanding(false)
@@ -632,8 +628,8 @@ class NoteFragment : Fragment(), NoteFragmentContract.View, OnMapReadyCallback,
 
     override fun showDatePicker(calendar: Calendar) {
         DatePickerDialog.newInstance(this, calendar).apply {
-            accentColor = getThemePrimaryColor(context!!)
-            val themeAccentColor = getThemeAccentColor(context!!)
+            accentColor = getThemePrimaryColor(this@NoteFragment.context!!)
+            val themeAccentColor = getThemeAccentColor(this@NoteFragment.context!!)
             setOkColor(themeAccentColor)
             setCancelColor(themeAccentColor)
         }.show(fragmentManager, DATE_PICKER_TAG)
@@ -645,8 +641,8 @@ class NoteFragment : Fragment(), NoteFragmentContract.View, OnMapReadyCallback,
 
     override fun showTimePicker(hourOfDay: Int, minute: Int, is24HourMode: Boolean) {
         TimePickerDialog.newInstance(this, hourOfDay, minute, is24HourMode).apply {
-            accentColor = getThemePrimaryColor(context!!)
-            val themeAccentColor = getThemeAccentColor(context!!)
+            accentColor = getThemePrimaryColor(this@NoteFragment.context!!)
+            val themeAccentColor = getThemeAccentColor(this@NoteFragment.context!!)
             setOkColor(themeAccentColor)
             setCancelColor(themeAccentColor)
             activity?.let {

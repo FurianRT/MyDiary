@@ -32,6 +32,7 @@ class GalleryListPresenter(private val mDataManager: DataManager) : GalleryListC
                 view?.selectImage(image)
             }
         }
+        view?.showSelectedImageCount(mSelectedImages.size)
     }
 
     override fun setNoteId(noteId: String) {
@@ -46,7 +47,9 @@ class GalleryListPresenter(private val mDataManager: DataManager) : GalleryListC
         addDisposable(mDataManager.getImagesForNote(noteId)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { images ->
+                    view?.showSelectedImageCount(mSelectedImages.size)
                     if (images.isEmpty()) {
+                        view?.closeCab()
                         view?.showEmptyList()
                     } else {
                         var i = 0
@@ -65,6 +68,7 @@ class GalleryListPresenter(private val mDataManager: DataManager) : GalleryListC
 
     override fun onMultiSelectionButtonClick() {
         view?.activateSelection()
+        view?.showSelectedImageCount(mSelectedImages.size)
     }
 
     override fun onCabDeleteButtonClick() {
@@ -80,6 +84,7 @@ class GalleryListPresenter(private val mDataManager: DataManager) : GalleryListC
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe {
                     mSelectedImages.clear()
+                    view?.showSelectedImageCount(mSelectedImages.size)
                     view?.closeCab()
                 })
     }
@@ -92,6 +97,7 @@ class GalleryListPresenter(private val mDataManager: DataManager) : GalleryListC
                     val list = images.toMutableList()
                     list.removeAll(mSelectedImages)
                     mSelectedImages.addAll(list)
+                    view?.showSelectedImageCount(mSelectedImages.size)
                     view?.selectImages(list)
                 })
     }
@@ -102,6 +108,7 @@ class GalleryListPresenter(private val mDataManager: DataManager) : GalleryListC
 
     override fun onCabCloseSelection() {
         mSelectedImages.clear()
+        view?.showSelectedImageCount(mSelectedImages.size)
         view?.deactivateSelection()
     }
 
@@ -128,15 +135,13 @@ class GalleryListPresenter(private val mDataManager: DataManager) : GalleryListC
     }
 
     override fun onImageDeleted(image: MyImage) {
+        mSelectedImages.remove(image)
         addDisposable(mDataManager.deleteImage(image)
                 .andThen(mDataManager.deleteImageFromStorage(image.name))
                 .ignoreElement()
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe {
-                    mSelectedImages.remove(image)
-                    if (mSelectedImages.isEmpty()) {
-                        view?.closeCab()
-                    }
+                    view?.showSelectedImageCount(mSelectedImages.size)
                 })
     }
 }

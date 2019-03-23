@@ -7,9 +7,10 @@ import androidx.viewpager.widget.PagerAdapter
 import com.furianrt.mydiary.data.model.MyImage
 import com.furianrt.mydiary.note.fragments.notefragment.toolbarimage.NoteImageFragment
 
-class NoteFragmentPagerAdapter(fm: FragmentManager) : FragmentStatePagerAdapter(fm) {
-
-    var images: List<MyImage> = ArrayList()
+class NoteFragmentPagerAdapter(
+        fm: FragmentManager,
+        var images: List<MyImage> = ArrayList()
+) : FragmentStatePagerAdapter(fm) {
 
     override fun getCount(): Int = images.count()
 

@@ -18,15 +18,27 @@ class GalleryPagerPresenter(
         addDisposable(mDataManager.getImagesForNote(noteId)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { images ->
-                    view?.showImages(images.sortedWith(compareBy(MyImage::order, MyImage::addedTime)))
+                    if (images.isEmpty()) {
+                        view?.showListImagesView(noteId)
+                    } else {
+                        view?.showImages(images.sortedWith(compareBy(MyImage::order, MyImage::addedTime)))
+                    }
                 })
     }
 
-    override fun onListModeButtonClick() {
+    override fun onButtonListModeClick() {
         view?.showListImagesView(mNoteId)
     }
 
     override fun setNoteId(noteId: String) {
         mNoteId = noteId
+    }
+
+    override fun onButtonDeleteClick(image: MyImage) {
+        addDisposable(mDataManager.deleteImage(image)
+                .andThen(mDataManager.deleteImageFromStorage(image.name))
+                .ignoreElement()
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe())
     }
 }

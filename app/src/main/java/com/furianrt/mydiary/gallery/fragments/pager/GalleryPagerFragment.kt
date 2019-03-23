@@ -8,6 +8,8 @@ import com.furianrt.mydiary.R
 import com.furianrt.mydiary.data.model.MyImage
 import com.furianrt.mydiary.gallery.fragments.list.GalleryListFragment
 import com.furianrt.mydiary.utils.inTransaction
+import kotlinx.android.synthetic.main.activity_gallery.*
+import kotlinx.android.synthetic.main.fragment_gallery_pager.*
 import kotlinx.android.synthetic.main.fragment_gallery_pager.view.*
 import javax.inject.Inject
 
@@ -18,6 +20,15 @@ class GalleryPagerFragment : Fragment(), GalleryPagerContract.View {
 
     private var mPagerPosition = 0
     private lateinit var mPagerAdapter: GalleryPagerAdapter
+
+    private val mOnPageChangeListener = object : ViewPager.OnPageChangeListener {
+        override fun onPageScrollStateChanged(state: Int) {}
+        override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {}
+        override fun onPageSelected(position: Int) {
+            mPagerPosition = position
+            showImageCounter(mPagerPosition + 1, mPagerAdapter.count)
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         getPresenterComponent(context!!).inject(this)
@@ -33,38 +44,33 @@ class GalleryPagerFragment : Fragment(), GalleryPagerContract.View {
                               savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_gallery_pager, container, false)
 
-        setupUi(view)
+        mPagerAdapter = GalleryPagerAdapter(ArrayList(), childFragmentManager)
+        view.pager_gallery.adapter = mPagerAdapter
 
         return view
     }
 
-    private fun setupUi(view: View) {
-        mPagerAdapter = GalleryPagerAdapter(ArrayList(), childFragmentManager)
-        view.pager_gallery.adapter = mPagerAdapter
-        view.pager_gallery.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
-            override fun onPageScrollStateChanged(p0: Int) {}
-            override fun onPageScrolled(p0: Int, p1: Float, p2: Int) {}
-            override fun onPageSelected(position: Int) {
-                mPagerPosition = position
-            }
-        })
-    }
-
     override fun onResume() {
         super.onResume()
+        pager_gallery.addOnPageChangeListener(mOnPageChangeListener)
         mPresenter.attachView(this)
         mPresenter.onViewStart()
     }
 
     override fun onPause() {
         super.onPause()
+        pager_gallery.removeOnPageChangeListener(mOnPageChangeListener)
         mPresenter.detachView()
     }
 
     override fun showImages(images: List<MyImage>) {
-        mPagerAdapter.list = images
+        if (mPagerPosition >= images.size) {
+            mPagerPosition = images.size - 1
+        }
+        showImageCounter(mPagerPosition + 1, images.size)
+        mPagerAdapter.images = images
         mPagerAdapter.notifyDataSetChanged()
-        view?.pager_gallery?.setCurrentItem(mPagerPosition, false)
+        pager_gallery.setCurrentItem(mPagerPosition, false)
     }
 
     override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
@@ -75,7 +81,11 @@ class GalleryPagerFragment : Fragment(), GalleryPagerContract.View {
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         return when (item?.itemId) {
             R.id.menu_list_mode -> {
-                mPresenter.onListModeButtonClick()
+                mPresenter.onButtonListModeClick()
+                true
+            }
+            R.id.menu_delete -> {
+                mPresenter.onButtonDeleteClick(mPagerAdapter.images[mPagerPosition])
                 true
             }
             else -> super.onOptionsItemSelected(item)
@@ -91,6 +101,11 @@ class GalleryPagerFragment : Fragment(), GalleryPagerContract.View {
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         outState.putInt(ARG_POSITION, view!!.pager_gallery.currentItem)
+    }
+
+    private fun showImageCounter(current: Int, count: Int) {
+        val textCounter = "$current/$count"
+        activity?.text_toolbar_title?.text = textCounter
     }
 
     companion object {

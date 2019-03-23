@@ -20,6 +20,7 @@ import com.furianrt.mydiary.utils.*
 import com.yanzhenjie.album.Album
 import com.yanzhenjie.album.api.widget.Widget
 import jp.wasabeef.recyclerview.animators.FadeInUpAnimator
+import kotlinx.android.synthetic.main.activity_gallery.*
 import kotlinx.android.synthetic.main.fragment_gallery_list.*
 import kotlinx.android.synthetic.main.fragment_gallery_list.view.*
 import kotlinx.android.synthetic.main.gallery_list_empty_state.view.*
@@ -147,6 +148,7 @@ class GalleryListFragment : Fragment(), GalleryListAdapter.OnListItemInteraction
 
     override fun showImages(images: List<MyImage>, selectedImages: List<MyImage>) {
         hideEmptyState()
+        showImageCount(images.size)
         mRecyclerViewState?.let {
             list_gallery.layoutManager?.onRestoreInstanceState(mRecyclerViewState)
             mRecyclerViewState = null
@@ -157,6 +159,7 @@ class GalleryListFragment : Fragment(), GalleryListAdapter.OnListItemInteraction
 
     override fun showEmptyList() {
         showEmptyState()
+        showImageCount(0)
         mAdapter.selectedImages = mutableListOf()
         mAdapter.submitList(emptyList())
     }
@@ -167,6 +170,10 @@ class GalleryListFragment : Fragment(), GalleryListAdapter.OnListItemInteraction
         for (image in images) {
             mAdapter.notifyItemChanged(listImages.indexOfFirst { it.name == image.name })
         }
+    }
+
+    override fun showSelectedImageCount(count: Int) {
+        mActionMode?.title = getString(R.string.fragment_gallery_list_selected) + ": $count"
     }
 
     override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
@@ -273,64 +280,6 @@ class GalleryListFragment : Fragment(), GalleryListAdapter.OnListItemInteraction
         mPresenter.onImageDeleted(image)
     }
 
-    private fun showEmptyState() {
-        if (empty_state.visibility == View.INVISIBLE) {
-            empty_state.translationY = empty_state.height + 100f
-            empty_state.visibility = View.VISIBLE
-            empty_state.animate()
-                    .translationY(0f)
-                    .setDuration(ANIMATION_MOVE_DURATION)
-                    .setInterpolator(DecelerateInterpolator())
-                    .setListener(null)
-        }
-    }
-
-    private fun hideEmptyState() {
-        if (empty_state.visibility == View.VISIBLE) {
-            empty_state.animate()
-                    .translationY(empty_state.height + 100f)
-                    .setDuration(ANIMATION_MOVE_DURATION)
-                    .setInterpolator(AccelerateInterpolator())
-                    .setListener(object : Animator.AnimatorListener {
-                        override fun onAnimationRepeat(animation: Animator?) {}
-                        override fun onAnimationCancel(animation: Animator?) {}
-                        override fun onAnimationStart(animation: Animator?) {}
-                        override fun onAnimationEnd(animation: Animator?) {
-                            empty_state.visibility = View.INVISIBLE
-                        }
-                    })
-        }
-    }
-
-    private fun restoreTrash(animate: Boolean) {
-        if (animate) {
-            fab_trash.animateScale(
-                    FAB_HIGHLIGHTED_SIZE.toFloat() / FAB_DEFAULT_SIZE.toFloat(),
-                    1f,
-                    ANIMATION_SCALE_DURATION
-            )
-        } else {
-            fab_trash.customSize = FAB_HIGHLIGHTED_SIZE
-            fab_trash.requestLayout()
-        }
-    }
-
-    private fun highlightTrash() {
-        fab_trash.animateScale(
-                1f,
-                FAB_HIGHLIGHTED_SIZE.toFloat() / FAB_DEFAULT_SIZE.toFloat(),
-                ANIMATION_SCALE_DURATION
-        )
-    }
-
-    private fun showTrash() {
-        fab_trash.show()
-    }
-
-    private fun hideTrash() {
-        fab_trash.hide()
-    }
-
     override fun showViewImagePager(noteId: String, position: Int) {
         if (fragmentManager?.findFragmentByTag(GalleryPagerFragment.TAG) == null) {
             fragmentManager?.inTransaction {
@@ -391,5 +340,68 @@ class GalleryListFragment : Fragment(), GalleryListAdapter.OnListItemInteraction
 
     override fun closeCab() {
         mActionMode?.finish()
+    }
+
+    private fun showImageCount(count: Int) {
+        val textCount = getString(R.string.fragment_gallery_list_image_count) + ": $count"
+        activity?.text_toolbar_title?.text = textCount
+    }
+
+    private fun showEmptyState() {
+        if (empty_state.visibility == View.INVISIBLE) {
+            empty_state.translationY = empty_state.height + 100f
+            empty_state.visibility = View.VISIBLE
+            empty_state.animate()
+                    .translationY(0f)
+                    .setDuration(ANIMATION_MOVE_DURATION)
+                    .setInterpolator(DecelerateInterpolator())
+                    .setListener(null)
+        }
+    }
+
+    private fun hideEmptyState() {
+        if (empty_state.visibility == View.VISIBLE) {
+            empty_state.animate()
+                    .translationY(empty_state.height + 100f)
+                    .setDuration(ANIMATION_MOVE_DURATION)
+                    .setInterpolator(AccelerateInterpolator())
+                    .setListener(object : Animator.AnimatorListener {
+                        override fun onAnimationRepeat(animation: Animator?) {}
+                        override fun onAnimationCancel(animation: Animator?) {}
+                        override fun onAnimationStart(animation: Animator?) {}
+                        override fun onAnimationEnd(animation: Animator?) {
+                            empty_state.visibility = View.INVISIBLE
+                        }
+                    })
+        }
+    }
+
+    private fun restoreTrash(animate: Boolean) {
+        if (animate) {
+            fab_trash.animateScale(
+                    FAB_HIGHLIGHTED_SIZE.toFloat() / FAB_DEFAULT_SIZE.toFloat(),
+                    1f,
+                    ANIMATION_SCALE_DURATION
+            )
+        } else {
+            fab_trash.customSize = FAB_HIGHLIGHTED_SIZE
+            fab_trash.requestLayout()
+        }
+    }
+
+    private fun highlightTrash() {
+        fab_trash.animateScale(
+                1f,
+                FAB_HIGHLIGHTED_SIZE.toFloat() / FAB_DEFAULT_SIZE.toFloat(),
+                ANIMATION_SCALE_DURATION
+        )
+    }
+
+    private fun showTrash() {
+        fab_trash.show()
+    }
+
+    private fun hideTrash() {
+        fab_trash.hide()
     }
 }

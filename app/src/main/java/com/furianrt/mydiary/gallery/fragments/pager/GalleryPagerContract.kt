@@ -7,18 +7,14 @@ import com.furianrt.mydiary.data.model.MyImage
 interface GalleryPagerContract {
 
     interface View : BaseView {
-
         fun showImages(images: List<MyImage>)
-
         fun showListImagesView(noteId: String)
     }
 
     abstract class Presenter : BasePresenter<View>() {
-
         abstract fun onViewStart()
-
         abstract fun setNoteId(noteId: String)
-
-        abstract fun onListModeButtonClick()
+        abstract fun onButtonListModeClick()
+        abstract fun onButtonDeleteClick(image: MyImage)
     }
 }

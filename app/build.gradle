@@ -118,6 +118,9 @@ dependencies {
     //Encryption
     implementation 'org.mindrot:jbcrypt:0.4'
 
+    //ImageView with zoom
+    implementation 'com.jsibbold:zoomage:1.2.0'
+
     //Tests
     testImplementation "junit:junit:$junit_version"
     androidTestImplementation 'androidx.test:runner:1.1.1'

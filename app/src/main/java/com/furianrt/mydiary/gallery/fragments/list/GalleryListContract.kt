@@ -20,6 +20,7 @@ interface GalleryListContract {
         fun showEmptyList()
         fun showLoading()
         fun hideLoading()
+        fun showSelectedImageCount(count: Int)
     }
 
     abstract class Presenter : BasePresenter<View>() {
