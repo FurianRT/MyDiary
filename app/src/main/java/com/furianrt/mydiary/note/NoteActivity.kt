@@ -108,7 +108,7 @@ class NoteActivity : BaseActivity(), NoteActivityContract.View,
     }
 
     override fun onSupportNavigateUp(): Boolean {
-        onBackPressed()
+        finish()
         return true
     }
 

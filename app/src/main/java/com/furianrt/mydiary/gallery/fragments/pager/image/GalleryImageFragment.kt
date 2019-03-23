@@ -17,10 +17,7 @@ class GalleryImageFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        arguments?.let {
-            mImage = it.getParcelable(ARG_IMAGE)
-        }
-
+        arguments?.let { mImage = it.getParcelable(ARG_IMAGE) }
         setHasOptionsMenu(true)
     }
 

@@ -235,12 +235,16 @@ class GalleryListFragment : Fragment(), GalleryListAdapter.OnListItemInteraction
 
     override fun selectImage(image: MyImage) {
         mAdapter.selectedImages.add(image)
-        mAdapter.notifyItemChanged(mAdapter.getImages().indexOf(image))
+        mAdapter.getImages().find { it.name == image.name }?.let {
+            mAdapter.notifyItemChanged(mAdapter.getImages().indexOf(it))
+        }
     }
 
     override fun deselectImage(image: MyImage) {
-        mAdapter.selectedImages.remove(image)
-        mAdapter.notifyItemChanged(mAdapter.getImages().indexOf(image))
+        mAdapter.selectedImages.removeAll { it.name == image.name }
+        mAdapter.getImages().find { it.name == image.name }?.let {
+            mAdapter.notifyItemChanged(mAdapter.getImages().indexOf(it))
+        }
     }
 
     override fun onListItemClick(image: MyImage, position: Int) {

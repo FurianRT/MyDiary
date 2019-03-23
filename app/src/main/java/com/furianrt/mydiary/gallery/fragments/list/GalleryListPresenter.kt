@@ -22,15 +22,13 @@ class GalleryListPresenter(private val mDataManager: DataManager) : GalleryListC
     }
 
     private fun selectListItem(image: MyImage) {
-        when {
-            mSelectedImages.contains(image) -> {
-                mSelectedImages.remove(image)
-                view?.deselectImage(image)
-            }
-            else -> {
-                mSelectedImages.add(image)
-                view?.selectImage(image)
-            }
+        val foundedImage = mSelectedImages.find { it.name == image.name }
+        if (foundedImage != null) {
+            mSelectedImages.remove(foundedImage)
+            view?.deselectImage(image)
+        } else {
+            mSelectedImages.add(image)
+            view?.selectImage(image)
         }
         view?.showSelectedImageCount(mSelectedImages.size)
     }
@@ -94,11 +92,10 @@ class GalleryListPresenter(private val mDataManager: DataManager) : GalleryListC
                 .first(emptyList())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { images ->
-                    val list = images.toMutableList()
-                    list.removeAll(mSelectedImages)
-                    mSelectedImages.addAll(list)
+                    mSelectedImages.clear()
+                    mSelectedImages.addAll(images)
                     view?.showSelectedImageCount(mSelectedImages.size)
-                    view?.selectImages(list)
+                    view?.selectImages(mSelectedImages)
                 })
     }
 

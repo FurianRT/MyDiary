@@ -56,7 +56,7 @@ class GalleryActivity : BaseActivity(), GalleryActivityContract.View {
     }
 
     override fun onSupportNavigateUp(): Boolean {
-        onBackPressed()
+        finish()
         return true
     }
 }

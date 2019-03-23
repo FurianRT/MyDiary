@@ -81,7 +81,7 @@ class MainActivity : BaseActivity(), MainActivityContract.View,
         private const val ANIMATION_IMAGE_SETTINGS_FADE_OUT_OFFSET = 2000L
         private const val ANIMATION_PROGRESS_FADE_OUT_OFFSET = 2000L
         private const val ANIMATION_PROGRESS_DURATION = 500L
-        private const val BOTTOM_SHEET_EXPAND_DELAY = 200L
+        private const val BOTTOM_SHEET_EXPAND_DELAY = 300L
     }
 
     @Inject
