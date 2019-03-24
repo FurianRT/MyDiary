@@ -10,6 +10,7 @@ import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.furianrt.mydiary.R
 import com.furianrt.mydiary.data.model.MyNoteWithProp
 import com.furianrt.mydiary.general.GlideApp
@@ -148,6 +149,8 @@ class MainListAdapter(
                     GlideApp.with(itemView)
                             .load(Uri.parse(notDeletedImages.first().uri))
                             .override(200, 200)
+                            .diskCacheStrategy(DiskCacheStrategy.NONE)
+                            .skipMemoryCache(true)
                             .into(image_main_list)
                 }
 

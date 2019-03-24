@@ -21,8 +21,9 @@ interface DataManager {
     fun updateNote(note: MyNote): Completable
     fun updateNoteText(noteId: String, title: String, content: String): Completable
     fun updateTag(tag: MyTag): Completable
-    fun updateImages(images: List<MyImage>): Completable
-    fun updateImagesSync(images: List<MyImage>): Completable
+    fun updateImage(image: MyImage): Completable
+    fun updateImage(images: List<MyImage>): Completable
+    fun updateImageSync(images: List<MyImage>): Completable
     fun updateCategory(category: MyCategory): Completable
     fun updateAppearance(appearance: MyNoteAppearance): Completable
     fun updateDbProfile(profile: MyProfile): Completable

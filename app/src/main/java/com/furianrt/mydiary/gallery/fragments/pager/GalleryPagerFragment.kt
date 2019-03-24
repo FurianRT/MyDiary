@@ -1,5 +1,8 @@
 package com.furianrt.mydiary.gallery.fragments.pager
 
+import android.app.Activity
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.view.*
 import androidx.fragment.app.Fragment
@@ -7,13 +10,35 @@ import androidx.viewpager.widget.ViewPager
 import com.furianrt.mydiary.R
 import com.furianrt.mydiary.data.model.MyImage
 import com.furianrt.mydiary.gallery.fragments.list.GalleryListFragment
+import com.furianrt.mydiary.utils.getThemeAccentColor
+import com.furianrt.mydiary.utils.getThemePrimaryColor
+import com.furianrt.mydiary.utils.getThemePrimaryDarkColor
 import com.furianrt.mydiary.utils.inTransaction
+import com.yalantis.ucrop.UCrop
 import kotlinx.android.synthetic.main.activity_gallery.*
 import kotlinx.android.synthetic.main.fragment_gallery_pager.*
 import kotlinx.android.synthetic.main.fragment_gallery_pager.view.*
+import java.util.*
 import javax.inject.Inject
 
 class GalleryPagerFragment : Fragment(), GalleryPagerContract.View {
+
+    companion object {
+
+        const val TAG = "GalleryPagerFragment"
+        private const val ARG_POSITION = "position"
+        private const val ARG_NOTE_ID = "noteId"
+        private const val IMAGE_EDITOR_REQUEST_CODE = 2
+
+        @JvmStatic
+        fun newInstance(noteId: String, position: Int) =
+                GalleryPagerFragment().apply {
+                    arguments = Bundle().apply {
+                        putString(ARG_NOTE_ID, noteId)
+                        putInt(ARG_POSITION, position)
+                    }
+                }
+    }
 
     @Inject
     lateinit var mPresenter: GalleryPagerContract.Presenter
@@ -88,6 +113,10 @@ class GalleryPagerFragment : Fragment(), GalleryPagerContract.View {
                 mPresenter.onButtonDeleteClick(mPagerAdapter.images[mPagerPosition])
                 true
             }
+            R.id.menu_edit -> {
+                mPresenter.onButtonEditClick(mPagerAdapter.images[mPagerPosition])
+                true
+            }
             else -> super.onOptionsItemSelected(item)
         }
     }
@@ -103,24 +132,29 @@ class GalleryPagerFragment : Fragment(), GalleryPagerContract.View {
         outState.putInt(ARG_POSITION, view!!.pager_gallery.currentItem)
     }
 
+    override fun showEditImageView(image: MyImage) {
+        val uri = Uri.parse(image.uri)
+        UCrop.of(uri, uri)
+                .withOptions(UCrop.Options().apply {
+                    setToolbarTitle(getString(R.string.fragment_gallery_pager_edit_photo))
+                    setActiveWidgetColor(getThemeAccentColor(context!!))
+                    setStatusBarColor(getThemePrimaryDarkColor(context!!))
+                    setToolbarColor(getThemePrimaryColor(context!!))
+                    setCompressionQuality(100)
+                    setFreeStyleCropEnabled(true)
+                })
+                .start(context!!, this, IMAGE_EDITOR_REQUEST_CODE)
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == IMAGE_EDITOR_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
+            mPresenter.onImageEdited()
+        }
+    }
+
     private fun showImageCounter(current: Int, count: Int) {
         val textCounter = "$current/$count"
         activity?.text_toolbar_title?.text = textCounter
-    }
-
-    companion object {
-
-        const val TAG = "GalleryPagerFragment"
-        private const val ARG_POSITION = "position"
-        private const val ARG_NOTE_ID = "noteId"
-
-        @JvmStatic
-        fun newInstance(noteId: String, position: Int) =
-                GalleryPagerFragment().apply {
-                    arguments = Bundle().apply {
-                        putString(ARG_NOTE_ID, noteId)
-                        putInt(ARG_POSITION, position)
-                    }
-                }
     }
 }

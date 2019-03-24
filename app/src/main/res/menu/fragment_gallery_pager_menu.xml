@@ -9,13 +9,15 @@
         app:showAsAction="ifRoom" />
 
     <item
-        android:id="@+id/menu_delete"
-        android:title="@string/delete"
-        app:showAsAction="never" />
+        android:id="@+id/menu_edit"
+        android:icon="@drawable/ic_crop_rotate"
+        android:title="@string/edit"
+        app:showAsAction="ifRoom" />
 
     <item
-        android:id="@+id/menu_edit"
-        android:title="@string/edit"
-        app:showAsAction="never" />
+        android:id="@+id/menu_delete"
+        android:icon="@drawable/ic_delete"
+        android:title="@string/delete"
+        app:showAsAction="ifRoom" />
 
 </menu>

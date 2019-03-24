@@ -95,12 +95,17 @@ class DataManagerImp(
             Completable.fromAction { mDatabase.tagDao().update(tag.apply { isSync = false }) }
                     .subscribeOn(mRxScheduler)
 
-    override fun updateImages(images: List<MyImage>): Completable =
+    override fun updateImage(image: MyImage): Completable =
+            Completable.fromAction {
+                mDatabase.imageDao().update(image.apply { isSync = false })
+            }.subscribeOn(mRxScheduler)
+
+    override fun updateImage(images: List<MyImage>): Completable =
             Completable.fromAction {
                 mDatabase.imageDao().update(images.map { it.apply { isSync = false } })
             }.subscribeOn(mRxScheduler)
 
-    override fun updateImagesSync(images: List<MyImage>): Completable =
+    override fun updateImageSync(images: List<MyImage>): Completable =
             Completable.fromAction { mDatabase.imageDao().update(images) }
                     .subscribeOn(mRxScheduler)
 

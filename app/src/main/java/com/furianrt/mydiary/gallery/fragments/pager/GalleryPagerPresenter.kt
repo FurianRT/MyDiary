@@ -9,6 +9,7 @@ class GalleryPagerPresenter(
 ) : GalleryPagerContract.Presenter() {
 
     private lateinit var mNoteId: String
+    private var mEditedImage: MyImage? = null
 
     override fun onViewStart() {
         loadImages(mNoteId)
@@ -40,5 +41,17 @@ class GalleryPagerPresenter(
                 .ignoreElement()
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe())
+    }
+
+    override fun onButtonEditClick(image: MyImage) {
+        mEditedImage = image
+        view?.showEditImageView(image)
+    }
+
+    override fun onImageEdited() {
+        mEditedImage?.let { image ->
+            addDisposable(mDataManager.updateImage(image.apply { isEdited = true })
+                    .subscribe())
+        }
     }
 }

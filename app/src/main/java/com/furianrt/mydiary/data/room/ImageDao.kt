@@ -14,6 +14,9 @@ interface ImageDao {
     fun insert(images: List<MyImage>)
 
     @Update
+    fun update(image: MyImage)
+
+    @Update
     fun update(images: List<MyImage>)
 
     @Query("UPDATE Images SET is_image_deleted = 1, is_image_sync = 0 WHERE id_note_image = :noteId")

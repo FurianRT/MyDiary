@@ -30,3 +30,7 @@
 
 -dontwarn com.yanzhenjie.album.**
 -dontwarn com.yanzhenjie.mediascanner.**
+
+-dontwarn com.yalantis.ucrop**
+-keep class com.yalantis.ucrop** { *; }
+-keep interface com.yalantis.ucrop** { *; }

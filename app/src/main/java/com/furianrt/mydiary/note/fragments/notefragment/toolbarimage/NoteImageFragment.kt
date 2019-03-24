@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.furianrt.mydiary.R
 import com.furianrt.mydiary.data.model.MyImage
 import com.furianrt.mydiary.general.GlideApp
@@ -28,6 +29,8 @@ class NoteImageFragment : androidx.fragment.app.Fragment() {
 
         GlideApp.with(this)
                 .load(Uri.parse(mImage?.uri))
+                .diskCacheStrategy(DiskCacheStrategy.NONE)
+                .skipMemoryCache(true)
                 .into(view.image_note)
 
         view.layout_toolbar_image_root.setOnClickListener {

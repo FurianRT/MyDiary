@@ -167,7 +167,7 @@ class SyncPresenter(
                         return@flatMapCompletable Completable.concat(listOf(
                                 mDataManager.saveImagesFilesInCloud(imagesSync.filter { it.isEdited }),
                                 mDataManager.saveImagesInCloud(imagesSync.map { it.apply { isEdited = false } }),
-                                mDataManager.updateImagesSync(imagesSync.map { it.apply { isEdited = false } })
+                                mDataManager.updateImageSync(imagesSync.map { it.apply { isEdited = false } })
                         ))
                     }
                     .andThen(mDataManager.getDeletedImages().first(emptyList()))

@@ -59,7 +59,7 @@ class GalleryListPresenter(private val mDataManager: DataManager) : GalleryListC
     }
 
     override fun onImagesOrderChange(images: List<MyImage>) {
-        addDisposable(mDataManager.updateImages(images)
+        addDisposable(mDataManager.updateImage(images)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe())
     }

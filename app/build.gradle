@@ -90,7 +90,7 @@ dependencies {
     implementation 'com.yanzhenjie:album:2.1.2'
 
     //Picture editor
-    implementation 'com.yanzhenjie:durban:1.0.1'
+    implementation 'com.github.yalantis:ucrop:2.2.2-native'
 
     //DateTime
     implementation 'net.danlew:android.joda:2.9.9.4'
