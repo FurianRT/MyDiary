@@ -82,6 +82,8 @@ class GalleryPagerFragment : Fragment(), GalleryPagerContract.View,
         pager_gallery.addOnPageChangeListener(mOnPageChangeListener)
         mPresenter.attachView(this)
         mPresenter.onViewStart()
+        (activity?.supportFragmentManager?.findFragmentByTag(DeleteConfirmDialog.TAG) as? DeleteConfirmDialog)
+                ?.setOnDeleteConfirmListener(this)
     }
 
     override fun onPause() {
@@ -131,14 +133,6 @@ class GalleryPagerFragment : Fragment(), GalleryPagerContract.View,
         ).apply {
             setOnDeleteConfirmListener(this@GalleryPagerFragment)
         }.show(activity?.supportFragmentManager, DeleteConfirmDialog.TAG)
-    }
-
-    override fun setUserVisibleHint(isVisibleToUser: Boolean) {
-        super.setUserVisibleHint(isVisibleToUser)
-        if (isVisibleToUser) {
-            (activity?.supportFragmentManager?.findFragmentByTag(DeleteConfirmDialog.TAG) as? DeleteConfirmDialog)
-                    ?.setOnDeleteConfirmListener(this@GalleryPagerFragment)
-        }
     }
 
     override fun onDialogButtonDeleteClick() {

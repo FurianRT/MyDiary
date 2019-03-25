@@ -22,9 +22,11 @@ class MyApp : Application() {
         const val NOTIFICATION_FIREBASE_CHANNEL_NAME = "Info"
     }
 
-    val component: AppComponent = DaggerAppComponent.builder()
-            .appModule(AppModule(this))
-            .build()
+    val component: AppComponent by lazy {
+        DaggerAppComponent.builder()
+                .appModule(AppModule(this))
+                .build()
+    }
 
     override fun onCreate() {
         super.onCreate()

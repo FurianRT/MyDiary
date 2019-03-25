@@ -1,4 +1,4 @@
-package com.furianrt.mydiary
+package com.furianrt.mydiary.base
 
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable

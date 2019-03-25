@@ -2,8 +2,8 @@ package com.furianrt.mydiary.settings.global
 
 import android.os.Bundle
 import android.preference.PreferenceManager
-import com.furianrt.mydiary.BaseActivity
 import com.furianrt.mydiary.R
+import com.furianrt.mydiary.base.BaseActivity
 import kotlinx.android.synthetic.main.activity_global_settings.*
 
 class GlobalSettingsActivity : BaseActivity() {

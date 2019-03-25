@@ -1,7 +1,7 @@
 package com.furianrt.mydiary.main.fragments.profile.about
 
-import com.furianrt.mydiary.BasePresenter
-import com.furianrt.mydiary.BaseView
+import com.furianrt.mydiary.base.BasePresenter
+import com.furianrt.mydiary.base.BaseView
 import com.furianrt.mydiary.data.model.MyProfile
 
 interface AboutProfileContract {

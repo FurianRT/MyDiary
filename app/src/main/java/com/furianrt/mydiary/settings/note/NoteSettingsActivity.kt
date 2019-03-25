@@ -1,8 +1,8 @@
 package com.furianrt.mydiary.settings.note
 
 import android.os.Bundle
-import com.furianrt.mydiary.BaseActivity
 import com.furianrt.mydiary.R
+import com.furianrt.mydiary.base.BaseActivity
 import kotlinx.android.synthetic.main.activity_note_settings.*
 
 class NoteSettingsActivity : BaseActivity() {

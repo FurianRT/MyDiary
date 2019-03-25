@@ -1,8 +1,8 @@
 package com.furianrt.mydiary.gallery
 
 import android.os.Bundle
-import com.furianrt.mydiary.BaseActivity
 import com.furianrt.mydiary.R
+import com.furianrt.mydiary.base.BaseActivity
 import com.furianrt.mydiary.gallery.fragments.list.GalleryListFragment
 import com.furianrt.mydiary.gallery.fragments.pager.GalleryPagerFragment
 import com.furianrt.mydiary.utils.inTransaction

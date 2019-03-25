@@ -1,7 +1,7 @@
 package com.furianrt.mydiary.note.fragments.notefragment.edit
 
-import com.furianrt.mydiary.BasePresenter
-import com.furianrt.mydiary.BaseView
+import com.furianrt.mydiary.base.BasePresenter
+import com.furianrt.mydiary.base.BaseView
 
 interface NoteEditFragmentContract {
 

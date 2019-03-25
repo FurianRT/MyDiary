@@ -5,8 +5,8 @@ import android.util.Log
 import android.view.Menu
 import android.view.WindowManager
 import androidx.viewpager.widget.ViewPager
-import com.furianrt.mydiary.BaseActivity
 import com.furianrt.mydiary.R
+import com.furianrt.mydiary.base.BaseActivity
 import com.furianrt.mydiary.data.model.MyNoteWithProp
 import com.furianrt.mydiary.note.fragments.notefragment.edit.NoteEditFragment
 import com.furianrt.mydiary.utils.generateUniqueId

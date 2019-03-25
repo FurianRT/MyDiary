@@ -1,10 +1,11 @@
-package com.furianrt.mydiary
+package com.furianrt.mydiary.base
 
 import android.os.Bundle
 import android.os.PersistableBundle
 import android.preference.PreferenceManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import com.furianrt.mydiary.R
 import com.furianrt.mydiary.data.prefs.PreferencesHelper
 
 abstract class BaseActivity : AppCompatActivity() {

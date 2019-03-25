@@ -1,7 +1,7 @@
 package com.furianrt.mydiary.note.dialogs.tags
 
-import com.furianrt.mydiary.BasePresenter
-import com.furianrt.mydiary.BaseView
+import com.furianrt.mydiary.base.BasePresenter
+import com.furianrt.mydiary.base.BaseView
 import com.furianrt.mydiary.data.model.MyTag
 
 interface TagsDialogContract {
