@@ -10,6 +10,7 @@ import androidx.viewpager.widget.ViewPager
 import com.furianrt.mydiary.R
 import com.furianrt.mydiary.data.model.MyImage
 import com.furianrt.mydiary.gallery.fragments.list.GalleryListFragment
+import com.furianrt.mydiary.general.DeleteConfirmDialog
 import com.furianrt.mydiary.utils.getThemeAccentColor
 import com.furianrt.mydiary.utils.getThemePrimaryColor
 import com.furianrt.mydiary.utils.getThemePrimaryDarkColor
@@ -21,7 +22,8 @@ import kotlinx.android.synthetic.main.fragment_gallery_pager.view.*
 import java.util.*
 import javax.inject.Inject
 
-class GalleryPagerFragment : Fragment(), GalleryPagerContract.View {
+class GalleryPagerFragment : Fragment(), GalleryPagerContract.View,
+        DeleteConfirmDialog.OnDeleteConfirmListener {
 
     companion object {
 
@@ -110,7 +112,7 @@ class GalleryPagerFragment : Fragment(), GalleryPagerContract.View {
                 true
             }
             R.id.menu_delete -> {
-                mPresenter.onButtonDeleteClick(mPagerAdapter.images[mPagerPosition])
+                showDeleteConfirmationDialog()
                 true
             }
             R.id.menu_edit -> {
@@ -121,6 +123,28 @@ class GalleryPagerFragment : Fragment(), GalleryPagerContract.View {
         }
     }
 
+    private fun showDeleteConfirmationDialog() {
+        DeleteConfirmDialog.newInstance(resources.getQuantityString(
+                R.plurals.image_delete_confirmation,
+                1,
+                1)
+        ).apply {
+            setOnDeleteConfirmListener(this@GalleryPagerFragment)
+        }.show(activity?.supportFragmentManager, DeleteConfirmDialog.TAG)
+    }
+
+    override fun setUserVisibleHint(isVisibleToUser: Boolean) {
+        super.setUserVisibleHint(isVisibleToUser)
+        if (isVisibleToUser) {
+            (activity?.supportFragmentManager?.findFragmentByTag(DeleteConfirmDialog.TAG) as? DeleteConfirmDialog)
+                    ?.setOnDeleteConfirmListener(this@GalleryPagerFragment)
+        }
+    }
+
+    override fun onDialogButtonDeleteClick() {
+        mPresenter.onButtonDeleteClick(mPagerAdapter.images[mPagerPosition])
+    }
+
     override fun showListImagesView(noteId: String) {
         fragmentManager?.inTransaction {
             replace(R.id.container_gallery, GalleryListFragment.newInstance(noteId), GalleryListFragment.TAG)
@@ -129,7 +153,7 @@ class GalleryPagerFragment : Fragment(), GalleryPagerContract.View {
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        outState.putInt(ARG_POSITION, view!!.pager_gallery.currentItem)
+        outState.putInt(ARG_POSITION, pager_gallery.currentItem)
     }
 
     override fun showEditImageView(image: MyImage) {

@@ -26,6 +26,7 @@ import com.furianrt.mydiary.data.model.*
 import com.furianrt.mydiary.data.prefs.PreferencesHelper
 import com.furianrt.mydiary.gallery.GalleryActivity
 import com.furianrt.mydiary.general.AppBarLayoutBehavior
+import com.furianrt.mydiary.general.DeleteConfirmDialog
 import com.furianrt.mydiary.general.GlideApp
 import com.furianrt.mydiary.note.NoteActivity
 import com.furianrt.mydiary.note.dialogs.categories.CategoriesDialog
@@ -62,7 +63,8 @@ class NoteFragment : Fragment(), NoteFragmentContract.View, OnMapReadyCallback,
         TagsDialog.OnTagsDialogInteractionListener, View.OnClickListener,
         MoodsDialog.OnMoodsDialogInteractionListener,
         CategoriesDialog.OnCategoriesDialogInteractionListener,
-        DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener {
+        DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener,
+        DeleteConfirmDialog.OnDeleteConfirmListener {
 
     companion object {
         const val TAG = "NoteFragment"
@@ -180,16 +182,16 @@ class NoteFragment : Fragment(), NoteFragmentContract.View, OnMapReadyCallback,
         return when (item?.itemId) {
             R.id.menu_image -> {
                 removeEditFragment()
-                mPresenter.onAddImageButtonClick()
+                mPresenter.onButtonAddImageClick()
                 true
             }
             R.id.menu_delete -> {
-                mPresenter.onDeleteButtonClick()
+                showDeleteConfirmationDialog()
                 true
             }
             R.id.menu_appearance -> {
                 removeEditFragment()
-                mPresenter.onAppearanceButtonClick()
+                mPresenter.onButtonAppearanceClick()
                 true
             }
             R.id.menu_date -> {
@@ -203,11 +205,25 @@ class NoteFragment : Fragment(), NoteFragmentContract.View, OnMapReadyCallback,
                 true
             }
             R.id.menu_edit -> {
-                mPresenter.onEditButtonClick()
+                mPresenter.onButtonEditClick()
                 true
             }
             else -> super.onOptionsItemSelected(item)
         }
+    }
+
+    private fun showDeleteConfirmationDialog() {
+        DeleteConfirmDialog.newInstance(resources.getQuantityString(
+                R.plurals.note_delete_confirmation,
+                1,
+                1)
+        ).apply {
+            setOnDeleteConfirmListener(this@NoteFragment)
+        }.show(activity?.supportFragmentManager, DeleteConfirmDialog.TAG)
+    }
+
+    override fun onDialogButtonDeleteClick() {
+        mPresenter.onButtonDeleteClick()
     }
 
     override fun shoNoteEditView() {
@@ -370,9 +386,9 @@ class NoteFragment : Fragment(), NoteFragmentContract.View, OnMapReadyCallback,
     }
 
     override fun showMoodsDialog(moods: List<MyMood>) {
-        val dialog = MoodsDialog()
-        dialog.setOnMoodsDialogInteractionListener(this)
-        dialog.show(activity?.supportFragmentManager, MoodsDialog.TAG)
+        MoodsDialog().apply {
+            setOnMoodsDialogInteractionListener(this@NoteFragment)
+        }.show(activity?.supportFragmentManager, MoodsDialog.TAG)
     }
 
     override fun showLocation(location: MyLocation) {
@@ -420,17 +436,14 @@ class NoteFragment : Fragment(), NoteFragmentContract.View, OnMapReadyCallback,
     override fun setUserVisibleHint(isVisibleToUser: Boolean) {
         super.setUserVisibleHint(isVisibleToUser)
         if (isVisibleToUser) {
-            val tagsDialog =
-                    fragmentManager?.findFragmentByTag(TagsDialog.TAG) as TagsDialog?
-            tagsDialog?.setOnTagChangedListener(this)
-
-            val moodsDialog =
-                    fragmentManager?.findFragmentByTag(MoodsDialog.TAG) as MoodsDialog?
-            moodsDialog?.setOnMoodsDialogInteractionListener(this)
-
-            val categoriesDialog =
-                    fragmentManager?.findFragmentByTag(CategoriesDialog.TAG) as CategoriesDialog?
-            categoriesDialog?.setOnCategoriesDialogListener(this)
+            (activity?.supportFragmentManager?.findFragmentByTag(TagsDialog.TAG) as? TagsDialog?)
+                    ?.setOnTagChangedListener(this)
+            (activity?.supportFragmentManager?.findFragmentByTag(MoodsDialog.TAG) as? MoodsDialog?)
+                    ?.setOnMoodsDialogInteractionListener(this)
+            (activity?.supportFragmentManager?.findFragmentByTag(CategoriesDialog.TAG) as? CategoriesDialog?)
+                    ?.setOnCategoriesDialogListener(this)
+            (activity?.supportFragmentManager?.findFragmentByTag(DeleteConfirmDialog.TAG) as? DeleteConfirmDialog?)
+                    ?.setOnDeleteConfirmListener(this)
         }
     }
 
@@ -479,21 +492,21 @@ class NoteFragment : Fragment(), NoteFragmentContract.View, OnMapReadyCallback,
             R.id.text_time -> mPresenter.onTimeFieldClick()
             R.id.fab_add_image -> {
                 removeEditFragment()
-                mPresenter.onAddImageButtonClick()
+                mPresenter.onButtonAddImageClick()
             }
         }
     }
 
     override fun showCategoriesDialog(noteId: String) {
-        val dialog = CategoriesDialog.newInstance(noteId)
-        dialog.setOnCategoriesDialogListener(this)
-        dialog.show(activity?.supportFragmentManager, CategoriesDialog.TAG)
+        CategoriesDialog.newInstance(noteId).apply {
+            setOnCategoriesDialogListener(this@NoteFragment)
+        }.show(activity?.supportFragmentManager, CategoriesDialog.TAG)
     }
 
     override fun showTagsDialog(tags: ArrayList<MyTag>) {
-        val dialog = TagsDialog.newInstance(tags)
-        dialog.setOnTagChangedListener(this)
-        dialog.show(activity?.supportFragmentManager, TagsDialog.TAG)
+        TagsDialog.newInstance(tags).apply {
+            setOnTagChangedListener(this@NoteFragment)
+        }.show(activity?.supportFragmentManager, TagsDialog.TAG)
     }
 
     override fun showForecast(forecast: Forecast) {

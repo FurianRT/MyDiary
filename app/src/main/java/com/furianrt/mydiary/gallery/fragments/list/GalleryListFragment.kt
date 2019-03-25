@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.furianrt.mydiary.R
 import com.furianrt.mydiary.data.model.MyImage
 import com.furianrt.mydiary.gallery.fragments.pager.GalleryPagerFragment
+import com.furianrt.mydiary.general.DeleteConfirmDialog
 import com.furianrt.mydiary.utils.*
 import com.yanzhenjie.album.Album
 import com.yanzhenjie.album.api.widget.Widget
@@ -29,7 +30,7 @@ import pub.devrel.easypermissions.EasyPermissions
 import javax.inject.Inject
 
 class GalleryListFragment : Fragment(), GalleryListAdapter.OnListItemInteractionListener,
-        GalleryListContract.View, ActionMode.Callback {
+        GalleryListContract.View, ActionMode.Callback, DeleteConfirmDialog.OnDeleteConfirmListener {
 
     companion object {
         const val TAG = "GalleryListFragment"
@@ -121,7 +122,7 @@ class GalleryListFragment : Fragment(), GalleryListAdapter.OnListItemInteraction
             mActionMode = (activity as AppCompatActivity).startSupportActionMode(this)
         }
 
-        view.button_add_images.setOnClickListener { mPresenter.onAddImageButtonClick() }
+        view.button_add_images.setOnClickListener { mPresenter.onButtonAddImageClick() }
 
         return view
     }
@@ -130,6 +131,8 @@ class GalleryListFragment : Fragment(), GalleryListAdapter.OnListItemInteraction
         super.onResume()
         mPresenter.attachView(this)
         mPresenter.onViewStart()
+        (activity?.supportFragmentManager?.findFragmentByTag(DeleteConfirmDialog.TAG) as? DeleteConfirmDialog?)
+                ?.setOnDeleteConfirmListener(this)
     }
 
     override fun onPause() {
@@ -173,7 +176,7 @@ class GalleryListFragment : Fragment(), GalleryListAdapter.OnListItemInteraction
     }
 
     override fun showSelectedImageCount(count: Int) {
-        mActionMode?.title = getString(R.string.fragment_gallery_list_selected) + ": $count"
+        mActionMode?.title = getString(R.string.fragment_gallery_list_selected, count)
     }
 
     override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
@@ -184,11 +187,11 @@ class GalleryListFragment : Fragment(), GalleryListAdapter.OnListItemInteraction
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         return when (item?.itemId) {
             R.id.menu_multi_select -> {
-                mPresenter.onMultiSelectionButtonClick()
+                mPresenter.onButtonMultiSelectionClick()
                 true
             }
             R.id.menu_add_image -> {
-                mPresenter.onAddImageButtonClick()
+                mPresenter.onButtonAddImageClick()
                 true
             }
             else -> super.onOptionsItemSelected(item)
@@ -207,16 +210,31 @@ class GalleryListFragment : Fragment(), GalleryListAdapter.OnListItemInteraction
     override fun onActionItemClicked(mode: ActionMode?, item: MenuItem?): Boolean {
         return when (item?.itemId) {
             R.id.menu_delete -> {
-                mPresenter.onCabDeleteButtonClick()
+                showDeleteConfirmationDialog()
                 true
             }
 
             R.id.menu_select_all -> {
-                mPresenter.onCabSelectAllButtonClick()
+                mPresenter.onButtonCabSelectAllClick()
                 true
             }
             else -> false
         }
+    }
+
+    private fun showDeleteConfirmationDialog() {
+        val selectedImageCount = mAdapter.selectedImages.count()
+        DeleteConfirmDialog.newInstance(resources.getQuantityString(
+                R.plurals.image_delete_confirmation,
+                selectedImageCount,
+                selectedImageCount)
+        ).apply {
+            setOnDeleteConfirmListener(this@GalleryListFragment)
+        }.show(activity?.supportFragmentManager, DeleteConfirmDialog.TAG)
+    }
+
+    override fun onDialogButtonDeleteClick() {
+        mPresenter.onButtonCabDeleteClick()
     }
 
     override fun onDestroyActionMode(mode: ActionMode?) {
@@ -347,8 +365,7 @@ class GalleryListFragment : Fragment(), GalleryListAdapter.OnListItemInteraction
     }
 
     private fun showImageCount(count: Int) {
-        val textCount = getString(R.string.fragment_gallery_list_image_count) + ": $count"
-        activity?.text_toolbar_title?.text = textCount
+        activity?.text_toolbar_title?.text = getString(R.string.fragment_gallery_list_image_count, count)
     }
 
     private fun showEmptyState() {

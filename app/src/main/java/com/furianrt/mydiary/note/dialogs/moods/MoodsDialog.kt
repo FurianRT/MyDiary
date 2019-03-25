@@ -1,10 +1,10 @@
 package com.furianrt.mydiary.note.dialogs.moods
 
 import android.annotation.SuppressLint
-import androidx.appcompat.app.AlertDialog
 import android.app.Dialog
 import android.content.DialogInterface
 import android.os.Bundle
+import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -75,9 +75,7 @@ class MoodsDialog : DialogFragment(), MoodsDialogContract.View,
     }
 
     interface OnMoodsDialogInteractionListener {
-
         fun onMoodPicked(mood: MyMood)
-
         fun onNoMoodPicked()
     }
 

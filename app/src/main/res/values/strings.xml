@@ -225,8 +225,24 @@
     <string name="gallery_list_empty_state_add_images">Добавить картинки</string>
     <string name="gallery_list_empty_state_message_part_1">Список картинок пуст?</string>
     <string name="gallery_list_empty_state_message_part_2">Ничего страшного! Добавьте новые, это просто!</string>
-    <string name="fragment_gallery_list_selected">Выбрано</string>
-    <string name="fragment_gallery_list_image_count">Всего картинок</string>
+    <string name="fragment_gallery_list_selected">Выбрано: %1$d</string>
+    <string name="fragment_gallery_list_image_count">Всего картинок: %1$d</string>
     <string name="fragment_gallery_pager_edit_photo">Ред. фото</string>
+    <plurals name="note_delete_confirmation">
+        <item quantity="zero">Удалить %1$d записей?</item>
+        <item quantity="one">Удалить %1$d запись?</item>
+        <item quantity="two">Удалить %1$d записи?</item>
+        <item quantity="few">Удалить %1$d записи?</item>
+        <item quantity="many">Удалить %1$d записей?</item>
+        <item quantity="other">Удалить %1$d записей?</item>
+    </plurals>
+    <plurals name="image_delete_confirmation">
+        <item quantity="zero">Удалить %1$d картинок?</item>
+        <item quantity="one">Удалить %1$d картинку?</item>
+        <item quantity="two">Удалить %1$d картинки?</item>
+        <item quantity="few">Удалить %1$d картинки?</item>
+        <item quantity="many">Удалить %1$d картинок?</item>
+        <item quantity="other">Удалить %1$d картинок?</item>
+    </plurals>
 
 </resources>

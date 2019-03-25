@@ -241,7 +241,7 @@ class NoteFragmentPresenter(private val mDataManager: DataManager) : NoteFragmen
                 })
     }
 
-    override fun onAddImageButtonClick() {
+    override fun onButtonAddImageClick() {
         view?.requestStoragePermissions()
     }
 
@@ -261,7 +261,7 @@ class NoteFragmentPresenter(private val mDataManager: DataManager) : NoteFragmen
                 .subscribe { view?.hideLoading() })
     }
 
-    override fun onDeleteButtonClick() {
+    override fun onButtonDeleteClick() {
         addDisposable(mDataManager.getImagesForNote(mNote.id)
                 .first(emptyList())
                 .flatMapObservable { Observable.fromIterable(it) }
@@ -304,7 +304,7 @@ class NoteFragmentPresenter(private val mDataManager: DataManager) : NoteFragmen
                 .subscribe { view?.showNoCategoryMessage() })
     }
 
-    override fun onAppearanceButtonClick() {
+    override fun onButtonAppearanceClick() {
         view?.showNoteSettingsView(mNote.id)
     }
 
@@ -356,7 +356,7 @@ class NoteFragmentPresenter(private val mDataManager: DataManager) : NoteFragmen
                 .subscribe())
     }
 
-    override fun onEditButtonClick() {
+    override fun onButtonEditClick() {
         view?.shoNoteEditView()
     }
 }

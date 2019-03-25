@@ -31,6 +31,7 @@ import com.furianrt.mydiary.data.model.MyHeaderImage
 import com.furianrt.mydiary.data.model.MyNoteWithProp
 import com.furianrt.mydiary.data.model.MyProfile
 import com.furianrt.mydiary.general.AppBarLayoutBehavior
+import com.furianrt.mydiary.general.DeleteConfirmDialog
 import com.furianrt.mydiary.general.GlideApp
 import com.furianrt.mydiary.general.HeaderItemDecoration
 import com.furianrt.mydiary.main.fragments.authentication.AuthFragment
@@ -66,7 +67,8 @@ import javax.inject.Inject
 class MainActivity : BaseActivity(), MainActivityContract.View,
         MainListAdapter.OnMainListItemInteractionListener, View.OnClickListener,
         SignOutFragment.OnSignOutFragmentInteractionListener,
-        ImageSettingsFragment.OnImageSettingsInteractionListener {
+        ImageSettingsFragment.OnImageSettingsInteractionListener,
+        DeleteConfirmDialog.OnDeleteConfirmListener {
 
     companion object {
         private const val TAG = "MainActivity"
@@ -293,7 +295,7 @@ class MainActivity : BaseActivity(), MainActivityContract.View,
 
     override fun onClick(v: View?) {
         when (v?.id) {
-            R.id.fab_delete -> mPresenter.onMenuDeleteClick()
+            R.id.fab_delete -> showDeleteConfirmationDialog()
             R.id.image_toolbar_main -> mPresenter.onMainImageClick()
             R.id.fab_menu -> mPresenter.onFabMenuClick()
             R.id.button_sync -> mPresenter.onButtonSyncClick()
@@ -328,6 +330,21 @@ class MainActivity : BaseActivity(), MainActivityContract.View,
             }
             else -> super.onOptionsItemSelected(item)
         }
+    }
+
+    private fun showDeleteConfirmationDialog() {
+        val selectedNotesCount = mAdapter.selectedNotes.count()
+        DeleteConfirmDialog.newInstance(resources.getQuantityString(
+                R.plurals.note_delete_confirmation,
+                selectedNotesCount,
+                selectedNotesCount)
+        ).apply {
+            setOnDeleteConfirmListener(this@MainActivity)
+        }.show(supportFragmentManager, DeleteConfirmDialog.TAG)
+    }
+
+    override fun onDialogButtonDeleteClick() {
+        mPresenter.onButtonDeleteClick()
     }
 
     override fun showImageOptions() {
@@ -508,7 +525,7 @@ class MainActivity : BaseActivity(), MainActivityContract.View,
         mAdapter.notifyDataSetChanged()
     }
 
-    override fun openNotePager(position: Int,  note: MyNoteWithProp) {
+    override fun openNotePager(position: Int, note: MyNoteWithProp) {
         val intent = Intent(this, NoteActivity::class.java)
         intent.putExtra(NoteActivity.EXTRA_CLICKED_NOTE_POSITION, position)
         intent.putExtra(NoteActivity.EXTRA_MODE, NoteActivity.Companion.Mode.READ)
@@ -595,6 +612,8 @@ class MainActivity : BaseActivity(), MainActivityContract.View,
         mPresenter.attachView(this)
         mPresenter.onViewResume()
         mAdapter.listener = this
+        (supportFragmentManager.findFragmentByTag(DeleteConfirmDialog.TAG) as? DeleteConfirmDialog)
+                ?.setOnDeleteConfirmListener(this)
     }
 
     override fun onPause() {

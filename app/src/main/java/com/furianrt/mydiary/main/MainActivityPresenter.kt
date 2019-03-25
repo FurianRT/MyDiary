@@ -36,7 +36,7 @@ class MainActivityPresenter(
                     .collectInto(mutableListOf<Boolean>()) { l, i -> l.add(i) }
                     .flatMap { mDataManager.deleteNote(note.note).toSingleDefault(true) }
 
-    override fun onMenuDeleteClick() {
+    override fun onButtonDeleteClick() {
         addDisposable(Flowable.fromIterable(mSelectedNotes)
                 .flatMapSingle { note -> deleteImagesAndNote(note) }
                 .collectInto(mutableListOf<Boolean>()) { l, i -> l.add(i) }

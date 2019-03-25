@@ -48,7 +48,7 @@ interface MainActivityContract {
         abstract fun onSaveInstanceState(): ArrayList<MyNoteWithProp>?
         abstract fun onRestoreInstanceState(selectedNotes: ArrayList<MyNoteWithProp>?)
         abstract fun onFabMenuClick()
-        abstract fun onMenuDeleteClick()
+        abstract fun onButtonDeleteClick()
         abstract fun onMenuAllNotesClick()
         abstract fun onButtonSettingsClick()
         abstract fun is24TimeFormat(): Boolean

@@ -64,12 +64,12 @@ class GalleryListPresenter(private val mDataManager: DataManager) : GalleryListC
                 .subscribe())
     }
 
-    override fun onMultiSelectionButtonClick() {
+    override fun onButtonMultiSelectionClick() {
         view?.activateSelection()
         view?.showSelectedImageCount(mSelectedImages.size)
     }
 
-    override fun onCabDeleteButtonClick() {
+    override fun onButtonCabDeleteClick() {
         if (mSelectedImages.isEmpty()) {
             view?.closeCab()
             return
@@ -87,7 +87,7 @@ class GalleryListPresenter(private val mDataManager: DataManager) : GalleryListC
                 })
     }
 
-    override fun onCabSelectAllButtonClick() {
+    override fun onButtonCabSelectAllClick() {
         addDisposable(mDataManager.getImagesForNote(mNoteId)
                 .first(emptyList())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -111,7 +111,7 @@ class GalleryListPresenter(private val mDataManager: DataManager) : GalleryListC
 
     override fun onSaveInstanceState() = mSelectedImages
 
-    override fun onAddImageButtonClick() {
+    override fun onButtonAddImageClick() {
         view?.requestStoragePermissions()
     }
 
