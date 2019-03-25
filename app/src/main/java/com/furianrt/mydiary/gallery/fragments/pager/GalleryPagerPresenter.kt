@@ -3,6 +3,7 @@ package com.furianrt.mydiary.gallery.fragments.pager
 import com.furianrt.mydiary.data.DataManager
 import com.furianrt.mydiary.data.model.MyImage
 import io.reactivex.android.schedulers.AndroidSchedulers
+import org.joda.time.DateTime
 
 class GalleryPagerPresenter(
         private val mDataManager: DataManager
@@ -50,8 +51,10 @@ class GalleryPagerPresenter(
 
     override fun onImageEdited() {
         mEditedImage?.let { image ->
-            addDisposable(mDataManager.updateImage(image.apply { isEdited = true })
-                    .subscribe())
+            addDisposable(mDataManager.updateImage(image.apply {
+                isEdited = true
+                editedTime = DateTime.now().millis
+            }).subscribe())
         }
     }
 }

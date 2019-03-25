@@ -10,7 +10,6 @@ import com.google.firebase.storage.UploadTask
 import durdinapps.rxfirebase2.RxFirebaseStorage
 import durdinapps.rxfirebase2.RxFirestore
 import io.reactivex.Completable
-import io.reactivex.Maybe
 import io.reactivex.Observable
 import io.reactivex.Single
 
@@ -42,10 +41,10 @@ class CloudHelperImp(
                         }
                     }
 
-    override fun getProfile(email: String): Maybe<MyProfile> =
-            RxFirestore.getDocument(mFirestore.collection(COLLECTION_USERS).document(email)) {
-                return@getDocument it.toObject(MyProfile::class.java)
-            }
+    override fun getProfile(email: String): Single<MyProfile> =
+            RxFirestore.getDocument(mFirestore.collection(COLLECTION_USERS)
+                    .document(email)) { return@getDocument it.toObject(MyProfile::class.java)!! }
+                    .toSingle()
 
     override fun saveProfile(profile: MyProfile): Completable =
             RxFirestore.setDocument(

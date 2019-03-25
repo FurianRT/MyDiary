@@ -162,7 +162,6 @@
     <string name="security_email_settings_summary">Используется для сброса графического ключа</string>
     <string name="security_email_settings_title">Email для сброса ключа</string>
     <string name="security_time_settings_title">Время до запроса ключа</string>
-    <string name="voice">Голос</string>
     <string name="fragment_authentication_sign_in">Логин</string>
     <string name="fragment_authentication_sign_up">Регистрация</string>
     <string name="fragment_registration_email">Email</string>

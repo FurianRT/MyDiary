@@ -11,7 +11,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.bumptech.glide.signature.ObjectKey
 import com.furianrt.mydiary.R
 import com.furianrt.mydiary.data.model.MyImage
 import com.furianrt.mydiary.general.GlideApp
@@ -155,8 +155,7 @@ class GalleryListAdapter(
             GlideApp.with(itemView)
                     .load(Uri.parse(mImage.uri))
                     .override(550, 400)
-                    .diskCacheStrategy(DiskCacheStrategy.NONE)
-                    .skipMemoryCache(true)
+                    .signature(ObjectKey(mImage.editedTime))
                     .into(itemView.image_gallery_item)
 
             if (mIsTrashed) {

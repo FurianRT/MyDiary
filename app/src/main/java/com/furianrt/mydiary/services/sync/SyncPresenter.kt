@@ -57,7 +57,7 @@ class SyncPresenter(
     private fun checkProfile(): Observable<ProgressMessage> =
             mDataManager.getDbProfile()
                     .firstOrError()
-                    .flatMap { mDataManager.getCloudProfile(it.email).toSingle() }
+                    .flatMap { mDataManager.getCloudProfile(it.email) }
                     .zipWith(mDataManager.getDbProfile().firstOrError(), BiFunction<MyProfile, MyProfile, Boolean>
                     { cloudProfile, localProfile ->
                         return@BiFunction cloudProfile.passwordHash == localProfile.passwordHash

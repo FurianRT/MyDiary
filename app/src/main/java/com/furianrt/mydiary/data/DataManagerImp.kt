@@ -305,7 +305,7 @@ class DataManagerImp(
                     .getProfile()
                     .subscribeOn(mRxScheduler)
 
-    override fun getCloudProfile(email: String): Maybe<MyProfile> =
+    override fun getCloudProfile(email: String): Single<MyProfile> =
             mCloud.getProfile(email)
                     .subscribeOn(mRxScheduler)
 

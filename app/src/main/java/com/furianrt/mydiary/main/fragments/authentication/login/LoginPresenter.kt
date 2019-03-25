@@ -40,7 +40,7 @@ class LoginPresenter(
                     view?.showLoginSuccess()
                 }, { error ->
                     view?.hideLoading()
-                    if (error is NoSuchElementException) {
+                    if (error is NoSuchElementException || error is WrongPasswordException) {
                         view?.showErrorWrongCredential()
                     } else {
                         error.printStackTrace()

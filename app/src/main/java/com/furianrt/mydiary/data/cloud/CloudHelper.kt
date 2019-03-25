@@ -2,13 +2,12 @@ package com.furianrt.mydiary.data.cloud
 
 import com.furianrt.mydiary.data.model.*
 import io.reactivex.Completable
-import io.reactivex.Maybe
 import io.reactivex.Single
 
 interface CloudHelper {
 
     fun isProfileExists(email: String): Single<Boolean>
-    fun getProfile(email: String): Maybe<MyProfile>
+    fun getProfile(email: String): Single<MyProfile>
     fun saveProfile(profile: MyProfile): Completable
     fun saveNotes(notes: List<MyNote>, profile: MyProfile): Completable
     fun saveCategories(categories: List<MyCategory>, profile: MyProfile): Completable

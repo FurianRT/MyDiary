@@ -75,7 +75,7 @@ interface DataManager {
     fun getHeaderImages(): Flowable<List<MyHeaderImage>>
     fun getAllNoteTags(): Flowable<List<NoteTag>>
     fun getDbProfile(): Observable<MyProfile>
-    fun getCloudProfile(email: String): Maybe<MyProfile>
+    fun getCloudProfile(email: String): Single<MyProfile>
     fun getTextColor(): Int
     fun getTextSize(): Int
     fun getNoteBackgroundColor(): Int

@@ -6,7 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.bumptech.glide.signature.ObjectKey
 import com.furianrt.mydiary.R
 import com.furianrt.mydiary.data.model.MyImage
 import com.furianrt.mydiary.general.GlideApp
@@ -14,11 +14,11 @@ import kotlinx.android.synthetic.main.fragment_gallery_image.view.*
 
 class GalleryImageFragment : Fragment() {
 
-    private var mImage: MyImage? = null
+    private lateinit var mImage: MyImage
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        arguments?.let { mImage = it.getParcelable(ARG_IMAGE) }
+        mImage = arguments?.getParcelable(ARG_IMAGE) ?: throw IllegalArgumentException()
         setHasOptionsMenu(true)
     }
 
@@ -27,9 +27,8 @@ class GalleryImageFragment : Fragment() {
         val view = inflater.inflate(R.layout.fragment_gallery_image, container, false)
 
         GlideApp.with(this)
-                .load(Uri.parse(mImage?.uri))
-                .diskCacheStrategy(DiskCacheStrategy.NONE)
-                .skipMemoryCache(true)
+                .load(Uri.parse(mImage.uri))
+                .signature(ObjectKey(mImage.editedTime))
                 .into(view.image_gallery)
 
         return view
