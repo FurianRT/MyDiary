@@ -147,6 +147,7 @@ class GalleryListAdapter(
 
         override fun bind(item: ViewItem) {
             mImage = item.image!!
+            itemView.alpha = 1f
             itemView.setOnClickListener { listener.onListItemClick(mImage, adapterPosition) }
             itemView.setOnLongClickListener {
                 mItemTouchHelper.startDrag(this)

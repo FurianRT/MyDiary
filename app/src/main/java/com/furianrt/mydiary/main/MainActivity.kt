@@ -27,11 +27,9 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.furianrt.mydiary.R
 import com.furianrt.mydiary.base.BaseActivity
-import com.furianrt.mydiary.data.model.MyHeaderImage
-import com.furianrt.mydiary.data.model.MyNoteWithProp
-import com.furianrt.mydiary.data.model.MyProfile
+import com.furianrt.mydiary.data.model.*
+import com.furianrt.mydiary.dialogs.delete.note.DeleteNoteDialog
 import com.furianrt.mydiary.general.AppBarLayoutBehavior
-import com.furianrt.mydiary.general.DeleteConfirmDialog
 import com.furianrt.mydiary.general.GlideApp
 import com.furianrt.mydiary.general.HeaderItemDecoration
 import com.furianrt.mydiary.main.fragments.authentication.AuthFragment
@@ -39,10 +37,10 @@ import com.furianrt.mydiary.main.fragments.imagesettings.ImageSettingsFragment
 import com.furianrt.mydiary.main.fragments.premium.PremiumFragment
 import com.furianrt.mydiary.main.fragments.profile.ProfileFragment
 import com.furianrt.mydiary.main.fragments.profile.signout.SignOutFragment
+import com.furianrt.mydiary.main.fragments.splash.SplashFragment
 import com.furianrt.mydiary.main.listadapter.MainListAdapter
 import com.furianrt.mydiary.main.listadapter.MainListItem
 import com.furianrt.mydiary.note.NoteActivity
-import com.furianrt.mydiary.services.sync.ProgressMessage
 import com.furianrt.mydiary.services.sync.SyncService
 import com.furianrt.mydiary.settings.global.GlobalSettingsActivity
 import com.furianrt.mydiary.utils.getThemePrimaryColor
@@ -68,7 +66,7 @@ class MainActivity : BaseActivity(), MainActivityContract.View,
         MainListAdapter.OnMainListItemInteractionListener, View.OnClickListener,
         SignOutFragment.OnSignOutFragmentInteractionListener,
         ImageSettingsFragment.OnImageSettingsInteractionListener,
-        DeleteConfirmDialog.OnDeleteConfirmListener {
+        DeleteNoteDialog.OnDeleteNoteConfirmListener {
 
     companion object {
         private const val TAG = "MainActivity"
@@ -170,7 +168,13 @@ class MainActivity : BaseActivity(), MainActivityContract.View,
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        application.setTheme(R.style.AppTheme)
         super.onCreate(savedInstanceState)
+        if (savedInstanceState == null && supportFragmentManager.findFragmentByTag(SplashFragment.TAG) == null) {
+            supportFragmentManager.inTransaction {
+                add(R.id.container_splash, SplashFragment(), SplashFragment.TAG)
+            }
+        }
         getPresenterComponent(this).inject(this)
         setContentView(R.layout.activity_main)
         mBottomSheet = BottomSheetBehavior.from(main_sheet_container)
@@ -208,10 +212,11 @@ class MainActivity : BaseActivity(), MainActivityContract.View,
             layout_main_root.translationX = it.getFloat(BUNDLE_ROOT_LAYOUT_OFFSET, 0f)
             mBottomSheet.state = it.getInt(BUNDLE_BOTTOM_SHEET_STATE, BottomSheetBehavior.STATE_COLLAPSED)
         }
-        setupUi()
 
         LocalBroadcastManager.getInstance(this)
                 .registerReceiver(mBroadcastReceiver, IntentFilter(Intent.ACTION_SYNC))
+
+        setupUi()
     }
 
     private fun setupUi() {
@@ -295,7 +300,7 @@ class MainActivity : BaseActivity(), MainActivityContract.View,
 
     override fun onClick(v: View?) {
         when (v?.id) {
-            R.id.fab_delete -> showDeleteConfirmationDialog()
+            R.id.fab_delete -> mPresenter.onButtonDeleteClick()
             R.id.image_toolbar_main -> mPresenter.onMainImageClick()
             R.id.fab_menu -> mPresenter.onFabMenuClick()
             R.id.button_sync -> mPresenter.onButtonSyncClick()
@@ -332,19 +337,14 @@ class MainActivity : BaseActivity(), MainActivityContract.View,
         }
     }
 
-    private fun showDeleteConfirmationDialog() {
-        val selectedNotesCount = mAdapter.selectedNotes.count()
-        DeleteConfirmDialog.newInstance(resources.getQuantityString(
-                R.plurals.note_delete_confirmation,
-                selectedNotesCount,
-                selectedNotesCount)
-        ).apply {
+    override fun showDeleteConfirmationDialog(notes: List<MyNote>) {
+        DeleteNoteDialog.newInstance(notes).apply {
             setOnDeleteConfirmListener(this@MainActivity)
-        }.show(supportFragmentManager, DeleteConfirmDialog.TAG)
+        }.show(supportFragmentManager, DeleteNoteDialog.TAG)
     }
 
-    override fun onDialogButtonDeleteClick() {
-        mPresenter.onButtonDeleteClick()
+    override fun onDialogButtonDeleteClick(notes: List<MyNote>) {
+        mPresenter.onButtonDeleteConfirmClick(notes)
     }
 
     override fun showImageOptions() {
@@ -612,7 +612,7 @@ class MainActivity : BaseActivity(), MainActivityContract.View,
         mPresenter.attachView(this)
         mPresenter.onViewResume()
         mAdapter.listener = this
-        (supportFragmentManager.findFragmentByTag(DeleteConfirmDialog.TAG) as? DeleteConfirmDialog)
+        (supportFragmentManager.findFragmentByTag(DeleteNoteDialog.TAG) as? DeleteNoteDialog)
                 ?.setOnDeleteConfirmListener(this)
     }
 

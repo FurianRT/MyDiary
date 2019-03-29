@@ -2,6 +2,7 @@ package com.furianrt.mydiary.main
 
 import android.util.Log
 import com.furianrt.mydiary.data.DataManager
+import com.furianrt.mydiary.data.model.MyNote
 import com.furianrt.mydiary.data.model.MyNoteWithProp
 import com.furianrt.mydiary.data.model.MyProfile
 import com.furianrt.mydiary.main.listadapter.MainContentItem
@@ -29,15 +30,21 @@ class MainActivityPresenter(
     private var mSelectedNotes = ArrayList<MyNoteWithProp>()
     private var mProfile = MyProfile()
 
-    private fun deleteImagesAndNote(note: MyNoteWithProp): Single<Boolean> =
-            Flowable.fromIterable(note.images)
+    private fun deleteImagesAndNote(note: MyNote): Single<Boolean> =
+            mDataManager.getImagesForNote(note.id)
+                    .first(emptyList())
+                    .flatMapObservable { Observable.fromIterable(it) }
                     .filter { !it.isDeleted }
                     .flatMapSingle { image -> mDataManager.deleteImageFromStorage(image.name) }
                     .collectInto(mutableListOf<Boolean>()) { l, i -> l.add(i) }
-                    .flatMap { mDataManager.deleteNote(note.note).toSingleDefault(true) }
+                    .flatMap { mDataManager.deleteNote(note).toSingleDefault(true) }
 
     override fun onButtonDeleteClick() {
-        addDisposable(Flowable.fromIterable(mSelectedNotes)
+        view?.showDeleteConfirmationDialog(mSelectedNotes.map { it.note })
+    }
+
+    override fun onButtonDeleteConfirmClick(notes: List<MyNote>) {
+        addDisposable(Flowable.fromIterable(notes)
                 .flatMapSingle { note -> deleteImagesAndNote(note) }
                 .collectInto(mutableListOf<Boolean>()) { l, i -> l.add(i) }
                 .ignoreElement()

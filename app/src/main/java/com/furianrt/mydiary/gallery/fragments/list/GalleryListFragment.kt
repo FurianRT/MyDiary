@@ -15,8 +15,8 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import com.furianrt.mydiary.R
 import com.furianrt.mydiary.data.model.MyImage
+import com.furianrt.mydiary.dialogs.delete.image.DeleteImageDialog
 import com.furianrt.mydiary.gallery.fragments.pager.GalleryPagerFragment
-import com.furianrt.mydiary.general.DeleteConfirmDialog
 import com.furianrt.mydiary.utils.*
 import com.yanzhenjie.album.Album
 import com.yanzhenjie.album.api.widget.Widget
@@ -30,7 +30,7 @@ import pub.devrel.easypermissions.EasyPermissions
 import javax.inject.Inject
 
 class GalleryListFragment : Fragment(), GalleryListAdapter.OnListItemInteractionListener,
-        GalleryListContract.View, ActionMode.Callback, DeleteConfirmDialog.OnDeleteConfirmListener {
+        GalleryListContract.View, ActionMode.Callback, DeleteImageDialog.OnDeleteImageConfirmListener {
 
     companion object {
         const val TAG = "GalleryListFragment"
@@ -131,7 +131,7 @@ class GalleryListFragment : Fragment(), GalleryListAdapter.OnListItemInteraction
         super.onResume()
         mPresenter.attachView(this)
         mPresenter.onViewStart()
-        (activity?.supportFragmentManager?.findFragmentByTag(DeleteConfirmDialog.TAG) as? DeleteConfirmDialog?)
+        (activity?.supportFragmentManager?.findFragmentByTag(DeleteImageDialog.TAG) as? DeleteImageDialog?)
                 ?.setOnDeleteConfirmListener(this)
     }
 
@@ -210,7 +210,7 @@ class GalleryListFragment : Fragment(), GalleryListAdapter.OnListItemInteraction
     override fun onActionItemClicked(mode: ActionMode?, item: MenuItem?): Boolean {
         return when (item?.itemId) {
             R.id.menu_delete -> {
-                showDeleteConfirmationDialog()
+                mPresenter.onButtonCabDeleteClick()
                 true
             }
 
@@ -220,21 +220,6 @@ class GalleryListFragment : Fragment(), GalleryListAdapter.OnListItemInteraction
             }
             else -> false
         }
-    }
-
-    private fun showDeleteConfirmationDialog() {
-        val selectedImageCount = mAdapter.selectedImages.count()
-        DeleteConfirmDialog.newInstance(resources.getQuantityString(
-                R.plurals.image_delete_confirmation,
-                selectedImageCount,
-                selectedImageCount)
-        ).apply {
-            setOnDeleteConfirmListener(this@GalleryListFragment)
-        }.show(activity?.supportFragmentManager, DeleteConfirmDialog.TAG)
-    }
-
-    override fun onDialogButtonDeleteClick() {
-        mPresenter.onButtonCabDeleteClick()
     }
 
     override fun onDestroyActionMode(mode: ActionMode?) {
@@ -249,6 +234,23 @@ class GalleryListFragment : Fragment(), GalleryListAdapter.OnListItemInteraction
     override fun deactivateSelection() {
         mSelectionActive = false
         mAdapter.deactivateSelection()
+    }
+
+    override fun showDeleteConfirmationDialog(images: List<MyImage>) {
+        DeleteImageDialog.newInstance(images).apply {
+            setOnDeleteConfirmListener(this@GalleryListFragment)
+        }.show(activity?.supportFragmentManager, DeleteImageDialog.TAG)
+    }
+
+    override fun onDialogButtonDeleteClick(images: List<MyImage>) {
+        mPresenter.onButtonDeleteConfirmClick(images)
+    }
+
+    override fun onDialogButtonCancelClick(images: List<MyImage>) {
+        val adapterImages = mAdapter.getImages()
+        images.forEach { image ->
+            mAdapter.notifyItemChanged(adapterImages.indexOfFirst { it.name == image.name })
+        }
     }
 
     override fun selectImage(image: MyImage) {
@@ -297,9 +299,8 @@ class GalleryListFragment : Fragment(), GalleryListAdapter.OnListItemInteraction
     }
 
     override fun onItemTrashed(image: MyImage) {
-        //todo добавить подтверждение удаления
         hideTrash()
-        mPresenter.onImageDeleted(image)
+        mPresenter.onImageTrashed(image)
     }
 
     override fun showViewImagePager(noteId: String, position: Int) {
@@ -321,6 +322,12 @@ class GalleryListFragment : Fragment(), GalleryListAdapter.OnListItemInteraction
                     getString(R.string.storage_permission_request),
                     STORAGE_PERMISSIONS_REQUEST_CODE, readExtStorage, camera)
         }
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>,
+                                            grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults, this)
     }
 
     @AfterPermissionGranted(STORAGE_PERMISSIONS_REQUEST_CODE)

@@ -2,6 +2,7 @@ package com.furianrt.mydiary.services.sync
 
 import com.furianrt.mydiary.base.BasePresenter
 import com.furianrt.mydiary.base.BaseView
+import com.furianrt.mydiary.data.model.ProgressMessage
 
 interface SyncContract {
 

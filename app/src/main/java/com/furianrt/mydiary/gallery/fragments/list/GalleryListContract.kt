@@ -21,6 +21,7 @@ interface GalleryListContract {
         fun showLoading()
         fun hideLoading()
         fun showSelectedImageCount(count: Int)
+        fun showDeleteConfirmationDialog(images: List<MyImage>)
     }
 
     abstract class Presenter : BasePresenter<View>() {
@@ -37,6 +38,7 @@ interface GalleryListContract {
         abstract fun onButtonAddImageClick()
         abstract fun onStoragePermissionsGranted()
         abstract fun onNoteImagesPicked(imageUrls: List<String>)
-        abstract fun onImageDeleted(image: MyImage)
+        abstract fun onImageTrashed(image: MyImage)
+        abstract fun onButtonDeleteConfirmClick(images: List<MyImage>)
     }
 }

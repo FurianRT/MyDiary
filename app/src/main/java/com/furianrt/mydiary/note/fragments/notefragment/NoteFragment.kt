@@ -24,14 +24,14 @@ import com.furianrt.mydiary.R
 import com.furianrt.mydiary.data.api.forecast.Forecast
 import com.furianrt.mydiary.data.model.*
 import com.furianrt.mydiary.data.prefs.PreferencesHelper
+import com.furianrt.mydiary.dialogs.categories.CategoriesDialog
+import com.furianrt.mydiary.dialogs.delete.note.DeleteNoteDialog
+import com.furianrt.mydiary.dialogs.moods.MoodsDialog
+import com.furianrt.mydiary.dialogs.tags.TagsDialog
 import com.furianrt.mydiary.gallery.GalleryActivity
 import com.furianrt.mydiary.general.AppBarLayoutBehavior
-import com.furianrt.mydiary.general.DeleteConfirmDialog
 import com.furianrt.mydiary.general.GlideApp
 import com.furianrt.mydiary.note.NoteActivity
-import com.furianrt.mydiary.note.dialogs.categories.CategoriesDialog
-import com.furianrt.mydiary.note.dialogs.moods.MoodsDialog
-import com.furianrt.mydiary.note.dialogs.tags.TagsDialog
 import com.furianrt.mydiary.note.fragments.notefragment.content.NoteContentFragment
 import com.furianrt.mydiary.note.fragments.notefragment.edit.NoteEditFragment
 import com.furianrt.mydiary.settings.note.NoteSettingsActivity
@@ -64,7 +64,7 @@ class NoteFragment : Fragment(), NoteFragmentContract.View, OnMapReadyCallback,
         MoodsDialog.OnMoodsDialogInteractionListener,
         CategoriesDialog.OnCategoriesDialogInteractionListener,
         DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener,
-        DeleteConfirmDialog.OnDeleteConfirmListener {
+        DeleteNoteDialog.OnDeleteNoteConfirmListener {
 
     companion object {
         const val TAG = "NoteFragment"
@@ -186,7 +186,7 @@ class NoteFragment : Fragment(), NoteFragmentContract.View, OnMapReadyCallback,
                 true
             }
             R.id.menu_delete -> {
-                showDeleteConfirmationDialog()
+                mPresenter.onButtonDeleteClick()
                 true
             }
             R.id.menu_appearance -> {
@@ -212,18 +212,14 @@ class NoteFragment : Fragment(), NoteFragmentContract.View, OnMapReadyCallback,
         }
     }
 
-    private fun showDeleteConfirmationDialog() {
-        DeleteConfirmDialog.newInstance(resources.getQuantityString(
-                R.plurals.note_delete_confirmation,
-                1,
-                1)
-        ).apply {
+    override fun showDeleteConfirmationDialog(note: MyNote) {
+        DeleteNoteDialog.newInstance(listOf(note)).apply {
             setOnDeleteConfirmListener(this@NoteFragment)
-        }.show(activity?.supportFragmentManager, DeleteConfirmDialog.TAG)
+        }.show(activity?.supportFragmentManager, DeleteNoteDialog.TAG)
     }
 
-    override fun onDialogButtonDeleteClick() {
-        mPresenter.onButtonDeleteClick()
+    override fun onDialogButtonDeleteClick(notes: List<MyNote>) {
+        mPresenter.onButtonDeleteConfirmClick(notes.first())
     }
 
     override fun shoNoteEditView() {
@@ -442,7 +438,7 @@ class NoteFragment : Fragment(), NoteFragmentContract.View, OnMapReadyCallback,
                     ?.setOnMoodsDialogInteractionListener(this)
             (activity?.supportFragmentManager?.findFragmentByTag(CategoriesDialog.TAG) as? CategoriesDialog?)
                     ?.setOnCategoriesDialogListener(this)
-            (activity?.supportFragmentManager?.findFragmentByTag(DeleteConfirmDialog.TAG) as? DeleteConfirmDialog?)
+            (activity?.supportFragmentManager?.findFragmentByTag(DeleteNoteDialog.TAG) as? DeleteNoteDialog?)
                     ?.setOnDeleteConfirmListener(this)
         }
     }

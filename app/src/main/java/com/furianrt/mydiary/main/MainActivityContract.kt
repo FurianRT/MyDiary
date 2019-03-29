@@ -3,6 +3,7 @@ package com.furianrt.mydiary.main
 import com.furianrt.mydiary.base.BasePresenter
 import com.furianrt.mydiary.base.BaseView
 import com.furianrt.mydiary.data.model.MyHeaderImage
+import com.furianrt.mydiary.data.model.MyNote
 import com.furianrt.mydiary.data.model.MyNoteWithProp
 import com.furianrt.mydiary.data.model.MyProfile
 import com.furianrt.mydiary.main.listadapter.MainListItem
@@ -36,6 +37,7 @@ interface MainActivityContract {
         fun showViewImageSettings()
         fun showImageOptions()
         fun startSyncService()
+        fun showDeleteConfirmationDialog(notes: List<MyNote>)
     }
 
     abstract class Presenter : BasePresenter<View>() {
@@ -48,7 +50,6 @@ interface MainActivityContract {
         abstract fun onSaveInstanceState(): ArrayList<MyNoteWithProp>?
         abstract fun onRestoreInstanceState(selectedNotes: ArrayList<MyNoteWithProp>?)
         abstract fun onFabMenuClick()
-        abstract fun onButtonDeleteClick()
         abstract fun onMenuAllNotesClick()
         abstract fun onButtonSettingsClick()
         abstract fun is24TimeFormat(): Boolean
@@ -57,5 +58,7 @@ interface MainActivityContract {
         abstract fun onSignOut()
         abstract fun onButtonSortClick()
         abstract fun onButtonImageSettingsClick()
+        abstract fun onButtonDeleteClick()
+        abstract fun onButtonDeleteConfirmClick(notes: List<MyNote>)
     }
 }

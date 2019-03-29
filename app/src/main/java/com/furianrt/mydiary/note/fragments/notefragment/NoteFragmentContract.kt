@@ -44,6 +44,7 @@ interface NoteFragmentContract {
         fun shoNoteEditView()
         fun showLoading()
         fun hideLoading()
+        fun showDeleteConfirmationDialog(note: MyNote)
     }
 
     abstract class Presenter : BasePresenter<View>() {
@@ -73,5 +74,6 @@ interface NoteFragmentContract {
         abstract fun onButtonEditClick()
         abstract fun onViewStart(locationEnabled: Boolean, networkAvailable: Boolean)
         abstract fun init(note: MyNote, mode: NoteActivity.Companion.Mode)
+        abstract fun onButtonDeleteConfirmClick(note: MyNote)
     }
 }

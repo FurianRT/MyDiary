@@ -9,6 +9,7 @@ import androidx.core.app.NotificationCompat
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.furianrt.mydiary.MyApp
 import com.furianrt.mydiary.R
+import com.furianrt.mydiary.data.model.ProgressMessage
 import com.furianrt.mydiary.main.MainActivity
 import javax.inject.Inject
 

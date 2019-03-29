@@ -2,6 +2,16 @@ package com.furianrt.mydiary.di.presenter
 
 import android.content.Context
 import com.furianrt.mydiary.data.DataManager
+import com.furianrt.mydiary.dialogs.categories.CategoriesDialogContract
+import com.furianrt.mydiary.dialogs.categories.CategoriesDialogPresenter
+import com.furianrt.mydiary.dialogs.categories.edit.CategoryEditContract
+import com.furianrt.mydiary.dialogs.categories.edit.CategoryEditPresenter
+import com.furianrt.mydiary.dialogs.categories.list.CategoryListContract
+import com.furianrt.mydiary.dialogs.categories.list.CategoryListPresenter
+import com.furianrt.mydiary.dialogs.moods.MoodsDialogContract
+import com.furianrt.mydiary.dialogs.moods.MoodsDialogPresenter
+import com.furianrt.mydiary.dialogs.tags.TagsDialogContract
+import com.furianrt.mydiary.dialogs.tags.TagsDialogPresenter
 import com.furianrt.mydiary.gallery.GalleryActivityContract
 import com.furianrt.mydiary.gallery.GalleryActivityPresenter
 import com.furianrt.mydiary.gallery.fragments.list.GalleryListContract
@@ -32,16 +42,6 @@ import com.furianrt.mydiary.main.fragments.profile.signout.SignOutContract
 import com.furianrt.mydiary.main.fragments.profile.signout.SignOutPresenter
 import com.furianrt.mydiary.note.NoteActivityContract
 import com.furianrt.mydiary.note.NoteActivityPresenter
-import com.furianrt.mydiary.note.dialogs.categories.CategoriesDialogContract
-import com.furianrt.mydiary.note.dialogs.categories.CategoriesDialogPresenter
-import com.furianrt.mydiary.note.dialogs.categories.edit.CategoryEditContract
-import com.furianrt.mydiary.note.dialogs.categories.edit.CategoryEditPresenter
-import com.furianrt.mydiary.note.dialogs.categories.list.CategoryListContract
-import com.furianrt.mydiary.note.dialogs.categories.list.CategoryListPresenter
-import com.furianrt.mydiary.note.dialogs.moods.MoodsDialogContract
-import com.furianrt.mydiary.note.dialogs.moods.MoodsDialogPresenter
-import com.furianrt.mydiary.note.dialogs.tags.TagsDialogContract
-import com.furianrt.mydiary.note.dialogs.tags.TagsDialogPresenter
 import com.furianrt.mydiary.note.fragments.notefragment.NoteFragmentContract
 import com.furianrt.mydiary.note.fragments.notefragment.NoteFragmentPresenter
 import com.furianrt.mydiary.note.fragments.notefragment.content.NoteContentFragmentContract

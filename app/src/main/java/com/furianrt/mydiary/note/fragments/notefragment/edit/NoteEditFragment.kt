@@ -98,6 +98,7 @@ class NoteEditFragment : Fragment(), NoteEditFragmentContract.View {
 
     override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
         super.onCreateOptionsMenu(menu, inflater)
+        menu?.removeItem(R.id.menu_done)
         menu?.removeItem(R.id.menu_edit)
         menu?.removeItem(R.id.menu_delete)
         inflater?.inflate(R.menu.fragment_edit_menu, menu)

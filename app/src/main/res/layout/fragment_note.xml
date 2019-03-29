@@ -200,7 +200,7 @@
                 <ImageView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:src="@drawable/ic_sharp"
+                    android:src="@drawable/sharp"
                     tools:ignore="ContentDescription" />
 
             </com.google.android.flexbox.FlexboxLayout>

@@ -37,6 +37,10 @@ class GalleryPagerPresenter(
     }
 
     override fun onButtonDeleteClick(image: MyImage) {
+        view?.showDeleteConfirmationDialog(image)
+    }
+
+    override fun onButtonDeleteConfirmClick(image: MyImage) {
         addDisposable(mDataManager.deleteImage(image)
                 .andThen(mDataManager.deleteImageFromStorage(image.name))
                 .ignoreElement()

@@ -67,14 +67,8 @@ class NoteActivity : BaseActivity(), NoteActivityContract.View,
 
         pager_note.adapter = mPagerAdapter
         pager_note.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
-            override fun onPageScrollStateChanged(p0: Int) {
-
-            }
-
-            override fun onPageScrolled(p0: Int, p1: Float, p2: Int) {
-
-            }
-
+            override fun onPageScrollStateChanged(p0: Int) {}
+            override fun onPageScrolled(p0: Int, p1: Float, p2: Int) {}
             override fun onPageSelected(position: Int) {
                 mPagerPosition = position
             }

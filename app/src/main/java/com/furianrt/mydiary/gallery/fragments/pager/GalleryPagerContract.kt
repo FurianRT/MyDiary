@@ -10,6 +10,7 @@ interface GalleryPagerContract {
         fun showImages(images: List<MyImage>)
         fun showListImagesView(noteId: String)
         fun showEditImageView(image: MyImage)
+        fun showDeleteConfirmationDialog(image: MyImage)
     }
 
     abstract class Presenter : BasePresenter<View>() {
@@ -19,5 +20,6 @@ interface GalleryPagerContract {
         abstract fun onButtonDeleteClick(image: MyImage)
         abstract fun onButtonEditClick(image: MyImage)
         abstract fun onImageEdited()
+        abstract fun onButtonDeleteConfirmClick(image: MyImage)
     }
 }

@@ -9,8 +9,8 @@ import androidx.fragment.app.Fragment
 import androidx.viewpager.widget.ViewPager
 import com.furianrt.mydiary.R
 import com.furianrt.mydiary.data.model.MyImage
+import com.furianrt.mydiary.dialogs.delete.image.DeleteImageDialog
 import com.furianrt.mydiary.gallery.fragments.list.GalleryListFragment
-import com.furianrt.mydiary.general.DeleteConfirmDialog
 import com.furianrt.mydiary.utils.getThemeAccentColor
 import com.furianrt.mydiary.utils.getThemePrimaryColor
 import com.furianrt.mydiary.utils.getThemePrimaryDarkColor
@@ -23,7 +23,7 @@ import java.util.*
 import javax.inject.Inject
 
 class GalleryPagerFragment : Fragment(), GalleryPagerContract.View,
-        DeleteConfirmDialog.OnDeleteConfirmListener {
+        DeleteImageDialog.OnDeleteImageConfirmListener {
 
     companion object {
 
@@ -82,7 +82,7 @@ class GalleryPagerFragment : Fragment(), GalleryPagerContract.View,
         pager_gallery.addOnPageChangeListener(mOnPageChangeListener)
         mPresenter.attachView(this)
         mPresenter.onViewStart()
-        (activity?.supportFragmentManager?.findFragmentByTag(DeleteConfirmDialog.TAG) as? DeleteConfirmDialog)
+        (activity?.supportFragmentManager?.findFragmentByTag(DeleteImageDialog.TAG) as? DeleteImageDialog)
                 ?.setOnDeleteConfirmListener(this)
     }
 
@@ -114,7 +114,7 @@ class GalleryPagerFragment : Fragment(), GalleryPagerContract.View,
                 true
             }
             R.id.menu_delete -> {
-                showDeleteConfirmationDialog()
+                mPresenter.onButtonDeleteClick(mPagerAdapter.images[mPagerPosition])
                 true
             }
             R.id.menu_edit -> {
@@ -125,18 +125,18 @@ class GalleryPagerFragment : Fragment(), GalleryPagerContract.View,
         }
     }
 
-    private fun showDeleteConfirmationDialog() {
-        DeleteConfirmDialog.newInstance(resources.getQuantityString(
-                R.plurals.image_delete_confirmation,
-                1,
-                1)
-        ).apply {
+    override fun showDeleteConfirmationDialog(image: MyImage) {
+        DeleteImageDialog.newInstance(listOf(image)).apply {
             setOnDeleteConfirmListener(this@GalleryPagerFragment)
-        }.show(activity?.supportFragmentManager, DeleteConfirmDialog.TAG)
+        }.show(activity?.supportFragmentManager, DeleteImageDialog.TAG)
     }
 
-    override fun onDialogButtonDeleteClick() {
-        mPresenter.onButtonDeleteClick(mPagerAdapter.images[mPagerPosition])
+    override fun onDialogButtonDeleteClick(images: List<MyImage>) {
+        mPresenter.onButtonDeleteConfirmClick(images.first())
+    }
+
+    override fun onDialogButtonCancelClick(images: List<MyImage>) {
+
     }
 
     override fun showListImagesView(noteId: String) {

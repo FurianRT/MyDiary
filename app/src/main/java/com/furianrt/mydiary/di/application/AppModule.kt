@@ -43,8 +43,8 @@ class AppModule(private val app: Application) {
     companion object {
         private const val TAG = "AppModule"
         private const val DATABASE_NAME = "Notes.db"
-        private const val WEATHER_BASE_URL = "https://api.openweathermap.org/data/2.5/"
-        private const val IMAGE_BASE_URL = "https://pixabay.com/api/"
+        private const val WEATHER_API_BASE_URL = "https://api.openweathermap.org/data/2.5/"
+        private const val IMAGE_API_BASE_URL = "https://pixabay.com/api/"
     }
 
     @Provides
@@ -187,7 +187,7 @@ class AppModule(private val app: Application) {
     fun provideForecastRetrofit(@ForecastApi okHttpClient: OkHttpClient): Retrofit =
             Retrofit.Builder()
                     .client(okHttpClient)
-                    .baseUrl(WEATHER_BASE_URL)
+                    .baseUrl(WEATHER_API_BASE_URL)
                     .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                     .addConverterFactory(GsonConverterFactory.create())
                     .build()
@@ -198,7 +198,7 @@ class AppModule(private val app: Application) {
     fun provideImageRetrofit(@ImageApi okHttpClient: OkHttpClient): Retrofit =
             Retrofit.Builder()
                     .client(okHttpClient)
-                    .baseUrl(IMAGE_BASE_URL)
+                    .baseUrl(IMAGE_API_BASE_URL)
                     .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                     .addConverterFactory(GsonConverterFactory.create())
                     .build()

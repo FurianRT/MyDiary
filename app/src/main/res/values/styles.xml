@@ -49,6 +49,10 @@
         <item name="colorControlHighlight">@color/white</item>
     </style>-->
 
+    <style name="AppTheme.Launcher">
+        <item name="android:windowBackground">@drawable/splash_screen</item>
+    </style>
+
     <style name="OverlayPrimaryColorR1">
         <item name="colorPrimary">@color/r1</item>
         <item name="colorPrimaryDark">@color/r11</item>

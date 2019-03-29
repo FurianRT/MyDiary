@@ -72,16 +72,22 @@ class GalleryListPresenter(private val mDataManager: DataManager) : GalleryListC
     override fun onButtonCabDeleteClick() {
         if (mSelectedImages.isEmpty()) {
             view?.closeCab()
-            return
+        } else {
+            view?.showDeleteConfirmationDialog(mSelectedImages)
         }
-        addDisposable(mDataManager.deleteImage(mSelectedImages)
-                .andThen(Observable.fromIterable(mSelectedImages))
-                .flatMapSingle { mDataManager.deleteImageFromStorage(it.name) }
+    }
+
+    override fun onButtonDeleteConfirmClick(images: List<MyImage>) {
+        addDisposable(mDataManager.deleteImage(images)
+                .andThen(Observable.fromIterable(images))
+                .flatMapSingle { image ->
+                    mSelectedImages.removeAll { it.name == image.name }
+                    return@flatMapSingle mDataManager.deleteImageFromStorage(image.name)
+                }
                 .collectInto(mutableListOf<Boolean>()) { l, i -> l.add(i) }
                 .ignoreElement()
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe {
-                    mSelectedImages.clear()
                     view?.showSelectedImageCount(mSelectedImages.size)
                     view?.closeCab()
                 })
@@ -131,14 +137,7 @@ class GalleryListPresenter(private val mDataManager: DataManager) : GalleryListC
                 .subscribe { view?.hideLoading() })
     }
 
-    override fun onImageDeleted(image: MyImage) {
-        mSelectedImages.remove(image)
-        addDisposable(mDataManager.deleteImage(image)
-                .andThen(mDataManager.deleteImageFromStorage(image.name))
-                .ignoreElement()
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe {
-                    view?.showSelectedImageCount(mSelectedImages.size)
-                })
+    override fun onImageTrashed(image: MyImage) {
+        view?.showDeleteConfirmationDialog(listOf(image))
     }
 }

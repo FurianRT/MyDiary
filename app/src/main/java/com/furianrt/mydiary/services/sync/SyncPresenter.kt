@@ -4,6 +4,7 @@ import android.util.Log
 import com.furianrt.mydiary.data.DataManager
 import com.furianrt.mydiary.data.model.MyImage
 import com.furianrt.mydiary.data.model.MyProfile
+import com.furianrt.mydiary.data.model.ProgressMessage
 import io.reactivex.Completable
 import io.reactivex.Observable
 import io.reactivex.Single

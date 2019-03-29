@@ -1,5 +1,10 @@
 package com.furianrt.mydiary.di.presenter
 
+import com.furianrt.mydiary.dialogs.categories.CategoriesDialog
+import com.furianrt.mydiary.dialogs.categories.edit.CategoryEditFragment
+import com.furianrt.mydiary.dialogs.categories.list.CategoryListFragment
+import com.furianrt.mydiary.dialogs.moods.MoodsDialog
+import com.furianrt.mydiary.dialogs.tags.TagsDialog
 import com.furianrt.mydiary.gallery.GalleryActivity
 import com.furianrt.mydiary.gallery.fragments.list.GalleryListFragment
 import com.furianrt.mydiary.gallery.fragments.pager.GalleryPagerFragment
@@ -15,11 +20,6 @@ import com.furianrt.mydiary.main.fragments.profile.menu.MenuProfileFragment
 import com.furianrt.mydiary.main.fragments.profile.password.PasswordFragment
 import com.furianrt.mydiary.main.fragments.profile.signout.SignOutFragment
 import com.furianrt.mydiary.note.NoteActivity
-import com.furianrt.mydiary.note.dialogs.categories.CategoriesDialog
-import com.furianrt.mydiary.note.dialogs.categories.edit.CategoryEditFragment
-import com.furianrt.mydiary.note.dialogs.categories.list.CategoryListFragment
-import com.furianrt.mydiary.note.dialogs.moods.MoodsDialog
-import com.furianrt.mydiary.note.dialogs.tags.TagsDialog
 import com.furianrt.mydiary.note.fragments.notefragment.NoteFragment
 import com.furianrt.mydiary.note.fragments.notefragment.content.NoteContentFragment
 import com.furianrt.mydiary.note.fragments.notefragment.edit.NoteEditFragment

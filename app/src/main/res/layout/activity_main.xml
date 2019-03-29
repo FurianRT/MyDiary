@@ -3,7 +3,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/grey_light"
+    tools:context=".main.MainActivity">
 
     <androidx.drawerlayout.widget.DrawerLayout
         android:id="@+id/drawer"
@@ -72,12 +74,17 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_gravity="start"
+            android:background="@color/grey_light"
             app:headerLayout="@layout/nav_header_main"
             app:menu="@menu/activity_main_drawer_menu" />
 
     </androidx.drawerlayout.widget.DrawerLayout>
 
-    <include
-        layout="@layout/bottom_sheet_main" />
+    <FrameLayout
+        android:id="@+id/container_splash"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <include layout="@layout/bottom_sheet_main" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

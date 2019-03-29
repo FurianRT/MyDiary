@@ -4,12 +4,15 @@ import android.app.Application
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.os.Build
+import android.widget.ImageView
 import com.furianrt.mydiary.di.application.AppComponent
 import com.furianrt.mydiary.di.application.AppModule
 import com.furianrt.mydiary.di.application.DaggerAppComponent
-import com.furianrt.mydiary.general.MediaLoader
+import com.furianrt.mydiary.general.GlideApp
 import com.yanzhenjie.album.Album
 import com.yanzhenjie.album.AlbumConfig
+import com.yanzhenjie.album.AlbumFile
+import com.yanzhenjie.album.AlbumLoader
 import net.danlew.android.joda.JodaTimeAndroid
 import java.util.*
 
@@ -33,34 +36,51 @@ class MyApp : Application() {
         createNotificationSyncChannel()
         createNotificationFirebaseChannel()
         JodaTimeAndroid.init(this)
-        Album.initialize(AlbumConfig.newBuilder(this)
-                .setAlbumLoader(MediaLoader())
-                .setLocale(Locale.getDefault())
-                .build())
+        initializeImageAlbum()
     }
 
     private fun createNotificationSyncChannel() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val serviceChannel = NotificationChannel(
-                    NOTIFICATION_SYNC_CHANNEL_ID,
-                    NOTIFICATION_SYNC_CHANNEL_NAME,
-                    NotificationManager.IMPORTANCE_LOW
-            ).apply { setSound(null, null) }
-            val manager = getSystemService(NotificationManager::class.java)
-            manager.createNotificationChannel(serviceChannel)
+            getSystemService(NotificationManager::class.java)
+                    .createNotificationChannel(NotificationChannel(
+                            NOTIFICATION_SYNC_CHANNEL_ID,
+                            NOTIFICATION_SYNC_CHANNEL_NAME,
+                            NotificationManager.IMPORTANCE_LOW
+                    ).apply {
+                        setSound(null, null)
+                    })
         }
     }
 
     private fun createNotificationFirebaseChannel() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val serviceChannel = NotificationChannel(
-                    NOTIFICATION_FIREBASE_CHANNEL_ID,
-                    NOTIFICATION_FIREBASE_CHANNEL_NAME,
-                    NotificationManager.IMPORTANCE_DEFAULT
-            )
-            val manager = getSystemService(NotificationManager::class.java)
-            manager.createNotificationChannel(serviceChannel)
+            getSystemService(NotificationManager::class.java)
+                    .createNotificationChannel(NotificationChannel(
+                            NOTIFICATION_FIREBASE_CHANNEL_ID,
+                            NOTIFICATION_FIREBASE_CHANNEL_NAME,
+                            NotificationManager.IMPORTANCE_DEFAULT
+                    ))
         }
+    }
+
+    private fun initializeImageAlbum() {
+        Album.initialize(AlbumConfig.newBuilder(this)
+                .setAlbumLoader(object : AlbumLoader {
+                    override fun load(imageView: ImageView?, albumFile: AlbumFile?) {
+                        load(imageView, albumFile?.path)
+                    }
+
+                    override fun load(imageView: ImageView?, url: String?) {
+                        if (imageView != null && !url.isNullOrBlank()) {
+                            GlideApp.with(imageView.context)
+                                    .load(url)
+                                    .placeholder(R.drawable.ic_image)
+                                    .into(imageView)
+                        }
+                    }
+                })
+                .setLocale(Locale.getDefault())
+                .build())
     }
 }
 
@@ -85,6 +105,7 @@ class MyApp : Application() {
 * исправить ошибку соединения при регистрации
 * добавить заглушку на пустые состояния списков
 * реализовать свайп элементов листа главного экрана
+* добавить экран с описанием према
 *
 * */
 

@@ -262,12 +262,16 @@ class NoteFragmentPresenter(private val mDataManager: DataManager) : NoteFragmen
     }
 
     override fun onButtonDeleteClick() {
-        addDisposable(mDataManager.getImagesForNote(mNote.id)
+        view?.showDeleteConfirmationDialog(mNote)
+    }
+
+    override fun onButtonDeleteConfirmClick(note: MyNote) {
+        addDisposable(mDataManager.getImagesForNote(note.id)
                 .first(emptyList())
                 .flatMapObservable { Observable.fromIterable(it) }
                 .flatMapSingle { image -> mDataManager.deleteImageFromStorage(image.name) }
                 .collectInto(mutableListOf<Boolean>()) { l, i -> l.add(i) }
-                .flatMapCompletable { mDataManager.deleteNote(mNote) }
+                .flatMapCompletable { mDataManager.deleteNote(note) }
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { view?.closeView() })
     }
