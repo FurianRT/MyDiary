@@ -45,6 +45,32 @@ class SyncService : Service(), SyncContract.View {
     }
 
     override fun sendProgressUpdate(progressMessage: ProgressMessage) {
+        progressMessage.message = if (progressMessage.hasError) {
+            when (progressMessage.taskIndex) {
+                ProgressMessage.PROFILE_CHECK -> getString(R.string.sync_error_profile)
+                ProgressMessage.SYNC_NOTES -> getString(R.string.sync_error_notes)
+                ProgressMessage.SYNC_APPEARANCE -> getString(R.string.sync_error_appearance)
+                ProgressMessage.SYNC_CATEGORIES -> getString(R.string.sync_error_categories)
+                ProgressMessage.SYNC_TAGS -> getString(R.string.sync_error_tags)
+                ProgressMessage.SYNC_NOTE_TAGS -> getString(R.string.sync_error_note_tags)
+                ProgressMessage.SYNC_IMAGES -> getString(R.string.sync_error_images)
+                ProgressMessage.CLEANUP -> getString(R.string.sync_error_cleanup)
+                else -> getString(R.string.sync_error)
+            }
+        } else {
+            when (progressMessage.taskIndex) {
+                ProgressMessage.PROFILE_CHECK -> getString(R.string.sync_profile_check)
+                ProgressMessage.SYNC_NOTES -> getString(R.string.sync_notes)
+                ProgressMessage.SYNC_APPEARANCE -> getString(R.string.sync_appearance)
+                ProgressMessage.SYNC_CATEGORIES -> getString(R.string.sync_categories)
+                ProgressMessage.SYNC_TAGS -> getString(R.string.sync_tags)
+                ProgressMessage.SYNC_NOTE_TAGS -> getString(R.string.sync_note_tags)
+                ProgressMessage.SYNC_IMAGES -> getString(R.string.sync_images)
+                ProgressMessage.CLEANUP -> getString(R.string.sync_cleanup)
+                ProgressMessage.SYNC_FINISHED -> getString(R.string.sync_done)
+                else -> ""
+            }
+        }
         LocalBroadcastManager.getInstance(applicationContext)
                 .sendBroadcast(Intent().apply {
                     putExtra(EXTRA_PROGRESS_MESSAGE, progressMessage)

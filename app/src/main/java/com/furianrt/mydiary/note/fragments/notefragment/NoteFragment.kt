@@ -137,6 +137,7 @@ class NoteFragment : Fragment(), NoteFragmentContract.View, OnMapReadyCallback,
         someTemporaryFunction(view)
 
         mPagerAdapter = NoteFragmentPagerAdapter(childFragmentManager)
+        view.pager_note_image.adapter = mPagerAdapter
 
         view.layout_mood.setOnClickListener(this@NoteFragment)
         view.layout_category.setOnClickListener(this@NoteFragment)
@@ -144,11 +145,14 @@ class NoteFragment : Fragment(), NoteFragmentContract.View, OnMapReadyCallback,
         view.text_date.setOnClickListener(this@NoteFragment)
         view.text_time.setOnClickListener(this@NoteFragment)
         view.fab_add_image.setOnClickListener(this@NoteFragment)
-        view.pager_note_image.adapter = mPagerAdapter
         view.layout_loading.setOnTouchListener { _, _ -> true }
         view.map_touch_event_interceptor.setOnTouchListener { _, _ -> true }
 
-        addFragments()
+        if (childFragmentManager.findFragmentByTag(NoteContentFragment.TAG) == null) {
+            childFragmentManager.inTransaction {
+                add(R.id.container_note_edit, NoteContentFragment.newInstance(mMode), NoteContentFragment.TAG)
+            }
+        }
 
         return view
     }
@@ -468,14 +472,6 @@ class NoteFragment : Fragment(), NoteFragmentContract.View, OnMapReadyCallback,
 
         val params = app_bar_layout.layoutParams as CoordinatorLayout.LayoutParams
         (params.behavior as AppBarLayoutBehavior).shouldScroll = true
-    }
-
-    private fun addFragments() {
-        if (childFragmentManager.findFragmentByTag(NoteContentFragment.TAG) == null) {
-            childFragmentManager.inTransaction {
-                add(R.id.container_note_edit, NoteContentFragment.newInstance(mMode), NoteContentFragment.TAG)
-            }
-        }
     }
 
     override fun onClick(v: View) {

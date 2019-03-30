@@ -80,11 +80,6 @@
 
     </androidx.drawerlayout.widget.DrawerLayout>
 
-    <FrameLayout
-        android:id="@+id/container_splash"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
-
     <include layout="@layout/bottom_sheet_main" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

@@ -8,6 +8,7 @@ data class ProgressMessage(
         val taskIndex: Int,
         val progress: Int = 0,
         val totalTasks: Int = 8,
+        var message: String? = null,
         val hasError: Boolean = false
 ) : Parcelable {
     companion object {

@@ -37,7 +37,6 @@ import com.furianrt.mydiary.main.fragments.imagesettings.ImageSettingsFragment
 import com.furianrt.mydiary.main.fragments.premium.PremiumFragment
 import com.furianrt.mydiary.main.fragments.profile.ProfileFragment
 import com.furianrt.mydiary.main.fragments.profile.signout.SignOutFragment
-import com.furianrt.mydiary.main.fragments.splash.SplashFragment
 import com.furianrt.mydiary.main.listadapter.MainListAdapter
 import com.furianrt.mydiary.main.listadapter.MainListItem
 import com.furianrt.mydiary.note.NoteActivity
@@ -107,30 +106,16 @@ class MainActivity : BaseActivity(), MainActivityContract.View,
             nav_view.getHeaderView(0).button_sync.text = getString(R.string.nav_header_main_button_sync)
         }
     }
+    private lateinit var mOnDrawerListener: ActionBarDrawerToggle
+
     private val mBroadcastReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
             intent?.getParcelableExtra<ProgressMessage>(SyncService.EXTRA_PROGRESS_MESSAGE)?.let {
-                if (it.hasError) {                              //todo убарть это все отсюда
-                    button_sync.text = when (it.taskIndex) {
-                        ProgressMessage.PROFILE_CHECK -> getString(R.string.sync_error_profile)
-                        ProgressMessage.SYNC_NOTES -> getString(R.string.sync_error_notes)
-                        ProgressMessage.SYNC_APPEARANCE -> getString(R.string.sync_error_appearance)
-                        ProgressMessage.SYNC_CATEGORIES -> getString(R.string.sync_error_categories)
-                        ProgressMessage.SYNC_TAGS -> getString(R.string.sync_error_tags)
-                        ProgressMessage.SYNC_NOTE_TAGS -> getString(R.string.sync_error_note_tags)
-                        ProgressMessage.SYNC_IMAGES -> getString(R.string.sync_error_images)
-                        ProgressMessage.CLEANUP -> getString(R.string.sync_error_cleanup)
-                        else -> getString(R.string.sync_error)
-                    }
+                if (it.hasError) {
+                    button_sync.text = it.message
                     nav_view.getHeaderView(0).progress_sync.progress = 100f
                     nav_view.getHeaderView(0).progress_sync.finishLoad()
-                    nav_view.getHeaderView(0)
-                            .progress_sync
-                            .animate()
-                            .alpha(0f)
-                            .setDuration(ANIMATION_PROGRESS_DURATION)
-                            .setStartDelay(ANIMATION_PROGRESS_FADE_OUT_OFFSET)
-                            .setListener(mProgressAnimationListener)
+                    animateProgressAlpha()
                 } else {
                     if (nav_view.getHeaderView(0).progress_sync.isFinish) {
                         nav_view.getHeaderView(0).progress_sync.reset()
@@ -139,27 +124,10 @@ class MainActivity : BaseActivity(), MainActivityContract.View,
                     nav_view.getHeaderView(0).progress_sync.alpha = 0.35f
                     nav_view.getHeaderView(0).progress_sync.visibility = View.VISIBLE
                     nav_view.getHeaderView(0).progress_sync.progress = it.progress.toFloat()
-                    val progressText = it.progress.toString() + "% " + when (it.taskIndex) {
-                        ProgressMessage.PROFILE_CHECK -> getString(R.string.sync_profile_check)
-                        ProgressMessage.SYNC_NOTES -> getString(R.string.sync_notes)
-                        ProgressMessage.SYNC_APPEARANCE -> getString(R.string.sync_appearance)
-                        ProgressMessage.SYNC_CATEGORIES -> getString(R.string.sync_categories)
-                        ProgressMessage.SYNC_TAGS -> getString(R.string.sync_tags)
-                        ProgressMessage.SYNC_NOTE_TAGS -> getString(R.string.sync_note_tags)
-                        ProgressMessage.SYNC_IMAGES -> getString(R.string.sync_images)
-                        ProgressMessage.CLEANUP -> getString(R.string.sync_cleanup)
-                        ProgressMessage.SYNC_FINISHED -> {
-                            nav_view.getHeaderView(0).progress_sync.finishLoad()
-                            nav_view.getHeaderView(0)
-                                    .progress_sync
-                                    .animate()
-                                    .alpha(0f)
-                                    .setDuration(ANIMATION_PROGRESS_DURATION)
-                                    .setStartDelay(ANIMATION_PROGRESS_FADE_OUT_OFFSET)
-                                    .setListener(mProgressAnimationListener)
-                            getString(R.string.sync_done)
-                        }
-                        else -> ""
+                    val progressText = "${it.progress}% ${it.message}"
+                    if (it.taskIndex == ProgressMessage.SYNC_FINISHED) {
+                        nav_view.getHeaderView(0).progress_sync.finishLoad()
+                        animateProgressAlpha()
                     }
                     nav_view.getHeaderView(0).button_sync.text = progressText
                 }
@@ -170,11 +138,6 @@ class MainActivity : BaseActivity(), MainActivityContract.View,
     override fun onCreate(savedInstanceState: Bundle?) {
         application.setTheme(R.style.AppTheme)
         super.onCreate(savedInstanceState)
-        if (savedInstanceState == null && supportFragmentManager.findFragmentByTag(SplashFragment.TAG) == null) {
-            supportFragmentManager.inTransaction {
-                add(R.id.container_splash, SplashFragment(), SplashFragment.TAG)
-            }
-        }
         getPresenterComponent(this).inject(this)
         setContentView(R.layout.activity_main)
         mBottomSheet = BottomSheetBehavior.from(main_sheet_container)
@@ -183,20 +146,16 @@ class MainActivity : BaseActivity(), MainActivityContract.View,
             override fun onStateChanged(bottomSheet: View, newState: Int) {
                 if (newState == BottomSheetBehavior.STATE_COLLAPSED) {
                     supportFragmentManager.findFragmentByTag(PremiumFragment.TAG)?.let {
-                        Log.e(TAG, "PremiumFragment removed")
                         supportFragmentManager.popBackStack()
                     }
                     supportFragmentManager.findFragmentByTag(ProfileFragment.TAG)?.let {
-                        Log.e(TAG, "ProfileFragment removed")
                         supportFragmentManager.inTransaction { remove(it) }
                     }
                     supportFragmentManager.findFragmentByTag(AuthFragment.TAG)?.let {
-                        Log.e(TAG, "AuthFragment removed")
                         (it as AuthFragment).clearFocus()
                         supportFragmentManager.inTransaction { remove(it) }
                     }
                     supportFragmentManager.findFragmentByTag(ImageSettingsFragment.TAG)?.let {
-                        Log.e(TAG, "ImageSettingsFragment removed")
                         supportFragmentManager.inTransaction { remove(it) }
                     }
                 }
@@ -212,10 +171,8 @@ class MainActivity : BaseActivity(), MainActivityContract.View,
             layout_main_root.translationX = it.getFloat(BUNDLE_ROOT_LAYOUT_OFFSET, 0f)
             mBottomSheet.state = it.getInt(BUNDLE_BOTTOM_SHEET_STATE, BottomSheetBehavior.STATE_COLLAPSED)
         }
-
         LocalBroadcastManager.getInstance(this)
                 .registerReceiver(mBroadcastReceiver, IntentFilter(Intent.ACTION_SYNC))
-
         setupUi()
     }
 
@@ -225,29 +182,21 @@ class MainActivity : BaseActivity(), MainActivityContract.View,
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_menu)
 
-        drawer.addDrawerListener(object :
-                ActionBarDrawerToggle(this, drawer, toolbar_main, R.string.open, R.string.close) {
-            override fun onDrawerSlide(drawerView: View, slideOffset: Float) {
-                super.onDrawerSlide(drawerView, slideOffset)
-                layout_main_root.translationX = slideOffset * drawerView.width
-            }
-        })
-        fab_menu.setOnClickListener(this)
-        fab_delete.setOnClickListener(this)
-        fab_folder.setOnClickListener(this)
-        fab_place.setOnClickListener(this)
-        image_toolbar_main.setOnClickListener(this)
-        button_main_image_settings.setOnClickListener(this)
-        nav_view.getHeaderView(0).button_sync.setOnClickListener(this)
-        nav_view.getHeaderView(0).button_profile_settings.setOnClickListener(this)
-        nav_view.getHeaderView(0).layout_profile_name.setOnClickListener(this)
-        nav_view.getHeaderView(0).image_profile.setOnClickListener(this)
-
         mAdapter = MainListAdapter(is24TimeFormat = mPresenter.is24TimeFormat())
         list_main.layoutManager = LinearLayoutManager(this)
         list_main.addItemDecoration(HeaderItemDecoration(list_main, mAdapter))
         list_main.adapter = mAdapter
         list_main.itemAnimator = LandingAnimator()
+    }
+
+    private fun animateProgressAlpha() {
+        nav_view.getHeaderView(0)
+                .progress_sync
+                .animate()
+                .alpha(0f)
+                .setDuration(ANIMATION_PROGRESS_DURATION)
+                .setStartDelay(ANIMATION_PROGRESS_FADE_OUT_OFFSET)
+                .setListener(mProgressAnimationListener)
     }
 
     override fun showHeaderImage(image: MyHeaderImage) {
@@ -384,7 +333,6 @@ class MainActivity : BaseActivity(), MainActivityContract.View,
         if (supportFragmentManager.findFragmentByTag(ProfileFragment.TAG) == null) {
             supportFragmentManager.inTransaction {
                 replace(R.id.main_sheet_container, ProfileFragment(), ProfileFragment.TAG)
-                Log.e(TAG, "ProfileFragment added")
             }
         }
         mHandler.postDelayed(mBottomSheetOpenRunnable, BOTTOM_SHEET_EXPAND_DELAY)
@@ -394,7 +342,6 @@ class MainActivity : BaseActivity(), MainActivityContract.View,
         if (supportFragmentManager.findFragmentByTag(AuthFragment.TAG) == null) {
             supportFragmentManager.inTransaction {
                 replace(R.id.main_sheet_container, AuthFragment(), AuthFragment.TAG)
-                Log.e(TAG, "AuthFragment added")
             }
         }
         mHandler.postDelayed(mBottomSheetOpenRunnable, BOTTOM_SHEET_EXPAND_DELAY)
@@ -405,7 +352,6 @@ class MainActivity : BaseActivity(), MainActivityContract.View,
             supportFragmentManager.inTransaction {
                 add(R.id.main_sheet_container, PremiumFragment(), PremiumFragment.TAG)
             }
-            Log.e(TAG, "PremiumFragment added")
         }
         mHandler.postDelayed(mBottomSheetOpenRunnable, BOTTOM_SHEET_EXPAND_DELAY)
     }
@@ -475,10 +421,8 @@ class MainActivity : BaseActivity(), MainActivityContract.View,
                 .start()
     }
 
-    override fun showNotes(notes: List<MainListItem>, selectedNotes: ArrayList<MyNoteWithProp>,
-                           hasPremium: Boolean) {
+    override fun showNotes(notes: List<MainListItem>, selectedNotes: ArrayList<MyNoteWithProp>) {
         Log.e(TAG, "showNotes")
-        mAdapter.hasPremium = hasPremium
         mAdapter.selectedNotes = selectedNotes
         mAdapter.submitList(notes.toMutableList())
         mRecyclerViewState?.let {
@@ -549,7 +493,7 @@ class MainActivity : BaseActivity(), MainActivityContract.View,
     }
 
     override fun showAnonymousProfile() {
-        mAdapter.hasPremium = false
+        mAdapter.profile = null
         mAdapter.notifyDataSetChanged()
         nav_view.getHeaderView(0).text_email.text = getString(R.string.nav_header_main_anonymous)
         nav_view.getHeaderView(0).text_profile_description.text =
@@ -557,7 +501,7 @@ class MainActivity : BaseActivity(), MainActivityContract.View,
     }
 
     override fun showRegularProfile(profile: MyProfile) {
-        mAdapter.hasPremium = false
+        mAdapter.profile = null
         mAdapter.notifyDataSetChanged()
         //todo Добавить загрузку картинки профиля
         nav_view.getHeaderView(0).text_email.text = profile.email
@@ -566,7 +510,7 @@ class MainActivity : BaseActivity(), MainActivityContract.View,
     }
 
     override fun showPremiumProfile(profile: MyProfile) {
-        mAdapter.hasPremium = true
+        mAdapter.profile = profile
         mAdapter.notifyDataSetChanged()
         //todo Добавить загрузку картинки профиля
         nav_view.getHeaderView(0).text_email.text = profile.email
@@ -606,6 +550,32 @@ class MainActivity : BaseActivity(), MainActivityContract.View,
     }
 
     override fun networkAvailable() = isNetworkAvailable()
+
+    override fun onStart() {
+        super.onStart()
+        mOnDrawerListener = object : ActionBarDrawerToggle(this, drawer, toolbar_main, R.string.open, R.string.close) {
+            override fun onDrawerSlide(drawerView: View, slideOffset: Float) {
+                super.onDrawerSlide(drawerView, slideOffset)
+                layout_main_root.translationX = slideOffset * drawerView.width
+            }
+        }
+        drawer.addDrawerListener(mOnDrawerListener)
+        fab_menu.setOnClickListener(this)
+        fab_delete.setOnClickListener(this)
+        fab_folder.setOnClickListener(this)
+        fab_place.setOnClickListener(this)
+        image_toolbar_main.setOnClickListener(this)
+        button_main_image_settings.setOnClickListener(this)
+        nav_view.getHeaderView(0).button_sync.setOnClickListener(this)
+        nav_view.getHeaderView(0).button_profile_settings.setOnClickListener(this)
+        nav_view.getHeaderView(0).layout_profile_name.setOnClickListener(this)
+        nav_view.getHeaderView(0).image_profile.setOnClickListener(this)
+    }
+
+    override fun onStop() {
+        super.onStop()
+        drawer.removeDrawerListener(mOnDrawerListener)
+    }
 
     override fun onResume() {
         super.onResume()

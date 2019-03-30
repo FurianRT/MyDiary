@@ -19,13 +19,13 @@ interface ImageDao {
     @Update
     fun update(images: List<MyImage>)
 
-    @Query("UPDATE Images SET is_image_deleted = 1, is_image_sync = 0 WHERE id_note_image = :noteId")
+    @Query("UPDATE Images SET is_image_deleted = 1, image_sync_with = '[]' WHERE id_note_image = :noteId")
     fun deleteByNoteId(noteId: String)
 
-    @Query("UPDATE Images SET is_image_deleted = 1, is_image_sync = 0 WHERE name = :imageId")
+    @Query("UPDATE Images SET is_image_deleted = 1, image_sync_with = '[]' WHERE name = :imageId")
     fun delete(imageId: String)
 
-    @Query("UPDATE Images SET is_image_deleted = 1, is_image_sync = 0 WHERE name IN (:imageIds)")
+    @Query("UPDATE Images SET is_image_deleted = 1, image_sync_with = '[]' WHERE name IN (:imageIds)")
     fun delete(imageIds: List<String>)
 
     @Query("SELECT * FROM Images WHERE is_image_deleted = 0")

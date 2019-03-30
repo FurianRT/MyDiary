@@ -26,6 +26,7 @@ import com.furianrt.mydiary.data.storage.StorageHelperImp
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.FirebaseFirestoreSettings
 import com.google.firebase.storage.FirebaseStorage
+import com.google.gson.Gson
 import dagger.Module
 import dagger.Provides
 import io.reactivex.Scheduler
@@ -234,7 +235,7 @@ class AppModule(private val app: Application) {
         for (i in 0 until tagNames.size) {
             cv.put(MyTag.FIELD_ID, "default_tag_$i")
             cv.put(MyTag.FIELD_NAME, tagNames[i])
-            cv.put(MyTag.FIELD_IS_SYNC, true)
+            cv.put(MyTag.FIELD_IS_SYNC, Gson().toJson(listOf(MyTag.DEFAULT_SYNC_EMAIL)))
             cv.put(MyTag.FIELD_IS_DELETED, false)
             db.insert(MyTag.TABLE_NAME, SQLiteDatabase.CONFLICT_IGNORE, cv)
         }
@@ -244,7 +245,7 @@ class AppModule(private val app: Application) {
             cv.put(MyCategory.FIELD_ID, "default_category_$i")
             cv.put(MyCategory.FIELD_NAME, categoryNames[i])
             cv.put(MyCategory.FIELD_COLOR, MyCategory.DEFAULT_COLOR)
-            cv.put(MyCategory.FIELD_IS_SYNC, true)
+            cv.put(MyCategory.FIELD_IS_SYNC, Gson().toJson(listOf(MyCategory.DEFAULT_SYNC_EMAIL)))
             cv.put(MyCategory.FIELD_IS_DELETED, false)
             db.insert(MyCategory.TABLE_NAME, SQLiteDatabase.CONFLICT_IGNORE, cv)
         }

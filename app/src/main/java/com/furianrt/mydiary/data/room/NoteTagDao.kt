@@ -17,13 +17,13 @@ abstract class NoteTagDao {
     @Update
     abstract fun update(noteTags: List<NoteTag>)
 
-    @Query("UPDATE NoteTag SET is_notetag_deleted = 1, is_notetag_sync = 0 WHERE id_note = :noteId")
+    @Query("UPDATE NoteTag SET is_notetag_deleted = 1, notetag_sync_with = '[]' WHERE id_note = :noteId")
     abstract fun deleteWithNoteId(noteId: String)
 
-    @Query("UPDATE NoteTag SET is_notetag_deleted = 1, is_notetag_sync = 0 WHERE id_tag = :tagId")
+    @Query("UPDATE NoteTag SET is_notetag_deleted = 1, notetag_sync_with = '[]' WHERE id_tag = :tagId")
     abstract fun deleteWithTagId(tagId: String)
 
-    @Query("UPDATE NoteTag SET is_notetag_deleted = 1, is_notetag_sync = 0 WHERE id_note = :noteId")
+    @Query("UPDATE NoteTag SET is_notetag_deleted = 1, notetag_sync_with = '[]' WHERE id_note = :noteId")
     abstract fun deleteAllTagsForNote(noteId: String)
 
     @Query("DELETE FROM NoteTag WHERE is_notetag_deleted = 1")

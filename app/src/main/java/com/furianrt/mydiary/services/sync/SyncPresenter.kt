@@ -21,6 +21,8 @@ class SyncPresenter(
 
     private class SyncGoneWrongException(val taskIndex: Int) : Throwable()
 
+    private lateinit var mProfile: MyProfile
+
     override fun onStartCommand() {
         view?.sendProgressUpdate(ProgressMessage(ProgressMessage.PROFILE_CHECK))
         addDisposable(Observable.concat(listOf(
@@ -61,6 +63,7 @@ class SyncPresenter(
                     .flatMap { mDataManager.getCloudProfile(it.email) }
                     .zipWith(mDataManager.getDbProfile().firstOrError(), BiFunction<MyProfile, MyProfile, Boolean>
                     { cloudProfile, localProfile ->
+                        mProfile = localProfile
                         return@BiFunction cloudProfile.passwordHash == localProfile.passwordHash
                     })
                     .flatMapObservable { isPasswordValid ->
@@ -78,9 +81,9 @@ class SyncPresenter(
     private fun syncNotes(): Observable<ProgressMessage> =
             mDataManager.getAllNotes()
                     .first(emptyList())
-                    .map { notes -> notes.filter { !it.isSync } }
+                    .map { notes -> notes.filter { !it.isSync(mProfile.email) } }
                     .flatMapCompletable { notes ->
-                        val notesSync = notes.map { it.apply { it.isSync = true } }
+                        val notesSync = notes.map { it.apply { it.syncWith.add(mProfile.email) } }
                         return@flatMapCompletable Completable.concat(listOf(
                                 mDataManager.saveNotesInCloud(notesSync),
                                 mDataManager.updateNotesSync(notesSync)))
@@ -95,9 +98,9 @@ class SyncPresenter(
     private fun syncAppearance(): Observable<ProgressMessage> =
             mDataManager.getAllNoteAppearances()
                     .first(emptyList())
-                    .map { appearances -> appearances.filter { !it.isSync } }
+                    .map { appearances -> appearances.filter { !it.isSync(mProfile.email) } }
                     .flatMapCompletable { appearances ->
-                        val appearancesSync = appearances.map { it.apply { it.isSync = true } }
+                        val appearancesSync = appearances.map { it.apply { it.syncWith.add(mProfile.email) } }
                         return@flatMapCompletable Completable.concat(listOf(
                                 mDataManager.saveAppearancesInCloud(appearancesSync),
                                 mDataManager.updateAppearancesSync(appearancesSync)))
@@ -112,9 +115,9 @@ class SyncPresenter(
     private fun syncCategories(): Observable<ProgressMessage> =
             mDataManager.getAllCategories()
                     .first(emptyList())
-                    .map { categories -> categories.filter { !it.isSync } }
+                    .map { categories -> categories.filter { !it.isSync(mProfile.email) } }
                     .flatMapCompletable { categories ->
-                        val categoriesSync = categories.map { it.apply { it.isSync = true } }
+                        val categoriesSync = categories.map { it.apply { it.syncWith.add(mProfile.email) } }
                         return@flatMapCompletable Completable.concat(listOf(
                                 mDataManager.saveCategoriesInCloud(categoriesSync),
                                 mDataManager.updateCategoriesSync(categoriesSync)))
@@ -128,9 +131,9 @@ class SyncPresenter(
 
     private fun syncTags(): Observable<ProgressMessage> =
             mDataManager.getAllTags()
-                    .map { tags -> tags.filter { !it.isSync } }
+                    .map { tags -> tags.filter { !it.isSync(mProfile.email) } }
                     .flatMapCompletable { tags ->
-                        val tagsSync = tags.map { it.apply { it.isSync = true } }
+                        val tagsSync = tags.map { it.apply { it.syncWith.add(mProfile.email) } }
                         return@flatMapCompletable Completable.concat(listOf(
                                 mDataManager.saveTagsInCloud(tagsSync),
                                 mDataManager.updateTagsSync(tagsSync)))
@@ -145,9 +148,9 @@ class SyncPresenter(
     private fun syncNoteTags(): Observable<ProgressMessage> =
             mDataManager.getAllNoteTags()
                     .first(emptyList())
-                    .map { noteTags -> noteTags.filter { !it.isSync } }
+                    .map { noteTags -> noteTags.filter { !it.isSync(mProfile.email) } }
                     .flatMapCompletable { noteTags ->
-                        val noteTagsSync = noteTags.map { it.apply { it.isSync = true } }
+                        val noteTagsSync = noteTags.map { it.apply { it.syncWith.add(mProfile.email) } }
                         return@flatMapCompletable Completable.concat(listOf(
                                 mDataManager.saveNoteTagsInCloud(noteTagsSync),
                                 mDataManager.updateNoteTagsSync(noteTagsSync)))
@@ -162,9 +165,9 @@ class SyncPresenter(
     private fun syncImages(): Observable<ProgressMessage> =
             mDataManager.getAllImages()
                     .first(emptyList())
-                    .map { images -> images.filter { !it.isSync } }
+                    .map { images -> images.filter { !it.isSync(mProfile.email) } }
                     .flatMapCompletable { images ->
-                        val imagesSync = images.map { it.apply { it.isSync = true } }
+                        val imagesSync = images.map { it.apply { it.syncWith.add(mProfile.email) } }
                         return@flatMapCompletable Completable.concat(listOf(
                                 mDataManager.saveImagesFilesInCloud(imagesSync.filter { it.isEdited }),
                                 mDataManager.saveImagesInCloud(imagesSync.map { it.apply { isEdited = false } }),

@@ -84,7 +84,7 @@ class DataManagerImp(
                     .subscribeOn(mRxScheduler)
 
     override fun updateNote(note: MyNote): Completable =
-            Completable.fromAction { mDatabase.noteDao().update(note.apply { isSync = false }) }
+            Completable.fromAction { mDatabase.noteDao().update(note.apply { syncWith = mutableListOf() }) }
                     .subscribeOn(mRxScheduler)
 
     override fun updateNoteText(noteId: String, title: String, content: String): Completable =
@@ -92,17 +92,17 @@ class DataManagerImp(
                     .subscribeOn(mRxScheduler)
 
     override fun updateTag(tag: MyTag): Completable =
-            Completable.fromAction { mDatabase.tagDao().update(tag.apply { isSync = false }) }
+            Completable.fromAction { mDatabase.tagDao().update(tag.apply { syncWith = mutableListOf() }) }
                     .subscribeOn(mRxScheduler)
 
     override fun updateImage(image: MyImage): Completable =
             Completable.fromAction {
-                mDatabase.imageDao().update(image.apply { isSync = false })
+                mDatabase.imageDao().update(image.apply { syncWith = mutableListOf() })
             }.subscribeOn(mRxScheduler)
 
     override fun updateImage(images: List<MyImage>): Completable =
             Completable.fromAction {
-                mDatabase.imageDao().update(images.map { it.apply { isSync = false } })
+                mDatabase.imageDao().update(images.map { it.apply { syncWith = mutableListOf() } })
             }.subscribeOn(mRxScheduler)
 
     override fun updateImageSync(images: List<MyImage>): Completable =
@@ -110,12 +110,12 @@ class DataManagerImp(
                     .subscribeOn(mRxScheduler)
 
     override fun updateCategory(category: MyCategory): Completable =
-            Completable.fromAction { mDatabase.categoryDao().update(category.apply { isSync = false }) }
+            Completable.fromAction { mDatabase.categoryDao().update(category.apply { syncWith = mutableListOf() }) }
                     .andThen(mDatabase.noteDao().getAllNotes())
                     .first(emptyList())
                     .flatMapObservable { Observable.fromIterable(it) }
                     .filter { it.categoryId == category.id }
-                    .map { it.apply { it.isSync = false } }
+                    .map { it.apply { it.syncWith = mutableListOf() } }
                     .flatMapSingle {
                         Completable.fromAction { mDatabase.noteDao().update(it) }
                                 .toSingleDefault(true)
@@ -125,9 +125,9 @@ class DataManagerImp(
                     .subscribeOn(mRxScheduler)
 
     override fun updateAppearance(appearance: MyNoteAppearance): Completable =
-            Completable.fromAction { mDatabase.appearanceDao().update(appearance.apply { isSync = false }) }
+            Completable.fromAction { mDatabase.appearanceDao().update(appearance.apply { syncWith = mutableListOf() }) }
                     .andThen(mDatabase.noteDao().getNote(appearance.appearanceId))
-                    .map { it.apply { it.isSync = false } }
+                    .map { it.apply { it.syncWith = mutableListOf() } }
                     .flatMapCompletable { Completable.fromAction { mDatabase.noteDao().update(it) } }
                     .subscribeOn(mRxScheduler)
 
@@ -190,7 +190,7 @@ class DataManagerImp(
     override fun replaceNoteTags(noteId: String, tags: List<MyTag>): Completable =
             Completable.fromAction {
                 mDatabase.noteTagDao()
-                        .replaceNoteTags(noteId, tags.map { it.apply { it.isSync = false } })
+                        .replaceNoteTags(noteId, tags.map { it.apply { syncWith = mutableListOf() } })
             }.subscribeOn(mRxScheduler)
 
     override fun deleteAllTagsForNote(noteId: String): Completable =

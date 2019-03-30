@@ -164,7 +164,7 @@ class MainActivityPresenter(
                                 .size
                     })
                     view?.showNotesTotal(notes.size)
-                    view?.showNotes(items, mSelectedNotes, mProfile.hasPremium)
+                    view?.showNotes(items, mSelectedNotes)
                 })
     }
 

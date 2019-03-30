@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.signature.ObjectKey
 import com.furianrt.mydiary.R
 import com.furianrt.mydiary.data.model.MyNoteWithProp
+import com.furianrt.mydiary.data.model.MyProfile
 import com.furianrt.mydiary.general.GlideApp
 import com.furianrt.mydiary.general.HeaderItemDecoration
 import com.furianrt.mydiary.utils.*
@@ -28,7 +29,7 @@ class MainListAdapter(
         HeaderItemDecoration.StickyHeaderInterface {
 
     var listener: OnMainListItemInteractionListener? = null
-    var hasPremium = false
+    var profile: MyProfile? = null
 
     override fun bindHeaderData(header: View, headerPosition: Int) {
         if (headerPosition == RecyclerView.NO_POSITION) {
@@ -126,12 +127,13 @@ class MainListAdapter(
                     text_category.text = ""
                 }
 
-                if (!hasPremium) {
+                val tempProfile = profile
+                if (tempProfile == null) {
                     image_sync.visibility = View.INVISIBLE
                 } else {
-                    if (item.note.note.isSync
-                            && item.note.images.find { !it.isSync } == null
-                            && item.note.tags.find { !it.isSync } == null) {
+                    if (item.note.note.isSync(tempProfile.email)
+                            && item.note.images.find { !it.isSync(tempProfile.email) } == null
+                            && item.note.tags.find { !it.isSync(tempProfile.email) } == null) {
                         image_sync.setImageResource(R.drawable.ic_cloud_done)
                         image_sync.setColorFilter(getThemeAccentColor(mView.context), PorterDuff.Mode.SRC_IN)
                     } else {

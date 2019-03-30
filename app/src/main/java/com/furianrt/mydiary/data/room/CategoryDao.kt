@@ -20,7 +20,7 @@ interface CategoryDao {
     @Update
     fun update(category: List<MyCategory>)
 
-    @Query("UPDATE Categories SET is_category_deleted = 1, is_category_sync = 0 WHERE id_category = :categoryId")
+    @Query("UPDATE Categories SET is_category_deleted = 1, category_sync_with = '[]' WHERE id_category = :categoryId")
     fun delete(categoryId: String)
 
     @Query("DELETE FROM Categories WHERE is_category_deleted = 1")

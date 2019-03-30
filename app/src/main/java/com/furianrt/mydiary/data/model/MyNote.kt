@@ -20,7 +20,7 @@ data class MyNote(
         @ColumnInfo(name = FIELD_CREATION_TIME) var creationTime: Long = DateTime.now().millis,
         @ColumnInfo(name = FIELD_LOCATION) var locationName: String? = null,
         @ColumnInfo(name = FIELD_FORECAST) var forecast: Forecast? = null,
-        @ColumnInfo(name = FIELD_IS_SYNC) var isSync: Boolean = false,
+        @ColumnInfo(name = FIELD_IS_SYNC) var syncWith: MutableList<String> = mutableListOf(),
         @ColumnInfo(name = FIELD_IS_DELETED) var isDeleted: Boolean = false
 ) : Parcelable {
 
@@ -35,7 +35,9 @@ data class MyNote(
         const val FIELD_CREATION_TIME = "creation_time"
         const val FIELD_LOCATION = "location"
         const val FIELD_FORECAST = "forecast"
-        const val FIELD_IS_SYNC = "is_note_sync"
+        const val FIELD_IS_SYNC = "note_sync_with"
         const val FIELD_IS_DELETED = "is_note_deleted"
     }
+
+    fun isSync(email: String) = syncWith.contains(email)
 }

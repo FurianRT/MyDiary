@@ -21,10 +21,10 @@ interface NoteDao {
     @Update
     fun update(notes: List<MyNote>)
 
-    @Query("UPDATE Notes SET title = :title, content = :content, is_note_sync = 0 WHERE id_note = :noteId")
+    @Query("UPDATE Notes SET title = :title, content = :content, note_sync_with = '[]' WHERE id_note = :noteId")
     fun updateNoteText(noteId: String, title: String, content: String)
 
-    @Query("UPDATE Notes SET is_note_deleted = 1, is_note_sync = 0 WHERE id_note = :noteId")
+    @Query("UPDATE Notes SET is_note_deleted = 1, note_sync_with = '[]' WHERE id_note = :noteId")
     fun delete(noteId: String)
 
     @Query("DELETE FROM Notes WHERE is_note_deleted = 1")

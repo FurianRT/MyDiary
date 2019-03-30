@@ -7,6 +7,20 @@ import com.google.gson.reflect.TypeToken
 class RoomTypeConverter {
 
     @TypeConverter
+    fun stringToList(value: String): List<String> {
+        if (value.isBlank()) {
+            return emptyList()
+        }
+        val type = object : TypeToken<List<String>>() {}.type
+        return Gson().fromJson(value, type)
+    }
+
+    @TypeConverter
+    fun stringToList(list: List<String>): String {
+        return Gson().toJson(list)
+    }
+
+    @TypeConverter
     fun stringToForecast(value: String?): Forecast? {
         val type = object : TypeToken<Forecast>() {}.type
         return Gson().fromJson(value, type)

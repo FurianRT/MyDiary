@@ -13,7 +13,7 @@ data class MyCategory(
         @ColumnInfo(name = FIELD_ID) @PrimaryKey(autoGenerate = false) var id: String = "",
         @ColumnInfo(name = FIELD_NAME) var name: String = "",
         @ColumnInfo(name = FIELD_COLOR) var color: Int = DEFAULT_COLOR,
-        @ColumnInfo(name = FIELD_IS_SYNC) var isSync: Boolean = false,
+        @ColumnInfo(name = FIELD_IS_SYNC) var syncWith: MutableList<String> = mutableListOf(),
         @ColumnInfo(name = FIELD_IS_DELETED) var isDeleted: Boolean = false
 ) : Parcelable {
 
@@ -23,7 +23,10 @@ data class MyCategory(
         const val FIELD_ID = "id_category"
         const val FIELD_NAME = "name_category"
         const val FIELD_COLOR = "color"
-        const val FIELD_IS_SYNC = "is_category_sync"
+        const val FIELD_IS_SYNC = "category_sync_with"
         const val FIELD_IS_DELETED = "is_category_deleted"
+        const val DEFAULT_SYNC_EMAIL = "default"
     }
+
+    fun isSync(email: String) = syncWith.contains(DEFAULT_SYNC_EMAIL) || syncWith.contains(email)
 }
