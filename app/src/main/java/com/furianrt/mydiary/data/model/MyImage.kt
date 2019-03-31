@@ -28,7 +28,7 @@ data class MyImage(
         @ColumnInfo(name = FIELD_EDITED_TIME) var editedTime: Long = DateTime.now().millis,
         @ColumnInfo(name = FIELD_ORDER) var order: Int = Int.MAX_VALUE,
         @ColumnInfo(name = FIELD_IS_SYNC) var syncWith: MutableList<String> = mutableListOf(),
-        @ColumnInfo(name = FIELD_IS_EDITED) var isEdited: Boolean = true,
+        @ColumnInfo(name = FIELD_IS_EDITED) var fileSyncWith: MutableList<String> = mutableListOf(),
         @ColumnInfo(name = FIELD_IS_DELETED) var isDeleted: Boolean = false
 ) : Parcelable {
 
@@ -41,9 +41,10 @@ data class MyImage(
         const val FIELD_EDITED_TIME = "edited_time"
         const val FIELD_ORDER = "image_order"
         const val FIELD_IS_SYNC = "image_sync_with"
-        const val FIELD_IS_EDITED = "is_image_edited"
+        const val FIELD_IS_EDITED = "image_file_sync_with"
         const val FIELD_IS_DELETED = "is_image_deleted"
     }
 
     fun isSync(email: String) = syncWith.contains(email)
+    fun isFileSync(email: String) = fileSyncWith.contains(email)
 }

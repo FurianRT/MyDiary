@@ -11,7 +11,7 @@ interface CategoryDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insert(category: MyCategory)
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
     fun insert(category: List<MyCategory>)
 
     @Update

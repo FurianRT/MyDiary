@@ -55,10 +55,15 @@ class GalleryPagerPresenter(
 
     override fun onImageEdited() {
         mEditedImage?.let { image ->
-            addDisposable(mDataManager.updateImage(image.apply {
-                isEdited = true
-                editedTime = DateTime.now().millis
-            }).subscribe())
+            addDisposable(mDataManager.getDbProfile()
+                    .firstOrError()
+                    .flatMapCompletable {
+                        mDataManager.updateImage(image.apply {
+                            fileSyncWith.clear()
+                            editedTime = DateTime.now().millis
+                        })
+                    }
+                    .subscribe())
         }
     }
 }

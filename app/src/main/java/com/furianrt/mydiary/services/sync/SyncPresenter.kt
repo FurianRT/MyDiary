@@ -169,9 +169,9 @@ class SyncPresenter(
                     .flatMapCompletable { images ->
                         val imagesSync = images.map { it.apply { it.syncWith.add(mProfile.email) } }
                         return@flatMapCompletable Completable.concat(listOf(
-                                mDataManager.saveImagesFilesInCloud(imagesSync.filter { it.isEdited }),
-                                mDataManager.saveImagesInCloud(imagesSync.map { it.apply { isEdited = false } }),
-                                mDataManager.updateImageSync(imagesSync.map { it.apply { isEdited = false } })
+                                mDataManager.saveImagesFilesInCloud(imagesSync.filter { !it.isFileSync(mProfile.email) }),
+                                mDataManager.saveImagesInCloud(imagesSync.map { it.apply { it.fileSyncWith.add(mProfile.email) } }),
+                                mDataManager.updateImageSync(imagesSync.map { it.apply { it.fileSyncWith.add(mProfile.email) } })
                         ))
                     }
                     .andThen(mDataManager.getDeletedImages().first(emptyList()))
