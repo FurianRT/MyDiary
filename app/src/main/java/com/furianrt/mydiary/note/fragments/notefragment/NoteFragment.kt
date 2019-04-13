@@ -16,7 +16,6 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.coordinatorlayout.widget.CoordinatorLayout
-import androidx.core.content.ContextCompat
 import androidx.core.content.ContextCompat.getColor
 import androidx.fragment.app.Fragment
 import androidx.viewpager.widget.ViewPager
@@ -58,6 +57,7 @@ import pub.devrel.easypermissions.EasyPermissions
 import java.io.IOException
 import java.util.*
 import javax.inject.Inject
+import kotlin.collections.ArrayList
 
 class NoteFragment : Fragment(), NoteFragmentContract.View, OnMapReadyCallback,
         TagsDialog.OnTagsDialogInteractionListener, View.OnClickListener,
@@ -75,6 +75,7 @@ class NoteFragment : Fragment(), NoteFragmentContract.View, OnMapReadyCallback,
         private const val STORAGE_PERMISSIONS_REQUEST_CODE = 2
         private const val ZOOM = 15f
         private const val BUNDLE_IMAGE_PAGER_POSITION = "imagePagerPosition"
+        private const val BUNDLE_NOTE_TEXT_BUFFER = "noteTextBuffer"
         private const val BASE_WEATHER_IMAGE_URL = "http://openweathermap.org/img/w/"
         private const val TIME_PICKER_TAG = "timePicker"
         private const val DATE_PICKER_TAG = "datePicker"
@@ -123,16 +124,19 @@ class NoteFragment : Fragment(), NoteFragmentContract.View, OnMapReadyCallback,
         super.onCreate(savedInstanceState)
         val note = arguments?.getParcelable<MyNote>(ARG_NOTE) ?: throw IllegalArgumentException()
         mMode = arguments?.getSerializable(ARG_MODE) as NoteActivity.Companion.Mode
-        mPresenter.init(note, mMode)
         savedInstanceState?.let {
             mImagePagerPosition = it.getInt(BUNDLE_IMAGE_PAGER_POSITION, 0)
+            mPresenter.setNoteTextBuffer(it.getParcelableArrayList(BUNDLE_NOTE_TEXT_BUFFER)
+                    ?: ArrayList())
         }
+        mPresenter.init(note, mMode)
         setHasOptionsMenu(true)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_note, container, false)
+
 
         someTemporaryFunction(view)
 
@@ -172,9 +176,10 @@ class NoteFragment : Fragment(), NoteFragmentContract.View, OnMapReadyCallback,
     }
 
     override fun showNoteText(title: String, content: String) {
-        val noteContentFragment =
-                childFragmentManager.findFragmentByTag(NoteContentFragment.TAG) as? NoteContentFragment
-        noteContentFragment?.showNoteText(title, content)
+        (childFragmentManager.findFragmentByTag(NoteContentFragment.TAG) as? NoteContentFragment?)
+                ?.showNoteText(title, content)
+        (childFragmentManager.findFragmentByTag(NoteEditFragment.TAG) as? NoteEditFragment?)
+                ?.showNoteText(title, content)
     }
 
     override fun showDateAndTime(time: Long, is24TimeFormat: Boolean) {
@@ -210,6 +215,14 @@ class NoteFragment : Fragment(), NoteFragmentContract.View, OnMapReadyCallback,
             }
             R.id.menu_edit -> {
                 mPresenter.onButtonEditClick()
+                true
+            }
+            R.id.menu_undo -> {
+                mPresenter.onButtonUndoClick()
+                true
+            }
+            R.id.menu_redo -> {
+                mPresenter.onButtonRedoClick()
                 true
             }
             else -> super.onOptionsItemSelected(item)
@@ -429,8 +442,9 @@ class NoteFragment : Fragment(), NoteFragmentContract.View, OnMapReadyCallback,
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
-        outState.putInt(BUNDLE_IMAGE_PAGER_POSITION, pager_note_image.currentItem)
         super.onSaveInstanceState(outState)
+        outState.putInt(BUNDLE_IMAGE_PAGER_POSITION, pager_note_image.currentItem)
+        outState.putParcelableArrayList(BUNDLE_NOTE_TEXT_BUFFER, mPresenter.getNoteTextBuffer())
     }
 
     override fun setUserVisibleHint(isVisibleToUser: Boolean) {
@@ -569,7 +583,7 @@ class NoteFragment : Fragment(), NoteFragmentContract.View, OnMapReadyCallback,
         val widget = Widget.newDarkBuilder(context)
                 .statusBarColor(getThemePrimaryDarkColor(context!!))
                 .toolBarColor(getThemePrimaryColor(context!!))
-                .navigationBarColor(ContextCompat.getColor(context!!, R.color.black))
+                .navigationBarColor(getColor(context!!, R.color.black))
                 .title(R.string.album)
                 .build()
 
@@ -626,6 +640,7 @@ class NoteFragment : Fragment(), NoteFragmentContract.View, OnMapReadyCallback,
     }
 
     fun onNoteTextChange(title: String, content: String) {
+        mPresenter.onNoteTextChange(title, content)
         childFragmentManager.findFragmentByTag(NoteContentFragment.TAG)?.let {
             (it as NoteContentFragment).updateNoteText(title, content)
         }
@@ -660,5 +675,19 @@ class NoteFragment : Fragment(), NoteFragmentContract.View, OnMapReadyCallback,
 
     override fun onTimeSet(view: TimePickerDialog?, hourOfDay: Int, minute: Int, second: Int) {
         mPresenter.onTimeSelected(hourOfDay, minute)
+    }
+
+    override fun enableRedoButton(enable: Boolean) {
+        (childFragmentManager.findFragmentByTag(NoteEditFragment.TAG) as? NoteEditFragment?)
+                ?.enableRedoButton(enable)
+    }
+
+    override fun enableUndoButton(enable: Boolean) {
+        (childFragmentManager.findFragmentByTag(NoteEditFragment.TAG) as? NoteEditFragment?)
+                ?.enableUndoButton(enable)
+    }
+
+    fun onNoteFragmentEditModeEnabled() {
+        mPresenter.onEditModeEnabled()
     }
 }

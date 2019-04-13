@@ -56,6 +56,9 @@ class NoteActivity : BaseActivity(), NoteActivityContract.View,
 
         mPagerAdapter = NoteActivityPagerAdapter(supportFragmentManager, mMode)
 
+        val str = "qwe"
+        val str2 = str.subSequence(0, 1).toString() + "0" + str.subSequence(2, 3)
+
         setupUi()
     }
 

@@ -45,6 +45,8 @@ interface NoteFragmentContract {
         fun showLoading()
         fun hideLoading()
         fun showDeleteConfirmationDialog(note: MyNote)
+        fun enableRedoButton(enable: Boolean)
+        fun enableUndoButton(enable: Boolean)
     }
 
     abstract class Presenter : BasePresenter<View>() {
@@ -75,5 +77,11 @@ interface NoteFragmentContract {
         abstract fun onViewStart(locationEnabled: Boolean, networkAvailable: Boolean)
         abstract fun init(note: MyNote, mode: NoteActivity.Companion.Mode)
         abstract fun onButtonDeleteConfirmClick(note: MyNote)
+        abstract fun getNoteTextBuffer(): ArrayList<NoteCacheEntry>
+        abstract fun setNoteTextBuffer(buffer: ArrayList<NoteCacheEntry>)
+        abstract fun onNoteTextChange(title: String, content: String)
+        abstract fun onButtonUndoClick()
+        abstract fun onButtonRedoClick()
+        abstract fun onEditModeEnabled()
     }
 }

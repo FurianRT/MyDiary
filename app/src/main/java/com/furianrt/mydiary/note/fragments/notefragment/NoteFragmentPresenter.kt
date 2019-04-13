@@ -13,19 +13,26 @@ import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import org.joda.time.DateTime
 import java.util.*
+import kotlin.collections.ArrayList
 
 class NoteFragmentPresenter(private val mDataManager: DataManager) : NoteFragmentContract.Presenter() {
+
+    companion object {
+        private const val TAG = "NoteFragmentPresenter"
+        private const val UNDO_REDO_BUFFER_SIZE = 10
+    }
 
     private lateinit var mNote: MyNote
     private lateinit var mMode: NoteActivity.Companion.Mode
 
-    companion object {
-        private const val TAG = "NoteFragmentPresenter"
-    }
+    private var mNoteTextBuffer = ArrayList<NoteCacheEntry>(UNDO_REDO_BUFFER_SIZE)
 
     override fun init(note: MyNote, mode: NoteActivity.Companion.Mode) {
         mNote = note
         mMode = mode
+        if (mNoteTextBuffer.isEmpty()) {
+            mNoteTextBuffer.add(NoteCacheEntry(mNote.title, mNote.content, true))
+        }
     }
 
     override fun onViewStart(locationEnabled: Boolean, networkAvailable: Boolean) {
@@ -98,7 +105,7 @@ class NoteFragmentPresenter(private val mDataManager: DataManager) : NoteFragmen
     }
 
     private fun loadNote(noteId: String, mode: NoteActivity.Companion.Mode, locationEnabled: Boolean,
-                          networkAvailable: Boolean) {
+                         networkAvailable: Boolean) {
         addDisposable(mDataManager.getNote(noteId)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { note ->
@@ -362,5 +369,65 @@ class NoteFragmentPresenter(private val mDataManager: DataManager) : NoteFragmen
 
     override fun onButtonEditClick() {
         view?.shoNoteEditView()
+    }
+
+    override fun getNoteTextBuffer(): ArrayList<NoteCacheEntry> = mNoteTextBuffer
+
+    override fun setNoteTextBuffer(buffer: ArrayList<NoteCacheEntry>) {
+        mNoteTextBuffer = buffer
+    }
+
+    override fun onNoteTextChange(title: String, content: String) {
+        val selectedIndex = mNoteTextBuffer.indexOfFirst { it.current }
+        val selectedEntry = mNoteTextBuffer[selectedIndex]
+
+        if (selectedEntry.title == title && selectedEntry.content == content) {
+            return
+        }
+
+        mNoteTextBuffer = ArrayList(mNoteTextBuffer.subList(0, selectedIndex + 1))
+
+        mNoteTextBuffer[selectedIndex].current = false
+        if (mNoteTextBuffer.size == UNDO_REDO_BUFFER_SIZE) {
+            mNoteTextBuffer.removeAt(0)
+        }
+        mNoteTextBuffer.add(NoteCacheEntry(title, content, true))
+
+        view?.enableRedoButton(false)
+        view?.enableUndoButton(true)
+    }
+
+    override fun onButtonUndoClick() {
+        val selectedIndex = mNoteTextBuffer.indexOfFirst { it.current }
+        if (selectedIndex > 0) {
+            mNoteTextBuffer[selectedIndex].current = false
+            val nextSelectedEntry = mNoteTextBuffer[selectedIndex - 1]
+            nextSelectedEntry.current = true
+            view?.enableUndoButton(selectedIndex - 1 != 0)
+            view?.enableRedoButton(true)
+            view?.showNoteText(nextSelectedEntry.title, nextSelectedEntry.content)
+        } else {
+            Log.e(TAG, "Undo button should be disabled")
+        }
+    }
+
+    override fun onButtonRedoClick() {
+        val selectedIndex = mNoteTextBuffer.indexOfFirst { it.current }
+        if (selectedIndex < mNoteTextBuffer.size - 1) {
+            mNoteTextBuffer[selectedIndex].current = false
+            val nextSelectedEntry = mNoteTextBuffer[selectedIndex + 1]
+            nextSelectedEntry.current = true
+            view?.enableRedoButton(selectedIndex + 1 != mNoteTextBuffer.size - 1)
+            view?.enableUndoButton(true)
+            view?.showNoteText(nextSelectedEntry.title, nextSelectedEntry.content)
+        } else {
+            Log.e(TAG, "Redo button should be disabled")
+        }
+    }
+
+    override fun onEditModeEnabled() {
+        val selectedIndex = mNoteTextBuffer.indexOfFirst { it.current }
+        view?.enableUndoButton(selectedIndex > 0)
+        view?.enableRedoButton(selectedIndex < mNoteTextBuffer.size - 1)
     }
 }

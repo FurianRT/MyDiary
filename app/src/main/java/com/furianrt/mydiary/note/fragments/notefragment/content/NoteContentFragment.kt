@@ -67,26 +67,22 @@ class NoteContentFragment : Fragment(), NoteContentFragmentContract.View {
 
     fun showNoteText(title: String, content: String) {
         Log.e(TAG, "showNoteText")
-        view?.apply {
-            if (title.isEmpty()) {
-                text_note_title.visibility = View.GONE
-            } else {
-                text_note_title.visibility = View.VISIBLE
-                text_note_title.text = title
-            }
-            text_note_content.text = content
+        if (title.isEmpty()) {
+            text_note_title.visibility = View.GONE
+        } else {
+            text_note_title.visibility = View.VISIBLE
+            text_note_title.text = title
         }
+        text_note_content.text = content
     }
 
     fun setAppearance(appearance: MyNoteAppearance) {
         mAppearance = appearance
-        view?.apply {
-            appearance.textColor?.let { text_note_title.setTextColor(it) }
-            appearance.textSize?.let { text_note_title.textSize = it.toFloat() }
-            appearance.textColor?.let { text_note_content.setTextColor(it) }
-            appearance.textSize?.let { text_note_content.textSize = it.toFloat() }
-            appearance.textBackground?.let { layout_note_content_root.setBackgroundColor(it) }
-        }
+        appearance.textColor?.let { text_note_title.setTextColor(it) }
+        appearance.textSize?.let { text_note_title.textSize = it.toFloat() }
+        appearance.textColor?.let { text_note_content.setTextColor(it) }
+        appearance.textSize?.let { text_note_content.textSize = it.toFloat() }
+        appearance.textBackground?.let { layout_note_content_root.setBackgroundColor(it) }
         fragmentManager?.let { manager ->
             manager.findFragmentByTag(NoteEditFragment.TAG)?.let {
                 (it as NoteEditFragment).setAppearance(appearance)
@@ -128,18 +124,18 @@ class NoteContentFragment : Fragment(), NoteContentFragmentContract.View {
                 this.setPrimaryNavigationFragment(parentFragment)
             }
             fragmentManager?.let { manager ->
-                    val editFragment = NoteEditFragment.newInstance(
-                            view!!.text_note_title.text.toString(),
-                            view!!.text_note_content.text.toString(),
-                            clickedView,
-                            touchPosition,
-                            mAppearance
-                    )
-                    manager.inTransaction {
-                        add(R.id.container_note_edit, editFragment, NoteEditFragment.TAG)
-                        addToBackStack(null)
-                    }
+                val editFragment = NoteEditFragment.newInstance(
+                        view!!.text_note_title.text.toString(),
+                        view!!.text_note_content.text.toString(),
+                        clickedView,
+                        touchPosition,
+                        mAppearance
+                )
+                manager.inTransaction {
+                    add(R.id.container_note_edit, editFragment, NoteEditFragment.TAG)
+                    addToBackStack(null)
                 }
+            }
         }
     }
 

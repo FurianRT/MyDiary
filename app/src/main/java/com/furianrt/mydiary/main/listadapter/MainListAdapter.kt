@@ -18,7 +18,6 @@ import com.furianrt.mydiary.general.GlideApp
 import com.furianrt.mydiary.general.HeaderItemDecoration
 import com.furianrt.mydiary.utils.*
 import kotlinx.android.synthetic.main.activity_main_list_content.view.*
-import kotlinx.android.synthetic.main.activity_main_list_date.view.*
 import kotlinx.android.synthetic.main.activity_main_list_header.view.*
 import java.util.*
 

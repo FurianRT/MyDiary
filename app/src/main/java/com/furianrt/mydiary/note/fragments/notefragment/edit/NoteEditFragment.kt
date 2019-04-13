@@ -1,9 +1,12 @@
 package com.furianrt.mydiary.note.fragments.notefragment.edit
 
 import android.content.Context
+import android.graphics.Color
 import android.os.Bundle
 import android.text.Editable
+import android.text.InputType
 import android.text.TextWatcher
+import android.util.Log
 import android.view.*
 import androidx.core.graphics.ColorUtils
 import androidx.fragment.app.Fragment
@@ -12,6 +15,7 @@ import com.furianrt.mydiary.data.model.MyNoteAppearance
 import com.furianrt.mydiary.note.fragments.notefragment.NoteFragment
 import com.furianrt.mydiary.note.fragments.notefragment.content.NoteContentFragment
 import com.furianrt.mydiary.utils.showKeyboard
+import kotlinx.android.synthetic.main.fragment_note_edit.*
 import kotlinx.android.synthetic.main.fragment_note_edit.view.*
 import javax.inject.Inject
 
@@ -22,17 +26,17 @@ class NoteEditFragment : Fragment(), NoteEditFragmentContract.View {
     private var mNoteTitle = ""
     private var mNoteContent = ""
     private var mAppearance: MyNoteAppearance? = null
+    private var mEnableUndo = false
+    private var mEnableRedo = false
     private var mListener: OnNoteFragmentInteractionListener? = null
     private val mTextChangeListener = object : TextWatcher {
         override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
         override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
         override fun afterTextChanged(s: Editable?) {
-            view?.let {
-                (parentFragment as NoteFragment).onNoteTextChange(
-                        it.edit_note_title.text.toString(),
-                        it.edit_note_content.text.toString()
-                )
-            }
+            (parentFragment as NoteFragment).onNoteTextChange(
+                    edit_note_title.text.toString(),
+                    edit_note_content.text.toString()
+            )
         }
     }
 
@@ -65,8 +69,6 @@ class NoteEditFragment : Fragment(), NoteEditFragmentContract.View {
 
         view.edit_note_title.setText(mNoteTitle)
         view.edit_note_content.setText(mNoteContent)
-        view.edit_note_title.addTextChangedListener(mTextChangeListener)
-        view.edit_note_content.addTextChangedListener(mTextChangeListener)
 
         return view
     }
@@ -74,26 +76,19 @@ class NoteEditFragment : Fragment(), NoteEditFragmentContract.View {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         mAppearance?.let { setAppearance(it) }
-        view.apply {
-            when (mClickedView) {
-                ClickedView.TITLE -> {
-                    edit_note_title.requestFocus()
-                    edit_note_title.setSelection(mClickPosition)
-                    edit_note_title.postDelayed({ edit_note_title.showKeyboard() }, 400)
+        when (mClickedView) {
+            ClickedView.TITLE -> {
+                edit_note_title.requestFocus()
+                edit_note_title.setSelection(mClickPosition)
+                edit_note_title.postDelayed({ edit_note_title.showKeyboard() }, 400)
 
-                }
-                ClickedView.CONTENT -> {
-                    edit_note_content.requestFocus()
-                    edit_note_content.setSelection(mClickPosition)
-                    edit_note_content.postDelayed({ edit_note_content.showKeyboard() }, 400)
-                }
+            }
+            ClickedView.CONTENT -> {
+                edit_note_content.requestFocus()
+                edit_note_content.setSelection(mClickPosition)
+                edit_note_content.postDelayed({ edit_note_content.showKeyboard() }, 400)
             }
         }
-    }
-
-    override fun onStart() {
-        super.onStart()
-        mPresenter.attachView(this)
     }
 
     override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
@@ -101,7 +96,30 @@ class NoteEditFragment : Fragment(), NoteEditFragmentContract.View {
         menu?.removeItem(R.id.menu_done)
         menu?.removeItem(R.id.menu_edit)
         menu?.removeItem(R.id.menu_delete)
+        menu?.removeItem(R.id.menu_undo)
+        menu?.removeItem(R.id.menu_redo)
         inflater?.inflate(R.menu.fragment_edit_menu, menu)
+    }
+
+    override fun onPrepareOptionsMenu(menu: Menu?) {
+        super.onPrepareOptionsMenu(menu)
+        val itemUndo = menu?.findItem(R.id.menu_undo)
+        val itemRedo = menu?.findItem(R.id.menu_redo)
+
+        itemUndo?.isEnabled = mEnableUndo
+        itemRedo?.isEnabled = mEnableRedo
+
+        if (mEnableUndo) {
+            itemUndo?.icon?.mutate()?.setTint(Color.WHITE)
+        } else {
+            itemUndo?.icon?.mutate()?.setTint(Color.GRAY)
+        }
+
+        if (mEnableRedo) {
+            itemRedo?.icon?.mutate()?.setTint(Color.WHITE)
+        } else {
+            itemRedo?.icon?.mutate()?.setTint(Color.GRAY)
+        }
     }
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
@@ -112,7 +130,6 @@ class NoteEditFragment : Fragment(), NoteEditFragmentContract.View {
             }
             else -> super.onOptionsItemSelected(item)
         }
-
     }
 
     override fun closeView() {
@@ -139,38 +156,96 @@ class NoteEditFragment : Fragment(), NoteEditFragmentContract.View {
         fragmentManager?.findFragmentByTag(NoteContentFragment.TAG)?.let {
             (it as NoteContentFragment).setVisibility(View.VISIBLE)
         }
-        view?.edit_note_title?.removeTextChangedListener(mTextChangeListener)
-        view?.edit_note_content?.removeTextChangedListener(mTextChangeListener)
     }
 
     override fun onResume() {
         super.onResume()
+        mPresenter.attachView(this)
+        (parentFragment as? NoteFragment?)?.onNoteFragmentEditModeEnabled()
         mListener?.onNoteFragmentEditModeEnabled()
-        //(parentFragment as? NoteFragment)?.disableActionBarExpanding(false)
     }
 
-    override fun onStop() {
-        super.onStop()
+    override fun onPause() {
+        super.onPause()
         val noteTitle = view?.edit_note_title?.text.toString()
         val noteContent = view?.edit_note_content?.text.toString()
-        val noteFragment = (parentFragment as? NoteFragment)
+        val noteFragment = (parentFragment as? NoteFragment?)
         noteFragment?.onNoteEditFinished(noteTitle, noteContent)
         noteFragment?.enableActionBarExpanding(expanded = false, animate = false)
         mListener?.onNoteFragmentEditModeDisabled()
         mPresenter.detachView()
     }
 
+    override fun onStart() {
+        super.onStart()
+        edit_note_title.addTextChangedListener(mTextChangeListener)
+        edit_note_content.addTextChangedListener(mTextChangeListener)
+    }
+
+    override fun onStop() {
+        super.onStop()
+        edit_note_title.removeTextChangedListener(mTextChangeListener)
+        edit_note_content.removeTextChangedListener(mTextChangeListener)
+    }
+
     fun setAppearance(appearance: MyNoteAppearance) {
         appearance.textColor?.let {
-            view?.edit_note_title?.setTextColor(it)
-            view?.edit_note_content?.setTextColor(it)
-            view?.edit_note_title?.setHintTextColor(ColorUtils.setAlphaComponent(it, 50))
-            view?.edit_note_content?.setHintTextColor(ColorUtils.setAlphaComponent(it, 50))
+            edit_note_title.setTextColor(it)
+            edit_note_content.setTextColor(it)
+            edit_note_title.setHintTextColor(ColorUtils.setAlphaComponent(it, 50))
+            edit_note_content.setHintTextColor(ColorUtils.setAlphaComponent(it, 50))
         }
         appearance.textSize?.let {
-            view?.edit_note_title?.textSize = it.toFloat()
-            view?.edit_note_content?.textSize = it.toFloat()
+            edit_note_title.textSize = it.toFloat()
+            edit_note_content.textSize = it.toFloat()
         }
+    }
+
+    fun showNoteText(title: String, content: String) {
+        Log.e(TAG, "showNoteText")
+        // Отключаем листенер что бы в undo/redo не прилетал измененный им же текст
+        edit_note_title.removeTextChangedListener(mTextChangeListener)
+        edit_note_content.removeTextChangedListener(mTextChangeListener)
+        // Клава с SUGGESTIONS кэширует текст и делает странные вещи при undo/redo.
+        // Приходится отключать флаг при замене текста
+        val currentTitleInputType = edit_note_title.inputType
+        val currentContentInputType = edit_note_content.inputType
+
+        val titleSelection = edit_note_title.selectionStart
+        val contentSelection = edit_note_content.selectionStart
+
+        edit_note_title.inputType = InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS and InputType.TYPE_TEXT_FLAG_CAP_SENTENCES
+        edit_note_content.inputType = InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS and InputType.TYPE_TEXT_FLAG_CAP_SENTENCES
+
+        edit_note_title.setText(title)
+        edit_note_content.setText(content)
+
+        edit_note_title.inputType = currentTitleInputType
+        edit_note_content.inputType = currentContentInputType
+        edit_note_title.addTextChangedListener(mTextChangeListener)
+        edit_note_content.addTextChangedListener(mTextChangeListener)
+
+        edit_note_title.setSelection(if (titleSelection > title.length) {
+            title.length
+        } else {
+            titleSelection
+        })
+
+        edit_note_content.setSelection(if (contentSelection > content.length) {
+            content.length
+        } else {
+            contentSelection
+        })
+    }
+
+    fun enableRedoButton(enable: Boolean) {
+        mEnableRedo = enable
+        activity?.invalidateOptionsMenu()
+    }
+
+    fun enableUndoButton(enable: Boolean) {
+        mEnableUndo = enable
+        activity?.invalidateOptionsMenu()
     }
 
     interface OnNoteFragmentInteractionListener {

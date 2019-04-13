@@ -3,10 +3,24 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
+        android:id="@+id/menu_undo"
+        android:icon="@drawable/ic_undo"
+        android:title="@string/save"
+        android:orderInCategory="0"
+        app:showAsAction="always" />
+
+    <item
+        android:id="@+id/menu_redo"
+        android:icon="@drawable/ic_redo"
+        android:title="@string/save"
+        android:orderInCategory="1"
+        app:showAsAction="always" />
+
+    <item
         android:id="@+id/menu_done"
         android:icon="@drawable/ic_done"
         android:title="@string/save"
-        android:orderInCategory="0"
+        android:orderInCategory="2"
         app:showAsAction="always" />
 
 </menu>

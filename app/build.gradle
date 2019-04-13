@@ -49,7 +49,6 @@ dependencies {
     implementation "androidx.preference:preference:$support_version"
     implementation "com.google.android.material:material:$support_version"
     implementation "androidx.appcompat:appcompat:$compat_version"
-    //todo в alpha3 баг, пока не повышать
     implementation 'androidx.constraintlayout:constraintlayout:2.0.0-alpha2'
     implementation 'com.google.android:flexbox:1.1.0'
 
@@ -107,8 +106,8 @@ dependencies {
     //Firebase
     implementation 'com.google.firebase:firebase-core:16.0.8'
     implementation 'com.google.firebase:firebase-storage:16.1.0'
-    implementation 'com.google.firebase:firebase-firestore:18.1.0'
-    implementation 'com.google.firebase:firebase-messaging:17.5.0'
+    implementation 'com.google.firebase:firebase-firestore:18.2.0'
+    implementation 'com.google.firebase:firebase-messaging:17.6.0'
 
     //Rx for FirebaseStorage and Firestore
     implementation 'com.github.FrangSierra:RxFirebase:1.5.6'
