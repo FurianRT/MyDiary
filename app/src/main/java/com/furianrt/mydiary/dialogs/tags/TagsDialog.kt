@@ -46,7 +46,7 @@ class TagsDialog : DialogFragment(), TagsDialogListAdapter.OnTagChangedListener,
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        getPresenterComponent(context!!).inject(this)
+        getPresenterComponent(requireContext()).inject(this)
         super.onCreate(savedInstanceState)
         val tags: ArrayList<MyTag> = if (savedInstanceState != null) {
             mRecyclerViewState = savedInstanceState.getParcelable(BUNDLE_RECYCLER_VIEW_STATE)

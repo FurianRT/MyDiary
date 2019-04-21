@@ -23,7 +23,7 @@ class AboutProfileFragment : Fragment(), AboutProfileContract.View {
     lateinit var mPresenter: AboutProfileContract.Presenter
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        getPresenterComponent(context!!).inject(this)
+        getPresenterComponent(requireContext()).inject(this)
         super.onCreate(savedInstanceState)
     }
 

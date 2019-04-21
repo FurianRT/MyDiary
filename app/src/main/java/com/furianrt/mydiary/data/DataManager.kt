@@ -5,6 +5,11 @@ import com.furianrt.mydiary.data.model.*
 import io.reactivex.*
 
 interface DataManager {
+
+    companion object {
+        const val PREFS_ENCRYPTION_PASSWORD = "yd9Hyr1Dpw6Bf07h"
+    }
+
     fun insertNote(note: MyNote): Completable
     fun insertNote(notes: List<MyNote>): Completable
     fun insertNoteTag(noteTag: NoteTag): Completable
@@ -76,21 +81,31 @@ interface DataManager {
     fun getAllNoteTags(): Flowable<List<NoteTag>>
     fun getDbProfile(): Observable<MyProfile>
     fun getCloudProfile(email: String): Single<MyProfile>
-    fun getTextColor(): Int
-    fun getTextSize(): Int
-    fun getNoteBackgroundColor(): Int
-    fun getNoteTextBackgroundColor(): Int
     fun getAllNotesFromCloud(): Single<List<MyNote>>
     fun getAllCategoriesFromCloud(): Single<List<MyCategory>>
     fun getAllTagsFromCloud(): Single<List<MyTag>>
     fun getAllAppearancesFromCloud(): Single<List<MyNoteAppearance>>
     fun getAllNoteTagsFromCloud(): Single<List<NoteTag>>
     fun getAllImagesFromCloud(): Single<List<MyImage>>
+    fun getTextColor(): Int
+    fun getTextSize(): Int
+    fun getNoteBackgroundColor(): Int
+    fun getNoteTextBackgroundColor(): Int
+    fun getPin(): Single<String>
+    fun setPin(pin: String): Completable
+    fun getBackupEmail(): String
+    fun setBackupEmail(email: String)
     fun is24TimeFormat(): Boolean
     fun isSortDesc(): Boolean
     fun isWeatherEnabled(): Boolean
     fun isLocationEnabled(): Boolean
     fun isMoodEnabled(): Boolean
+    fun isAuthorized(): Boolean
+    fun setAuthorized(authorized: Boolean)
+    fun getPasswordRequestDelay(): Long
+    fun setPasswordRequestDelay(delay: Long)
+    fun isPasswordEnabled(): Boolean
+    fun setPasswordEnabled(enable: Boolean)
     fun isProfileExists(email: String): Single<Boolean>
     fun setSortDesc(desc: Boolean)
     fun replaceNoteTags(noteId: String, tags: List<MyTag>): Completable

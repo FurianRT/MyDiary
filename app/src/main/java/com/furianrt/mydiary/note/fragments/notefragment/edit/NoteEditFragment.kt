@@ -44,7 +44,7 @@ class NoteEditFragment : Fragment(), NoteEditFragmentContract.View {
     lateinit var mPresenter: NoteEditFragmentContract.Presenter
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        getPresenterComponent(context!!).inject(this)
+        getPresenterComponent(requireContext()).inject(this)
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
         arguments?.apply {
@@ -207,7 +207,7 @@ class NoteEditFragment : Fragment(), NoteEditFragmentContract.View {
         edit_note_title.removeTextChangedListener(mTextChangeListener)
         edit_note_content.removeTextChangedListener(mTextChangeListener)
         // Клава с SUGGESTIONS кэширует текст и делает странные вещи при undo/redo.
-        // Приходится отключать флаг при замене текста
+        // Приходится отключать SUGGESTIONS при программном измениии текста
         val currentTitleInputType = edit_note_title.inputType
         val currentContentInputType = edit_note_content.inputType
 

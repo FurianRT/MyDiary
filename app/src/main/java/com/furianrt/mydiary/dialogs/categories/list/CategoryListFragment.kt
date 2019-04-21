@@ -29,7 +29,7 @@ class CategoryListFragment : Fragment(), View.OnClickListener,
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        getPresenterComponent(context!!).inject(this)
+        getPresenterComponent(requireContext()).inject(this)
         mNoteId = arguments?.getString(ARG_NOTE_ID) ?: throw IllegalArgumentException()
         mRecyclerViewState = savedInstanceState?.getParcelable(BUNDLE_RECYCLER_VIEW_STATE)
     }

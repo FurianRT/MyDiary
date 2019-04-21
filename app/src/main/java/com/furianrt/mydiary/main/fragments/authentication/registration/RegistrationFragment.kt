@@ -31,7 +31,7 @@ class RegistrationFragment : Fragment(), RegistrationContract.View {
     lateinit var mPresenter: RegistrationContract.Presenter
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        getPresenterComponent(context!!).inject(this)
+        getPresenterComponent(requireContext()).inject(this)
         super.onCreate(savedInstanceState)
     }
 
@@ -118,7 +118,7 @@ class RegistrationFragment : Fragment(), RegistrationContract.View {
 
     private fun showEmailError() {
         view?.image_email?.setImageResource(R.drawable.ic_error)
-        view?.image_email?.setColorFilter(ContextCompat.getColor(context!!, R.color.red), PorterDuff.Mode.SRC_IN)
+        view?.image_email?.setColorFilter(ContextCompat.getColor(requireContext(), R.color.red), PorterDuff.Mode.SRC_IN)
         hideLoadingEmail()
         view?.image_email?.visibility = View.VISIBLE
     }
@@ -126,7 +126,7 @@ class RegistrationFragment : Fragment(), RegistrationContract.View {
     private fun showEmailSuccess() {
         view?.text_error?.text = ""
         view?.image_email?.setImageResource(R.drawable.ic_done)
-        view?.image_email?.setColorFilter(getThemeAccentColor(context!!), PorterDuff.Mode.SRC_IN)
+        view?.image_email?.setColorFilter(getThemeAccentColor(requireContext()), PorterDuff.Mode.SRC_IN)
         hideLoadingEmail()
         view?.image_email?.visibility = View.VISIBLE
     }

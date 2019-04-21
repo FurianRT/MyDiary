@@ -58,7 +58,7 @@ class GalleryPagerFragment : Fragment(), GalleryPagerContract.View,
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        getPresenterComponent(context!!).inject(this)
+        getPresenterComponent(requireContext()).inject(this)
         super.onCreate(savedInstanceState)
         mPagerPosition = savedInstanceState?.getInt(ARG_POSITION)
                 ?: (arguments?.getInt(ARG_POSITION) ?: 0)
@@ -155,9 +155,9 @@ class GalleryPagerFragment : Fragment(), GalleryPagerContract.View,
         UCrop.of(uri, uri)
                 .withOptions(UCrop.Options().apply {
                     setToolbarTitle(getString(R.string.fragment_gallery_pager_edit_photo))
-                    setActiveWidgetColor(getThemeAccentColor(context!!))
-                    setStatusBarColor(getThemePrimaryDarkColor(context!!))
-                    setToolbarColor(getThemePrimaryColor(context!!))
+                    setActiveWidgetColor(getThemeAccentColor(requireContext()))
+                    setStatusBarColor(getThemePrimaryDarkColor(requireContext()))
+                    setToolbarColor(getThemePrimaryColor(requireContext()))
                     setCompressionQuality(100)
                     setFreeStyleCropEnabled(true)
                 })

@@ -20,7 +20,7 @@ class PremiumFragment : Fragment(), PremiumContract.View {
     lateinit var mPresenter: PremiumContract.Presenter
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        getPresenterComponent(context!!).inject(this)
+        getPresenterComponent(requireContext()).inject(this)
         super.onCreate(savedInstanceState)
     }
 

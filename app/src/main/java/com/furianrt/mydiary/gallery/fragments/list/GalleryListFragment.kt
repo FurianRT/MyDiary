@@ -70,7 +70,7 @@ class GalleryListFragment : Fragment(), GalleryListAdapter.OnListItemInteraction
     private var mActionMode: ActionMode? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        getPresenterComponent(context!!).inject(this)
+        getPresenterComponent(requireContext()).inject(this)
         super.onCreate(savedInstanceState)
 
         setHasOptionsMenu(true)
@@ -90,7 +90,7 @@ class GalleryListFragment : Fragment(), GalleryListAdapter.OnListItemInteraction
         val view = inflater.inflate(R.layout.fragment_gallery_list, container, false)
 
         mAdapter = GalleryListAdapter(this@GalleryListFragment, view.list_gallery)
-        val orientation = context!!.resources.configuration.orientation
+        val orientation = requireContext().resources.configuration.orientation
 
         view.list_gallery.layoutManager = if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
             GridLayoutManager(context, HORIZONTAL_LIST_SPAN_COUNT).apply {
@@ -116,7 +116,7 @@ class GalleryListFragment : Fragment(), GalleryListAdapter.OnListItemInteraction
         view.list_gallery.adapter = mAdapter
         view.list_gallery.itemAnimator = FadeInUpAnimator()
 
-        view.fab_trash.drawable.mutate().setTint(ContextCompat.getColor(context!!, R.color.white))
+        view.fab_trash.drawable.mutate().setTint(ContextCompat.getColor(requireContext(), R.color.white))
 
         if (mSelectionActive) {
             mActionMode = (activity as AppCompatActivity).startSupportActionMode(this)
@@ -315,7 +315,7 @@ class GalleryListFragment : Fragment(), GalleryListAdapter.OnListItemInteraction
     override fun requestStoragePermissions() {
         val readExtStorage = Manifest.permission.READ_EXTERNAL_STORAGE
         val camera = Manifest.permission.CAMERA
-        if (EasyPermissions.hasPermissions(context!!, readExtStorage, camera)) {
+        if (EasyPermissions.hasPermissions(requireContext(), readExtStorage, camera)) {
             mPresenter.onStoragePermissionsGranted()
         } else {
             EasyPermissions.requestPermissions(this,
@@ -332,10 +332,10 @@ class GalleryListFragment : Fragment(), GalleryListAdapter.OnListItemInteraction
 
     @AfterPermissionGranted(STORAGE_PERMISSIONS_REQUEST_CODE)
     override fun showImageExplorer() {
-        val widget = Widget.newDarkBuilder(context)
-                .statusBarColor(getThemePrimaryDarkColor(context!!))
-                .toolBarColor(getThemePrimaryColor(context!!))
-                .navigationBarColor(ContextCompat.getColor(context!!, R.color.black))
+        val widget = Widget.newDarkBuilder(requireContext())
+                .statusBarColor(getThemePrimaryDarkColor(requireContext()))
+                .toolBarColor(getThemePrimaryColor(requireContext()))
+                .navigationBarColor(ContextCompat.getColor(requireContext(), R.color.black))
                 .title(R.string.album)
                 .build()
 

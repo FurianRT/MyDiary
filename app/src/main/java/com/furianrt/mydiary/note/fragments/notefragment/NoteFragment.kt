@@ -120,7 +120,7 @@ class NoteFragment : Fragment(), NoteFragmentContract.View, OnMapReadyCallback,
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        getPresenterComponent(context!!).inject(this)
+        getPresenterComponent(requireContext()).inject(this)
         super.onCreate(savedInstanceState)
         val note = arguments?.getParcelable<MyNote>(ARG_NOTE) ?: throw IllegalArgumentException()
         mMode = arguments?.getSerializable(ARG_MODE) as NoteActivity.Companion.Mode
@@ -166,7 +166,7 @@ class NoteFragment : Fragment(), NoteFragmentContract.View, OnMapReadyCallback,
         activity?.window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE)
         pager_note_image.addOnPageChangeListener(mOnPageChangeListener)
         mPresenter.attachView(this)
-        mPresenter.onViewStart(context!!.isLocationEnabled(), context!!.isNetworkAvailable())
+        mPresenter.onViewStart(requireContext().isLocationEnabled(), requireContext().isNetworkAvailable())
     }
 
     override fun onPause() {
@@ -320,10 +320,10 @@ class NoteFragment : Fragment(), NoteFragmentContract.View, OnMapReadyCallback,
         layout_tags.removeViews(1, itemCount - 1)
 
         val image = layout_tags.getChildAt(0) as? ImageView?
-        image?.setColorFilter(getColor(context!!, R.color.grey_dark), PorterDuff.Mode.SRC_IN)
+        image?.setColorFilter(getColor(requireContext(), R.color.grey_dark), PorterDuff.Mode.SRC_IN)
 
-        val textNoTags = TextView(context!!)
-        textNoTags.setTextColor(getColor(context!!, R.color.grey_dark))
+        val textNoTags = TextView(requireContext())
+        textNoTags.setTextColor(getColor(requireContext(), R.color.grey_dark))
         textNoTags.setText(R.string.choose_tags)
 
         val params = LinearLayout.LayoutParams(
@@ -340,14 +340,14 @@ class NoteFragment : Fragment(), NoteFragmentContract.View, OnMapReadyCallback,
         val itemCount = layout_tags.flexItemCount
         layout_tags.removeViews(1, itemCount - 1)
         val image = layout_tags.getChildAt(0) as? ImageView?
-        image?.setColorFilter(getColor(context!!, R.color.black), PorterDuff.Mode.SRC_IN)
+        image?.setColorFilter(getColor(requireContext(), R.color.black), PorterDuff.Mode.SRC_IN)
         for (tagName in tagNames) {
             layout_tags.addView(wrapTextIntoCardView(tagName))
         }
     }
 
     private fun wrapTextIntoCardView(text: String) =
-            MaterialCardView(context!!).apply {
+            MaterialCardView(requireContext()).apply {
                 elevation = 5f
                 radius = 25f
                 val params = FrameLayout.LayoutParams(
@@ -433,7 +433,7 @@ class NoteFragment : Fragment(), NoteFragmentContract.View, OnMapReadyCallback,
     override fun requestLocationPermissions() {
         val fineLocation = Manifest.permission.ACCESS_FINE_LOCATION
         val coarseLocation = Manifest.permission.ACCESS_COARSE_LOCATION
-        if (EasyPermissions.hasPermissions(context!!, fineLocation, coarseLocation)) {
+        if (EasyPermissions.hasPermissions(requireContext(), fineLocation, coarseLocation)) {
             mPresenter.onLocationPermissionsGranted()
         } else {
             EasyPermissions.requestPermissions(this, getString(R.string.location_permission_request),
@@ -569,7 +569,7 @@ class NoteFragment : Fragment(), NoteFragmentContract.View, OnMapReadyCallback,
     override fun requestStoragePermissions() {
         val readExtStorage = Manifest.permission.READ_EXTERNAL_STORAGE
         val camera = Manifest.permission.CAMERA
-        if (EasyPermissions.hasPermissions(context!!, readExtStorage, camera)) {
+        if (EasyPermissions.hasPermissions(requireContext(), readExtStorage, camera)) {
             mPresenter.onStoragePermissionsGranted()
         } else {
             EasyPermissions.requestPermissions(this,
@@ -581,9 +581,9 @@ class NoteFragment : Fragment(), NoteFragmentContract.View, OnMapReadyCallback,
     @AfterPermissionGranted(STORAGE_PERMISSIONS_REQUEST_CODE)
     override fun showImageExplorer() {
         val widget = Widget.newDarkBuilder(context)
-                .statusBarColor(getThemePrimaryDarkColor(context!!))
-                .toolBarColor(getThemePrimaryColor(context!!))
-                .navigationBarColor(getColor(context!!, R.color.black))
+                .statusBarColor(getThemePrimaryDarkColor(requireContext()))
+                .toolBarColor(getThemePrimaryColor(requireContext()))
+                .navigationBarColor(getColor(requireContext(), R.color.black))
                 .title(R.string.album)
                 .build()
 
@@ -648,8 +648,8 @@ class NoteFragment : Fragment(), NoteFragmentContract.View, OnMapReadyCallback,
 
     override fun showDatePicker(calendar: Calendar) {
         DatePickerDialog.newInstance(this, calendar).apply {
-            accentColor = getThemePrimaryColor(this@NoteFragment.context!!)
-            val themeAccentColor = getThemeAccentColor(this@NoteFragment.context!!)
+            accentColor = getThemePrimaryColor(this@NoteFragment.requireContext())
+            val themeAccentColor = getThemeAccentColor(this@NoteFragment.requireContext())
             setOkColor(themeAccentColor)
             setCancelColor(themeAccentColor)
         }.show(fragmentManager, DATE_PICKER_TAG)
@@ -661,8 +661,8 @@ class NoteFragment : Fragment(), NoteFragmentContract.View, OnMapReadyCallback,
 
     override fun showTimePicker(hourOfDay: Int, minute: Int, is24HourMode: Boolean) {
         TimePickerDialog.newInstance(this, hourOfDay, minute, is24HourMode).apply {
-            accentColor = getThemePrimaryColor(this@NoteFragment.context!!)
-            val themeAccentColor = getThemeAccentColor(this@NoteFragment.context!!)
+            accentColor = getThemePrimaryColor(this@NoteFragment.requireContext())
+            val themeAccentColor = getThemeAccentColor(this@NoteFragment.requireContext())
             setOkColor(themeAccentColor)
             setCancelColor(themeAccentColor)
             activity?.let {

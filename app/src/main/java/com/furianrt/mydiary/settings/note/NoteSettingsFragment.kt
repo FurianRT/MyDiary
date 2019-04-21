@@ -64,7 +64,7 @@ class NoteSettingsFragment : PreferenceFragment(), NoteSettingsContract.View {
 
     companion object {
 
-        val TAG = NoteSettingsFragment::class.toString()
+        const val TAG = "NoteSettingsFragment"
 
         private const val ARG_NOTE_ID = "noteId"
         private const val TEXT_SIZE = "font_size_note"

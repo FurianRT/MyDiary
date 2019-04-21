@@ -49,4 +49,37 @@ class PreferencesHelperImp(val context: Context) : PreferencesHelper {
     override fun setSortDesc(desc: Boolean) {
         mPrefs.edit().putBoolean(PreferencesHelper.IS_NOTE_SORT_DESC, desc).apply()
     }
+
+    @Suppress("NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
+    override fun getPin(): String = mPrefs.getString(PreferencesHelper.DIARY_PIN, " ")
+
+    override fun setPin(pin: String) {
+        mPrefs.edit().putString(PreferencesHelper.DIARY_PIN, pin).apply()
+    }
+
+    override fun setBackupEmail(email: String) {
+        mPrefs.edit().putString(PreferencesHelper.SECURITY_EMAIL, email).apply()
+    }
+
+    @Suppress("NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
+    override fun getBackupEmail(): String = mPrefs.getString(PreferencesHelper.SECURITY_EMAIL, "")
+
+    override fun isAuthorized(): Boolean = mPrefs.getBoolean(PreferencesHelper.SECURITY_IS_AUTHORIZED, true)
+
+    override fun setAuthorized(authorized: Boolean) {
+        mPrefs.edit().putBoolean(PreferencesHelper.SECURITY_IS_AUTHORIZED, authorized).apply()
+    }
+
+    override fun getPasswordRequestDelay(): Long =
+            mPrefs.getLong(PreferencesHelper.SECURITY_REQUEST_DELAY, 0L)
+
+    override fun setPasswordRequestDelay(delay: Long) {
+        mPrefs.edit().putLong(PreferencesHelper.SECURITY_REQUEST_DELAY, delay).apply()
+    }
+
+    override fun isPasswordEnabled(): Boolean = mPrefs.getBoolean(PreferencesHelper.SECURITY_KEY, false)
+
+    override fun setPasswordEnabled(enable: Boolean) {
+        mPrefs.edit().putBoolean(PreferencesHelper.SECURITY_KEY, enable).apply()
+    }
 }

@@ -27,7 +27,7 @@ class LoginFragment : Fragment(), LoginContract.View {
     lateinit var mPresenter: LoginContract.Presenter
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        getPresenterComponent(context!!).inject(this)
+        getPresenterComponent(requireContext()).inject(this)
         super.onCreate(savedInstanceState)
     }
 

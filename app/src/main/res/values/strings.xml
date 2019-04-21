@@ -97,6 +97,8 @@
     <string name="back">Назад</string>
     <string name="network_error">Нет интернет соединения</string>
     <string name="wrong_password">Неверный пароль</string>
+    <string name="email">Email</string>
+    <string name="done">Готово</string>
 
     <string name="choose_tags">Выберите теги</string>
     <string name="choose_category">Категория</string>
@@ -156,12 +158,9 @@
     <string name="map_activation_settings_off">Включить определение местонахождения</string>
     <string name="map_activation_settings_on">Отключить определение местонахождения</string>
     <string name="map_activation_settings_title">Местонахождение</string>
-    <string name="security_key_settings_off">Включить защиту приложения графическим ключем</string>
-    <string name="security_key_settings_on">Отключить защиту приложения графическим ключем</string>
-    <string name="security_key_settings_title">Графический ключ</string>
-    <string name="security_email_settings_summary">Используется для сброса графического ключа</string>
-    <string name="security_email_settings_title">Email для сброса ключа</string>
-    <string name="security_time_settings_title">Время до запроса ключа</string>
+    <string name="security_key_settings_off">Включить защиту паролем</string>
+    <string name="security_key_settings_title">Пароль</string>
+    <string name="security_time_settings_title">Время до запроса пароля</string>
     <string name="fragment_authentication_sign_in">Логин</string>
     <string name="fragment_authentication_sign_up">Регистрация</string>
     <string name="fragment_registration_email">Email</string>
@@ -228,6 +227,13 @@
     <string name="fragment_gallery_list_selected">Выбрано: %1$d</string>
     <string name="fragment_gallery_list_image_count">Всего картинок: %1$d</string>
     <string name="fragment_gallery_pager_edit_photo">Ред. фото</string>
+    <string name="activity_pin_forgot">Забыли пароль?</string>
+    <string name="activity_pin_wrong_pin">Неверный пароль</string>
+    <string name="activity_pin_dont_match">Пароли не совпадают</string>
+    <string name="activity_pin_enter">Введите пароль</string>
+    <string name="activity_pin_repeat">Повторите пароль</string>
+    <string name="fragment_backup_email_message">Введите email\nдля восстановления пароля</string>
+    <string name="fragment_backup_email_message_land">Введите email для восстановления пароля</string>
     <plurals name="note_delete_confirmation">
         <item quantity="zero">Удалить %1$d записей?</item>
         <item quantity="one">Удалить %1$d запись?</item>
@@ -244,5 +250,7 @@
         <item quantity="many">Удалить %1$d картинок?</item>
         <item quantity="other">Удалить %1$d картинок?</item>
     </plurals>
+
+    <string name="global_settings_pin_on_summary">Email для восстановления пароля %s</string>
 
 </resources>

@@ -1,5 +1,7 @@
 package com.furianrt.mydiary.data
 
+import android.util.Base64
+import com.furianrt.mydiary.data.DataManager.Companion.PREFS_ENCRYPTION_PASSWORD
 import com.furianrt.mydiary.data.api.forecast.Forecast
 import com.furianrt.mydiary.data.api.forecast.WeatherApiService
 import com.furianrt.mydiary.data.api.images.Image
@@ -12,6 +14,8 @@ import com.furianrt.mydiary.data.storage.StorageHelper
 import com.furianrt.mydiary.di.application.AppScope
 import io.reactivex.*
 import org.joda.time.DateTime
+import javax.crypto.Cipher
+import javax.crypto.spec.SecretKeySpec
 
 @AppScope
 class DataManagerImp(
@@ -23,6 +27,24 @@ class DataManagerImp(
         private val mCloud: CloudHelper,
         private val mRxScheduler: Scheduler
 ) : DataManager {
+
+    private fun decryptString(string: String): String {   //todo сделать более надежный алгоритм шифрования
+        val keyBytes = PREFS_ENCRYPTION_PASSWORD.toByteArray()
+        val aesKey = SecretKeySpec(keyBytes, "AES")
+        val cipher = Cipher.getInstance("AES")
+        cipher.init(Cipher.DECRYPT_MODE, aesKey)
+        val decryptedByteValue = cipher.doFinal(Base64.decode(string.toByteArray(), Base64.DEFAULT))
+        return String(decryptedByteValue)
+    }
+
+    private fun encryptString(string: String): String {
+        val keyBytes = PREFS_ENCRYPTION_PASSWORD.toByteArray()
+        val aesKey = SecretKeySpec(keyBytes, "AES")
+        val cipher = Cipher.getInstance("AES")
+        cipher.init(Cipher.ENCRYPT_MODE, aesKey)
+        val encrypted = cipher.doFinal(string.toByteArray())
+        return Base64.encodeToString(encrypted, Base64.DEFAULT)
+    }
 
     private fun Image.toMyHeaderImage(): MyHeaderImage =
             MyHeaderImage(id, largeImageURL, DateTime.now().millis)
@@ -361,6 +383,21 @@ class DataManagerImp(
             mCloud.saveProfile(profile)
                     .subscribeOn(mRxScheduler)
 
+    override fun getPin(): Single<String> =
+            Single.fromCallable { mPrefs.getPin() }
+                    .map { decryptString(it) }
+                    .subscribeOn(mRxScheduler)
+
+    override fun setPin(pin: String): Completable =
+            Completable.fromAction { mPrefs.setPin(encryptString(pin)) }
+                    .subscribeOn(mRxScheduler)
+
+    override fun getBackupEmail(): String = mPrefs.getBackupEmail()
+
+    override fun setBackupEmail(email: String) {
+        mPrefs.setBackupEmail(email)
+    }
+
     override fun isWeatherEnabled(): Boolean = mPrefs.isWeatherEnabled()
 
     override fun isLocationEnabled(): Boolean = mPrefs.isMapEnabled()
@@ -386,6 +423,24 @@ class DataManagerImp(
     override fun getNoteTextBackgroundColor(): Int = mPrefs.getNoteTextBackgroundColor()
 
     override fun is24TimeFormat(): Boolean = mPrefs.is24TimeFormat()
+
+    override fun isAuthorized(): Boolean = mPrefs.isAuthorized()
+
+    override fun setAuthorized(authorized: Boolean) {
+        mPrefs.setAuthorized(authorized)
+    }
+
+    override fun getPasswordRequestDelay(): Long = mPrefs.getPasswordRequestDelay()
+
+    override fun setPasswordRequestDelay(delay: Long) {
+        mPrefs.setPasswordRequestDelay(delay)
+    }
+
+    override fun isPasswordEnabled(): Boolean = mPrefs.isPasswordEnabled()
+
+    override fun setPasswordEnabled(enable: Boolean) {
+        mPrefs.setPasswordEnabled(enable)
+    }
 
     override fun loadHeaderImages(page: Int, perPage: Int): Single<List<MyHeaderImage>> =
             mImageApi.getImages()

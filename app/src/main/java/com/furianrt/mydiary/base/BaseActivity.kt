@@ -1,5 +1,6 @@
 package com.furianrt.mydiary.base
 
+import android.content.Intent
 import android.os.Bundle
 import android.os.PersistableBundle
 import android.preference.PreferenceManager
@@ -7,17 +8,31 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import com.furianrt.mydiary.R
 import com.furianrt.mydiary.data.prefs.PreferencesHelper
+import com.furianrt.mydiary.pin.PinActivity
 
 abstract class BaseActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        application.setTheme(R.style.AppTheme)
         applyStyleToTheme()
         super.onCreate(savedInstanceState)
     }
 
     override fun onCreate(savedInstanceState: Bundle?, persistentState: PersistableBundle?) {
+        application.setTheme(R.style.AppTheme)
         applyStyleToTheme()
         super.onCreate(savedInstanceState, persistentState)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        val isAuthorized = PreferenceManager.getDefaultSharedPreferences(this)
+                .getBoolean(PreferencesHelper.SECURITY_IS_AUTHORIZED, true)
+        if (!isAuthorized) {
+            val intent = Intent(this, PinActivity::class.java)
+            intent.putExtra(PinActivity.EXTRA_MODE, PinActivity.MODE_LOCK)
+            startActivity(intent)
+        }
     }
 
     // Похоже, что динамическое создание стиля в андроиде не предусмотрено,

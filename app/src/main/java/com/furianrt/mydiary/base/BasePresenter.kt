@@ -13,11 +13,11 @@ abstract class BasePresenter<T : BaseView> {
         mCompositeDisposable.add(disposable)
     }
 
-    fun attachView(view: T) {
+    open fun attachView(view: T) {
         this.view = view
     }
 
-    fun detachView() {
+    open fun detachView() {
         mCompositeDisposable.clear()
         view = null
     }

@@ -48,8 +48,14 @@ import com.furianrt.mydiary.note.fragments.notefragment.content.NoteContentFragm
 import com.furianrt.mydiary.note.fragments.notefragment.content.NoteContentFragmentPresenter
 import com.furianrt.mydiary.note.fragments.notefragment.edit.NoteEditFragmentContract
 import com.furianrt.mydiary.note.fragments.notefragment.edit.NoteEditFragmentPresenter
+import com.furianrt.mydiary.pin.PinContract
+import com.furianrt.mydiary.pin.PinPresenter
+import com.furianrt.mydiary.pin.fragments.email.BackupEmailContract
+import com.furianrt.mydiary.pin.fragments.email.BackupEmailPresenter
 import com.furianrt.mydiary.services.sync.SyncContract
 import com.furianrt.mydiary.services.sync.SyncPresenter
+import com.furianrt.mydiary.settings.global.GlobalSettingsContract
+import com.furianrt.mydiary.settings.global.GlobalSettingsPresenter
 import com.furianrt.mydiary.settings.note.NoteSettingsContract
 import com.furianrt.mydiary.settings.note.NoteSettingsPresenter
 import com.google.android.gms.location.FusedLocationProviderClient
@@ -132,6 +138,11 @@ class PresenterModule(private val context: Context) {
 
     @Provides
     @PresenterScope
+    fun provideGlobalSettingsPresenter(dataManager: DataManager): GlobalSettingsContract.Presenter =
+            GlobalSettingsPresenter(dataManager)
+
+    @Provides
+    @PresenterScope
     fun provideNoteSettingsPresenter(dataManager: DataManager): NoteSettingsContract.Presenter =
             NoteSettingsPresenter(dataManager)
 
@@ -189,4 +200,14 @@ class PresenterModule(private val context: Context) {
     @PresenterScope
     fun provideAboutProfilePresenter(dataManager: DataManager): AboutProfileContract.Presenter =
             AboutProfilePresenter(dataManager)
+
+    @Provides
+    @PresenterScope
+    fun providePinPresenter(dataManager: DataManager): PinContract.Presenter =
+            PinPresenter(dataManager)
+
+    @Provides
+    @PresenterScope
+    fun provideBackupEmailPresenter(dataManager: DataManager): BackupEmailContract.Presenter =
+            BackupEmailPresenter(dataManager)
 }

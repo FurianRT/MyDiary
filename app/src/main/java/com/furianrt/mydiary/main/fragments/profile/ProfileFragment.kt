@@ -41,7 +41,7 @@ class ProfileFragment : Fragment(), ProfileContract.View {
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        getPresenterComponent(context!!).inject(this)
+        getPresenterComponent(requireContext()).inject(this)
         super.onCreate(savedInstanceState)
     }
 

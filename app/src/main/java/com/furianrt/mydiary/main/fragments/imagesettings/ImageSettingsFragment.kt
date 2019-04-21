@@ -23,7 +23,7 @@ class ImageSettingsFragment : Fragment(), ImageSettingsContract.View {
     private var listener: OnImageSettingsInteractionListener? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        getPresenterComponent(context!!).inject(this)
+        getPresenterComponent(requireContext()).inject(this)
         super.onCreate(savedInstanceState)
     }
 

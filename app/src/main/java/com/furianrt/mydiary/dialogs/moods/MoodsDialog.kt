@@ -24,7 +24,7 @@ class MoodsDialog : DialogFragment(), MoodsDialogContract.View,
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        getPresenterComponent(context!!).inject(this)
+        getPresenterComponent(requireContext()).inject(this)
     }
 
     @SuppressLint("InflateParams")
@@ -37,15 +37,15 @@ class MoodsDialog : DialogFragment(), MoodsDialogContract.View,
         mAdapter = MoodsDialogListAdapter(emptyList(), this)
 
         view?.list_moods?.apply {
-            val manager = LinearLayoutManager(context)
+            val manager = LinearLayoutManager(requireContext())
             layoutManager = manager
             adapter = mAdapter
-            addItemDecoration(DividerItemDecoration(context, manager.orientation))
+            addItemDecoration(DividerItemDecoration(requireContext(), manager.orientation))
         }
 
         mPresenter.onViewCreate()
 
-        return AlertDialog.Builder(context!!)
+        return AlertDialog.Builder(requireContext())
                 .setView(view)
                 .setPositiveButton(getString(R.string.close), null)
                 .setNegativeButton(getString(R.string.no_mood)) { _, _ ->

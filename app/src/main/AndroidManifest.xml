@@ -28,7 +28,6 @@
                 <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
             </intent-filter>
         </service>
-
         <service
             android:name=".services.sync.SyncService"
             android:exported="false" />
@@ -52,6 +51,8 @@
         <activity android:name=".gallery.GalleryActivity" />
         <activity android:name=".settings.global.GlobalSettingsActivity" />
         <activity android:name=".settings.note.NoteSettingsActivity" />
+        <activity android:name=".pin.PinActivity" />
+
         <activity
             android:name="com.yalantis.ucrop.UCropActivity"
             android:screenOrientation="portrait"

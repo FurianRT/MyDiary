@@ -2,6 +2,29 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <PreferenceCategory
+        android:key="protection"
+        android:title="@string/settings_title_protection">
+
+        <SwitchPreference
+            android:defaultValue="false"
+            android:key="security_key"
+            android:summaryOff="@string/security_key_settings_off"
+            android:title="@string/security_key_settings_title" />
+
+        <ListPreference
+            android:defaultValue="0"
+            android:dependency="security_key"
+            android:entries="@array/pref_key_frequency_titles"
+            android:entryValues="@array/pref_key_frequency_values"
+            android:key="security_time"
+            android:negativeButtonText="@null"
+            android:positiveButtonText="@null"
+            android:summary="%s"
+            android:title="@string/security_time_settings_title" />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory
         android:key="theme"
         android:title="@string/settings_theme_title">
 
@@ -101,42 +124,6 @@
             android:summaryOff="@string/map_activation_settings_off"
             android:summaryOn="@string/map_activation_settings_on"
             android:title="@string/map_activation_settings_title" />
-
-    </PreferenceCategory>
-
-    <PreferenceCategory
-        android:key="protection"
-        android:title="@string/settings_title_protection">
-
-        <SwitchPreference
-            android:defaultValue="false"
-            android:key="security_key"
-            android:summaryOff="@string/security_key_settings_off"
-            android:summaryOn="@string/security_key_settings_on"
-            android:title="@string/security_key_settings_title" />
-
-        <EditTextPreference
-            android:capitalize="words"
-            android:defaultValue="dwdwdwd"
-            android:dependency="security_key"
-            android:inputType="textCapWords"
-            android:key="security_email"
-            android:maxLines="1"
-            android:selectAllOnFocus="true"
-            android:singleLine="true"
-            android:summary="@string/security_email_settings_summary"
-            android:title="@string/security_email_settings_title" />
-
-        <ListPreference
-            android:defaultValue="0"
-            android:dependency="security_key"
-            android:entries="@array/pref_key_frequency_titles"
-            android:entryValues="@array/pref_key_frequency_values"
-            android:key="security_time"
-            android:negativeButtonText="@null"
-            android:positiveButtonText="@null"
-            android:summary="%s"
-            android:title="@string/security_time_settings_title" />
 
     </PreferenceCategory>
 

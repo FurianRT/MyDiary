@@ -23,7 +23,10 @@ import com.furianrt.mydiary.note.NoteActivity
 import com.furianrt.mydiary.note.fragments.notefragment.NoteFragment
 import com.furianrt.mydiary.note.fragments.notefragment.content.NoteContentFragment
 import com.furianrt.mydiary.note.fragments.notefragment.edit.NoteEditFragment
+import com.furianrt.mydiary.pin.PinActivity
+import com.furianrt.mydiary.pin.fragments.email.BackupEmailFragment
 import com.furianrt.mydiary.services.sync.SyncService
+import com.furianrt.mydiary.settings.global.GlobalSettingsFragment
 import com.furianrt.mydiary.settings.note.NoteSettingsFragment
 import dagger.Subcomponent
 
@@ -34,9 +37,11 @@ interface PresenterComponent {
     fun inject(activity: MainActivity)
     fun inject(activity: NoteActivity)
     fun inject(activity: GalleryActivity)
+    fun inject(activity: PinActivity)
     fun inject(dialog: MoodsDialog)
     fun inject(dialog: CategoriesDialog)
     fun inject(dialog: TagsDialog)
+    fun inject(service: SyncService)
     fun inject(fragment: NoteContentFragment)
     fun inject(fragment: NoteEditFragment)
     fun inject(fragment: NoteFragment)
@@ -44,6 +49,7 @@ interface PresenterComponent {
     fun inject(fragment: GalleryListFragment)
     fun inject(fragment: CategoryListFragment)
     fun inject(fragment: CategoryEditFragment)
+    fun inject(fragment: GlobalSettingsFragment)
     fun inject(fragment: NoteSettingsFragment)
     fun inject(fragment: PremiumFragment)
     fun inject(fragment: ProfileFragment)
@@ -51,9 +57,9 @@ interface PresenterComponent {
     fun inject(fragment: LoginFragment)
     fun inject(fragment: AuthFragment)
     fun inject(fragment: ImageSettingsFragment)
-    fun inject(service: SyncService)
     fun inject(fragment: PasswordFragment)
     fun inject(fragment: MenuProfileFragment)
     fun inject(fragment: SignOutFragment)
     fun inject(fragment: AboutProfileFragment)
+    fun inject(fragment: BackupEmailFragment)
 }

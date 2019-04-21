@@ -1,14 +1,21 @@
 package com.furianrt.mydiary
 
+import android.app.Activity
 import android.app.Application
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.os.Build
+import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.widget.ImageView
+import androidx.preference.PreferenceManager
+import com.furianrt.mydiary.data.prefs.PreferencesHelper
 import com.furianrt.mydiary.di.application.AppComponent
 import com.furianrt.mydiary.di.application.AppModule
 import com.furianrt.mydiary.di.application.DaggerAppComponent
 import com.furianrt.mydiary.general.GlideApp
+import com.furianrt.mydiary.pin.PinActivity
 import com.yanzhenjie.album.Album
 import com.yanzhenjie.album.AlbumConfig
 import com.yanzhenjie.album.AlbumFile
@@ -16,13 +23,14 @@ import com.yanzhenjie.album.AlbumLoader
 import net.danlew.android.joda.JodaTimeAndroid
 import java.util.*
 
-class MyApp : Application() {
+class MyApp : Application(), Application.ActivityLifecycleCallbacks {
 
     companion object {
         const val NOTIFICATION_SYNC_CHANNEL_ID = "sync_channel"
         const val NOTIFICATION_SYNC_CHANNEL_NAME = "Synchronization"
         const val NOTIFICATION_FIREBASE_CHANNEL_ID = "firebase_channel"
         const val NOTIFICATION_FIREBASE_CHANNEL_NAME = "Info"
+        private const val PASSWORD_REQUEST_RELAY_OFFSET = 500L
     }
 
     val component: AppComponent by lazy {
@@ -31,12 +39,40 @@ class MyApp : Application() {
                 .build()
     }
 
+    private val mHandler = Handler(Looper.getMainLooper())
+    private val mLogoutRunnable = Runnable {
+        PreferenceManager.getDefaultSharedPreferences(this)
+                .edit()
+                .putBoolean(PreferencesHelper.SECURITY_IS_AUTHORIZED, false)
+                .apply()
+    }
+
     override fun onCreate() {
+        component.inject(this)
         super.onCreate()
+        registerActivityLifecycleCallbacks(this)
         createNotificationSyncChannel()
         createNotificationFirebaseChannel()
         JodaTimeAndroid.init(this)
         initializeImageAlbum()
+    }
+
+    override fun onActivityDestroyed(activity: Activity?) {}
+    override fun onActivitySaveInstanceState(activity: Activity?, outState: Bundle?) {}
+    override fun onActivityStopped(activity: Activity?) {}
+    override fun onActivityCreated(activity: Activity?, savedInstanceState: Bundle?) {}
+    override fun onActivityStarted(activity: Activity?) {}
+    override fun onActivityResumed(activity: Activity?) {
+        mHandler.removeCallbacks(mLogoutRunnable)
+    }
+
+    override fun onActivityPaused(activity: Activity?) {
+        val prefs = PreferenceManager.getDefaultSharedPreferences(this)
+        val isPasswordEnabled = prefs.getBoolean(PreferencesHelper.SECURITY_KEY, false)
+        if (isPasswordEnabled && activity !is PinActivity) {
+            val delay = prefs.getLong(PreferencesHelper.SECURITY_REQUEST_DELAY, 0L)
+            mHandler.postDelayed(mLogoutRunnable, PASSWORD_REQUEST_RELAY_OFFSET + delay)
+        }
     }
 
     private fun createNotificationSyncChannel() {
@@ -106,7 +142,7 @@ class MyApp : Application() {
 * добавить заглушку на пустые состояния списков
 * реализовать свайп элементов листа главного экрана
 * добавить экран с описанием према
-* добавить возможность отмены изменений
+* не синхронизируются категории
 *
 * */
 

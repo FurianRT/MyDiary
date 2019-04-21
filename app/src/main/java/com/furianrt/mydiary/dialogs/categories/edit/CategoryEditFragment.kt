@@ -18,7 +18,7 @@ class CategoryEditFragment : Fragment(), View.OnClickListener, CategoryEditContr
     private var mCategoryId: String = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        getPresenterComponent(context!!).inject(this)
+        getPresenterComponent(requireContext()).inject(this)
         super.onCreate(savedInstanceState)
         arguments?.let { mCategoryId = it.getString(ARG_CATEGORY_ID, "") }
     }

@@ -136,7 +136,6 @@ class MainActivity : BaseActivity(), MainActivityContract.View,
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        application.setTheme(R.style.AppTheme)
         super.onCreate(savedInstanceState)
         getPresenterComponent(this).inject(this)
         setContentView(R.layout.activity_main)

@@ -44,7 +44,7 @@ class PasswordFragment : Fragment(), PasswordContract.View {
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        getPresenterComponent(context!!).inject(this)
+        getPresenterComponent(requireContext()).inject(this)
         super.onCreate(savedInstanceState)
     }
 
@@ -70,7 +70,7 @@ class PasswordFragment : Fragment(), PasswordContract.View {
         return view
     }
 
-    override fun isNetworkAvailable() = context?.isNetworkAvailable() ?: false
+    override fun isNetworkAvailable() = requireContext().isNetworkAvailable()
 
     override fun showLoading() {
         view?.view_alpha?.visibility = View.VISIBLE

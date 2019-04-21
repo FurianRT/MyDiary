@@ -15,8 +15,7 @@ class NoteSettingsActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_note_settings)
 
-        val noteId =
-                intent.getStringExtra(EXTRA_NOTE_ID) ?: throw IllegalArgumentException()
+        val noteId = intent.getStringExtra(EXTRA_NOTE_ID) ?: throw IllegalArgumentException()
         addSettingsFragment(noteId)
 
         setSupportActionBar(toolbar_settings_note)

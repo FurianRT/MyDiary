@@ -24,7 +24,7 @@ class MenuProfileFragment : Fragment(), MenuProfileContract.View, View.OnClickLi
     lateinit var mPresenter: MenuProfileContract.Presenter
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        getPresenterComponent(context!!).inject(this)
+        getPresenterComponent(requireContext()).inject(this)
         super.onCreate(savedInstanceState)
     }
 

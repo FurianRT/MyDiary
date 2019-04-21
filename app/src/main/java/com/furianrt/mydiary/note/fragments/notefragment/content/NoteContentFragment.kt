@@ -27,7 +27,7 @@ class NoteContentFragment : Fragment(), NoteContentFragmentContract.View {
     lateinit var mPresenter: NoteContentFragmentContract.Presenter
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        getPresenterComponent(context!!).inject(this)
+        getPresenterComponent(requireContext()).inject(this)
         super.onCreate(savedInstanceState)
         arguments?.let {
             mMode = (it.getSerializable(ARG_MODE) as? NoteActivity.Companion.Mode?)

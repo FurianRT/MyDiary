@@ -1,0 +1,335 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorPrimaryDark"
+    tools:context=".pin.PinActivity">
+
+    <ImageButton
+        android:id="@+id/button_pin_close"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="12dp"
+        android:layout_marginTop="12dp"
+        android:background="?android:attr/selectableItemBackground"
+        android:padding="4dp"
+        android:src="@drawable/ic_close"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="ContentDescription" />
+
+    <ImageView
+        android:id="@+id/imageView2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:layout_marginEnd="8dp"
+        android:src="@drawable/diary_logo"
+        app:layout_constraintEnd_toEndOf="@+id/text_pin_message"
+        app:layout_constraintStart_toStartOf="@+id/text_pin_message"
+        app:layout_constraintTop_toBottomOf="@id/button_pin_close"
+        tools:ignore="ContentDescription" />
+
+    <TextView
+        android:id="@+id/text_pin_message"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="24dp"
+        android:layout_marginEnd="24dp"
+        android:gravity="center"
+        android:text="@string/activity_pin_enter"
+        android:textColor="@color/white"
+        android:textSize="16sp"
+        app:layout_constraintEnd_toStartOf="@+id/linearLayout"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imageView2" />
+
+    <LinearLayout
+        android:id="@+id/layout_pins"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:layout_marginEnd="8dp"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="@+id/text_pin_message"
+        app:layout_constraintStart_toStartOf="@+id/text_pin_message"
+        app:layout_constraintTop_toBottomOf="@+id/text_pin_message">
+
+        <ImageView
+            android:id="@+id/image_pin_one"
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            android:layout_marginEnd="16dp"
+            android:src="@drawable/cirlcle_stroke_background"
+            tools:ignore="ContentDescription"
+            tools:src="@drawable/circle_white_background" />
+
+        <ImageView
+            android:id="@+id/image_pin_two"
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            android:layout_marginEnd="16dp"
+            android:src="@drawable/cirlcle_stroke_background"
+            tools:ignore="ContentDescription"
+            tools:src="@drawable/circle_white_background" />
+
+        <ImageView
+            android:id="@+id/image_pin_three"
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            android:layout_marginEnd="16dp"
+            android:src="@drawable/cirlcle_stroke_background"
+            tools:ignore="ContentDescription" />
+
+        <ImageView
+            android:id="@+id/image_pin_four"
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            android:src="@drawable/cirlcle_stroke_background"
+            tools:ignore="ContentDescription" />
+
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/linearLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="@+id/coordinatorLayout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.8"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:orientation="horizontal">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/button_one"
+                style="@style/Widget.MaterialComponents.Button.TextButton"
+                android:layout_width="50dp"
+                android:layout_height="60dp"
+                android:layout_marginEnd="32dp"
+                android:gravity="center"
+                android:text="1"
+                android:textColor="@color/white"
+                android:textSize="18sp"
+                app:cornerRadius="100dp"
+                app:strokeColor="@color/white"
+                app:strokeWidth="0.5dp"
+                tools:ignore="HardcodedText" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/button_two"
+                style="@style/Widget.MaterialComponents.Button.TextButton"
+                android:layout_width="50dp"
+                android:layout_height="60dp"
+                android:layout_marginEnd="32dp"
+                android:gravity="center"
+                android:text="2"
+                android:textColor="@color/white"
+                android:textSize="18sp"
+                app:cornerRadius="100dp"
+                app:strokeColor="@color/white"
+                app:strokeWidth="0.5dp"
+                tools:ignore="HardcodedText" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/button_three"
+                style="@style/Widget.MaterialComponents.Button.TextButton"
+                android:layout_width="50dp"
+                android:layout_height="60dp"
+                android:gravity="center"
+                android:text="3"
+                android:textColor="@color/white"
+                android:textSize="18sp"
+                app:cornerRadius="100dp"
+                app:strokeColor="@color/white"
+                app:strokeWidth="0.5dp"
+                tools:ignore="HardcodedText" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:orientation="horizontal">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/button_four"
+                style="@style/Widget.MaterialComponents.Button.TextButton"
+                android:layout_width="50dp"
+                android:layout_height="60dp"
+                android:layout_marginEnd="32dp"
+                android:gravity="center"
+                android:text="4"
+                android:textColor="@color/white"
+                android:textSize="18sp"
+                app:cornerRadius="100dp"
+                app:strokeColor="@color/white"
+                app:strokeWidth="0.5dp"
+                tools:ignore="HardcodedText" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/button_five"
+                style="@style/Widget.MaterialComponents.Button.TextButton"
+                android:layout_width="50dp"
+                android:layout_height="60dp"
+                android:layout_marginEnd="32dp"
+                android:gravity="center"
+                android:text="5"
+                android:textColor="@color/white"
+                android:textSize="18sp"
+                app:cornerRadius="100dp"
+                app:strokeColor="@color/white"
+                app:strokeWidth="0.5dp"
+                tools:ignore="HardcodedText" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/button_six"
+                style="@style/Widget.MaterialComponents.Button.TextButton"
+                android:layout_width="50dp"
+                android:layout_height="60dp"
+                android:gravity="center"
+                android:text="6"
+                android:textColor="@color/white"
+                android:textSize="18sp"
+                app:cornerRadius="100dp"
+                app:strokeColor="@color/white"
+                app:strokeWidth="0.5dp"
+                tools:ignore="HardcodedText" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:orientation="horizontal">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/button_seven"
+                style="@style/Widget.MaterialComponents.Button.TextButton"
+                android:layout_width="50dp"
+                android:layout_height="60dp"
+                android:layout_marginEnd="32dp"
+                android:gravity="center"
+                android:text="7"
+                android:textColor="@color/white"
+                android:textSize="18sp"
+                app:cornerRadius="100dp"
+                app:strokeColor="@color/white"
+                app:strokeWidth="0.5dp"
+                tools:ignore="HardcodedText" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/button_eight"
+                style="@style/Widget.MaterialComponents.Button.TextButton"
+                android:layout_width="50dp"
+                android:layout_height="60dp"
+                android:layout_marginEnd="32dp"
+                android:gravity="center"
+                android:text="8"
+                android:textColor="@color/white"
+                android:textSize="18sp"
+                app:cornerRadius="100dp"
+                app:strokeColor="@color/white"
+                app:strokeWidth="0.5dp"
+                tools:ignore="HardcodedText" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/button_nine"
+                style="@style/Widget.MaterialComponents.Button.TextButton"
+                android:layout_width="50dp"
+                android:layout_height="60dp"
+                android:gravity="center"
+                android:text="9"
+                android:textColor="@color/white"
+                android:textSize="18sp"
+                app:cornerRadius="100dp"
+                app:strokeColor="@color/white"
+                app:strokeWidth="0.5dp"
+                tools:ignore="HardcodedText" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:orientation="horizontal">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/button_zero"
+                style="@style/Widget.MaterialComponents.Button.TextButton"
+                android:layout_width="50dp"
+                android:layout_height="60dp"
+                android:layout_marginEnd="32dp"
+                android:gravity="center"
+                android:text="0"
+                android:textColor="@color/white"
+                android:textSize="18sp"
+                app:cornerRadius="100dp"
+                app:strokeColor="@color/white"
+                app:strokeWidth="0.5dp"
+                tools:ignore="HardcodedText" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/button_backspace"
+                style="@style/Widget.MaterialComponents.Button.TextButton"
+                android:layout_width="50dp"
+                android:layout_height="60dp"
+                android:gravity="center"
+                android:text="Del"
+                android:textColor="@color/white"
+                android:textSize="18sp"
+                app:cornerRadius="100dp"
+                app:strokeColor="@color/white"
+                app:strokeWidth="0.5dp"
+                tools:ignore="HardcodedText" />
+
+        </LinearLayout>
+
+
+    </LinearLayout>
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/button_forgot_password"
+        style="@style/Widget.MaterialComponents.Button.TextButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="24dp"
+        android:gravity="center"
+        android:letterSpacing="0.0"
+        android:text="@string/activity_pin_forgot"
+        android:textAllCaps="false"
+        android:textColor="@color/white"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/text_pin_message"
+        app:layout_constraintStart_toStartOf="@+id/text_pin_message" />
+
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:id="@+id/coordinatorLayout"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/button_pin_close">
+
+        <include layout="@layout/bottom_sheet_pin" />
+
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
