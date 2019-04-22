@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment
 
 import com.furianrt.mydiary.R
 import com.furianrt.mydiary.data.model.MyProfile
+import kotlinx.android.synthetic.main.fragment_about_profile.*
 import kotlinx.android.synthetic.main.fragment_about_profile.view.*
 import org.joda.time.DateTime
 import java.util.*
@@ -37,17 +38,17 @@ class AboutProfileFragment : Fragment(), AboutProfileContract.View {
     }
 
     override fun showProfileInfo(profile: MyProfile) {
-        view?.text_registration_date?.text =
+        text_registration_date.text =
                 DateTime(profile.registrationTime).toString("dd.MM.yyyy", Locale.getDefault())
-        view?.text_has_premium?.text = if (profile.hasPremium) {
+        text_has_premium.text = if (profile.hasPremium) {
             getString(R.string.fragment_about_profile_yup)
         } else {
             getString(R.string.fragment_about_profile_sync_non)
         }
         if (profile.lastSyncTime == 0L) {
-            view?.text_last_sync_date?.text = getString(R.string.fragment_about_profile_sync_non)
+            text_last_sync_date?.text = getString(R.string.fragment_about_profile_sync_non)
         } else {
-            view?.text_last_sync_date?.text =
+            text_last_sync_date.text =
                     DateTime(profile.lastSyncTime).toString("dd.MM.yyyy hh:mm", Locale.getDefault())
         }
     }

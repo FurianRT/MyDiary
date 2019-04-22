@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 
 import com.furianrt.mydiary.R
+import com.furianrt.mydiary.utils.KeyboardUtils
 import kotlinx.android.synthetic.main.fragment_backup_email.*
 import kotlinx.android.synthetic.main.fragment_backup_email.view.*
 import javax.inject.Inject
@@ -22,6 +23,13 @@ class BackupEmailFragment : Fragment(), BackupEmailContract.View {
     lateinit var mPresenter: BackupEmailContract.Presenter
 
     private var mListener: OnBackupEmailFragmentListener? = null
+
+    private val mOnKeyboardToggleListener = object : KeyboardUtils.SoftKeyboardToggleListener {
+        override fun onToggleSoftKeyboard(isVisible: Boolean) {
+            //повторная прорисовка контекстного меню
+            edit_backup_email.performClick()
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         getPresenterComponent(requireContext()).inject(this)
@@ -54,10 +62,12 @@ class BackupEmailFragment : Fragment(), BackupEmailContract.View {
     override fun onResume() {
         super.onResume()
         mPresenter.attachView(this)
+        KeyboardUtils.addKeyboardToggleListener(requireActivity(), mOnKeyboardToggleListener)
     }
 
     override fun onPause() {
         super.onPause()
+        KeyboardUtils.removeKeyboardToggleListener(mOnKeyboardToggleListener)
         mPresenter.detachView()
     }
 

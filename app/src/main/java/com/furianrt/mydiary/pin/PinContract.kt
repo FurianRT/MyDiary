@@ -8,14 +8,16 @@ interface PinContract {
 
     interface View : BaseView {
         fun showPassword(password: String)
+        fun showMessageRepeatPassword()
+        fun showMessagePasswordCreated()
+        fun showMessageEnterPassword()
+        fun showMessagePinCorrect()
+        fun showMessageCreatePassword()
+        fun showMessageCurrentPassword()
         fun showErrorWrongPin()
-        fun showRepeatPassword()
-        fun showPasswordCreated()
         fun showErrorPinsDoNotMatch()
-        fun showEnterPassword()
-        fun showPinCorrect()
         fun showForgotPinView()
-        fun showEnterEmail()
+        fun showEnterEmailView()
         fun close()
     }
 

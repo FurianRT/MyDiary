@@ -6,6 +6,12 @@ class GlobalSettingsPresenter(
         private val mDataManager: DataManager
 ) : GlobalSettingsContract.Presenter() {
 
+    override fun onViewCreate() {
+        if (mDataManager.isPasswordEnabled()) {
+            view?.showBackupEmail(mDataManager.getBackupEmail())
+        }
+    }
+
     override fun onPrefSecurityKeyChanged() {
         if (mDataManager.isPasswordEnabled()) {
             view?.showCreatePasswordView()

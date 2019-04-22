@@ -30,7 +30,7 @@ class MyApp : Application(), Application.ActivityLifecycleCallbacks {
         const val NOTIFICATION_SYNC_CHANNEL_NAME = "Synchronization"
         const val NOTIFICATION_FIREBASE_CHANNEL_ID = "firebase_channel"
         const val NOTIFICATION_FIREBASE_CHANNEL_NAME = "Info"
-        private const val PASSWORD_REQUEST_RELAY_OFFSET = 500L
+        private const val PASSWORD_REQUEST_RELAY_OFFSET = 300L
     }
 
     val component: AppComponent by lazy {
@@ -70,7 +70,7 @@ class MyApp : Application(), Application.ActivityLifecycleCallbacks {
         val prefs = PreferenceManager.getDefaultSharedPreferences(this)
         val isPasswordEnabled = prefs.getBoolean(PreferencesHelper.SECURITY_KEY, false)
         if (isPasswordEnabled && activity !is PinActivity) {
-            val delay = prefs.getLong(PreferencesHelper.SECURITY_REQUEST_DELAY, 0L)
+            val delay = prefs.getString(PreferencesHelper.SECURITY_REQUEST_DELAY, "0")!!.toLong()
             mHandler.postDelayed(mLogoutRunnable, PASSWORD_REQUEST_RELAY_OFFSET + delay)
         }
     }

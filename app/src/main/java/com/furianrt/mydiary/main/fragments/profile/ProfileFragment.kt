@@ -14,6 +14,7 @@ import com.furianrt.mydiary.main.MainActivity
 import com.furianrt.mydiary.main.fragments.profile.menu.MenuProfileFragment
 import com.furianrt.mydiary.utils.KeyboardUtils
 import com.furianrt.mydiary.utils.inTransaction
+import kotlinx.android.synthetic.main.fragment_profile.*
 import kotlinx.android.synthetic.main.fragment_profile.view.*
 import javax.inject.Inject
 
@@ -31,11 +32,11 @@ class ProfileFragment : Fragment(), ProfileContract.View {
         override fun onToggleSoftKeyboard(isVisible: Boolean) {
             if (!isVisible) {
                 activity?.window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING)
-                view?.profile_container
-                        ?.animate()
-                        ?.translationY(0f)
-                        ?.setDuration(ANIMATION_CONTAINER_DURATION)
-                        ?.interpolator = OvershootInterpolator()
+                profile_container
+                        .animate()
+                        .translationY(0f)
+                        .setDuration(ANIMATION_CONTAINER_DURATION)
+                        .interpolator = OvershootInterpolator()
             }
         }
     }
@@ -88,23 +89,21 @@ class ProfileFragment : Fragment(), ProfileContract.View {
     fun isBackStackEmpty() = childFragmentManager.backStackEntryCount == 0
 
     fun pushContainerUp() {
-        view?.let {
-            if (it.profile_container.translationY == 0f) {
-                it.profile_container
-                        .animate()
-                        .translationY(-it.profile_container.y)
-                        .setDuration(ANIMATION_CONTAINER_DURATION)
-                        .setInterpolator(OvershootInterpolator())
-                        .setListener(object : Animator.AnimatorListener {
-                            override fun onAnimationRepeat(animation: Animator?) {}
-                            override fun onAnimationCancel(animation: Animator?) {}
-                            override fun onAnimationStart(animation: Animator?) {}
-                            override fun onAnimationEnd(animation: Animator?) {
-                                //повторная прорисовка контекстного меню
-                                it.profile_container.requestLayout()   //todo иногда обрезается контекстное меню
-                            }
-                        })
-            }
+        if (profile_container.translationY == 0f) {
+            profile_container
+                    .animate()
+                    .translationY(-profile_container.y)
+                    .setDuration(ANIMATION_CONTAINER_DURATION)
+                    .setInterpolator(OvershootInterpolator())
+                    .setListener(object : Animator.AnimatorListener {
+                        override fun onAnimationRepeat(animation: Animator?) {}
+                        override fun onAnimationCancel(animation: Animator?) {}
+                        override fun onAnimationStart(animation: Animator?) {}
+                        override fun onAnimationEnd(animation: Animator?) {
+                            //повторная прорисовка контекстного меню
+                            profile_container.requestLayout()   //todo иногда обрезается контекстное меню
+                        }
+                    })
         }
     }
 }

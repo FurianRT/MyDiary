@@ -100,7 +100,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:orientation="vertical"
-        app:layout_constraintBottom_toBottomOf="@+id/coordinatorLayout"
+        app:layout_constraintBottom_toBottomOf="@+id/layout_pin_bottom_sheet"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.8"
         app:layout_constraintStart_toStartOf="parent"
@@ -319,7 +319,7 @@
         app:layout_constraintStart_toStartOf="@+id/text_pin_message" />
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
-        android:id="@+id/coordinatorLayout"
+        android:id="@+id/layout_pin_bottom_sheet"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginTop="8dp"

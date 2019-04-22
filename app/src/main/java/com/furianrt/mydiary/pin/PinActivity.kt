@@ -88,7 +88,7 @@ class PinActivity : BaseActivity(), PinContract.View, View.OnClickListener,
         if (length < 1) image_pin_one.setImageResource(R.drawable.cirlcle_stroke_background)
     }
 
-    override fun showPinCorrect() {
+    override fun showMessagePinCorrect() {
         setResult(Activity.RESULT_OK)
         finish()
     }
@@ -103,24 +103,32 @@ class PinActivity : BaseActivity(), PinContract.View, View.OnClickListener,
         layout_pins.animateShake(SHAKE_DURATION)
     }
 
-    override fun showRepeatPassword() {
+    override fun showMessageRepeatPassword() {
         text_pin_message.text = getString(R.string.activity_pin_repeat)
     }
 
-    override fun showEnterPassword() {
+    override fun showMessageEnterPassword() {
         text_pin_message.text = getString(R.string.activity_pin_enter)
     }
 
-    override fun showPasswordCreated() {
+    override fun showMessagePasswordCreated() {
         setResult(Activity.RESULT_OK)
         finish()
+    }
+
+    override fun showMessageCreatePassword() {
+        text_pin_message.text = getString(R.string.activity_pin_create_pin)
+    }
+
+    override fun showMessageCurrentPassword() {
+        text_pin_message.text = getString(R.string.activity_pin_enter_current_pin)
     }
 
     override fun showForgotPinView() {
 
     }
 
-    override fun showEnterEmail() {
+    override fun showEnterEmailView() {
         if (supportFragmentManager.findFragmentByTag(BackupEmailFragment.TAG) == null) {
             supportFragmentManager.inTransaction {
                 add(R.id.pin_sheet_container, BackupEmailFragment(), BackupEmailFragment.TAG)

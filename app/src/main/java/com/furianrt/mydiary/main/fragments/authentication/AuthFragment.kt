@@ -16,6 +16,7 @@ import com.furianrt.mydiary.utils.KeyboardUtils
 import com.furianrt.mydiary.utils.dpToPx
 import com.furianrt.mydiary.utils.hideKeyboard
 import com.furianrt.mydiary.utils.inTransaction
+import kotlinx.android.synthetic.main.fragment_auth.*
 import kotlinx.android.synthetic.main.fragment_auth.view.*
 import javax.inject.Inject
 
@@ -36,28 +37,26 @@ class AuthFragment : Fragment(), AuthContract.View {
     private val mOnKeyboardToggleListener = object : KeyboardUtils.SoftKeyboardToggleListener {
         override fun onToggleSoftKeyboard(isVisible: Boolean) {
             if (isVisible) {
-                view?.let {
-                    it.auth_container
-                            .animate()
-                            .translationY(-it.auth_container.y)
-                            .setDuration(ANIMATION_CONTAINER_DURATION)
-                            .setInterpolator(OvershootInterpolator())
-                            .setListener(object : Animator.AnimatorListener {
-                                override fun onAnimationRepeat(animation: Animator?) {}
-                                override fun onAnimationCancel(animation: Animator?) {}
-                                override fun onAnimationStart(animation: Animator?) {}
-                                override fun onAnimationEnd(animation: Animator?) {
-                                    //повторная прорисовка контекстного меню
-                                    it.auth_container.requestLayout()   //todo иногда обрезается контекстное меню
-                                }
-                            })
-                }
+                auth_container
+                        .animate()
+                        .translationY(-auth_container.y)
+                        .setDuration(ANIMATION_CONTAINER_DURATION)
+                        .setInterpolator(OvershootInterpolator())
+                        .setListener(object : Animator.AnimatorListener {
+                            override fun onAnimationRepeat(animation: Animator?) {}
+                            override fun onAnimationCancel(animation: Animator?) {}
+                            override fun onAnimationStart(animation: Animator?) {}
+                            override fun onAnimationEnd(animation: Animator?) {
+                                //повторная прорисовка контекстного меню
+                                auth_container.requestLayout()   //todo иногда обрезается контекстное меню
+                            }
+                        })
             } else {
-                view?.auth_container
-                        ?.animate()
-                        ?.translationY(0f)
-                        ?.setDuration(ANIMATION_CONTAINER_DURATION)
-                        ?.interpolator = OvershootInterpolator()
+                auth_container
+                        .animate()
+                        .translationY(0f)
+                        .setDuration(ANIMATION_CONTAINER_DURATION)
+                        .interpolator = OvershootInterpolator()
             }
         }
     }
@@ -88,9 +87,7 @@ class AuthFragment : Fragment(), AuthContract.View {
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
-        view?.let {
-            outState.putFloat(BUNDLE_CREATE_BUTTON_TRANSLATION_Y, it.card_create_account.translationY)
-        }
+        outState.putFloat(BUNDLE_CREATE_BUTTON_TRANSLATION_Y, card_create_account.translationY)
         super.onSaveInstanceState(outState)
     }
 
@@ -105,11 +102,11 @@ class AuthFragment : Fragment(), AuthContract.View {
                 addToBackStack(null)
             }
         }
-        view?.card_create_account?.animate()
-                ?.translationY(dpToPx(ANIMATION_BUTTON_TRANSLATION_VALUE_DP).toFloat())
-                ?.setDuration(ANIMATION_BUTTON_DURATION)
-                ?.setInterpolator(AnticipateOvershootInterpolator())
-                ?.startDelay = ANIMATION_BUTTON_START_DELAY
+        card_create_account.animate()
+                .translationY(dpToPx(ANIMATION_BUTTON_TRANSLATION_VALUE_DP).toFloat())
+                .setDuration(ANIMATION_BUTTON_DURATION)
+                .setInterpolator(AnticipateOvershootInterpolator())
+                .startDelay = ANIMATION_BUTTON_START_DELAY
     }
 
     override fun closeSheet() {
@@ -119,7 +116,7 @@ class AuthFragment : Fragment(), AuthContract.View {
     override fun onResume() {
         super.onResume()
         mPresenter.attachView(this)
-        KeyboardUtils.addKeyboardToggleListener(activity!!, mOnKeyboardToggleListener)
+        KeyboardUtils.addKeyboardToggleListener(requireActivity(), mOnKeyboardToggleListener)
     }
 
     override fun onPause() {
@@ -129,7 +126,7 @@ class AuthFragment : Fragment(), AuthContract.View {
     }
 
     fun onRegistrationFragmentDetach() {
-        view?.card_create_account?.animate()
+        card_create_account?.animate()
                 ?.translationY(0f)
                 ?.setDuration(ANIMATION_BUTTON_DURATION)
                 ?.interpolator = OvershootInterpolator()
@@ -139,6 +136,6 @@ class AuthFragment : Fragment(), AuthContract.View {
 
     fun clearFocus() {
         activity?.hideKeyboard()
-        view?.auth_container?.clearFocus()
+        auth_container?.clearFocus()
     }
 }

@@ -16,6 +16,7 @@ import com.furianrt.mydiary.utils.inTransaction
 import com.furianrt.mydiary.utils.isNetworkAvailable
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import kotlinx.android.synthetic.main.bottom_sheet_main.*
+import kotlinx.android.synthetic.main.fragment_registration.*
 import kotlinx.android.synthetic.main.fragment_registration.view.*
 import javax.inject.Inject
 
@@ -57,23 +58,23 @@ class RegistrationFragment : Fragment(), RegistrationContract.View {
     override fun isNetworkAvailable() = context?.isNetworkAvailable() ?: false
 
     override fun showErrorNetworkConnection() {
-        view?.text_error?.text = getString(R.string.network_error)
+        text_error.text = getString(R.string.network_error)
     }
 
     override fun showErrorPassword() {
-        view?.layout_password?.animateShake(SHAKE_DURATION)
-        view?.layout_password_repeat?.animateShake(SHAKE_DURATION)
-        view?.text_error?.text = getString(R.string.fragment_registration_password_error)
+        layout_password.animateShake(SHAKE_DURATION)
+        layout_password_repeat.animateShake(SHAKE_DURATION)
+        text_error.text = getString(R.string.fragment_registration_password_error)
     }
 
     override fun showErrorEmailFormat() {
         showEmailError()
-        view?.text_error?.text = getString(R.string.fragment_registration_email_format)
+        text_error.text = getString(R.string.fragment_registration_email_format)
     }
 
     override fun showErrorEmailExists() {
         showEmailError()
-        view?.text_error?.text = getString(R.string.fragment_registration_error_email_exists)
+        text_error.text = getString(R.string.fragment_registration_error_email_exists)
     }
 
     override fun showMessageCorrectEmail() {
@@ -97,64 +98,64 @@ class RegistrationFragment : Fragment(), RegistrationContract.View {
     }
 
     override fun showErrorShortPassword() {
-        view?.layout_password?.animateShake(SHAKE_DURATION)
-        view?.text_error?.text = getString(R.string.fragment_registration_error_short_password)
+        layout_password.animateShake(SHAKE_DURATION)
+        text_error.text = getString(R.string.fragment_registration_error_short_password)
     }
 
     override fun showErrorEmptyPassword() {
-        view?.layout_password?.animateShake(SHAKE_DURATION)
-        view?.text_error?.text = getString(R.string.fragment_registration_empty_password)
+        layout_password.animateShake(SHAKE_DURATION)
+        text_error.text = getString(R.string.fragment_registration_empty_password)
     }
 
     override fun showErrorEmptyPasswordRepeat() {
-        view?.layout_password_repeat?.animateShake(SHAKE_DURATION)
-        view?.text_error?.text = getString(R.string.fragment_registration_empty_password)
+        layout_password_repeat.animateShake(SHAKE_DURATION)
+        text_error.text = getString(R.string.fragment_registration_empty_password)
     }
 
     override fun showErrorEmptyEmail() {
         showEmailError()
-        view?.text_error?.text = getString(R.string.fragment_registration_empty_email)
+        text_error.text = getString(R.string.fragment_registration_empty_email)
     }
 
     private fun showEmailError() {
-        view?.image_email?.setImageResource(R.drawable.ic_error)
-        view?.image_email?.setColorFilter(ContextCompat.getColor(requireContext(), R.color.red), PorterDuff.Mode.SRC_IN)
+        image_email.setImageResource(R.drawable.ic_error)
+        image_email.setColorFilter(ContextCompat.getColor(requireContext(), R.color.red), PorterDuff.Mode.SRC_IN)
         hideLoadingEmail()
-        view?.image_email?.visibility = View.VISIBLE
+        image_email.visibility = View.VISIBLE
     }
 
     private fun showEmailSuccess() {
-        view?.text_error?.text = ""
-        view?.image_email?.setImageResource(R.drawable.ic_done)
-        view?.image_email?.setColorFilter(getThemeAccentColor(requireContext()), PorterDuff.Mode.SRC_IN)
+        text_error.text = ""
+        image_email.setImageResource(R.drawable.ic_done)
+        image_email.setColorFilter(getThemeAccentColor(requireContext()), PorterDuff.Mode.SRC_IN)
         hideLoadingEmail()
-        view?.image_email?.visibility = View.VISIBLE
+        image_email.visibility = View.VISIBLE
     }
 
     override fun clearEmailMessages() {
-        view?.text_error?.text = ""
-        view?.image_email?.visibility = View.GONE
+        text_error.text = ""
+        image_email.visibility = View.GONE
         hideLoadingEmail()
     }
 
     override fun showLoadingEmail() {
-        view?.text_error?.text = ""
-        view?.image_email?.visibility = View.GONE
-        view?.progress_email?.visibility = View.VISIBLE
+        text_error.text = ""
+        image_email.visibility = View.GONE
+        progress_email.visibility = View.VISIBLE
     }
 
     override fun hideLoadingEmail() {
-        view?.progress_email?.visibility = View.GONE
+        progress_email.visibility = View.GONE
     }
 
     override fun showLoading() {
-        view?.view_alpha?.visibility = View.VISIBLE
-        view?.progress_sign_up?.visibility = View.VISIBLE
+        view_alpha.visibility = View.VISIBLE
+        progress_sign_up.visibility = View.VISIBLE
     }
 
     override fun hideLoading() {
-        view?.view_alpha?.visibility = View.GONE
-        view?.progress_sign_up?.visibility = View.GONE
+        view_alpha.visibility = View.GONE
+        progress_sign_up.visibility = View.GONE
     }
 
     override fun close() {

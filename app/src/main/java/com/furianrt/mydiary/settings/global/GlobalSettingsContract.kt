@@ -15,5 +15,6 @@ interface GlobalSettingsContract {
         abstract fun onPrefSecurityKeyChanged()
         abstract fun onPasswordCreated()
         abstract fun onPasswordRemoved()
+        abstract fun onViewCreate()
     }
 }

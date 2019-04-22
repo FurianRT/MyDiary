@@ -16,7 +16,7 @@
             android:dependency="security_key"
             android:entries="@array/pref_key_frequency_titles"
             android:entryValues="@array/pref_key_frequency_values"
-            android:key="security_time"
+            android:key="security_request_delay"
             android:negativeButtonText="@null"
             android:positiveButtonText="@null"
             android:summary="%s"

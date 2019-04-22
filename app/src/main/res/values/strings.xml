@@ -72,11 +72,11 @@
     </string-array>
     <string-array name="pref_key_frequency_values">
         <item>0</item>
-        <item>15</item>
-        <item>30</item>
-        <item>60</item>
-        <item>300</item>
-        <item>600</item>
+        <item>15000</item>
+        <item>30000</item>
+        <item>60000</item>
+        <item>300000</item>
+        <item>600000</item>
     </string-array>
 
     <string name="location_permission_request">Приложению требуется разрешение для определения
@@ -250,7 +250,8 @@
         <item quantity="many">Удалить %1$d картинок?</item>
         <item quantity="other">Удалить %1$d картинок?</item>
     </plurals>
-
     <string name="global_settings_pin_on_summary">Email для восстановления пароля %s</string>
+    <string name="activity_pin_create_pin">Придумайте пароль</string>
+    <string name="activity_pin_enter_current_pin">Введите текущий пароль</string>
 
 </resources>

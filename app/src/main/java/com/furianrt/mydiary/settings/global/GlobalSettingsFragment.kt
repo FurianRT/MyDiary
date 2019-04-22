@@ -28,6 +28,8 @@ class GlobalSettingsFragment : PreferenceFragment(), GlobalSettingsContract.View
         super.onCreate(savedInstanceState)
         addPreferencesFromResource(R.xml.pref_global)
         PreferenceManager.setDefaultValues(activity, R.xml.pref_global, false)
+        mPresenter.attachView(this)
+        mPresenter.onViewCreate()
     }
 
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
@@ -73,15 +75,18 @@ class GlobalSettingsFragment : PreferenceFragment(), GlobalSettingsContract.View
         startActivityForResult(intent, REQUEST_CODE_REMOVE_PIN)
     }
 
-    override fun onResume() {
-        super.onResume()
+    override fun onStart() {
+        super.onStart()
         preferenceManager.sharedPreferences.registerOnSharedPreferenceChangeListener(this)
-        mPresenter.attachView(this)
     }
 
-    override fun onPause() {
-        super.onPause()
+    override fun onStop() {
+        super.onStop()
         preferenceManager.sharedPreferences.unregisterOnSharedPreferenceChangeListener(this)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
         mPresenter.detachView()
     }
 }

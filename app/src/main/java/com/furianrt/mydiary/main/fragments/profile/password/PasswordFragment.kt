@@ -17,6 +17,7 @@ import com.furianrt.mydiary.utils.inTransaction
 import com.furianrt.mydiary.utils.isNetworkAvailable
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import kotlinx.android.synthetic.main.bottom_sheet_main.*
+import kotlinx.android.synthetic.main.fragment_password.*
 import kotlinx.android.synthetic.main.fragment_password.view.*
 import javax.inject.Inject
 
@@ -73,48 +74,48 @@ class PasswordFragment : Fragment(), PasswordContract.View {
     override fun isNetworkAvailable() = requireContext().isNetworkAvailable()
 
     override fun showLoading() {
-        view?.view_alpha?.visibility = View.VISIBLE
-        view?.progress_change_password?.visibility = View.VISIBLE
+        view_alpha.visibility = View.VISIBLE
+        progress_change_password.visibility = View.VISIBLE
     }
 
     override fun hideLoading() {
-        view?.view_alpha?.visibility = View.GONE
-        view?.progress_change_password?.visibility = View.INVISIBLE
+        view_alpha.visibility = View.GONE
+        progress_change_password.visibility = View.INVISIBLE
     }
 
     override fun showErrorEmptyOldPassword() {
-        view?.layout_old_password?.animateShake(SHAKE_DURATION)
-        view?.text_error?.text = getString(R.string.fragment_password_enter_old_password)
+        layout_old_password.animateShake(SHAKE_DURATION)
+        text_error.text = getString(R.string.fragment_password_enter_old_password)
     }
 
     override fun showErrorEmptyNewPassword() {
-        view?.layout_new_password?.animateShake(SHAKE_DURATION)
-        view?.text_error?.text = getString(R.string.fragment_password_enter_new_password)
+        layout_new_password.animateShake(SHAKE_DURATION)
+        text_error.text = getString(R.string.fragment_password_enter_new_password)
     }
 
     override fun showErrorEmptyRepeatPassword() {
-        view?.layout_password_repeat?.animateShake(SHAKE_DURATION)
-        view?.text_error?.text = getString(R.string.fragment_registration_repeat_password)
+        layout_password_repeat.animateShake(SHAKE_DURATION)
+        text_error.text = getString(R.string.fragment_registration_repeat_password)
     }
 
     override fun showErrorWrongOldPassword() {
-        view?.layout_old_password?.animateShake(SHAKE_DURATION)
-        view?.text_error?.text = getString(R.string.wrong_password)
+        layout_old_password.animateShake(SHAKE_DURATION)
+        text_error.text = getString(R.string.wrong_password)
     }
 
     override fun showErrorWrongPasswordRepeat() {
-        view?.layout_new_password?.animateShake(SHAKE_DURATION)
-        view?.layout_password_repeat?.animateShake(SHAKE_DURATION)
-        view?.text_error?.text = getString(R.string.fragment_registration_password_error)
+        layout_new_password.animateShake(SHAKE_DURATION)
+        layout_password_repeat.animateShake(SHAKE_DURATION)
+        text_error.text = getString(R.string.fragment_registration_password_error)
     }
 
     override fun showErrorNetworkConnection() {
-        view?.text_error?.text = getString(R.string.network_error)
+        text_error.text = getString(R.string.network_error)
     }
 
     override fun showErrorShortNewPassword() {
-        view?.layout_new_password?.animateShake(SHAKE_DURATION)
-        view?.text_error?.text = getString(R.string.fragment_registration_error_short_password)
+        layout_new_password.animateShake(SHAKE_DURATION)
+        text_error.text = getString(R.string.fragment_registration_error_short_password)
     }
 
     override fun showSuccessPasswordChange() {
@@ -134,7 +135,7 @@ class PasswordFragment : Fragment(), PasswordContract.View {
     }
 
     override fun clearErrorMessage() {
-        view?.text_error?.text = ""
+        text_error.text = ""
     }
 
     override fun returnToMenuView() {

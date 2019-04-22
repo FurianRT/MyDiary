@@ -29,6 +29,12 @@ class PinPresenter(
 
     override fun onViewResumed() {
         view?.showPassword(mPassword)
+        when {
+            mPrevPassword.isNotEmpty() -> view?.showMessageRepeatPassword()
+            mMode == PinActivity.MODE_CREATE -> view?.showMessageCreatePassword()
+            mMode == PinActivity.MODE_REMOVE -> view?.showMessageCurrentPassword()
+            mMode == PinActivity.MODE_LOCK -> view?.showMessageEnterPassword()
+        }
     }
 
     override fun onValueEntered(value: Int) {
@@ -51,7 +57,7 @@ class PinPresenter(
                 .subscribe { savedPin ->
                     if (mPassword == savedPin) {
                         mDataManager.setAuthorized(true)
-                        view?.showPinCorrect()
+                        view?.showMessagePinCorrect()
                     } else {
                         mPassword = ""
                         view?.showPassword(mPassword)
@@ -66,17 +72,17 @@ class PinPresenter(
                 mPrevPassword = mPassword
                 mPassword = ""
                 view?.showPassword(mPassword)
-                view?.showRepeatPassword()
+                view?.showMessageRepeatPassword()
             }
             mPrevPassword == mPassword -> {
-                view?.showEnterEmail()
+                view?.showEnterEmailView()
             }
             else -> {
                 mPrevPassword = ""
                 mPassword = ""
                 view?.showPassword(mPassword)
                 view?.showErrorPinsDoNotMatch()
-                view?.showEnterPassword()
+                view?.showMessageCreatePassword()
             }
         }
     }
@@ -87,7 +93,7 @@ class PinPresenter(
                 .subscribe { savedPin ->
                     if (mPassword == savedPin) {
                         mDataManager.setAuthorized(true)
-                        view?.showPinCorrect()
+                        view?.showMessagePinCorrect()
                     } else {
                         mPassword = ""
                         view?.showPassword(mPassword)
@@ -102,7 +108,7 @@ class PinPresenter(
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe {
                     mDataManager.setAuthorized(true)
-                    view?.showPasswordCreated()
+                    view?.showMessagePasswordCreated()
                 })
     }
 
