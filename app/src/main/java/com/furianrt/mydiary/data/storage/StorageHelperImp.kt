@@ -38,4 +38,13 @@ class StorageHelperImp(context: Context) : StorageHelper {
         fos.close()
         return destFile
     }
+
+    override fun copyBitmapToStorage(bitmap: Bitmap, destFileName: String): File {
+        val destFile = File(mDirectory, "$destFileName.jpg")
+        val fos = FileOutputStream(destFile)
+        bitmap.compress(Bitmap.CompressFormat.JPEG, COMPRESS_VALUE, fos)
+        fos.flush()
+        fos.close()
+        return destFile
+    }
 }

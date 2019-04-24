@@ -425,6 +425,7 @@ class MainActivity : BaseActivity(), MainActivityContract.View,
         mAdapter.selectedNotes = selectedNotes
         mAdapter.submitList(notes.toMutableList())
         empty_state.visibility = if (notes.isEmpty()) {
+            app_bar_layout.setExpanded(false, true)
             View.VISIBLE
         } else {
             View.GONE

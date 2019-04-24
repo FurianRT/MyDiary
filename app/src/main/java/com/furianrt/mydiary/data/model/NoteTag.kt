@@ -31,7 +31,7 @@ import kotlinx.android.parcel.Parcelize
 data class NoteTag(
         @ColumnInfo(name = FIELD_NOTE_ID, index = true) var noteId: String = "",
         @ColumnInfo(name = FIELD_TAG_ID, index = true) var tagId: String = "",
-        @ColumnInfo(name = FIELD_IS_SYNC) var syncWith: MutableList<String> = mutableListOf(),
+        @ColumnInfo(name = FIELD_SYNC_WITH) var syncWith: MutableList<String> = mutableListOf(),
         @ColumnInfo(name = FIELD_IS_DELETED) var isDeleted: Boolean = false
 ) : Parcelable {
 
@@ -39,7 +39,7 @@ data class NoteTag(
         const val TABLE_NAME = "NoteTag"
         const val FIELD_NOTE_ID = "id_note"
         const val FIELD_TAG_ID = "id_tag"
-        const val FIELD_IS_SYNC = "notetag_sync_with"
+        const val FIELD_SYNC_WITH = "notetag_sync_with"
         const val FIELD_IS_DELETED = "is_notetag_deleted"
     }
 
