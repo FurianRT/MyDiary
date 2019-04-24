@@ -60,8 +60,8 @@ class TagsDialog : DialogFragment(), TagsDialogListAdapter.OnTagChangedListener,
 
     @SuppressLint("InflateParams")
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        val inflater = activity?.layoutInflater
-        val view = inflater?.inflate(R.layout.dialog_tags, null)
+
+        val view = requireActivity().layoutInflater.inflate(R.layout.dialog_tags, null)
 
         mPresenter.attachView(this)
 

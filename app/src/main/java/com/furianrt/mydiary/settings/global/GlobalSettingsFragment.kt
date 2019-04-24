@@ -30,30 +30,36 @@ class GlobalSettingsFragment : PreferenceFragment(), GlobalSettingsContract.View
         PreferenceManager.setDefaultValues(activity, R.xml.pref_global, false)
         mPresenter.attachView(this)
         mPresenter.onViewCreate()
+
+        findPreference(PreferencesHelper.SECURITY_KEY).setOnPreferenceClickListener {
+            mPresenter.onPrefSecurityKeyClick()
+            return@setOnPreferenceClickListener true
+        }
     }
 
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
         when (key) {
             PreferencesHelper.COLOR_PRIMARY -> activity?.recreate()
             PreferencesHelper.COLOR_ACCENT -> activity?.recreate()
-            PreferencesHelper.SECURITY_KEY -> mPresenter.onPrefSecurityKeyChanged()
         }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == REQUEST_CODE_CREATE_PIN) {
+            val keyPref = findPreference(PreferencesHelper.SECURITY_KEY) as SwitchPreference
             if (resultCode == Activity.RESULT_OK) {
+                keyPref.isChecked = true
                 mPresenter.onPasswordCreated()
             } else {
-                val keyPref = findPreference(PreferencesHelper.SECURITY_KEY) as SwitchPreference
                 keyPref.isChecked = false
             }
         } else if (requestCode == REQUEST_CODE_REMOVE_PIN) {
+            val keyPref = findPreference(PreferencesHelper.SECURITY_KEY) as SwitchPreference
             if (resultCode == Activity.RESULT_OK) {
+                keyPref.isChecked = false
                 mPresenter.onPasswordRemoved()
             } else {
-                val keyPref = findPreference(PreferencesHelper.SECURITY_KEY) as SwitchPreference
                 keyPref.isChecked = true            }
         }
     }
@@ -64,12 +70,14 @@ class GlobalSettingsFragment : PreferenceFragment(), GlobalSettingsContract.View
     }
 
     override fun showCreatePasswordView() {
+        (findPreference(PreferencesHelper.SECURITY_KEY) as SwitchPreference).isChecked = false
         val intent = Intent(activity!!, PinActivity::class.java)
         intent.putExtra(PinActivity.EXTRA_MODE, PinActivity.MODE_CREATE)
         startActivityForResult(intent, REQUEST_CODE_CREATE_PIN)
     }
 
     override fun showRemovePasswordView() {
+        (findPreference(PreferencesHelper.SECURITY_KEY) as SwitchPreference).isChecked = true
         val intent = Intent(activity!!, PinActivity::class.java)
         intent.putExtra(PinActivity.EXTRA_MODE, PinActivity.MODE_REMOVE)
         startActivityForResult(intent, REQUEST_CODE_REMOVE_PIN)

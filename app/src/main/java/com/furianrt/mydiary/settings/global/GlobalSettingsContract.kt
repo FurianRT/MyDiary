@@ -12,7 +12,7 @@ interface GlobalSettingsContract {
     }
 
     abstract class Presenter : BasePresenter<View>() {
-        abstract fun onPrefSecurityKeyChanged()
+        abstract fun onPrefSecurityKeyClick()
         abstract fun onPasswordCreated()
         abstract fun onPasswordRemoved()
         abstract fun onViewCreate()

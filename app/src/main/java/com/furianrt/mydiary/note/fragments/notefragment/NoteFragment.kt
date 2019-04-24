@@ -171,6 +171,7 @@ class NoteFragment : Fragment(), NoteFragmentContract.View, OnMapReadyCallback,
 
     override fun onPause() {
         super.onPause()
+        mImagePagerPosition = pager_note_image.currentItem
         pager_note_image.removeOnPageChangeListener(mOnPageChangeListener)
         mPresenter.detachView()
     }

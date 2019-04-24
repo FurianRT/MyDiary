@@ -32,7 +32,7 @@ class DeleteImageDialog : DialogFragment() {
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        return AlertDialog.Builder(context!!)
+        return AlertDialog.Builder(requireContext())
                 .setMessage(resources.getQuantityString(
                         R.plurals.image_delete_confirmation,
                         mImages.size,

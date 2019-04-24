@@ -71,7 +71,7 @@
         <item>10 минут</item>
     </string-array>
     <string-array name="pref_key_frequency_values">
-        <item>0</item>
+        <item>1000</item>
         <item>15000</item>
         <item>30000</item>
         <item>60000</item>
@@ -99,6 +99,8 @@
     <string name="wrong_password">Неверный пароль</string>
     <string name="email">Email</string>
     <string name="done">Готово</string>
+    <string name="undo">Отменить</string>
+    <string name="redo">Повторить</string>
 
     <string name="choose_tags">Выберите теги</string>
     <string name="choose_category">Категория</string>
@@ -163,7 +165,6 @@
     <string name="security_time_settings_title">Время до запроса пароля</string>
     <string name="fragment_authentication_sign_in">Логин</string>
     <string name="fragment_authentication_sign_up">Регистрация</string>
-    <string name="fragment_registration_email">Email</string>
     <string name="fragment_registration_password">Пароль</string>
     <string name="fragment_registration_repeat_password">Повторите пароль</string>
     <string name="fragment_registration_sign_up">Регистрация</string>
@@ -253,5 +254,7 @@
     <string name="global_settings_pin_on_summary">Email для восстановления пароля %s</string>
     <string name="activity_pin_create_pin">Придумайте пароль</string>
     <string name="activity_pin_enter_current_pin">Введите текущий пароль</string>
+    <string name="fragment_backup_email_invalid_email">Некорректный email</string>
+    <string name="fragment_backup_email_enter_email">Введите email</string>
 
 </resources>

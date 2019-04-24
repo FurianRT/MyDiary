@@ -1,6 +1,7 @@
 package com.furianrt.mydiary.pin
 
 import android.os.Bundle
+import android.os.Handler
 import com.furianrt.mydiary.data.DataManager
 import io.reactivex.android.schedulers.AndroidSchedulers
 
@@ -11,11 +12,14 @@ class PinPresenter(
     companion object {
         private const val BUNDLE_PASSWORD = "password"
         private const val BUNDLE_PREVIOUS_PASSWORD = "prev_password"
+        private const val CREATE_PASSWORD_DELAY = 200L
     }
 
     private var mPassword = ""
     private var mPrevPassword = ""
     private var mMode: Int = PinActivity.MODE_CREATE
+    private val mHandler = Handler()
+    private val mCreatePasswordRunnable = Runnable { checkPinCreateMode() }
 
     override fun onSaveInstanceState(bundle: Bundle?) {
         bundle?.putString(BUNDLE_PASSWORD, mPassword)
@@ -43,9 +47,12 @@ class PinPresenter(
             view?.showPassword(mPassword)
             if (mPassword.length == 4) {
                 when (mMode) {
-                    PinActivity.MODE_CREATE -> checkPinCreateMode()
-                    PinActivity.MODE_REMOVE -> checkPinRemoveMode()
-                    else -> checkPinEnterMode()
+                    PinActivity.MODE_CREATE ->
+                        mHandler.postDelayed(mCreatePasswordRunnable, CREATE_PASSWORD_DELAY)
+                    PinActivity.MODE_REMOVE ->
+                        checkPinRemoveMode()
+                    else ->
+                        checkPinEnterMode()
                 }
             }
         }
@@ -92,7 +99,6 @@ class PinPresenter(
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { savedPin ->
                     if (mPassword == savedPin) {
-                        mDataManager.setAuthorized(true)
                         view?.showMessagePinCorrect()
                     } else {
                         mPassword = ""
@@ -129,5 +135,10 @@ class PinPresenter(
 
     override fun onButtonForgotPasswordClick() {
         view?.showForgotPinView()
+    }
+
+    override fun detachView() {
+        super.detachView()
+        mHandler.removeCallbacks(mCreatePasswordRunnable)
     }
 }

@@ -12,7 +12,7 @@ class GlobalSettingsPresenter(
         }
     }
 
-    override fun onPrefSecurityKeyChanged() {
+    override fun onPrefSecurityKeyClick() {
         if (mDataManager.isPasswordEnabled()) {
             view?.showCreatePasswordView()
         } else {

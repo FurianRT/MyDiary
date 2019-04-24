@@ -24,7 +24,7 @@ class RegistrationFragment : Fragment(), RegistrationContract.View {
 
     companion object {
         const val TAG = "RegistrationFragment"
-        private const val SHAKE_DURATION = 400L
+        private const val ANIMATION_SHAKE_DURATION = 400L
         private const val CLOSE_AFTER_DONE_DELAY = 2000L
     }
 
@@ -62,8 +62,8 @@ class RegistrationFragment : Fragment(), RegistrationContract.View {
     }
 
     override fun showErrorPassword() {
-        layout_password.animateShake(SHAKE_DURATION)
-        layout_password_repeat.animateShake(SHAKE_DURATION)
+        layout_password.animateShake(ANIMATION_SHAKE_DURATION)
+        layout_password_repeat.animateShake(ANIMATION_SHAKE_DURATION)
         text_error.text = getString(R.string.fragment_registration_password_error)
     }
 
@@ -98,17 +98,17 @@ class RegistrationFragment : Fragment(), RegistrationContract.View {
     }
 
     override fun showErrorShortPassword() {
-        layout_password.animateShake(SHAKE_DURATION)
+        layout_password.animateShake(ANIMATION_SHAKE_DURATION)
         text_error.text = getString(R.string.fragment_registration_error_short_password)
     }
 
     override fun showErrorEmptyPassword() {
-        layout_password.animateShake(SHAKE_DURATION)
+        layout_password.animateShake(ANIMATION_SHAKE_DURATION)
         text_error.text = getString(R.string.fragment_registration_empty_password)
     }
 
     override fun showErrorEmptyPasswordRepeat() {
-        layout_password_repeat.animateShake(SHAKE_DURATION)
+        layout_password_repeat.animateShake(ANIMATION_SHAKE_DURATION)
         text_error.text = getString(R.string.fragment_registration_empty_password)
     }
 

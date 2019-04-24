@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorPrimaryDark"
+    android:background="?attr/colorPrimaryDark"
     tools:context=".pin.PinActivity">
 
     <ImageButton
@@ -90,7 +90,6 @@
             android:layout_height="16dp"
             android:src="@drawable/cirlcle_stroke_background"
             tools:ignore="ContentDescription" />
-
 
     </LinearLayout>
 
@@ -290,7 +289,7 @@
                 android:layout_width="50dp"
                 android:layout_height="60dp"
                 android:gravity="center"
-                android:text="Del"
+                android:text="&lt;"
                 android:textColor="@color/white"
                 android:textSize="18sp"
                 app:cornerRadius="100dp"
@@ -299,7 +298,6 @@
                 tools:ignore="HardcodedText" />
 
         </LinearLayout>
-
 
     </LinearLayout>
 
@@ -324,6 +322,7 @@
         android:id="@+id/layout_pin_bottom_sheet"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:layout_marginTop="24dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

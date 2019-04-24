@@ -20,7 +20,7 @@ class LoginFragment : Fragment(), LoginContract.View {
     companion object {
         const val TAG = "LoginFragment"
         private const val CLOSE_AFTER_DONE_DELAY = 2000L
-        private const val SHAKE_DURATION = 400L
+        private const val ANIMATION_SHAKE_DURATION = 400L
     }
 
     @Inject
@@ -35,8 +35,8 @@ class LoginFragment : Fragment(), LoginContract.View {
                               savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_login, container, false)
 
-        view?.button_forgot_password?.setOnClickListener { mPresenter.onButtonForgotClick() }
-        view?.button_sing_in?.setOnClickListener {
+        view.button_forgot_password.setOnClickListener { mPresenter.onButtonForgotClick() }
+        view.button_sing_in.setOnClickListener {
             mPresenter.onButtonSignInClick(
                     view.edit_email.text.toString(),
                     view.edit_password.text.toString()
@@ -54,16 +54,16 @@ class LoginFragment : Fragment(), LoginContract.View {
     }
 
     override fun showErrorEmptyPassword() {
-        view?.layout_password?.animateShake(SHAKE_DURATION)
+        view?.layout_password?.animateShake(ANIMATION_SHAKE_DURATION)
     }
 
     override fun showErrorEmptyEmail() {
-        view?.layout_email?.animateShake(SHAKE_DURATION)
+        view?.layout_email?.animateShake(ANIMATION_SHAKE_DURATION)
     }
 
     override fun showErrorWrongCredential() {
-        view?.layout_password?.animateShake(SHAKE_DURATION)
-        view?.layout_email?.animateShake(SHAKE_DURATION)
+        view?.layout_password?.animateShake(ANIMATION_SHAKE_DURATION)
+        view?.layout_email?.animateShake(ANIMATION_SHAKE_DURATION)
     }
 
     override fun showLoading() {

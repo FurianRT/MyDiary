@@ -12,6 +12,8 @@ import com.furianrt.mydiary.pin.PinActivity
 
 abstract class BaseActivity : AppCompatActivity() {
 
+    open var needLockScreen = true
+
     override fun onCreate(savedInstanceState: Bundle?) {
         application.setTheme(R.style.AppTheme)
         applyStyleToTheme()
@@ -26,23 +28,24 @@ abstract class BaseActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-        val isAuthorized = PreferenceManager.getDefaultSharedPreferences(this)
-                .getBoolean(PreferencesHelper.SECURITY_IS_AUTHORIZED, true)
-        if (!isAuthorized) {
-            val intent = Intent(this, PinActivity::class.java)
-            intent.putExtra(PinActivity.EXTRA_MODE, PinActivity.MODE_LOCK)
-            startActivity(intent)
+        if (needLockScreen) {
+            val prefs = PreferenceManager.getDefaultSharedPreferences(this)
+            val isPinEnabled = prefs.getBoolean(PreferencesHelper.SECURITY_KEY, false)
+            val isAuthorized = prefs.getBoolean(PreferencesHelper.SECURITY_IS_AUTHORIZED, true)
+            if (isPinEnabled && !isAuthorized) {
+                val intent = Intent(this, PinActivity::class.java)
+                intent.putExtra(PinActivity.EXTRA_MODE, PinActivity.MODE_LOCK)
+                startActivity(intent)
+            }
         }
     }
 
     // Похоже, что динамическое создание стиля в андроиде не предусмотрено,
     // поэтому приходится хардкодить этот бред
     private fun applyStyleToTheme() {
-        val colorPrimary = PreferenceManager
+        when (PreferenceManager
                 .getDefaultSharedPreferences(this)
-                .getInt(PreferencesHelper.COLOR_PRIMARY, 0)
-
-        when (colorPrimary) {
+                .getInt(PreferencesHelper.COLOR_PRIMARY, 0)) {
             ContextCompat.getColor(this, R.color.r1) ->
                 theme.applyStyle(R.style.OverlayPrimaryColorR1, true)
             ContextCompat.getColor(this, R.color.r2) ->
@@ -113,11 +116,9 @@ abstract class BaseActivity : AppCompatActivity() {
                 theme.applyStyle(R.style.OverlayPrimaryColorBlack, true)
         }
 
-        val colorAccent = PreferenceManager
+        when (PreferenceManager
                 .getDefaultSharedPreferences(this)
-                .getInt(PreferencesHelper.COLOR_ACCENT, 0)
-
-        when (colorAccent) {
+                .getInt(PreferencesHelper.COLOR_ACCENT, 0)) {
             ContextCompat.getColor(this, R.color.r1) ->
                 theme.applyStyle(R.style.OverlayAccentColorR1, true)
             ContextCompat.getColor(this, R.color.r2) ->

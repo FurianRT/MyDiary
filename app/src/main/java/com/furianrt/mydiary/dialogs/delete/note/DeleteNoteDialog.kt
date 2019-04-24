@@ -32,7 +32,7 @@ class DeleteNoteDialog : DialogFragment() {
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        return AlertDialog.Builder(context!!)
+        return AlertDialog.Builder(requireContext())
                 .setMessage(resources.getQuantityString(
                         R.plurals.note_delete_confirmation,
                         mNotes.size,

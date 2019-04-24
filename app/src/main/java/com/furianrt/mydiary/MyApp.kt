@@ -30,7 +30,7 @@ class MyApp : Application(), Application.ActivityLifecycleCallbacks {
         const val NOTIFICATION_SYNC_CHANNEL_NAME = "Synchronization"
         const val NOTIFICATION_FIREBASE_CHANNEL_ID = "firebase_channel"
         const val NOTIFICATION_FIREBASE_CHANNEL_NAME = "Info"
-        private const val PASSWORD_REQUEST_RELAY_OFFSET = 300L
+        private const val PIN_DEFAULT_DELAY = "1000"
     }
 
     val component: AppComponent by lazy {
@@ -40,16 +40,12 @@ class MyApp : Application(), Application.ActivityLifecycleCallbacks {
     }
 
     private val mHandler = Handler(Looper.getMainLooper())
-    private val mLogoutRunnable = Runnable {
-        PreferenceManager.getDefaultSharedPreferences(this)
-                .edit()
-                .putBoolean(PreferencesHelper.SECURITY_IS_AUTHORIZED, false)
-                .apply()
-    }
+    private val mLogoutRunnable = Runnable { setAuthorized(false) }
 
     override fun onCreate() {
         component.inject(this)
         super.onCreate()
+        setAuthorized(false)
         registerActivityLifecycleCallbacks(this)
         createNotificationSyncChannel()
         createNotificationFirebaseChannel()
@@ -59,9 +55,9 @@ class MyApp : Application(), Application.ActivityLifecycleCallbacks {
 
     override fun onActivityDestroyed(activity: Activity?) {}
     override fun onActivitySaveInstanceState(activity: Activity?, outState: Bundle?) {}
-    override fun onActivityStopped(activity: Activity?) {}
     override fun onActivityCreated(activity: Activity?, savedInstanceState: Bundle?) {}
     override fun onActivityStarted(activity: Activity?) {}
+    override fun onActivityStopped(activity: Activity?) {}
     override fun onActivityResumed(activity: Activity?) {
         mHandler.removeCallbacks(mLogoutRunnable)
     }
@@ -70,9 +66,16 @@ class MyApp : Application(), Application.ActivityLifecycleCallbacks {
         val prefs = PreferenceManager.getDefaultSharedPreferences(this)
         val isPasswordEnabled = prefs.getBoolean(PreferencesHelper.SECURITY_KEY, false)
         if (isPasswordEnabled && activity !is PinActivity) {
-            val delay = prefs.getString(PreferencesHelper.SECURITY_REQUEST_DELAY, "0")!!.toLong()
-            mHandler.postDelayed(mLogoutRunnable, PASSWORD_REQUEST_RELAY_OFFSET + delay)
+            val delay = prefs.getString(PreferencesHelper.SECURITY_REQUEST_DELAY, PIN_DEFAULT_DELAY)!!.toLong()
+            mHandler.postDelayed(mLogoutRunnable, delay)
         }
+    }
+
+    private fun setAuthorized(authorized: Boolean) {
+        PreferenceManager.getDefaultSharedPreferences(this)
+                .edit()
+                .putBoolean(PreferencesHelper.SECURITY_IS_AUTHORIZED, authorized)
+                .apply()
     }
 
     private fun createNotificationSyncChannel() {
@@ -142,7 +145,6 @@ class MyApp : Application(), Application.ActivityLifecycleCallbacks {
 * добавить заглушку на пустые состояния списков
 * реализовать свайп элементов листа главного экрана
 * добавить экран с описанием према
-* не синхронизируются категории
 *
 * */
 

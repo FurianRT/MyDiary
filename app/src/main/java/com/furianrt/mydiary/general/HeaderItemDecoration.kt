@@ -9,9 +9,10 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 
-class HeaderItemDecoration(private val mRecyclerView: RecyclerView,
-                           private val mListener: StickyHeaderInterface)
-    : RecyclerView.ItemDecoration() {
+class HeaderItemDecoration(
+        private val mRecyclerView: RecyclerView,
+        private val mListener: StickyHeaderInterface
+) : RecyclerView.ItemDecoration() {
 
     private val mHeaderContainer = CardView(mRecyclerView.context)
     private var mStickyHeaderHeight: Int = 0
@@ -112,12 +113,16 @@ class HeaderItemDecoration(private val mRecyclerView: RecyclerView,
         val widthSpec = View.MeasureSpec.makeMeasureSpec(parent.width, View.MeasureSpec.EXACTLY)
         val heightSpec = View.MeasureSpec.makeMeasureSpec(parent.height, View.MeasureSpec.UNSPECIFIED)
 
-        val childWidthSpec = ViewGroup.getChildMeasureSpec(widthSpec,
+        val childWidthSpec = ViewGroup.getChildMeasureSpec(
+                widthSpec,
                 parent.paddingLeft + parent.paddingRight,
-                view.layoutParams.width)
-        val childHeightSpec = ViewGroup.getChildMeasureSpec(heightSpec,
+                view.layoutParams.width
+        )
+        val childHeightSpec = ViewGroup.getChildMeasureSpec(
+                heightSpec,
                 parent.paddingTop + parent.paddingBottom,
-                view.layoutParams.height)
+                view.layoutParams.height
+        )
 
         view.measure(childWidthSpec, childHeightSpec)
 

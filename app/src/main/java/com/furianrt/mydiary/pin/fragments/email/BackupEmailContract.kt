@@ -9,10 +9,12 @@ interface BackupEmailContract {
         fun showEmailIsCorrect(email: String)
         fun showErrorEmptyEmail()
         fun showErrorEmailFormat()
+        fun showEmail(email: String)
     }
 
     abstract class Presenter : BasePresenter<View>() {
         abstract fun onButtonDoneClick(email: String)
+        abstract fun onViewCreated(email: String, firstLaunch: Boolean)
 
     }
 }

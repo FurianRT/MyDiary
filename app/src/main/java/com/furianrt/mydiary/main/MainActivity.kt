@@ -145,7 +145,7 @@ class MainActivity : BaseActivity(), MainActivityContract.View,
             override fun onStateChanged(bottomSheet: View, newState: Int) {
                 if (newState == BottomSheetBehavior.STATE_COLLAPSED) {
                     supportFragmentManager.findFragmentByTag(PremiumFragment.TAG)?.let {
-                        supportFragmentManager.popBackStack()
+                        supportFragmentManager.popBackStack() //todo странная фигня
                     }
                     supportFragmentManager.findFragmentByTag(ProfileFragment.TAG)?.let {
                         supportFragmentManager.inTransaction { remove(it) }

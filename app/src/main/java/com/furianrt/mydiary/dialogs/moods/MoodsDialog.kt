@@ -32,11 +32,11 @@ class MoodsDialog : DialogFragment(), MoodsDialogContract.View,
 
         mPresenter.attachView(this)
 
-        val view = activity?.layoutInflater?.inflate(R.layout.dialog_moods, null)
+        val view = requireActivity().layoutInflater.inflate(R.layout.dialog_moods, null)
 
         mAdapter = MoodsDialogListAdapter(emptyList(), this)
 
-        view?.list_moods?.apply {
+        view.list_moods.apply {
             val manager = LinearLayoutManager(requireContext())
             layoutManager = manager
             adapter = mAdapter
@@ -48,9 +48,7 @@ class MoodsDialog : DialogFragment(), MoodsDialogContract.View,
         return AlertDialog.Builder(requireContext())
                 .setView(view)
                 .setPositiveButton(getString(R.string.close), null)
-                .setNegativeButton(getString(R.string.no_mood)) { _, _ ->
-                    mListener?.onNoMoodPicked()
-                }
+                .setNegativeButton(getString(R.string.no_mood)) { _, _ -> mListener?.onNoMoodPicked() }
                 .create()
     }
 

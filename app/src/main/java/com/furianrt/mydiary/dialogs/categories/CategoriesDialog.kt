@@ -43,7 +43,6 @@ class CategoriesDialog : DialogFragment(), CategoriesDialogContract.View {
         mNoteId = arguments?.getString(ARG_NOTE_ID) ?: throw IllegalArgumentException()
     }
 
-    @SuppressLint("InflateParams")
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         mPresenter.onViewCreate(mNoteId)
@@ -52,16 +51,14 @@ class CategoriesDialog : DialogFragment(), CategoriesDialogContract.View {
 
     @SuppressLint("InflateParams")
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        mView = activity?.layoutInflater?.inflate(R.layout.dialog_categories, null)
+        mView = requireActivity().layoutInflater.inflate(R.layout.dialog_categories, null)
 
         mPresenter.attachView(this)
 
         val dialog = AlertDialog.Builder(context!!)
                 .setView(mView)
                 .setPositiveButton(getString(R.string.close), null)
-                .setNegativeButton(getString(R.string.no_category)) { _, _ ->
-                    mListener?.onNoCategoryPicked()
-                }
+                .setNegativeButton(getString(R.string.no_category)) { _, _ -> mListener?.onNoCategoryPicked() }
                 .create()
 
         dialog.setOnKeyListener { _, keyCode, event ->

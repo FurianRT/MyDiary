@@ -5,13 +5,14 @@ import android.os.Bundle
 import android.os.Handler
 import android.view.View
 import android.widget.Toast
-import androidx.cardview.widget.CardView
 import com.furianrt.mydiary.R
+import com.furianrt.mydiary.base.BaseActivity
+import com.furianrt.mydiary.general.LockableBottomSheetBehavior
 import com.furianrt.mydiary.pin.fragments.email.BackupEmailFragment
 import com.furianrt.mydiary.utils.animateShake
 import com.furianrt.mydiary.utils.inTransaction
 import com.google.android.material.bottomsheet.BottomSheetBehavior
-import com.yanzhenjie.album.mvp.BaseActivity
+import com.google.android.material.card.MaterialCardView
 import kotlinx.android.synthetic.main.activity_pin.*
 import kotlinx.android.synthetic.main.bottom_sheet_pin.*
 import javax.inject.Inject
@@ -20,7 +21,7 @@ class PinActivity : BaseActivity(), PinContract.View, View.OnClickListener,
         BackupEmailFragment.OnBackupEmailFragmentListener {
 
     companion object {
-        private const val SHAKE_DURATION = 400L
+        private const val ANIMATION_SHAKE_DURATION = 400L
         private const val BOTTOM_SHEET_EXPAND_DELAY = 200L
         private const val BUNDLE_BOTTOM_SHEET_STATE = "bottomSheetState"
         const val MODE_CREATE = 0
@@ -32,12 +33,14 @@ class PinActivity : BaseActivity(), PinContract.View, View.OnClickListener,
     @Inject
     lateinit var mPresenter: PinContract.Presenter
 
-    private lateinit var mBottomSheet: BottomSheetBehavior<CardView>
+    private lateinit var mBottomSheet: LockableBottomSheetBehavior<MaterialCardView>
     private var mMode = MODE_CREATE
     private val mHandler = Handler()
     private val mBottomSheetOpenRunnable: Runnable = Runnable {
         mBottomSheet.state = BottomSheetBehavior.STATE_EXPANDED
     }
+
+    override var needLockScreen = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         getPresenterComponent(this).inject(this)
@@ -47,7 +50,12 @@ class PinActivity : BaseActivity(), PinContract.View, View.OnClickListener,
         mMode = intent.getIntExtra(EXTRA_MODE, MODE_CREATE)
         mPresenter.setMode(mMode)
 
-        mBottomSheet = BottomSheetBehavior.from(pin_sheet_container)
+        if (mMode == MODE_CREATE || mMode == MODE_REMOVE) {
+            button_forgot_password.visibility = View.INVISIBLE
+        }
+
+        mBottomSheet = BottomSheetBehavior.from(pin_sheet_container) as LockableBottomSheetBehavior
+        mBottomSheet.locked = true
 
         savedInstanceState?.let {
             mBottomSheet.state = it.getInt(BUNDLE_BOTTOM_SHEET_STATE, BottomSheetBehavior.STATE_COLLAPSED)
@@ -95,12 +103,12 @@ class PinActivity : BaseActivity(), PinContract.View, View.OnClickListener,
 
     override fun showErrorWrongPin() {
         Toast.makeText(this, getString(R.string.activity_pin_wrong_pin), Toast.LENGTH_SHORT).show()
-        layout_pins.animateShake(SHAKE_DURATION)
+        layout_pins.animateShake(ANIMATION_SHAKE_DURATION)
     }
 
     override fun showErrorPinsDoNotMatch() {
         Toast.makeText(this, getString(R.string.activity_pin_dont_match), Toast.LENGTH_SHORT).show()
-        layout_pins.animateShake(SHAKE_DURATION)
+        layout_pins.animateShake(ANIMATION_SHAKE_DURATION)
     }
 
     override fun showMessageRepeatPassword() {
@@ -169,6 +177,11 @@ class PinActivity : BaseActivity(), PinContract.View, View.OnClickListener,
 
     override fun onBackPressed() {
         close()
+    }
+
+    override fun finish() {
+        super.finish()
+        overridePendingTransition(R.anim.activity_stay_slide_bottom, R.anim.slide_bottom_down)
     }
 
     override fun onResume() {
