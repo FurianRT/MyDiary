@@ -27,6 +27,12 @@
                 app:layout_behavior="@string/appbar_scrolling_view_behavior"
                 tools:listitem="@layout/activity_main_list_content" />
 
+            <include
+                android:id="@+id/empty_state"
+                layout="@layout/empty_state_note_list"
+                android:visibility="gone"
+                tools:visibility="visible" />
+
             <com.furian.fab.FloatingActionMenu
                 android:id="@+id/fab_menu"
                 android:layout_width="wrap_content"

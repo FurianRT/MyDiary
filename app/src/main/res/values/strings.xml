@@ -256,5 +256,7 @@
     <string name="activity_pin_enter_current_pin">Введите текущий пароль</string>
     <string name="fragment_backup_email_invalid_email">Некорректный email</string>
     <string name="fragment_backup_email_enter_email">Введите email</string>
+    <string name="empty_state_note_list_empty">Тут пусто!</string>
+    <string name="empty_state_note_list_hint">Сделай свою первую запись!</string>
 
 </resources>

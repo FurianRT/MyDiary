@@ -22,9 +22,9 @@ import com.yanzhenjie.album.Album
 import com.yanzhenjie.album.api.widget.Widget
 import jp.wasabeef.recyclerview.animators.FadeInUpAnimator
 import kotlinx.android.synthetic.main.activity_gallery.*
+import kotlinx.android.synthetic.main.empty_state_gallery_list.view.*
 import kotlinx.android.synthetic.main.fragment_gallery_list.*
 import kotlinx.android.synthetic.main.fragment_gallery_list.view.*
-import kotlinx.android.synthetic.main.gallery_list_empty_state.view.*
 import pub.devrel.easypermissions.AfterPermissionGranted
 import pub.devrel.easypermissions.EasyPermissions
 import javax.inject.Inject

@@ -96,11 +96,11 @@ class NoteFragment : Fragment(), NoteFragmentContract.View, OnMapReadyCallback,
     @Inject
     lateinit var mPresenter: NoteFragmentContract.Presenter
 
-    private var mGoogleMap: GoogleMap? = null
     private lateinit var mPagerAdapter: NoteFragmentPagerAdapter
     private lateinit var mMode: NoteActivity.Companion.Mode
-    private var mImagePagerPosition = 0
 
+    private var mGoogleMap: GoogleMap? = null
+    private var mImagePagerPosition = 0
     private val mOnPageChangeListener = object : ViewPager.OnPageChangeListener {
         override fun onPageScrollStateChanged(state: Int) {}
         override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {}
@@ -108,7 +108,6 @@ class NoteFragment : Fragment(), NoteFragmentContract.View, OnMapReadyCallback,
             text_image_position.text = (position + 1).toString()
         }
     }
-
     private val mLocationCallback = object : LocationCallback() {
         override fun onLocationResult(result: LocationResult?) {
             super.onLocationResult(result)
@@ -137,7 +136,6 @@ class NoteFragment : Fragment(), NoteFragmentContract.View, OnMapReadyCallback,
                               savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_note, container, false)
 
-
         someTemporaryFunction(view)
 
         mPagerAdapter = NoteFragmentPagerAdapter(childFragmentManager)
@@ -163,7 +161,7 @@ class NoteFragment : Fragment(), NoteFragmentContract.View, OnMapReadyCallback,
 
     override fun onResume() {
         super.onResume()
-        activity?.window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE)
+        requireActivity().window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE)
         pager_note_image.addOnPageChangeListener(mOnPageChangeListener)
         mPresenter.attachView(this)
         mPresenter.onViewStart(requireContext().isLocationEnabled(), requireContext().isNetworkAvailable())
@@ -233,7 +231,7 @@ class NoteFragment : Fragment(), NoteFragmentContract.View, OnMapReadyCallback,
     override fun showDeleteConfirmationDialog(note: MyNote) {
         DeleteNoteDialog.newInstance(listOf(note)).apply {
             setOnDeleteConfirmListener(this@NoteFragment)
-        }.show(activity?.supportFragmentManager, DeleteNoteDialog.TAG)
+        }.show(requireActivity().supportFragmentManager, DeleteNoteDialog.TAG)
     }
 
     override fun onDialogButtonDeleteClick(notes: List<MyNote>) {
@@ -247,7 +245,7 @@ class NoteFragment : Fragment(), NoteFragmentContract.View, OnMapReadyCallback,
     }
 
     override fun showNoteSettingsView(noteId: String) {
-        val intent = Intent(context, NoteSettingsActivity::class.java)
+        val intent = Intent(requireContext(), NoteSettingsActivity::class.java)
         intent.putExtra(NoteSettingsActivity.EXTRA_NOTE_ID, noteId)
         startActivity(intent)
     }
@@ -286,7 +284,7 @@ class NoteFragment : Fragment(), NoteFragmentContract.View, OnMapReadyCallback,
     }
 
     override fun showGalleryView(noteId: String) {
-        val intent = Intent(context, GalleryActivity::class.java)
+        val intent = Intent(requireContext(), GalleryActivity::class.java)
         intent.putExtra(GalleryActivity.EXTRA_POSITION, view!!.pager_note_image.currentItem)
         intent.putExtra(GalleryActivity.EXTRA_NOTE_ID, noteId)
         startActivity(intent)
@@ -385,7 +383,7 @@ class NoteFragment : Fragment(), NoteFragmentContract.View, OnMapReadyCallback,
     override fun showMood(mood: MyMood) {
         text_mood.alpha = 1f
         text_mood.text = mood.name
-        val smile = resources.getIdentifier(mood.iconName, "drawable", context?.packageName)
+        val smile = resources.getIdentifier(mood.iconName, "drawable", requireContext().packageName)
         image_mood.clearColorFilter()
         image_mood.setImageResource(smile)
         image_mood.alpha = 1f
@@ -402,7 +400,7 @@ class NoteFragment : Fragment(), NoteFragmentContract.View, OnMapReadyCallback,
     override fun showMoodsDialog(moods: List<MyMood>) {
         MoodsDialog().apply {
             setOnMoodsDialogInteractionListener(this@NoteFragment)
-        }.show(activity?.supportFragmentManager, MoodsDialog.TAG)
+        }.show(requireActivity().supportFragmentManager, MoodsDialog.TAG)
     }
 
     override fun showLocation(location: MyLocation) {
@@ -507,13 +505,13 @@ class NoteFragment : Fragment(), NoteFragmentContract.View, OnMapReadyCallback,
     override fun showCategoriesDialog(noteId: String) {
         CategoriesDialog.newInstance(noteId).apply {
             setOnCategoriesDialogListener(this@NoteFragment)
-        }.show(activity?.supportFragmentManager, CategoriesDialog.TAG)
+        }.show(requireActivity().supportFragmentManager, CategoriesDialog.TAG)
     }
 
     override fun showTagsDialog(tags: ArrayList<MyTag>) {
         TagsDialog.newInstance(tags).apply {
             setOnTagChangedListener(this@NoteFragment)
-        }.show(activity?.supportFragmentManager, TagsDialog.TAG)
+        }.show(requireActivity().supportFragmentManager, TagsDialog.TAG)
     }
 
     override fun showForecast(forecast: Forecast) {
@@ -559,7 +557,7 @@ class NoteFragment : Fragment(), NoteFragmentContract.View, OnMapReadyCallback,
 
     override fun findAddress(latitude: Double, longitude: Double) {
         try {
-            val geoCoder = Geocoder(context, Locale.getDefault())
+            val geoCoder = Geocoder(requireContext(), Locale.getDefault())
             val addresses = geoCoder.getFromLocation(latitude, longitude, 1)
             mPresenter.onAddressFound(addresses, latitude, longitude)
         } catch (e: IOException) {
@@ -666,10 +664,8 @@ class NoteFragment : Fragment(), NoteFragmentContract.View, OnMapReadyCallback,
             val themeAccentColor = getThemeAccentColor(this@NoteFragment.requireContext())
             setOkColor(themeAccentColor)
             setCancelColor(themeAccentColor)
-            activity?.let {
-                setOkText(it.getString(R.string.ok).toUpperCase())
-                setCancelText(it.getString(R.string.cancel).toUpperCase())
-            }
+            setOkText(getString(R.string.ok).toUpperCase())
+            setCancelText(getString(R.string.cancel).toUpperCase())
             setLocale(Locale.ENGLISH)
         }.show(fragmentManager, TIME_PICKER_TAG)
     }

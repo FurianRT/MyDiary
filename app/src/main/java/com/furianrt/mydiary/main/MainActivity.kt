@@ -424,6 +424,11 @@ class MainActivity : BaseActivity(), MainActivityContract.View,
         Log.e(TAG, "showNotes")
         mAdapter.selectedNotes = selectedNotes
         mAdapter.submitList(notes.toMutableList())
+        empty_state.visibility = if (notes.isEmpty()) {
+            View.VISIBLE
+        } else {
+            View.GONE
+        }
         mRecyclerViewState?.let {
             list_main.layoutManager?.onRestoreInstanceState(it)
             mRecyclerViewState = null
