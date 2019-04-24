@@ -90,7 +90,8 @@ class AppModule(private val app: Application) {
     fun provideRoomCallback() = object : RoomDatabase.Callback() {
         override fun onCreate(db: SupportSQLiteDatabase) {
             super.onCreate(db)
-            setInitialData(db)
+            createDefaultProperties(db)
+            createTutorialNote(db)
         }
     }
 
@@ -214,7 +215,7 @@ class AppModule(private val app: Application) {
     fun provideImageApiService(@ImageApi retrofit: Retrofit): ImageApiService =
             retrofit.create(ImageApiService::class.java)
 
-    private fun setInitialData(db: SupportSQLiteDatabase) {
+    private fun createDefaultProperties(db: SupportSQLiteDatabase) {
         val cv = ContentValues()
         val moodNames = app.resources.getStringArray(R.array.moods)
         val moodIcons = arrayOf(
@@ -250,15 +251,13 @@ class AppModule(private val app: Application) {
             db.insert(MyCategory.TABLE_NAME, SQLiteDatabase.CONFLICT_IGNORE, cv)
         }
         cv.clear()
-
-        createTutorialNote(db)
     }
 
     private fun createTutorialNote(db: SupportSQLiteDatabase) {
         val note = MyNote(
-                id = "tutorial_note",
-                title = "title",
-                content = "content",
+                id = MyNote.TUTORIAL_NOTE_ID,
+                title = app.getString(R.string.tutorial_note_title),
+                content = app.getString(R.string.tutorial_note_content),
                 time = DateTime.now().millis,
                 moodId = app.resources.getStringArray(R.array.moods).size,
                 categoryId = "default_category_4",
@@ -274,12 +273,12 @@ class AppModule(private val app: Application) {
 
         val headerImage = BitmapFactory.decodeResource(app.resources, R.drawable.tutorial_header_image)
         val imageUri = provideStorageHelper(app)
-                .copyBitmapToStorage(headerImage, "tutorial_header_image")
+                .copyBitmapToStorage(headerImage, MyImage.TUTORIAL_IMAGE_NAME)
                 .toURI()
                 .toString()
 
         val image = MyImage(
-                name = "tutorial_header_image",
+                name = MyImage.TUTORIAL_IMAGE_NAME,
                 uri = imageUri,
                 noteId = note.id,
                 addedTime = DateTime.now().millis,

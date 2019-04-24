@@ -11,6 +11,7 @@ import com.google.android.gms.location.LocationResult
 import io.reactivex.Flowable
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.functions.BiFunction
 import org.joda.time.DateTime
 import java.util.*
 import kotlin.collections.ArrayList
@@ -92,14 +93,19 @@ class NoteFragmentPresenter(private val mDataManager: DataManager) : NoteFragmen
     }
 
     private fun loadTags(noteId: String) {
-        addDisposable(mDataManager.getTagsForNote(noteId)
-                .defaultIfEmpty(emptyList())
+        val tagsFlowable = mDataManager.getTagsForNote(noteId).defaultIfEmpty(emptyList())
+        val appearanceFlowable = mDataManager.getNoteAppearance(noteId)
+
+        addDisposable(Flowable.combineLatest(tagsFlowable, appearanceFlowable,
+                BiFunction<List<MyTag>, MyNoteAppearance, TagsAndAppearance> { tags, appearance ->
+                    return@BiFunction TagsAndAppearance(tags, appearance)
+                })
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { tags ->
-                    if (tags.isEmpty()) {
-                        view?.showNoTagsMessage()
+                .subscribe {
+                    if (it.tags.isEmpty()) {
+                        view?.showNoTagsMessage(it.appearance)
                     } else {
-                        view?.showTagNames(tags.map { it.name })
+                        view?.showTags(it)
                     }
                 })
     }

@@ -24,7 +24,6 @@ class MainActivityPresenter(
 
     companion object {
         private const val TAG = "MainActivityPresenter"
-        private const val HEADER_IMAGE_NAME = "header_image"
     }
 
     private var mSelectedNotes = ArrayList<MyNoteWithProp>()
@@ -108,29 +107,30 @@ class MainActivityPresenter(
         addDisposable(mDataManager.getHeaderImages()
                 .firstOrError()
                 .flatMap { dbImages ->
-                    return@flatMap if (dbImages.isNotEmpty() && DateUtils.isToday(DateTime(dbImages.first().addedTime))) {
-                        Single.just(dbImages.first())
-                    } else if (dbImages.isNotEmpty() && view?.networkAvailable() == false) {
-                        Single.just(dbImages.first())
-                    } else if (dbImages.isEmpty() && view?.networkAvailable() == true) {
-                        mDataManager.loadHeaderImages()
-                                .map { it.first() }
-                                .flatMap { mDataManager.insertHeaderImage(it) }
-                                .flatMap { mDataManager.getHeaderImages().firstOrError() }
-                                .map { it.first() }
-                    } else if (dbImages.isNotEmpty() && view?.networkAvailable() == true) {
-                        mDataManager.loadHeaderImages()
-                                .onErrorReturn { dbImages }
-                                .map { list ->
-                                    list.find { apiImage ->
-                                        dbImages.find { it.id == apiImage.id } == null
-                                    } ?: dbImages.first()
-                                }
-                                .flatMap { mDataManager.insertHeaderImage(it) }
-                                .flatMap { mDataManager.getHeaderImages().firstOrError() }
-                                .map { it.first() }
-                    } else {
-                        throw Exception()
+                    return@flatMap when {
+                        dbImages.isNotEmpty() && DateUtils.isToday(DateTime(dbImages.first().addedTime)) ->
+                            Single.just(dbImages.first())
+                        dbImages.isNotEmpty() && view?.networkAvailable() == false ->
+                            Single.just(dbImages.first())
+                        dbImages.isEmpty() && view?.networkAvailable() == true ->
+                            mDataManager.loadHeaderImages()
+                                    .map { it.first() }
+                                    .flatMap { mDataManager.insertHeaderImage(it) }
+                                    .flatMap { mDataManager.getHeaderImages().firstOrError() }
+                                    .map { it.first() }
+                        dbImages.isNotEmpty() && view?.networkAvailable() == true ->
+                            mDataManager.loadHeaderImages()
+                                    .onErrorReturn { dbImages }
+                                    .map { list ->
+                                        list.find { apiImage ->
+                                            dbImages.find { it.id == apiImage.id } == null
+                                        } ?: dbImages.first()
+                                    }
+                                    .flatMap { mDataManager.insertHeaderImage(it) }
+                                    .flatMap { mDataManager.getHeaderImages().firstOrError() }
+                                    .map { it.first() }
+                        else ->
+                            throw Exception()
                     }
                 }
                 .observeOn(AndroidSchedulers.mainThread())

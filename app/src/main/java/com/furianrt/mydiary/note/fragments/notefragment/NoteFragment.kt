@@ -250,22 +250,6 @@ class NoteFragment : Fragment(), NoteFragmentContract.View, OnMapReadyCallback,
         startActivity(intent)
     }
 
-    override fun updateNoteAppearance(appearance: MyNoteAppearance) {
-        view?.apply {
-            appearance.background?.let { layout_root_note.setBackgroundColor(it) }
-            appearance.textBackground?.let { card_note_edit.setCardBackgroundColor(it) }
-            appearance.textColor?.let { text_mood.setTextColor(it) }
-            appearance.textColor?.let { text_location.setTextColor(it) }
-            appearance.textColor?.let { text_date.setTextColor(it) }
-            appearance.textColor?.let { text_time.setTextColor(it) }
-            appearance.textColor?.let { text_temp.setTextColor(it) }
-            appearance.textColor?.let { text_category.setTextColor(it) }
-        }
-        childFragmentManager.findFragmentByTag(NoteContentFragment.TAG)?.let {
-            (it as NoteContentFragment).setAppearance(appearance)
-        }
-    }
-
     private fun removeEditFragment() {
         childFragmentManager.findFragmentByTag(NoteContentFragment.TAG)?.let {
             (it as NoteContentFragment).removeEditFragment()
@@ -314,16 +298,36 @@ class NoteFragment : Fragment(), NoteFragmentContract.View, OnMapReadyCallback,
         text_mood.visibility = View.GONE
     }
 
-    override fun showNoTagsMessage() {
-        val itemCount = layout_tags.flexItemCount
-        layout_tags.removeViews(1, itemCount - 1)
+    override fun updateNoteAppearance(appearance: MyNoteAppearance) {
+        appearance.background?.let { layout_root_note.setBackgroundColor(it) }
+        appearance.textBackground?.let { card_note_edit.setCardBackgroundColor(it) }
+        appearance.textColor?.let { text_mood.setTextColor(it) }
+        appearance.textColor?.let { text_location.setTextColor(it) }
+        appearance.textColor?.let { text_date.setTextColor(it) }
+        appearance.textColor?.let { text_time.setTextColor(it) }
+        appearance.textColor?.let { text_temp.setTextColor(it) }
+        appearance.textColor?.let { text_category.setTextColor(it) }
+        childFragmentManager.findFragmentByTag(NoteContentFragment.TAG)?.let {
+            (it as NoteContentFragment).setAppearance(appearance)
+        }
+    }
 
-        val image = layout_tags.getChildAt(0) as? ImageView?
-        image?.setColorFilter(getColor(requireContext(), R.color.grey_dark), PorterDuff.Mode.SRC_IN)
+    override fun showNoTagsMessage(appearance: MyNoteAppearance) {
+        layout_tags.removeViews(1, layout_tags.flexItemCount - 1)
+
+        val image = layout_tags.getChildAt(0) as ImageView
+        image.setColorFilter(
+                appearance.textColor ?: getColor(requireContext(), R.color.black),
+                PorterDuff.Mode.SRC_IN
+        )
+        image.alpha = 0.4f
 
         val textNoTags = TextView(requireContext())
-        textNoTags.setTextColor(getColor(requireContext(), R.color.grey_dark))
+        textNoTags.setTextColor(
+                appearance.textColor ?: getColor(requireContext(), R.color.black)
+        )
         textNoTags.setText(R.string.choose_tags)
+        textNoTags.alpha = 0.4f
 
         val params = LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.WRAP_CONTENT,
@@ -335,20 +339,26 @@ class NoteFragment : Fragment(), NoteFragmentContract.View, OnMapReadyCallback,
         layout_tags.addView(textNoTags)
     }
 
-    override fun showTagNames(tagNames: List<String>) {
-        val itemCount = layout_tags.flexItemCount
-        layout_tags.removeViews(1, itemCount - 1)
-        val image = layout_tags.getChildAt(0) as? ImageView?
-        image?.setColorFilter(getColor(requireContext(), R.color.black), PorterDuff.Mode.SRC_IN)
-        for (tagName in tagNames) {
-            layout_tags.addView(wrapTextIntoCardView(tagName))
+    override fun showTags(tagsAndAppearance: TagsAndAppearance) {
+        layout_tags.removeViews(1, layout_tags.flexItemCount - 1)
+        val image = layout_tags.getChildAt(0) as ImageView
+        image.setColorFilter(
+                tagsAndAppearance.appearance.textColor ?: getColor(requireContext(), R.color.black),
+                PorterDuff.Mode.SRC_IN
+        )
+        image.alpha = 1.0f
+        for (tag in tagsAndAppearance.tags) {
+            layout_tags.addView(wrapTextIntoCardView(tag.name, tagsAndAppearance.appearance))
         }
     }
 
-    private fun wrapTextIntoCardView(text: String) =
+    private fun wrapTextIntoCardView(text: String, appearance: MyNoteAppearance) =
             MaterialCardView(requireContext()).apply {
                 elevation = 5f
                 radius = 25f
+                setCardBackgroundColor(
+                        appearance.textBackground ?: getColor(requireContext(), R.color.white)
+                )
                 val params = FrameLayout.LayoutParams(
                         FrameLayout.LayoutParams.WRAP_CONTENT,
                         FrameLayout.LayoutParams.WRAP_CONTENT
@@ -358,7 +368,9 @@ class NoteFragment : Fragment(), NoteFragmentContract.View, OnMapReadyCallback,
 
                 addView(TextView(context).apply {
                     this.text = text
-                    setTextColor(Color.BLACK)
+                    setTextColor(
+                            appearance.textColor ?: getColor(requireContext(), R.color.black)
+                    )
                     setPadding(20, 10, 20, 10)
                 })
             }

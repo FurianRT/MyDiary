@@ -6,7 +6,6 @@ import android.net.Uri
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -36,9 +35,11 @@ class MainListAdapter(
         }
 
         val time = (getItem(headerPosition) as MainHeaderItem).time
-        val date = getMonth(time).toUpperCase(Locale.getDefault()) + ", " + getYear(time)
-
-        header.text_date.text = date
+        header.text_date.text = header.context.getString(
+                R.string.note_list_date_format,
+                getMonth(time),
+                getYear(time)
+        )
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
@@ -85,24 +86,24 @@ class MainListAdapter(
 
         override fun bind(item: MainListItem) {
             mHeaderItem = item as MainHeaderItem
-            val date = getMonth(mHeaderItem.time)
-                    .toUpperCase(Locale.getDefault()) + ", " + getYear(mHeaderItem.time)
-            view.apply {
-                text_date.text = date
-            }
+            view.text_date.text = view.context.getString(
+                    R.string.note_list_date_format,
+                    getMonth(mHeaderItem.time),
+                    getYear(mHeaderItem.time)
+            )
         }
     }
 
     inner class ContentViewHolder(
-            private val mView: View
-    ) : MyViewHolder(mView), View.OnClickListener, View.OnLongClickListener {
+            private val view: View
+    ) : MyViewHolder(view), View.OnClickListener, View.OnLongClickListener {
 
         private lateinit var mContentItem: MainContentItem
 
         override fun bind(item: MainListItem) {
             mContentItem = item as MainContentItem
             val time = mContentItem.note.note.time
-            mView.apply {
+            with(view) {
                 setOnClickListener(this@ContentViewHolder)
                 setOnLongClickListener(this@ContentViewHolder)
                 text_day_of_week.text = getDayOfWeek(time)
@@ -112,7 +113,6 @@ class MainListAdapter(
                 } else {
                     text_day_of_week.setBackgroundColor(Color.BLACK)
                 }
-                categoryColor?.let { text_day_of_week.setBackgroundColor(it) }
                 text_day.text = getDay(time)
                 text_time.text = getTime(time, is24TimeFormat)
                 text_tags.text = mContentItem.note.tags.filter { !it.isDeleted }.size.toString()
@@ -134,7 +134,7 @@ class MainListAdapter(
                             && item.note.images.find { !it.isSync(tempProfile.email) } == null
                             && item.note.tags.find { !it.isSync(tempProfile.email) } == null) {
                         image_sync.setImageResource(R.drawable.ic_cloud_done)
-                        image_sync.setColorFilter(getThemeAccentColor(mView.context), PorterDuff.Mode.SRC_IN)
+                        image_sync.setColorFilter(getThemeAccentColor(view.context), PorterDuff.Mode.SRC_IN)
                     } else {
                         image_sync.setImageResource(R.drawable.ic_cloud_off)
                         image_sync.setColorFilter(
@@ -145,8 +145,10 @@ class MainListAdapter(
                 }
                 val notDeletedImages = mContentItem.note.images.filter { !it.isDeleted }
                 if (notDeletedImages.isEmpty()) {
+                    image_main_list.visibility = View.GONE
                     image_main_list.setImageDrawable(null)
                 } else {
+                    image_main_list.visibility = View.VISIBLE
                     GlideApp.with(itemView)
                             .load(Uri.parse(notDeletedImages.first().uri))
                             .override(200, 200)
@@ -177,11 +179,10 @@ class MainListAdapter(
         }
 
         private fun selectItem(note: MyNoteWithProp) {
-            val cardView = mView as CardView
-            if (selectedNotes.contains(note)) {
-                cardView.setCardBackgroundColor(getThemeAccentColor(mView.context))
+            view.view_selected.visibility = if (selectedNotes.contains(note)) {
+                View.VISIBLE
             } else {
-                cardView.setCardBackgroundColor(Color.WHITE)
+                View.INVISIBLE
             }
         }
     }
