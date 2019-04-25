@@ -25,20 +25,18 @@ class MoodsDialogListAdapter(
         holder.bind(moods[position])
     }
 
-    inner class MoodsListViewHolder(
-            private val mView: View
-    ) : RecyclerView.ViewHolder(mView), View.OnClickListener {
+    inner class MoodsListViewHolder(view: View) : RecyclerView.ViewHolder(view), View.OnClickListener {
 
         private lateinit var mMood: MyMood
 
         fun bind(mood: MyMood) {
-            mView.setOnClickListener(this)
-            mView.text_item_mood.text = mood.name
+            itemView.setOnClickListener(this)
+            itemView.text_item_mood.text = mood.name
             mMood = mood
-            val smile = mView.context
+            val smile = itemView.context
                     .resources
-                    .getIdentifier(mood.iconName, "drawable", mView.context.packageName)
-            mView.text_item_mood.setCompoundDrawablesWithIntrinsicBounds(smile, 0, 0, 0)
+                    .getIdentifier(mood.iconName, "drawable", itemView.context.packageName)
+            itemView.text_item_mood.setCompoundDrawablesWithIntrinsicBounds(smile, 0, 0, 0)
         }
 
         override fun onClick(v: View?) {

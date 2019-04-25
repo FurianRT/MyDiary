@@ -2,7 +2,7 @@ package com.furianrt.mydiary.main.listadapter
 
 import com.furianrt.mydiary.R
 
-class MainHeaderItem(var time: Long) : MainListItem() {
+data class MainHeaderItem(var time: Long) : MainListItem() {
 
     override fun getType(): Int = R.layout.activity_main_list_header
 }

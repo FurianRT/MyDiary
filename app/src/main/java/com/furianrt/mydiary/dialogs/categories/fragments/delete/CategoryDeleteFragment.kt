@@ -1,6 +1,5 @@
 package com.furianrt.mydiary.dialogs.categories.fragments.delete
 
-
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View

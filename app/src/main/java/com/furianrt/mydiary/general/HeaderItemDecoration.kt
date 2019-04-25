@@ -4,33 +4,34 @@ import android.graphics.Canvas
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.FrameLayout
 import androidx.cardview.widget.CardView
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 
 class HeaderItemDecoration(
-        private val mRecyclerView: RecyclerView,
-        private val mListener: StickyHeaderInterface
+        private val recyclerView: RecyclerView,
+        private val listener: StickyHeaderInterface
 ) : RecyclerView.ItemDecoration() {
 
-    private val mHeaderContainer = CardView(mRecyclerView.context)
+    private val mHeaderContainer = CardView(recyclerView.context)
     private var mStickyHeaderHeight: Int = 0
     private var mCurrentHeader: View? = null
     private var mCurrentHeaderPosition = 0
+    private var mTempFlag = false
 
     init {
         mHeaderContainer.radius = 0f
-        val layout = ConstraintLayout(mRecyclerView.context)
-        val params = mRecyclerView.layoutParams
-        val parent = mRecyclerView.parent as ViewGroup
-        val index = parent.indexOfChild(mRecyclerView)
+        val layout = FrameLayout(recyclerView.context)
+        val params = recyclerView.layoutParams
+        val parent = recyclerView.parent as ViewGroup
+        val index = parent.indexOfChild(recyclerView)
         parent.addView(layout, index, params)
-        parent.removeView(mRecyclerView)
-        layout.addView(mRecyclerView, ConstraintLayout.LayoutParams.MATCH_PARENT,
-                ConstraintLayout.LayoutParams.MATCH_PARENT)
-        layout.addView(mHeaderContainer, ConstraintLayout.LayoutParams.MATCH_PARENT,
-                ConstraintLayout.LayoutParams.WRAP_CONTENT)
+        parent.removeView(recyclerView)
+        layout.addView(recyclerView, FrameLayout.LayoutParams.MATCH_PARENT,
+                FrameLayout.LayoutParams.MATCH_PARENT)
+        layout.addView(mHeaderContainer, FrameLayout.LayoutParams.MATCH_PARENT,
+                FrameLayout.LayoutParams.WRAP_CONTENT)
     }
 
     override fun onDrawOver(c: Canvas, parent: RecyclerView, state: RecyclerView.State) {
@@ -48,7 +49,7 @@ class HeaderItemDecoration(
             mHeaderContainer.visibility = View.VISIBLE
         }
 
-        if ((mRecyclerView.layoutManager as LinearLayoutManager)
+        if ((recyclerView.layoutManager as LinearLayoutManager)
                         .findFirstCompletelyVisibleItemPosition() == 0) {
             mHeaderContainer.cardElevation = 0f
             return
@@ -60,7 +61,7 @@ class HeaderItemDecoration(
         val childInContact = getChildInContact(parent, contactPoint) ?: return
 
         val nextPosition = parent.getChildAdapterPosition(childInContact)
-        if (mListener.isHeader(nextPosition)) {
+        if (listener.isHeader(nextPosition)) {
             moveHeader(currentHeader, childInContact, topChildPosition, nextPosition)
             return
         }
@@ -69,31 +70,40 @@ class HeaderItemDecoration(
     }
 
     private fun getHeaderViewForItem(itemPosition: Int, parent: RecyclerView): View {
-        val headerPosition = mListener.getHeaderPositionForItem(itemPosition)
-        val layoutResId = mListener.getHeaderLayout(headerPosition)
+        val headerPosition = listener.getHeaderPositionForItem(itemPosition)
+        val layoutResId = listener.getHeaderLayout(headerPosition)
         val header = LayoutInflater.from(parent.context).inflate(layoutResId, parent, false)
-        mListener.bindHeaderData(header, headerPosition)
+        listener.bindHeaderData(header, headerPosition)
         return header
     }
 
     private fun drawHeader(header: View, position: Int) {
         mHeaderContainer.layoutParams.height = mStickyHeaderHeight
-        mHeaderContainer.cardElevation = 20f
+        mHeaderContainer.cardElevation = 8f
         setCurrentHeader(header, position)
     }
 
     private fun moveHeader(currentHead: View, nextHead: View, currentPos: Int, nextPos: Int) {
+        if (mTempFlag) {
+            mHeaderContainer.removeAllViews()
+            mHeaderContainer.addView(mCurrentHeader)
+            mTempFlag = false
+        }
+
         val marginTop = nextHead.top - currentHead.height
         mHeaderContainer.cardElevation = 0f
-        if (mCurrentHeaderPosition == nextPos && currentPos != nextPos) {
-            setCurrentHeader(currentHead, currentPos)
-        }
 
         val params = mCurrentHeader?.layoutParams as? ViewGroup.MarginLayoutParams ?: return
         params.setMargins(0, marginTop, 0, 0)
         mCurrentHeader?.layoutParams = params
 
         mHeaderContainer.layoutParams.height = mStickyHeaderHeight + marginTop
+
+        if (mCurrentHeaderPosition == nextPos && currentPos != nextPos) {
+            mCurrentHeader = currentHead
+            mCurrentHeaderPosition = currentPos
+            mTempFlag = true
+        }
     }
 
     private fun setCurrentHeader(header: View, position: Int) {
@@ -131,13 +141,9 @@ class HeaderItemDecoration(
     }
 
     interface StickyHeaderInterface {
-
         fun getHeaderPositionForItem(itemPosition: Int): Int
-
         fun getHeaderLayout(headerPosition: Int): Int
-
         fun bindHeaderData(header: View, headerPosition: Int)
-
         fun isHeader(itemPosition: Int): Boolean
     }
 }

@@ -69,24 +69,17 @@ class MainListAdapter(
 
     override fun getItemViewType(position: Int): Int = getItem(position).getType()
 
-    interface OnMainListItemInteractionListener {
-
-        fun onMainListItemClick(note: MyNoteWithProp, position: Int)
-
-        fun onMainListItemLongClick(note: MyNoteWithProp, position: Int)
-    }
-
     abstract class MyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         abstract fun bind(item: MainListItem)
     }
 
-    inner class HeaderViewHolder(private val view: View) : MyViewHolder(view) {
+    inner class HeaderViewHolder(view: View) : MyViewHolder(view) {
 
         private lateinit var mHeaderItem: MainHeaderItem
 
         override fun bind(item: MainListItem) {
             mHeaderItem = item as MainHeaderItem
-            view.text_date.text = view.context.getString(
+            itemView.text_date.text = itemView.context.getString(
                     R.string.note_list_date_format,
                     getMonth(mHeaderItem.time),
                     getYear(mHeaderItem.time)
@@ -94,16 +87,14 @@ class MainListAdapter(
         }
     }
 
-    inner class ContentViewHolder(
-            private val view: View
-    ) : MyViewHolder(view), View.OnClickListener, View.OnLongClickListener {
+    inner class ContentViewHolder(view: View) : MyViewHolder(view), View.OnClickListener, View.OnLongClickListener {
 
         private lateinit var mContentItem: MainContentItem
 
         override fun bind(item: MainListItem) {
             mContentItem = item as MainContentItem
             val time = mContentItem.note.note.time
-            with(view) {
+            with(itemView) {
                 setOnClickListener(this@ContentViewHolder)
                 setOnLongClickListener(this@ContentViewHolder)
                 text_day_of_week.text = getDayOfWeek(time)
@@ -134,7 +125,7 @@ class MainListAdapter(
                             && item.note.images.find { !it.isSync(tempProfile.email) } == null
                             && item.note.tags.find { !it.isSync(tempProfile.email) } == null) {
                         image_sync.setImageResource(R.drawable.ic_cloud_done)
-                        image_sync.setColorFilter(getThemeAccentColor(view.context), PorterDuff.Mode.SRC_IN)
+                        image_sync.setColorFilter(getThemeAccentColor(itemView.context), PorterDuff.Mode.SRC_IN)
                     } else {
                         image_sync.setImageResource(R.drawable.ic_cloud_off)
                         image_sync.setColorFilter(
@@ -179,11 +170,16 @@ class MainListAdapter(
         }
 
         private fun selectItem(note: MyNoteWithProp) {
-            view.view_selected.visibility = if (selectedNotes.contains(note)) {
+            itemView.view_selected.visibility = if (selectedNotes.contains(note)) {
                 View.VISIBLE
             } else {
                 View.INVISIBLE
             }
         }
+    }
+
+    interface OnMainListItemInteractionListener {
+        fun onMainListItemClick(note: MyNoteWithProp, position: Int)
+        fun onMainListItemLongClick(note: MyNoteWithProp, position: Int)
     }
 }

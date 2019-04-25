@@ -7,6 +7,8 @@ import retrofit2.http.Query
 interface ImageApiService {
 
     @GET(".")
-    fun getImages(@Query("page") page: Int = 1,
-                  @Query("per_page") perPage: Int = 20): Single<ImageResponse>
+    fun getImages(
+            @Query("page") page: Int = 1,
+            @Query("per_page") perPage: Int = 20
+    ): Single<ImageResponse>
 }

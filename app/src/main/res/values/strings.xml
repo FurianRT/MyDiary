@@ -264,7 +264,4 @@
     <string name="tutorial_note_title">Туториал</string>
     <string name="tutorial_note_content">Когда-нибудь тут появится подробное описание всех фич дневника</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
-
 </resources>

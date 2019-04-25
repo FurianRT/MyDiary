@@ -111,16 +111,12 @@ class TagsDialog : DialogFragment(), TagsDialogListAdapter.OnTagChangedListener,
     }
 
     private fun initUiElements(view: View) {
-        val editSearch = view.search_add_tags.findViewById<EditText>(R.id.search_src_text)
-        editSearch.setTextColor(Color.WHITE)
-
-        val addTagButton =  view.search_add_tags
-                .findViewById<ImageView>(R.id.search_close_btn)
-        addTagButton.setOnClickListener {
-            mPresenter.onButtonAddTagClicked( view.search_add_tags.query.toString())
-             view.button_close_search.visibility = View.INVISIBLE
-             view.search_add_tags.isIconified = true
-             view.search_add_tags.isIconified = true
+        view.search_add_tags.findViewById<EditText>(R.id.search_src_text).setTextColor(Color.WHITE)
+        view.search_add_tags.findViewById<ImageView>(R.id.search_close_btn).setOnClickListener {
+            mPresenter.onButtonAddTagClicked(view.search_add_tags.query.toString())
+            view.button_close_search.visibility = View.INVISIBLE
+            view.search_add_tags.isIconified = true
+            view.search_add_tags.isIconified = true
         }
 
         view.search_add_tags.setOnSearchClickListener {
@@ -132,7 +128,8 @@ class TagsDialog : DialogFragment(), TagsDialogListAdapter.OnTagChangedListener,
             view.search_add_tags.onActionViewCollapsed()
         }
 
-        view.button_close_search.postDelayed({      //todo реализовать поиск тэгов
+        view.button_close_search.postDelayed({
+            //todo реализовать поиск тэгов
             if (!view.search_add_tags.isIconified) {
                 view.button_close_search.visibility = View.VISIBLE
             }

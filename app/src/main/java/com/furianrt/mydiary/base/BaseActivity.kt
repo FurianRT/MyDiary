@@ -35,6 +35,7 @@ abstract class BaseActivity : AppCompatActivity() {
             if (isPinEnabled && !isAuthorized) {
                 val intent = Intent(this, PinActivity::class.java)
                 intent.putExtra(PinActivity.EXTRA_MODE, PinActivity.MODE_LOCK)
+                intent.flags = Intent.FLAG_ACTIVITY_SINGLE_TOP
                 startActivity(intent)
             }
         }

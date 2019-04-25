@@ -1,186 +1,192 @@
-<?xml version="1.0" encoding="utf-8"?>
-<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+<?xml version="1.0" encoding="utf-8"?><!--Без корнегово лайаута дергано прорисовывается стики хедр-->
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_marginStart="8dp"
-    android:layout_marginTop="5dp"
-    android:layout_marginEnd="8dp"
-    android:layout_marginBottom="5dp"
-    app:cardCornerRadius="5dp"
-    app:cardElevation="2dp">
+    android:layout_height="wrap_content">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/layout_main_list_item"
+    <com.google.android.material.card.MaterialCardView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="?android:selectableItemBackground">
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="5dp"
+        app:cardCornerRadius="5dp"
+        app:cardElevation="2dp">
 
-        <com.google.android.material.card.MaterialCardView
-            android:id="@+id/layout_date"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
-            app:cardBackgroundColor="@color/transparent"
-            app:cardCornerRadius="5dp"
-            app:cardElevation="4dp"
-            app:layout_constraintBottom_toTopOf="@id/image_sync"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/layout_main_list_item"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="?android:selectableItemBackground">
 
-            <LinearLayout
-                android:layout_width="57dp"
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/layout_date"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:gravity="center"
-                android:orientation="vertical">
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                app:cardBackgroundColor="@color/transparent"
+                app:cardCornerRadius="5dp"
+                app:cardElevation="4dp"
+                app:layout_constraintBottom_toTopOf="@id/image_sync"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
 
-                <TextView
-                    android:id="@+id/text_day_of_week"
-                    android:layout_width="match_parent"
+                <LinearLayout
+                    android:layout_width="57dp"
                     android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
                     android:gravity="center"
-                    android:paddingStart="2dp"
-                    android:paddingEnd="2dp"
-                    android:textColor="@color/white"
-                    android:textSize="7pt"
-                    android:textStyle="bold"
-                    tools:background="?attr/colorAccent"
-                    tools:text="Mon" />
+                    android:orientation="vertical">
 
-                <TextView
-                    android:id="@+id/text_day"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@color/white"
-                    android:gravity="center"
-                    android:textSize="7pt"
-                    android:textStyle="bold"
-                    tools:text="22" />
+                    <TextView
+                        android:id="@+id/text_day_of_week"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:paddingStart="2dp"
+                        android:paddingEnd="2dp"
+                        android:textColor="@color/white"
+                        android:textSize="7pt"
+                        android:textStyle="bold"
+                        tools:background="?attr/colorAccent"
+                        tools:text="Mon" />
 
-                <TextView
-                    android:id="@+id/text_time"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@color/white"
-                    android:gravity="center"
-                    android:textSize="6pt"
-                    android:textStyle="bold"
-                    tools:text="20:00" />
+                    <TextView
+                        android:id="@+id/text_day"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@color/white"
+                        android:gravity="center"
+                        android:textSize="7pt"
+                        android:textStyle="bold"
+                        tools:text="22" />
 
-            </LinearLayout>
-        </com.google.android.material.card.MaterialCardView>
+                    <TextView
+                        android:id="@+id/text_time"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@color/white"
+                        android:gravity="center"
+                        android:textSize="6pt"
+                        android:textStyle="bold"
+                        tools:text="20:00" />
 
-        <ImageView
-            android:id="@+id/image_sync"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:layout_marginBottom="8dp"
-            android:src="@drawable/ic_cloud_off"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="@id/layout_date"
-            app:layout_constraintStart_toStartOf="@id/layout_date"
-            app:layout_constraintTop_toBottomOf="@id/layout_date"
-            tools:ignore="ContentDescription" />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
 
-        <TextView
-            android:id="@+id/text_note_title"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginBottom="8dp"
-            android:ellipsize="end"
-            android:maxLines="1"
-            android:textColor="@color/black"
-            android:textStyle="bold"
-            app:layout_constraintEnd_toStartOf="@id/image_main_list"
-            app:layout_constraintStart_toEndOf="@id/layout_date"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:text="Titledqwdqwdqwdqwdqwdqwdqwdq" />
+            <ImageView
+                android:id="@+id/image_sync"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"
+                android:src="@drawable/ic_cloud_off"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="@id/layout_date"
+                app:layout_constraintStart_toStartOf="@id/layout_date"
+                app:layout_constraintTop_toBottomOf="@id/layout_date"
+                tools:ignore="ContentDescription" />
 
-        <TextView
-            android:id="@+id/text_note_content"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="8dp"
-            android:ellipsize="end"
-            android:maxLines="1"
-            android:textColor="@color/black"
-            app:layout_constraintEnd_toStartOf="@id/image_main_list"
-            app:layout_constraintStart_toEndOf="@id/layout_date"
-            app:layout_constraintTop_toBottomOf="@id/text_note_title"
-            tools:text="Contentdwqdqwdqwdqwdwqdqwd" />
+            <TextView
+                android:id="@+id/text_note_title"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginBottom="8dp"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:textColor="@color/black"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toStartOf="@id/image_main_list"
+                app:layout_constraintStart_toEndOf="@id/layout_date"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="Titledqwdqwdqwdqwdqwdqwdqwdq" />
 
-        <ImageView
-            android:id="@+id/image_main_list"
-            android:layout_width="100dp"
-            android:layout_height="0dp"
-            android:scaleType="centerCrop"
-            android:visibility="gone"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:ignore="ContentDescription"
-            tools:src="@drawable/tutorial_header_image"
-            tools:visibility="visible" />
+            <TextView
+                android:id="@+id/text_note_content"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="8dp"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:textColor="@color/black"
+                app:layout_constraintEnd_toStartOf="@id/image_main_list"
+                app:layout_constraintStart_toEndOf="@id/layout_date"
+                app:layout_constraintTop_toBottomOf="@id/text_note_title"
+                tools:text="Contentdwqdqwdqwdqwdwqdqwd" />
 
-        <TextView
-            android:id="@+id/text_tags"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="4dp"
-            android:layout_marginBottom="8dp"
-            android:drawableStart="@drawable/ic_tag"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toEndOf="@id/layout_date"
-            tools:text="0" />
+            <ImageView
+                android:id="@+id/image_main_list"
+                android:layout_width="100dp"
+                android:layout_height="0dp"
+                android:scaleType="centerCrop"
+                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:ignore="ContentDescription"
+                tools:src="@drawable/tutorial_header_image"
+                tools:visibility="visible" />
 
-        <TextView
-            android:id="@+id/text_images"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="4dp"
-            android:layout_marginBottom="8dp"
-            android:drawableStart="@drawable/ic_image"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toEndOf="@id/text_tags"
-            tools:text="1" />
+            <TextView
+                android:id="@+id/text_tags"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                android:layout_marginBottom="8dp"
+                android:drawableStart="@drawable/ic_tag"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toEndOf="@id/layout_date"
+                tools:text="0" />
 
-        <TextView
-            android:id="@+id/text_category"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="4dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginBottom="8dp"
-            android:drawableStart="@drawable/ic_folder"
-            android:ellipsize="end"
-            android:maxLines="1"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/image_main_list"
-            app:layout_constraintStart_toEndOf="@id/text_images"
-            tools:text="Category" />
+            <TextView
+                android:id="@+id/text_images"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                android:layout_marginBottom="8dp"
+                android:drawableStart="@drawable/ic_image"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toEndOf="@id/text_tags"
+                tools:text="1" />
 
-        <View
-            android:id="@+id/view_selected"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:alpha="0.2"
-            android:background="?attr/colorAccent"
-            android:elevation="4dp"
-            android:visibility="invisible"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            <TextView
+                android:id="@+id/text_category"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginBottom="8dp"
+                android:drawableStart="@drawable/ic_folder"
+                android:ellipsize="end"
+                android:maxLines="1"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/image_main_list"
+                app:layout_constraintStart_toEndOf="@id/text_images"
+                tools:text="Category" />
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+            <View
+                android:id="@+id/view_selected"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:alpha="0.2"
+                android:background="?attr/colorAccent"
+                android:elevation="4dp"
+                android:visibility="invisible"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
-</com.google.android.material.card.MaterialCardView>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </com.google.android.material.card.MaterialCardView>
+
+</FrameLayout>

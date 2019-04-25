@@ -59,18 +59,18 @@ class AppModule(private val app: Application) {
 
     @Provides
     @AppScope
-    fun providePreferencesHelper(context: Context): PreferencesHelper =
-            PreferencesHelperImp(context)
+    fun providePreferencesHelper(context: Context): PreferencesHelper = PreferencesHelperImp(context)
 
     @Provides
     @AppScope
-    fun provideCloudHelper(firestore: FirebaseFirestore, firebaseStorage: FirebaseStorage): CloudHelper =
-            CloudHelperImp(firestore, firebaseStorage)
+    fun provideCloudHelper(
+            firestore: FirebaseFirestore,
+            firebaseStorage: FirebaseStorage
+    ): CloudHelper = CloudHelperImp(firestore, firebaseStorage)
 
     @Provides
     @AppScope
-    fun provideFirestore() = FirebaseFirestore
-            .getInstance()
+    fun provideFirestore(): FirebaseFirestore = FirebaseFirestore.getInstance()
             .apply {
                 firestoreSettings = FirebaseFirestoreSettings.Builder(firestoreSettings)
                         .setPersistenceEnabled(false)
@@ -98,11 +98,13 @@ class AppModule(private val app: Application) {
 
     @Provides
     @AppScope
-    fun provideNoteDatabase(context: Context, @DatabaseInfo databaseName: String,
-                            callback: RoomDatabase.Callback) =
-            Room.databaseBuilder(context, NoteDatabase::class.java, databaseName)
-                    .addCallback(callback)
-                    .build()
+    fun provideNoteDatabase(
+            context: Context,
+            @DatabaseInfo databaseName: String,
+            callback: RoomDatabase.Callback
+    ) = Room.databaseBuilder(context, NoteDatabase::class.java, databaseName)
+            .addCallback(callback)
+            .build()
 
     @Provides
     @AppScope
@@ -110,101 +112,103 @@ class AppModule(private val app: Application) {
 
     @Provides
     @AppScope
-    fun provideDataManager(database: NoteDatabase, prefs: PreferencesHelper, storage: StorageHelper,
-                           weatherApi: WeatherApiService, imageApi: ImageApiService,
-                           cloudHelper: CloudHelper, rxScheduler: Scheduler): DataManager =
-            DataManagerImp(database, prefs, storage, weatherApi, imageApi, cloudHelper, rxScheduler)
+    fun provideDataManager(
+            database: NoteDatabase,
+            prefs: PreferencesHelper,
+            storage: StorageHelper,
+            weatherApi: WeatherApiService,
+            imageApi: ImageApiService,
+            cloudHelper: CloudHelper,
+            rxScheduler: Scheduler
+    ): DataManager = DataManagerImp(database, prefs, storage, weatherApi, imageApi, cloudHelper, rxScheduler)
 
     @Provides
     @ForecastApi
     @AppScope
-    fun provideForecastParamInterceptor(): Interceptor {
-        return Interceptor { chain ->
-            val original = chain.request()
-            val url = original.url()
-                    .newBuilder()
-                    .addQueryParameter("appid", app.getString(R.string.weather_api_key))
-                    .addQueryParameter("units", "metric")
-                    .build()
-            val request = original.newBuilder()
-                    .url(url)
-                    .build()
-            return@Interceptor chain.proceed(request)
-        }
+    fun provideForecastParamInterceptor(): Interceptor = Interceptor { chain ->
+        val url = chain.request()
+                .url()
+                .newBuilder()
+                .addQueryParameter("appid", app.getString(R.string.weather_api_key))
+                .addQueryParameter("units", "metric")
+                .build()
+        val request = chain.request()
+                .newBuilder()
+                .url(url)
+                .build()
+        return@Interceptor chain.proceed(request)
     }
 
     @Provides
     @ImageApi
     @AppScope
-    fun provideImageParamInterceptor(): Interceptor {
-        return Interceptor { chain ->
-            val original = chain.request()
-            val url = original.url()
-                    .newBuilder()
-                    .addQueryParameter("key", app.getString(R.string.image_api_key))
-                    .addQueryParameter("image_type", "photo")
-                    .addQueryParameter("orientation", "horizontal")
-                    .addQueryParameter("travel", "backgrounds")
-                    .addQueryParameter("min_width", "1280")
-                    .addQueryParameter("min_height", "720")
-                    .addQueryParameter("order", "latest")
-                    .addQueryParameter("safesearch", "true")
-                    .build()
-            val request = original.newBuilder()
-                    .url(url)
-                    .build()
-            return@Interceptor chain.proceed(request)
-        }
+    fun provideImageParamInterceptor(): Interceptor = Interceptor { chain ->
+        val url = chain.request()
+                .url()
+                .newBuilder()
+                .addQueryParameter("key", app.getString(R.string.image_api_key))
+                .addQueryParameter("image_type", "photo")
+                .addQueryParameter("orientation", "horizontal")
+                .addQueryParameter("travel", "backgrounds")
+                .addQueryParameter("min_width", "1280")
+                .addQueryParameter("min_height", "720")
+                .addQueryParameter("order", "latest")
+                .addQueryParameter("safesearch", "true")
+                .build()
+        val request = chain.request()
+                .newBuilder()
+                .url(url)
+                .build()
+        return@Interceptor chain.proceed(request)
     }
 
     @Provides
     @AppScope
-    fun provideHttpLoggingInterceptor(): HttpLoggingInterceptor {
-        val logging = HttpLoggingInterceptor { message -> Log.e(TAG, message) }
-        return logging.setLevel(HttpLoggingInterceptor.Level.BASIC)
-    }
+    fun provideHttpLoggingInterceptor(): HttpLoggingInterceptor =
+            HttpLoggingInterceptor { message -> Log.e(TAG, message) }
+                    .setLevel(HttpLoggingInterceptor.Level.BASIC)
 
     @Provides
     @ForecastApi
     @AppScope
-    fun provideForecastOkHttpClient(logInterceptor: HttpLoggingInterceptor,
-                                    @ForecastApi paramInterceptor: Interceptor): OkHttpClient =
-            OkHttpClient.Builder()
-                    .addInterceptor(logInterceptor)
-                    .addInterceptor(paramInterceptor)
-                    .build()
+    fun provideForecastOkHttpClient(
+            logInterceptor: HttpLoggingInterceptor,
+            @ForecastApi paramInterceptor: Interceptor
+    ): OkHttpClient = OkHttpClient.Builder()
+            .addInterceptor(logInterceptor)
+            .addInterceptor(paramInterceptor)
+            .build()
 
     @Provides
     @ImageApi
     @AppScope
-    fun provideImageOkHttpClient(logInterceptor: HttpLoggingInterceptor,
-                                 @ImageApi paramInterceptor: Interceptor): OkHttpClient =
-            OkHttpClient.Builder()
-                    .addInterceptor(logInterceptor)
-                    .addInterceptor(paramInterceptor)
-                    .build()
+    fun provideImageOkHttpClient(
+            logInterceptor: HttpLoggingInterceptor,
+            @ImageApi paramInterceptor: Interceptor
+    ): OkHttpClient = OkHttpClient.Builder()
+            .addInterceptor(logInterceptor)
+            .addInterceptor(paramInterceptor)
+            .build()
 
     @Provides
     @ForecastApi
     @AppScope
-    fun provideForecastRetrofit(@ForecastApi okHttpClient: OkHttpClient): Retrofit =
-            Retrofit.Builder()
-                    .client(okHttpClient)
-                    .baseUrl(WEATHER_API_BASE_URL)
-                    .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
-                    .addConverterFactory(GsonConverterFactory.create())
-                    .build()
+    fun provideForecastRetrofit(@ForecastApi okHttpClient: OkHttpClient): Retrofit = Retrofit.Builder()
+            .client(okHttpClient)
+            .baseUrl(WEATHER_API_BASE_URL)
+            .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
 
     @Provides
     @ImageApi
     @AppScope
-    fun provideImageRetrofit(@ImageApi okHttpClient: OkHttpClient): Retrofit =
-            Retrofit.Builder()
-                    .client(okHttpClient)
-                    .baseUrl(IMAGE_API_BASE_URL)
-                    .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
-                    .addConverterFactory(GsonConverterFactory.create())
-                    .build()
+    fun provideImageRetrofit(@ImageApi okHttpClient: OkHttpClient): Retrofit = Retrofit.Builder()
+            .client(okHttpClient)
+            .baseUrl(IMAGE_API_BASE_URL)
+            .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
 
     @Provides
     @AppScope
@@ -217,41 +221,42 @@ class AppModule(private val app: Application) {
             retrofit.create(ImageApiService::class.java)
 
     private fun createDefaultProperties(db: SupportSQLiteDatabase) {
-        val cv = ContentValues()
-        val moodNames = app.resources.getStringArray(R.array.moods)
-        val moodIcons = arrayOf(
-                app.resources.getResourceEntryName(R.drawable.ic_mood_angry),
-                app.resources.getResourceEntryName(R.drawable.ic_mood_awful),
-                app.resources.getResourceEntryName(R.drawable.ic_mood_bad),
-                app.resources.getResourceEntryName(R.drawable.ic_mood_neutral),
-                app.resources.getResourceEntryName(R.drawable.ic_mood_good),
-                app.resources.getResourceEntryName(R.drawable.ic_mood_great)
-        )
-        for (i in 0 until moodNames.size) {
-            cv.put(MyMood.FIELD_NAME, moodNames[i])
-            cv.put(MyMood.FIELD_ICON, moodIcons[i])
-            db.insert(MyMood.TABLE_NAME, SQLiteDatabase.CONFLICT_IGNORE, cv)
+        with(ContentValues()) {
+            val moodNames = app.resources.getStringArray(R.array.moods)
+            val moodIcons = arrayOf(
+                    app.resources.getResourceEntryName(R.drawable.ic_mood_angry),
+                    app.resources.getResourceEntryName(R.drawable.ic_mood_awful),
+                    app.resources.getResourceEntryName(R.drawable.ic_mood_bad),
+                    app.resources.getResourceEntryName(R.drawable.ic_mood_neutral),
+                    app.resources.getResourceEntryName(R.drawable.ic_mood_good),
+                    app.resources.getResourceEntryName(R.drawable.ic_mood_great)
+            )
+            for (i in 0 until moodNames.size) {
+                put(MyMood.FIELD_NAME, moodNames[i])
+                put(MyMood.FIELD_ICON, moodIcons[i])
+                db.insert(MyMood.TABLE_NAME, SQLiteDatabase.CONFLICT_IGNORE, this)
+            }
+            clear()
+            val tagNames = app.resources.getStringArray(R.array.tags)
+            for (i in 0 until tagNames.size) {
+                put(MyTag.FIELD_ID, "default_tag_$i")
+                put(MyTag.FIELD_NAME, tagNames[i])
+                put(MyTag.FIELD_SYNC_WITH, Gson().toJson(listOf(MyTag.DEFAULT_SYNC_EMAIL)))
+                put(MyTag.FIELD_IS_DELETED, false)
+                db.insert(MyTag.TABLE_NAME, SQLiteDatabase.CONFLICT_IGNORE, this)
+            }
+            clear()
+            val categoryNames = app.resources.getStringArray(R.array.categories)
+            for (i in 0 until categoryNames.size) {
+                put(MyCategory.FIELD_ID, "default_category_$i")
+                put(MyCategory.FIELD_NAME, categoryNames[i])
+                put(MyCategory.FIELD_COLOR, MyCategory.DEFAULT_COLOR)
+                put(MyCategory.FIELD_SYNC_WITH, Gson().toJson(listOf(MyCategory.DEFAULT_SYNC_EMAIL)))
+                put(MyCategory.FIELD_IS_DELETED, false)
+                db.insert(MyCategory.TABLE_NAME, SQLiteDatabase.CONFLICT_IGNORE, this)
+            }
+            clear()
         }
-        cv.clear()
-        val tagNames = app.resources.getStringArray(R.array.tags)
-        for (i in 0 until tagNames.size) {
-            cv.put(MyTag.FIELD_ID, "default_tag_$i")
-            cv.put(MyTag.FIELD_NAME, tagNames[i])
-            cv.put(MyTag.FIELD_SYNC_WITH, Gson().toJson(listOf(MyTag.DEFAULT_SYNC_EMAIL)))
-            cv.put(MyTag.FIELD_IS_DELETED, false)
-            db.insert(MyTag.TABLE_NAME, SQLiteDatabase.CONFLICT_IGNORE, cv)
-        }
-        cv.clear()
-        val categoryNames = app.resources.getStringArray(R.array.categories)
-        for (i in 0 until categoryNames.size) {
-            cv.put(MyCategory.FIELD_ID, "default_category_$i")
-            cv.put(MyCategory.FIELD_NAME, categoryNames[i])
-            cv.put(MyCategory.FIELD_COLOR, MyCategory.DEFAULT_COLOR)
-            cv.put(MyCategory.FIELD_SYNC_WITH, Gson().toJson(listOf(MyCategory.DEFAULT_SYNC_EMAIL)))
-            cv.put(MyCategory.FIELD_IS_DELETED, false)
-            db.insert(MyCategory.TABLE_NAME, SQLiteDatabase.CONFLICT_IGNORE, cv)
-        }
-        cv.clear()
     }
 
     private fun createTutorialNote(db: SupportSQLiteDatabase) {

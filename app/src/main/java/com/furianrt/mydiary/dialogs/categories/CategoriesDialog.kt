@@ -105,9 +105,7 @@ class CategoriesDialog : DialogFragment(), CategoriesDialogContract.View {
     }
 
     interface OnCategoriesDialogInteractionListener {
-
         fun onCategoryPicked(category: MyCategory)
-
         fun onNoCategoryPicked()
     }
 }

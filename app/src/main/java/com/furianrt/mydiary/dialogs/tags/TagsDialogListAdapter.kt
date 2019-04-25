@@ -24,7 +24,7 @@ class TagsDialogListAdapter(
         holder.bind(getItem(position))
     }
 
-    inner class TagsDialogViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView),
+    inner class TagsDialogViewHolder(view: View) : RecyclerView.ViewHolder(view),
             View.OnClickListener, CompoundButton.OnCheckedChangeListener,
             PopupMenu.OnMenuItemClickListener {
 
