@@ -1,8 +1,8 @@
 package com.furianrt.mydiary.di.presenter
 
 import com.furianrt.mydiary.dialogs.categories.CategoriesDialog
-import com.furianrt.mydiary.dialogs.categories.edit.CategoryEditFragment
-import com.furianrt.mydiary.dialogs.categories.list.CategoryListFragment
+import com.furianrt.mydiary.dialogs.categories.fragments.edit.CategoryEditFragment
+import com.furianrt.mydiary.dialogs.categories.fragments.list.CategoryListFragment
 import com.furianrt.mydiary.dialogs.moods.MoodsDialog
 import com.furianrt.mydiary.dialogs.tags.TagsDialog
 import com.furianrt.mydiary.gallery.GalleryActivity

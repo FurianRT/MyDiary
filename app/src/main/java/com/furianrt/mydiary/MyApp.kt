@@ -30,7 +30,6 @@ class MyApp : Application(), Application.ActivityLifecycleCallbacks {
         const val NOTIFICATION_SYNC_CHANNEL_NAME = "Synchronization"
         const val NOTIFICATION_FIREBASE_CHANNEL_ID = "firebase_channel"
         const val NOTIFICATION_FIREBASE_CHANNEL_NAME = "Info"
-        private const val PIN_DEFAULT_DELAY = "1000"
     }
 
     val component: AppComponent by lazy {
@@ -66,7 +65,10 @@ class MyApp : Application(), Application.ActivityLifecycleCallbacks {
         val prefs = PreferenceManager.getDefaultSharedPreferences(this)
         val isPasswordEnabled = prefs.getBoolean(PreferencesHelper.SECURITY_KEY, false)
         if (isPasswordEnabled && activity !is PinActivity) {
-            val delay = prefs.getString(PreferencesHelper.SECURITY_REQUEST_DELAY, PIN_DEFAULT_DELAY)!!.toLong()
+            val delay = prefs.getString(
+                    PreferencesHelper.SECURITY_REQUEST_DELAY,
+                    PreferencesHelper.DEFAULT_PIN_DELAY
+            )!!.toLong()
             mHandler.postDelayed(mLogoutRunnable, delay)
         }
     }
@@ -125,26 +127,25 @@ class MyApp : Application(), Application.ActivityLifecycleCallbacks {
 
 /*TODO
 *
-* диктор
 * изменить цвет подсказки диалога
 * запилить дравер лайаут с поиском
 * выбор шрифта
 *   измениение тегов
+*   поиск тэгов
 * реализовать выбор локации
 * реклама
 * улучшить дефолтные цвета
 * добавить анимацию тени к липким заголовкам
 * кликабельные итемы android:background="?android:selectableItemBackground"
-* добавить подсказки для drag and prop и другого
 * добавить notifications
 * добавить appsFlyerEvents
 * добавить настройки дейли картинки
 * добавить настройки внешнего вида основного экрана
-* полностью переделать дизайн главного экрана
 * исправить ошибку соединения при регистрации
 * реализовать свайп элементов листа главного экрана
-* добавить экран с описанием према
+* добавить экран с описанием премиума
 * изменить цвета у дефолтных категорий
+* отрефакторить создание интента для активити
 *
 * */
 

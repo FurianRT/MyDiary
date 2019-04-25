@@ -1,4 +1,4 @@
-package com.furianrt.mydiary.dialogs.categories.edit
+package com.furianrt.mydiary.dialogs.categories.fragments.edit
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.furianrt.mydiary.R
 import com.furianrt.mydiary.data.model.MyCategory
+import kotlinx.android.synthetic.main.fragment_category_edit.*
 import kotlinx.android.synthetic.main.fragment_category_edit.view.*
 import javax.inject.Inject
 
@@ -27,12 +28,10 @@ class CategoryEditFragment : Fragment(), View.OnClickListener, CategoryEditContr
                               savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_category_edit, container, false)
 
-        view.apply {
-            color_picker_category.addSVBar(svbar_category)
-            color_picker_category.showOldCenterColor = false
-            button_category_back.setOnClickListener { fragmentManager?.popBackStack() }
-            button_category_done.setOnClickListener(this@CategoryEditFragment)
-        }
+        view.color_picker_category.addSVBar(view.svbar_category)
+        view.color_picker_category.showOldCenterColor = false
+        view.button_category_back.setOnClickListener { fragmentManager?.popBackStack() }
+        view.button_category_done.setOnClickListener(this@CategoryEditFragment)
 
         mPresenter.attachView(this)
 
@@ -42,8 +41,8 @@ class CategoryEditFragment : Fragment(), View.OnClickListener, CategoryEditContr
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         if (savedInstanceState != null) {
-            view.edit_category.setText(savedInstanceState.getString(BUNDLE_CATEGORY_NAME, ""))
-            view.color_picker_category.color =
+            edit_category.setText(savedInstanceState.getString(BUNDLE_CATEGORY_NAME, ""))
+            color_picker_category.color =
                     savedInstanceState.getInt(BUNDLE_CATEGORY_COLOR, MyCategory.DEFAULT_COLOR)
         } else {
             mPresenter.loadCategory(mCategoryId)
@@ -67,13 +66,13 @@ class CategoryEditFragment : Fragment(), View.OnClickListener, CategoryEditContr
 
     override fun onClick(v: View) {
         when (v.id) {
-            R.id.button_category_done ->
-                view?.let {
-                    val color = it.color_picker_category.color
-                    val name = it.edit_category.text?.toString() ?: ""
-                    val category = MyCategory(mCategoryId, name, color)
-                    mPresenter.onButtonDoneClick(category)
-                }
+            R.id.button_category_done -> {
+                val color = color_picker_category.color
+                val name = edit_category.text?.toString() ?: ""
+                val category = MyCategory(mCategoryId, name, color)
+                mPresenter.onButtonDoneClick(category)
+            }
+
         }
     }
 

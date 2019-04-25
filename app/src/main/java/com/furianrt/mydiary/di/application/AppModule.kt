@@ -22,6 +22,7 @@ import com.furianrt.mydiary.data.prefs.PreferencesHelperImp
 import com.furianrt.mydiary.data.room.NoteDatabase
 import com.furianrt.mydiary.data.storage.StorageHelper
 import com.furianrt.mydiary.data.storage.StorageHelperImp
+import com.furianrt.mydiary.utils.generateUniqueId
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.FirebaseFirestoreSettings
 import com.google.firebase.storage.FirebaseStorage
@@ -255,7 +256,7 @@ class AppModule(private val app: Application) {
 
     private fun createTutorialNote(db: SupportSQLiteDatabase) {
         val note = MyNote(
-                id = MyNote.TUTORIAL_NOTE_ID,
+                id = generateUniqueId(),
                 title = app.getString(R.string.tutorial_note_title),
                 content = app.getString(R.string.tutorial_note_content),
                 time = DateTime.now().millis,
@@ -271,15 +272,14 @@ class AppModule(private val app: Application) {
         val noteTag1 = NoteTag(noteId = note.id, tagId = "default_tag_0")
         val noteTag2 = NoteTag(noteId = note.id, tagId = "default_tag_1")
 
-        val headerImage = BitmapFactory.decodeResource(app.resources, R.drawable.tutorial_header_image)
-        val imageUri = provideStorageHelper(app)
-                .copyBitmapToStorage(headerImage, MyImage.TUTORIAL_IMAGE_NAME)
-                .toURI()
-                .toString()
+        val imageFile = provideStorageHelper(app).copyBitmapToStorage(
+                BitmapFactory.decodeResource(app.resources, R.drawable.tutorial_header_image),
+                generateUniqueId()
+        )
 
         val image = MyImage(
-                name = MyImage.TUTORIAL_IMAGE_NAME,
-                uri = imageUri,
+                name = imageFile.name,
+                uri = imageFile.toURI().toString(),
                 noteId = note.id,
                 addedTime = DateTime.now().millis,
                 editedTime = DateTime.now().millis

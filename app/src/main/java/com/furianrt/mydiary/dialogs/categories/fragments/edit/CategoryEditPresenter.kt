@@ -1,4 +1,4 @@
-package com.furianrt.mydiary.dialogs.categories.edit
+package com.furianrt.mydiary.dialogs.categories.fragments.edit
 
 import com.furianrt.mydiary.data.DataManager
 import com.furianrt.mydiary.data.model.MyCategory

@@ -38,7 +38,6 @@ data class MyNote(
         const val FIELD_SYNC_WITH = "note_sync_with"
         const val FIELD_IS_DELETED = "is_note_deleted"
         const val DEFAULT_SYNC_EMAIL = "default"
-        const val TUTORIAL_NOTE_ID = "tutorial_note"
     }
 
     fun isSync(email: String) = syncWith.contains(DEFAULT_SYNC_EMAIL) || syncWith.contains(email)

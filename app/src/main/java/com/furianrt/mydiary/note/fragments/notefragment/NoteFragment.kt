@@ -159,6 +159,22 @@ class NoteFragment : Fragment(), NoteFragmentContract.View, OnMapReadyCallback,
         return view
     }
 
+    private fun someTemporaryFunction(view: View) {   //todo убрать костыль
+        val isMoodEnabled = PreferenceManager.getDefaultSharedPreferences(context)
+                .getBoolean(PreferencesHelper.MOOD_AVAILABILITY, true)
+        if (!isMoodEnabled) {
+            view.layout_mood.visibility = View.GONE
+        }
+
+        val isMapEnabled = PreferenceManager.getDefaultSharedPreferences(context)
+                .getBoolean(PreferencesHelper.MAP_AVAILABILITY, true)
+        if (!isMapEnabled) {
+            view.map_view.visibility = View.GONE
+            view.text_location.visibility = View.GONE
+            view.map_touch_event_interceptor.visibility = View.GONE
+        }
+    }
+
     override fun onResume() {
         super.onResume()
         requireActivity().window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE)
@@ -272,22 +288,6 @@ class NoteFragment : Fragment(), NoteFragmentContract.View, OnMapReadyCallback,
         intent.putExtra(GalleryActivity.EXTRA_POSITION, view!!.pager_note_image.currentItem)
         intent.putExtra(GalleryActivity.EXTRA_NOTE_ID, noteId)
         startActivity(intent)
-    }
-
-    private fun someTemporaryFunction(view: View) {   //todo убрать костыль
-        val isMoodEnabled = PreferenceManager.getDefaultSharedPreferences(context)
-                .getBoolean(PreferencesHelper.MOOD_AVAILABILITY, true)
-        if (!isMoodEnabled) {
-            view.layout_mood.visibility = View.GONE
-        }
-
-        val isMapEnabled = PreferenceManager.getDefaultSharedPreferences(context)
-                .getBoolean(PreferencesHelper.MAP_AVAILABILITY, true)
-        if (!isMapEnabled) {
-            view.map_view.visibility = View.GONE
-            view.text_location.visibility = View.GONE
-            view.map_touch_event_interceptor.visibility = View.GONE
-        }
     }
 
     override fun hideLocation() {
@@ -676,9 +676,9 @@ class NoteFragment : Fragment(), NoteFragmentContract.View, OnMapReadyCallback,
             val themeAccentColor = getThemeAccentColor(this@NoteFragment.requireContext())
             setOkColor(themeAccentColor)
             setCancelColor(themeAccentColor)
-            setOkText(getString(R.string.ok).toUpperCase())
-            setCancelText(getString(R.string.cancel).toUpperCase())
-            setLocale(Locale.ENGLISH)
+            setOkText(this@NoteFragment.getString(R.string.ok).toUpperCase())
+            setCancelText(this@NoteFragment.getString(R.string.cancel).toUpperCase())
+            setLocale(Locale.ENGLISH) //для отображения PM/AM на всех языках
         }.show(fragmentManager, TIME_PICKER_TAG)
     }
 

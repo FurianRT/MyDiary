@@ -29,14 +29,13 @@ class MoodsDialog : DialogFragment(), MoodsDialogContract.View,
 
     @SuppressLint("InflateParams")
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-
         mPresenter.attachView(this)
 
         val view = requireActivity().layoutInflater.inflate(R.layout.dialog_moods, null)
 
         mAdapter = MoodsDialogListAdapter(emptyList(), this)
 
-        view.list_moods.apply {
+        with(view.list_moods) {
             val manager = LinearLayoutManager(requireContext())
             layoutManager = manager
             adapter = mAdapter

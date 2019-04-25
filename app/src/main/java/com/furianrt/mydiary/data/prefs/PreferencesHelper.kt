@@ -42,5 +42,7 @@ interface PreferencesHelper {
         const val SECURITY_KEY = "security_key"
         const val IS_NOTE_SORT_DESC = "is_note_sort_desc"
         const val DIARY_PIN = "diary_pin"
+        const val DEFAULT_TEXT_SIZE = "16"
+        const val DEFAULT_PIN_DELAY = "1000"
     }
 }

@@ -112,9 +112,7 @@ class NoteContentFragment : Fragment(), NoteContentFragmentContract.View {
 
     override fun showNoteEditViewForTitleEnd() {
         (parentFragment as? NoteFragment)?.disableActionBarExpanding(true)
-        view?.let {
-            showNoteEditView(NoteEditFragment.ClickedView.TITLE, it.text_note_title.text.length)
-        }
+        showNoteEditView(NoteEditFragment.ClickedView.TITLE, text_note_title.text.length)
     }
 
     private fun showNoteEditView(clickedView: NoteEditFragment.ClickedView, touchPosition: Int) {
@@ -125,8 +123,8 @@ class NoteContentFragment : Fragment(), NoteContentFragmentContract.View {
             }
             fragmentManager?.let { manager ->
                 val editFragment = NoteEditFragment.newInstance(
-                        view!!.text_note_title.text.toString(),
-                        view!!.text_note_content.text.toString(),
+                        text_note_title.text.toString(),
+                        text_note_content.text.toString(),
                         clickedView,
                         touchPosition,
                         mAppearance

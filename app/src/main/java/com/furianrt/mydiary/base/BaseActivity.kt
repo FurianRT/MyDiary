@@ -40,6 +40,14 @@ abstract class BaseActivity : AppCompatActivity() {
         }
     }
 
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        PreferenceManager.getDefaultSharedPreferences(this)
+                .edit()
+                .putBoolean(PreferencesHelper.SECURITY_IS_AUTHORIZED, true)
+                .apply()
+    }
+
     // Похоже, что динамическое создание стиля в андроиде не предусмотрено,
     // поэтому приходится хардкодить этот бред
     private fun applyStyleToTheme() {

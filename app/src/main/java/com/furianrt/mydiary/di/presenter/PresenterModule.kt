@@ -4,10 +4,10 @@ import android.content.Context
 import com.furianrt.mydiary.data.DataManager
 import com.furianrt.mydiary.dialogs.categories.CategoriesDialogContract
 import com.furianrt.mydiary.dialogs.categories.CategoriesDialogPresenter
-import com.furianrt.mydiary.dialogs.categories.edit.CategoryEditContract
-import com.furianrt.mydiary.dialogs.categories.edit.CategoryEditPresenter
-import com.furianrt.mydiary.dialogs.categories.list.CategoryListContract
-import com.furianrt.mydiary.dialogs.categories.list.CategoryListPresenter
+import com.furianrt.mydiary.dialogs.categories.fragments.edit.CategoryEditContract
+import com.furianrt.mydiary.dialogs.categories.fragments.edit.CategoryEditPresenter
+import com.furianrt.mydiary.dialogs.categories.fragments.list.CategoryListContract
+import com.furianrt.mydiary.dialogs.categories.fragments.list.CategoryListPresenter
 import com.furianrt.mydiary.dialogs.moods.MoodsDialogContract
 import com.furianrt.mydiary.dialogs.moods.MoodsDialogPresenter
 import com.furianrt.mydiary.dialogs.tags.TagsDialogContract

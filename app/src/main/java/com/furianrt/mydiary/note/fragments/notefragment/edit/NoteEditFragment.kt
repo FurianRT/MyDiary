@@ -47,12 +47,12 @@ class NoteEditFragment : Fragment(), NoteEditFragmentContract.View {
         getPresenterComponent(requireContext()).inject(this)
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
-        arguments?.apply {
-            mNoteTitle = getString(ARG_NOTE_TITLE, "")
-            mNoteContent = getString(ARG_NOTE_CONTENT, "")
-            mClickedView = getSerializable(ARG_CLICKED_VIEW) as? ClickedView?
-            mClickPosition = getInt(ARG_POSITION)
-            mAppearance = getParcelable(ARG_APPEARANCE) as? MyNoteAppearance?
+        arguments?.let {
+            mNoteTitle = it.getString(ARG_NOTE_TITLE, "")
+            mNoteContent = it.getString(ARG_NOTE_CONTENT, "")
+            mClickedView = it.getSerializable(ARG_CLICKED_VIEW) as? ClickedView?
+            mClickPosition = it.getInt(ARG_POSITION)
+            mAppearance = it.getParcelable(ARG_APPEARANCE) as? MyNoteAppearance?
         }
         if (savedInstanceState != null) {
             mClickedView = null
@@ -249,9 +249,7 @@ class NoteEditFragment : Fragment(), NoteEditFragmentContract.View {
     }
 
     interface OnNoteFragmentInteractionListener {
-
         fun onNoteFragmentEditModeEnabled()
-
         fun onNoteFragmentEditModeDisabled()
     }
 

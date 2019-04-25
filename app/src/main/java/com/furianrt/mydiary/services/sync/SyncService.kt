@@ -41,7 +41,7 @@ class SyncService : Service(), SyncContract.View {
                 .build()
         startForeground(FOREGROUND_ID, notification)
         mPresenter.onStartCommand()
-        return Service.START_NOT_STICKY
+        return START_NOT_STICKY
     }
 
     override fun sendProgressUpdate(progressMessage: ProgressMessage) {

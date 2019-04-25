@@ -7,10 +7,6 @@ import com.furianrt.mydiary.R
 
 class PreferencesHelperImp(val context: Context) : PreferencesHelper {
 
-    companion object {
-        private const val DEFAULT_TEXT_SIZE = "16"
-    }
-
     private val mPrefs = PreferenceManager.getDefaultSharedPreferences(context)
 
     override fun getWeatherUnits(): Int =
@@ -30,7 +26,7 @@ class PreferencesHelperImp(val context: Context) : PreferencesHelper {
                     ContextCompat.getColor(context, R.color.black))
 
     override fun getTextSize(): Int =
-            mPrefs.getString(PreferencesHelper.TEXT_SIZE, DEFAULT_TEXT_SIZE)!!.toInt()
+            mPrefs.getString(PreferencesHelper.TEXT_SIZE, PreferencesHelper.DEFAULT_TEXT_SIZE)!!.toInt()
 
     override fun getNoteBackgroundColor(): Int =
             mPrefs.getInt(PreferencesHelper.NOTE_BACKGROUND_COLOR,
@@ -71,7 +67,7 @@ class PreferencesHelperImp(val context: Context) : PreferencesHelper {
     }
 
     override fun getPasswordRequestDelay(): Long =
-            mPrefs.getLong(PreferencesHelper.SECURITY_REQUEST_DELAY, 0L)
+            mPrefs.getLong(PreferencesHelper.SECURITY_REQUEST_DELAY, 1000L)
 
     override fun setPasswordRequestDelay(delay: Long) {
         mPrefs.edit().putLong(PreferencesHelper.SECURITY_REQUEST_DELAY, delay).apply()

@@ -1,4 +1,4 @@
-package com.furianrt.mydiary.dialogs.categories.list
+package com.furianrt.mydiary.dialogs.categories.fragments.list
 
 import android.view.LayoutInflater
 import android.view.MenuItem

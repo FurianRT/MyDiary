@@ -1,4 +1,4 @@
-package com.furianrt.mydiary.dialogs.categories.list
+package com.furianrt.mydiary.dialogs.categories.fragments.list
 
 import android.os.Bundle
 import android.os.Parcelable
@@ -11,7 +11,7 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.furianrt.mydiary.R
 import com.furianrt.mydiary.data.model.MyCategory
-import com.furianrt.mydiary.dialogs.categories.edit.CategoryEditFragment
+import com.furianrt.mydiary.dialogs.categories.fragments.edit.CategoryEditFragment
 import com.furianrt.mydiary.utils.inTransaction
 import kotlinx.android.synthetic.main.fragment_category_list.*
 import kotlinx.android.synthetic.main.fragment_category_list.view.*
@@ -38,9 +38,13 @@ class CategoryListFragment : Fragment(), View.OnClickListener,
                               savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_category_list, container, false)
 
-
-        setupUi(view)
-
+        view.button_add_category.setOnClickListener(this@CategoryListFragment)
+        with(view.list_categories) {
+            val manager = LinearLayoutManager(context)
+            layoutManager = manager
+            adapter = mListAdapter
+            addItemDecoration(DividerItemDecoration(context, manager.orientation))
+        }
 
         return view
     }
@@ -54,18 +58,6 @@ class CategoryListFragment : Fragment(), View.OnClickListener,
     override fun onStop() {
         super.onStop()
         mPresenter.detachView()
-    }
-
-    private fun setupUi(view: View?) {
-        view?.apply {
-            button_add_category.setOnClickListener(this@CategoryListFragment)
-            list_categories.apply {
-                val manager = LinearLayoutManager(context)
-                layoutManager = manager
-                adapter = mListAdapter
-                addItemDecoration(DividerItemDecoration(context, manager.orientation))
-            }
-        }
     }
 
     override fun showViewAddCategory() {

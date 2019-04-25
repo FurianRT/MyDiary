@@ -172,7 +172,6 @@ class GalleryPagerFragment : Fragment(), GalleryPagerContract.View,
     }
 
     private fun showImageCounter(current: Int, count: Int) {
-        val textCounter = "$current/$count"
-        activity?.text_toolbar_title?.text = textCounter
+        activity?.text_toolbar_title?.text = getString(R.string.counter_format, current, count)
     }
 }

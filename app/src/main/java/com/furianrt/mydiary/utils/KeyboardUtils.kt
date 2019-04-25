@@ -11,7 +11,7 @@ import java.util.*
 
 class KeyboardUtils(
         activity: Activity,
-        private var mCallback: SoftKeyboardToggleListener?
+        private var callback: SoftKeyboardToggleListener?
 ) : ViewTreeObserver.OnGlobalLayoutListener {
     private val mRootView: View =
             (activity.findViewById<View>(android.R.id.content) as ViewGroup).getChildAt(0)
@@ -29,14 +29,14 @@ class KeyboardUtils(
         val dp = heightDiff / mScreenDensity
         val isVisible = dp > MAGIC_NUMBER
 
-        if (mCallback != null && isVisible != sPrevValue) {
+        if (callback != null && isVisible != sPrevValue) {
             sPrevValue = isVisible
-            mCallback?.onToggleSoftKeyboard(isVisible)
+            callback?.onToggleSoftKeyboard(isVisible)
         }
     }
 
     private fun removeListener() {
-        mCallback = null
+        callback = null
         mRootView.viewTreeObserver.removeOnGlobalLayoutListener(this)
     }
 

@@ -9,8 +9,8 @@ import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
 import com.furianrt.mydiary.R
 import com.furianrt.mydiary.data.model.MyCategory
-import com.furianrt.mydiary.dialogs.categories.edit.CategoryEditFragment
-import com.furianrt.mydiary.dialogs.categories.list.CategoryListFragment
+import com.furianrt.mydiary.dialogs.categories.fragments.edit.CategoryEditFragment
+import com.furianrt.mydiary.dialogs.categories.fragments.list.CategoryListFragment
 import com.furianrt.mydiary.utils.inTransaction
 import javax.inject.Inject
 

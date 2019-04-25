@@ -1,4 +1,4 @@
-package com.furianrt.mydiary.dialogs.categories.list
+package com.furianrt.mydiary.dialogs.categories.fragments.list
 
 import androidx.recyclerview.widget.DiffUtil
 import com.furianrt.mydiary.data.model.MyCategory

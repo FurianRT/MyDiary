@@ -1,4 +1,4 @@
-package com.furianrt.mydiary.dialogs.categories.list
+package com.furianrt.mydiary.dialogs.categories.fragments.list
 
 import com.furianrt.mydiary.base.BasePresenter
 import com.furianrt.mydiary.base.BaseView

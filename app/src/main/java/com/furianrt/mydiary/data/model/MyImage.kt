@@ -44,7 +44,6 @@ data class MyImage(
         const val FIELD_FILE_SYNC_WITH = "image_file_sync_with"
         const val FIELD_IS_DELETED = "is_image_deleted"
         const val DEFAULT_SYNC_EMAIL = "default"
-        const val TUTORIAL_IMAGE_NAME = "tutorial_header_image"
     }
 
     fun isSync(email: String) = syncWith.contains(DEFAULT_SYNC_EMAIL) || syncWith.contains(email)

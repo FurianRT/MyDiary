@@ -31,7 +31,6 @@ class TagsDialog : DialogFragment(), TagsDialogListAdapter.OnTagChangedListener,
     lateinit var mPresenter: TagsDialogContract.Presenter
 
     companion object {
-
         const val TAG = "TagsDialog"
         private const val ARG_TAGS = "tags"
         private const val BUNDLE_RECYCLER_VIEW_STATE = "recyclerState"
@@ -52,7 +51,7 @@ class TagsDialog : DialogFragment(), TagsDialogListAdapter.OnTagChangedListener,
             mRecyclerViewState = savedInstanceState.getParcelable(BUNDLE_RECYCLER_VIEW_STATE)
             savedInstanceState.getParcelableArrayList(ARG_TAGS)!!
         } else {
-            arguments?.getParcelableArrayList(ARG_TAGS)!!
+            arguments?.getParcelableArrayList(ARG_TAGS) ?: throw IllegalArgumentException()
         }
 
         mPresenter.setTags(tags)
@@ -64,6 +63,7 @@ class TagsDialog : DialogFragment(), TagsDialogListAdapter.OnTagChangedListener,
         val view = requireActivity().layoutInflater.inflate(R.layout.dialog_tags, null)
 
         mPresenter.attachView(this)
+        mPresenter.onViewCreate()
 
         initUiElements(view)
 
@@ -86,7 +86,7 @@ class TagsDialog : DialogFragment(), TagsDialogListAdapter.OnTagChangedListener,
     override fun onSaveInstanceState(outState: Bundle) {
         outState.putParcelableArrayList(ARG_TAGS, mPresenter.getTags())
         outState.putParcelable(BUNDLE_RECYCLER_VIEW_STATE,
-                view?.list_tags?.layoutManager?.onSaveInstanceState())
+                list_tags.layoutManager?.onSaveInstanceState())
         super.onSaveInstanceState(outState)
     }
 
@@ -105,49 +105,44 @@ class TagsDialog : DialogFragment(), TagsDialogListAdapter.OnTagChangedListener,
     override fun showTags(tags: MutableList<MyTag>) {
         mListAdapter.submitList(tags.toMutableList())
         mRecyclerViewState?.let {
-            list_tags.layoutManager?.onRestoreInstanceState(mRecyclerViewState)
+            list_tags.layoutManager?.onRestoreInstanceState(it)
             mRecyclerViewState = null
         }
     }
 
-    private fun initUiElements(view: View?) {
-        mPresenter.onViewCreate()
+    private fun initUiElements(view: View) {
+        val editSearch = view.search_add_tags.findViewById<EditText>(R.id.search_src_text)
+        editSearch.setTextColor(Color.WHITE)
 
-        view?.apply {
-            val editSearch = search_add_tags
-                    .findViewById<EditText>(R.id.search_src_text)
-            editSearch.setTextColor(Color.WHITE)
+        val addTagButton =  view.search_add_tags
+                .findViewById<ImageView>(R.id.search_close_btn)
+        addTagButton.setOnClickListener {
+            mPresenter.onButtonAddTagClicked( view.search_add_tags.query.toString())
+             view.button_close_search.visibility = View.INVISIBLE
+             view.search_add_tags.isIconified = true
+             view.search_add_tags.isIconified = true
+        }
 
-            val addTagButton = search_add_tags
-                    .findViewById<ImageView>(R.id.search_close_btn)
-            addTagButton.setOnClickListener {
-                mPresenter.onButtonAddTagClicked(search_add_tags.query.toString())
-                button_close_search.visibility = View.INVISIBLE
-                search_add_tags.isIconified = true
-                search_add_tags.isIconified = true
+        view.search_add_tags.setOnSearchClickListener {
+            view.button_close_search.visibility = View.VISIBLE
+        }
+
+        view.button_close_search.setOnClickListener {
+            it.visibility = View.INVISIBLE
+            view.search_add_tags.onActionViewCollapsed()
+        }
+
+        view.button_close_search.postDelayed({      //todo реализовать поиск тэгов
+            if (!view.search_add_tags.isIconified) {
+                view.button_close_search.visibility = View.VISIBLE
             }
+        }, 150)
 
-            search_add_tags.setOnSearchClickListener {
-                button_close_search.visibility = View.VISIBLE
-            }
-
-            button_close_search.setOnClickListener {
-                it.visibility = View.INVISIBLE
-                search_add_tags.onActionViewCollapsed()
-            }
-
-            button_close_search.postDelayed({
-                if (!search_add_tags.isIconified) {
-                    button_close_search.visibility = View.VISIBLE
-                }
-            }, 150)
-
-            list_tags.apply {
-                val manager = LinearLayoutManager(context)
-                layoutManager = manager
-                adapter = mListAdapter
-                addItemDecoration(DividerItemDecoration(context, manager.orientation))
-            }
+        with(view.list_tags) {
+            val manager = LinearLayoutManager(context)
+            layoutManager = manager
+            adapter = mListAdapter
+            addItemDecoration(DividerItemDecoration(context, manager.orientation))
         }
     }
 
