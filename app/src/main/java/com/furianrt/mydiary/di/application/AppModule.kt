@@ -9,6 +9,7 @@ import android.util.Log
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.sqlite.db.SupportSQLiteDatabase
+import com.furianrt.mydiary.BuildConfig
 import com.furianrt.mydiary.R
 import com.furianrt.mydiary.data.DataManager
 import com.furianrt.mydiary.data.DataManagerImp
@@ -129,7 +130,7 @@ class AppModule(private val app: Application) {
         val url = chain.request()
                 .url()
                 .newBuilder()
-                .addQueryParameter("appid", app.getString(R.string.weather_api_key))
+                .addQueryParameter("appid", BuildConfig.WEATHER_API_KEY)
                 .addQueryParameter("units", "metric")
                 .build()
         val request = chain.request()
@@ -146,7 +147,7 @@ class AppModule(private val app: Application) {
         val url = chain.request()
                 .url()
                 .newBuilder()
-                .addQueryParameter("key", app.getString(R.string.image_api_key))
+                .addQueryParameter("key", BuildConfig.IMAGE_API_KEY)
                 .addQueryParameter("image_type", "photo")
                 .addQueryParameter("orientation", "horizontal")
                 .addQueryParameter("travel", "backgrounds")
