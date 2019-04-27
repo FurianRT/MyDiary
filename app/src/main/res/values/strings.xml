@@ -2,8 +2,13 @@
 
     <string name="app_name">YourBestDiary</string>
 
-    <string name="weather_api_key" translatable="false">d173aae09c9fc47e1ef98019e91cfd06</string>
-    <string name="image_api_key" translatable="false" tools:ignore="TypographyDashes">11653844-2c33293b7478245ac1b4c25c9</string>
+    <string name="weather_api_key" translatable="false">
+        d173aae09c9fc47e1ef98019e91cfd06
+    </string>
+
+    <string name="image_api_key" translatable="false" tools:ignore="TypographyDashes">
+        11653844-2c33293b7478245ac1b4c25c9
+    </string>
 
     <string-array name="tags">
         <item>Мечта</item>
@@ -82,10 +87,12 @@
     <string name="note_list_date_format" translatable="false">%s, %s</string>
     <string name="counter_format" translatable="false">%d/%d</string>
 
-    <string name="location_permission_request">Приложению требуется разрешение для определения
-        местоположения вашей новой записи</string>
-    <string name="storage_permission_request">Приложению требуется разрешение
-        для сохранения изображения</string>
+    <string name="location_permission_request">
+        Приложению требуется разрешение для определения местоположения вашей новой записи
+    </string>
+    <string name="storage_permission_request">
+        Приложению требуется разрешениедля сохранения изображения
+    </string>
 
     <string name="yes">Да</string>
     <string name="no">Нет</string>

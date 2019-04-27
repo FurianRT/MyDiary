@@ -318,9 +318,13 @@ class GalleryListFragment : Fragment(), GalleryListAdapter.OnListItemInteraction
         if (EasyPermissions.hasPermissions(requireContext(), readExtStorage, camera)) {
             mPresenter.onStoragePermissionsGranted()
         } else {
-            EasyPermissions.requestPermissions(this,
+            EasyPermissions.requestPermissions(
+                    this,
                     getString(R.string.storage_permission_request),
-                    STORAGE_PERMISSIONS_REQUEST_CODE, readExtStorage, camera)
+                    STORAGE_PERMISSIONS_REQUEST_CODE,
+                    readExtStorage,
+                    camera
+            )
         }
     }
 
