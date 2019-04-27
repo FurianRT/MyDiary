@@ -22,14 +22,17 @@ interface PinContract {
     }
 
     abstract class Presenter : BasePresenter<View>() {
-        abstract fun onValueEntered(value: Int)
         abstract fun onButtonForgotPasswordClick()
-        abstract fun onViewResumed()
         abstract fun onRestoreInstanceState(bundle: Bundle?)
         abstract fun onSaveInstanceState(bundle: Bundle?)
         abstract fun onButtonBackspaceClick()
-        abstract fun setMode(mode: Int)
         abstract fun onEmailEntered(email: String)
         abstract fun onButtonCloseClick()
+        abstract fun onViewResumedModeCreate()
+        abstract fun onViewResumedModeRemove()
+        abstract fun onViewResumedModeLock()
+        abstract fun onValueEnteredModeCreate(value: Int)
+        abstract fun onValueEnteredModeRemove(value: Int)
+        abstract fun onValueEnteredModeLock(value: Int)
     }
 }

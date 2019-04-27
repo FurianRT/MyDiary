@@ -9,6 +9,23 @@ import android.view.ViewTreeObserver
 import android.view.inputmethod.InputMethodManager
 import java.util.*
 
+fun View.showKeyboard() {
+    val imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+    imm.toggleSoftInput(0, InputMethodManager.SHOW_IMPLICIT)
+}
+
+fun View.hideKeyboard() {
+    val imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+    imm.hideSoftInputFromWindow(windowToken, 0)
+}
+
+fun Activity.hideKeyboard() {
+    currentFocus?.let {
+        val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.hideSoftInputFromWindow(it.windowToken, 0)
+    }
+}
+
 class KeyboardUtils(
         activity: Activity,
         private var callback: SoftKeyboardToggleListener?

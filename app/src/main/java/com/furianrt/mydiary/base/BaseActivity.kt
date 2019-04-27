@@ -1,6 +1,5 @@
 package com.furianrt.mydiary.base
 
-import android.content.Intent
 import android.os.Bundle
 import android.os.PersistableBundle
 import android.preference.PreferenceManager
@@ -33,10 +32,7 @@ abstract class BaseActivity : AppCompatActivity() {
             val isPinEnabled = prefs.getBoolean(PreferencesHelper.SECURITY_KEY, false)
             val isAuthorized = prefs.getBoolean(PreferencesHelper.SECURITY_IS_AUTHORIZED, true)
             if (isPinEnabled && !isAuthorized) {
-                val intent = Intent(this, PinActivity::class.java)
-                intent.putExtra(PinActivity.EXTRA_MODE, PinActivity.MODE_LOCK)
-                intent.flags = Intent.FLAG_ACTIVITY_SINGLE_TOP
-                startActivity(intent)
+                startActivity(PinActivity.newIntentModeLock(this))
             }
         }
     }

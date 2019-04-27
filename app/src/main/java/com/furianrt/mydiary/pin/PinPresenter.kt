@@ -17,7 +17,6 @@ class PinPresenter(
 
     private var mPassword = ""
     private var mPrevPassword = ""
-    private var mMode: Int = PinActivity.MODE_CREATE
     private val mHandler = Handler()
     private val mCreatePasswordRunnable = Runnable { checkPinCreateMode() }
 
@@ -31,34 +30,56 @@ class PinPresenter(
         mPrevPassword = bundle?.getString(BUNDLE_PREVIOUS_PASSWORD) ?: ""
     }
 
-    override fun onViewResumed() {
+    override fun onViewResumedModeCreate() {
         view?.showPassword(mPassword)
-        when {
-            mPrevPassword.isNotEmpty() -> view?.showMessageRepeatPassword()
-            mMode == PinActivity.MODE_CREATE -> view?.showMessageCreatePassword()
-            mMode == PinActivity.MODE_REMOVE -> view?.showMessageCurrentPassword()
-            mMode == PinActivity.MODE_LOCK -> view?.showMessageEnterPassword()
+        if (mPrevPassword.isNotEmpty()) {
+            view?.showMessageRepeatPassword()
+        } else {
+            view?.showMessageCreatePassword()
         }
     }
 
-    override fun onValueEntered(value: Int) {
+    override fun onViewResumedModeRemove() {
+        view?.showPassword(mPassword)
+        view?.showMessageCurrentPassword()
+    }
+
+    override fun onViewResumedModeLock() {
+        view?.showPassword(mPassword)
+        view?.showMessageEnterPassword()
+    }
+
+    override fun onValueEnteredModeCreate(value: Int) {
         if (mPassword.length != 4) {
             mPassword += value
             view?.showPassword(mPassword)
             if (mPassword.length == 4) {
-                when (mMode) {
-                    PinActivity.MODE_CREATE ->
-                        mHandler.postDelayed(mCreatePasswordRunnable, CREATE_PASSWORD_DELAY)
-                    PinActivity.MODE_REMOVE ->
-                        checkPinRemoveMode()
-                    else ->
-                        checkPinEnterMode()
-                }
+                mHandler.postDelayed(mCreatePasswordRunnable, CREATE_PASSWORD_DELAY)
             }
         }
     }
 
-    private fun checkPinEnterMode() {
+    override fun onValueEnteredModeRemove(value: Int) {
+        if (mPassword.length != 4) {
+            mPassword += value
+            view?.showPassword(mPassword)
+            if (mPassword.length == 4) {
+                checkPinRemoveMode()
+            }
+        }
+    }
+
+    override fun onValueEnteredModeLock(value: Int) {
+        if (mPassword.length != 4) {
+            mPassword += value
+            view?.showPassword(mPassword)
+            if (mPassword.length == 4) {
+                checkPinLockMode()
+            }
+        }
+    }
+
+    private fun checkPinLockMode() {
         addDisposable(mDataManager.getPin()
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { savedPin ->
@@ -116,10 +137,6 @@ class PinPresenter(
                     mDataManager.setAuthorized(true)
                     view?.showMessagePasswordCreated()
                 })
-    }
-
-    override fun setMode(mode: Int) {
-        mMode = mode
     }
 
     override fun onButtonCloseClick() {

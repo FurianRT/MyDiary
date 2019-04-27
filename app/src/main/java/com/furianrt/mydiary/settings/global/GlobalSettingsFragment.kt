@@ -71,16 +71,12 @@ class GlobalSettingsFragment : PreferenceFragment(), GlobalSettingsContract.View
 
     override fun showCreatePasswordView() {
         (findPreference(PreferencesHelper.SECURITY_KEY) as SwitchPreference).isChecked = false
-        val intent = Intent(activity!!, PinActivity::class.java)
-        intent.putExtra(PinActivity.EXTRA_MODE, PinActivity.MODE_CREATE)
-        startActivityForResult(intent, REQUEST_CODE_CREATE_PIN)
+        startActivityForResult(PinActivity.newIntentModeCreate(activity!!), REQUEST_CODE_CREATE_PIN)
     }
 
     override fun showRemovePasswordView() {
         (findPreference(PreferencesHelper.SECURITY_KEY) as SwitchPreference).isChecked = true
-        val intent = Intent(activity!!, PinActivity::class.java)
-        intent.putExtra(PinActivity.EXTRA_MODE, PinActivity.MODE_REMOVE)
-        startActivityForResult(intent, REQUEST_CODE_REMOVE_PIN)
+        startActivityForResult(PinActivity.newIntentModeRemove(activity!!), REQUEST_CODE_REMOVE_PIN)
     }
 
     override fun onStart() {

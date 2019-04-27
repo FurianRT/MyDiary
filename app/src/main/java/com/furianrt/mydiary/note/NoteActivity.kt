@@ -1,5 +1,7 @@
 package com.furianrt.mydiary.note
 
+import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.Menu
@@ -19,11 +21,19 @@ class NoteActivity : BaseActivity(), NoteActivityContract.View,
     companion object {
         private const val TAG = "NoteActivity"
         private const val BUNDLE_NOTE_ID = "noteId"
+        private const val EXTRA_MODE = "mode"
+        private const val EXTRA_CLICKED_NOTE_POSITION = "notePosition"
 
-        const val EXTRA_MODE = "mode"
-        const val EXTRA_CLICKED_NOTE_POSITION = "notePosition"
+        enum class Mode { ADD, READ } //todo вместо это сделать разные методы у презентера
 
-        enum class Mode { ADD, READ }
+        fun newIntentModeAdd(context: Context) =
+                Intent(context, NoteActivity::class.java).apply { putExtra(EXTRA_MODE, Mode.ADD) }
+
+        fun newIntentModeRead(context: Context, position: Int) =
+                Intent(context, NoteActivity::class.java).apply {
+                    putExtra(EXTRA_MODE, Mode.READ)
+                    putExtra(EXTRA_CLICKED_NOTE_POSITION, position)
+                }
     }
 
     @Inject
@@ -46,7 +56,8 @@ class NoteActivity : BaseActivity(), NoteActivityContract.View,
 
         if (savedInstanceState != null) {
             mPagerPosition = savedInstanceState.getInt(EXTRA_CLICKED_NOTE_POSITION, 0)
-            mNoteId = savedInstanceState.getString(BUNDLE_NOTE_ID) ?: throw IllegalArgumentException()
+            mNoteId = savedInstanceState.getString(BUNDLE_NOTE_ID)
+                    ?: throw IllegalArgumentException()
         } else {
             mPagerPosition = intent.getIntExtra(EXTRA_CLICKED_NOTE_POSITION, 0)
             mNoteId = generateUniqueId()

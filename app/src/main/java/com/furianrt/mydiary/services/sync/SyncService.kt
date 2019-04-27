@@ -18,7 +18,10 @@ class SyncService : Service(), SyncContract.View {
     companion object {
         const val TAG = "SyncService"
         private const val FOREGROUND_ID = 1
-        const val EXTRA_PROGRESS_MESSAGE = "progress_message"
+        private const val EXTRA_PROGRESS_MESSAGE = "progress_message"
+
+        fun getProgressMessage(intent: Intent?): ProgressMessage? =
+                intent?.getParcelableExtra(EXTRA_PROGRESS_MESSAGE)
     }
 
     @Inject

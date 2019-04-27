@@ -284,10 +284,7 @@ class NoteFragment : Fragment(), NoteFragmentContract.View, OnMapReadyCallback,
     }
 
     override fun showGalleryView(noteId: String) {
-        val intent = Intent(requireContext(), GalleryActivity::class.java)
-        intent.putExtra(GalleryActivity.EXTRA_POSITION, view!!.pager_note_image.currentItem)
-        intent.putExtra(GalleryActivity.EXTRA_NOTE_ID, noteId)
-        startActivity(intent)
+        startActivity(GalleryActivity.newIntent(requireContext(), noteId, pager_note_image.currentItem))
     }
 
     override fun hideLocation() {

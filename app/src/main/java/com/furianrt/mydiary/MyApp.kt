@@ -146,6 +146,7 @@ class MyApp : Application(), Application.ActivityLifecycleCallbacks {
 * добавить экран с описанием премиума
 * изменить цвета у дефолтных категорий
 * отрефакторить создание интента для активити
+* поменять иконку у firebase notification
 *
 * */
 

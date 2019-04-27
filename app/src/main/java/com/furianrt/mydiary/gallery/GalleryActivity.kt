@@ -1,5 +1,7 @@
 package com.furianrt.mydiary.gallery
 
+import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import com.furianrt.mydiary.R
 import com.furianrt.mydiary.base.BaseActivity
@@ -12,8 +14,14 @@ import javax.inject.Inject
 class GalleryActivity : BaseActivity(), GalleryActivityContract.View {
 
     companion object {
-        const val EXTRA_POSITION = "position"
-        const val EXTRA_NOTE_ID = "noteId"
+        private const val EXTRA_POSITION = "position"
+        private const val EXTRA_NOTE_ID = "noteId"
+
+        fun newIntent(context: Context, noteId: String, position: Int) =
+                Intent(context, GalleryActivity::class.java).apply {
+                    putExtra(EXTRA_NOTE_ID, noteId)
+                    putExtra(EXTRA_POSITION, position)
+                }
     }
 
     @Inject

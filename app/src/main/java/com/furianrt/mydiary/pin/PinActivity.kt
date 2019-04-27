@@ -1,6 +1,8 @@
 package com.furianrt.mydiary.pin
 
 import android.app.Activity
+import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.view.View
@@ -8,6 +10,7 @@ import android.widget.Toast
 import com.furianrt.mydiary.R
 import com.furianrt.mydiary.base.BaseActivity
 import com.furianrt.mydiary.general.LockableBottomSheetBehavior
+import com.furianrt.mydiary.pin.PinActivity.Mode.*
 import com.furianrt.mydiary.pin.fragments.email.BackupEmailFragment
 import com.furianrt.mydiary.utils.animateShake
 import com.furianrt.mydiary.utils.inTransaction
@@ -24,17 +27,32 @@ class PinActivity : BaseActivity(), PinContract.View, View.OnClickListener,
         private const val ANIMATION_SHAKE_DURATION = 400L
         private const val BOTTOM_SHEET_EXPAND_DELAY = 200L
         private const val BUNDLE_BOTTOM_SHEET_STATE = "bottomSheetState"
-        const val MODE_CREATE = 0
-        const val MODE_REMOVE = 1
-        const val MODE_LOCK = 2
-        const val EXTRA_MODE = "mode"
+        private const val EXTRA_MODE = "mode"
+
+        fun newIntentModeCreate(context: Context) =
+                Intent(context, PinActivity::class.java).apply {
+                    putExtra(EXTRA_MODE, MODE_CREATE)
+                    flags = Intent.FLAG_ACTIVITY_SINGLE_TOP
+                }
+        fun newIntentModeRemove(context: Context) =
+                Intent(context, PinActivity::class.java).apply {
+                    putExtra(EXTRA_MODE, MODE_REMOVE)
+                    flags = Intent.FLAG_ACTIVITY_SINGLE_TOP
+                }
+        fun newIntentModeLock(context: Context) =
+                Intent(context, PinActivity::class.java).apply {
+                    putExtra(EXTRA_MODE, MODE_LOCK)
+                    flags = Intent.FLAG_ACTIVITY_SINGLE_TOP
+                }
     }
 
     @Inject
     lateinit var mPresenter: PinContract.Presenter
 
+    private enum class Mode { MODE_CREATE, MODE_REMOVE, MODE_LOCK }
+
     private lateinit var mBottomSheet: LockableBottomSheetBehavior<MaterialCardView>
-    private var mMode = MODE_CREATE
+    private lateinit var mMode: Mode
     private val mHandler = Handler()
     private val mBottomSheetOpenRunnable: Runnable = Runnable {
         mBottomSheet.state = BottomSheetBehavior.STATE_EXPANDED
@@ -47,8 +65,7 @@ class PinActivity : BaseActivity(), PinContract.View, View.OnClickListener,
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_pin)
 
-        mMode = intent.getIntExtra(EXTRA_MODE, MODE_CREATE)
-        mPresenter.setMode(mMode)
+        mMode = intent.getSerializableExtra(EXTRA_MODE) as Mode
 
         if (mMode == MODE_CREATE || mMode == MODE_REMOVE) {
             button_forgot_password.visibility = View.INVISIBLE
@@ -147,19 +164,27 @@ class PinActivity : BaseActivity(), PinContract.View, View.OnClickListener,
 
     override fun onClick(v: View) {
         when (v.id) {
-            R.id.button_one -> mPresenter.onValueEntered(1)
-            R.id.button_two -> mPresenter.onValueEntered(2)
-            R.id.button_three -> mPresenter.onValueEntered(3)
-            R.id.button_four -> mPresenter.onValueEntered(4)
-            R.id.button_five -> mPresenter.onValueEntered(5)
-            R.id.button_six -> mPresenter.onValueEntered(6)
-            R.id.button_seven -> mPresenter.onValueEntered(7)
-            R.id.button_eight -> mPresenter.onValueEntered(8)
-            R.id.button_nine -> mPresenter.onValueEntered(9)
-            R.id.button_zero -> mPresenter.onValueEntered(0)
+            R.id.button_one -> valueEntered(1)
+            R.id.button_two -> valueEntered(2)
+            R.id.button_three -> valueEntered(3)
+            R.id.button_four -> valueEntered(4)
+            R.id.button_five -> valueEntered(5)
+            R.id.button_six -> valueEntered(6)
+            R.id.button_seven -> valueEntered(7)
+            R.id.button_eight -> valueEntered(8)
+            R.id.button_nine -> valueEntered(9)
+            R.id.button_zero -> valueEntered(0)
             R.id.button_backspace -> mPresenter.onButtonBackspaceClick()
             R.id.button_forgot_password -> mPresenter.onButtonForgotPasswordClick()
             R.id.button_pin_close -> mPresenter.onButtonCloseClick()
+        }
+    }
+
+    private fun valueEntered(value: Int) {
+        when (mMode) {
+            MODE_CREATE -> mPresenter.onValueEnteredModeCreate(value)
+            MODE_REMOVE -> mPresenter.onValueEnteredModeRemove(value)
+            MODE_LOCK -> mPresenter.onValueEnteredModeLock(value)
         }
     }
 
@@ -187,7 +212,11 @@ class PinActivity : BaseActivity(), PinContract.View, View.OnClickListener,
     override fun onResume() {
         super.onResume()
         mPresenter.attachView(this)
-        mPresenter.onViewResumed()
+        when (mMode) {
+            MODE_CREATE -> mPresenter.onViewResumedModeCreate()
+            MODE_REMOVE -> mPresenter.onViewResumedModeRemove()
+            MODE_LOCK -> mPresenter.onViewResumedModeLock()
+        }
     }
 
     override fun onPause() {

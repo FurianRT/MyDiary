@@ -110,7 +110,7 @@ class MainActivity : BaseActivity(), MainActivityContract.View,
 
     private val mBroadcastReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
-            intent?.getParcelableExtra<ProgressMessage>(SyncService.EXTRA_PROGRESS_MESSAGE)?.let {
+            SyncService.getProgressMessage(intent)?.let {
                 if (it.hasError) {
                     button_sync.text = it.message
                     nav_view.getHeaderView(0).progress_sync.progress = 100f
@@ -370,9 +370,7 @@ class MainActivity : BaseActivity(), MainActivityContract.View,
     }
 
     override fun showViewNewNote() {
-        val intent = Intent(this, NoteActivity::class.java)
-        intent.putExtra(NoteActivity.EXTRA_MODE, NoteActivity.Companion.Mode.ADD)
-        startActivity(intent)
+        startActivity(NoteActivity.newIntentModeAdd(this))
     }
 
     override fun requestStoragePermissions() {
@@ -475,10 +473,7 @@ class MainActivity : BaseActivity(), MainActivityContract.View,
     }
 
     override fun openNotePager(position: Int, note: MyNoteWithProp) {
-        val intent = Intent(this, NoteActivity::class.java)
-        intent.putExtra(NoteActivity.EXTRA_CLICKED_NOTE_POSITION, position)
-        intent.putExtra(NoteActivity.EXTRA_MODE, NoteActivity.Companion.Mode.READ)
-        startActivity(intent)
+        startActivity(NoteActivity.newIntentModeRead(this, position))
     }
 
     override fun showSettingsView() {
