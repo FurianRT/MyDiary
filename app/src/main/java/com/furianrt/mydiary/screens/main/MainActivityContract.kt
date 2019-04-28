@@ -6,6 +6,7 @@ import com.furianrt.mydiary.data.model.MyHeaderImage
 import com.furianrt.mydiary.data.model.MyNote
 import com.furianrt.mydiary.data.model.MyNoteWithProp
 import com.furianrt.mydiary.data.model.MyProfile
+import com.furianrt.mydiary.screens.main.listadapter.MainListItem
 
 interface MainActivityContract {
 

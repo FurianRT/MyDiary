@@ -8,6 +8,8 @@ import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.furianrt.mydiary.R
+import com.furianrt.mydiary.screens.main.fragments.authentication.AuthFragment
+import com.furianrt.mydiary.screens.main.fragments.authentication.done.DoneAuthFragment
 import com.furianrt.mydiary.utils.animateShake
 import com.furianrt.mydiary.utils.getThemeAccentColor
 import com.furianrt.mydiary.utils.inTransaction

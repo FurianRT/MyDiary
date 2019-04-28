@@ -10,6 +10,7 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.furianrt.mydiary.MyApp
 import com.furianrt.mydiary.R
 import com.furianrt.mydiary.data.model.SyncProgressMessage
+import com.furianrt.mydiary.screens.main.MainActivity
 import javax.inject.Inject
 
 class SyncService : Service(), SyncContract.View {

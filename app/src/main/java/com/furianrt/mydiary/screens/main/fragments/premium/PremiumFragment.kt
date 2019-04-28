@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.furianrt.mydiary.R
+import com.furianrt.mydiary.screens.main.MainActivity
 import kotlinx.android.synthetic.main.fragment_premium.view.*
 import javax.inject.Inject
 

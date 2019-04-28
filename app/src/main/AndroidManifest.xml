@@ -34,7 +34,7 @@
             android:exported="false" />
 
         <activity
-            android:name=".main.MainActivity"
+            android:name=".screens.main.MainActivity"
             android:windowSoftInputMode="adjustPan">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

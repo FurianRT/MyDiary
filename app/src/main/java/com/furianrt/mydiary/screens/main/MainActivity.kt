@@ -32,6 +32,13 @@ import com.furianrt.mydiary.dialogs.delete.note.DeleteNoteDialog
 import com.furianrt.mydiary.general.AppBarLayoutBehavior
 import com.furianrt.mydiary.general.GlideApp
 import com.furianrt.mydiary.general.HeaderItemDecoration
+import com.furianrt.mydiary.screens.main.fragments.authentication.AuthFragment
+import com.furianrt.mydiary.screens.main.fragments.imagesettings.ImageSettingsFragment
+import com.furianrt.mydiary.screens.main.fragments.premium.PremiumFragment
+import com.furianrt.mydiary.screens.main.fragments.profile.ProfileFragment
+import com.furianrt.mydiary.screens.main.fragments.profile.signout.SignOutFragment
+import com.furianrt.mydiary.screens.main.listadapter.MainListAdapter
+import com.furianrt.mydiary.screens.main.listadapter.MainListItem
 import com.furianrt.mydiary.screens.note.NoteActivity
 import com.furianrt.mydiary.screens.settings.global.GlobalSettingsActivity
 import com.furianrt.mydiary.services.sync.SyncService

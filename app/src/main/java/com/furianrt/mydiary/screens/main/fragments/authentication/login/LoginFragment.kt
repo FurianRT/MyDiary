@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.furianrt.mydiary.R
+import com.furianrt.mydiary.screens.main.fragments.authentication.done.DoneAuthFragment
 import com.furianrt.mydiary.utils.animateShake
 import com.furianrt.mydiary.utils.inTransaction
 import com.furianrt.mydiary.utils.isNetworkAvailable

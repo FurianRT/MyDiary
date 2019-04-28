@@ -10,6 +10,8 @@ import android.view.WindowManager
 import android.view.animation.OvershootInterpolator
 import androidx.fragment.app.Fragment
 import com.furianrt.mydiary.R
+import com.furianrt.mydiary.screens.main.MainActivity
+import com.furianrt.mydiary.screens.main.fragments.profile.menu.MenuProfileFragment
 import com.furianrt.mydiary.utils.KeyboardUtils
 import com.furianrt.mydiary.utils.inTransaction
 import kotlinx.android.synthetic.main.fragment_profile.*

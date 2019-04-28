@@ -8,6 +8,8 @@ import android.view.ViewGroup
 import android.view.WindowManager
 import androidx.fragment.app.Fragment
 import com.furianrt.mydiary.R
+import com.furianrt.mydiary.screens.main.fragments.profile.ProfileFragment
+import com.furianrt.mydiary.screens.main.fragments.profile.password.success.PasswordSuccessFragment
 import com.furianrt.mydiary.utils.animateShake
 import com.furianrt.mydiary.utils.hideKeyboard
 import com.furianrt.mydiary.utils.inTransaction
@@ -124,11 +126,12 @@ class PasswordFragment : Fragment(), PasswordContract.View {
                 }
             }
         }
-        activity?.let {
-            it.main_sheet_container.postDelayed({
-                BottomSheetBehavior.from(it.main_sheet_container).state = BottomSheetBehavior.STATE_COLLAPSED
-            }, CLOSE_AFTER_DONE_DELAY)
-        }
+        requireActivity().main_sheet_container.postDelayed({
+                    BottomSheetBehavior.from(requireActivity().main_sheet_container).state =
+                            BottomSheetBehavior.STATE_COLLAPSED
+                },
+                CLOSE_AFTER_DONE_DELAY
+        )
     }
 
     override fun clearErrorMessage() {

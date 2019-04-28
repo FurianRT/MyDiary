@@ -6,6 +6,9 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.furianrt.mydiary.R
+import com.furianrt.mydiary.screens.main.fragments.profile.about.AboutProfileFragment
+import com.furianrt.mydiary.screens.main.fragments.profile.password.PasswordFragment
+import com.furianrt.mydiary.screens.main.fragments.profile.signout.SignOutFragment
 import com.furianrt.mydiary.utils.inTransaction
 import kotlinx.android.synthetic.main.fragment_menu_profile.view.*
 import javax.inject.Inject

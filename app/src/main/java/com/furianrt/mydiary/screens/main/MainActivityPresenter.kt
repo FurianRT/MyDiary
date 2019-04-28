@@ -5,6 +5,9 @@ import com.furianrt.mydiary.data.DataManager
 import com.furianrt.mydiary.data.model.MyNote
 import com.furianrt.mydiary.data.model.MyNoteWithProp
 import com.furianrt.mydiary.data.model.MyProfile
+import com.furianrt.mydiary.screens.main.listadapter.MainContentItem
+import com.furianrt.mydiary.screens.main.listadapter.MainHeaderItem
+import com.furianrt.mydiary.screens.main.listadapter.MainListItem
 import io.reactivex.Flowable
 import io.reactivex.Observable
 import io.reactivex.Single

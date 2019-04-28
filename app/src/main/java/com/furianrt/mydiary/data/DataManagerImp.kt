@@ -25,7 +25,6 @@ class DataManagerImp(
         private val weatherApi: WeatherApiService,
         private val imageApi: ImageApiService,
         private val cloud: CloudHelper,
-        private val auth: AuthHelper,
         private val rxScheduler: Scheduler
 ) : DataManager {
 

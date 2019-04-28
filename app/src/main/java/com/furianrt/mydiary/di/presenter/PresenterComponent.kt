@@ -8,6 +8,17 @@ import com.furianrt.mydiary.dialogs.tags.TagsDialog
 import com.furianrt.mydiary.screens.gallery.GalleryActivity
 import com.furianrt.mydiary.screens.gallery.fragments.list.GalleryListFragment
 import com.furianrt.mydiary.screens.gallery.fragments.pager.GalleryPagerFragment
+import com.furianrt.mydiary.screens.main.MainActivity
+import com.furianrt.mydiary.screens.main.fragments.authentication.AuthFragment
+import com.furianrt.mydiary.screens.main.fragments.authentication.login.LoginFragment
+import com.furianrt.mydiary.screens.main.fragments.authentication.registration.RegistrationFragment
+import com.furianrt.mydiary.screens.main.fragments.imagesettings.ImageSettingsFragment
+import com.furianrt.mydiary.screens.main.fragments.premium.PremiumFragment
+import com.furianrt.mydiary.screens.main.fragments.profile.ProfileFragment
+import com.furianrt.mydiary.screens.main.fragments.profile.about.AboutProfileFragment
+import com.furianrt.mydiary.screens.main.fragments.profile.menu.MenuProfileFragment
+import com.furianrt.mydiary.screens.main.fragments.profile.password.PasswordFragment
+import com.furianrt.mydiary.screens.main.fragments.profile.signout.SignOutFragment
 import com.furianrt.mydiary.screens.note.NoteActivity
 import com.furianrt.mydiary.screens.note.fragments.notefragment.NoteFragment
 import com.furianrt.mydiary.screens.note.fragments.notefragment.content.NoteContentFragment
