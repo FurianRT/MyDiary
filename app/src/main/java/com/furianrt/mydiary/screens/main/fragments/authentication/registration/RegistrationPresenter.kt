@@ -2,20 +2,17 @@ package com.furianrt.mydiary.screens.main.fragments.authentication.registration
 
 import android.util.Patterns
 import com.furianrt.mydiary.data.DataManager
-import com.furianrt.mydiary.data.model.MyProfile
-import io.reactivex.Completable
-import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.schedulers.Schedulers
-import org.mindrot.jbcrypt.BCrypt
 
 class RegistrationPresenter(
-        private val mDataManager: DataManager
+        private val dataManager: DataManager
 ) : RegistrationContract.Presenter() {
 
     companion object {
-        private const val PASSWORD_MIN_LENGTH = 4
+        private const val PASSWORD_MIN_LENGTH = 6
     }
+
+    private class ProfileExistsException : Throwable()
 
     private var mPrevEmail = ""
 
@@ -46,7 +43,7 @@ class RegistrationPresenter(
                 }
                 if (validateEmail(email)) {
                     v.showLoadingEmail()
-                    addDisposable(mDataManager.isProfileExists(email)
+                    addDisposable(dataManager.isProfileExists(email)
                             .observeOn(AndroidSchedulers.mainThread())
                             .subscribe({ exists ->
                                 v.hideLoadingEmail()
@@ -67,20 +64,13 @@ class RegistrationPresenter(
 
     private fun signUp(email: String, password: String) {
         view?.showLoading()
-        addDisposable(mDataManager.isProfileExists(email)
-                .flatMap { exists ->
-                    return@flatMap if (exists) {
+        addDisposable(dataManager.isProfileExists(email)
+                .flatMapCompletable { exists ->
+                    if (exists) {
                         throw ProfileExistsException()
                     } else {
-                        hashPassword(password)
+                        return@flatMapCompletable dataManager.signUp(email, password)
                     }
-                }
-                .flatMapCompletable { passwordHash ->
-                    val profile = MyProfile(email, passwordHash)
-                    return@flatMapCompletable Completable.concat(listOf(
-                            mDataManager.newProfile(profile),
-                            mDataManager.saveProfile(profile)
-                    ))
                 }
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({
@@ -132,10 +122,4 @@ class RegistrationPresenter(
             else -> true
         }
     }
-
-    private fun hashPassword(password: String): Single<String> =
-            Single.fromCallable { BCrypt.hashpw(password, BCrypt.gensalt()) }
-                    .subscribeOn(Schedulers.computation())
-
-    class ProfileExistsException : Throwable()
 }

@@ -66,9 +66,10 @@ class AppModule(private val app: Application) {
     @Provides
     @AppScope
     fun provideCloudHelper(
+            firebaseAuth: FirebaseAuth,
             firestore: FirebaseFirestore,
             firebaseStorage: FirebaseStorage
-    ): CloudHelper = CloudHelperImp(firestore, firebaseStorage)
+    ): CloudHelper = CloudHelperImp(firebaseAuth, firestore, firebaseStorage)
 
     @Provides
     @AppScope

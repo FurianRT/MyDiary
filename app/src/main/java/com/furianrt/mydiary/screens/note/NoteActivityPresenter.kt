@@ -8,15 +8,15 @@ import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 
 class NoteActivityPresenter(
-        private val mDataManager: DataManager
+        private val dataManager: DataManager
 ) : NoteActivityContract.Presenter() {
 
     override fun loadNotes() {
-        addDisposable(mDataManager.getAllNotesWithProp()
+        addDisposable(dataManager.getAllNotesWithProp()
                 .firstOrError()
                 .flatMapObservable { Observable.fromIterable(it) }
                 .toSortedList { o1, o2 ->
-                    return@toSortedList if (mDataManager.isSortDesc()) {
+                    return@toSortedList if (dataManager.isSortDesc()) {
                         o2.note.time.compareTo(o1.note.time)
                     } else {
                         o1.note.time.compareTo(o2.note.time)
@@ -29,9 +29,9 @@ class NoteActivityPresenter(
     override fun loadNote(noteId: String) {
         val tempNote = MyNote(noteId)
         val noteAppearance = MyNoteAppearance(tempNote.id)
-        addDisposable(mDataManager.findNote(noteId)
-                .switchIfEmpty(mDataManager.insertNote(tempNote)
-                        .andThen(mDataManager.insertAppearance(noteAppearance))
+        addDisposable(dataManager.findNote(noteId)
+                .switchIfEmpty(dataManager.insertNote(tempNote)
+                        .andThen(dataManager.insertAppearance(noteAppearance))
                         .toSingleDefault(tempNote))
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { note ->

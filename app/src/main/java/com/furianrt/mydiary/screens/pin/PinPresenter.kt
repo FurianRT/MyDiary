@@ -6,7 +6,7 @@ import com.furianrt.mydiary.data.DataManager
 import io.reactivex.android.schedulers.AndroidSchedulers
 
 class PinPresenter(
-        private val mDataManager: DataManager
+        private val dataManager: DataManager
 ) : PinContract.Presenter() {
 
     companion object {
@@ -80,11 +80,11 @@ class PinPresenter(
     }
 
     private fun checkPinLockMode() {
-        addDisposable(mDataManager.getPin()
+        addDisposable(dataManager.getPin()
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { savedPin ->
                     if (mPassword == savedPin) {
-                        mDataManager.setAuthorized(true)
+                        dataManager.setAuthorized(true)
                         view?.showMessagePinCorrect()
                     } else {
                         mPassword = ""
@@ -116,7 +116,7 @@ class PinPresenter(
     }
 
     private fun checkPinRemoveMode() {
-        addDisposable(mDataManager.getPin()
+        addDisposable(dataManager.getPin()
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { savedPin ->
                     if (mPassword == savedPin) {
@@ -130,11 +130,11 @@ class PinPresenter(
     }
 
     override fun onEmailEntered(email: String) {
-        mDataManager.setBackupEmail(email)
-        addDisposable(mDataManager.setPin(mPassword)
+        dataManager.setBackupEmail(email)
+        addDisposable(dataManager.setPin(mPassword)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe {
-                    mDataManager.setAuthorized(true)
+                    dataManager.setAuthorized(true)
                     view?.showMessagePasswordCreated()
                 })
     }

@@ -6,7 +6,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import org.joda.time.DateTime
 
 class GalleryPagerPresenter(
-        private val mDataManager: DataManager
+        private val dataManager: DataManager
 ) : GalleryPagerContract.Presenter() {
 
     private lateinit var mNoteId: String
@@ -17,7 +17,7 @@ class GalleryPagerPresenter(
     }
 
     private fun loadImages(noteId: String) {
-        addDisposable(mDataManager.getImagesForNote(noteId)
+        addDisposable(dataManager.getImagesForNote(noteId)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { images ->
                     if (images.isEmpty()) {
@@ -41,8 +41,8 @@ class GalleryPagerPresenter(
     }
 
     override fun onButtonDeleteConfirmClick(image: MyImage) {
-        addDisposable(mDataManager.deleteImage(image)
-                .andThen(mDataManager.deleteImageFromStorage(image.name))
+        addDisposable(dataManager.deleteImage(image)
+                .andThen(dataManager.deleteImageFromStorage(image.name))
                 .ignoreElement()
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe())
@@ -55,10 +55,10 @@ class GalleryPagerPresenter(
 
     override fun onImageEdited() {
         mEditedImage?.let { image ->
-            addDisposable(mDataManager.getDbProfile()
+            addDisposable(dataManager.getDbProfile()
                     .firstOrError()
                     .flatMapCompletable {
-                        mDataManager.updateImage(image.apply {
+                        dataManager.updateImage(image.apply {
                             fileSyncWith.clear()
                             editedTime = DateTime.now().millis
                         })

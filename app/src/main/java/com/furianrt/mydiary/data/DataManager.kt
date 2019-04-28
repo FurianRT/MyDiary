@@ -18,6 +18,7 @@ interface DataManager {
     fun insertCategory(categories: List<MyCategory>): Completable
     fun insertAppearance(appearance: MyNoteAppearance): Completable
     fun insertAppearance(appearances: List<MyNoteAppearance>): Completable
+    fun insertProfile(profile: MyProfile): Completable
     fun updateNote(note: MyNote): Completable
     fun updateNoteText(noteId: String, title: String, content: String): Completable
     fun updateTag(tag: MyTag): Completable
@@ -39,7 +40,6 @@ interface DataManager {
     fun deleteAllTagsForNote(noteId: String): Completable
     fun deleteImageFromStorage(fileName: String): Single<Boolean>
     fun deleteCategory(category: MyCategory): Completable
-    fun deleteProfile(): Completable
     fun deleteNotesFromCloud(notes: List<MyNote>): Completable
     fun deleteCategoriesFromCloud(categories: List<MyCategory>): Completable
     fun deleteNoteTagsFromCloud(noteTags: List<NoteTag>): Completable
@@ -75,7 +75,6 @@ interface DataManager {
     fun getHeaderImages(): Flowable<List<MyHeaderImage>>
     fun getAllNoteTags(): Flowable<List<NoteTag>>
     fun getDbProfile(): Observable<MyProfile>
-    fun getCloudProfile(email: String): Single<MyProfile>
     fun getAllNotesFromCloud(): Single<List<MyNote>>
     fun getAllCategoriesFromCloud(): Single<List<MyCategory>>
     fun getAllTagsFromCloud(): Single<List<MyTag>>
@@ -106,10 +105,8 @@ interface DataManager {
     fun replaceNoteTags(noteId: String, tags: List<MyTag>): Completable
     fun findNote(noteId: String): Maybe<MyNote>
     fun addLocation(location: MyLocation): Completable
-    fun saveProfile(profile: MyProfile): Completable
     fun loadHeaderImages(page: Int = 1, perPage: Int = 20): Single<List<MyHeaderImage>>
     fun saveImageToStorage(image: MyImage): Single<MyImage>
-    fun newProfile(profile: MyProfile): Completable
     fun saveNotesInCloud(notes: List<MyNote>): Completable
     fun saveCategoriesInCloud(categories: List<MyCategory>): Completable
     fun saveTagsInCloud(tags: List<MyTag>): Completable
@@ -118,4 +115,11 @@ interface DataManager {
     fun saveImagesInCloud(images: List<MyImage>): Completable
     fun saveImagesFilesInCloud(images: List<MyImage>): Completable
     fun loadImageFiles(images: List<MyImage>): Completable
+    fun isSignedIn(): Boolean
+    fun signUp(email: String, password: String): Completable
+    fun signIn(email: String, password: String): Completable
+    fun signOut(): Completable
+    fun updatePassword(oldPassword: String, newPassword: String): Completable
+    fun observeSignOut(): Observable<Boolean>
+    fun updateProfile(profile: MyProfile): Completable
 }

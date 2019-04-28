@@ -8,7 +8,9 @@ import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import org.joda.time.DateTime
 
-class GalleryListPresenter(private val mDataManager: DataManager) : GalleryListContract.Presenter() {
+class GalleryListPresenter(
+        private val dataManager: DataManager
+) : GalleryListContract.Presenter() {
 
     private lateinit var mNoteId: String
     private var mSelectedImages: MutableList<MyImage> = ArrayList()
@@ -42,7 +44,7 @@ class GalleryListPresenter(private val mDataManager: DataManager) : GalleryListC
     }
 
     private fun loadImages(noteId: String) {
-        addDisposable(mDataManager.getImagesForNote(noteId)
+        addDisposable(dataManager.getImagesForNote(noteId)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { images ->
                     view?.showSelectedImageCount(mSelectedImages.size)
@@ -59,7 +61,7 @@ class GalleryListPresenter(private val mDataManager: DataManager) : GalleryListC
     }
 
     override fun onImagesOrderChange(images: List<MyImage>) {
-        addDisposable(mDataManager.updateImage(images)
+        addDisposable(dataManager.updateImage(images)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe())
     }
@@ -78,11 +80,11 @@ class GalleryListPresenter(private val mDataManager: DataManager) : GalleryListC
     }
 
     override fun onButtonDeleteConfirmClick(images: List<MyImage>) {
-        addDisposable(mDataManager.deleteImage(images)
+        addDisposable(dataManager.deleteImage(images)
                 .andThen(Observable.fromIterable(images))
                 .flatMapSingle { image ->
                     mSelectedImages.removeAll { it.name == image.name }
-                    return@flatMapSingle mDataManager.deleteImageFromStorage(image.name)
+                    return@flatMapSingle dataManager.deleteImageFromStorage(image.name)
                 }
                 .collectInto(mutableListOf<Boolean>()) { l, i -> l.add(i) }
                 .ignoreElement()
@@ -94,7 +96,7 @@ class GalleryListPresenter(private val mDataManager: DataManager) : GalleryListC
     }
 
     override fun onButtonCabSelectAllClick() {
-        addDisposable(mDataManager.getImagesForNote(mNoteId)
+        addDisposable(dataManager.getImagesForNote(mNoteId)
                 .first(emptyList())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { images ->
@@ -131,8 +133,8 @@ class GalleryListPresenter(private val mDataManager: DataManager) : GalleryListC
                     val name = mNoteId + "_" + generateUniqueId()
                     return@map MyImage(name, url, mNoteId, DateTime.now().millis)
                 }
-                .flatMapSingle { image -> mDataManager.saveImageToStorage(image) }
-                .flatMapCompletable { savedImage -> mDataManager.insertImage(savedImage) }
+                .flatMapSingle { image -> dataManager.saveImageToStorage(image) }
+                .flatMapCompletable { savedImage -> dataManager.insertImage(savedImage) }
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { view?.hideLoading() })
     }

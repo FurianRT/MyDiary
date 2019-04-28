@@ -5,7 +5,7 @@ import com.furianrt.mydiary.data.model.MyCategory
 import io.reactivex.android.schedulers.AndroidSchedulers
 
 class CategoryListPresenter(
-        private val mDataManager: DataManager
+        private val dataManager: DataManager
 ) : CategoryListContract.Presenter() {
 
     override fun onAddCategoryButtonClick() {
@@ -13,7 +13,7 @@ class CategoryListPresenter(
     }
 
     override fun onDeleteCategoryButtonClick(category: MyCategory) {
-        addDisposable(mDataManager.deleteCategory(category)
+        addDisposable(dataManager.deleteCategory(category)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe())
     }
@@ -23,16 +23,16 @@ class CategoryListPresenter(
     }
 
     override fun onViewStart() {
-        addDisposable(mDataManager.getAllCategories()
+        addDisposable(dataManager.getAllCategories()
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { categories -> view?.showCategories(categories) })
     }
 
     override fun onCategoryClick(category: MyCategory, noteId: String) {
-        addDisposable(mDataManager.findNote(noteId)
+        addDisposable(dataManager.findNote(noteId)
                 .flatMapCompletable { note ->
                     note.categoryId = category.id
-                    return@flatMapCompletable mDataManager.updateNote(note)
+                    return@flatMapCompletable dataManager.updateNote(note)
                 }
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { view?.close() })

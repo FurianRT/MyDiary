@@ -5,12 +5,12 @@ import com.furianrt.mydiary.data.DataManager
 import io.reactivex.android.schedulers.AndroidSchedulers
 
 class BackupEmailPresenter(
-        private val mDataManager: DataManager
+        private val dataManager: DataManager
 ) : BackupEmailContract.Presenter() {
 
     override fun onViewCreated(email: String, firstLaunch: Boolean) {
         if (email.isEmpty() && firstLaunch) {
-            addDisposable(mDataManager.getDbProfile()
+            addDisposable(dataManager.getDbProfile()
                     .firstElement()
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe { view?.showEmail(it.email) })
@@ -19,7 +19,7 @@ class BackupEmailPresenter(
 
     override fun onButtonDoneClick(email: String) {
         if (validateEmail(email)) {
-            mDataManager.setBackupEmail(email)
+            dataManager.setBackupEmail(email)
             view?.showEmailIsCorrect(email)
         }
     }

@@ -1,16 +1,16 @@
 package com.furianrt.mydiary.screens.main.fragments.authentication.login
 
 import com.furianrt.mydiary.data.DataManager
+import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
+import com.google.firebase.auth.FirebaseAuthInvalidUserException
 import io.reactivex.Completable
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import org.mindrot.jbcrypt.BCrypt
 
 class LoginPresenter(
-        private val mDataManager: DataManager
+        private val dataManager: DataManager
 ) : LoginContract.Presenter() {
-
-    private class WrongPasswordException : Throwable()
 
     override fun onButtonForgotClick() {
 
@@ -27,35 +27,20 @@ class LoginPresenter(
 
     private fun signIn(email: String, password: String) {
         view?.showLoading()
-        addDisposable(mDataManager.getCloudProfile(email)
-                .flatMapCompletable { profile ->
-                    Completable.concat(listOf(
-                            validatePassword(password, profile.passwordHash),
-                            mDataManager.newProfile(profile)
-                    ))
-                }
+        addDisposable(dataManager.signIn(email, password)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({
                     view?.hideLoading()
                     view?.showLoginSuccess()
-                }, { error ->
+                }, {
                     view?.hideLoading()
-                    if (error is NoSuchElementException || error is WrongPasswordException) {
+                    view?.hideLoading()
+                    if (it is FirebaseAuthInvalidUserException || it is FirebaseAuthInvalidCredentialsException) {
                         view?.showErrorWrongCredential()
                     } else {
-                        error.printStackTrace()
+                        it.printStackTrace()
                         view?.showErrorNetworkConnection()
                     }
                 }))
     }
-
-    private fun validatePassword(password: String, passwordHash: String): Completable =
-            Single.fromCallable { BCrypt.checkpw(password, passwordHash) }
-                    .flatMapCompletable { passwordValid ->
-                        if (passwordValid) {
-                            return@flatMapCompletable Completable.complete()
-                        } else {
-                            throw WrongPasswordException()
-                        }
-                    }
 }

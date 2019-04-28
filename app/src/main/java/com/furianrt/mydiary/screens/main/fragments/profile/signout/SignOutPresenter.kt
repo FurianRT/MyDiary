@@ -4,11 +4,11 @@ import com.furianrt.mydiary.data.DataManager
 import io.reactivex.android.schedulers.AndroidSchedulers
 
 class SignOutPresenter(
-        private val mDataManager: DataManager
+        private val dataManager: DataManager
 ) : SignOutContract.Presenter() {
 
     override fun onButtonSignOutClick() {
-        addDisposable(mDataManager.deleteProfile()
+        addDisposable(dataManager.signOut()
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { view?.close() })
     }

@@ -6,8 +6,8 @@
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 
     <application
@@ -38,21 +38,19 @@
             android:windowSoftInputMode="adjustPan">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
 
         <activity android:name=".screens.note.NoteActivity" />
-
-        <meta-data
-            android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyBqIaX5gl6vGr0C5xZA29CKXoYyJPW2pxI" />
-
         <activity android:name=".screens.gallery.GalleryActivity" />
         <activity android:name=".screens.settings.global.GlobalSettingsActivity" />
         <activity android:name=".screens.settings.note.NoteSettingsActivity" />
         <activity android:name=".screens.pin.PinActivity" />
+
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyBqIaX5gl6vGr0C5xZA29CKXoYyJPW2pxI" />
 
     </application>
 

@@ -2,7 +2,7 @@ package com.furianrt.mydiary.screens.note.fragments.notefragment.content
 
 import com.furianrt.mydiary.data.DataManager
 
-class NoteContentFragmentPresenter(private val mDataManager: DataManager)
+class NoteContentFragmentPresenter(private val dataManager: DataManager)
     : NoteContentFragmentContract.Presenter() {
 
     private var mTouchPosition = 0

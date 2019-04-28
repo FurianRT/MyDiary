@@ -4,7 +4,6 @@ import android.util.Log
 import com.furianrt.mydiary.data.DataManager
 import com.furianrt.mydiary.data.model.MyNote
 import com.furianrt.mydiary.data.model.MyNoteWithProp
-import com.furianrt.mydiary.data.model.MyProfile
 import com.furianrt.mydiary.screens.main.listadapter.MainContentItem
 import com.furianrt.mydiary.screens.main.listadapter.MainHeaderItem
 import com.furianrt.mydiary.screens.main.listadapter.MainListItem
@@ -19,7 +18,7 @@ import kotlin.Comparator
 import kotlin.collections.ArrayList
 
 class MainActivityPresenter(
-        private val mDataManager: DataManager
+        private val dataManager: DataManager
 ) : MainActivityContract.Presenter() {
 
     companion object {
@@ -27,16 +26,15 @@ class MainActivityPresenter(
     }
 
     private var mSelectedNotes = ArrayList<MyNoteWithProp>()
-    private var mProfile = MyProfile()
 
     private fun deleteImagesAndNote(note: MyNote): Single<Boolean> =
-            mDataManager.getImagesForNote(note.id)
+            dataManager.getImagesForNote(note.id)
                     .first(emptyList())
                     .flatMapObservable { Observable.fromIterable(it) }
                     .filter { !it.isDeleted }
-                    .flatMapSingle { image -> mDataManager.deleteImageFromStorage(image.name) }
+                    .flatMapSingle { image -> dataManager.deleteImageFromStorage(image.name) }
                     .collectInto(mutableListOf<Boolean>()) { l, i -> l.add(i) }
-                    .flatMap { mDataManager.deleteNote(note).toSingleDefault(true) }
+                    .flatMap { dataManager.deleteNote(note).toSingleDefault(true) }
 
     override fun onButtonDeleteClick() {
         view?.showDeleteConfirmationDialog(mSelectedNotes.map { it.note })
@@ -55,7 +53,7 @@ class MainActivityPresenter(
     }
 
     override fun onMenuAllNotesClick() {
-        addDisposable(mDataManager.getAllNotesWithProp()
+        addDisposable(dataManager.getAllNotesWithProp()
                 .first(ArrayList())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { notes ->
@@ -76,35 +74,38 @@ class MainActivityPresenter(
     }
 
     override fun onHeaderImagesPicked(imageUrls: List<String>) {    //todo добавить настройки выбора картинки
-        /*addDisposable(mDataManager.getHeaderImages()
+        /*addDisposable(dataManager.getHeaderImages()
                 .first(emptyList())
                 .flatMapObservable { images -> Observable.fromIterable(images) }
                 .defaultIfEmpty(MyHeaderImage("oops", "oops"))
-                .flatMapSingle { image -> mDataManager.deleteImageFromStorage(image.name) }
-                .flatMapCompletable { mDataManager.deleteAllHeaderImages() }
+                .flatMapSingle { image -> dataManager.deleteImageFromStorage(image.name) }
+                .flatMapCompletable { dataManager.deleteAllHeaderImages() }
                 .andThen(Observable.fromIterable(imageUrls))
                 .map { uri -> MyHeaderImage(HEADER_IMAGE_NAME + "_" + generateUniqueId(), uri) }
-                .flatMapSingle { image -> mDataManager.saveHeaderImageToStorage(image) }
-                .flatMapCompletable { savedImage -> mDataManager.insertHeaderImage(savedImage) }
+                .flatMapSingle { image -> dataManager.saveHeaderImageToStorage(image) }
+                .flatMapCompletable { savedImage -> dataManager.insertHeaderImage(savedImage) }
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe())*/
     }
 
     private fun loadProfile() {
-        addDisposable(mDataManager.getDbProfile()
+        addDisposable(dataManager.getDbProfile()
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { profile ->
-                    mProfile = profile
-                    if (profile.hasPremium) {
+                    //if (profile.hasPremium) {
                         view?.showPremiumProfile(profile)
-                    } else {
-                        view?.showRegularProfile(profile)
-                    }
+                    //} else {
+                   //     view?.showRegularProfile(profile)
+                    //}
+                })
+        addDisposable(dataManager.observeSignOut()
+                .subscribe {
+                    view?.showAnonymousProfile()
                 })
     }
 
     private fun loadHeaderImage() {     //todo порефакторить
-        addDisposable(mDataManager.getHeaderImages()
+        addDisposable(dataManager.getHeaderImages()
                 .firstOrError()
                 .flatMap { dbImages ->
                     return@flatMap when {
@@ -113,21 +114,21 @@ class MainActivityPresenter(
                         dbImages.isNotEmpty() && view?.networkAvailable() == false ->
                             Single.just(dbImages.first())
                         dbImages.isEmpty() && view?.networkAvailable() == true ->
-                            mDataManager.loadHeaderImages()
+                            dataManager.loadHeaderImages()
                                     .map { it.first() }
-                                    .flatMap { mDataManager.insertHeaderImage(it) }
-                                    .flatMap { mDataManager.getHeaderImages().firstOrError() }
+                                    .flatMap { dataManager.insertHeaderImage(it) }
+                                    .flatMap { dataManager.getHeaderImages().firstOrError() }
                                     .map { it.first() }
                         dbImages.isNotEmpty() && view?.networkAvailable() == true ->
-                            mDataManager.loadHeaderImages()
+                            dataManager.loadHeaderImages()
                                     .onErrorReturn { dbImages }
                                     .map { list ->
                                         list.find { apiImage ->
                                             dbImages.find { it.id == apiImage.id } == null
                                         } ?: dbImages.first()
                                     }
-                                    .flatMap { mDataManager.insertHeaderImage(it) }
-                                    .flatMap { mDataManager.getHeaderImages().firstOrError() }
+                                    .flatMap { dataManager.insertHeaderImage(it) }
+                                    .flatMap { dataManager.getHeaderImages().firstOrError() }
                                     .map { it.first() }
                         else ->
                             throw Exception()
@@ -143,12 +144,12 @@ class MainActivityPresenter(
     }
 
     private fun loadNotes() {
-        if (mDataManager.isSortDesc()) {
+        if (dataManager.isSortDesc()) {
             view?.setSortAsc()
         } else {
             view?.setSortDesc()
         }
-        addDisposable(mDataManager.getAllNotesWithProp()
+        addDisposable(dataManager.getAllNotesWithProp()
                 .map { formatNotes(toMap(it)) }
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { items ->
@@ -170,7 +171,7 @@ class MainActivityPresenter(
 
     private fun toMap(notes: List<MyNoteWithProp>): Map<Long, ArrayList<MyNoteWithProp>> {
         val map = TreeMap<Long, ArrayList<MyNoteWithProp>>(Comparator<Long> { p0, p1 ->
-            return@Comparator if (mDataManager.isSortDesc()) {
+            return@Comparator if (dataManager.isSortDesc()) {
                 p1.compareTo(p0)
             } else {
                 p0.compareTo(p1)
@@ -196,7 +197,7 @@ class MainActivityPresenter(
         for (date in notes.keys) {
             val header = MainHeaderItem(date)
             list.add(header)
-            val values = if (mDataManager.isSortDesc()) {
+            val values = if (dataManager.isSortDesc()) {
                 notes.getValue(date).sortedByDescending { it.note.time }
             } else {
                 notes.getValue(date).sortedBy { it.note.time }
@@ -220,7 +221,7 @@ class MainActivityPresenter(
     }
 
     override fun onButtonSortClick() {
-        mDataManager.setSortDesc(!mDataManager.isSortDesc())
+        dataManager.setSortDesc(!dataManager.isSortDesc())
         loadNotes()
     }
 
@@ -267,11 +268,11 @@ class MainActivityPresenter(
     }
 
     private fun openNotePagerView(note: MyNoteWithProp) {
-        addDisposable(mDataManager.getAllNotesWithProp()
+        addDisposable(dataManager.getAllNotesWithProp()
                 .firstOrError()
                 .flatMapObservable { Observable.fromIterable(it) }
                 .toSortedList { o1, o2 ->
-                    return@toSortedList if (mDataManager.isSortDesc()) {
+                    return@toSortedList if (dataManager.isSortDesc()) {
                         o2.note.time.compareTo(o1.note.time)
                     } else {
                         o1.note.time.compareTo(o2.note.time)
@@ -285,27 +286,21 @@ class MainActivityPresenter(
         view?.showSettingsView()
     }
 
-    override fun is24TimeFormat(): Boolean =
-            mDataManager.is24TimeFormat()
+    override fun is24TimeFormat(): Boolean = dataManager.is24TimeFormat()
 
     override fun onButtonSyncClick() {
         when {
-            mProfile.email.isEmpty() -> view?.showLoginView()
-            mProfile.hasPremium -> view?.startSyncService()
-            else -> view?.showPremiumView()
+            !dataManager.isSignedIn() -> view?.showLoginView()
+            //mProfile.hasPremium -> view?.startSyncService()
+            else -> view?.startSyncService()
         }
     }
 
     override fun onButtonProfileClick() {
-        if (mProfile.email.isEmpty()) {
-            view?.showLoginView()
-        } else {
+        if (dataManager.isSignedIn()) {
             view?.showProfileSettings()
+        } else {
+            view?.showLoginView()
         }
-    }
-
-    override fun onSignOut() {
-        mProfile = MyProfile()
-        view?.showAnonymousProfile()
     }
 }

@@ -39,17 +39,18 @@ class AboutProfileFragment : Fragment(), AboutProfileContract.View {
 
     override fun showProfileInfo(profile: MyProfile) {
         text_registration_date.text =
-                DateTime(profile.registrationTime).toString("dd.MM.yyyy", Locale.getDefault())
-        text_has_premium.text = if (profile.hasPremium) {
+                DateTime(profile.creationTime).toString("dd.MM.yyyy", Locale.getDefault())
+        /*text_has_premium.text = if (profile.hasPremium) {
             getString(R.string.fragment_about_profile_yup)
         } else {
             getString(R.string.fragment_about_profile_sync_non)
-        }
-        if (profile.lastSyncTime == 0L) {
+        }*/
+        val lastSyncTime = profile.lastSyncTime
+        if (lastSyncTime == null) {
             text_last_sync_date?.text = getString(R.string.fragment_about_profile_sync_non)
         } else {
             text_last_sync_date.text =
-                    DateTime(profile.lastSyncTime).toString("dd.MM.yyyy hh:mm", Locale.getDefault())
+                    DateTime(lastSyncTime).toString("dd.MM.yyyy hh:mm", Locale.getDefault())
         }
     }
 

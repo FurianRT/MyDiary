@@ -63,7 +63,6 @@ import javax.inject.Inject
 
 class MainActivity : BaseActivity(), MainActivityContract.View,
         MainListAdapter.OnMainListItemInteractionListener, View.OnClickListener,
-        SignOutFragment.OnSignOutFragmentInteractionListener,
         ImageSettingsFragment.OnImageSettingsInteractionListener,
         DeleteNoteDialog.OnDeleteNoteConfirmListener {
 
@@ -486,10 +485,6 @@ class MainActivity : BaseActivity(), MainActivityContract.View,
         if (requestCode == ACTIVITY_SETTING_REQUEST_CODE) {
             recreate()
         }
-    }
-
-    override fun onSignOut() {
-        mPresenter.onSignOut()
     }
 
     override fun showAnonymousProfile() {

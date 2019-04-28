@@ -8,7 +8,9 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 
 
 //todo тут все плохо, надо переписать
-class TagsDialogPresenter(private val mDataManager: DataManager) : TagsDialogContract.Presenter() {
+class TagsDialogPresenter(
+        private val dataManager: DataManager
+) : TagsDialogContract.Presenter() {
 
     private lateinit var mTags: ArrayList<MyTag>
 
@@ -38,7 +40,7 @@ class TagsDialogPresenter(private val mDataManager: DataManager) : TagsDialogCon
             val tag = MyTag(generateUniqueId(), tagName)
             tag.isChecked = true
             addDisposable(Completable.fromAction { mTags.add(tag) }
-                    .andThen(mDataManager.insertTag(tag))
+                    .andThen(dataManager.insertTag(tag))
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe { view?.showTags(mTags) })
         }
@@ -46,14 +48,14 @@ class TagsDialogPresenter(private val mDataManager: DataManager) : TagsDialogCon
 
     override fun onButtonDeleteTagClicked(tag: MyTag) {
         addDisposable(Completable.fromCallable { mTags.remove(tag) }
-                .andThen(mDataManager.deleteTag(tag))
+                .andThen(dataManager.deleteTag(tag))
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { view?.showTags(mTags) })
     }
 
     override fun onButtonEditTagClicked(tag: MyTag) {
         addDisposable(Completable.fromAction { mTags.find { it.id == tag.id }?.name = tag.name }
-                .andThen(mDataManager.updateTag(tag))
+                .andThen(dataManager.updateTag(tag))
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { view?.showTags(mTags) })
     }

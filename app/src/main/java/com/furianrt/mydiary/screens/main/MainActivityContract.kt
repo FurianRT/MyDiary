@@ -55,7 +55,6 @@ interface MainActivityContract {
         abstract fun is24TimeFormat(): Boolean
         abstract fun onButtonSyncClick()
         abstract fun onButtonProfileClick()
-        abstract fun onSignOut()
         abstract fun onButtonSortClick()
         abstract fun onButtonImageSettingsClick()
         abstract fun onButtonDeleteClick()

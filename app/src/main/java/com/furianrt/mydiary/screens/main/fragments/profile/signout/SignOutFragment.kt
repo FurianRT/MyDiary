@@ -1,6 +1,5 @@
 package com.furianrt.mydiary.screens.main.fragments.profile.signout
 
-import android.content.Context
 import android.os.Bundle
 import android.os.Handler
 import android.view.LayoutInflater
@@ -22,7 +21,6 @@ class SignOutFragment : Fragment(), SignOutContract.View {
     @Inject
     lateinit var mPresenter: SignOutContract.Presenter
 
-    private var mListener: OnSignOutFragmentInteractionListener? = null
     private val mHandler = Handler()
     private val mBottomSheetCloseRunnable: Runnable = Runnable {
         (activity as? MainActivity?)?.closeBottomSheet()
@@ -37,10 +35,7 @@ class SignOutFragment : Fragment(), SignOutContract.View {
                               savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_sign_out, container, false)
 
-        view.button_sign_out.setOnClickListener {
-            mListener?.onSignOut()
-            mPresenter.onButtonSignOutClick()
-        }
+        view.button_sign_out.setOnClickListener { mPresenter.onButtonSignOutClick() }
         view.button_sign_out_cancel.setOnClickListener { mPresenter.onButtonSignOutCancelClick() }
 
         return view
@@ -63,25 +58,5 @@ class SignOutFragment : Fragment(), SignOutContract.View {
         super.onPause()
         mHandler.removeCallbacks(mBottomSheetCloseRunnable)
         mPresenter.detachView()
-    }
-
-    override fun onAttach(context: Context?) {
-        super.onAttach(context)
-        if (context is OnSignOutFragmentInteractionListener) {
-            mListener = context
-        } else {
-            throw RuntimeException(context.toString()
-                    + " must implement OnSignOutFragmentInteractionListener")
-        }
-    }
-
-    override fun onDetach() {
-        super.onDetach()
-        mListener = null
-    }
-
-    interface OnSignOutFragmentInteractionListener {
-
-        fun onSignOut()
     }
 }

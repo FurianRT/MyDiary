@@ -4,11 +4,11 @@ import com.furianrt.mydiary.data.DataManager
 import io.reactivex.android.schedulers.AndroidSchedulers
 
 class AboutProfilePresenter(
-        private val mDataManager: DataManager
+        private val dataManager: DataManager
 ) : AboutProfileContract.Presenter() {
 
     override fun onViewResume() {
-        addDisposable(mDataManager.getDbProfile()
+        addDisposable(dataManager.getDbProfile()
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { view?.showProfileInfo(it) })
     }

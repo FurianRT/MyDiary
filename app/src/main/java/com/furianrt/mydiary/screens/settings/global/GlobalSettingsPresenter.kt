@@ -3,17 +3,17 @@ package com.furianrt.mydiary.screens.settings.global
 import com.furianrt.mydiary.data.DataManager
 
 class GlobalSettingsPresenter(
-        private val mDataManager: DataManager
+        private val dataManager: DataManager
 ) : GlobalSettingsContract.Presenter() {
 
     override fun onViewCreate() {
-        if (mDataManager.isPasswordEnabled()) {
-            view?.showBackupEmail(mDataManager.getBackupEmail())
+        if (dataManager.isPasswordEnabled()) {
+            view?.showBackupEmail(dataManager.getBackupEmail())
         }
     }
 
     override fun onPrefSecurityKeyClick() {
-        if (mDataManager.isPasswordEnabled()) {
+        if (dataManager.isPasswordEnabled()) {
             view?.showCreatePasswordView()
         } else {
             view?.showRemovePasswordView()
@@ -21,10 +21,10 @@ class GlobalSettingsPresenter(
     }
 
     override fun onPasswordCreated() {
-        view?.showBackupEmail(mDataManager.getBackupEmail())
+        view?.showBackupEmail(dataManager.getBackupEmail())
     }
 
     override fun onPasswordRemoved() {
-        mDataManager.setBackupEmail("")
+        dataManager.setBackupEmail("")
     }
 }
