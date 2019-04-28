@@ -2,36 +2,29 @@ package com.furianrt.mydiary.data.cloud
 
 import com.furianrt.mydiary.data.model.*
 import io.reactivex.Completable
-import io.reactivex.Observable
 import io.reactivex.Single
 
 interface CloudHelper {
-    fun isSignedIn(): Boolean
-    fun signUp(email: String, password: String): Single<MyProfile>
-    fun signIn(email: String, password: String): Single<MyProfile>
-    fun signOut(): Completable
-    fun updatePassword(oldPassword: String, newPassword: String): Completable
-    fun updateProfile(profile: MyProfile): Completable
-    fun isProfileExists(email: String): Single<Boolean>
-    fun observeSignOut(): Observable<Boolean>
-    fun saveNotes(notes: List<MyNote>): Completable
-    fun saveCategories(categories: List<MyCategory>): Completable
-    fun saveTags(tags: List<MyTag>): Completable
-    fun saveNoteTags(noteTags: List<NoteTag>): Completable
-    fun saveAppearances(appearances: List<MyNoteAppearance>): Completable
-    fun saveImages(images: List<MyImage>): Completable
-    fun saveImagesFiles(images: List<MyImage>): Completable
-    fun deleteNotes(notes: List<MyNote>): Completable
-    fun deleteCategories(categories: List<MyCategory>): Completable
-    fun deleteNoteTags(noteTags: List<NoteTag>): Completable
-    fun deleteTags(tags: List<MyTag>): Completable
-    fun deleteAppearances(appearances: List<MyNoteAppearance>): Completable
-    fun deleteImages(images: List<MyImage>): Completable
-    fun getAllNotes(): Single<List<MyNote>>
-    fun getAllCategories(): Single<List<MyCategory>>
-    fun getAllTags(): Single<List<MyTag>>
-    fun getAllAppearances(): Single<List<MyNoteAppearance>>
-    fun getAllNoteTags(): Single<List<NoteTag>>
-    fun getAllImages(): Single<List<MyImage>>
-    fun loadImageFiles(images: List<MyImage>): Completable
+    fun saveProfile(profile: MyProfile): Completable
+    fun saveNotes(notes: List<MyNote>, userId: String): Completable
+    fun saveCategories(categories: List<MyCategory>, userId: String): Completable
+    fun saveTags(tags: List<MyTag>, userId: String): Completable
+    fun saveNoteTags(noteTags: List<NoteTag>, userId: String): Completable
+    fun saveAppearances(appearances: List<MyNoteAppearance>, userId: String): Completable
+    fun saveImages(images: List<MyImage>, userId: String): Completable
+    fun saveImagesFiles(images: List<MyImage>, userId: String): Completable
+    fun deleteNotes(notes: List<MyNote>, userId: String): Completable
+    fun deleteCategories(categories: List<MyCategory>, userId: String): Completable
+    fun deleteNoteTags(noteTags: List<NoteTag>, userId: String): Completable
+    fun deleteTags(tags: List<MyTag>, userId: String): Completable
+    fun deleteAppearances(appearances: List<MyNoteAppearance>, userId: String): Completable
+    fun deleteImages(images: List<MyImage>, userId: String): Completable
+    fun getProfile(userId: String): Single<MyProfile>
+    fun getAllNotes(userId: String): Single<List<MyNote>>
+    fun getAllCategories(userId: String): Single<List<MyCategory>>
+    fun getAllTags(userId: String): Single<List<MyTag>>
+    fun getAllAppearances(userId: String): Single<List<MyNoteAppearance>>
+    fun getAllNoteTags(userId: String): Single<List<NoteTag>>
+    fun getAllImages(userId: String): Single<List<MyImage>>
+    fun loadImageFiles(images: List<MyImage>, userId: String): Completable
 }

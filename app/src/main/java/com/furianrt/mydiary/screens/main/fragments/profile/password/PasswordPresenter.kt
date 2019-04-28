@@ -1,12 +1,9 @@
 package com.furianrt.mydiary.screens.main.fragments.profile.password
 
 import com.furianrt.mydiary.data.DataManager
-import com.furianrt.mydiary.data.model.MyProfile
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
-import io.reactivex.Completable
-import io.reactivex.Single
+import com.google.firebase.auth.FirebaseAuthInvalidUserException
 import io.reactivex.android.schedulers.AndroidSchedulers
-import org.mindrot.jbcrypt.BCrypt
 
 class PasswordPresenter(
         private val dataManager: DataManager
@@ -37,16 +34,29 @@ class PasswordPresenter(
     private fun validateOldPassword(oldPassword: String, newPassword: String) {
         view?.showLoading()
         addDisposable(dataManager.updatePassword(oldPassword, newPassword)
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({
                     view?.hideLoading()
                     view?.showSuccessPasswordChange()
                 }, {
-                    view?.hideLoading()
-                    if (it is FirebaseAuthInvalidCredentialsException) {
-                        view?.showErrorWrongOldPassword()
-                    } else {
-                        it.printStackTrace()
-                        view?.showErrorNetworkConnection()
+                    when (it) {
+                        is FirebaseAuthInvalidCredentialsException -> {
+                            view?.hideLoading()
+                            view?.showErrorWrongOldPassword()
+                        }
+                        is FirebaseAuthInvalidUserException -> {
+                            addDisposable(dataManager.signOut() //todo вынужденный Disposable в subscribe.
+                                    .observeOn(AndroidSchedulers.mainThread())
+                                    .subscribe {
+                                        view?.hideLoading()
+                                        view?.close()
+                                    })
+                        }
+                        else -> {
+                            it.printStackTrace()
+                            view?.hideLoading()
+                            view?.showErrorNetworkConnection()
+                        }
                     }
                 }))
     }

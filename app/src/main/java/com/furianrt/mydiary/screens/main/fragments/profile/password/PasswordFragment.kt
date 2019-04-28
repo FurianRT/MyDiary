@@ -142,6 +142,11 @@ class PasswordFragment : Fragment(), PasswordContract.View {
         fragmentManager?.popBackStack()
     }
 
+    override fun close() {
+        BottomSheetBehavior.from(requireActivity().main_sheet_container).state =
+                BottomSheetBehavior.STATE_COLLAPSED
+    }
+
     override fun onResume() {
         super.onResume()
         mPresenter.attachView(this)

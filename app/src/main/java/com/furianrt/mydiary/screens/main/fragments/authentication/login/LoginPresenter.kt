@@ -3,10 +3,7 @@ package com.furianrt.mydiary.screens.main.fragments.authentication.login
 import com.furianrt.mydiary.data.DataManager
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
 import com.google.firebase.auth.FirebaseAuthInvalidUserException
-import io.reactivex.Completable
-import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
-import org.mindrot.jbcrypt.BCrypt
 
 class LoginPresenter(
         private val dataManager: DataManager

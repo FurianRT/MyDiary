@@ -52,6 +52,10 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyBqIaX5gl6vGr0C5xZA29CKXoYyJPW2pxI" />
 
+        <meta-data
+            android:name="firebase_performance_logcat_enabled"
+            android:value="true" />
+
     </application>
 
 </manifest>

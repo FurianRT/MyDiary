@@ -6,6 +6,7 @@ import com.furianrt.mydiary.data.api.forecast.Forecast
 import com.furianrt.mydiary.data.api.forecast.WeatherApiService
 import com.furianrt.mydiary.data.api.images.Image
 import com.furianrt.mydiary.data.api.images.ImageApiService
+import com.furianrt.mydiary.data.auth.AuthHelper
 import com.furianrt.mydiary.data.cloud.CloudHelper
 import com.furianrt.mydiary.data.database.NoteDatabase
 import com.furianrt.mydiary.data.model.*
@@ -25,6 +26,7 @@ class DataManagerImp(
         private val weatherApi: WeatherApiService,
         private val imageApi: ImageApiService,
         private val cloud: CloudHelper,
+        private val auth: AuthHelper,
         private val rxScheduler: Scheduler
 ) : DataManager {
 
@@ -207,6 +209,10 @@ class DataManagerImp(
 
     override fun deleteCategory(category: MyCategory): Completable =
             Completable.fromAction { database.categoryDao().delete(category.id) }
+                    .subscribeOn(rxScheduler)
+
+    override fun clearDbProfile(): Completable =
+            Completable.fromAction { database.profileDao().clearProfile() }
                     .subscribeOn(rxScheduler)
 
     override fun replaceNoteTags(noteId: String, tags: List<MyTag>): Completable =
@@ -398,7 +404,7 @@ class DataManagerImp(
     }
 
     override fun isProfileExists(email: String): Single<Boolean> =
-            cloud.isProfileExists(email)
+            auth.isProfileExists(email)
                     .subscribeOn(rxScheduler)
 
     override fun getTextColor(): Int = prefs.getTextColor()
@@ -439,105 +445,110 @@ class DataManagerImp(
                     .subscribeOn(rxScheduler)
 
     override fun saveNotesInCloud(notes: List<MyNote>): Completable =
-            cloud.saveNotes(notes)
+            cloud.saveNotes(notes, auth.getUserId())
                     .subscribeOn(rxScheduler)
 
     override fun saveCategoriesInCloud(categories: List<MyCategory>): Completable =
-            cloud.saveCategories(categories)
+            cloud.saveCategories(categories, auth.getUserId())
                     .subscribeOn(rxScheduler)
 
     override fun saveNoteTagsInCloud(noteTags: List<NoteTag>): Completable =
-            cloud.saveNoteTags(noteTags)
+            cloud.saveNoteTags(noteTags, auth.getUserId())
                     .subscribeOn(rxScheduler)
 
     override fun saveTagsInCloud(tags: List<MyTag>): Completable =
-            cloud.saveTags(tags)
+            cloud.saveTags(tags, auth.getUserId())
                     .subscribeOn(rxScheduler)
 
     override fun saveAppearancesInCloud(appearances: List<MyNoteAppearance>): Completable =
-            cloud.saveAppearances(appearances)
+            cloud.saveAppearances(appearances, auth.getUserId())
                     .subscribeOn(rxScheduler)
 
     override fun saveImagesInCloud(images: List<MyImage>): Completable =
-            cloud.saveImages(images)
+            cloud.saveImages(images, auth.getUserId())
                     .subscribeOn(rxScheduler)
 
     override fun saveImagesFilesInCloud(images: List<MyImage>): Completable =
-            cloud.saveImagesFiles(images)
+            cloud.saveImagesFiles(images, auth.getUserId())
                     .subscribeOn(rxScheduler)
 
     override fun deleteNotesFromCloud(notes: List<MyNote>): Completable =
-            cloud.deleteNotes(notes)
+            cloud.deleteNotes(notes, auth.getUserId())
                     .subscribeOn(rxScheduler)
 
     override fun deleteCategoriesFromCloud(categories: List<MyCategory>): Completable =
-            cloud.deleteCategories(categories)
+            cloud.deleteCategories(categories, auth.getUserId())
                     .subscribeOn(rxScheduler)
 
     override fun deleteNoteTagsFromCloud(noteTags: List<NoteTag>): Completable =
-            cloud.deleteNoteTags(noteTags)
+            cloud.deleteNoteTags(noteTags, auth.getUserId())
                     .subscribeOn(rxScheduler)
 
     override fun deleteTagsFromCloud(tags: List<MyTag>): Completable =
-            cloud.deleteTags(tags)
+            cloud.deleteTags(tags, auth.getUserId())
                     .subscribeOn(rxScheduler)
 
     override fun deleteAppearancesFromCloud(appearances: List<MyNoteAppearance>): Completable =
-            cloud.deleteAppearances(appearances)
+            cloud.deleteAppearances(appearances, auth.getUserId())
                     .subscribeOn(rxScheduler)
 
     override fun deleteImagesFromCloud(images: List<MyImage>): Completable =
-            cloud.deleteImages(images)
+            cloud.deleteImages(images, auth.getUserId())
                     .subscribeOn(rxScheduler)
 
     override fun getAllNotesFromCloud(): Single<List<MyNote>> =
-            cloud.getAllNotes()
+            cloud.getAllNotes(auth.getUserId())
                     .subscribeOn(rxScheduler)
 
     override fun getAllCategoriesFromCloud(): Single<List<MyCategory>> =
-            cloud.getAllCategories()
+            cloud.getAllCategories(auth.getUserId())
                     .subscribeOn(rxScheduler)
 
     override fun getAllTagsFromCloud(): Single<List<MyTag>> =
-            cloud.getAllTags()
+            cloud.getAllTags(auth.getUserId())
                     .subscribeOn(rxScheduler)
 
     override fun getAllAppearancesFromCloud(): Single<List<MyNoteAppearance>> =
-            cloud.getAllAppearances()
+            cloud.getAllAppearances(auth.getUserId())
                     .subscribeOn(rxScheduler)
 
     override fun getAllNoteTagsFromCloud(): Single<List<NoteTag>> =
-            cloud.getAllNoteTags()
+            cloud.getAllNoteTags(auth.getUserId())
                     .subscribeOn(rxScheduler)
 
     override fun getAllImagesFromCloud(): Single<List<MyImage>> =
-            cloud.getAllImages()
+            cloud.getAllImages(auth.getUserId())
                     .subscribeOn(rxScheduler)
 
     override fun loadImageFiles(images: List<MyImage>): Completable =
-            cloud.loadImageFiles(images)
+            cloud.loadImageFiles(images, auth.getUserId())
                     .subscribeOn(rxScheduler)
 
-    override fun isSignedIn(): Boolean = cloud.isSignedIn()
+    override fun isSignedIn(): Boolean = auth.isSignedIn()
 
     override fun signUp(email: String, password: String): Completable =
-            cloud.signUp(email, password)
-                    .flatMapCompletable {
-                        Completable.fromAction { database.profileDao().insert(it) }
-                                .subscribeOn(rxScheduler)
+            auth.signUp(email, password)
+                    .map { MyProfile(it.id, it.email, it.photoUri) }
+                    .flatMapCompletable { profile ->
+                        Completable.concat(listOf(
+                                cloud.saveProfile(profile)
+                                        .doOnError { auth.signOut() },
+                                Completable.fromAction { database.profileDao().insert(profile) }
+                                        .subscribeOn(rxScheduler)))
                     }
                     .subscribeOn(rxScheduler)
 
     override fun signIn(email: String, password: String): Completable =
-            cloud.signIn(email, password)
-                    .flatMapCompletable {
-                        Completable.fromAction { database.profileDao().insert(it) }
+            auth.signIn(email, password)
+                    .flatMap { cloud.getProfile(it).doOnError { auth.signOut() } }
+                    .flatMapCompletable { profile ->
+                        Completable.fromAction { database.profileDao().insert(profile) }
                                 .subscribeOn(rxScheduler)
                     }
                     .subscribeOn(rxScheduler)
 
     override fun signOut(): Completable =
-            cloud.signOut()
+            auth.signOut()
                     .andThen(
                             Completable.fromAction { database.profileDao().clearProfile() }
                                     .subscribeOn(rxScheduler)
@@ -545,15 +556,15 @@ class DataManagerImp(
                     .subscribeOn(rxScheduler)
 
     override fun updatePassword(oldPassword: String, newPassword: String): Completable =
-            cloud.updatePassword(oldPassword, newPassword)
+            auth.updatePassword(oldPassword, newPassword)
                     .subscribeOn(rxScheduler)
 
     override fun observeSignOut(): Observable<Boolean> =
-            cloud.observeSignOut()
+            auth.observeSignOut()
                     .subscribeOn(rxScheduler)
 
     override fun updateProfile(profile: MyProfile): Completable =
-            cloud.updateProfile(profile)
+            cloud.saveProfile(profile)
                     .andThen(
                             Completable.fromAction { database.profileDao().update(profile) }
                                     .subscribeOn(rxScheduler)

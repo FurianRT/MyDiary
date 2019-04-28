@@ -42,17 +42,11 @@ class SyncPresenter(
         }, {
             it.printStackTrace()
             Log.e(TAG, "Sync error")
-            if (it is SyncGoneWrongException) {
-                view?.sendProgressUpdate(SyncProgressMessage(
-                        taskIndex = it.taskIndex,
-                        hasError = true
-                ))
+            view?.sendProgressUpdate(if (it is SyncGoneWrongException) {
+                SyncProgressMessage(taskIndex = it.taskIndex, hasError = true)
             } else {
-                view?.sendProgressUpdate(SyncProgressMessage(
-                        taskIndex = SyncProgressMessage.UNKNOWN,
-                        hasError = true
-                ))
-            }
+                SyncProgressMessage(taskIndex = SyncProgressMessage.UNKNOWN, hasError = true)
+            })
             view?.close()
         }))
     }

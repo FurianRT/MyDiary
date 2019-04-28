@@ -99,8 +99,11 @@ class MainActivityPresenter(
                     //}
                 })
         addDisposable(dataManager.observeSignOut()
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe {
-                    view?.showAnonymousProfile()
+                    addDisposable(dataManager.clearDbProfile()  //todo вынужденный Disposable в subscribe
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .subscribe { view?.showAnonymousProfile() })
                 })
     }
 

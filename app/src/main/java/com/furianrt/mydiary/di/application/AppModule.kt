@@ -15,6 +15,8 @@ import com.furianrt.mydiary.data.DataManager
 import com.furianrt.mydiary.data.DataManagerImp
 import com.furianrt.mydiary.data.api.forecast.WeatherApiService
 import com.furianrt.mydiary.data.api.images.ImageApiService
+import com.furianrt.mydiary.data.auth.AuthHelper
+import com.furianrt.mydiary.data.auth.AuthHelperImp
 import com.furianrt.mydiary.data.cloud.CloudHelper
 import com.furianrt.mydiary.data.cloud.CloudHelperImp
 import com.furianrt.mydiary.data.database.NoteDatabase
@@ -66,10 +68,13 @@ class AppModule(private val app: Application) {
     @Provides
     @AppScope
     fun provideCloudHelper(
-            firebaseAuth: FirebaseAuth,
             firestore: FirebaseFirestore,
             firebaseStorage: FirebaseStorage
-    ): CloudHelper = CloudHelperImp(firebaseAuth, firestore, firebaseStorage)
+    ): CloudHelper = CloudHelperImp(firestore, firebaseStorage)
+
+    @Provides
+    @AppScope
+    fun provideAuthHelper(firebaseAuth: FirebaseAuth): AuthHelper = AuthHelperImp(firebaseAuth)
 
     @Provides
     @AppScope
@@ -126,8 +131,18 @@ class AppModule(private val app: Application) {
             weatherApi: WeatherApiService,
             imageApi: ImageApiService,
             cloudHelper: CloudHelper,
+            authHelper: AuthHelper,
             rxScheduler: Scheduler
-    ): DataManager = DataManagerImp(database, prefs, storage, weatherApi, imageApi, cloudHelper, rxScheduler)
+    ): DataManager = DataManagerImp(
+            database,
+            prefs,
+            storage,
+            weatherApi,
+            imageApi,
+            cloudHelper,
+            authHelper,
+            rxScheduler
+    )
 
     @Provides
     @ForecastApi

@@ -126,9 +126,6 @@ dependencies {
     //Crash tracking
     implementation 'com.crashlytics.sdk.android:crashlytics:2.9.9'
 
-    //Encryption
-    implementation 'org.mindrot:jbcrypt:0.4'
-
     //ImageView with zoom
     implementation 'com.jsibbold:zoomage:1.2.0'
 

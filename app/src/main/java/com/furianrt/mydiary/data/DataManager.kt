@@ -46,6 +46,7 @@ interface DataManager {
     fun deleteTagsFromCloud(tags: List<MyTag>): Completable
     fun deleteAppearancesFromCloud(appearances: List<MyNoteAppearance>): Completable
     fun deleteImagesFromCloud(images: List<MyImage>): Completable
+    fun clearDbProfile(): Completable
     fun cleanupNotes(): Completable
     fun cleanupNoteTags(): Completable
     fun cleanupAppearances(): Completable
