@@ -5,9 +5,9 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/grey_light"
-    tools:context=".note.NoteActivity">
+    tools:context=".screens.note.NoteActivity">
 
-    <com.furianrt.mydiary.note.NoteActivityViewPager
+    <com.furianrt.mydiary.screens.note.NoteActivityViewPager
         android:id="@+id/pager_note"
         android:layout_width="0dp"
         android:layout_height="0dp"

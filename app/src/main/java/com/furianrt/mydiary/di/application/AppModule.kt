@@ -17,13 +17,14 @@ import com.furianrt.mydiary.data.api.forecast.WeatherApiService
 import com.furianrt.mydiary.data.api.images.ImageApiService
 import com.furianrt.mydiary.data.cloud.CloudHelper
 import com.furianrt.mydiary.data.cloud.CloudHelperImp
+import com.furianrt.mydiary.data.database.NoteDatabase
 import com.furianrt.mydiary.data.model.*
 import com.furianrt.mydiary.data.prefs.PreferencesHelper
 import com.furianrt.mydiary.data.prefs.PreferencesHelperImp
-import com.furianrt.mydiary.data.room.NoteDatabase
 import com.furianrt.mydiary.data.storage.StorageHelper
 import com.furianrt.mydiary.data.storage.StorageHelperImp
 import com.furianrt.mydiary.utils.generateUniqueId
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.FirebaseFirestoreSettings
 import com.google.firebase.storage.FirebaseStorage
@@ -68,6 +69,10 @@ class AppModule(private val app: Application) {
             firestore: FirebaseFirestore,
             firebaseStorage: FirebaseStorage
     ): CloudHelper = CloudHelperImp(firestore, firebaseStorage)
+
+    @Provides
+    @AppScope
+    fun provideFirebaseAuth(): FirebaseAuth = FirebaseAuth.getInstance()
 
     @Provides
     @AppScope

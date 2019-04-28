@@ -9,8 +9,7 @@ import androidx.core.app.NotificationCompat
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.furianrt.mydiary.MyApp
 import com.furianrt.mydiary.R
-import com.furianrt.mydiary.data.model.ProgressMessage
-import com.furianrt.mydiary.main.MainActivity
+import com.furianrt.mydiary.data.model.SyncProgressMessage
 import javax.inject.Inject
 
 class SyncService : Service(), SyncContract.View {
@@ -20,7 +19,7 @@ class SyncService : Service(), SyncContract.View {
         private const val FOREGROUND_ID = 1
         private const val EXTRA_PROGRESS_MESSAGE = "progress_message"
 
-        fun getProgressMessage(intent: Intent?): ProgressMessage? =
+        fun getProgressMessage(intent: Intent?): SyncProgressMessage? =
                 intent?.getParcelableExtra(EXTRA_PROGRESS_MESSAGE)
     }
 
@@ -47,30 +46,30 @@ class SyncService : Service(), SyncContract.View {
         return START_NOT_STICKY
     }
 
-    override fun sendProgressUpdate(progressMessage: ProgressMessage) {
+    override fun sendProgressUpdate(progressMessage: SyncProgressMessage) {
         progressMessage.message = if (progressMessage.hasError) {
             when (progressMessage.taskIndex) {
-                ProgressMessage.PROFILE_CHECK -> getString(R.string.sync_error_profile)
-                ProgressMessage.SYNC_NOTES -> getString(R.string.sync_error_notes)
-                ProgressMessage.SYNC_APPEARANCE -> getString(R.string.sync_error_appearance)
-                ProgressMessage.SYNC_CATEGORIES -> getString(R.string.sync_error_categories)
-                ProgressMessage.SYNC_TAGS -> getString(R.string.sync_error_tags)
-                ProgressMessage.SYNC_NOTE_TAGS -> getString(R.string.sync_error_note_tags)
-                ProgressMessage.SYNC_IMAGES -> getString(R.string.sync_error_images)
-                ProgressMessage.CLEANUP -> getString(R.string.sync_error_cleanup)
+                SyncProgressMessage.PROFILE_CHECK -> getString(R.string.sync_error_profile)
+                SyncProgressMessage.SYNC_NOTES -> getString(R.string.sync_error_notes)
+                SyncProgressMessage.SYNC_APPEARANCE -> getString(R.string.sync_error_appearance)
+                SyncProgressMessage.SYNC_CATEGORIES -> getString(R.string.sync_error_categories)
+                SyncProgressMessage.SYNC_TAGS -> getString(R.string.sync_error_tags)
+                SyncProgressMessage.SYNC_NOTE_TAGS -> getString(R.string.sync_error_note_tags)
+                SyncProgressMessage.SYNC_IMAGES -> getString(R.string.sync_error_images)
+                SyncProgressMessage.CLEANUP -> getString(R.string.sync_error_cleanup)
                 else -> getString(R.string.sync_error)
             }
         } else {
             when (progressMessage.taskIndex) {
-                ProgressMessage.PROFILE_CHECK -> getString(R.string.sync_profile_check)
-                ProgressMessage.SYNC_NOTES -> getString(R.string.sync_notes)
-                ProgressMessage.SYNC_APPEARANCE -> getString(R.string.sync_appearance)
-                ProgressMessage.SYNC_CATEGORIES -> getString(R.string.sync_categories)
-                ProgressMessage.SYNC_TAGS -> getString(R.string.sync_tags)
-                ProgressMessage.SYNC_NOTE_TAGS -> getString(R.string.sync_note_tags)
-                ProgressMessage.SYNC_IMAGES -> getString(R.string.sync_images)
-                ProgressMessage.CLEANUP -> getString(R.string.sync_cleanup)
-                ProgressMessage.SYNC_FINISHED -> getString(R.string.sync_done)
+                SyncProgressMessage.PROFILE_CHECK -> getString(R.string.sync_profile_check)
+                SyncProgressMessage.SYNC_NOTES -> getString(R.string.sync_notes)
+                SyncProgressMessage.SYNC_APPEARANCE -> getString(R.string.sync_appearance)
+                SyncProgressMessage.SYNC_CATEGORIES -> getString(R.string.sync_categories)
+                SyncProgressMessage.SYNC_TAGS -> getString(R.string.sync_tags)
+                SyncProgressMessage.SYNC_NOTE_TAGS -> getString(R.string.sync_note_tags)
+                SyncProgressMessage.SYNC_IMAGES -> getString(R.string.sync_images)
+                SyncProgressMessage.CLEANUP -> getString(R.string.sync_cleanup)
+                SyncProgressMessage.SYNC_FINISHED -> getString(R.string.sync_done)
                 else -> ""
             }
         }

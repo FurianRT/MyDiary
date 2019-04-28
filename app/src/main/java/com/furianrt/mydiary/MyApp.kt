@@ -15,7 +15,7 @@ import com.furianrt.mydiary.di.application.AppComponent
 import com.furianrt.mydiary.di.application.AppModule
 import com.furianrt.mydiary.di.application.DaggerAppComponent
 import com.furianrt.mydiary.general.GlideApp
-import com.furianrt.mydiary.pin.PinActivity
+import com.furianrt.mydiary.screens.pin.PinActivity
 import com.yanzhenjie.album.Album
 import com.yanzhenjie.album.AlbumConfig
 import com.yanzhenjie.album.AlbumFile

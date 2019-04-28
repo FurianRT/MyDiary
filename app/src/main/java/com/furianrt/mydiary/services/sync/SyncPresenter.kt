@@ -4,7 +4,7 @@ import android.util.Log
 import com.furianrt.mydiary.data.DataManager
 import com.furianrt.mydiary.data.model.MyImage
 import com.furianrt.mydiary.data.model.MyProfile
-import com.furianrt.mydiary.data.model.ProgressMessage
+import com.furianrt.mydiary.data.model.SyncProgressMessage
 import io.reactivex.Completable
 import io.reactivex.Observable
 import io.reactivex.Single
@@ -24,7 +24,7 @@ class SyncPresenter(
     private lateinit var mProfile: MyProfile
 
     override fun onStartCommand() {
-        view?.sendProgressUpdate(ProgressMessage(ProgressMessage.PROFILE_CHECK))
+        view?.sendProgressUpdate(SyncProgressMessage(SyncProgressMessage.PROFILE_CHECK))
         addDisposable(Observable.concat(listOf(
                 checkProfile(),
                 syncNotes(),
@@ -43,13 +43,13 @@ class SyncPresenter(
             it.printStackTrace()
             Log.e(TAG, "Sync error")
             if (it is SyncGoneWrongException) {
-                view?.sendProgressUpdate(ProgressMessage(
+                view?.sendProgressUpdate(SyncProgressMessage(
                         taskIndex = it.taskIndex,
                         hasError = true
                 ))
             } else {
-                view?.sendProgressUpdate(ProgressMessage(
-                        taskIndex = ProgressMessage.UNKNOWN,
+                view?.sendProgressUpdate(SyncProgressMessage(
+                        taskIndex = SyncProgressMessage.UNKNOWN,
                         hasError = true
                 ))
             }
@@ -57,7 +57,7 @@ class SyncPresenter(
         }))
     }
 
-    private fun checkProfile(): Observable<ProgressMessage> =
+    private fun checkProfile(): Observable<SyncProgressMessage> =
             mDataManager.getDbProfile()
                     .firstOrError()
                     .flatMap { mDataManager.getCloudProfile(it.email) }
@@ -68,17 +68,17 @@ class SyncPresenter(
                     })
                     .flatMapObservable { isPasswordValid ->
                         return@flatMapObservable if (isPasswordValid) {
-                            Observable.just(ProgressMessage(ProgressMessage.SYNC_NOTES, 5))
+                            Observable.just(SyncProgressMessage(SyncProgressMessage.SYNC_NOTES, 5))
                         } else {
-                            Observable.just(ProgressMessage(
-                                    taskIndex = ProgressMessage.PROFILE_CHECK,
+                            Observable.just(SyncProgressMessage(
+                                    taskIndex = SyncProgressMessage.PROFILE_CHECK,
                                     hasError = true
                             ))
                         }
                     }
-                    .onErrorResumeNext(Observable.error(SyncGoneWrongException(ProgressMessage.PROFILE_CHECK)))
+                    .onErrorResumeNext(Observable.error(SyncGoneWrongException(SyncProgressMessage.PROFILE_CHECK)))
 
-    private fun syncNotes(): Observable<ProgressMessage> =
+    private fun syncNotes(): Observable<SyncProgressMessage> =
             mDataManager.getAllNotes()
                     .first(emptyList())
                     .map { notes -> notes.filter { !it.isSync(mProfile.email) } }
@@ -92,10 +92,10 @@ class SyncPresenter(
                     .flatMapCompletable { mDataManager.deleteNotesFromCloud(it) }
                     .andThen(mDataManager.getAllNotesFromCloud())
                     .flatMapCompletable { mDataManager.insertNote(it) }
-                    .andThen(Observable.just(ProgressMessage(ProgressMessage.SYNC_APPEARANCE, 20)))
-                    .onErrorResumeNext(Observable.error(SyncGoneWrongException(ProgressMessage.SYNC_NOTES)))
+                    .andThen(Observable.just(SyncProgressMessage(SyncProgressMessage.SYNC_APPEARANCE, 20)))
+                    .onErrorResumeNext(Observable.error(SyncGoneWrongException(SyncProgressMessage.SYNC_NOTES)))
 
-    private fun syncAppearance(): Observable<ProgressMessage> =
+    private fun syncAppearance(): Observable<SyncProgressMessage> =
             mDataManager.getAllNoteAppearances()
                     .first(emptyList())
                     .map { appearances -> appearances.filter { !it.isSync(mProfile.email) } }
@@ -109,10 +109,10 @@ class SyncPresenter(
                     .flatMapCompletable { mDataManager.deleteAppearancesFromCloud(it) }
                     .andThen(mDataManager.getAllAppearancesFromCloud())
                     .flatMapCompletable { mDataManager.insertAppearance(it) }
-                    .andThen(Observable.just(ProgressMessage(ProgressMessage.SYNC_CATEGORIES, 35)))
-                    .onErrorResumeNext(Observable.error(SyncGoneWrongException(ProgressMessage.SYNC_APPEARANCE)))
+                    .andThen(Observable.just(SyncProgressMessage(SyncProgressMessage.SYNC_CATEGORIES, 35)))
+                    .onErrorResumeNext(Observable.error(SyncGoneWrongException(SyncProgressMessage.SYNC_APPEARANCE)))
 
-    private fun syncCategories(): Observable<ProgressMessage> =
+    private fun syncCategories(): Observable<SyncProgressMessage> =
             mDataManager.getAllCategories()
                     .first(emptyList())
                     .map { categories -> categories.filter { !it.isSync(mProfile.email) } }
@@ -126,10 +126,10 @@ class SyncPresenter(
                     .flatMapCompletable { mDataManager.deleteCategoriesFromCloud(it) }
                     .andThen(mDataManager.getAllCategoriesFromCloud())
                     .flatMapCompletable { mDataManager.insertCategory(it) }
-                    .andThen(Observable.just(ProgressMessage(ProgressMessage.SYNC_TAGS, 50)))
-                    .onErrorResumeNext(Observable.error(SyncGoneWrongException(ProgressMessage.SYNC_CATEGORIES)))
+                    .andThen(Observable.just(SyncProgressMessage(SyncProgressMessage.SYNC_TAGS, 50)))
+                    .onErrorResumeNext(Observable.error(SyncGoneWrongException(SyncProgressMessage.SYNC_CATEGORIES)))
 
-    private fun syncTags(): Observable<ProgressMessage> =
+    private fun syncTags(): Observable<SyncProgressMessage> =
             mDataManager.getAllTags()
                     .map { tags -> tags.filter { !it.isSync(mProfile.email) } }
                     .flatMapCompletable { tags ->
@@ -142,10 +142,10 @@ class SyncPresenter(
                     .flatMapCompletable { mDataManager.deleteTagsFromCloud(it) }
                     .andThen(mDataManager.getAllTagsFromCloud())
                     .flatMapCompletable { mDataManager.insertTag(it) }
-                    .andThen(Observable.just(ProgressMessage(ProgressMessage.SYNC_NOTE_TAGS, 65)))
-                    .onErrorResumeNext(Observable.error(SyncGoneWrongException(ProgressMessage.SYNC_TAGS)))
+                    .andThen(Observable.just(SyncProgressMessage(SyncProgressMessage.SYNC_NOTE_TAGS, 65)))
+                    .onErrorResumeNext(Observable.error(SyncGoneWrongException(SyncProgressMessage.SYNC_TAGS)))
 
-    private fun syncNoteTags(): Observable<ProgressMessage> =
+    private fun syncNoteTags(): Observable<SyncProgressMessage> =
             mDataManager.getAllNoteTags()
                     .first(emptyList())
                     .map { noteTags -> noteTags.filter { !it.isSync(mProfile.email) } }
@@ -159,10 +159,10 @@ class SyncPresenter(
                     .flatMapCompletable { mDataManager.deleteNoteTagsFromCloud(it) }
                     .andThen(mDataManager.getAllNoteTagsFromCloud())
                     .flatMapCompletable { mDataManager.insertNoteTag(it) }
-                    .andThen(Observable.just(ProgressMessage(ProgressMessage.SYNC_IMAGES, 80)))
-                    .onErrorResumeNext(Observable.error(SyncGoneWrongException(ProgressMessage.SYNC_NOTE_TAGS)))
+                    .andThen(Observable.just(SyncProgressMessage(SyncProgressMessage.SYNC_IMAGES, 80)))
+                    .onErrorResumeNext(Observable.error(SyncGoneWrongException(SyncProgressMessage.SYNC_NOTE_TAGS)))
 
-    private fun syncImages(): Observable<ProgressMessage> =
+    private fun syncImages(): Observable<SyncProgressMessage> =
             mDataManager.getAllImages()
                     .first(emptyList())
                     .map { images -> images.filter { !it.isSync(mProfile.email) } }
@@ -189,10 +189,10 @@ class SyncPresenter(
                                 mDataManager.insertImages(it)
                         ))
                     }
-                    .andThen(Observable.just(ProgressMessage(ProgressMessage.CLEANUP, 95)))
-                    .onErrorResumeNext(Observable.error(SyncGoneWrongException(ProgressMessage.SYNC_IMAGES)))
+                    .andThen(Observable.just(SyncProgressMessage(SyncProgressMessage.CLEANUP, 95)))
+                    .onErrorResumeNext(Observable.error(SyncGoneWrongException(SyncProgressMessage.SYNC_IMAGES)))
 
-    private fun cleanup(): Observable<ProgressMessage> =
+    private fun cleanup(): Observable<SyncProgressMessage> =
             mDataManager.cleanupNotes()
                     .andThen(mDataManager.cleanupAppearances())
                     .andThen(mDataManager.cleanupCategories())
@@ -207,6 +207,6 @@ class SyncPresenter(
                                 mDataManager.updateDbProfile(profile)
                         ))
                     }
-                    .andThen(Observable.just(ProgressMessage(ProgressMessage.SYNC_FINISHED, 100)))
-                    .onErrorResumeNext(Observable.error(SyncGoneWrongException(ProgressMessage.CLEANUP)))
+                    .andThen(Observable.just(SyncProgressMessage(SyncProgressMessage.SYNC_FINISHED, 100)))
+                    .onErrorResumeNext(Observable.error(SyncGoneWrongException(SyncProgressMessage.CLEANUP)))
 }

@@ -7,7 +7,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import com.furianrt.mydiary.R
 import com.furianrt.mydiary.data.prefs.PreferencesHelper
-import com.furianrt.mydiary.pin.PinActivity
+import com.furianrt.mydiary.screens.pin.PinActivity
 
 abstract class BaseActivity : AppCompatActivity() {
 

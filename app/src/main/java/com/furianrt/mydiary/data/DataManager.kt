@@ -5,11 +5,6 @@ import com.furianrt.mydiary.data.model.*
 import io.reactivex.*
 
 interface DataManager {
-
-    companion object {
-        const val PREFS_ENCRYPTION_PASSWORD = "yd9Hyr1Dpw6Bf07h"
-    }
-
     fun insertNote(note: MyNote): Completable
     fun insertNote(notes: List<MyNote>): Completable
     fun insertNoteTag(noteTag: NoteTag): Completable

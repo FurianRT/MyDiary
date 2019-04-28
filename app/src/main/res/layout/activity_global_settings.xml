@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:background="@color/grey_light"
-    tools:context=".settings.global.GlobalSettingsActivity">
+    tools:context=".screens.settings.global.GlobalSettingsActivity">
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar_settings_global"
@@ -18,7 +18,7 @@
 
     <fragment
         android:id="@+id/fragment_settings_global"
-        android:name="com.furianrt.mydiary.settings.global.GlobalSettingsFragment"
+        android:name="com.furianrt.mydiary.screens.settings.global.GlobalSettingsFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 

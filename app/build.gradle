@@ -26,6 +26,7 @@ android {
     buildTypes.each {
         it.buildConfigField 'String', 'WEATHER_API_KEY', weatherApikey
         it.buildConfigField 'String', 'IMAGE_API_KEY', imageApikey
+        it.buildConfigField 'String', 'PREFS_PASSWORD', prefsPassword
     }
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
@@ -92,10 +93,10 @@ dependencies {
     implementation "com.github.bumptech.glide:glide:$glide_version"
     kapt "com.github.bumptech.glide:compiler:$glide_version"
 
-    //Picture album
+    //Image album
     implementation 'com.yanzhenjie:album:2.1.2'
 
-    //Picture editor
+    //Image editor
     implementation 'com.github.yalantis:ucrop:2.2.2-native'
 
     //Color picker
@@ -116,15 +117,14 @@ dependencies {
     implementation 'com.google.firebase:firebase-storage:16.1.0'
     implementation 'com.google.firebase:firebase-firestore:18.2.0'
     implementation 'com.google.firebase:firebase-messaging:17.6.0'
+    implementation 'com.google.firebase:firebase-perf:16.2.5'
+    implementation 'com.google.firebase:firebase-auth:16.2.1'
 
     //Rx for FirebaseStorage and Firestore
     implementation 'com.github.FrangSierra:RxFirebase:1.5.6'
 
-    //Crashlytics
+    //Crash tracking
     implementation 'com.crashlytics.sdk.android:crashlytics:2.9.9'
-
-    //Performance monitoring
-    implementation 'com.google.firebase:firebase-perf:16.2.5'
 
     //Encryption
     implementation 'org.mindrot:jbcrypt:0.4'

@@ -28,6 +28,7 @@
                 <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
             </intent-filter>
         </service>
+
         <service
             android:name=".services.sync.SyncService"
             android:exported="false" />
@@ -42,21 +43,17 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".note.NoteActivity" />
+        <activity android:name=".screens.note.NoteActivity" />
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyBqIaX5gl6vGr0C5xZA29CKXoYyJPW2pxI" />
 
-        <activity android:name=".gallery.GalleryActivity" />
-        <activity android:name=".settings.global.GlobalSettingsActivity" />
-        <activity android:name=".settings.note.NoteSettingsActivity" />
-        <activity android:name=".pin.PinActivity" />
+        <activity android:name=".screens.gallery.GalleryActivity" />
+        <activity android:name=".screens.settings.global.GlobalSettingsActivity" />
+        <activity android:name=".screens.settings.note.NoteSettingsActivity" />
+        <activity android:name=".screens.pin.PinActivity" />
 
-        <activity
-            android:name="com.yalantis.ucrop.UCropActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppTheme" />
     </application>
 
 </manifest>

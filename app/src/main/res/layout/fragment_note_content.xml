@@ -5,7 +5,7 @@
     android:id="@+id/layout_note_content_root"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    tools:context=".note.fragments.notefragment.edit.NoteEditFragment">
+    tools:context=".screens.note.fragments.notefragment.edit.NoteEditFragment">
 
     <TextView
         android:id="@+id/text_note_title"

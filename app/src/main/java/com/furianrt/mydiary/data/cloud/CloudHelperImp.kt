@@ -14,8 +14,8 @@ import io.reactivex.Observable
 import io.reactivex.Single
 
 class CloudHelperImp(
-        private val mFirestore: FirebaseFirestore,
-        private val mFirebaseStorage: FirebaseStorage
+        private val firestore: FirebaseFirestore,
+        private val firebaseStorage: FirebaseStorage
 ) : CloudHelper {
 
     companion object {
@@ -30,7 +30,7 @@ class CloudHelperImp(
     }
 
     override fun isProfileExists(email: String): Single<Boolean> =
-            RxFirestore.getDocument(mFirestore.collection(COLLECTION_USERS)
+            RxFirestore.getDocument(firestore.collection(COLLECTION_USERS)
                     .document(email)) { return@getDocument it.exists() }
                     .toSingle()
                     .onErrorReturn {
@@ -41,21 +41,42 @@ class CloudHelperImp(
                         }
                     }
 
+
+    /*private fun AuthResult.toMyProfile() = MyProfile(
+            this.user.email,
+
+            )
+
+    override fun createUser(email: String, password: String): Maybe<AuthResult> =
+            RxFirebaseAuth.createUserWithEmailAndPassword(firebaseAuth, email, password)
+
+    override fun signIn(email: String, password: String): Maybe<AuthResult> =
+            RxFirebaseAuth.signInWithEmailAndPassword(firebaseAuth, email, password)
+
+    override fun signOut() = firebaseAuth.signOut()
+
+    override fun observeAuthState(): Observable<FirebaseAuth> =
+            RxFirebaseAuth.observeAuthState(firebaseAuth)
+
+    override fun isSignedIn(): Single<Boolean> =
+            Single.fromCallable { firebaseAuth.currentUser != null }*/
+
+
     override fun getProfile(email: String): Single<MyProfile> =
-            RxFirestore.getDocument(mFirestore.collection(COLLECTION_USERS)
+            RxFirestore.getDocument(firestore.collection(COLLECTION_USERS)
                     .document(email)) { return@getDocument it.toObject(MyProfile::class.java)!! }
                     .toSingle()
 
     override fun saveProfile(profile: MyProfile): Completable =
             RxFirestore.setDocument(
-                    mFirestore.collection(COLLECTION_USERS).document(profile.email),
+                    firestore.collection(COLLECTION_USERS).document(profile.email),
                     profile
             )
 
     override fun saveNotes(notes: List<MyNote>, profile: MyProfile): Completable =
-            RxFirestore.runTransaction(mFirestore) { transaction ->
+            RxFirestore.runTransaction(firestore) { transaction ->
                 notes.forEach { note ->
-                    transaction.set(mFirestore.collection(COLLECTION_USERS)
+                    transaction.set(firestore.collection(COLLECTION_USERS)
                             .document(profile.email)
                             .collection(COLLECTION_NOTES)
                             .document(note.id), note)
@@ -63,9 +84,9 @@ class CloudHelperImp(
             }
 
     override fun saveCategories(categories: List<MyCategory>, profile: MyProfile): Completable =
-            RxFirestore.runTransaction(mFirestore) { transaction ->
+            RxFirestore.runTransaction(firestore) { transaction ->
                 categories.forEach { category ->
-                    transaction.set(mFirestore.collection(COLLECTION_USERS)
+                    transaction.set(firestore.collection(COLLECTION_USERS)
                             .document(profile.email)
                             .collection(COLLECTION_CATEGORIES)
                             .document(category.id), category)
@@ -73,10 +94,10 @@ class CloudHelperImp(
             }
 
     override fun saveNoteTags(noteTags: List<NoteTag>, profile: MyProfile): Completable =
-            RxFirestore.runTransaction(mFirestore) { transaction ->
+            RxFirestore.runTransaction(firestore) { transaction ->
                 noteTags.forEach { noteTag ->
                     Log.e(TAG, "saving noteTag in cloud Id: " + noteTag.noteId + noteTag.tagId)
-                    transaction.set(mFirestore.collection(COLLECTION_USERS)
+                    transaction.set(firestore.collection(COLLECTION_USERS)
                             .document(profile.email)
                             .collection(COLLECTION_NOTE_TAGS)
                             .document(noteTag.noteId + noteTag.tagId), noteTag)
@@ -84,9 +105,9 @@ class CloudHelperImp(
             }
 
     override fun saveTags(tags: List<MyTag>, profile: MyProfile): Completable =
-            RxFirestore.runTransaction(mFirestore) { transaction ->
+            RxFirestore.runTransaction(firestore) { transaction ->
                 tags.forEach { tag ->
-                    transaction.set(mFirestore.collection(COLLECTION_USERS)
+                    transaction.set(firestore.collection(COLLECTION_USERS)
                             .document(profile.email)
                             .collection(COLLECTION_TAGS)
                             .document(tag.id), tag)
@@ -94,9 +115,9 @@ class CloudHelperImp(
             }
 
     override fun saveAppearances(appearances: List<MyNoteAppearance>, profile: MyProfile): Completable =
-            RxFirestore.runTransaction(mFirestore) { transaction ->
+            RxFirestore.runTransaction(firestore) { transaction ->
                 appearances.forEach { appearance ->
-                    transaction.set(mFirestore.collection(COLLECTION_USERS)
+                    transaction.set(firestore.collection(COLLECTION_USERS)
                             .document(profile.email)
                             .collection(COLLECTION_APPEARANCES)
                             .document(appearance.appearanceId), appearance)
@@ -104,9 +125,9 @@ class CloudHelperImp(
             }
 
     override fun saveImages(images: List<MyImage>, profile: MyProfile): Completable =
-            RxFirestore.runTransaction(mFirestore) { transaction ->
+            RxFirestore.runTransaction(firestore) { transaction ->
                 images.forEach { image ->
-                    transaction.set(mFirestore.collection(COLLECTION_USERS)
+                    transaction.set(firestore.collection(COLLECTION_USERS)
                             .document(profile.email)
                             .collection(COLLECTION_IMAGES)
                             .document(image.name), image)
@@ -116,7 +137,7 @@ class CloudHelperImp(
     override fun saveImagesFiles(images: List<MyImage>, profile: MyProfile): Completable =
             Observable.fromIterable(images)
                     .flatMapSingle { image ->
-                        RxFirebaseStorage.putFile(mFirebaseStorage.reference
+                        RxFirebaseStorage.putFile(firebaseStorage.reference
                                 .child(COLLECTION_USERS)
                                 .child(profile.email)
                                 .child(COLLECTION_NOTES)
@@ -129,10 +150,10 @@ class CloudHelperImp(
                     .ignoreElement()
 
     override fun deleteNotes(notes: List<MyNote>, profile: MyProfile): Completable =
-            RxFirestore.runTransaction(mFirestore) { transaction ->
+            RxFirestore.runTransaction(firestore) { transaction ->
                 notes.forEach { note ->
                     Log.e(TAG, "deleting note from cloud id: ${note.id}")
-                    transaction.delete(mFirestore.collection(COLLECTION_USERS)
+                    transaction.delete(firestore.collection(COLLECTION_USERS)
                             .document(profile.email)
                             .collection(COLLECTION_NOTES)
                             .document(note.id))
@@ -142,9 +163,9 @@ class CloudHelperImp(
                     .onErrorComplete()
 
     override fun deleteCategories(categories: List<MyCategory>, profile: MyProfile): Completable =
-            RxFirestore.runTransaction(mFirestore) { transaction ->
+            RxFirestore.runTransaction(firestore) { transaction ->
                 categories.forEach { category ->
-                    transaction.delete(mFirestore.collection(COLLECTION_USERS)
+                    transaction.delete(firestore.collection(COLLECTION_USERS)
                             .document(profile.email)
                             .collection(COLLECTION_CATEGORIES)
                             .document(category.id))
@@ -154,10 +175,10 @@ class CloudHelperImp(
                     .onErrorComplete()
 
     override fun deleteNoteTags(noteTags: List<NoteTag>, profile: MyProfile): Completable =
-            RxFirestore.runTransaction(mFirestore) { transaction ->
+            RxFirestore.runTransaction(firestore) { transaction ->
                 noteTags.forEach { noteTag ->
                     Log.e(TAG, "deleting noteTag from cloud id: " + noteTag.noteId + noteTag.tagId)
-                    transaction.delete(mFirestore.collection(COLLECTION_USERS)
+                    transaction.delete(firestore.collection(COLLECTION_USERS)
                             .document(profile.email)
                             .collection(COLLECTION_NOTE_TAGS)
                             .document(noteTag.noteId + noteTag.tagId))
@@ -167,9 +188,9 @@ class CloudHelperImp(
                     .onErrorComplete()
 
     override fun deleteTags(tags: List<MyTag>, profile: MyProfile): Completable =
-            RxFirestore.runTransaction(mFirestore) { transaction ->
+            RxFirestore.runTransaction(firestore) { transaction ->
                 tags.forEach { tag ->
-                    transaction.delete(mFirestore.collection(COLLECTION_USERS)
+                    transaction.delete(firestore.collection(COLLECTION_USERS)
                             .document(profile.email)
                             .collection(COLLECTION_TAGS)
                             .document(tag.id))
@@ -179,9 +200,9 @@ class CloudHelperImp(
                     .onErrorComplete()
 
     override fun deleteAppearances(appearances: List<MyNoteAppearance>, profile: MyProfile): Completable =
-            RxFirestore.runTransaction(mFirestore) { transaction ->
+            RxFirestore.runTransaction(firestore) { transaction ->
                 appearances.forEach { appearance ->
-                    transaction.delete(mFirestore.collection(COLLECTION_USERS)
+                    transaction.delete(firestore.collection(COLLECTION_USERS)
                             .document(profile.email)
                             .collection(COLLECTION_APPEARANCES)
                             .document(appearance.appearanceId))
@@ -191,9 +212,9 @@ class CloudHelperImp(
                     .onErrorComplete()
 
     override fun deleteImages(images: List<MyImage>, profile: MyProfile): Completable =
-            RxFirestore.runTransaction(mFirestore) { transaction ->
+            RxFirestore.runTransaction(firestore) { transaction ->
                 images.forEach { images ->
-                    transaction.delete(mFirestore.collection(COLLECTION_USERS)
+                    transaction.delete(firestore.collection(COLLECTION_USERS)
                             .document(profile.email)
                             .collection(COLLECTION_IMAGES)
                             .document(images.name))
@@ -203,7 +224,7 @@ class CloudHelperImp(
                     .onErrorComplete()
                     .andThen(Observable.fromIterable(images))
                     .flatMapSingle { image ->
-                        RxFirebaseStorage.delete(mFirebaseStorage.reference
+                        RxFirebaseStorage.delete(firebaseStorage.reference
                                 .child(COLLECTION_USERS)
                                 .child(profile.email)
                                 .child(COLLECTION_NOTES)
@@ -218,37 +239,37 @@ class CloudHelperImp(
                     .ignoreElement()
 
     override fun getAllNotes(profile: MyProfile): Single<List<MyNote>> =
-            RxFirestore.getCollection(mFirestore.collection(COLLECTION_USERS)
+            RxFirestore.getCollection(firestore.collection(COLLECTION_USERS)
                     .document(profile.email)
                     .collection(COLLECTION_NOTES), MyNote::class.java)
                     .toSingle(emptyList())
 
     override fun getAllCategories(profile: MyProfile): Single<List<MyCategory>> =
-            RxFirestore.getCollection(mFirestore.collection(COLLECTION_USERS)
+            RxFirestore.getCollection(firestore.collection(COLLECTION_USERS)
                     .document(profile.email)
                     .collection(COLLECTION_CATEGORIES), MyCategory::class.java)
                     .toSingle(emptyList())
 
     override fun getAllTags(profile: MyProfile): Single<List<MyTag>> =
-            RxFirestore.getCollection(mFirestore.collection(COLLECTION_USERS)
+            RxFirestore.getCollection(firestore.collection(COLLECTION_USERS)
                     .document(profile.email)
                     .collection(COLLECTION_TAGS), MyTag::class.java)
                     .toSingle(emptyList())
 
     override fun getAllAppearances(profile: MyProfile): Single<List<MyNoteAppearance>> =
-            RxFirestore.getCollection(mFirestore.collection(COLLECTION_USERS)
+            RxFirestore.getCollection(firestore.collection(COLLECTION_USERS)
                     .document(profile.email)
                     .collection(COLLECTION_APPEARANCES), MyNoteAppearance::class.java)
                     .toSingle(emptyList())
 
     override fun getAllNoteTags(profile: MyProfile): Single<List<NoteTag>> =
-            RxFirestore.getCollection(mFirestore.collection(COLLECTION_USERS)
+            RxFirestore.getCollection(firestore.collection(COLLECTION_USERS)
                     .document(profile.email)
                     .collection(COLLECTION_NOTE_TAGS), NoteTag::class.java)
                     .toSingle(emptyList())
 
     override fun getAllImages(profile: MyProfile): Single<List<MyImage>> =
-            RxFirestore.getCollection(mFirestore.collection(COLLECTION_USERS)
+            RxFirestore.getCollection(firestore.collection(COLLECTION_USERS)
                     .document(profile.email)
                     .collection(COLLECTION_IMAGES), MyImage::class.java)
                     .toSingle(emptyList())
@@ -256,7 +277,7 @@ class CloudHelperImp(
     override fun loadImageFiles(profile: MyProfile, images: List<MyImage>): Completable =
             Observable.fromIterable(images)
                     .flatMapSingle { image ->
-                        RxFirebaseStorage.getFile(mFirebaseStorage.reference
+                        RxFirebaseStorage.getFile(firebaseStorage.reference
                                 .child(COLLECTION_USERS)
                                 .child(profile.email)
                                 .child(COLLECTION_NOTES)

@@ -6,6 +6,12 @@ import io.reactivex.Single
 
 interface CloudHelper {
 
+    /*fun createUser(email: String, password: String): Maybe<AuthResult>
+    fun signIn(email: String, password: String): Maybe<AuthResult>
+    fun signOut()
+    fun observeAuthState(): Observable<FirebaseAuth>
+    fun isSignedIn(): Single<Boolean>*/
+
     fun isProfileExists(email: String): Single<Boolean>
     fun getProfile(email: String): Single<MyProfile>
     fun saveProfile(profile: MyProfile): Completable
