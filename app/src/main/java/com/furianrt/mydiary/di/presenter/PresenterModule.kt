@@ -4,6 +4,8 @@ import android.content.Context
 import com.furianrt.mydiary.data.DataManager
 import com.furianrt.mydiary.dialogs.categories.CategoriesDialogContract
 import com.furianrt.mydiary.dialogs.categories.CategoriesDialogPresenter
+import com.furianrt.mydiary.dialogs.categories.fragments.delete.CategoryDeleteContract
+import com.furianrt.mydiary.dialogs.categories.fragments.delete.CategoryDeletePresenter
 import com.furianrt.mydiary.dialogs.categories.fragments.edit.CategoryEditContract
 import com.furianrt.mydiary.dialogs.categories.fragments.edit.CategoryEditPresenter
 import com.furianrt.mydiary.dialogs.categories.fragments.list.CategoryListContract
@@ -22,6 +24,8 @@ import com.furianrt.mydiary.screens.main.MainActivityContract
 import com.furianrt.mydiary.screens.main.MainActivityPresenter
 import com.furianrt.mydiary.screens.main.fragments.authentication.AuthContract
 import com.furianrt.mydiary.screens.main.fragments.authentication.AuthPresenter
+import com.furianrt.mydiary.screens.main.fragments.authentication.forgot.ForgotPassContract
+import com.furianrt.mydiary.screens.main.fragments.authentication.forgot.ForgotPassPresenter
 import com.furianrt.mydiary.screens.main.fragments.authentication.login.LoginContract
 import com.furianrt.mydiary.screens.main.fragments.authentication.login.LoginPresenter
 import com.furianrt.mydiary.screens.main.fragments.authentication.registration.RegistrationContract
@@ -210,4 +214,14 @@ class PresenterModule(private val context: Context) {
     @PresenterScope
     fun provideBackupEmailPresenter(dataManager: DataManager): BackupEmailContract.Presenter =
             BackupEmailPresenter(dataManager)
+
+    @Provides
+    @PresenterScope
+    fun provideForgotPassPresenter(dataManager: DataManager): ForgotPassContract.Presenter =
+            ForgotPassPresenter(dataManager)
+
+    @Provides
+    @PresenterScope
+    fun provideCategoryDeletePresenter(dataManager: DataManager): CategoryDeleteContract.Presenter =
+            CategoryDeletePresenter(dataManager)
 }

@@ -644,10 +644,6 @@ class NoteFragment : Fragment(), NoteFragmentContract.View, OnMapReadyCallback,
         disableActionBarExpanding(false)
     }
 
-    override fun closeView() {
-        activity?.finish()
-    }
-
     fun onNoteTextChange(title: String, content: String) {
         mPresenter.onNoteTextChange(title, content)
         childFragmentManager.findFragmentByTag(NoteContentFragment.TAG)?.let {

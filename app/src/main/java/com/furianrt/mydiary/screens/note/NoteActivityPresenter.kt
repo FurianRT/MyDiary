@@ -3,8 +3,6 @@ package com.furianrt.mydiary.screens.note
 import com.furianrt.mydiary.data.DataManager
 import com.furianrt.mydiary.data.model.MyNote
 import com.furianrt.mydiary.data.model.MyNoteAppearance
-import com.furianrt.mydiary.data.model.MyNoteWithProp
-import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 
 class NoteActivityPresenter(
@@ -13,30 +11,36 @@ class NoteActivityPresenter(
 
     override fun loadNotes() {
         addDisposable(dataManager.getAllNotesWithProp()
-                .firstOrError()
-                .flatMapObservable { Observable.fromIterable(it) }
-                .toSortedList { o1, o2 ->
-                    return@toSortedList if (dataManager.isSortDesc()) {
-                        o2.note.time.compareTo(o1.note.time)
-                    } else {
-                        o1.note.time.compareTo(o2.note.time)
-                    }
-                }
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { notes -> view?.showNotes(notes) })
+                .subscribe { notes ->
+                    if (notes.isEmpty()) {
+                        view?.closeView()
+                    } else {
+                        view?.showNotes(if (dataManager.isSortDesc()) {
+                            notes.sortedByDescending { it.note.time }
+                        } else {
+                            notes.sortedBy { it.note.time }
+                        })
+                    }
+                })
     }
 
     override fun loadNote(noteId: String) {
-        val tempNote = MyNote(noteId)
-        val noteAppearance = MyNoteAppearance(tempNote.id)
+        val newNote = MyNote(noteId)
+        val noteAppearance = MyNoteAppearance(newNote.id)
         addDisposable(dataManager.findNote(noteId)
-                .switchIfEmpty(dataManager.insertNote(tempNote)
+                .switchIfEmpty(dataManager.insertNote(newNote)
                         .andThen(dataManager.insertAppearance(noteAppearance))
-                        .toSingleDefault(tempNote))
+                        .toSingleDefault(newNote))
+                .flatMapPublisher { dataManager.getAllNotesWithProp() }
+                .map { notes -> notes.filter { it.note.id == noteId } }
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { note ->
-                    view?.showNotes(listOf(MyNoteWithProp(note, null, null, null)))
+                .subscribe { notes ->
+                    if (notes.isEmpty()) {
+                        view?.closeView()
+                    } else {
+                        view?.showNotes(notes)
+                    }
                 })
-
     }
 }

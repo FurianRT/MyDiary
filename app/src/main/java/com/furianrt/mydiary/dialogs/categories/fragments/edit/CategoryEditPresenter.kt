@@ -9,17 +9,22 @@ class CategoryEditPresenter(
         private val dataManager: DataManager
 ) : CategoryEditContract.Presenter() {
 
-    override fun onButtonDoneClick(category: MyCategory) {
-        addDisposable(if (category.id.isEmpty()) {
-            category.id = generateUniqueId()
-            dataManager.insertCategory(category)
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe { view?.close() }
+    override fun onButtonDoneClick(categoryId: String, categoryName: String, categoryColor: Int) {
+        if (categoryName.isEmpty()) {
+            view?.showErrorEmptyName()
         } else {
-            dataManager.updateCategory(category)
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe { view?.close() }
-        })
+            val category = MyCategory(categoryId, categoryName, categoryColor)
+            addDisposable(if (category.id.isEmpty()) {
+                category.id = generateUniqueId()
+                dataManager.insertCategory(category)
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe { view?.close() }
+            } else {
+                dataManager.updateCategory(category)
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe { view?.close() }
+            })
+        }
     }
 
     override fun loadCategory(categoryId: String) {

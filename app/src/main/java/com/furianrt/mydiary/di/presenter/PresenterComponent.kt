@@ -1,6 +1,7 @@
 package com.furianrt.mydiary.di.presenter
 
 import com.furianrt.mydiary.dialogs.categories.CategoriesDialog
+import com.furianrt.mydiary.dialogs.categories.fragments.delete.CategoryDeleteFragment
 import com.furianrt.mydiary.dialogs.categories.fragments.edit.CategoryEditFragment
 import com.furianrt.mydiary.dialogs.categories.fragments.list.CategoryListFragment
 import com.furianrt.mydiary.dialogs.moods.MoodsDialog
@@ -10,6 +11,7 @@ import com.furianrt.mydiary.screens.gallery.fragments.list.GalleryListFragment
 import com.furianrt.mydiary.screens.gallery.fragments.pager.GalleryPagerFragment
 import com.furianrt.mydiary.screens.main.MainActivity
 import com.furianrt.mydiary.screens.main.fragments.authentication.AuthFragment
+import com.furianrt.mydiary.screens.main.fragments.authentication.forgot.ForgotPassFragment
 import com.furianrt.mydiary.screens.main.fragments.authentication.login.LoginFragment
 import com.furianrt.mydiary.screens.main.fragments.authentication.registration.RegistrationFragment
 import com.furianrt.mydiary.screens.main.fragments.imagesettings.ImageSettingsFragment
@@ -62,4 +64,6 @@ interface PresenterComponent {
     fun inject(fragment: SignOutFragment)
     fun inject(fragment: AboutProfileFragment)
     fun inject(fragment: BackupEmailFragment)
+    fun inject(fragment: ForgotPassFragment)
+    fun inject(fragment: CategoryDeleteFragment)
 }

@@ -2,6 +2,7 @@ package com.furianrt.mydiary.screens.main.fragments.authentication.registration
 
 import android.util.Patterns
 import com.furianrt.mydiary.data.DataManager
+import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
 import io.reactivex.android.schedulers.AndroidSchedulers
 
 class RegistrationPresenter(
@@ -39,9 +40,7 @@ class RegistrationPresenter(
                 mPrevEmail = email
                 if (!v.isNetworkAvailable()) {
                     v.showErrorNetworkConnection()
-                    return
-                }
-                if (validateEmail(email)) {
+                } else if (validateEmail(email)) {
                     v.showLoadingEmail()
                     addDisposable(dataManager.isProfileExists(email)
                             .observeOn(AndroidSchedulers.mainThread())
@@ -78,11 +77,13 @@ class RegistrationPresenter(
                     view?.showMessageSuccessRegistration()
                 }, {
                     view?.hideLoading()
-                    if (it is ProfileExistsException) {
-                        view?.showErrorEmailExists()
-                    } else {
-                        it.printStackTrace()
-                        view?.showErrorNetworkConnection()
+                    when (it) {
+                        is ProfileExistsException -> view?.showErrorEmailExists()
+                        is FirebaseAuthInvalidCredentialsException -> view?.showErrorEmailFormat()
+                        else -> {
+                            it.printStackTrace()
+                            view?.showErrorNetworkConnection()
+                        }
                     }
                 }))
     }

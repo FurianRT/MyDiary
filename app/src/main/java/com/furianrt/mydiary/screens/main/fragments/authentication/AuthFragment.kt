@@ -1,10 +1,12 @@
 package com.furianrt.mydiary.screens.main.fragments.authentication
 
 import android.animation.Animator
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.WindowManager
 import android.view.animation.AnticipateOvershootInterpolator
 import android.view.animation.OvershootInterpolator
 import androidx.fragment.app.Fragment
@@ -34,7 +36,7 @@ class AuthFragment : Fragment(), AuthContract.View {
     @Inject
     lateinit var mPresenter: AuthContract.Presenter
 
-    private val mOnKeyboardToggleListener = object : KeyboardUtils.SoftKeyboardToggleListener {
+    /*private val mOnKeyboardToggleListener = object : KeyboardUtils.SoftKeyboardToggleListener {
         override fun onToggleSoftKeyboard(isVisible: Boolean) {
             if (isVisible) {
                 auth_container
@@ -52,6 +54,19 @@ class AuthFragment : Fragment(), AuthContract.View {
                             }
                         })
             } else {
+                auth_container
+                        .animate()
+                        .translationY(0f)
+                        .setDuration(ANIMATION_CONTAINER_DURATION)
+                        .interpolator = OvershootInterpolator()
+            }
+        }
+    }*/
+
+    private val mOnKeyboardToggleListener = object : KeyboardUtils.SoftKeyboardToggleListener {
+        override fun onToggleSoftKeyboard(isVisible: Boolean) {
+            if (!isVisible) {
+                activity?.window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING)
                 auth_container
                         .animate()
                         .translationY(0f)
@@ -102,6 +117,11 @@ class AuthFragment : Fragment(), AuthContract.View {
                 addToBackStack(null)
             }
         }
+        hideRegistrationButton()
+    }
+
+    fun hideRegistrationButton() {
+        button_create_account?.isEnabled = false
         card_create_account.animate()
                 .translationY(dpToPx(ANIMATION_BUTTON_TRANSLATION_VALUE_DP).toFloat())
                 .setDuration(ANIMATION_BUTTON_DURATION)
@@ -125,17 +145,58 @@ class AuthFragment : Fragment(), AuthContract.View {
         mPresenter.detachView()
     }
 
-    fun onRegistrationFragmentDetach() {
+    override fun onAttach(context: Context?) {
+        super.onAttach(context)
+        activity?.window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING)
+    }
+
+    override fun onDetach() {
+        super.onDetach()
+        activity?.window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN)
+    }
+
+    fun showRegistrationButton() {
         card_create_account?.animate()
                 ?.translationY(0f)
                 ?.setDuration(ANIMATION_BUTTON_DURATION)
-                ?.interpolator = OvershootInterpolator()
+                ?.setInterpolator(OvershootInterpolator())
+                ?.setListener(object : Animator.AnimatorListener {
+                    override fun onAnimationRepeat(animation: Animator?) {}
+                    override fun onAnimationCancel(animation: Animator?) {}
+                    override fun onAnimationStart(animation: Animator?) {}
+                    override fun onAnimationEnd(animation: Animator?) {
+                        button_create_account?.isEnabled = true
+                    }
+                })
     }
 
     fun isBackStackEmpty() = childFragmentManager.backStackEntryCount == 0
 
+    fun pushContainerUp() {
+        if (auth_container.translationY == 0f) {
+            auth_container
+                    .animate()
+                    .translationY(-auth_container.y)
+                    .setDuration(ANIMATION_CONTAINER_DURATION)
+                    .setInterpolator(OvershootInterpolator())
+                    .setListener(object : Animator.AnimatorListener {
+                        override fun onAnimationRepeat(animation: Animator?) {}
+                        override fun onAnimationCancel(animation: Animator?) {}
+                        override fun onAnimationStart(animation: Animator?) {}
+                        override fun onAnimationEnd(animation: Animator?) {
+                            //повторная прорисовка контекстного меню
+                            auth_container.requestLayout()   //todo иногда обрезается контекстное меню
+                        }
+                    })
+        }
+    }
+
     fun clearFocus() {
         activity?.hideKeyboard()
         auth_container?.clearFocus()
+    }
+
+    fun enableSignUpButton(enable: Boolean) {
+        button_create_account.isEnabled = enable
     }
 }

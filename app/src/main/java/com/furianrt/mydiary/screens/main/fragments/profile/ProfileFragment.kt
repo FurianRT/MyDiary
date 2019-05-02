@@ -10,6 +10,7 @@ import android.view.WindowManager
 import android.view.animation.OvershootInterpolator
 import androidx.fragment.app.Fragment
 import com.furianrt.mydiary.R
+import com.furianrt.mydiary.data.model.MyProfile
 import com.furianrt.mydiary.screens.main.MainActivity
 import com.furianrt.mydiary.screens.main.fragments.profile.menu.MenuProfileFragment
 import com.furianrt.mydiary.utils.KeyboardUtils
@@ -58,6 +59,10 @@ class ProfileFragment : Fragment(), ProfileContract.View {
         }
 
         return view
+    }
+
+    override fun showProfile(profile: MyProfile) {
+        text_email.text = profile.email
     }
 
     override fun close() {

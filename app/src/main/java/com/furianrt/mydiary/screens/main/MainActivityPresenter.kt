@@ -1,9 +1,9 @@
 package com.furianrt.mydiary.screens.main
 
-import android.util.Log
 import com.furianrt.mydiary.data.DataManager
 import com.furianrt.mydiary.data.model.MyNote
 import com.furianrt.mydiary.data.model.MyNoteWithProp
+import com.furianrt.mydiary.data.model.SyncProgressMessage
 import com.furianrt.mydiary.screens.main.listadapter.MainContentItem
 import com.furianrt.mydiary.screens.main.listadapter.MainHeaderItem
 import com.furianrt.mydiary.screens.main.listadapter.MainListItem
@@ -20,10 +20,6 @@ import kotlin.collections.ArrayList
 class MainActivityPresenter(
         private val dataManager: DataManager
 ) : MainActivityContract.Presenter() {
-
-    companion object {
-        private const val TAG = "MainActivityPresenter"
-    }
 
     private var mSelectedNotes = ArrayList<MyNoteWithProp>()
 
@@ -63,10 +59,21 @@ class MainActivityPresenter(
                 })
     }
 
-    override fun onViewResume() {
+    override fun attachView(view: MainActivityContract.View) {
+        super.attachView(view)
         loadProfile()
         loadNotes()
         loadHeaderImage()
+        updateSyncProgress()
+    }
+
+    private fun updateSyncProgress() {
+        val message = dataManager.getLastSyncMessage()
+        if (message != null && message.taskIndex != SyncProgressMessage.SYNC_FINISHED) {
+            view?.showSyncProgress(message)
+        } else {
+            view?.clearSyncProgress()
+        }
     }
 
     override fun onStoragePermissionsGranted() {
@@ -98,7 +105,8 @@ class MainActivityPresenter(
                    //     view?.showRegularProfile(profile)
                     //}
                 })
-        addDisposable(dataManager.observeSignOut()
+        addDisposable(dataManager.observeAuthState()
+                .filter { it == DataManager.SIGN_STATE_SIGN_OUT }
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe {
                     addDisposable(dataManager.clearDbProfile()  //todo вынужденный Disposable в subscribe
@@ -213,7 +221,6 @@ class MainActivityPresenter(
     }
 
     override fun onFabMenuClick() {
-        Log.e(TAG, "onFabMenuClick " + (view == null).toString())
         if (mSelectedNotes.isEmpty()) {
             view?.showViewNewNote()
         } else {

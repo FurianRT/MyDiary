@@ -210,7 +210,9 @@ public class FlikerProgressBar extends View implements Runnable {
         isStop = stop;
         if (isStop) {
             progressColor = stopColor;
-            thread.interrupt();
+            if (thread != null) {
+                thread.interrupt();
+            }
         } else {
             progressColor = loadingColor;
             thread = new Thread(this);

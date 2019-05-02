@@ -17,6 +17,14 @@ class SyncPresenter(
 
     companion object {
         private const val TAG = "SyncPresenter"
+        private const val PROGRESS_NOTES = 5
+        private const val PROGRESS_APPEARANCE = 20
+        private const val PROGRESS_CATEGORIES = 35
+        private const val PROGRESS_TAGS = 50
+        private const val PROGRESS_NOTE_TAGS = 65
+        private const val PROGRESS_IMAGES = 80
+        private const val PROGRESS_CLEANUP = 95
+        private const val PROGRESS_FINISHED = 100
     }
 
     private class SyncGoneWrongException(val taskIndex: Int) : Throwable()
@@ -39,6 +47,7 @@ class SyncPresenter(
             view?.close()
         }.subscribe({
             view?.sendProgressUpdate(it)
+            dataManager.setLastSyncMessage(it)
         }, {
             it.printStackTrace()
             Log.e(TAG, "Sync error")
@@ -51,12 +60,17 @@ class SyncPresenter(
         }))
     }
 
+    override fun detachView() {
+        super.detachView()
+        dataManager.setLastSyncMessage(SyncProgressMessage(SyncProgressMessage.SYNC_FINISHED))
+    }
+
     private fun getProfile(): Observable<SyncProgressMessage> =
             dataManager.getDbProfile()
                     .firstOrError()
                     .flatMapObservable { profile ->
                         mProfile = profile
-                        Observable.just(SyncProgressMessage(SyncProgressMessage.SYNC_NOTES, 5))
+                        Observable.just(SyncProgressMessage(SyncProgressMessage.SYNC_NOTES, PROGRESS_NOTES))
                     }
                     .onErrorResumeNext(Observable.error(SyncGoneWrongException(SyncProgressMessage.PROFILE_CHECK)))
 
@@ -64,96 +78,98 @@ class SyncPresenter(
             dataManager.getAllNotes()
                     .first(emptyList())
                     .map { notes -> notes.filter { !it.isSync(mProfile.email) } }
-                    .flatMapCompletable { notes ->
-                        val notesSync = notes.map { it.apply { it.syncWith.add(mProfile.email) } }
-                        return@flatMapCompletable Completable.concat(listOf(
-                                dataManager.saveNotesInCloud(notesSync),
-                                dataManager.updateNotesSync(notesSync)))
+                    .map { notes -> notes.apply { forEach { it.syncWith.add(mProfile.email) } } }
+                    .flatMapCompletable {
+                        Completable.concat(listOf(
+                                dataManager.saveNotesInCloud(it),
+                                dataManager.updateNotesSync(it)))
                     }
                     .andThen(dataManager.getDeletedNotes().first(emptyList()))
                     .flatMapCompletable { dataManager.deleteNotesFromCloud(it) }
                     .andThen(dataManager.getAllNotesFromCloud())
                     .flatMapCompletable { dataManager.insertNote(it) }
-                    .andThen(Observable.just(SyncProgressMessage(SyncProgressMessage.SYNC_APPEARANCE, 20)))
+                    .andThen(Observable.just(SyncProgressMessage(SyncProgressMessage.SYNC_APPEARANCE, PROGRESS_APPEARANCE)))
                     .onErrorResumeNext(Observable.error(SyncGoneWrongException(SyncProgressMessage.SYNC_NOTES)))
 
     private fun syncAppearance(): Observable<SyncProgressMessage> =
             dataManager.getAllNoteAppearances()
                     .first(emptyList())
                     .map { appearances -> appearances.filter { !it.isSync(mProfile.email) } }
-                    .flatMapCompletable { appearances ->
-                        val appearancesSync = appearances.map { it.apply { it.syncWith.add(mProfile.email) } }
-                        return@flatMapCompletable Completable.concat(listOf(
-                                dataManager.saveAppearancesInCloud(appearancesSync),
-                                dataManager.updateAppearancesSync(appearancesSync)))
+                    .map { appearances -> appearances.apply { forEach { it.syncWith.add(mProfile.email) } } }
+                    .flatMapCompletable {
+                        Completable.concat(listOf(
+                                dataManager.saveAppearancesInCloud(it),
+                                dataManager.updateAppearancesSync(it)))
                     }
                     .andThen(dataManager.getDeletedAppearances().first(emptyList()))
                     .flatMapCompletable { dataManager.deleteAppearancesFromCloud(it) }
                     .andThen(dataManager.getAllAppearancesFromCloud())
                     .flatMapCompletable { dataManager.insertAppearance(it) }
-                    .andThen(Observable.just(SyncProgressMessage(SyncProgressMessage.SYNC_CATEGORIES, 35)))
+                    .andThen(Observable.just(SyncProgressMessage(SyncProgressMessage.SYNC_CATEGORIES, PROGRESS_CATEGORIES)))
                     .onErrorResumeNext(Observable.error(SyncGoneWrongException(SyncProgressMessage.SYNC_APPEARANCE)))
 
     private fun syncCategories(): Observable<SyncProgressMessage> =
             dataManager.getAllCategories()
                     .first(emptyList())
                     .map { categories -> categories.filter { !it.isSync(mProfile.email) } }
-                    .flatMapCompletable { categories ->
-                        val categoriesSync = categories.map { it.apply { it.syncWith.add(mProfile.email) } }
-                        return@flatMapCompletable Completable.concat(listOf(
-                                dataManager.saveCategoriesInCloud(categoriesSync),
-                                dataManager.updateCategoriesSync(categoriesSync)))
+                    .map { categories -> categories.apply { forEach { it.syncWith.add(mProfile.email) } } }
+                    .flatMapCompletable {
+                        Completable.concat(listOf(
+                                dataManager.saveCategoriesInCloud(it),
+                                dataManager.updateCategoriesSync(it)))
                     }
                     .andThen(dataManager.getDeletedCategories().first(emptyList()))
                     .flatMapCompletable { dataManager.deleteCategoriesFromCloud(it) }
                     .andThen(dataManager.getAllCategoriesFromCloud())
                     .flatMapCompletable { dataManager.insertCategory(it) }
-                    .andThen(Observable.just(SyncProgressMessage(SyncProgressMessage.SYNC_TAGS, 50)))
+                    .andThen(Observable.just(SyncProgressMessage(SyncProgressMessage.SYNC_TAGS, PROGRESS_TAGS)))
                     .onErrorResumeNext(Observable.error(SyncGoneWrongException(SyncProgressMessage.SYNC_CATEGORIES)))
 
     private fun syncTags(): Observable<SyncProgressMessage> =
             dataManager.getAllTags()
                     .map { tags -> tags.filter { !it.isSync(mProfile.email) } }
-                    .flatMapCompletable { tags ->
-                        val tagsSync = tags.map { it.apply { it.syncWith.add(mProfile.email) } }
-                        return@flatMapCompletable Completable.concat(listOf(
-                                dataManager.saveTagsInCloud(tagsSync),
-                                dataManager.updateTagsSync(tagsSync)))
+                    .map { tags -> tags.apply { forEach { it.syncWith.add(mProfile.email) } } }
+                    .flatMapCompletable {
+                        Completable.concat(listOf(
+                                dataManager.saveTagsInCloud(it),
+                                dataManager.updateTagsSync(it)))
                     }
                     .andThen(dataManager.getDeletedTags().first(emptyList()))
                     .flatMapCompletable { dataManager.deleteTagsFromCloud(it) }
                     .andThen(dataManager.getAllTagsFromCloud())
                     .flatMapCompletable { dataManager.insertTag(it) }
-                    .andThen(Observable.just(SyncProgressMessage(SyncProgressMessage.SYNC_NOTE_TAGS, 65)))
+                    .andThen(Observable.just(SyncProgressMessage(SyncProgressMessage.SYNC_NOTE_TAGS, PROGRESS_NOTE_TAGS)))
                     .onErrorResumeNext(Observable.error(SyncGoneWrongException(SyncProgressMessage.SYNC_TAGS)))
 
     private fun syncNoteTags(): Observable<SyncProgressMessage> =
             dataManager.getAllNoteTags()
                     .first(emptyList())
                     .map { noteTags -> noteTags.filter { !it.isSync(mProfile.email) } }
-                    .flatMapCompletable { noteTags ->
-                        val noteTagsSync = noteTags.map { it.apply { it.syncWith.add(mProfile.email) } }
-                        return@flatMapCompletable Completable.concat(listOf(
-                                dataManager.saveNoteTagsInCloud(noteTagsSync),
-                                dataManager.updateNoteTagsSync(noteTagsSync)))
+                    .map { noteTags -> noteTags.apply { forEach { it.syncWith.add(mProfile.email) } } }
+                    .flatMapCompletable {
+                        Completable.concat(listOf(
+                                dataManager.saveNoteTagsInCloud(it),
+                                dataManager.updateNoteTagsSync(it)))
                     }
                     .andThen(dataManager.getDeletedNoteTags().first(emptyList()))
                     .flatMapCompletable { dataManager.deleteNoteTagsFromCloud(it) }
                     .andThen(dataManager.getAllNoteTagsFromCloud())
                     .flatMapCompletable { dataManager.insertNoteTag(it) }
-                    .andThen(Observable.just(SyncProgressMessage(SyncProgressMessage.SYNC_IMAGES, 80)))
+                    .andThen(Observable.just(SyncProgressMessage(SyncProgressMessage.SYNC_IMAGES, PROGRESS_IMAGES)))
                     .onErrorResumeNext(Observable.error(SyncGoneWrongException(SyncProgressMessage.SYNC_NOTE_TAGS)))
 
     private fun syncImages(): Observable<SyncProgressMessage> =
             dataManager.getAllImages()
                     .first(emptyList())
                     .map { images -> images.filter { !it.isSync(mProfile.email) } }
+                    .map { notSyncImages -> notSyncImages.apply { forEach { it.syncWith.add(mProfile.email) } } }
                     .flatMapCompletable { images ->
-                        val imagesSync = images.map { it.apply { it.syncWith.add(mProfile.email) } }
+                        val notSyncFiles = images.filter { !it.isFileSync(mProfile.email) }
+                        notSyncFiles.forEach { it.fileSyncWith.add(mProfile.email) }
                         return@flatMapCompletable Completable.concat(listOf(
-                                dataManager.saveImagesFilesInCloud(imagesSync.filter { !it.isFileSync(mProfile.email) }),
-                                dataManager.saveImagesInCloud(imagesSync.map { it.apply { it.fileSyncWith.add(mProfile.email) } }),
-                                dataManager.updateImageSync(imagesSync.map { it.apply { it.fileSyncWith.add(mProfile.email) } })
+                                dataManager.saveImagesFilesInCloud(notSyncFiles),
+                                dataManager.saveImagesInCloud(images),
+                                dataManager.updateImageSync(images)
                         ))
                     }
                     .andThen(dataManager.getDeletedImages().first(emptyList()))
@@ -171,7 +187,7 @@ class SyncPresenter(
                                 dataManager.insertImages(it)
                         ))
                     }
-                    .andThen(Observable.just(SyncProgressMessage(SyncProgressMessage.CLEANUP, 95)))
+                    .andThen(Observable.just(SyncProgressMessage(SyncProgressMessage.CLEANUP, PROGRESS_CLEANUP)))
                     .onErrorResumeNext(Observable.error(SyncGoneWrongException(SyncProgressMessage.SYNC_IMAGES)))
 
     private fun cleanup(): Observable<SyncProgressMessage> =
@@ -186,6 +202,6 @@ class SyncPresenter(
                         profile.lastSyncTime = DateTime.now().millis
                         return@flatMapCompletable dataManager.updateProfile(profile)
                     }
-                    .andThen(Observable.just(SyncProgressMessage(SyncProgressMessage.SYNC_FINISHED, 100)))
+                    .andThen(Observable.just(SyncProgressMessage(SyncProgressMessage.SYNC_FINISHED, PROGRESS_FINISHED)))
                     .onErrorResumeNext(Observable.error(SyncGoneWrongException(SyncProgressMessage.CLEANUP)))
 }

@@ -287,7 +287,7 @@ class NoteFragmentPresenter(private val dataManager: DataManager) : NoteFragment
                 .collectInto(mutableListOf<Boolean>()) { l, i -> l.add(i) }
                 .flatMapCompletable { dataManager.deleteNote(note) }
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { view?.closeView() })
+                .subscribe())
     }
 
     override fun onToolbarImageClick() {
@@ -327,10 +327,11 @@ class NoteFragmentPresenter(private val dataManager: DataManager) : NoteFragment
     }
 
     override fun updateNoteText(noteTitle: String, noteContent: String) {
-        //todo добавить условие
-        addDisposable(dataManager.updateNoteText(mNote.id, noteTitle, noteContent)
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe())
+        if (mNote.title != noteTitle || mNote.content != noteContent) {
+            addDisposable(dataManager.updateNoteText(mNote.id, noteTitle, noteContent)
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe())
+        }
     }
 
     override fun onDateFieldClick() {

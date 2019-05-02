@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.furianrt.mydiary.R
 import com.furianrt.mydiary.data.model.MyCategory
+import com.furianrt.mydiary.dialogs.categories.fragments.delete.CategoryDeleteFragment
 import com.furianrt.mydiary.dialogs.categories.fragments.edit.CategoryEditFragment
 import com.furianrt.mydiary.utils.inTransaction
 import kotlinx.android.synthetic.main.fragment_category_list.*
@@ -61,14 +62,7 @@ class CategoryListFragment : Fragment(), View.OnClickListener,
     }
 
     override fun showViewAddCategory() {
-        fragmentManager?.apply {
-            if (findFragmentByTag(CategoryEditFragment.TAG) == null) {
-                inTransaction {
-                    replace(R.id.container_categories, CategoryEditFragment(), CategoryEditFragment.TAG)
-                    addToBackStack(null)
-                }
-            }
-        }
+        replaceFragment(CategoryEditFragment(), CategoryEditFragment.TAG)
     }
 
     override fun showCategories(categories: List<MyCategory>) {
@@ -97,26 +91,45 @@ class CategoryListFragment : Fragment(), View.OnClickListener,
         mPresenter.onEditCategoryButtonClick(category)
     }
 
-    override fun showEditView(category: MyCategory) {
-        fragmentManager?.apply {
-            if (findFragmentByTag(CategoryEditFragment.TAG) == null) {
-                inTransaction {
-                    replace(R.id.container_categories, CategoryEditFragment.newInstance(category.id),
-                            CategoryEditFragment.TAG)
+    override fun showEditView(categoryId: String) {
+        replaceFragment(CategoryEditFragment.newInstance(categoryId), CategoryEditFragment.TAG)
+    }
+
+    override fun showDeleteCategoryView(category: MyCategory) {
+        addFragment(CategoryDeleteFragment.newInstance(category), CategoryDeleteFragment.TAG)
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putParcelable(BUNDLE_RECYCLER_VIEW_STATE,
+                list_categories.layoutManager?.onSaveInstanceState())
+    }
+
+    override fun close() {
+        (parentFragment as? DialogFragment?)?.dismiss()
+    }
+
+    private fun replaceFragment(fragment: Fragment, tag: String) {
+        fragmentManager?.let {
+            if (it.findFragmentByTag(tag) == null) {
+                it.inTransaction {
+                    replace(R.id.container_categories, fragment, tag)
                     addToBackStack(null)
                 }
             }
         }
     }
 
-    override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
-        outState.putParcelable(BUNDLE_RECYCLER_VIEW_STATE,
-                view?.list_categories?.layoutManager?.onSaveInstanceState())
-    }
-
-    override fun close() {
-        (parentFragment as? DialogFragment?)?.dismiss()
+    private fun addFragment(fragment: Fragment, tag: String) {
+        fragmentManager?.let {
+            if (it.findFragmentByTag(tag) == null) {
+                it.inTransaction {
+                    setCustomAnimations(R.anim.scale_up, R.anim.scale_up, R.anim.scale_down, R.anim.scale_down)
+                    add(R.id.container_categories, fragment, tag)
+                    addToBackStack(null)
+                }
+            }
+        }
     }
 
     companion object {

@@ -8,6 +8,7 @@ interface NoteActivityContract {
 
     interface View : BaseView {
         fun showNotes(notes: List<MyNoteWithProp>)
+        fun closeView()
     }
 
     abstract class Presenter : BasePresenter<View>() {

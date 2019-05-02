@@ -9,6 +9,7 @@ interface MenuProfileContract {
         fun showSignOutView()
         fun showPasswordView()
         fun showAboutView()
+        fun disableSignOut(disable: Boolean)
     }
 
     abstract class Presenter : BasePresenter<View>() {

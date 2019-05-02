@@ -2,9 +2,11 @@ package com.furianrt.mydiary.screens.main.fragments.authentication.registration
 
 import android.graphics.PorterDuff
 import android.os.Bundle
+import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.WindowManager
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.furianrt.mydiary.R
@@ -26,10 +28,22 @@ class RegistrationFragment : Fragment(), RegistrationContract.View {
         const val TAG = "RegistrationFragment"
         private const val ANIMATION_SHAKE_DURATION = 400L
         private const val CLOSE_AFTER_DONE_DELAY = 2000L
+        private const val CHANGE_ACTIVITY_FLAG_DELAY = 200L
     }
 
     @Inject
     lateinit var mPresenter: RegistrationContract.Presenter
+
+    private val mHandler = Handler()
+    private val mChangeActivityFlag: Runnable = Runnable {
+        activity?.window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN)
+    }
+    private val mOnEditFocusChangeListener: (v: View, hasFocus: Boolean) -> Unit = { _, hasFocus ->
+        if (hasFocus) {
+            (parentFragment as AuthFragment).pushContainerUp()
+            mHandler.postDelayed(mChangeActivityFlag, CHANGE_ACTIVITY_FLAG_DELAY)
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         getPresenterComponent(requireContext()).inject(this)
@@ -51,6 +65,12 @@ class RegistrationFragment : Fragment(), RegistrationContract.View {
         view.edit_email.setOnFocusChangeListener { _, hasFocus ->
             mPresenter.onEmailFocusChange(view.edit_email.text.toString(), hasFocus)
         }
+        view.edit_email.setOnFocusChangeListener(mOnEditFocusChangeListener)
+        view.edit_password.setOnFocusChangeListener(mOnEditFocusChangeListener)
+        view.edit_password_repeat.setOnFocusChangeListener(mOnEditFocusChangeListener)
+        view.edit_email.setOnClickListener { mOnEditFocusChangeListener.invoke(it, true) }
+        view.edit_password.setOnClickListener { mOnEditFocusChangeListener.invoke(it, true) }
+        view.edit_password_repeat.setOnClickListener { mOnEditFocusChangeListener.invoke(it, true) }
         view.view_alpha.setOnTouchListener { _, _ -> true }
         return view
     }
@@ -69,7 +89,7 @@ class RegistrationFragment : Fragment(), RegistrationContract.View {
 
     override fun showErrorEmailFormat() {
         showEmailError()
-        text_error.text = getString(R.string.fragment_registration_email_format)
+        text_error.text = getString(R.string.wrong_email_format)
     }
 
     override fun showErrorEmailExists() {
@@ -85,8 +105,9 @@ class RegistrationFragment : Fragment(), RegistrationContract.View {
         fragmentManager?.let {
             if (it.findFragmentByTag(DoneAuthFragment.TAG) == null) {
                 it.inTransaction {
+                    val message = getString(R.string.fragment_done_auth_done)
                     setCustomAnimations(R.anim.scale_up, R.anim.scale_up)
-                    add(R.id.auth_container, DoneAuthFragment(), DoneAuthFragment.TAG)
+                    add(R.id.auth_container, DoneAuthFragment.newInstance(message), DoneAuthFragment.TAG)
                 }
             }
         }
@@ -104,17 +125,17 @@ class RegistrationFragment : Fragment(), RegistrationContract.View {
 
     override fun showErrorEmptyPassword() {
         layout_password.animateShake(ANIMATION_SHAKE_DURATION)
-        text_error.text = getString(R.string.fragment_registration_empty_password)
+        text_error.text = getString(R.string.empty_password)
     }
 
     override fun showErrorEmptyPasswordRepeat() {
         layout_password_repeat.animateShake(ANIMATION_SHAKE_DURATION)
-        text_error.text = getString(R.string.fragment_registration_empty_password)
+        text_error.text = getString(R.string.empty_password)
     }
 
     override fun showErrorEmptyEmail() {
         showEmailError()
-        text_error.text = getString(R.string.fragment_registration_empty_email)
+        text_error.text = getString(R.string.empty_email)
     }
 
     private fun showEmailError() {
@@ -169,11 +190,12 @@ class RegistrationFragment : Fragment(), RegistrationContract.View {
 
     override fun onPause() {
         super.onPause()
+        mHandler.removeCallbacks(mChangeActivityFlag)
         mPresenter.detachView()
     }
 
     override fun onDetach() {
         super.onDetach()
-        (parentFragment as? AuthFragment?)?.onRegistrationFragmentDetach()
+        (parentFragment as? AuthFragment?)?.showRegistrationButton()
     }
 }

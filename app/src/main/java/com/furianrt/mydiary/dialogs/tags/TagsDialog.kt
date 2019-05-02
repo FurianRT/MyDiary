@@ -67,7 +67,7 @@ class TagsDialog : DialogFragment(), TagsDialogListAdapter.OnTagChangedListener,
 
         initUiElements(view)
 
-        return AlertDialog.Builder(context!!)
+        return AlertDialog.Builder(requireContext())
                 .setView(view)
                 .setPositiveButton(getString(R.string.save)) { _, _ ->
                     mListener?.onTagsDialogPositiveButtonClick(
@@ -84,10 +84,10 @@ class TagsDialog : DialogFragment(), TagsDialogListAdapter.OnTagChangedListener,
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
         outState.putParcelableArrayList(ARG_TAGS, mPresenter.getTags())
         outState.putParcelable(BUNDLE_RECYCLER_VIEW_STATE,
                 list_tags.layoutManager?.onSaveInstanceState())
-        super.onSaveInstanceState(outState)
     }
 
     override fun onTagClicked(tag: MyTag) {

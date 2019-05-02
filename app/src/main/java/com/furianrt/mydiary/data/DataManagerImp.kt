@@ -13,6 +13,7 @@ import com.furianrt.mydiary.data.model.*
 import com.furianrt.mydiary.data.prefs.PreferencesHelper
 import com.furianrt.mydiary.data.storage.StorageHelper
 import com.furianrt.mydiary.di.application.AppScope
+import com.google.gson.Gson
 import io.reactivex.*
 import org.joda.time.DateTime
 import javax.crypto.Cipher
@@ -435,6 +436,19 @@ class DataManagerImp(
         prefs.setPasswordEnabled(enable)
     }
 
+    override fun getLastSyncMessage(): SyncProgressMessage? {
+        val message = prefs.getLastSyncMessage()
+        return if (message.isNullOrBlank()) {
+            null
+        } else {
+            Gson().fromJson(message, SyncProgressMessage::class.java)
+        }
+    }
+
+    override fun setLastSyncMessage(message: SyncProgressMessage) {
+        prefs.setLastSyncMessage(Gson().toJson(message))
+    }
+
     override fun loadHeaderImages(page: Int, perPage: Int): Single<List<MyHeaderImage>> =
             imageApi.getImages()
                     .map { response ->
@@ -549,25 +563,32 @@ class DataManagerImp(
 
     override fun signOut(): Completable =
             auth.signOut()
-                    .andThen(
-                            Completable.fromAction { database.profileDao().clearProfile() }
-                                    .subscribeOn(rxScheduler)
-                    )
+                    .andThen(Completable.fromAction { database.profileDao().clearProfile() }
+                            .subscribeOn(rxScheduler))
                     .subscribeOn(rxScheduler)
 
     override fun updatePassword(oldPassword: String, newPassword: String): Completable =
             auth.updatePassword(oldPassword, newPassword)
                     .subscribeOn(rxScheduler)
 
-    override fun observeSignOut(): Observable<Boolean> =
-            auth.observeSignOut()
+    override fun observeAuthState(): Observable<Int> =
+            auth.observeAuthState()
+                    .map {
+                        if (it == AuthHelper.STATE_SIGN_OUT) {
+                            DataManager.SIGN_STATE_SIGN_OUT
+                        } else {
+                            DataManager.SIGN_STATE_SIGN_IN
+                        }
+                    }
                     .subscribeOn(rxScheduler)
 
     override fun updateProfile(profile: MyProfile): Completable =
             cloud.saveProfile(profile)
-                    .andThen(
-                            Completable.fromAction { database.profileDao().update(profile) }
-                                    .subscribeOn(rxScheduler)
-                    )
+                    .andThen(Completable.fromAction { database.profileDao().update(profile) }
+                            .subscribeOn(rxScheduler))
+                    .subscribeOn(rxScheduler)
+
+    override fun sendPasswordResetEmail(email: String): Completable =
+            auth.sendPasswordResetEmail(email)
                     .subscribeOn(rxScheduler)
 }

@@ -2,10 +2,7 @@ package com.furianrt.mydiary.screens.main
 
 import com.furianrt.mydiary.base.BasePresenter
 import com.furianrt.mydiary.base.BaseView
-import com.furianrt.mydiary.data.model.MyHeaderImage
-import com.furianrt.mydiary.data.model.MyNote
-import com.furianrt.mydiary.data.model.MyNoteWithProp
-import com.furianrt.mydiary.data.model.MyProfile
+import com.furianrt.mydiary.data.model.*
 import com.furianrt.mydiary.screens.main.listadapter.MainListItem
 
 interface MainActivityContract {
@@ -38,12 +35,13 @@ interface MainActivityContract {
         fun showImageOptions()
         fun startSyncService()
         fun showDeleteConfirmationDialog(notes: List<MyNote>)
+        fun showSyncProgress(message: SyncProgressMessage)
+        fun clearSyncProgress()
     }
 
     abstract class Presenter : BasePresenter<View>() {
         abstract fun onMainListItemClick(note: MyNoteWithProp, position: Int)
         abstract fun onHeaderImagesPicked(imageUrls: List<String>)
-        abstract fun onViewResume()
         abstract fun onMainImageClick()
         abstract fun onStoragePermissionsGranted()
         abstract fun onMainListItemLongClick(note: MyNoteWithProp, position: Int)

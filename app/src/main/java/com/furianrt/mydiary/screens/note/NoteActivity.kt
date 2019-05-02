@@ -24,7 +24,7 @@ class NoteActivity : BaseActivity(), NoteActivityContract.View,
         private const val EXTRA_MODE = "mode"
         private const val EXTRA_CLICKED_NOTE_POSITION = "notePosition"
 
-        enum class Mode { ADD, READ } //todo вместо это сделать разные методы у презентера
+        enum class Mode { ADD, READ }
 
         fun newIntentModeAdd(context: Context) =
                 Intent(context, NoteActivity::class.java).apply { putExtra(EXTRA_MODE, Companion.Mode.ADD) }
@@ -98,6 +98,9 @@ class NoteActivity : BaseActivity(), NoteActivityContract.View,
     }
 
     override fun showNotes(notes: List<MyNoteWithProp>) {
+        if (mPagerPosition >= notes.size) {
+            mPagerPosition = notes.size - 1
+        }
         mPagerAdapter.list = notes
         Log.e(TAG, "note_list_notify")
         mPagerAdapter.notifyDataSetChanged()
@@ -119,6 +122,10 @@ class NoteActivity : BaseActivity(), NoteActivityContract.View,
 
     fun savePagerPosition() {
         mPagerPosition = pager_note.currentItem
+    }
+
+    override fun closeView() {
+        finish()
     }
 
     override fun onResume() {

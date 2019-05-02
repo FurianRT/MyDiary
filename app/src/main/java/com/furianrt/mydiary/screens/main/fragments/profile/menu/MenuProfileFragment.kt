@@ -1,15 +1,23 @@
 package com.furianrt.mydiary.screens.main.fragments.profile.menu
 
+import android.content.BroadcastReceiver
+import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.furianrt.mydiary.R
+import com.furianrt.mydiary.data.model.SyncProgressMessage
 import com.furianrt.mydiary.screens.main.fragments.profile.about.AboutProfileFragment
 import com.furianrt.mydiary.screens.main.fragments.profile.password.PasswordFragment
 import com.furianrt.mydiary.screens.main.fragments.profile.signout.SignOutFragment
+import com.furianrt.mydiary.services.sync.SyncService
 import com.furianrt.mydiary.utils.inTransaction
+import kotlinx.android.synthetic.main.fragment_menu_profile.*
 import kotlinx.android.synthetic.main.fragment_menu_profile.view.*
 import javax.inject.Inject
 
@@ -21,6 +29,16 @@ class MenuProfileFragment : Fragment(), MenuProfileContract.View, View.OnClickLi
 
     @Inject
     lateinit var mPresenter: MenuProfileContract.Presenter
+
+    private val mBroadcastReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context?, intent: Intent?) {
+            SyncService.getProgressMessage(intent)?.let {
+                if (it.hasError || it.taskIndex == SyncProgressMessage.SYNC_FINISHED) {
+                   button_sign_out?.isEnabled = true
+                }
+            }
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         getPresenterComponent(requireContext()).inject(this)
@@ -73,13 +91,20 @@ class MenuProfileFragment : Fragment(), MenuProfileContract.View, View.OnClickLi
         }
     }
 
+    override fun disableSignOut(disable: Boolean) {
+        button_sign_out.isEnabled = !disable
+    }
+
     override fun onResume() {
         super.onResume()
+        LocalBroadcastManager.getInstance(requireContext())
+                .registerReceiver(mBroadcastReceiver, IntentFilter(Intent.ACTION_SYNC))
         mPresenter.attachView(this)
     }
 
     override fun onPause() {
         super.onPause()
+        LocalBroadcastManager.getInstance(requireContext()).unregisterReceiver(mBroadcastReceiver)
         mPresenter.detachView()
     }
 }

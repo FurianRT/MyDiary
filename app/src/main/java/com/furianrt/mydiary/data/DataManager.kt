@@ -5,6 +5,10 @@ import com.furianrt.mydiary.data.model.*
 import io.reactivex.*
 
 interface DataManager {
+    companion object {
+        const val SIGN_STATE_SIGN_OUT = 0
+        const val SIGN_STATE_SIGN_IN = 1
+    }
     fun insertNote(note: MyNote): Completable
     fun insertNote(notes: List<MyNote>): Completable
     fun insertNoteTag(noteTag: NoteTag): Completable
@@ -103,6 +107,8 @@ interface DataManager {
     fun setPasswordEnabled(enable: Boolean)
     fun isProfileExists(email: String): Single<Boolean>
     fun setSortDesc(desc: Boolean)
+    fun setLastSyncMessage(message: SyncProgressMessage)
+    fun getLastSyncMessage(): SyncProgressMessage?
     fun replaceNoteTags(noteId: String, tags: List<MyTag>): Completable
     fun findNote(noteId: String): Maybe<MyNote>
     fun addLocation(location: MyLocation): Completable
@@ -121,6 +127,7 @@ interface DataManager {
     fun signIn(email: String, password: String): Completable
     fun signOut(): Completable
     fun updatePassword(oldPassword: String, newPassword: String): Completable
-    fun observeSignOut(): Observable<Boolean>
+    fun observeAuthState(): Observable<Int>
     fun updateProfile(profile: MyProfile): Completable
+    fun sendPasswordResetEmail(email: String): Completable
 }

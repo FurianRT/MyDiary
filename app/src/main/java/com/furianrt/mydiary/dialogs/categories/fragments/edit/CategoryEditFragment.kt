@@ -4,9 +4,11 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.furianrt.mydiary.R
 import com.furianrt.mydiary.data.model.MyCategory
+import com.furianrt.mydiary.utils.animateShake
 import kotlinx.android.synthetic.main.fragment_category_edit.*
 import kotlinx.android.synthetic.main.fragment_category_edit.view.*
 import javax.inject.Inject
@@ -51,17 +53,18 @@ class CategoryEditFragment : Fragment(), View.OnClickListener, CategoryEditContr
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        view?.let {
-            outState.putString(BUNDLE_CATEGORY_NAME, it.edit_category.text.toString())
-            outState.putInt(BUNDLE_CATEGORY_COLOR, it.color_picker_category.color)
-        }
+        outState.putString(BUNDLE_CATEGORY_NAME, edit_category.text.toString())
+        outState.putInt(BUNDLE_CATEGORY_COLOR, color_picker_category.color)
     }
 
     override fun showCategory(category: MyCategory) {
-        view?.apply {
-            edit_category.setText(category.name)
-            color_picker_category.color = category.color
-        }
+        edit_category.setText(category.name)
+        color_picker_category.color = category.color
+    }
+
+    override fun showErrorEmptyName() {
+        text_input_category.animateShake(ANIMATION_SHAKE_DURATION)
+        Toast.makeText(requireContext(), getString(R.string.fragment_category_edit_error_empty_name), Toast.LENGTH_SHORT).show()
     }
 
     override fun onClick(v: View) {
@@ -69,8 +72,7 @@ class CategoryEditFragment : Fragment(), View.OnClickListener, CategoryEditContr
             R.id.button_category_done -> {
                 val color = color_picker_category.color
                 val name = edit_category.text?.toString() ?: ""
-                val category = MyCategory(mCategoryId, name, color)
-                mPresenter.onButtonDoneClick(category)
+                mPresenter.onButtonDoneClick(mCategoryId, name, color)
             }
 
         }
@@ -91,6 +93,7 @@ class CategoryEditFragment : Fragment(), View.OnClickListener, CategoryEditContr
         private const val ARG_CATEGORY_ID = "category_ID"
         private const val BUNDLE_CATEGORY_NAME = "category_name"
         private const val BUNDLE_CATEGORY_COLOR = "category_color"
+        private const val ANIMATION_SHAKE_DURATION = 400L
 
         @JvmStatic
         fun newInstance(categoryId: String) =

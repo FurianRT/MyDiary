@@ -54,7 +54,6 @@ dependencies {
     implementation "androidx.cardview:cardview:$support_version"
     implementation "androidx.preference:preference:$support_version"
     implementation "com.google.android.material:material:$support_version"
-    implementation "androidx.legacy:legacy-support-v4:$support_version"
     implementation "androidx.appcompat:appcompat:$support_version"
     implementation 'androidx.constraintlayout:constraintlayout:2.0.0-alpha2'
     implementation 'com.google.android:flexbox:1.1.0'
@@ -87,7 +86,7 @@ dependencies {
     implementation "com.squareup.retrofit2:retrofit:$retrofit_version"
     implementation "com.squareup.retrofit2:adapter-rxjava2:$retrofit_version"
     implementation "com.squareup.retrofit2:converter-gson:$retrofit_version"
-    implementation 'com.squareup.okhttp3:logging-interceptor:3.11.0'
+    implementation 'com.squareup.okhttp3:logging-interceptor:3.14.1'
 
     //Image loading
     implementation "com.github.bumptech.glide:glide:$glide_version"
@@ -103,10 +102,10 @@ dependencies {
     implementation 'com.larswerkman:HoloColorPicker:1.5'
 
     //DateTime
-    implementation 'net.danlew:android.joda:2.9.9.4'
+    implementation 'net.danlew:android.joda:2.10.1.2'
 
     //DateTime pickers
-    implementation 'com.wdullaer:materialdatetimepicker:4.1.0'
+    implementation 'com.wdullaer:materialdatetimepicker:4.1.2'
     implementation 'com.github.applikeysolutions:cosmocalendar:1.0.4'
 
     //Circular imageView
@@ -125,6 +124,9 @@ dependencies {
 
     //Crash tracking
     implementation 'com.crashlytics.sdk.android:crashlytics:2.9.9'
+
+    //Advertising
+   // implementation 'com.google.firebase:firebase-ads:17.2.0'
 
     //ImageView with zoom
     implementation 'com.jsibbold:zoomage:1.2.0'

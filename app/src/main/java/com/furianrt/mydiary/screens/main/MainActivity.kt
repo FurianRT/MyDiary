@@ -36,7 +36,6 @@ import com.furianrt.mydiary.screens.main.fragments.authentication.AuthFragment
 import com.furianrt.mydiary.screens.main.fragments.imagesettings.ImageSettingsFragment
 import com.furianrt.mydiary.screens.main.fragments.premium.PremiumFragment
 import com.furianrt.mydiary.screens.main.fragments.profile.ProfileFragment
-import com.furianrt.mydiary.screens.main.fragments.profile.signout.SignOutFragment
 import com.furianrt.mydiary.screens.main.listadapter.MainListAdapter
 import com.furianrt.mydiary.screens.main.listadapter.MainListItem
 import com.furianrt.mydiary.screens.note.NoteActivity
@@ -100,9 +99,7 @@ class MainActivity : BaseActivity(), MainActivityContract.View,
         override fun onAnimationCancel(animation: Animator?) {}
         override fun onAnimationStart(animation: Animator?) {}
         override fun onAnimationEnd(animation: Animator?) {
-            nav_view.getHeaderView(0).progress_sync.visibility = View.GONE
-            nav_view.getHeaderView(0).button_sync.isEnabled = true
-            nav_view.getHeaderView(0).button_sync.text = getString(R.string.nav_header_main_button_sync)
+            clearSyncProgress()
         }
     }
     private lateinit var mOnDrawerListener: ActionBarDrawerToggle
@@ -119,19 +116,29 @@ class MainActivity : BaseActivity(), MainActivityContract.View,
                     if (nav_view.getHeaderView(0).progress_sync.isFinish) {
                         nav_view.getHeaderView(0).progress_sync.reset()
                     }
-                    nav_view.getHeaderView(0).button_sync.isEnabled = false
-                    nav_view.getHeaderView(0).progress_sync.alpha = 0.35f
-                    nav_view.getHeaderView(0).progress_sync.visibility = View.VISIBLE
-                    nav_view.getHeaderView(0).progress_sync.progress = it.progress.toFloat()
-                    val progressText = "${it.progress}% ${it.message}"
+                    showSyncProgress(it)
                     if (it.taskIndex == SyncProgressMessage.SYNC_FINISHED) {
                         nav_view.getHeaderView(0).progress_sync.finishLoad()
                         animateProgressAlpha()
                     }
-                    nav_view.getHeaderView(0).button_sync.text = progressText
                 }
             }
         }
+    }
+
+    override fun showSyncProgress(message: SyncProgressMessage) {
+        nav_view.getHeaderView(0).button_sync.isEnabled = false
+        nav_view.getHeaderView(0).progress_sync.alpha = 0.35f
+        nav_view.getHeaderView(0).progress_sync.visibility = View.VISIBLE
+        nav_view.getHeaderView(0).progress_sync.progress = message.progress.toFloat()
+        val progressText = "${message.progress}% ${message.message}"
+        nav_view.getHeaderView(0).button_sync.text = progressText
+    }
+
+    override fun clearSyncProgress() {
+        nav_view.getHeaderView(0).progress_sync.visibility = View.GONE
+        nav_view.getHeaderView(0).button_sync.isEnabled = true
+        nav_view.getHeaderView(0).button_sync.text = getString(R.string.nav_header_main_button_sync)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -169,8 +176,7 @@ class MainActivity : BaseActivity(), MainActivityContract.View,
             layout_main_root.translationX = it.getFloat(BUNDLE_ROOT_LAYOUT_OFFSET, 0f)
             mBottomSheet.state = it.getInt(BUNDLE_BOTTOM_SHEET_STATE, BottomSheetBehavior.STATE_COLLAPSED)
         }
-        LocalBroadcastManager.getInstance(this)
-                .registerReceiver(mBroadcastReceiver, IntentFilter(Intent.ACTION_SYNC))
+
         setupUi()
     }
 
@@ -575,10 +581,11 @@ class MainActivity : BaseActivity(), MainActivityContract.View,
     override fun onResume() {
         super.onResume()
         mPresenter.attachView(this)
-        mPresenter.onViewResume()
         mAdapter.listener = this
         (supportFragmentManager.findFragmentByTag(DeleteNoteDialog.TAG) as? DeleteNoteDialog)
                 ?.setOnDeleteConfirmListener(this)
+        LocalBroadcastManager.getInstance(this)
+                .registerReceiver(mBroadcastReceiver, IntentFilter(Intent.ACTION_SYNC))
     }
 
     override fun onPause() {
@@ -587,11 +594,7 @@ class MainActivity : BaseActivity(), MainActivityContract.View,
         mBackPressCount = 0
         mAdapter.listener = null
         mHandler.removeCallbacks(mBottomSheetOpenRunnable)
-        mPresenter.detachView()
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
         LocalBroadcastManager.getInstance(this).unregisterReceiver(mBroadcastReceiver)
+        mPresenter.detachView()
     }
 }

@@ -27,7 +27,7 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
         val notificationBuilder = NotificationCompat.Builder(this, MyApp.NOTIFICATION_FIREBASE_CHANNEL_ID)
         notificationBuilder.setAutoCancel(true)
                 .setWhen(System.currentTimeMillis())
-                .setSmallIcon(R.drawable.ic_star)
+                .setSmallIcon(R.drawable.ic_notification_logo)
                 .setStyle(NotificationCompat.BigTextStyle()
                         .setBigContentTitle(notification.title)
                         .bigText(notification.body))

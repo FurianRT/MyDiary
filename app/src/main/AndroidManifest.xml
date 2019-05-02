@@ -48,6 +48,12 @@
         <activity android:name=".screens.settings.note.NoteSettingsActivity" />
         <activity android:name=".screens.pin.PinActivity" />
 
+        <!--Этого требует библиотека для редактирования картинок-->
+        <activity
+            android:name="com.yalantis.ucrop.UCropActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme" />
+
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyBqIaX5gl6vGr0C5xZA29CKXoYyJPW2pxI" />
@@ -55,6 +61,14 @@
         <meta-data
             android:name="firebase_performance_logcat_enabled"
             android:value="true" />
+
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_icon"
+            android:resource="@drawable/ic_notification_logo" />
+
+        <!--<meta-data
+            android:name="com.google.android.gms.ads.APPLICATION_ID"
+            android:value="@string/banner_ad_unit_id"/>-->
 
     </application>
 

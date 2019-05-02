@@ -106,7 +106,6 @@ class CloudHelperImp(
                                 .child(image.noteId)
                                 .child(COLLECTION_IMAGES)
                                 .child(image.name), Uri.parse(image.uri))
-                                .retry(3L)
                     }
                     .collectInto(mutableListOf<UploadTask.TaskSnapshot>()) { l, i -> l.add(i) }
                     .ignoreElement()
@@ -120,9 +119,7 @@ class CloudHelperImp(
                             .collection(COLLECTION_NOTES)
                             .document(note.id))
                 }
-            }
-                    .retry(3L)
-                    .onErrorComplete()
+            }.onErrorComplete()
 
     override fun deleteCategories(categories: List<MyCategory>, userId: String): Completable =
             RxFirestore.runTransaction(firestore) { transaction ->
@@ -132,9 +129,7 @@ class CloudHelperImp(
                             .collection(COLLECTION_CATEGORIES)
                             .document(category.id))
                 }
-            }
-                    .retry(3L)
-                    .onErrorComplete()
+            }.onErrorComplete()
 
     override fun deleteNoteTags(noteTags: List<NoteTag>, userId: String): Completable =
             RxFirestore.runTransaction(firestore) { transaction ->
@@ -145,9 +140,7 @@ class CloudHelperImp(
                             .collection(COLLECTION_NOTE_TAGS)
                             .document(noteTag.noteId + noteTag.tagId))
                 }
-            }
-                    .retry(3L)
-                    .onErrorComplete()
+            }.onErrorComplete()
 
     override fun deleteTags(tags: List<MyTag>, userId: String): Completable =
             RxFirestore.runTransaction(firestore) { transaction ->
@@ -157,9 +150,7 @@ class CloudHelperImp(
                             .collection(COLLECTION_TAGS)
                             .document(tag.id))
                 }
-            }
-                    .retry(3L)
-                    .onErrorComplete()
+            }.onErrorComplete()
 
     override fun deleteAppearances(appearances: List<MyNoteAppearance>, userId: String): Completable =
             RxFirestore.runTransaction(firestore) { transaction ->
@@ -169,9 +160,7 @@ class CloudHelperImp(
                             .collection(COLLECTION_APPEARANCES)
                             .document(appearance.appearanceId))
                 }
-            }
-                    .retry(3L)
-                    .onErrorComplete()
+            }.onErrorComplete()
 
     override fun deleteImages(images: List<MyImage>, userId: String): Completable =
             RxFirestore.runTransaction(firestore) { transaction ->
@@ -182,7 +171,6 @@ class CloudHelperImp(
                             .document(images.name))
                 }
             }
-                    .retry(3L)
                     .onErrorComplete()
                     .andThen(Observable.fromIterable(images))
                     .flatMapSingle { image ->
@@ -193,7 +181,6 @@ class CloudHelperImp(
                                 .child(image.noteId)
                                 .child(COLLECTION_IMAGES)
                                 .child(image.name))
-                                .retry(3L)
                                 .toSingleDefault(true)
                                 .onErrorReturn { false }
                     }
@@ -251,7 +238,6 @@ class CloudHelperImp(
                                 .child(image.noteId)
                                 .child(COLLECTION_IMAGES)
                                 .child(image.name), Uri.parse(image.uri))
-                                .retry(3L)
                     }
                     .collectInto(mutableListOf<FileDownloadTask.TaskSnapshot>()) { l, i -> l.add(i) }
                     .ignoreElement()

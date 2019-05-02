@@ -14,10 +14,11 @@ interface LoginContract {
         fun showErrorWrongCredential()
         fun showLoading()
         fun hideLoading()
+        fun showForgotPassView(email: String)
     }
 
     abstract class Presenter : BasePresenter<View>() {
-        abstract fun onButtonForgotClick()
+        abstract fun onButtonForgotClick(email: String)
         abstract fun onButtonSignInClick(email: String, password: String)
 
     }

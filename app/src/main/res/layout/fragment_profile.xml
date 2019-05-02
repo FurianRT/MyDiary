@@ -27,7 +27,7 @@
     </LinearLayout>
 
     <com.jackandphantom.circularimageview.CircleImage
-        android:id="@+id/circleImage"
+        android:id="@+id/image_profile"
         android:layout_width="120dp"
         android:layout_height="120dp"
         android:layout_marginTop="40dp"
@@ -40,15 +40,15 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/textView3"
+        android:id="@+id/text_email"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:text="downinflames8@gmail.com"
         android:textColor="@color/white"
         app:layout_constraintEnd_toEndOf="@+id/linearLayout3"
         app:layout_constraintStart_toStartOf="@+id/linearLayout3"
-        app:layout_constraintTop_toBottomOf="@+id/circleImage" />
+        app:layout_constraintTop_toBottomOf="@+id/image_profile"
+        tools:text="downinflames8@gmail.com" />
 
     <FrameLayout
         android:id="@+id/profile_container"
@@ -59,7 +59,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView3" />
+        app:layout_constraintTop_toBottomOf="@+id/text_email" />
 
     <ImageButton
         android:id="@+id/button_profile_close"

@@ -2,6 +2,8 @@
 
     <string name="app_name">YourBestDiary</string>
 
+   <!-- <string name="banner_ad_unit_id" translatable="false">ca-app-pub-3940256099942544/6300978111</string>-->
+
     <string-array name="tags">
         <item>Мечта</item>
         <item>Идея</item>
@@ -89,7 +91,6 @@
     <string name="yes">Да</string>
     <string name="no">Нет</string>
     <string name="exit">Выйти</string>
-    <string name="change_password">Сменить пароль</string>
     <string name="time">Время</string>
     <string name="save">Сохранить</string>
     <string name="ok">Ок</string>
@@ -97,12 +98,17 @@
     <string name="edit">Редактировать</string>
     <string name="delete">Удалить</string>
     <string name="back">Назад</string>
-    <string name="network_error">Нет интернет соединения</string>
-    <string name="wrong_password">Неверный пароль</string>
     <string name="email">Email</string>
+    <string name="send">Отправить</string>
     <string name="done">Готово</string>
     <string name="undo">Отменить</string>
     <string name="redo">Повторить</string>
+    <string name="network_error">Нет интернет соединения</string>
+    <string name="change_password">Сменить пароль</string>
+    <string name="wrong_password">Неверный пароль</string>
+    <string name="empty_password">Введите пароль</string>
+    <string name="empty_email">Введите email</string>
+    <string name="wrong_email_format">Некорректный email</string>
 
     <string name="choose_tags">Выберите теги</string>
     <string name="choose_category">Категория</string>
@@ -172,14 +178,13 @@
     <string name="fragment_registration_sign_up">Регистрация</string>
     <string name="fragment_login_forgot">Не помню</string>
     <string name="fragment_login_sign_in">Войти</string>
+    <string name="fragment_login_wrong_credential">Неверный email или пароль</string>
     <string name="fragment_auth_sign_up">Зарегистрироваться</string>
     <string name="fragment_registration_password_error">Пароли не совпадают</string>
-    <string name="fragment_registration_email_format">Некорректный email</string>
-    <string name="fragment_registration_error_email_exists">Такой email уже зарегистрирован</string>
+    <string name="fragment_registration_error_email_exists">Email уже зарегистрирован</string>
     <string name="fragment_registration_error_short_password">Пароль слишком короткий</string>
-    <string name="fragment_registration_empty_password">Введите пароль</string>
-    <string name="fragment_registration_empty_email">Введите email</string>
     <string name="fragment_done_auth_done">Добро пожаловать!</string>
+    <string name="fragment_done_email_sent">Письмо отправлено!</string>
     <string name="nav_header_main_sing_in">Войти в аккаунт</string>
     <string name="nav_header_main_anonymous">Аноним</string>
     <string name="nav_header_main_regular">Премиум статус: нет</string>
@@ -262,5 +267,9 @@
     <string name="empty_state_note_list_hint">Сделай свою первую запись!</string>
     <string name="tutorial_note_title">Туториал</string>
     <string name="tutorial_note_content">Когда-нибудь тут появится подробное описание всех фич дневника</string>
+    <string name="fragment_forgot_pass_hint">На заданный email, будет отправлено письмо с инструкцией по восстановлению пароля. Если письмо не пришло, проверьте папку со спамом.</string>
+    <string name="fragment_category_edit_error_empty_name">Введите название категории</string>
+    <string name="fragment_category_delete_message">Удалить категорию \"%s\"?</string>
+    <string name="fragment_tag_delete_message">Удалить тег \"%s\"?</string>
 
 </resources>

@@ -9,8 +9,8 @@ class LoginPresenter(
         private val dataManager: DataManager
 ) : LoginContract.Presenter() {
 
-    override fun onButtonForgotClick() {
-
+    override fun onButtonForgotClick(email: String) {
+        view?.showForgotPassView(email)
     }
 
     override fun onButtonSignInClick(email: String, password: String) {

@@ -13,13 +13,11 @@ class CategoryListPresenter(
     }
 
     override fun onDeleteCategoryButtonClick(category: MyCategory) {
-        addDisposable(dataManager.deleteCategory(category)
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe())
+        view?.showDeleteCategoryView(category)
     }
 
     override fun onEditCategoryButtonClick(category: MyCategory) {
-        view?.showEditView(category)
+        view?.showEditView(category.id)
     }
 
     override fun onViewStart() {

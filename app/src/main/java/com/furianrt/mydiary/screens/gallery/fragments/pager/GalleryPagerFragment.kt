@@ -161,7 +161,7 @@ class GalleryPagerFragment : Fragment(), GalleryPagerContract.View,
                     setCompressionQuality(100)
                     setFreeStyleCropEnabled(true)
                 })
-                .start(context!!, this, IMAGE_EDITOR_REQUEST_CODE)
+                .start(requireContext(), this, IMAGE_EDITOR_REQUEST_CODE)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

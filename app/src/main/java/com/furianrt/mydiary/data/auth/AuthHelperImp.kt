@@ -31,10 +31,14 @@ class AuthHelperImp(
 
     override fun signOut(): Completable = Completable.fromAction { firebaseAuth.signOut() }
 
-    override fun observeSignOut(): Observable<Boolean> =
+    override fun observeAuthState(): Observable<Int> =
             RxFirebaseAuth.observeAuthState(firebaseAuth)
-                    .filter { it.currentUser == null }
-                    .map { it.currentUser == null }
+                    .map { if (it.currentUser == null) {
+                            AuthHelper.STATE_SIGN_OUT
+                        } else {
+                            AuthHelper.STATE_SIGN_IN
+                        }
+                    }
 
     override fun isSignedIn(): Boolean = firebaseAuth.currentUser != null
 
@@ -49,4 +53,7 @@ class AuthHelperImp(
             RxFirebaseAuth.fetchSignInMethodsForEmail(firebaseAuth, email)
                     .toSingle()
                     .map { !it.signInMethods.isNullOrEmpty() }
+
+    override fun sendPasswordResetEmail(email: String): Completable =
+            RxFirebaseAuth.sendPasswordResetEmail(firebaseAuth, email)
 }

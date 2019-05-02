@@ -30,7 +30,6 @@ interface NoteFragmentContract {
         fun showImageExplorer()
         fun showImages(images: List<MyImage>)
         fun showNoImages()
-        fun closeView()
         fun showGalleryView(noteId: String)
         fun showMoodsDialog(moods: List<MyMood>)
         fun showCategoriesDialog(noteId: String)
