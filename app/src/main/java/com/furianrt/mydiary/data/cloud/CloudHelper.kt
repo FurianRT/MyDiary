@@ -2,6 +2,7 @@ package com.furianrt.mydiary.data.cloud
 
 import com.furianrt.mydiary.data.model.*
 import io.reactivex.Completable
+import io.reactivex.Maybe
 import io.reactivex.Single
 
 interface CloudHelper {
@@ -19,7 +20,7 @@ interface CloudHelper {
     fun deleteTags(tags: List<MyTag>, userId: String): Completable
     fun deleteAppearances(appearances: List<MyNoteAppearance>, userId: String): Completable
     fun deleteImages(images: List<MyImage>, userId: String): Completable
-    fun getProfile(userId: String): Single<MyProfile>
+    fun getProfile(userId: String): Maybe<MyProfile>
     fun getAllNotes(userId: String): Single<List<MyNote>>
     fun getAllCategories(userId: String): Single<List<MyCategory>>
     fun getAllTags(userId: String): Single<List<MyTag>>

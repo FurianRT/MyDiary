@@ -25,6 +25,8 @@ interface PreferencesHelper {
     fun setPasswordEnabled(enable: Boolean)
     fun setLastSyncMessage(message: String)
     fun getLastSyncMessage(): String?
+    fun setLastAppLaunchTime(time: Long)
+    fun getLastAppLaunchTime(): Long
 
     companion object {
         const val COLOR_PRIMARY = "color_primary"
@@ -47,5 +49,6 @@ interface PreferencesHelper {
         const val DEFAULT_TEXT_SIZE = "16"
         const val DEFAULT_PIN_DELAY = "1000"
         const val LAST_PROGRESS_MESSAGE = "last_progress_message"
+        const val LAST_APP_LAUNCH_TIME = "last_app_launch_time"
     }
 }

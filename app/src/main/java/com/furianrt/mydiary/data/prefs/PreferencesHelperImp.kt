@@ -4,6 +4,7 @@ import android.content.Context
 import android.preference.PreferenceManager
 import androidx.core.content.ContextCompat
 import com.furianrt.mydiary.R
+import org.joda.time.DateTime
 
 class PreferencesHelperImp(val context: Context) : PreferencesHelper {
 
@@ -87,4 +88,11 @@ class PreferencesHelperImp(val context: Context) : PreferencesHelper {
 
     override fun getLastSyncMessage(): String? =
             mPrefs.getString(PreferencesHelper.LAST_PROGRESS_MESSAGE, "")
+
+    override fun setLastAppLaunchTime(time: Long) {
+        mPrefs.edit().putLong(PreferencesHelper.LAST_APP_LAUNCH_TIME, time).apply()
+    }
+
+    override fun getLastAppLaunchTime(): Long =
+            mPrefs.getLong(PreferencesHelper.LAST_APP_LAUNCH_TIME, DateTime.now().millis)
 }

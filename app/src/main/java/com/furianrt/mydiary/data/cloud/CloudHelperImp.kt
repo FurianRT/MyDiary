@@ -10,8 +10,10 @@ import com.google.firebase.storage.UploadTask
 import durdinapps.rxfirebase2.RxFirebaseStorage
 import durdinapps.rxfirebase2.RxFirestore
 import io.reactivex.Completable
+import io.reactivex.Maybe
 import io.reactivex.Observable
 import io.reactivex.Single
+import java.util.concurrent.TimeUnit
 
 class CloudHelperImp(
         private val firestore: FirebaseFirestore,
@@ -33,7 +35,7 @@ class CloudHelperImp(
             RxFirestore.setDocument(
                     firestore.collection(COLLECTION_USERS).document(profile.id),
                     profile
-            )
+            ).timeout(1, TimeUnit.MINUTES)
 
     override fun saveNotes(notes: List<MyNote>, userId: String): Completable =
             RxFirestore.runTransaction(firestore) { transaction ->
@@ -43,7 +45,7 @@ class CloudHelperImp(
                             .collection(COLLECTION_NOTES)
                             .document(note.id), note)
                 }
-            }
+            }.timeout(1, TimeUnit.MINUTES)
 
     override fun saveCategories(categories: List<MyCategory>, userId: String): Completable =
             RxFirestore.runTransaction(firestore) { transaction ->
@@ -53,7 +55,7 @@ class CloudHelperImp(
                             .collection(COLLECTION_CATEGORIES)
                             .document(category.id), category)
                 }
-            }
+            }.timeout(1, TimeUnit.MINUTES)
 
     override fun saveNoteTags(noteTags: List<NoteTag>, userId: String): Completable =
             RxFirestore.runTransaction(firestore) { transaction ->
@@ -64,7 +66,7 @@ class CloudHelperImp(
                             .collection(COLLECTION_NOTE_TAGS)
                             .document(noteTag.noteId + noteTag.tagId), noteTag)
                 }
-            }
+            }.timeout(1, TimeUnit.MINUTES)
 
     override fun saveTags(tags: List<MyTag>, userId: String): Completable =
             RxFirestore.runTransaction(firestore) { transaction ->
@@ -74,7 +76,7 @@ class CloudHelperImp(
                             .collection(COLLECTION_TAGS)
                             .document(tag.id), tag)
                 }
-            }
+            }.timeout(1, TimeUnit.MINUTES)
 
     override fun saveAppearances(appearances: List<MyNoteAppearance>, userId: String): Completable =
             RxFirestore.runTransaction(firestore) { transaction ->
@@ -84,7 +86,7 @@ class CloudHelperImp(
                             .collection(COLLECTION_APPEARANCES)
                             .document(appearance.appearanceId), appearance)
                 }
-            }
+            }.timeout(1, TimeUnit.MINUTES)
 
     override fun saveImages(images: List<MyImage>, userId: String): Completable =
             RxFirestore.runTransaction(firestore) { transaction ->
@@ -94,7 +96,7 @@ class CloudHelperImp(
                             .collection(COLLECTION_IMAGES)
                             .document(image.name), image)
                 }
-            }
+            }.timeout(1, TimeUnit.MINUTES)
 
     override fun saveImagesFiles(images: List<MyImage>, userId: String): Completable =
             Observable.fromIterable(images)
@@ -106,6 +108,7 @@ class CloudHelperImp(
                                 .child(image.noteId)
                                 .child(COLLECTION_IMAGES)
                                 .child(image.name), Uri.parse(image.uri))
+                                .timeout(1, TimeUnit.MINUTES)
                     }
                     .collectInto(mutableListOf<UploadTask.TaskSnapshot>()) { l, i -> l.add(i) }
                     .ignoreElement()
@@ -119,7 +122,7 @@ class CloudHelperImp(
                             .collection(COLLECTION_NOTES)
                             .document(note.id))
                 }
-            }.onErrorComplete()
+            }.timeout(1, TimeUnit.MINUTES).onErrorComplete()
 
     override fun deleteCategories(categories: List<MyCategory>, userId: String): Completable =
             RxFirestore.runTransaction(firestore) { transaction ->
@@ -129,7 +132,7 @@ class CloudHelperImp(
                             .collection(COLLECTION_CATEGORIES)
                             .document(category.id))
                 }
-            }.onErrorComplete()
+            }.timeout(1, TimeUnit.MINUTES).onErrorComplete()
 
     override fun deleteNoteTags(noteTags: List<NoteTag>, userId: String): Completable =
             RxFirestore.runTransaction(firestore) { transaction ->
@@ -140,7 +143,7 @@ class CloudHelperImp(
                             .collection(COLLECTION_NOTE_TAGS)
                             .document(noteTag.noteId + noteTag.tagId))
                 }
-            }.onErrorComplete()
+            }.timeout(1, TimeUnit.MINUTES).onErrorComplete()
 
     override fun deleteTags(tags: List<MyTag>, userId: String): Completable =
             RxFirestore.runTransaction(firestore) { transaction ->
@@ -150,7 +153,7 @@ class CloudHelperImp(
                             .collection(COLLECTION_TAGS)
                             .document(tag.id))
                 }
-            }.onErrorComplete()
+            }.timeout(1, TimeUnit.MINUTES).onErrorComplete()
 
     override fun deleteAppearances(appearances: List<MyNoteAppearance>, userId: String): Completable =
             RxFirestore.runTransaction(firestore) { transaction ->
@@ -160,7 +163,7 @@ class CloudHelperImp(
                             .collection(COLLECTION_APPEARANCES)
                             .document(appearance.appearanceId))
                 }
-            }.onErrorComplete()
+            }.timeout(1, TimeUnit.MINUTES).onErrorComplete()
 
     override fun deleteImages(images: List<MyImage>, userId: String): Completable =
             RxFirestore.runTransaction(firestore) { transaction ->
@@ -171,6 +174,7 @@ class CloudHelperImp(
                             .document(images.name))
                 }
             }
+                    .timeout(1, TimeUnit.MINUTES)
                     .onErrorComplete()
                     .andThen(Observable.fromIterable(images))
                     .flatMapSingle { image ->
@@ -181,51 +185,58 @@ class CloudHelperImp(
                                 .child(image.noteId)
                                 .child(COLLECTION_IMAGES)
                                 .child(image.name))
+                                .timeout(1, TimeUnit.MINUTES)
                                 .toSingleDefault(true)
                                 .onErrorReturn { false }
                     }
                     .collectInto(mutableListOf<Boolean>()) { l, i -> l.add(i) }
                     .ignoreElement()
 
-    override fun getProfile(userId: String): Single<MyProfile> =
+    override fun getProfile(userId: String): Maybe<MyProfile> =
             RxFirestore.getDocument(firestore.collection(COLLECTION_USERS)
                     .document(userId), MyProfile::class.java)
-                    .toSingle()
+                    .timeout(1, TimeUnit.MINUTES)
 
     override fun getAllNotes(userId: String): Single<List<MyNote>> =
             RxFirestore.getCollection(firestore.collection(COLLECTION_USERS)
                     .document(userId)
                     .collection(COLLECTION_NOTES), MyNote::class.java)
+                    .timeout(1, TimeUnit.MINUTES)
                     .toSingle(emptyList())
 
     override fun getAllCategories(userId: String): Single<List<MyCategory>> =
             RxFirestore.getCollection(firestore.collection(COLLECTION_USERS)
                     .document(userId)
                     .collection(COLLECTION_CATEGORIES), MyCategory::class.java)
+                    .timeout(1, TimeUnit.MINUTES)
                     .toSingle(emptyList())
 
     override fun getAllTags(userId: String): Single<List<MyTag>> =
             RxFirestore.getCollection(firestore.collection(COLLECTION_USERS)
                     .document(userId)
                     .collection(COLLECTION_TAGS), MyTag::class.java)
+                    .timeout(1, TimeUnit.MINUTES)
                     .toSingle(emptyList())
 
     override fun getAllAppearances(userId: String): Single<List<MyNoteAppearance>> =
             RxFirestore.getCollection(firestore.collection(COLLECTION_USERS)
                     .document(userId)
                     .collection(COLLECTION_APPEARANCES), MyNoteAppearance::class.java)
+                    .timeout(1, TimeUnit.MINUTES)
                     .toSingle(emptyList())
 
     override fun getAllNoteTags(userId: String): Single<List<NoteTag>> =
             RxFirestore.getCollection(firestore.collection(COLLECTION_USERS)
                     .document(userId)
                     .collection(COLLECTION_NOTE_TAGS), NoteTag::class.java)
+                    .timeout(1, TimeUnit.MINUTES)
                     .toSingle(emptyList())
 
     override fun getAllImages(userId: String): Single<List<MyImage>> =
             RxFirestore.getCollection(firestore.collection(COLLECTION_USERS)
                     .document(userId)
                     .collection(COLLECTION_IMAGES), MyImage::class.java)
+                    .timeout(1, TimeUnit.MINUTES)
                     .toSingle(emptyList())
 
     override fun loadImageFiles(images: List<MyImage>, userId: String): Completable =
@@ -238,6 +249,7 @@ class CloudHelperImp(
                                 .child(image.noteId)
                                 .child(COLLECTION_IMAGES)
                                 .child(image.name), Uri.parse(image.uri))
+                                .timeout(1, TimeUnit.MINUTES)
                     }
                     .collectInto(mutableListOf<FileDownloadTask.TaskSnapshot>()) { l, i -> l.add(i) }
                     .ignoreElement()

@@ -62,10 +62,10 @@ class RegistrationFragment : Fragment(), RegistrationContract.View {
                     view.edit_password_repeat.text.toString()
             )
         }
-        view.edit_email.setOnFocusChangeListener { _, hasFocus ->
+        view.edit_email.setOnFocusChangeListener { v, hasFocus ->
+            mOnEditFocusChangeListener.invoke(v, hasFocus)
             mPresenter.onEmailFocusChange(view.edit_email.text.toString(), hasFocus)
         }
-        view.edit_email.setOnFocusChangeListener(mOnEditFocusChangeListener)
         view.edit_password.setOnFocusChangeListener(mOnEditFocusChangeListener)
         view.edit_password_repeat.setOnFocusChangeListener(mOnEditFocusChangeListener)
         view.edit_email.setOnClickListener { mOnEditFocusChangeListener.invoke(it, true) }

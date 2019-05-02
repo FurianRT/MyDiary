@@ -7,6 +7,7 @@ import com.furianrt.mydiary.data.model.SyncProgressMessage
 import com.furianrt.mydiary.screens.main.listadapter.MainContentItem
 import com.furianrt.mydiary.screens.main.listadapter.MainHeaderItem
 import com.furianrt.mydiary.screens.main.listadapter.MainListItem
+import io.reactivex.Completable
 import io.reactivex.Flowable
 import io.reactivex.Observable
 import io.reactivex.Single
@@ -65,15 +66,7 @@ class MainActivityPresenter(
         loadNotes()
         loadHeaderImage()
         updateSyncProgress()
-    }
-
-    private fun updateSyncProgress() {
-        val message = dataManager.getLastSyncMessage()
-        if (message != null && message.taskIndex != SyncProgressMessage.SYNC_FINISHED) {
-            view?.showSyncProgress(message)
-        } else {
-            view?.clearSyncProgress()
-        }
+        addDisposable(checkLogOut().subscribe())
     }
 
     override fun onStoragePermissionsGranted() {
@@ -100,9 +93,9 @@ class MainActivityPresenter(
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { profile ->
                     //if (profile.hasPremium) {
-                        view?.showPremiumProfile(profile)
+                    view?.showPremiumProfile(profile)
                     //} else {
-                   //     view?.showRegularProfile(profile)
+                    //     view?.showRegularProfile(profile)
                     //}
                 })
         addDisposable(dataManager.observeAuthState()
@@ -220,6 +213,15 @@ class MainActivityPresenter(
         return list
     }
 
+    private fun updateSyncProgress() {
+        val message = dataManager.getLastSyncMessage()
+        if (message != null && message.taskIndex != SyncProgressMessage.SYNC_FINISHED) {
+            view?.showSyncProgress(message)
+        } else {
+            view?.clearSyncProgress()
+        }
+    }
+
     override fun onFabMenuClick() {
         if (mSelectedNotes.isEmpty()) {
             view?.showViewNewNote()
@@ -306,11 +308,29 @@ class MainActivityPresenter(
         }
     }
 
+    private fun checkLogOut(): Completable =
+            dataManager.getDbProfileCount()
+                    .flatMapCompletable { count ->
+                        if (dataManager.isSignedIn() && count == 0) {
+                            dataManager.signOut()
+                        } else if (count > 1) {
+                            dataManager.signOut().andThen(dataManager.clearDbProfile())
+                        } else {
+                            Completable.complete()
+                        }
+                    }
+
     override fun onButtonProfileClick() {
-        if (dataManager.isSignedIn()) {
-            view?.showProfileSettings()
-        } else {
-            view?.showLoginView()
-        }
+        addDisposable(checkLogOut()
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe({
+                    if (dataManager.isSignedIn()) {
+                        view?.showProfileSettings()
+                    } else {
+                        view?.showLoginView()
+                    }
+                }, {
+                    it.printStackTrace()
+                }))
     }
 }

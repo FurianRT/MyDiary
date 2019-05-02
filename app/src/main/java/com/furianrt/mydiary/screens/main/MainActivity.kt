@@ -99,7 +99,9 @@ class MainActivity : BaseActivity(), MainActivityContract.View,
         override fun onAnimationCancel(animation: Animator?) {}
         override fun onAnimationStart(animation: Animator?) {}
         override fun onAnimationEnd(animation: Animator?) {
-            clearSyncProgress()
+            nav_view.getHeaderView(0).progress_sync.visibility = View.GONE
+            nav_view.getHeaderView(0).button_sync.isEnabled = true
+            nav_view.getHeaderView(0).button_sync.text = getString(R.string.nav_header_main_button_sync)
         }
     }
     private lateinit var mOnDrawerListener: ActionBarDrawerToggle
@@ -136,6 +138,9 @@ class MainActivity : BaseActivity(), MainActivityContract.View,
     }
 
     override fun clearSyncProgress() {
+        if (nav_view.getHeaderView(0).progress_sync.isStop) {
+            nav_view.getHeaderView(0).progress_sync.reset()
+        }
         nav_view.getHeaderView(0).progress_sync.visibility = View.GONE
         nav_view.getHeaderView(0).button_sync.isEnabled = true
         nav_view.getHeaderView(0).button_sync.text = getString(R.string.nav_header_main_button_sync)

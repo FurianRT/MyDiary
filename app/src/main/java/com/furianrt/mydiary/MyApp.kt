@@ -21,6 +21,7 @@ import com.yanzhenjie.album.AlbumConfig
 import com.yanzhenjie.album.AlbumFile
 import com.yanzhenjie.album.AlbumLoader
 import net.danlew.android.joda.JodaTimeAndroid
+import org.joda.time.DateTime
 import java.util.*
 
 class MyApp : Application(), Application.ActivityLifecycleCallbacks {
@@ -30,6 +31,7 @@ class MyApp : Application(), Application.ActivityLifecycleCallbacks {
         const val NOTIFICATION_SYNC_CHANNEL_NAME = "Synchronization"
         const val NOTIFICATION_FIREBASE_CHANNEL_ID = "firebase_channel"
         const val NOTIFICATION_FIREBASE_CHANNEL_NAME = "Info"
+        private const val SYNC_PROGRESS_RESET_TIME = 1000 * 60 * 10
     }
 
     val component: AppComponent by lazy {
@@ -42,7 +44,6 @@ class MyApp : Application(), Application.ActivityLifecycleCallbacks {
     private val mLogoutRunnable = Runnable { setAuthorized(false) }
 
     override fun onCreate() {
-        component.inject(this)
         super.onCreate()
         setAuthorized(false)
         registerActivityLifecycleCallbacks(this)
@@ -50,6 +51,7 @@ class MyApp : Application(), Application.ActivityLifecycleCallbacks {
         createNotificationFirebaseChannel()
         JodaTimeAndroid.init(this)
         initializeImageAlbum()
+        resetSyncProgress()
     }
 
     override fun onActivityDestroyed(activity: Activity?) {}
@@ -122,6 +124,16 @@ class MyApp : Application(), Application.ActivityLifecycleCallbacks {
                 })
                 .setLocale(Locale.getDefault())
                 .build())
+    }
+
+    private fun resetSyncProgress() {
+        val prefs = PreferenceManager.getDefaultSharedPreferences(this)
+        val currentTime = DateTime.now().millis
+        val launchTimeDiff = currentTime - prefs.getLong(PreferencesHelper.LAST_APP_LAUNCH_TIME, currentTime)
+        if (launchTimeDiff >= SYNC_PROGRESS_RESET_TIME) {
+            prefs.edit().putString(PreferencesHelper.LAST_PROGRESS_MESSAGE, "").apply()
+        }
+        prefs.edit().putLong(PreferencesHelper.LAST_APP_LAUNCH_TIME, currentTime).apply()
     }
 }
 

@@ -86,6 +86,7 @@ interface DataManager {
     fun getAllAppearancesFromCloud(): Single<List<MyNoteAppearance>>
     fun getAllNoteTagsFromCloud(): Single<List<NoteTag>>
     fun getAllImagesFromCloud(): Single<List<MyImage>>
+    fun getDbProfileCount(): Single<Int>
     fun getTextColor(): Int
     fun getTextSize(): Int
     fun getNoteBackgroundColor(): Int

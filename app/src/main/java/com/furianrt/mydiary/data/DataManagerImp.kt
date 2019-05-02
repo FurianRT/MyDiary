@@ -534,6 +534,11 @@ class DataManagerImp(
             cloud.getAllImages(auth.getUserId())
                     .subscribeOn(rxScheduler)
 
+    override fun getDbProfileCount(): Single<Int> =
+            database.profileDao()
+                    .getProfileCount()
+                    .subscribeOn(rxScheduler)
+
     override fun loadImageFiles(images: List<MyImage>): Completable =
             cloud.loadImageFiles(images, auth.getUserId())
                     .subscribeOn(rxScheduler)
@@ -548,15 +553,23 @@ class DataManagerImp(
                                 cloud.saveProfile(profile)
                                         .doOnError { auth.signOut() },
                                 Completable.fromAction { database.profileDao().insert(profile) }
+                                        .doOnError { auth.signOut() }
                                         .subscribeOn(rxScheduler)))
                     }
                     .subscribeOn(rxScheduler)
 
     override fun signIn(email: String, password: String): Completable =
             auth.signIn(email, password)
-                    .flatMap { cloud.getProfile(it).doOnError { auth.signOut() } }
+                    .flatMap { userId ->
+                        cloud.getProfile(userId)
+                                .switchIfEmpty(cloud.saveProfile(MyProfile(userId, email))
+                                        .andThen(cloud.getProfile(userId)))
+                                .toSingle()
+                                .doOnError { auth.signOut() }
+                    }
                     .flatMapCompletable { profile ->
                         Completable.fromAction { database.profileDao().insert(profile) }
+                                .doOnError { auth.signOut() }
                                 .subscribeOn(rxScheduler)
                     }
                     .subscribeOn(rxScheduler)

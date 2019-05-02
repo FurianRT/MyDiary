@@ -185,7 +185,7 @@ class AuthFragment : Fragment(), AuthContract.View {
                         override fun onAnimationStart(animation: Animator?) {}
                         override fun onAnimationEnd(animation: Animator?) {
                             //повторная прорисовка контекстного меню
-                            auth_container.requestLayout()   //todo иногда обрезается контекстное меню
+                            auth_container?.requestLayout()   //todo иногда обрезается контекстное меню
                         }
                     })
         }

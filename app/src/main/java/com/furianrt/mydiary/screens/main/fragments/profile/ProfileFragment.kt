@@ -106,7 +106,7 @@ class ProfileFragment : Fragment(), ProfileContract.View {
                         override fun onAnimationStart(animation: Animator?) {}
                         override fun onAnimationEnd(animation: Animator?) {
                             //повторная прорисовка контекстного меню
-                            profile_container.requestLayout()   //todo иногда обрезается контекстное меню
+                            profile_container?.requestLayout()   //todo иногда обрезается контекстное меню
                         }
                     })
         }
