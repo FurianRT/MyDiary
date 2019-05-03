@@ -6,6 +6,10 @@ import com.furianrt.mydiary.dialogs.categories.fragments.edit.CategoryEditFragme
 import com.furianrt.mydiary.dialogs.categories.fragments.list.CategoryListFragment
 import com.furianrt.mydiary.dialogs.moods.MoodsDialog
 import com.furianrt.mydiary.dialogs.tags.TagsDialog
+import com.furianrt.mydiary.dialogs.tags.fragments.add.TagAddFragment
+import com.furianrt.mydiary.dialogs.tags.fragments.delete.TagDeleteFragment
+import com.furianrt.mydiary.dialogs.tags.fragments.edit.TagEditFragment
+import com.furianrt.mydiary.dialogs.tags.fragments.list.TagListFragment
 import com.furianrt.mydiary.screens.gallery.GalleryActivity
 import com.furianrt.mydiary.screens.gallery.fragments.list.GalleryListFragment
 import com.furianrt.mydiary.screens.gallery.fragments.pager.GalleryPagerFragment
@@ -35,7 +39,6 @@ import dagger.Subcomponent
 @PresenterScope
 @Subcomponent(modules = [PresenterModule::class])
 interface PresenterComponent {
-
     fun inject(activity: MainActivity)
     fun inject(activity: NoteActivity)
     fun inject(activity: GalleryActivity)
@@ -66,4 +69,8 @@ interface PresenterComponent {
     fun inject(fragment: BackupEmailFragment)
     fun inject(fragment: ForgotPassFragment)
     fun inject(fragment: CategoryDeleteFragment)
+    fun inject(fragment: TagListFragment)
+    fun inject(fragment: TagDeleteFragment)
+    fun inject(fragment: TagAddFragment)
+    fun inject(fragment: TagEditFragment)
 }

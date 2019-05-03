@@ -51,30 +51,11 @@ class NoteFragmentPresenter(private val dataManager: DataManager) : NoteFragment
     }
 
     override fun onTagsFieldClick() {
-        val allTagsObservable = dataManager.getAllTags()
-                .flatMapObservable { tags -> Observable.fromIterable(tags) }
-
-        addDisposable(dataManager.getTagsForNote(mNote.id)
-                .first(emptyList())
-                .flatMapObservable { tags -> Observable.fromIterable(tags) }
-                .map { tag -> tag.apply { isChecked = true } }
-                .concatWith(allTagsObservable)
-                .collectInto(ArrayList<MyTag>()) { list, tag ->
-                    val foundedTag = list.find { it.id == tag.id }
-                    if (foundedTag == null) list.add(tag)
-                }
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { tags -> view?.showTagsDialog(tags) })
+        view?.showTagsDialog(mNote.id)
     }
 
     override fun onCategoryFieldClick() {
         view?.showCategoriesDialog(mNote.id)
-    }
-
-    override fun onNoteTagsChanged(tags: List<MyTag>) {
-        addDisposable(dataManager.replaceNoteTags(mNote.id, tags)
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe())
     }
 
     override fun onMapReady() {

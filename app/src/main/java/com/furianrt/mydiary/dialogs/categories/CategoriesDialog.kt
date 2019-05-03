@@ -56,7 +56,7 @@ class CategoriesDialog : DialogFragment(), CategoriesDialogContract.View {
 
         mPresenter.attachView(this)
 
-        val dialog = AlertDialog.Builder(context!!)
+        val dialog = AlertDialog.Builder(requireContext())
                 .setView(mView)
                 .setPositiveButton(getString(R.string.close), null)
                 .setNegativeButton(getString(R.string.no_category)) { _, _ -> mListener?.onNoCategoryPicked() }

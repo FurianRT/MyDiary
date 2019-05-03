@@ -14,6 +14,14 @@ import com.furianrt.mydiary.dialogs.moods.MoodsDialogContract
 import com.furianrt.mydiary.dialogs.moods.MoodsDialogPresenter
 import com.furianrt.mydiary.dialogs.tags.TagsDialogContract
 import com.furianrt.mydiary.dialogs.tags.TagsDialogPresenter
+import com.furianrt.mydiary.dialogs.tags.fragments.add.TagAddContract
+import com.furianrt.mydiary.dialogs.tags.fragments.add.TagAddPresenter
+import com.furianrt.mydiary.dialogs.tags.fragments.delete.TagDeleteContract
+import com.furianrt.mydiary.dialogs.tags.fragments.delete.TagDeletePresenter
+import com.furianrt.mydiary.dialogs.tags.fragments.edit.TagEditContract
+import com.furianrt.mydiary.dialogs.tags.fragments.edit.TagEditPresenter
+import com.furianrt.mydiary.dialogs.tags.fragments.list.TagListContract
+import com.furianrt.mydiary.dialogs.tags.fragments.list.TagListPresenter
 import com.furianrt.mydiary.screens.gallery.GalleryActivityContract
 import com.furianrt.mydiary.screens.gallery.GalleryActivityPresenter
 import com.furianrt.mydiary.screens.gallery.fragments.list.GalleryListContract
@@ -224,4 +232,24 @@ class PresenterModule(private val context: Context) {
     @PresenterScope
     fun provideCategoryDeletePresenter(dataManager: DataManager): CategoryDeleteContract.Presenter =
             CategoryDeletePresenter(dataManager)
+
+    @Provides
+    @PresenterScope
+    fun provideTagListPresenter(dataManager: DataManager): TagListContract.Presenter =
+            TagListPresenter(dataManager)
+
+    @Provides
+    @PresenterScope
+    fun provideTagDeletePresenter(dataManager: DataManager): TagDeleteContract.Presenter =
+            TagDeletePresenter(dataManager)
+
+    @Provides
+    @PresenterScope
+    fun provideTagAddPresenter(dataManager: DataManager): TagAddContract.Presenter =
+            TagAddPresenter(dataManager)
+
+    @Provides
+    @PresenterScope
+    fun provideTagEditPresenter(dataManager: DataManager): TagEditContract.Presenter =
+            TagEditPresenter(dataManager)
 }

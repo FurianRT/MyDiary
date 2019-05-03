@@ -1,7 +1,6 @@
 package com.furianrt.mydiary.dialogs.categories.fragments.list
 
 import android.os.Bundle
-import android.os.Parcelable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,7 +13,6 @@ import com.furianrt.mydiary.data.model.MyCategory
 import com.furianrt.mydiary.dialogs.categories.fragments.delete.CategoryDeleteFragment
 import com.furianrt.mydiary.dialogs.categories.fragments.edit.CategoryEditFragment
 import com.furianrt.mydiary.utils.inTransaction
-import kotlinx.android.synthetic.main.fragment_category_list.*
 import kotlinx.android.synthetic.main.fragment_category_list.view.*
 import javax.inject.Inject
 
@@ -26,13 +24,11 @@ class CategoryListFragment : Fragment(), View.OnClickListener,
 
     private val mListAdapter = CategoriesListAdapter(this)
     private lateinit var mNoteId: String
-    private var mRecyclerViewState: Parcelable? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         getPresenterComponent(requireContext()).inject(this)
         mNoteId = arguments?.getString(ARG_NOTE_ID) ?: throw IllegalArgumentException()
-        mRecyclerViewState = savedInstanceState?.getParcelable(BUNDLE_RECYCLER_VIEW_STATE)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -66,10 +62,6 @@ class CategoryListFragment : Fragment(), View.OnClickListener,
     }
 
     override fun showCategories(categories: List<MyCategory>) {
-        mRecyclerViewState?.let {
-            list_categories.layoutManager?.onRestoreInstanceState(mRecyclerViewState)
-            mRecyclerViewState = null
-        }
         mListAdapter.submitList(categories)
     }
 
@@ -97,12 +89,6 @@ class CategoryListFragment : Fragment(), View.OnClickListener,
 
     override fun showDeleteCategoryView(category: MyCategory) {
         addFragment(CategoryDeleteFragment.newInstance(category), CategoryDeleteFragment.TAG)
-    }
-
-    override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
-        outState.putParcelable(BUNDLE_RECYCLER_VIEW_STATE,
-                list_categories.layoutManager?.onSaveInstanceState())
     }
 
     override fun close() {
@@ -136,7 +122,6 @@ class CategoryListFragment : Fragment(), View.OnClickListener,
 
         const val TAG = "CategoryListFragment"
         private const val ARG_NOTE_ID = "noteId"
-        private const val BUNDLE_RECYCLER_VIEW_STATE = "recyclerState"
 
         @JvmStatic
         fun newInstance(noteId: String) =

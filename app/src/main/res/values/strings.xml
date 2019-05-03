@@ -2,7 +2,7 @@
 
     <string name="app_name">YourBestDiary</string>
 
-   <!-- <string name="banner_ad_unit_id" translatable="false">ca-app-pub-3940256099942544/6300978111</string>-->
+    <!-- <string name="banner_ad_unit_id" translatable="false">ca-app-pub-3940256099942544/6300978111</string>-->
 
     <string-array name="tags">
         <item>Мечта</item>
@@ -103,6 +103,7 @@
     <string name="done">Готово</string>
     <string name="undo">Отменить</string>
     <string name="redo">Повторить</string>
+    <string name="add">Добавить</string>
     <string name="network_error">Нет интернет соединения</string>
     <string name="change_password">Сменить пароль</string>
     <string name="wrong_password">Неверный пароль</string>
@@ -115,6 +116,7 @@
     <string name="choose_mood">Настроение</string>
     <string name="choose_location">Выберите локацию</string>
     <string name="add_tag">Добавить тег</string>
+    <string name="tag_name">Название тега</string>
     <string name="open">Открыть</string>
     <string name="close">Закрыть</string>
     <string name="album">Альбом</string>
@@ -271,5 +273,7 @@
     <string name="fragment_category_edit_error_empty_name">Введите название категории</string>
     <string name="fragment_category_delete_message">Удалить категорию \"%s\"?</string>
     <string name="fragment_tag_delete_message">Удалить тег \"%s\"?</string>
+    <string name="fragment_tag_error_empty_name">Введите название тега</string>
+    <string name="fragment_add_tag_error_existing_name">Тег с таким названием уже есть</string>
 
 </resources>

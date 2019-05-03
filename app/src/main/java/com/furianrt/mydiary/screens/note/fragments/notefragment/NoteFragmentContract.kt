@@ -14,7 +14,7 @@ interface NoteFragmentContract {
 
     interface View : BaseView {
         fun showForecast(forecast: Forecast)
-        fun showTagsDialog(tags: ArrayList<MyTag>)
+        fun showTagsDialog(noteId: String)
         fun showTags(tagsAndAppearance: TagsAndAppearance)
         fun requestLocationPermissions()
         fun requestLocation()
@@ -54,7 +54,6 @@ interface NoteFragmentContract {
         abstract fun onLocationReceived(result: LocationResult)
         abstract fun onLocationPermissionsGranted()
         abstract fun onAddressFound(addresses: List<Address>, latitude: Double, longitude: Double)
-        abstract fun onNoteTagsChanged(tags: List<MyTag>)
         abstract fun onMapReady()
         abstract fun onButtonAddImageClick()
         abstract fun onStoragePermissionsGranted()

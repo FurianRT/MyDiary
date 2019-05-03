@@ -1,46 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/container_tags"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:layout_height="wrap_content" />
 
-    <LinearLayout
-        android:id="@+id/layout_tags_header"
-        android:layout_width="match_parent"
-        android:layout_height="?android:attr/actionBarSize"
-        android:background="@color/colorPrimary"
-        android:gravity="end|center_vertical"
-        android:orientation="horizontal">
-
-        <ImageButton
-            android:id="@+id/button_close_search"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_marginStart="8dp"
-            android:background="@color/transparent"
-            android:src="@drawable/ic_close"
-            android:visibility="invisible"
-            tools:ignore="ContentDescription" />
-
-        <androidx.appcompat.widget.SearchView
-            android:id="@+id/search_add_tags"
-            style="@style/SearchViewStyle"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layoutDirection="rtl"
-            android:maxWidth="10000dp"
-            android:inputType="textCapSentences"
-            app:queryHint="@string/add_tag" />
-
-    </LinearLayout>
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/list_tags"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:scrollbars="vertical"
-            tools:listitem="@layout/dialog_tags_list_item" />
-
-</LinearLayout>

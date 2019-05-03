@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.furianrt.mydiary.R
 import com.furianrt.mydiary.data.model.MyTag
+import kotlinx.android.synthetic.main.fragment_tag_delete.*
 import kotlinx.android.synthetic.main.fragment_tag_delete.view.*
 import javax.inject.Inject
 
@@ -19,6 +20,7 @@ class TagDeleteFragment : Fragment(), TagDeleteContract.View {
     private lateinit var mTag: MyTag
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        getPresenterComponent(requireContext()).inject(this)
         super.onCreate(savedInstanceState)
         mTag = arguments?.getParcelable(ARG_TAG) ?: throw IllegalArgumentException()
     }
@@ -28,7 +30,10 @@ class TagDeleteFragment : Fragment(), TagDeleteContract.View {
         val view = inflater.inflate(R.layout.fragment_tag_delete, container, false)
 
         view.text_tag_delete_message.text = getString(R.string.fragment_tag_delete_message, mTag.name)
-        view.button_delete_tag.setOnClickListener { mPresenter.onButtonDeleteClick(mTag) }
+        view.button_delete_tag.setOnClickListener {
+            button_delete_tag.isEnabled = false
+            mPresenter.onButtonDeleteClick(mTag)
+        }
         view.button_delete_tag_cancel.setOnClickListener { mPresenter.onButtonCancelClick() }
 
         return view
@@ -36,6 +41,16 @@ class TagDeleteFragment : Fragment(), TagDeleteContract.View {
 
     override fun closeView() {
         fragmentManager?.popBackStack()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        mPresenter.attachView(this)
+    }
+
+    override fun onPause() {
+        super.onPause()
+        mPresenter.detachView()
     }
 
 

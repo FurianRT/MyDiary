@@ -212,18 +212,12 @@ class DataManagerImp(
             Completable.fromAction { database.categoryDao().delete(category.id) }
                     .subscribeOn(rxScheduler)
 
-    override fun clearDbProfile(): Completable =
-            Completable.fromAction { database.profileDao().clearProfile() }
+    override fun deleteNoteTag(noteId: String, tagId: String): Completable =
+            Completable.fromAction { database.noteTagDao().delete(noteId, tagId) }
                     .subscribeOn(rxScheduler)
 
-    override fun replaceNoteTags(noteId: String, tags: List<MyTag>): Completable =
-            Completable.fromAction {
-                database.noteTagDao()
-                        .replaceNoteTags(noteId, tags.map { it.apply { syncWith.clear() } })
-            }.subscribeOn(rxScheduler)
-
-    override fun deleteAllTagsForNote(noteId: String): Completable =
-            Completable.fromAction { database.noteTagDao().deleteAllTagsForNote(noteId) }
+    override fun clearDbProfile(): Completable =
+            Completable.fromAction { database.profileDao().clearProfile() }
                     .subscribeOn(rxScheduler)
 
     override fun deleteImageFromStorage(fileName: String): Single<Boolean> =
@@ -299,7 +293,7 @@ class DataManagerImp(
                     .getDeletedImages()
                     .subscribeOn(rxScheduler)
 
-    override fun getAllTags(): Single<List<MyTag>> =
+    override fun getAllTags(): Flowable<List<MyTag>> =
             database.tagDao()
                     .getAllTags()
                     .subscribeOn(rxScheduler)

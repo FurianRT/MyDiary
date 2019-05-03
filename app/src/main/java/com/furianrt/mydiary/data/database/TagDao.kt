@@ -3,7 +3,6 @@ package com.furianrt.mydiary.data.database
 import androidx.room.*
 import com.furianrt.mydiary.data.model.MyTag
 import io.reactivex.Flowable
-import io.reactivex.Single
 
 @Dao
 interface TagDao {
@@ -30,5 +29,5 @@ interface TagDao {
     fun cleanup()
 
     @Query("SELECT * FROM Tags WHERE is_tag_deleted = 0")
-    fun getAllTags(): Single<List<MyTag>>
+    fun getAllTags(): Flowable<List<MyTag>>
 }

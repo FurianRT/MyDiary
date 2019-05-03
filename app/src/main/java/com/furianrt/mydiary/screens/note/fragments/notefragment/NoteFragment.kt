@@ -61,8 +61,7 @@ import javax.inject.Inject
 import kotlin.collections.ArrayList
 
 class NoteFragment : Fragment(), NoteFragmentContract.View, OnMapReadyCallback,
-        TagsDialog.OnTagsDialogInteractionListener, View.OnClickListener,
-        MoodsDialog.OnMoodsDialogInteractionListener,
+        View.OnClickListener, MoodsDialog.OnMoodsDialogInteractionListener,
         CategoriesDialog.OnCategoriesDialogInteractionListener,
         DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener,
         DeleteNoteDialog.OnDeleteNoteConfirmListener {
@@ -459,8 +458,6 @@ class NoteFragment : Fragment(), NoteFragmentContract.View, OnMapReadyCallback,
     override fun setUserVisibleHint(isVisibleToUser: Boolean) {
         super.setUserVisibleHint(isVisibleToUser)
         if (isVisibleToUser) {
-            (activity?.supportFragmentManager?.findFragmentByTag(TagsDialog.TAG) as? TagsDialog?)
-                    ?.setOnTagChangedListener(this)
             (activity?.supportFragmentManager?.findFragmentByTag(MoodsDialog.TAG) as? MoodsDialog?)
                     ?.setOnMoodsDialogInteractionListener(this)
             (activity?.supportFragmentManager?.findFragmentByTag(CategoriesDialog.TAG) as? CategoriesDialog?)
@@ -518,10 +515,8 @@ class NoteFragment : Fragment(), NoteFragmentContract.View, OnMapReadyCallback,
         }.show(requireActivity().supportFragmentManager, CategoriesDialog.TAG)
     }
 
-    override fun showTagsDialog(tags: ArrayList<MyTag>) {
-        TagsDialog.newInstance(tags).apply {
-            setOnTagChangedListener(this@NoteFragment)
-        }.show(requireActivity().supportFragmentManager, TagsDialog.TAG)
+    override fun showTagsDialog(noteId: String) {
+        TagsDialog.newInstance(noteId).show(requireActivity().supportFragmentManager, TagsDialog.TAG)
     }
 
     override fun showForecast(forecast: Forecast) {
@@ -540,10 +535,6 @@ class NoteFragment : Fragment(), NoteFragmentContract.View, OnMapReadyCallback,
 
     override fun onNoCategoryPicked() {
         mPresenter.onNoCategoryPicked()
-    }
-
-    override fun onTagsDialogPositiveButtonClick(tags: List<MyTag>) {
-        mPresenter.onNoteTagsChanged(tags)
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>,

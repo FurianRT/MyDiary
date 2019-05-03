@@ -41,7 +41,6 @@ interface DataManager {
     fun deleteNote(note: MyNote): Completable
     fun deleteImage(image: MyImage): Completable
     fun deleteImage(images: List<MyImage>): Completable
-    fun deleteAllTagsForNote(noteId: String): Completable
     fun deleteImageFromStorage(fileName: String): Single<Boolean>
     fun deleteCategory(category: MyCategory): Completable
     fun deleteNotesFromCloud(notes: List<MyNote>): Completable
@@ -50,6 +49,7 @@ interface DataManager {
     fun deleteTagsFromCloud(tags: List<MyTag>): Completable
     fun deleteAppearancesFromCloud(appearances: List<MyNoteAppearance>): Completable
     fun deleteImagesFromCloud(images: List<MyImage>): Completable
+    fun deleteNoteTag(noteId: String, tagId: String): Completable
     fun clearDbProfile(): Completable
     fun cleanupNotes(): Completable
     fun cleanupNoteTags(): Completable
@@ -62,7 +62,7 @@ interface DataManager {
     fun getTagsForNote(noteId: String): Flowable<List<MyTag>>
     fun getDeletedNoteTags(): Flowable<List<NoteTag>>
     fun getNote(noteId: String): Flowable<MyNote>
-    fun getAllTags(): Single<List<MyTag>>
+    fun getAllTags(): Flowable<List<MyTag>>
     fun getDeletedTags(): Flowable<List<MyTag>>
     fun getForecast(lat: Double, lon: Double): Single<Forecast?>
     fun getMood(moodId: Int): Single<MyMood>
@@ -110,7 +110,6 @@ interface DataManager {
     fun setSortDesc(desc: Boolean)
     fun setLastSyncMessage(message: SyncProgressMessage)
     fun getLastSyncMessage(): SyncProgressMessage?
-    fun replaceNoteTags(noteId: String, tags: List<MyTag>): Completable
     fun findNote(noteId: String): Maybe<MyNote>
     fun addLocation(location: MyLocation): Completable
     fun loadHeaderImages(page: Int = 1, perPage: Int = 20): Single<List<MyHeaderImage>>
