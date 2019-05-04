@@ -2,6 +2,7 @@ package com.furianrt.mydiary.services.sync
 
 import android.app.PendingIntent
 import android.app.Service
+import android.content.Context
 import android.content.Intent
 import android.os.IBinder
 import android.util.Log
@@ -34,8 +35,8 @@ class SyncService : Service(), SyncContract.View {
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        val notificationIntent = Intent(this, MainActivity::class.java)
-        val pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0)
+        val pendingIntent =
+                PendingIntent.getActivity(this, 0, newLauncherIntent(this), 0)
         val notification = NotificationCompat.Builder(this, MyApp.NOTIFICATION_SYNC_CHANNEL_ID)
                 .setContentTitle(getString(R.string.notification_sync_title))
                 .setContentText(getString(R.string.notification_sync_content))
@@ -46,6 +47,13 @@ class SyncService : Service(), SyncContract.View {
         mPresenter.onStartCommand()
         return START_NOT_STICKY
     }
+
+    private fun newLauncherIntent(context: Context): Intent =
+            Intent(context, MainActivity::class.java).apply {
+                flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                action = Intent.ACTION_MAIN
+                addCategory(Intent.CATEGORY_LAUNCHER)
+            }
 
     override fun sendProgressUpdate(progressMessage: SyncProgressMessage) {
         progressMessage.message = if (progressMessage.hasError) {

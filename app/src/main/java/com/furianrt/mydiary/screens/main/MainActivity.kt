@@ -56,7 +56,6 @@ import jp.wasabeef.recyclerview.animators.LandingAnimator
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.activity_main_toolbar.*
 import kotlinx.android.synthetic.main.bottom_sheet_main.*
-import kotlinx.android.synthetic.main.nav_header_main.*
 import kotlinx.android.synthetic.main.nav_header_main.view.*
 import pub.devrel.easypermissions.AfterPermissionGranted
 import pub.devrel.easypermissions.EasyPermissions
@@ -102,9 +101,7 @@ class MainActivity : BaseActivity(), MainActivityContract.View,
         override fun onAnimationCancel(animation: Animator?) {}
         override fun onAnimationStart(animation: Animator?) {}
         override fun onAnimationEnd(animation: Animator?) {
-            nav_view.getHeaderView(0).progress_sync.visibility = View.GONE
-            nav_view.getHeaderView(0).button_sync.isEnabled = true
-            nav_view.getHeaderView(0).button_sync.text = getString(R.string.nav_header_main_button_sync)
+            clearSyncProgress()
         }
     }
     private lateinit var mOnDrawerListener: ActionBarDrawerToggle
@@ -112,19 +109,18 @@ class MainActivity : BaseActivity(), MainActivityContract.View,
     private val mBroadcastReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
             SyncService.getProgressMessage(intent)?.let {
-                if (it.hasError) {
-                    button_sync.text = it.message
-                    nav_view.getHeaderView(0).progress_sync.progress = 100f
-                    nav_view.getHeaderView(0).progress_sync.finishLoad()
-                    animateProgressAlpha()
-                } else {
-                    if (nav_view.getHeaderView(0).progress_sync.isFinish) {
-                        nav_view.getHeaderView(0).progress_sync.reset()
-                    }
-                    showSyncProgress(it)
-                    if (it.taskIndex == SyncProgressMessage.SYNC_FINISHED) {
-                        nav_view.getHeaderView(0).progress_sync.finishLoad()
+                with(nav_view.getHeaderView(0)) {
+                    view_sync.alpha = 0.35f
+                    if (it.hasError) {
+                        button_sync.text = it.message
+                        view_sync.layoutParams.width = button_sync.width
+                        view_sync.requestLayout()
                         animateProgressAlpha()
+                    } else {
+                        showSyncProgress(it)
+                        if (it.taskIndex == SyncProgressMessage.SYNC_FINISHED) {
+                            animateProgressAlpha()
+                        }
                     }
                 }
             }
@@ -132,21 +128,26 @@ class MainActivity : BaseActivity(), MainActivityContract.View,
     }
 
     override fun showSyncProgress(message: SyncProgressMessage) {
-        nav_view.getHeaderView(0).button_sync.isEnabled = false
-        nav_view.getHeaderView(0).progress_sync.alpha = 0.35f
-        nav_view.getHeaderView(0).progress_sync.visibility = View.VISIBLE
-        nav_view.getHeaderView(0).progress_sync.progress = message.progress.toFloat()
-        val progressText = "${message.progress}% ${message.message}"
-        nav_view.getHeaderView(0).button_sync.text = progressText
+        with(nav_view.getHeaderView(0)) {
+            button_sync.isEnabled = false
+            view_sync.alpha = 0.35f
+            view_sync.visibility = View.VISIBLE
+            view_sync.layoutParams.width =
+                    (button_sync.width.toFloat() * message.progress.toFloat() / 100f).toInt()
+            val progressText = "${message.progress}% ${message.message}"
+            button_sync.text = progressText
+            view_sync.requestLayout()
+        }
     }
 
     override fun clearSyncProgress() {
-        if (nav_view.getHeaderView(0).progress_sync.isStop) {
-            nav_view.getHeaderView(0).progress_sync.reset()
+        with(nav_view.getHeaderView(0)) {
+            view_sync.visibility = View.INVISIBLE
+            view_sync.layoutParams.width = 0
+            button_sync.isEnabled = true
+            button_sync.text = getString(R.string.nav_header_main_button_sync)
+            view_sync.requestLayout()
         }
-        nav_view.getHeaderView(0).progress_sync.visibility = View.GONE
-        nav_view.getHeaderView(0).button_sync.isEnabled = true
-        nav_view.getHeaderView(0).button_sync.text = getString(R.string.nav_header_main_button_sync)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -202,8 +203,7 @@ class MainActivity : BaseActivity(), MainActivityContract.View,
     }
 
     private fun animateProgressAlpha() {
-        nav_view.getHeaderView(0)
-                .progress_sync
+        nav_view.getHeaderView(0).view_sync
                 .animate()
                 .alpha(0f)
                 .setDuration(ANIMATION_PROGRESS_DURATION)

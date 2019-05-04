@@ -10,6 +10,7 @@ import io.reactivex.Completable
 import io.reactivex.Observable
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
 import net.danlew.android.joda.DateUtils
 import org.joda.time.DateTime
 import java.util.*
@@ -196,12 +197,18 @@ class MainActivityPresenter(
     }
 
     private fun updateSyncProgress() {
-        val message = dataManager.getLastSyncMessage()
-        if (message != null && message.taskIndex != SyncProgressMessage.SYNC_FINISHED) {
-            view?.showSyncProgress(message)
-        } else {
-            view?.clearSyncProgress()
-        }
+        addDisposable(Single.fromCallable { dataManager.getLastSyncMessage() }
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe({ message ->
+                    if (message != null && message.taskIndex != SyncProgressMessage.SYNC_FINISHED) {
+                        view?.showSyncProgress(message)
+                    } else {
+                        view?.clearSyncProgress()
+                    }
+                }, {
+                    view?.clearSyncProgress()
+                }))
     }
 
     override fun onFabMenuClick() {

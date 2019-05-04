@@ -191,8 +191,7 @@ class DataManagerImp(
                     .subscribeOn(rxScheduler)
 
     override fun deleteNote(noteId: String): Completable =
-            Completable.fromAction { database.noteDao().delete(noteId) }
-                    .andThen(Completable.fromAction { database.noteTagDao().deleteWithNoteId(noteId) })
+            Completable.fromAction { database.noteTagDao().deleteWithNoteId(noteId) }
                     .andThen(Completable.fromAction { database.appearanceDao().delete(noteId) })
                     .andThen(database.imageDao().getImagesForNote(noteId))
                     .first(emptyList())
@@ -200,6 +199,7 @@ class DataManagerImp(
                     .flatMapSingle { Single.fromCallable { storage.deleteFile(it.name) } }
                     .collectInto(mutableListOf<Boolean>()) { l, i -> l.add(i) }
                     .flatMapCompletable { Completable.fromAction { database.imageDao().deleteByNoteId(noteId) } }
+                    .andThen(Completable.fromAction { database.noteDao().delete(noteId) })
                     .subscribeOn(rxScheduler)
 
     override fun deleteImage(image: MyImage): Completable =
@@ -210,7 +210,9 @@ class DataManagerImp(
     override fun deleteImage(images: List<MyImage>): Completable =
             Completable.fromAction { database.imageDao().delete(images.map { it.name }) }
                     .andThen(Observable.fromIterable(images))
-                    .flatMapCompletable { Completable.fromCallable { storage.deleteFile(it.name) } }
+                    .flatMapSingle { Single.fromCallable { storage.deleteFile(it.name) } }
+                    .collectInto(mutableListOf<Boolean>()) { l, i -> l.add(i) }
+                    .ignoreElement()
                     .subscribeOn(rxScheduler)
 
     override fun deleteCategory(category: MyCategory): Completable =

@@ -77,11 +77,6 @@ class CategoryEditFragment : Fragment(), CategoryEditContract.View {
         fragmentManager?.popBackStack()
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        mPresenter.detachView()
-    }
-
     override fun onResume() {
         super.onResume()
         edit_category.requestFocus()

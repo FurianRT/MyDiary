@@ -40,7 +40,10 @@ class DeleteNoteDialog : DialogFragment(), DeleteNoteContract.View {
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val view = requireActivity().layoutInflater.inflate(R.layout.dialog_delete_note, null)
 
-        view.button_note_delete.setOnClickListener { mPresenter.onButtonDeleteClick(mNotesIds) }
+        view.button_note_delete.setOnClickListener {
+            mPresenter.onButtonDeleteClick(mNotesIds)
+            mListener?.onDialogButtonDeleteClick()
+        }
         view.button_note_delete_cancel.setOnClickListener { mPresenter.onButtonCancelClick() }
         view.text_note_delete_title.text = resources.getQuantityString(
                 R.plurals.note_delete_confirmation,

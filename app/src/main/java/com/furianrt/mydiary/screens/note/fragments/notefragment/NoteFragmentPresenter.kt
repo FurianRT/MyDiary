@@ -253,7 +253,11 @@ class NoteFragmentPresenter(private val dataManager: DataManager) : NoteFragment
                     return@map MyImage(name, url, mNoteId, DateTime.now().millis)
                 }
                 .flatMapSingle { image -> dataManager.saveImageToStorage(image) }
-                .flatMapCompletable { savedImage -> dataManager.insertImage(savedImage) }
+                .flatMapSingle { savedImage ->
+                    dataManager.insertImage(savedImage).toSingleDefault(true)
+                }
+                .collectInto(mutableListOf<Boolean>()) { l, i -> l.add(i) }
+                .ignoreElement()
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { view?.hideLoading() })
     }

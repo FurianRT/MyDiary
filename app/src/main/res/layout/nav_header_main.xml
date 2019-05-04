@@ -179,20 +179,19 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/layout_profile" />
 
-    <com.furianrt.mydiary.general.FlikerProgressBar
-        android:id="@+id/progress_sync"
+    <View
+        android:id="@+id/view_sync"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:elevation="4dp"
-        android:visibility="gone"
         android:alpha="0.35"
+        android:background="@color/white"
+        android:elevation="4dp"
+        android:visibility="invisible"
         app:layout_constraintBottom_toBottomOf="@id/button_sync"
-        app:layout_constraintEnd_toEndOf="@id/button_sync"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@id/button_sync"
         app:layout_constraintTop_toTopOf="@id/button_sync"
-        app:loadingColor="@color/white"
-        app:stopColor="@color/white"
-        app:textSize="12sp"
+        tools:layout_width="100dp"
         tools:visibility="visible" />
 
     <com.applikeysolutions.cosmocalendar.view.CalendarView

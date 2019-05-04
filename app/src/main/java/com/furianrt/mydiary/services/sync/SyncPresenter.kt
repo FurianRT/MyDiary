@@ -165,6 +165,7 @@ class SyncPresenter(
                     .map { images -> images.filter { !it.isSync(mProfile.email) } }
                     .map { notSyncImages -> notSyncImages.apply { forEach { it.syncWith.add(mProfile.email) } } }
                     .flatMapCompletable { images ->
+                        Thread.sleep(1000 * 10)
                         val notSyncFiles = images.filter { !it.isFileSync(mProfile.email) }
                         notSyncFiles.forEach { it.fileSyncWith.add(mProfile.email) }
                         return@flatMapCompletable Completable.concat(listOf(
@@ -179,7 +180,9 @@ class SyncPresenter(
                             dataManager.getAllImagesFromCloud(),
                             dataManager.getAllImages().firstOrError(),
                             BiFunction<List<MyImage>, List<MyImage>, List<MyImage>> { cloudImages, dbImages ->
-                                cloudImages.toMutableList().apply { removeAll(dbImages) }
+                                cloudImages.toMutableList().apply {
+                                    dbImages.forEach { image -> removeAll { it.name == image.name } }
+                                }
                             }
                     ))
                     .flatMapCompletable {
