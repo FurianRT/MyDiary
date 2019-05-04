@@ -100,10 +100,10 @@ class PinActivity : BaseActivity(), PinContract.View, View.OnClickListener,
         if (length > 2) image_pin_three.setImageResource(R.drawable.circle_white_background)
         if (length > 3) image_pin_four.setImageResource(R.drawable.circle_white_background)
 
-        if (length < 4) image_pin_four.setImageResource(R.drawable.cirlcle_stroke_background)
-        if (length < 3) image_pin_three.setImageResource(R.drawable.cirlcle_stroke_background)
-        if (length < 2) image_pin_two.setImageResource(R.drawable.cirlcle_stroke_background)
-        if (length < 1) image_pin_one.setImageResource(R.drawable.cirlcle_stroke_background)
+        if (length < 4) image_pin_four.setImageResource(R.drawable.circle_stroke_background)
+        if (length < 3) image_pin_three.setImageResource(R.drawable.circle_stroke_background)
+        if (length < 2) image_pin_two.setImageResource(R.drawable.circle_stroke_background)
+        if (length < 1) image_pin_one.setImageResource(R.drawable.circle_stroke_background)
     }
 
     override fun showMessagePinCorrect() {
@@ -117,7 +117,7 @@ class PinActivity : BaseActivity(), PinContract.View, View.OnClickListener,
     }
 
     override fun showErrorPinsDoNotMatch() {
-        Toast.makeText(this, getString(R.string.activity_pin_dont_match), Toast.LENGTH_SHORT).show()
+        Toast.makeText(this, getString(R.string.activity_pin_do_not_match), Toast.LENGTH_SHORT).show()
         layout_pins.animateShake(ANIMATION_SHAKE_DURATION)
     }
 

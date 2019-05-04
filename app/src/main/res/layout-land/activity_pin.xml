@@ -50,7 +50,7 @@
             android:layout_width="16dp"
             android:layout_height="16dp"
             android:layout_marginEnd="16dp"
-            android:src="@drawable/cirlcle_stroke_background"
+            android:src="@drawable/circle_stroke_background"
             tools:ignore="ContentDescription"
             tools:src="@drawable/circle_white_background" />
 
@@ -59,7 +59,7 @@
             android:layout_width="16dp"
             android:layout_height="16dp"
             android:layout_marginEnd="16dp"
-            android:src="@drawable/cirlcle_stroke_background"
+            android:src="@drawable/circle_stroke_background"
             tools:ignore="ContentDescription"
             tools:src="@drawable/circle_white_background" />
 
@@ -68,14 +68,14 @@
             android:layout_width="16dp"
             android:layout_height="16dp"
             android:layout_marginEnd="16dp"
-            android:src="@drawable/cirlcle_stroke_background"
+            android:src="@drawable/circle_stroke_background"
             tools:ignore="ContentDescription" />
 
         <ImageView
             android:id="@+id/image_pin_four"
             android:layout_width="16dp"
             android:layout_height="16dp"
-            android:src="@drawable/cirlcle_stroke_background"
+            android:src="@drawable/circle_stroke_background"
             tools:ignore="ContentDescription" />
 
     </LinearLayout>

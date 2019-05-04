@@ -7,7 +7,7 @@ import android.provider.Settings
 import com.google.android.gms.common.ConnectionResult
 import com.google.android.gms.common.GoogleApiAvailability
 
-fun Activity.isGoogleServiesAvailable(resolutionCode: Int): Boolean {
+fun Activity.isGoogleServicesAvailable(resolutionCode: Int): Boolean {
     val googleApiAvailability = GoogleApiAvailability.getInstance()
     val status = googleApiAvailability.isGooglePlayServicesAvailable(this)
     if (status != ConnectionResult.SUCCESS) {

@@ -174,8 +174,6 @@
     <string name="security_key_settings_off">Включить защиту паролем</string>
     <string name="security_key_settings_title">Пароль</string>
     <string name="security_time_settings_title">Время до запроса пароля</string>
-    <string name="fragment_authentication_sign_in">Логин</string>
-    <string name="fragment_authentication_sign_up">Регистрация</string>
     <string name="fragment_registration_password">Пароль</string>
     <string name="fragment_registration_repeat_password">Повторите пароль</string>
     <string name="fragment_registration_sign_up">Регистрация</string>
@@ -240,7 +238,7 @@
     <string name="fragment_gallery_pager_edit_photo">Ред. фото</string>
     <string name="activity_pin_forgot">Забыли пароль?</string>
     <string name="activity_pin_wrong_pin">Неверный пароль</string>
-    <string name="activity_pin_dont_match">Пароли не совпадают</string>
+    <string name="activity_pin_do_not_match">Пароли не совпадают</string>
     <string name="activity_pin_enter">Введите пароль</string>
     <string name="activity_pin_repeat">Повторите пароль</string>
     <string name="fragment_backup_email_message">Введите email\nдля восстановления пароля</string>

@@ -1,6 +1,5 @@
 package com.furianrt.mydiary.services.sync
 
-import android.util.Log
 import com.furianrt.mydiary.data.DataManager
 import com.furianrt.mydiary.data.model.MyImage
 import com.furianrt.mydiary.data.model.MyProfile
@@ -43,14 +42,12 @@ class SyncPresenter(
                 syncImages(),
                 cleanup()
         )).doOnComplete {
-            Log.e(TAG, "Sync finished")
             view?.close()
         }.subscribe({
             view?.sendProgressUpdate(it)
             dataManager.setLastSyncMessage(it)
         }, {
             it.printStackTrace()
-            Log.e(TAG, "Sync error")
             view?.sendProgressUpdate(if (it is SyncGoneWrongException) {
                 SyncProgressMessage(taskIndex = it.taskIndex, hasError = true)
             } else {
@@ -165,7 +162,6 @@ class SyncPresenter(
                     .map { images -> images.filter { !it.isSync(mProfile.email) } }
                     .map { notSyncImages -> notSyncImages.apply { forEach { it.syncWith.add(mProfile.email) } } }
                     .flatMapCompletable { images ->
-                        Thread.sleep(1000 * 10)
                         val notSyncFiles = images.filter { !it.isFileSync(mProfile.email) }
                         notSyncFiles.forEach { it.fileSyncWith.add(mProfile.email) }
                         return@flatMapCompletable Completable.concat(listOf(
@@ -188,8 +184,7 @@ class SyncPresenter(
                     .flatMapCompletable {
                         Completable.concat(listOf(
                                 dataManager.loadImageFiles(it),
-                                dataManager.insertImages(it)
-                        ))
+                                dataManager.insertImages(it)))
                     }
                     .andThen(Observable.just(SyncProgressMessage(SyncProgressMessage.CLEANUP, PROGRESS_CLEANUP)))
                     .onErrorResumeNext(Observable.error(SyncGoneWrongException(SyncProgressMessage.SYNC_IMAGES)))
@@ -202,10 +197,7 @@ class SyncPresenter(
                     .andThen(dataManager.cleanupTags())
                     .andThen(dataManager.cleanupImages())
                     .andThen(dataManager.getDbProfile().firstOrError())
-                    .flatMapCompletable { profile ->
-                        profile.lastSyncTime = DateTime.now().millis
-                        return@flatMapCompletable dataManager.updateProfile(profile)
-                    }
+                    .flatMapCompletable { dataManager.updateProfile(it.apply { lastSyncTime = DateTime.now().millis }) }
                     .andThen(Observable.just(SyncProgressMessage(SyncProgressMessage.SYNC_FINISHED, PROGRESS_FINISHED)))
                     .onErrorResumeNext(Observable.error(SyncGoneWrongException(SyncProgressMessage.CLEANUP)))
 }

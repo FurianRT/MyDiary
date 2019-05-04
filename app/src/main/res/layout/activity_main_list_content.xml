@@ -105,7 +105,7 @@
                 app:layout_constraintEnd_toStartOf="@id/image_main_list"
                 app:layout_constraintStart_toEndOf="@id/layout_date"
                 app:layout_constraintTop_toTopOf="parent"
-                tools:text="Titledqwdqwdqwdqwdqwdqwdqwdq" />
+                tools:text="Test title test title test title test title" />
 
             <TextView
                 android:id="@+id/text_note_content"
@@ -120,7 +120,7 @@
                 app:layout_constraintEnd_toStartOf="@id/image_main_list"
                 app:layout_constraintStart_toEndOf="@id/layout_date"
                 app:layout_constraintTop_toBottomOf="@id/text_note_title"
-                tools:text="Contentdwqdqwdqwdqwdwqdqwd" />
+                tools:text="Test content test content test content test content test content" />
 
             <ImageView
                 android:id="@+id/image_main_list"
