@@ -7,12 +7,13 @@ import com.furianrt.mydiary.data.model.MyMood
 interface MoodsDialogContract {
 
     interface View : BaseView {
-
         fun showMoods(moods: List<MyMood>)
+        fun closeView()
     }
 
     abstract class Presenter : BasePresenter<View>() {
-
-        abstract fun onViewCreate()
+        abstract fun onButtonCloseClick()
+        abstract fun onButtonNoMoodClick(noteId: String)
+        abstract fun onMoodPicked(noteId: String, mood: MyMood)
     }
 }

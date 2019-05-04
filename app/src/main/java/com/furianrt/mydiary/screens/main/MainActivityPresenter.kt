@@ -1,14 +1,12 @@
 package com.furianrt.mydiary.screens.main
 
 import com.furianrt.mydiary.data.DataManager
-import com.furianrt.mydiary.data.model.MyNote
 import com.furianrt.mydiary.data.model.MyNoteWithProp
 import com.furianrt.mydiary.data.model.SyncProgressMessage
 import com.furianrt.mydiary.screens.main.listadapter.MainContentItem
 import com.furianrt.mydiary.screens.main.listadapter.MainHeaderItem
 import com.furianrt.mydiary.screens.main.listadapter.MainListItem
 import io.reactivex.Completable
-import io.reactivex.Flowable
 import io.reactivex.Observable
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -24,29 +22,13 @@ class MainActivityPresenter(
 
     private var mSelectedNotes = ArrayList<MyNoteWithProp>()
 
-    private fun deleteImagesAndNote(note: MyNote): Single<Boolean> =
-            dataManager.getImagesForNote(note.id)
-                    .first(emptyList())
-                    .flatMapObservable { Observable.fromIterable(it) }
-                    .filter { !it.isDeleted }
-                    .flatMapSingle { image -> dataManager.deleteImageFromStorage(image.name) }
-                    .collectInto(mutableListOf<Boolean>()) { l, i -> l.add(i) }
-                    .flatMap { dataManager.deleteNote(note).toSingleDefault(true) }
-
     override fun onButtonDeleteClick() {
-        view?.showDeleteConfirmationDialog(mSelectedNotes.map { it.note })
+        view?.showDeleteConfirmationDialog(mSelectedNotes.map { it.note.id })
     }
 
-    override fun onButtonDeleteConfirmClick(notes: List<MyNote>) {
-        addDisposable(Flowable.fromIterable(notes)
-                .flatMapSingle { note -> deleteImagesAndNote(note) }
-                .collectInto(mutableListOf<Boolean>()) { l, i -> l.add(i) }
-                .ignoreElement()
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe {
-                    mSelectedNotes.clear()
-                    view?.deactivateSelection()
-                })
+    override fun onButtonDeleteConfirmClick() {
+        mSelectedNotes.clear()
+        view?.deactivateSelection()
     }
 
     override fun onMenuAllNotesClick() {

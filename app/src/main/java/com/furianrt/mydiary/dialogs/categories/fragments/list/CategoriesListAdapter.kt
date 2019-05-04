@@ -27,27 +27,33 @@ class CategoriesListAdapter(
     }
 
     inner class CategoriesDialogViewHolder(view: View) : RecyclerView.ViewHolder(view),
-            View.OnClickListener, PopupMenu.OnMenuItemClickListener {
+            PopupMenu.OnMenuItemClickListener {
 
         private lateinit var mCategory: MyCategory
 
         fun bind(category: MyCategory) {
             mCategory = category
             with(itemView) {
-                setOnClickListener(this@CategoriesDialogViewHolder)
+                setOnClickListener {
+                    listener.onCategoryClick(category)
+                }
+                setOnLongClickListener {
+                    showPopupMenu(it, this@CategoriesDialogViewHolder)
+                    return@setOnLongClickListener true
+                }
+                button_category_more.setOnClickListener {
+                    showPopupMenu(it, this@CategoriesDialogViewHolder)
+                }
                 text_item_category.text = category.name
                 layout_category_color.setBackgroundColor(category.color)
-                button_category_more.setOnClickListener {
-                    val popup = PopupMenu(it.context, it)
-                    popup.setOnMenuItemClickListener(this@CategoriesDialogViewHolder)
-                    popup.inflate(R.menu.dialog_categories_list_item_menu)
-                    popup.show()
-                }
             }
         }
 
-        override fun onClick(v: View?) {
-            listener.onCategoryClick(mCategory)
+        private fun showPopupMenu(view: View, listener: PopupMenu.OnMenuItemClickListener) {
+            val popup = PopupMenu(view.context, view)
+            popup.setOnMenuItemClickListener(listener)
+            popup.inflate(R.menu.dialog_categories_list_item_menu)
+            popup.show()
         }
 
         override fun onMenuItemClick(item: MenuItem): Boolean {

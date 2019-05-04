@@ -61,10 +61,7 @@ import javax.inject.Inject
 import kotlin.collections.ArrayList
 
 class NoteFragment : Fragment(), NoteFragmentContract.View, OnMapReadyCallback,
-        View.OnClickListener, MoodsDialog.OnMoodsDialogInteractionListener,
-        CategoriesDialog.OnCategoriesDialogInteractionListener,
-        DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener,
-        DeleteNoteDialog.OnDeleteNoteConfirmListener {
+        View.OnClickListener, DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener {
 
     companion object {
         const val TAG = "NoteFragment"
@@ -244,14 +241,9 @@ class NoteFragment : Fragment(), NoteFragmentContract.View, OnMapReadyCallback,
         }
     }
 
-    override fun showDeleteConfirmationDialog(note: MyNote) {
-        DeleteNoteDialog.newInstance(listOf(note)).apply {
-            setOnDeleteConfirmListener(this@NoteFragment)
-        }.show(requireActivity().supportFragmentManager, DeleteNoteDialog.TAG)
-    }
-
-    override fun onDialogButtonDeleteClick(notes: List<MyNote>) {
-        mPresenter.onButtonDeleteConfirmClick(notes.first())
+    override fun showDeleteConfirmationDialog(noteId: String) {
+        DeleteNoteDialog.newInstance(listOf(noteId))
+                .show(requireActivity().supportFragmentManager, DeleteNoteDialog.TAG)
     }
 
     override fun shoNoteEditView() {
@@ -406,10 +398,8 @@ class NoteFragment : Fragment(), NoteFragmentContract.View, OnMapReadyCallback,
         image_mood.setColorFilter(Color.BLACK, PorterDuff.Mode.SRC_IN)
     }
 
-    override fun showMoodsDialog(moods: List<MyMood>) {
-        MoodsDialog().apply {
-            setOnMoodsDialogInteractionListener(this@NoteFragment)
-        }.show(requireActivity().supportFragmentManager, MoodsDialog.TAG)
+    override fun showMoodsDialog(noteId: String) {
+        MoodsDialog.newInstance(noteId).show(requireActivity().supportFragmentManager, MoodsDialog.TAG)
     }
 
     override fun showLocation(location: MyLocation) {
@@ -455,26 +445,6 @@ class NoteFragment : Fragment(), NoteFragmentContract.View, OnMapReadyCallback,
         outState.putParcelableArrayList(BUNDLE_NOTE_TEXT_BUFFER, mPresenter.getNoteTextBuffer())
     }
 
-    override fun setUserVisibleHint(isVisibleToUser: Boolean) {
-        super.setUserVisibleHint(isVisibleToUser)
-        if (isVisibleToUser) {
-            (activity?.supportFragmentManager?.findFragmentByTag(MoodsDialog.TAG) as? MoodsDialog?)
-                    ?.setOnMoodsDialogInteractionListener(this)
-            (activity?.supportFragmentManager?.findFragmentByTag(CategoriesDialog.TAG) as? CategoriesDialog?)
-                    ?.setOnCategoriesDialogListener(this)
-            (activity?.supportFragmentManager?.findFragmentByTag(DeleteNoteDialog.TAG) as? DeleteNoteDialog?)
-                    ?.setOnDeleteConfirmListener(this)
-        }
-    }
-
-    override fun onMoodPicked(mood: MyMood) {
-        mPresenter.onMoodPicked(mood)
-    }
-
-    override fun onNoMoodPicked() {
-        mPresenter.onNoMoodPicked()
-    }
-
     fun disableActionBarExpanding(animate: Boolean) {
         Log.e(TAG, "disableActionBarExpanding")
         app_bar_layout.setExpanded(false, animate)
@@ -510,9 +480,8 @@ class NoteFragment : Fragment(), NoteFragmentContract.View, OnMapReadyCallback,
     }
 
     override fun showCategoriesDialog(noteId: String) {
-        CategoriesDialog.newInstance(noteId).apply {
-            setOnCategoriesDialogListener(this@NoteFragment)
-        }.show(requireActivity().supportFragmentManager, CategoriesDialog.TAG)
+        CategoriesDialog.newInstance(noteId)
+                .show(requireActivity().supportFragmentManager, CategoriesDialog.TAG)
     }
 
     override fun showTagsDialog(noteId: String) {
@@ -527,14 +496,6 @@ class NoteFragment : Fragment(), NoteFragmentContract.View, OnMapReadyCallback,
 
         val temp = forecast.main.temp.toInt().toString() + " °C"
         text_temp.text = temp
-    }
-
-    override fun onCategoryPicked(category: MyCategory) {
-        mPresenter.onCategoryPicked(category)
-    }
-
-    override fun onNoCategoryPicked() {
-        mPresenter.onNoCategoryPicked()
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>,

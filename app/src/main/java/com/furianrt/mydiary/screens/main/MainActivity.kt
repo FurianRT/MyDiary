@@ -27,7 +27,10 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.furianrt.mydiary.R
 import com.furianrt.mydiary.base.BaseActivity
-import com.furianrt.mydiary.data.model.*
+import com.furianrt.mydiary.data.model.MyHeaderImage
+import com.furianrt.mydiary.data.model.MyNoteWithProp
+import com.furianrt.mydiary.data.model.MyProfile
+import com.furianrt.mydiary.data.model.SyncProgressMessage
 import com.furianrt.mydiary.dialogs.delete.note.DeleteNoteDialog
 import com.furianrt.mydiary.general.AppBarLayoutBehavior
 import com.furianrt.mydiary.general.GlideApp
@@ -295,14 +298,14 @@ class MainActivity : BaseActivity(), MainActivityContract.View,
         }
     }
 
-    override fun showDeleteConfirmationDialog(notes: List<MyNote>) {
-        DeleteNoteDialog.newInstance(notes).apply {
+    override fun showDeleteConfirmationDialog(noteIds: List<String>) {
+        DeleteNoteDialog.newInstance(noteIds).apply {
             setOnDeleteConfirmListener(this@MainActivity)
         }.show(supportFragmentManager, DeleteNoteDialog.TAG)
     }
 
-    override fun onDialogButtonDeleteClick(notes: List<MyNote>) {
-        mPresenter.onButtonDeleteConfirmClick(notes)
+    override fun onDialogButtonDeleteClick() {
+        mPresenter.onButtonDeleteConfirmClick()
     }
 
     override fun showImageOptions() {

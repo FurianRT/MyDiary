@@ -35,6 +35,7 @@
 
         <activity
             android:name=".screens.main.MainActivity"
+            android:launchMode="singleInstance"
             android:windowSoftInputMode="adjustPan">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -46,7 +47,9 @@
         <activity android:name=".screens.gallery.GalleryActivity" />
         <activity android:name=".screens.settings.global.GlobalSettingsActivity" />
         <activity android:name=".screens.settings.note.NoteSettingsActivity" />
-        <activity android:name=".screens.pin.PinActivity" />
+        <activity
+            android:name=".screens.pin.PinActivity"
+            android:launchMode="singleTop" />
 
         <!--Этого требует библиотека для редактирования картинок-->
         <activity

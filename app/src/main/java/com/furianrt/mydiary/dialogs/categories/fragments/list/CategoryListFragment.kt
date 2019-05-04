@@ -10,14 +10,29 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.furianrt.mydiary.R
 import com.furianrt.mydiary.data.model.MyCategory
+import com.furianrt.mydiary.dialogs.categories.fragments.add.CategoryAddFragment
 import com.furianrt.mydiary.dialogs.categories.fragments.delete.CategoryDeleteFragment
 import com.furianrt.mydiary.dialogs.categories.fragments.edit.CategoryEditFragment
 import com.furianrt.mydiary.utils.inTransaction
 import kotlinx.android.synthetic.main.fragment_category_list.view.*
 import javax.inject.Inject
 
-class CategoryListFragment : Fragment(), View.OnClickListener,
-        CategoriesListAdapter.OnCategoryListInteractionListener, CategoryListContract.View {
+class CategoryListFragment : Fragment(), CategoriesListAdapter.OnCategoryListInteractionListener,
+        CategoryListContract.View {
+
+    companion object {
+
+        const val TAG = "CategoryListFragment"
+        private const val ARG_NOTE_ID = "noteId"
+
+        @JvmStatic
+        fun newInstance(noteId: String) =
+                CategoryListFragment().apply {
+                    arguments = Bundle().apply {
+                        putString(ARG_NOTE_ID, noteId)
+                    }
+                }
+    }
 
     @Inject
     lateinit var mPresenter: CategoryListContract.Presenter
@@ -35,7 +50,9 @@ class CategoryListFragment : Fragment(), View.OnClickListener,
                               savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_category_list, container, false)
 
-        view.button_add_category.setOnClickListener(this@CategoryListFragment)
+        view.button_add_category.setOnClickListener { mPresenter.onButtonAddCategoryClick() }
+        view.button_categories_close.setOnClickListener { mPresenter.onButtonCloseClick() }
+        view.button_no_category.setOnClickListener { mPresenter.onButtonNoCategoryClick(mNoteId) }
         with(view.list_categories) {
             val manager = LinearLayoutManager(context)
             layoutManager = manager
@@ -58,17 +75,11 @@ class CategoryListFragment : Fragment(), View.OnClickListener,
     }
 
     override fun showViewAddCategory() {
-        replaceFragment(CategoryEditFragment(), CategoryEditFragment.TAG)
+        replaceFragment(CategoryAddFragment(), CategoryAddFragment.TAG)
     }
 
     override fun showCategories(categories: List<MyCategory>) {
         mListAdapter.submitList(categories)
-    }
-
-    override fun onClick(v: View) {
-        when (v.id) {
-            R.id.button_add_category -> mPresenter.onAddCategoryButtonClick()
-        }
     }
 
     override fun onCategoryClick(category: MyCategory) {
@@ -76,15 +87,15 @@ class CategoryListFragment : Fragment(), View.OnClickListener,
     }
 
     override fun onCategoryDelete(category: MyCategory) {
-        mPresenter.onDeleteCategoryButtonClick(category)
+        mPresenter.onButtonDeleteCategoryClick(category)
     }
 
     override fun onCategoryEdit(category: MyCategory) {
-        mPresenter.onEditCategoryButtonClick(category)
+        mPresenter.onButtonEditCategoryClick(category)
     }
 
-    override fun showEditView(categoryId: String) {
-        replaceFragment(CategoryEditFragment.newInstance(categoryId), CategoryEditFragment.TAG)
+    override fun showEditView(category: MyCategory) {
+        replaceFragment(CategoryEditFragment.newInstance(category), CategoryEditFragment.TAG)
     }
 
     override fun showDeleteCategoryView(category: MyCategory) {
@@ -116,19 +127,5 @@ class CategoryListFragment : Fragment(), View.OnClickListener,
                 }
             }
         }
-    }
-
-    companion object {
-
-        const val TAG = "CategoryListFragment"
-        private const val ARG_NOTE_ID = "noteId"
-
-        @JvmStatic
-        fun newInstance(noteId: String) =
-                CategoryListFragment().apply {
-                    arguments = Bundle().apply {
-                        putString(ARG_NOTE_ID, noteId)
-                    }
-                }
     }
 }

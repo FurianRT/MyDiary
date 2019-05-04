@@ -19,6 +19,7 @@ import org.joda.time.DateTime
 import javax.crypto.Cipher
 import javax.crypto.spec.SecretKeySpec
 
+//Возможно, стоило что-то убрать в отдельные use case
 @AppScope
 class DataManagerImp(
         private val database: NoteDatabase,
@@ -189,23 +190,27 @@ class DataManagerImp(
                     .andThen(Completable.fromAction { database.noteTagDao().deleteWithTagId(tag.id) })
                     .subscribeOn(rxScheduler)
 
-    override fun deleteNote(note: MyNote): Completable =
-            Completable.fromAction { database.noteDao().delete(note.id) }
-                    .andThen(Completable.fromAction { database.noteTagDao().deleteWithNoteId(note.id) })
-                    .andThen(Completable.fromAction { database.appearanceDao().delete(note.id) })
-                    .andThen(Completable.fromAction { database.imageDao().deleteByNoteId(note.id) })
-                    .andThen(database.imageDao().getImagesForNote(note.id))
+    override fun deleteNote(noteId: String): Completable =
+            Completable.fromAction { database.noteDao().delete(noteId) }
+                    .andThen(Completable.fromAction { database.noteTagDao().deleteWithNoteId(noteId) })
+                    .andThen(Completable.fromAction { database.appearanceDao().delete(noteId) })
+                    .andThen(database.imageDao().getImagesForNote(noteId))
                     .first(emptyList())
-                    .map { images -> images.map { it.name } }
-                    .flatMapCompletable { Completable.fromCallable { storage.deleteFiles(it) } }
+                    .flatMapObservable { Observable.fromIterable(it) }
+                    .flatMapSingle { Single.fromCallable { storage.deleteFile(it.name) } }
+                    .collectInto(mutableListOf<Boolean>()) { l, i -> l.add(i) }
+                    .flatMapCompletable { Completable.fromAction { database.imageDao().deleteByNoteId(noteId) } }
                     .subscribeOn(rxScheduler)
 
     override fun deleteImage(image: MyImage): Completable =
             Completable.fromAction { database.imageDao().delete(image.name) }
+                    .andThen(Completable.fromCallable { storage.deleteFile(image.name) })
                     .subscribeOn(rxScheduler)
 
     override fun deleteImage(images: List<MyImage>): Completable =
             Completable.fromAction { database.imageDao().delete(images.map { it.name }) }
+                    .andThen(Observable.fromIterable(images))
+                    .flatMapCompletable { Completable.fromCallable { storage.deleteFile(it.name) } }
                     .subscribeOn(rxScheduler)
 
     override fun deleteCategory(category: MyCategory): Completable =

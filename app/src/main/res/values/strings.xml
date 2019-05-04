@@ -111,6 +111,7 @@
     <string name="empty_email">Введите email</string>
     <string name="wrong_email_format">Некорректный email</string>
 
+    <string name="tags">Теги</string>
     <string name="choose_tags">Выберите теги</string>
     <string name="choose_category">Категория</string>
     <string name="choose_mood">Настроение</string>
@@ -204,14 +205,14 @@
     <string name="sync_notes">Загрузка записей</string>
     <string name="sync_appearance">Загрузка настроек</string>
     <string name="sync_categories">Загрузка категорий</string>
-    <string name="sync_tags">Загрузка тэгов</string>
+    <string name="sync_tags">Загрузка тегов</string>
     <string name="sync_images">Загрузка картинок</string>
     <string name="sync_cleanup">Завершение</string>
     <string name="sync_error_profile">Ошибка проверки профиля</string>
     <string name="sync_error_notes">Ошибка загрузки записей</string>
     <string name="sync_error_appearance">Ошибка загрузки настроек</string>
     <string name="sync_error_categories">Ошибка загрузки папок</string>
-    <string name="sync_error_tags">Ошибка загрузки тэгов</string>
+    <string name="sync_error_tags">Ошибка загрузки тегов</string>
     <string name="sync_error_note_tags">Ошибка загрузки связей</string>
     <string name="sync_error_images">Ошибка загрузки картинок</string>
     <string name="sync_error_cleanup">Ошибка очистки</string>

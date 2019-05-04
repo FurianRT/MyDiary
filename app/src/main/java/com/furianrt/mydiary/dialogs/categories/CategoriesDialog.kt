@@ -2,13 +2,11 @@ package com.furianrt.mydiary.dialogs.categories
 
 import android.annotation.SuppressLint
 import android.app.Dialog
-import android.content.DialogInterface
 import android.os.Bundle
 import android.view.*
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
 import com.furianrt.mydiary.R
-import com.furianrt.mydiary.data.model.MyCategory
 import com.furianrt.mydiary.dialogs.categories.fragments.delete.CategoryDeleteFragment
 import com.furianrt.mydiary.dialogs.categories.fragments.edit.CategoryEditFragment
 import com.furianrt.mydiary.dialogs.categories.fragments.list.CategoryListFragment
@@ -22,7 +20,6 @@ class CategoriesDialog : DialogFragment(), CategoriesDialogContract.View {
 
     private lateinit var mNoteId: String
     private var mView: View? = null
-    private var mListener: OnCategoriesDialogInteractionListener? = null
 
     companion object {
 
@@ -46,7 +43,14 @@ class CategoriesDialog : DialogFragment(), CategoriesDialogContract.View {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        mPresenter.onViewCreate(mNoteId)
+        childFragmentManager.apply {
+            if (findFragmentByTag(CategoryListFragment.TAG) == null) {
+                inTransaction {
+                    add(R.id.container_categories, CategoryListFragment.newInstance(mNoteId),
+                            CategoryListFragment.TAG)
+                }
+            }
+        }
         return mView
     }
 
@@ -54,12 +58,8 @@ class CategoriesDialog : DialogFragment(), CategoriesDialogContract.View {
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         mView = requireActivity().layoutInflater.inflate(R.layout.dialog_categories, null)
 
-        mPresenter.attachView(this)
-
         val dialog = AlertDialog.Builder(requireContext())
                 .setView(mView)
-                .setPositiveButton(getString(R.string.close), null)
-                .setNegativeButton(getString(R.string.no_category)) { _, _ -> mListener?.onNoCategoryPicked() }
                 .create()
 
         dialog.setOnKeyListener { _, keyCode, event ->
@@ -79,35 +79,15 @@ class CategoriesDialog : DialogFragment(), CategoriesDialogContract.View {
         return dialog
     }
 
-    override fun showViewCategoryList(noteId: String) {
-        childFragmentManager.apply {
-            if (findFragmentByTag(CategoryListFragment.TAG) == null) {
-                inTransaction {
-                    add(R.id.container_categories, CategoryListFragment.newInstance(noteId),
-                            CategoryListFragment.TAG)
-                }
-            }
-        }
-    }
-
-    fun setOnCategoriesDialogListener(listener: OnCategoriesDialogInteractionListener?) {
-        mListener = listener
-    }
-
-    override fun onStart() {
-        super.onStart()
+    override fun onResume() {
+        super.onResume()
         dialog.window?.clearFlags(WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE
                 or WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM)
+        mPresenter.attachView(this)
     }
 
-    override fun onDismiss(dialog: DialogInterface?) {
-        super.onDismiss(dialog)
-        mListener = null
+    override fun onPause() {
+        super.onPause()
         mPresenter.detachView()
-    }
-
-    interface OnCategoriesDialogInteractionListener {
-        fun onCategoryPicked(category: MyCategory)
-        fun onNoCategoryPicked()
     }
 }

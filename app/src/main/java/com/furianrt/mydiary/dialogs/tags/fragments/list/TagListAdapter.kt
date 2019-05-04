@@ -18,8 +18,7 @@ class TagListAdapter(
     private val mTags = mutableListOf<MyTag>()
 
     fun showList(tags: MutableList<MyTag>) {
-        val diffCallback = TagListDiffCallback(mTags, tags)
-        val diffResult = DiffUtil.calculateDiff(diffCallback)
+        val diffResult = DiffUtil.calculateDiff(TagListDiffCallback(mTags, tags))
         mTags.clear()
         mTags.addAll(tags)
         diffResult.dispatchUpdatesTo(this)
@@ -43,6 +42,7 @@ class TagListAdapter(
             mTag = tag
             with(itemView) {
                 text_tag_name.text = tag.name
+
                 setOnClickListener {
                     image_select_tag.visibility = if (image_select_tag.visibility == View.INVISIBLE) {
                         listener.onItemCheckChange(tag, true)
@@ -52,18 +52,27 @@ class TagListAdapter(
                         View.INVISIBLE
                     }
                 }
+
+                setOnLongClickListener {
+                    showPopupMenu(it, this@TagsViewHolder)
+                    return@setOnLongClickListener true
+                }
+
+                button_tag_more.setOnClickListener { showPopupMenu(it, this@TagsViewHolder) }
+
                 image_select_tag.visibility = if (tag.isChecked) {
                     View.VISIBLE
                 } else {
                     View.INVISIBLE
                 }
-                button_tag_more.setOnClickListener {
-                    val popup = PopupMenu(it.context, it)
-                    popup.setOnMenuItemClickListener(this@TagsViewHolder)
-                    popup.inflate(R.menu.tags_list_item_menu)
-                    popup.show()
-                }
             }
+        }
+
+        private fun showPopupMenu(view: View, listener: PopupMenu.OnMenuItemClickListener) {
+            val popup = PopupMenu(view.context, view)
+            popup.setOnMenuItemClickListener(listener)
+            popup.inflate(R.menu.tags_list_item_menu)
+            popup.show()
         }
 
         override fun onMenuItemClick(item: MenuItem): Boolean {

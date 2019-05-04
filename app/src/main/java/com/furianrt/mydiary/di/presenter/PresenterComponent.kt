@@ -1,9 +1,11 @@
 package com.furianrt.mydiary.di.presenter
 
 import com.furianrt.mydiary.dialogs.categories.CategoriesDialog
+import com.furianrt.mydiary.dialogs.categories.fragments.add.CategoryAddFragment
 import com.furianrt.mydiary.dialogs.categories.fragments.delete.CategoryDeleteFragment
 import com.furianrt.mydiary.dialogs.categories.fragments.edit.CategoryEditFragment
 import com.furianrt.mydiary.dialogs.categories.fragments.list.CategoryListFragment
+import com.furianrt.mydiary.dialogs.delete.note.DeleteNoteDialog
 import com.furianrt.mydiary.dialogs.moods.MoodsDialog
 import com.furianrt.mydiary.dialogs.tags.TagsDialog
 import com.furianrt.mydiary.dialogs.tags.fragments.add.TagAddFragment
@@ -46,6 +48,7 @@ interface PresenterComponent {
     fun inject(dialog: MoodsDialog)
     fun inject(dialog: CategoriesDialog)
     fun inject(dialog: TagsDialog)
+    fun inject(dialog: DeleteNoteDialog)
     fun inject(service: SyncService)
     fun inject(fragment: NoteContentFragment)
     fun inject(fragment: NoteEditFragment)
@@ -73,4 +76,5 @@ interface PresenterComponent {
     fun inject(fragment: TagDeleteFragment)
     fun inject(fragment: TagAddFragment)
     fun inject(fragment: TagEditFragment)
+    fun inject(fragment: CategoryAddFragment)
 }

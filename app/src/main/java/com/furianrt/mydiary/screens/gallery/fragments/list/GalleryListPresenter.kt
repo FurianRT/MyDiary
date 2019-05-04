@@ -4,7 +4,6 @@ import com.furianrt.mydiary.data.DataManager
 import com.furianrt.mydiary.data.model.MyImage
 import com.furianrt.mydiary.utils.generateUniqueId
 import io.reactivex.Flowable
-import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import org.joda.time.DateTime
 
@@ -81,15 +80,9 @@ class GalleryListPresenter(
 
     override fun onButtonDeleteConfirmClick(images: List<MyImage>) {
         addDisposable(dataManager.deleteImage(images)
-                .andThen(Observable.fromIterable(images))
-                .flatMapSingle { image ->
-                    mSelectedImages.removeAll { it.name == image.name }
-                    return@flatMapSingle dataManager.deleteImageFromStorage(image.name)
-                }
-                .collectInto(mutableListOf<Boolean>()) { l, i -> l.add(i) }
-                .ignoreElement()
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe {
+                    images.forEach { image -> mSelectedImages.removeAll { it.name == image.name } }
                     view?.showSelectedImageCount(mSelectedImages.size)
                     view?.closeCab()
                 })

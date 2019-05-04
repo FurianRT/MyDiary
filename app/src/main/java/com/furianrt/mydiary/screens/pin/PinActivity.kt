@@ -30,20 +30,13 @@ class PinActivity : BaseActivity(), PinContract.View, View.OnClickListener,
         private const val EXTRA_MODE = "mode"
 
         fun newIntentModeCreate(context: Context) =
-                Intent(context, PinActivity::class.java).apply {
-                    putExtra(EXTRA_MODE, MODE_CREATE)
-                    flags = Intent.FLAG_ACTIVITY_SINGLE_TOP
-                }
+                Intent(context, PinActivity::class.java).apply { putExtra(EXTRA_MODE, MODE_CREATE) }
+
         fun newIntentModeRemove(context: Context) =
-                Intent(context, PinActivity::class.java).apply {
-                    putExtra(EXTRA_MODE, MODE_REMOVE)
-                    flags = Intent.FLAG_ACTIVITY_SINGLE_TOP
-                }
+                Intent(context, PinActivity::class.java).apply { putExtra(EXTRA_MODE, MODE_REMOVE) }
+
         fun newIntentModeLock(context: Context) =
-                Intent(context, PinActivity::class.java).apply {
-                    putExtra(EXTRA_MODE, MODE_LOCK)
-                    flags = Intent.FLAG_ACTIVITY_SINGLE_TOP
-                }
+                Intent(context, PinActivity::class.java).apply { putExtra(EXTRA_MODE, MODE_LOCK) }
     }
 
     @Inject

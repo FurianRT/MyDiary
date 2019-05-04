@@ -58,15 +58,15 @@ class TagEditFragment : Fragment(), TagEditContract.View {
 
     override fun onResume() {
         super.onResume()
-        input_edit_tag.requestFocus()
-        input_edit_tag.showKeyboard()
+        edit_edit_tag.requestFocus()
+        edit_edit_tag.showKeyboard()
         mPresenter.attachView(this)
     }
 
     override fun onPause() {
         super.onPause()
-        input_edit_tag.clearFocus()
-        input_edit_tag.hideKeyboard()
+        edit_edit_tag.clearFocus()
+        edit_edit_tag.hideKeyboard()
         mPresenter.detachView()
     }
 

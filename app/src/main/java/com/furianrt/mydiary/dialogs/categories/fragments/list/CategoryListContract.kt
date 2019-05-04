@@ -9,16 +9,18 @@ interface CategoryListContract {
     interface View : BaseView {
         fun showCategories(categories: List<MyCategory>)
         fun showViewAddCategory()
-        fun showEditView(categoryId: String)
+        fun showEditView(category: MyCategory)
         fun close()
         fun showDeleteCategoryView(category: MyCategory)
     }
 
     abstract class Presenter : BasePresenter<View>() {
         abstract fun onViewStart()
-        abstract fun onAddCategoryButtonClick()
-        abstract fun onDeleteCategoryButtonClick(category: MyCategory)
-        abstract fun onEditCategoryButtonClick(category: MyCategory)
+        abstract fun onButtonAddCategoryClick()
+        abstract fun onButtonDeleteCategoryClick(category: MyCategory)
+        abstract fun onButtonEditCategoryClick(category: MyCategory)
         abstract fun onCategoryClick(category: MyCategory, noteId: String)
+        abstract fun onButtonNoCategoryClick(noteId: String)
+        abstract fun onButtonCloseClick()
     }
 }

@@ -2,7 +2,6 @@ package com.furianrt.mydiary.dialogs.moods
 
 import android.annotation.SuppressLint
 import android.app.Dialog
-import android.content.DialogInterface
 import android.os.Bundle
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
@@ -16,22 +15,38 @@ import javax.inject.Inject
 class MoodsDialog : DialogFragment(), MoodsDialogContract.View,
         MoodsDialogListAdapter.OnMoodListInteractionListener {
 
+    companion object {
+        const val TAG = "MoodsDialog"
+
+        private const val ARG_NOTE_ID = "note_id"
+
+        @JvmStatic
+        fun newInstance(noteId: String) =
+                MoodsDialog().apply {
+                    arguments = Bundle().apply {
+                        putString(ARG_NOTE_ID, noteId)
+                    }
+                }
+    }
+
     @Inject
     lateinit var mPresenter: MoodsDialogContract.Presenter
 
-    private var mListener: OnMoodsDialogInteractionListener? = null
     private lateinit var mAdapter: MoodsDialogListAdapter
+    private lateinit var mNoteId: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
         getPresenterComponent(requireContext()).inject(this)
+        super.onCreate(savedInstanceState)
+        mNoteId = arguments?.getString(ARG_NOTE_ID) ?: throw IllegalArgumentException()
     }
 
     @SuppressLint("InflateParams")
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        mPresenter.attachView(this)
-
         val view = requireActivity().layoutInflater.inflate(R.layout.dialog_moods, null)
+
+        view.button_mood_close.setOnClickListener { mPresenter.onButtonCloseClick() }
+        view.button_no_mood.setOnClickListener { mPresenter.onButtonNoMoodClick(mNoteId) }
 
         mAdapter = MoodsDialogListAdapter(emptyList(), this)
 
@@ -42,12 +57,8 @@ class MoodsDialog : DialogFragment(), MoodsDialogContract.View,
             addItemDecoration(DividerItemDecoration(requireContext(), manager.orientation))
         }
 
-        mPresenter.onViewCreate()
-
         return AlertDialog.Builder(requireContext())
                 .setView(view)
-                .setPositiveButton(getString(R.string.close), null)
-                .setNegativeButton(getString(R.string.no_mood)) { _, _ -> mListener?.onNoMoodPicked() }
                 .create()
     }
 
@@ -56,27 +67,21 @@ class MoodsDialog : DialogFragment(), MoodsDialogContract.View,
         mAdapter.notifyDataSetChanged()
     }
 
-    fun setOnMoodsDialogInteractionListener(listener: OnMoodsDialogInteractionListener?) {
-        mListener = listener
+    override fun onMoodClicked(mood: MyMood) {
+        mPresenter.onMoodPicked(mNoteId, mood)
     }
 
-    override fun onMoodClicked(mood: MyMood) {
-        mListener?.onMoodPicked(mood)
+    override fun closeView() {
         dismiss()
     }
 
-    override fun onDismiss(dialog: DialogInterface?) {
-        super.onDismiss(dialog)
-        mListener = null
+    override fun onResume() {
+        super.onResume()
+        mPresenter.attachView(this)
+    }
+
+    override fun onPause() {
+        super.onPause()
         mPresenter.detachView()
-    }
-
-    interface OnMoodsDialogInteractionListener {
-        fun onMoodPicked(mood: MyMood)
-        fun onNoMoodPicked()
-    }
-
-    companion object {
-        const val TAG = "MoodsDialog"
     }
 }

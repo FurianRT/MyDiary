@@ -42,8 +42,6 @@ class GalleryPagerPresenter(
 
     override fun onButtonDeleteConfirmClick(image: MyImage) {
         addDisposable(dataManager.deleteImage(image)
-                .andThen(dataManager.deleteImageFromStorage(image.name))
-                .ignoreElement()
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe())
     }

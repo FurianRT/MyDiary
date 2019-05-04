@@ -127,6 +127,7 @@ class SyncPresenter(
 
     private fun syncTags(): Observable<SyncProgressMessage> =
             dataManager.getAllTags()
+                    .first(emptyList())
                     .map { tags -> tags.filter { !it.isSync(mProfile.email) } }
                     .map { tags -> tags.apply { forEach { it.syncWith.add(mProfile.email) } } }
                     .flatMapCompletable {

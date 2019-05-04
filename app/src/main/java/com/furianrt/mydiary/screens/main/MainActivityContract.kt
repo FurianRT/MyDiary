@@ -2,7 +2,10 @@ package com.furianrt.mydiary.screens.main
 
 import com.furianrt.mydiary.base.BasePresenter
 import com.furianrt.mydiary.base.BaseView
-import com.furianrt.mydiary.data.model.*
+import com.furianrt.mydiary.data.model.MyHeaderImage
+import com.furianrt.mydiary.data.model.MyNoteWithProp
+import com.furianrt.mydiary.data.model.MyProfile
+import com.furianrt.mydiary.data.model.SyncProgressMessage
 import com.furianrt.mydiary.screens.main.listadapter.MainListItem
 
 interface MainActivityContract {
@@ -34,7 +37,7 @@ interface MainActivityContract {
         fun showViewImageSettings()
         fun showImageOptions()
         fun startSyncService()
-        fun showDeleteConfirmationDialog(notes: List<MyNote>)
+        fun showDeleteConfirmationDialog(noteIds: List<String>)
         fun showSyncProgress(message: SyncProgressMessage)
         fun clearSyncProgress()
     }
@@ -56,6 +59,6 @@ interface MainActivityContract {
         abstract fun onButtonSortClick()
         abstract fun onButtonImageSettingsClick()
         abstract fun onButtonDeleteClick()
-        abstract fun onButtonDeleteConfirmClick(notes: List<MyNote>)
+        abstract fun onButtonDeleteConfirmClick()
     }
 }

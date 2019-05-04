@@ -1,14 +1,13 @@
-package com.furianrt.mydiary.dialogs.categories.fragments.edit
+package com.furianrt.mydiary.dialogs.categories.fragments.add
 
 import com.furianrt.mydiary.base.BasePresenter
 import com.furianrt.mydiary.base.BaseView
 import com.furianrt.mydiary.data.model.MyCategory
 
-interface CategoryEditContract {
+interface CategoryAddContract {
 
     interface View : BaseView {
         fun close()
-        fun showCategory(category: MyCategory)
         fun showErrorEmptyName()
     }
 

@@ -8,16 +8,16 @@ class CategoryListPresenter(
         private val dataManager: DataManager
 ) : CategoryListContract.Presenter() {
 
-    override fun onAddCategoryButtonClick() {
+    override fun onButtonAddCategoryClick() {
         view?.showViewAddCategory()
     }
 
-    override fun onDeleteCategoryButtonClick(category: MyCategory) {
+    override fun onButtonDeleteCategoryClick(category: MyCategory) {
         view?.showDeleteCategoryView(category)
     }
 
-    override fun onEditCategoryButtonClick(category: MyCategory) {
-        view?.showEditView(category.id)
+    override fun onButtonEditCategoryClick(category: MyCategory) {
+        view?.showEditView(category)
     }
 
     override fun onViewStart() {
@@ -27,12 +27,25 @@ class CategoryListPresenter(
     }
 
     override fun onCategoryClick(category: MyCategory, noteId: String) {
-        addDisposable(dataManager.findNote(noteId)
+        addDisposable(dataManager.getNote(noteId)
+                .firstOrError()
                 .flatMapCompletable { note ->
                     note.categoryId = category.id
                     return@flatMapCompletable dataManager.updateNote(note)
                 }
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { view?.close() })
+    }
+
+    override fun onButtonNoCategoryClick(noteId: String) {
+        addDisposable(dataManager.getNote(noteId)
+                .firstOrError()
+                .flatMapCompletable { dataManager.updateNote(it.apply { categoryId = "" }) }
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe { view?.close() })
+    }
+
+    override fun onButtonCloseClick() {
+        view?.close()
     }
 }

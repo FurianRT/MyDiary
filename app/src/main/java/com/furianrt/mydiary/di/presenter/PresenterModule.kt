@@ -4,12 +4,16 @@ import android.content.Context
 import com.furianrt.mydiary.data.DataManager
 import com.furianrt.mydiary.dialogs.categories.CategoriesDialogContract
 import com.furianrt.mydiary.dialogs.categories.CategoriesDialogPresenter
+import com.furianrt.mydiary.dialogs.categories.fragments.add.CategoryAddContract
+import com.furianrt.mydiary.dialogs.categories.fragments.add.CategoryAddPresenter
 import com.furianrt.mydiary.dialogs.categories.fragments.delete.CategoryDeleteContract
 import com.furianrt.mydiary.dialogs.categories.fragments.delete.CategoryDeletePresenter
 import com.furianrt.mydiary.dialogs.categories.fragments.edit.CategoryEditContract
 import com.furianrt.mydiary.dialogs.categories.fragments.edit.CategoryEditPresenter
 import com.furianrt.mydiary.dialogs.categories.fragments.list.CategoryListContract
 import com.furianrt.mydiary.dialogs.categories.fragments.list.CategoryListPresenter
+import com.furianrt.mydiary.dialogs.delete.note.DeleteNoteContract
+import com.furianrt.mydiary.dialogs.delete.note.DeleteNotePresenter
 import com.furianrt.mydiary.dialogs.moods.MoodsDialogContract
 import com.furianrt.mydiary.dialogs.moods.MoodsDialogPresenter
 import com.furianrt.mydiary.dialogs.tags.TagsDialogContract
@@ -252,4 +256,14 @@ class PresenterModule(private val context: Context) {
     @PresenterScope
     fun provideTagEditPresenter(dataManager: DataManager): TagEditContract.Presenter =
             TagEditPresenter(dataManager)
+
+    @Provides
+    @PresenterScope
+    fun provideDeleteNotePresenter(dataManager: DataManager): DeleteNoteContract.Presenter =
+            DeleteNotePresenter(dataManager)
+
+    @Provides
+    @PresenterScope
+    fun provideCategoryAddPresenter(dataManager: DataManager): CategoryAddContract.Presenter =
+            CategoryAddPresenter(dataManager)
 }

@@ -22,13 +22,14 @@
             android:layout_marginStart="8dp"
             android:layout_marginEnd="8dp"
             android:hint="@string/tag_name"
-            android:textColorHint="@color/grey_dark">
+            app:hintTextAppearance="@style/TextAppearance.App.TextInputLayout">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/edit_add_tag"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:imeOptions="flagNoExtractUi|actionDone"
+                android:inputType="textCapSentences"
                 android:textColor="@color/white" />
 
         </com.google.android.material.textfield.TextInputLayout>

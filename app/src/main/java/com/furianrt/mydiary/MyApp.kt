@@ -31,7 +31,7 @@ class MyApp : Application(), Application.ActivityLifecycleCallbacks {
         const val NOTIFICATION_SYNC_CHANNEL_NAME = "Synchronization"
         const val NOTIFICATION_FIREBASE_CHANNEL_ID = "firebase_channel"
         const val NOTIFICATION_FIREBASE_CHANNEL_NAME = "Info"
-        private const val SYNC_PROGRESS_RESET_TIME = 1000 * 60 * 10
+        private const val SYNC_PROGRESS_RESET_TIME = 1000 * 60
     }
 
     val component: AppComponent by lazy {
@@ -139,22 +139,22 @@ class MyApp : Application(), Application.ActivityLifecycleCallbacks {
 
 /*TODO
 *
-* изменить цвет подсказки диалога
 * запилить дравер лайаут с поиском
 * выбор шрифта
-* реализовать выбор локации
+*   реализовать выбор локации
 * реклама
 * улучшить дефолтные цвета
-* кликабельные итемы android:background="?android:selectableItemBackground"
 * добавить notifications
 * добавить appsFlyerEvents
-* добавить настройки дейли картинки
-* добавить настройки внешнего вида основного экрана
-* исправить ошибку соединения при регистрации
-* добавить экран с описанием премиума
+*   добавить настройки дейли картинки
+*   добавить настройки внешнего вида основного экрана
+*   исправить ошибку соединения при регистрации
+*   добавить экран с описанием премиума
 * изменить цвета у дефолтных категорий
 * добавить ссылки на используемые библиотеки
 * написать туториал
+* исправить верстку окна редактирования категории
+* проверить удаление файлов картинки
 *
 * */
 
