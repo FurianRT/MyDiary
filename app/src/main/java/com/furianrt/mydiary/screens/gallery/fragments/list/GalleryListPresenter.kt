@@ -78,14 +78,9 @@ class GalleryListPresenter(
         }
     }
 
-    override fun onButtonDeleteConfirmClick(images: List<MyImage>) {
-        addDisposable(dataManager.deleteImage(images)
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe {
-                    images.forEach { image -> mSelectedImages.removeAll { it.name == image.name } }
-                    view?.showSelectedImageCount(mSelectedImages.size)
-                    view?.closeCab()
-                })
+    override fun onButtonDeleteConfirmClick() {
+        mSelectedImages.clear()
+        view?.closeCab()
     }
 
     override fun onButtonCabSelectAllClick() {

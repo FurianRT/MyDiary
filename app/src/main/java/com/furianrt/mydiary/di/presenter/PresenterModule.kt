@@ -12,6 +12,8 @@ import com.furianrt.mydiary.dialogs.categories.fragments.edit.CategoryEditContra
 import com.furianrt.mydiary.dialogs.categories.fragments.edit.CategoryEditPresenter
 import com.furianrt.mydiary.dialogs.categories.fragments.list.CategoryListContract
 import com.furianrt.mydiary.dialogs.categories.fragments.list.CategoryListPresenter
+import com.furianrt.mydiary.dialogs.delete.image.DeleteImageContract
+import com.furianrt.mydiary.dialogs.delete.image.DeleteImagePresenter
 import com.furianrt.mydiary.dialogs.delete.note.DeleteNoteContract
 import com.furianrt.mydiary.dialogs.delete.note.DeleteNotePresenter
 import com.furianrt.mydiary.dialogs.moods.MoodsDialogContract
@@ -266,4 +268,9 @@ class PresenterModule(private val context: Context) {
     @PresenterScope
     fun provideCategoryAddPresenter(dataManager: DataManager): CategoryAddContract.Presenter =
             CategoryAddPresenter(dataManager)
+
+    @Provides
+    @PresenterScope
+    fun provideDeleteImagePresenter(dataManager: DataManager): DeleteImageContract.Presenter =
+            DeleteImagePresenter(dataManager)
 }

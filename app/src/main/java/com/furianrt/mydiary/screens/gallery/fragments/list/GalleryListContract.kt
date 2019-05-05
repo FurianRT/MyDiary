@@ -39,6 +39,6 @@ interface GalleryListContract {
         abstract fun onStoragePermissionsGranted()
         abstract fun onNoteImagesPicked(imageUrls: List<String>)
         abstract fun onImageTrashed(image: MyImage)
-        abstract fun onButtonDeleteConfirmClick(images: List<MyImage>)
+        abstract fun onButtonDeleteConfirmClick()
     }
 }

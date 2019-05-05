@@ -22,8 +22,7 @@ import kotlinx.android.synthetic.main.fragment_gallery_pager.view.*
 import java.util.*
 import javax.inject.Inject
 
-class GalleryPagerFragment : Fragment(), GalleryPagerContract.View,
-        DeleteImageDialog.OnDeleteImageConfirmListener {
+class GalleryPagerFragment : Fragment(), GalleryPagerContract.View {
 
     companion object {
 
@@ -82,8 +81,6 @@ class GalleryPagerFragment : Fragment(), GalleryPagerContract.View,
         pager_gallery.addOnPageChangeListener(mOnPageChangeListener)
         mPresenter.attachView(this)
         mPresenter.onViewStart()
-        (activity?.supportFragmentManager?.findFragmentByTag(DeleteImageDialog.TAG) as? DeleteImageDialog)
-                ?.setOnDeleteConfirmListener(this)
     }
 
     override fun onPause() {
@@ -126,17 +123,7 @@ class GalleryPagerFragment : Fragment(), GalleryPagerContract.View,
     }
 
     override fun showDeleteConfirmationDialog(image: MyImage) {
-        DeleteImageDialog.newInstance(listOf(image)).apply {
-            setOnDeleteConfirmListener(this@GalleryPagerFragment)
-        }.show(activity?.supportFragmentManager, DeleteImageDialog.TAG)
-    }
-
-    override fun onDialogButtonDeleteClick(images: List<MyImage>) {
-        mPresenter.onButtonDeleteConfirmClick(images.first())
-    }
-
-    override fun onDialogButtonCancelClick(images: List<MyImage>) {
-
+        DeleteImageDialog.newInstance(listOf(image)).show(activity?.supportFragmentManager, DeleteImageDialog.TAG)
     }
 
     override fun showListImagesView(noteId: String) {

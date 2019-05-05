@@ -40,12 +40,6 @@ class GalleryPagerPresenter(
         view?.showDeleteConfirmationDialog(image)
     }
 
-    override fun onButtonDeleteConfirmClick(image: MyImage) {
-        addDisposable(dataManager.deleteImage(image)
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe())
-    }
-
     override fun onButtonEditClick(image: MyImage) {
         mEditedImage = image
         view?.showEditImageView(image)

@@ -242,14 +242,13 @@ class GalleryListFragment : Fragment(), GalleryListAdapter.OnListItemInteraction
         }.show(activity?.supportFragmentManager, DeleteImageDialog.TAG)
     }
 
-    override fun onDialogButtonDeleteClick(images: List<MyImage>) {
-        mPresenter.onButtonDeleteConfirmClick(images)
+    override fun onButtonDeleteConfirmClick() {
+        mPresenter.onButtonDeleteConfirmClick()
     }
 
-    override fun onDialogButtonCancelClick(images: List<MyImage>) {
-        val adapterImages = mAdapter.getImages()
+    override fun onDialogDeleteDismiss(images: List<MyImage>) {
         images.forEach { image ->
-            mAdapter.notifyItemChanged(adapterImages.indexOfFirst { it.name == image.name })
+            mAdapter.notifyItemChanged(mAdapter.getImages().indexOfFirst { it.name == image.name })
         }
     }
 

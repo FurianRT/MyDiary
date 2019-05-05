@@ -20,6 +20,5 @@ interface GalleryPagerContract {
         abstract fun onButtonDeleteClick(image: MyImage)
         abstract fun onButtonEditClick(image: MyImage)
         abstract fun onImageEdited()
-        abstract fun onButtonDeleteConfirmClick(image: MyImage)
     }
 }
