@@ -52,7 +52,7 @@ class MainListAdapter(
         return when (viewType) {
             R.layout.activity_main_list_header -> HeaderViewHolder(view)
             R.layout.activity_main_list_content -> ContentViewHolder(view)
-            else -> throw IllegalStateException("unsupported item type")
+            else -> throw IllegalStateException("Unsupported item type")
         }
     }
 
@@ -78,7 +78,6 @@ class MainListAdapter(
     }
 
     inner class HeaderViewHolder(view: View) : MyViewHolder(view) {
-
         override fun bind(item: MainListItem) {
             if (item is MainHeaderItem) {
                 itemView.text_date.text = itemView.context.getString(
@@ -91,30 +90,28 @@ class MainListAdapter(
     }
 
     inner class ContentViewHolder(view: View) : MyViewHolder(view) {
-
         override fun bind(item: MainListItem) {
-            if (item !is MainContentItem) {
-                return
-            }
-            with(itemView) {
-                setOnClickListener {
-                    listener?.onMainListItemClick(item.note, layoutPosition)
+            if (item is MainContentItem) {
+                with(itemView) {
+                    setOnClickListener {
+                        listener?.onMainListItemClick(item.note, layoutPosition)
+                    }
+                    setOnLongClickListener {
+                        listener?.onMainListItemLongClick(item.note, layoutPosition)
+                        return@setOnLongClickListener true
+                    }
+                    text_day_of_week.text = getDayOfWeek(item.note.note.time)
+                    text_day.text = getDay(item.note.note.time)
+                    text_time.text = getTime(item.note.note.time, is24TimeFormat)
+                    text_tags.text = item.note.tags.filter { !it.isDeleted }.size.toString()
+                    text_images.text = item.note.images.filter { !it.isDeleted }.size.toString()
+                    setCategory(item)
+                    setSyncIcon(item)
+                    setPreviewImage(item)
+                    setTitle(item)
+                    text_note_content.text = item.note.note.content
+                    selectItem(item.note)
                 }
-                setOnLongClickListener {
-                    listener?.onMainListItemLongClick(item.note, layoutPosition)
-                    return@setOnLongClickListener true
-                }
-                text_day_of_week.text = getDayOfWeek(item.note.note.time)
-                text_day.text = getDay(item.note.note.time)
-                text_time.text = getTime(item.note.note.time, is24TimeFormat)
-                text_tags.text = item.note.tags.filter { !it.isDeleted }.size.toString()
-                text_images.text = item.note.images.filter { !it.isDeleted }.size.toString()
-                setCategory(item)
-                setSyncIcon(item)
-                setPreviewImage(item)
-                setTitle(item)
-                text_note_content.text = item.note.note.content
-                selectItem(item.note)
             }
         }
 

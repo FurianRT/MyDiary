@@ -69,10 +69,10 @@ class MainActivity : BaseActivity(), MainActivityContract.View,
 
     companion object {
         private const val TAG = "MainActivity"
-        private const val BUNDLE_RECYCLER_VIEW_STATE = "recyclerState"
-        private const val BUNDLE_SELECTED_LIST_ITEMS = "selectedListItems"
-        private const val BUNDLE_ROOT_LAYOUT_OFFSET = "rootLayoutOffset"
-        private const val BUNDLE_BOTTOM_SHEET_STATE = "bottomSheetState"
+        private const val BUNDLE_RECYCLER_VIEW_STATE = "recycler_state"
+        private const val BUNDLE_SELECTED_LIST_ITEMS = "selected_list_items"
+        private const val BUNDLE_ROOT_LAYOUT_OFFSET = "root_layout_offset"
+        private const val BUNDLE_BOTTOM_SHEET_STATE = "bottom_sheet_state"
         private const val STORAGE_PERMISSIONS_REQUEST_CODE = 1
         private const val ACTIVITY_SETTING_REQUEST_CODE = 2
         private const val ITEM_LONG_CLICK_VIBRATION_DURATION = 30L
@@ -134,8 +134,7 @@ class MainActivity : BaseActivity(), MainActivityContract.View,
             view_sync.visibility = View.VISIBLE
             view_sync.layoutParams.width =
                     (button_sync.width.toFloat() * message.progress.toFloat() / 100f).toInt()
-            val progressText = "${message.progress}% ${message.message}"
-            button_sync.text = progressText
+            button_sync.text = getString(R.string.sync_progress_format, message.progress, message.message)
             view_sync.requestLayout()
         }
     }
