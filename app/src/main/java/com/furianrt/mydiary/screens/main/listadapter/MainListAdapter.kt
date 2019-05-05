@@ -26,6 +26,10 @@ class MainListAdapter(
 ) : ListAdapter<MainListItem, MainListAdapter.MyViewHolder>(MainDiffCallback()),
         HeaderItemDecoration.StickyHeaderInterface {
 
+    companion object {
+        private const val PREVIEW_IMAGE_SIZE = 200
+    }
+
     var listener: OnMainListItemInteractionListener? = null
     var profile: MyProfile? = null
 
@@ -87,36 +91,55 @@ class MainListAdapter(
         }
     }
 
-    inner class ContentViewHolder(view: View) : MyViewHolder(view), View.OnClickListener, View.OnLongClickListener {
-
-        private lateinit var mContentItem: MainContentItem
+    inner class ContentViewHolder(view: View) : MyViewHolder(view) {
 
         override fun bind(item: MainListItem) {
-            mContentItem = item as MainContentItem
-            val time = mContentItem.note.note.time
+            if (item !is MainContentItem) {
+                return
+            }
             with(itemView) {
-                setOnClickListener(this@ContentViewHolder)
-                setOnLongClickListener(this@ContentViewHolder)
-                text_day_of_week.text = getDayOfWeek(time)
-                val categoryColor = mContentItem.note.category?.color
+                setOnClickListener {
+                    listener?.onMainListItemClick(item.note, layoutPosition)
+                }
+                setOnLongClickListener {
+                    listener?.onMainListItemLongClick(item.note, layoutPosition)
+                    return@setOnLongClickListener true
+                }
+                text_day_of_week.text = getDayOfWeek(item.note.note.time)
+                text_day.text = getDay(item.note.note.time)
+                text_time.text = getTime(item.note.note.time, is24TimeFormat)
+                text_tags.text = item.note.tags.filter { !it.isDeleted }.size.toString()
+                text_images.text = item.note.images.filter { !it.isDeleted }.size.toString()
+                setCategory(item)
+                setSyncIcon(item)
+                setPreviewImage(item)
+                setTitle(item)
+                text_note_content.text = item.note.note.content
+                selectItem(item.note)
+            }
+        }
+
+        private fun setCategory(item: MainContentItem) {
+            with(itemView) {
+                val categoryColor = item.note.category?.color
                 if (categoryColor != null) {
                     text_day_of_week.setBackgroundColor(categoryColor)
                 } else {
                     text_day_of_week.setBackgroundColor(Color.BLACK)
                 }
-                text_day.text = getDay(time)
-                text_time.text = getTime(time, is24TimeFormat)
-                text_tags.text = mContentItem.note.tags.filter { !it.isDeleted }.size.toString()
-                text_images.text = mContentItem.note.images.filter { !it.isDeleted }.size.toString()
 
-                if (mContentItem.note.category != null) {
-                    text_category.text = mContentItem.note.category?.name
+                if (item.note.category != null) {
+                    text_category.text = item.note.category?.name
                     text_category.visibility = View.VISIBLE
                 } else {
                     text_category.visibility = View.INVISIBLE
                     text_category.text = ""
                 }
+            }
+        }
 
+        private fun setSyncIcon(item: MainContentItem) {
+            with(itemView) {
                 val tempProfile = profile
                 if (tempProfile == null) {
                     image_sync.visibility = View.INVISIBLE
@@ -134,7 +157,12 @@ class MainListAdapter(
                     }
                     image_sync.visibility = View.VISIBLE
                 }
-                val notDeletedImages = mContentItem.note.images.filter { !it.isDeleted }
+            }
+        }
+
+        private fun setPreviewImage(item: MainContentItem) {
+            with(itemView) {
+                val notDeletedImages = item.note.images.filter { !it.isDeleted }
                 if (notDeletedImages.isEmpty()) {
                     image_main_list.visibility = View.GONE
                     image_main_list.setImageDrawable(null)
@@ -142,31 +170,23 @@ class MainListAdapter(
                     image_main_list.visibility = View.VISIBLE
                     GlideApp.with(itemView)
                             .load(Uri.parse(notDeletedImages.first().uri))
-                            .override(200, 200)
+                            .override(PREVIEW_IMAGE_SIZE, PREVIEW_IMAGE_SIZE)
                             .signature(ObjectKey(notDeletedImages.first().editedTime))
                             .into(image_main_list)
                 }
+            }
+        }
 
-                val title = mContentItem.note.note.title
+        private fun setTitle(item: MainContentItem) {
+            with(itemView) {
+                val title = item.note.note.title
                 if (title.isEmpty()) {
                     text_note_title.visibility = View.GONE
                 } else {
                     text_note_title.text = title
                     text_note_title.visibility = View.VISIBLE
                 }
-                text_note_content.text = mContentItem.note.note.content
-
-                selectItem(mContentItem.note)
             }
-        }
-
-        override fun onClick(view: View?) {
-            listener?.onMainListItemClick(mContentItem.note, layoutPosition)
-        }
-
-        override fun onLongClick(v: View?): Boolean {
-            listener?.onMainListItemLongClick(mContentItem.note, layoutPosition)
-            return true
         }
 
         private fun selectItem(note: MyNoteWithProp) {

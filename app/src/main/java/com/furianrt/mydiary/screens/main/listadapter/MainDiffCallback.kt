@@ -1,11 +1,9 @@
 package com.furianrt.mydiary.screens.main.listadapter
 
-import android.annotation.SuppressLint
 import androidx.recyclerview.widget.DiffUtil
 
 class MainDiffCallback : DiffUtil.ItemCallback<MainListItem>() {
 
-    @SuppressLint("DiffUtilEquals")
     override fun areContentsTheSame(oldItem: MainListItem, newItem: MainListItem): Boolean {
         if (oldItem is MainContentItem && newItem is MainContentItem)
             return oldItem.note == newItem.note &&
@@ -13,7 +11,7 @@ class MainDiffCallback : DiffUtil.ItemCallback<MainListItem>() {
                     oldItem.note.tags == newItem.note.tags
         if (oldItem is MainHeaderItem && newItem is MainHeaderItem)
             return oldItem.time == newItem.time
-        return oldItem == newItem
+        return false
     }
 
     override fun areItemsTheSame(oldItem: MainListItem, newItem: MainListItem): Boolean {
@@ -21,6 +19,6 @@ class MainDiffCallback : DiffUtil.ItemCallback<MainListItem>() {
             return oldItem.note.note.id == newItem.note.note.id
         if (oldItem is MainHeaderItem && newItem is MainHeaderItem)
             return oldItem.time == newItem.time
-        return oldItem == newItem
+        return false
     }
 }
