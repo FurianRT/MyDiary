@@ -96,10 +96,10 @@ class GalleryPagerFragment : Fragment(), GalleryPagerContract.View,
         if (mPagerPosition >= images.size) {
             mPagerPosition = images.size - 1
         }
-        showImageCounter(mPagerPosition + 1, images.size)
         mPagerAdapter.images = images
         mPagerAdapter.notifyDataSetChanged()
         pager_gallery.setCurrentItem(mPagerPosition, false)
+        showImageCounter(mPagerPosition + 1, images.size)
     }
 
     override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {

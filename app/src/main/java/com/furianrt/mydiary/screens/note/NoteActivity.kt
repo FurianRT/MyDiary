@@ -5,6 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.Menu
+import android.view.View
 import android.view.WindowManager
 import androidx.viewpager.widget.ViewPager
 import com.furianrt.mydiary.R
@@ -44,12 +45,25 @@ class NoteActivity : BaseActivity(), NoteActivityContract.View,
     private lateinit var mNoteId: String
 
     private lateinit var mPagerAdapter: NoteActivityPagerAdapter
+    private val mOnPageChangeListener = object : ViewPager.OnPageChangeListener {
+        override fun onPageScrollStateChanged(state: Int) {}
+        override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {}
+        override fun onPageSelected(position: Int) {
+            mPagerPosition = position
+            showImageCounter(mPagerPosition + 1, mPagerAdapter.count)
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         getPresenterComponent(this).inject(this)
         setContentView(R.layout.activity_note)
         window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN)
+
+        setSupportActionBar(toolbar_note_activity)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        supportActionBar?.setDisplayShowHomeEnabled(true)
+        supportActionBar?.setDisplayShowTitleEnabled(false)
 
         mPagerPosition = savedInstanceState?.getInt(EXTRA_CLICKED_NOTE_POSITION, 0)
                 ?: intent.getIntExtra(EXTRA_CLICKED_NOTE_POSITION, 0)
@@ -66,24 +80,7 @@ class NoteActivity : BaseActivity(), NoteActivityContract.View,
         mMode = intent.getSerializableExtra(EXTRA_MODE) as Mode
 
         mPagerAdapter = NoteActivityPagerAdapter(supportFragmentManager, mMode)
-
-        setupUi()
-    }
-
-    private fun setupUi() {
-        setSupportActionBar(toolbar_note_activity)
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        supportActionBar?.setDisplayShowHomeEnabled(true)
-        supportActionBar?.setDisplayShowTitleEnabled(false)
-
         pager_note.adapter = mPagerAdapter
-        pager_note.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
-            override fun onPageScrollStateChanged(p0: Int) {}
-            override fun onPageScrolled(p0: Int, p1: Float, p2: Int) {}
-            override fun onPageSelected(position: Int) {
-                mPagerPosition = position
-            }
-        })
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -105,14 +102,17 @@ class NoteActivity : BaseActivity(), NoteActivityContract.View,
         Log.e(TAG, "note_list_notify")
         mPagerAdapter.notifyDataSetChanged()
         pager_note.setCurrentItem(mPagerPosition, false)
+        showImageCounter(mPagerPosition + 1, mPagerAdapter.count)
     }
 
     override fun onNoteFragmentEditModeDisabled() {
         pager_note.swipeEnabled = true
+        text_toolbar_title.visibility = View.VISIBLE
     }
 
     override fun onNoteFragmentEditModeEnabled() {
         pager_note.swipeEnabled = false
+        text_toolbar_title.visibility = View.GONE
     }
 
     override fun onSupportNavigateUp(): Boolean {
@@ -128,9 +128,14 @@ class NoteActivity : BaseActivity(), NoteActivityContract.View,
         finish()
     }
 
+    private fun showImageCounter(current: Int, count: Int) {
+        text_toolbar_title.text = getString(R.string.counter_format, current, count)
+    }
+
     override fun onResume() {
         super.onResume()
         mPresenter.attachView(this)
+        pager_note.addOnPageChangeListener(mOnPageChangeListener)
         if (mMode == Companion.Mode.READ) {
             mPresenter.loadNotes()
         } else {
@@ -140,6 +145,7 @@ class NoteActivity : BaseActivity(), NoteActivityContract.View,
 
     override fun onPause() {
         super.onPause()
+        pager_note.removeOnPageChangeListener(mOnPageChangeListener)
         mPresenter.detachView()
     }
 }

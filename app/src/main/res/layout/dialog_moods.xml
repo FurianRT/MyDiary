@@ -9,7 +9,7 @@
         android:id="@+id/layout_moods_header"
         android:layout_width="match_parent"
         android:layout_height="?android:attr/actionBarSize"
-        android:background="@color/colorPrimary"
+        android:background="?attr/colorPrimary"
         android:gravity="start|center_vertical"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

@@ -235,7 +235,7 @@
     <string name="gallery_list_empty_state_message_part_1">Список картинок пуст?</string>
     <string name="gallery_list_empty_state_message_part_2">Ничего страшного! Добавьте новые, это просто!</string>
     <string name="fragment_gallery_list_selected">Выбрано: %d</string>
-    <string name="fragment_gallery_list_image_count">Всего картинок: %d</string>
+    <string name="fragment_gallery_list_image_count">Всего: %d</string>
     <string name="fragment_gallery_pager_edit_photo">Ред. фото</string>
     <string name="activity_pin_forgot">Забыли пароль?</string>
     <string name="activity_pin_wrong_pin">Неверный пароль</string>

@@ -32,10 +32,6 @@ class GalleryActivity : BaseActivity(), GalleryActivityContract.View {
         getPresenterComponent(this).inject(this)
         setContentView(R.layout.activity_gallery)
 
-        setupUi()
-    }
-
-    private fun setupUi() {
         setSupportActionBar(toolbar_gallery)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setDisplayShowHomeEnabled(true)
