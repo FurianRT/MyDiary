@@ -79,15 +79,14 @@ class MainListAdapter(
 
     inner class HeaderViewHolder(view: View) : MyViewHolder(view) {
 
-        private lateinit var mHeaderItem: MainHeaderItem
-
         override fun bind(item: MainListItem) {
-            mHeaderItem = item as MainHeaderItem
-            itemView.text_date.text = itemView.context.getString(
-                    R.string.note_list_date_format,
-                    getMonth(mHeaderItem.time),
-                    getYear(mHeaderItem.time)
-            )
+            if (item is MainHeaderItem) {
+                itemView.text_date.text = itemView.context.getString(
+                        R.string.note_list_date_format,
+                        getMonth(item.time),
+                        getYear(item.time)
+                )
+            }
         }
     }
 
