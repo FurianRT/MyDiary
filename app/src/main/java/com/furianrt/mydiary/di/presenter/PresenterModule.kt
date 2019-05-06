@@ -68,8 +68,10 @@ import com.furianrt.mydiary.screens.note.fragments.notefragment.edit.NoteEditFra
 import com.furianrt.mydiary.screens.note.fragments.notefragment.edit.NoteEditFragmentPresenter
 import com.furianrt.mydiary.screens.pin.PinContract
 import com.furianrt.mydiary.screens.pin.PinPresenter
-import com.furianrt.mydiary.screens.pin.fragments.email.BackupEmailContract
-import com.furianrt.mydiary.screens.pin.fragments.email.BackupEmailPresenter
+import com.furianrt.mydiary.screens.pin.fragments.backupemail.BackupEmailContract
+import com.furianrt.mydiary.screens.pin.fragments.backupemail.BackupEmailPresenter
+import com.furianrt.mydiary.screens.pin.fragments.sendemail.SendEmailContract
+import com.furianrt.mydiary.screens.pin.fragments.sendemail.SendEmailPresenter
 import com.furianrt.mydiary.screens.settings.global.GlobalSettingsContract
 import com.furianrt.mydiary.screens.settings.global.GlobalSettingsPresenter
 import com.furianrt.mydiary.screens.settings.note.NoteSettingsContract
@@ -273,4 +275,9 @@ class PresenterModule(private val context: Context) {
     @PresenterScope
     fun provideDeleteImagePresenter(dataManager: DataManager): DeleteImageContract.Presenter =
             DeleteImagePresenter(dataManager)
+
+    @Provides
+    @PresenterScope
+    fun provideSendEmailPresenter(dataManager: DataManager): SendEmailContract.Presenter =
+            SendEmailPresenter(dataManager)
 }

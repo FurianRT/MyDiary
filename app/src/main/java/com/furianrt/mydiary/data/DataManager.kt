@@ -130,4 +130,5 @@ interface DataManager {
     fun observeAuthState(): Observable<Int>
     fun updateProfile(profile: MyProfile): Completable
     fun sendPasswordResetEmail(email: String): Completable
+    fun sendPinResetEmail(): Completable
 }

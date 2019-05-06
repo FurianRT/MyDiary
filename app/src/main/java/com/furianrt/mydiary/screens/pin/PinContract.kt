@@ -7,13 +7,13 @@ import com.furianrt.mydiary.base.BaseView
 interface PinContract {
 
     interface View : BaseView {
-        fun showPassword(password: String)
-        fun showMessageRepeatPassword()
-        fun showMessagePasswordCreated()
-        fun showMessageEnterPassword()
+        fun showPin(pin: String)
+        fun showMessageRepeatPin()
+        fun showMessagePinCreated()
+        fun showMessageEnterPin()
         fun showMessagePinCorrect()
-        fun showMessageCreatePassword()
-        fun showMessageCurrentPassword()
+        fun showMessageCreatePin()
+        fun showMessageCurrentPin()
         fun showErrorWrongPin()
         fun showErrorPinsDoNotMatch()
         fun showForgotPinView()
@@ -22,7 +22,7 @@ interface PinContract {
     }
 
     abstract class Presenter : BasePresenter<View>() {
-        abstract fun onButtonForgotPasswordClick()
+        abstract fun onButtonForgotPinClick()
         abstract fun onRestoreInstanceState(bundle: Bundle?)
         abstract fun onSaveInstanceState(bundle: Bundle?)
         abstract fun onButtonBackspaceClick()

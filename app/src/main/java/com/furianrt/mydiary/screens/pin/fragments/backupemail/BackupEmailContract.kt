@@ -1,4 +1,4 @@
-package com.furianrt.mydiary.screens.pin.fragments.email
+package com.furianrt.mydiary.screens.pin.fragments.backupemail
 
 import com.furianrt.mydiary.base.BasePresenter
 import com.furianrt.mydiary.base.BaseView

@@ -11,7 +11,9 @@ import com.furianrt.mydiary.R
 import com.furianrt.mydiary.base.BaseActivity
 import com.furianrt.mydiary.general.LockableBottomSheetBehavior
 import com.furianrt.mydiary.screens.pin.PinActivity.Mode.*
-import com.furianrt.mydiary.screens.pin.fragments.email.BackupEmailFragment
+import com.furianrt.mydiary.screens.pin.fragments.backupemail.BackupEmailFragment
+import com.furianrt.mydiary.screens.pin.fragments.done.DoneEmailFragment
+import com.furianrt.mydiary.screens.pin.fragments.sendemail.SendEmailFragment
 import com.furianrt.mydiary.utils.animateShake
 import com.furianrt.mydiary.utils.inTransaction
 import com.google.android.material.bottomsheet.BottomSheetBehavior
@@ -60,12 +62,28 @@ class PinActivity : BaseActivity(), PinContract.View, View.OnClickListener,
 
         mMode = intent.getSerializableExtra(EXTRA_MODE) as Mode
 
+        mBottomSheet = BottomSheetBehavior.from(pin_sheet_container) as LockableBottomSheetBehavior
+
         if (mMode == MODE_CREATE || mMode == MODE_REMOVE) {
-            button_forgot_password.visibility = View.INVISIBLE
+            button_forgot_pin.visibility = View.INVISIBLE
+            mBottomSheet.locked = true
+        } else {
+            mBottomSheet.locked = false
         }
 
-        mBottomSheet = BottomSheetBehavior.from(pin_sheet_container) as LockableBottomSheetBehavior
-        mBottomSheet.locked = true
+        mBottomSheet.setBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
+            override fun onSlide(bottomSheet: View, slideOffset: Float) {}
+            override fun onStateChanged(bottomSheet: View, newState: Int) {
+                if (newState == BottomSheetBehavior.STATE_COLLAPSED) {
+                    supportFragmentManager.findFragmentByTag(SendEmailFragment.TAG)?.let {
+                        supportFragmentManager.inTransaction { remove(it) }
+                    }
+                    supportFragmentManager.findFragmentByTag(DoneEmailFragment.TAG)?.let {
+                        supportFragmentManager.inTransaction { remove(it) }
+                    }
+                }
+            }
+        })
 
         savedInstanceState?.let {
             mBottomSheet.state = it.getInt(BUNDLE_BOTTOM_SHEET_STATE, BottomSheetBehavior.STATE_COLLAPSED)
@@ -83,7 +101,7 @@ class PinActivity : BaseActivity(), PinContract.View, View.OnClickListener,
         button_nine.setOnClickListener(this)
         button_zero.setOnClickListener(this)
         button_backspace.setOnClickListener(this)
-        button_forgot_password.setOnClickListener(this)
+        button_forgot_pin.setOnClickListener(this)
         button_pin_close.setOnClickListener(this)
     }
 
@@ -93,8 +111,8 @@ class PinActivity : BaseActivity(), PinContract.View, View.OnClickListener,
         mPresenter.onSaveInstanceState(outState)
     }
 
-    override fun showPassword(password: String) {
-        val length = password.length
+    override fun showPin(pin: String) {
+        val length = pin.length
         if (length > 0) image_pin_one.setImageResource(R.drawable.circle_white_background)
         if (length > 1) image_pin_two.setImageResource(R.drawable.circle_white_background)
         if (length > 2) image_pin_three.setImageResource(R.drawable.circle_white_background)
@@ -121,29 +139,34 @@ class PinActivity : BaseActivity(), PinContract.View, View.OnClickListener,
         layout_pins.animateShake(ANIMATION_SHAKE_DURATION)
     }
 
-    override fun showMessageRepeatPassword() {
+    override fun showMessageRepeatPin() {
         text_pin_message.text = getString(R.string.activity_pin_repeat)
     }
 
-    override fun showMessageEnterPassword() {
+    override fun showMessageEnterPin() {
         text_pin_message.text = getString(R.string.activity_pin_enter)
     }
 
-    override fun showMessagePasswordCreated() {
+    override fun showMessagePinCreated() {
         setResult(Activity.RESULT_OK)
         finish()
     }
 
-    override fun showMessageCreatePassword() {
+    override fun showMessageCreatePin() {
         text_pin_message.text = getString(R.string.activity_pin_create_pin)
     }
 
-    override fun showMessageCurrentPassword() {
+    override fun showMessageCurrentPin() {
         text_pin_message.text = getString(R.string.activity_pin_enter_current_pin)
     }
 
     override fun showForgotPinView() {
-
+        if (supportFragmentManager.findFragmentByTag(SendEmailFragment.TAG) == null) {
+            supportFragmentManager.inTransaction {
+                add(R.id.pin_sheet_container, SendEmailFragment(), SendEmailFragment.TAG)
+            }
+        }
+        mHandler.postDelayed(mBottomSheetOpenRunnable, BOTTOM_SHEET_EXPAND_DELAY)
     }
 
     override fun showEnterEmailView() {
@@ -168,7 +191,7 @@ class PinActivity : BaseActivity(), PinContract.View, View.OnClickListener,
             R.id.button_nine -> valueEntered(9)
             R.id.button_zero -> valueEntered(0)
             R.id.button_backspace -> mPresenter.onButtonBackspaceClick()
-            R.id.button_forgot_password -> mPresenter.onButtonForgotPasswordClick()
+            R.id.button_forgot_pin -> mPresenter.onButtonForgotPinClick()
             R.id.button_pin_close -> mPresenter.onButtonCloseClick()
         }
     }
@@ -194,7 +217,11 @@ class PinActivity : BaseActivity(), PinContract.View, View.OnClickListener,
     }
 
     override fun onBackPressed() {
-        close()
+        if (mBottomSheet.state == BottomSheetBehavior.STATE_EXPANDED) {
+            mBottomSheet.state = BottomSheetBehavior.STATE_COLLAPSED
+        } else {
+            close()
+        }
     }
 
     override fun finish() {

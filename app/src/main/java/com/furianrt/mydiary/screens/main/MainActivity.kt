@@ -63,7 +63,7 @@ import java.util.*
 import javax.inject.Inject
 
 class MainActivity : BaseActivity(), MainActivityContract.View,
-        MainListAdapter.OnMainListItemInteractionListener, View.OnClickListener,
+        MainListAdapter.OnMainListItemInteractionListener,
         ImageSettingsFragment.OnImageSettingsInteractionListener,
         DeleteNoteDialog.OnDeleteNoteConfirmListener {
 
@@ -153,6 +153,12 @@ class MainActivity : BaseActivity(), MainActivityContract.View,
         super.onCreate(savedInstanceState)
         getPresenterComponent(this).inject(this)
         setContentView(R.layout.activity_main)
+
+        setSupportActionBar(toolbar_main)
+        supportActionBar?.setDisplayShowTitleEnabled(false)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_menu)
+
         mBottomSheet = BottomSheetBehavior.from(main_sheet_container)
         mBottomSheet.setBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
             override fun onSlide(bottomSheet: View, slideOffset: Float) {}
@@ -185,14 +191,22 @@ class MainActivity : BaseActivity(), MainActivityContract.View,
             mBottomSheet.state = it.getInt(BUNDLE_BOTTOM_SHEET_STATE, BottomSheetBehavior.STATE_COLLAPSED)
         }
 
-        setupUi()
-    }
-
-    private fun setupUi() {
-        setSupportActionBar(toolbar_main)
-        supportActionBar?.setDisplayShowTitleEnabled(false)
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_menu)
+        fab_menu.setOnClickListener { mPresenter.onFabMenuClick() }
+        fab_delete.setOnClickListener { mPresenter.onButtonDeleteClick() }
+        fab_folder.setOnClickListener {
+            //todo
+        }
+        fab_place.setOnClickListener {
+            //todo
+        }
+        image_toolbar_main.setOnClickListener { mPresenter.onMainImageClick() }
+        button_main_image_settings.setOnClickListener { mPresenter.onButtonImageSettingsClick() }
+        with(nav_view.getHeaderView(0)) {
+            button_sync.setOnClickListener { mPresenter.onButtonSyncClick() }
+            button_profile_settings.setOnClickListener { mPresenter.onButtonProfileClick() }
+            layout_profile_name.setOnClickListener { mPresenter.onButtonProfileClick() }
+            image_profile.setOnClickListener { mPresenter.onButtonProfileClick() }
+        }
 
         mAdapter = MainListAdapter(is24TimeFormat = mPresenter.is24TimeFormat())
         list_main.layoutManager = LinearLayoutManager(this)
@@ -256,19 +270,6 @@ class MainActivity : BaseActivity(), MainActivityContract.View,
         val coordParams =
                 app_bar_layout.layoutParams as CoordinatorLayout.LayoutParams
         (coordParams.behavior as AppBarLayoutBehavior).shouldScroll = true
-    }
-
-    override fun onClick(v: View?) {
-        when (v?.id) {
-            R.id.fab_delete -> mPresenter.onButtonDeleteClick()
-            R.id.image_toolbar_main -> mPresenter.onMainImageClick()
-            R.id.fab_menu -> mPresenter.onFabMenuClick()
-            R.id.button_sync -> mPresenter.onButtonSyncClick()
-            R.id.button_profile_settings -> mPresenter.onButtonProfileClick()
-            R.id.layout_profile_name -> mPresenter.onButtonProfileClick()
-            R.id.image_profile -> mPresenter.onButtonProfileClick()
-            R.id.button_main_image_settings -> mPresenter.onButtonImageSettingsClick()
-        }
     }
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
@@ -568,16 +569,6 @@ class MainActivity : BaseActivity(), MainActivityContract.View,
             }
         }
         drawer.addDrawerListener(mOnDrawerListener)
-        fab_menu.setOnClickListener(this)
-        fab_delete.setOnClickListener(this)
-        fab_folder.setOnClickListener(this)
-        fab_place.setOnClickListener(this)
-        image_toolbar_main.setOnClickListener(this)
-        button_main_image_settings.setOnClickListener(this)
-        nav_view.getHeaderView(0).button_sync.setOnClickListener(this)
-        nav_view.getHeaderView(0).button_profile_settings.setOnClickListener(this)
-        nav_view.getHeaderView(0).layout_profile_name.setOnClickListener(this)
-        nav_view.getHeaderView(0).image_profile.setOnClickListener(this)
     }
 
     override fun onStop() {

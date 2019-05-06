@@ -1,5 +1,8 @@
 package com.furianrt.mydiary.data.auth
 
+import android.content.Context
+import com.furianrt.mydiary.BuildConfig
+import com.furianrt.mydiary.R
 import com.furianrt.mydiary.data.model.pojo.MyUser
 import com.google.firebase.auth.EmailAuthProvider
 import com.google.firebase.auth.FirebaseAuth
@@ -8,8 +11,13 @@ import durdinapps.rxfirebase2.RxFirebaseUser
 import io.reactivex.Completable
 import io.reactivex.Observable
 import io.reactivex.Single
+import java.util.*
+import javax.mail.*
+import javax.mail.internet.InternetAddress
+import javax.mail.internet.MimeMessage
 
 class AuthHelperImp(
+        private val context: Context,
         private val firebaseAuth: FirebaseAuth
 ) : AuthHelper {
 
@@ -33,7 +41,8 @@ class AuthHelperImp(
 
     override fun observeAuthState(): Observable<Int> =
             RxFirebaseAuth.observeAuthState(firebaseAuth)
-                    .map { if (it.currentUser == null) {
+                    .map {
+                        if (it.currentUser == null) {
                             AuthHelper.STATE_SIGN_OUT
                         } else {
                             AuthHelper.STATE_SIGN_IN
@@ -56,4 +65,26 @@ class AuthHelperImp(
 
     override fun sendPasswordResetEmail(email: String): Completable =
             RxFirebaseAuth.sendPasswordResetEmail(firebaseAuth, email)
+
+    override fun sendPinResetEmail(email: String, pin: String) {
+        val props = Properties()
+        props["mail.smtp.host"] = "smtp.gmail.com"
+        props["mail.smtp.socketFactory.port"] = "465"
+        props["mail.smtp.socketFactory.class"] = "javax.net.ssl.SSLSocketFactory"
+        props["mail.smtp.auth"] = "true"
+        props["mail.smtp.port"] = "465"
+
+        val session = Session.getDefaultInstance(props, object : Authenticator() {
+            override fun getPasswordAuthentication(): PasswordAuthentication {
+                return PasswordAuthentication(BuildConfig.SUPPORT_EMAIL, BuildConfig.SUPPORT_EMAIL_PASSWORD)
+            }
+        })
+
+        val message = MimeMessage(session)
+        message.setFrom(InternetAddress(BuildConfig.SUPPORT_EMAIL))
+        message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(email))
+        message.subject = context.getString(R.string.restore_pin_email_subject)
+        message.setText(context.getString(R.string.pin_recovery_email_content, pin))
+        Transport.send(message)
+    }
 }

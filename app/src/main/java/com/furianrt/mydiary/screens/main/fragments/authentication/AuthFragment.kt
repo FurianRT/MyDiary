@@ -36,33 +36,6 @@ class AuthFragment : Fragment(), AuthContract.View {
     @Inject
     lateinit var mPresenter: AuthContract.Presenter
 
-    /*private val mOnKeyboardToggleListener = object : KeyboardUtils.SoftKeyboardToggleListener {
-        override fun onToggleSoftKeyboard(isVisible: Boolean) {
-            if (isVisible) {
-                auth_container
-                        .animate()
-                        .translationY(-auth_container.y)
-                        .setDuration(ANIMATION_CONTAINER_DURATION)
-                        .setInterpolator(OvershootInterpolator())
-                        .setListener(object : Animator.AnimatorListener {
-                            override fun onAnimationRepeat(animation: Animator?) {}
-                            override fun onAnimationCancel(animation: Animator?) {}
-                            override fun onAnimationStart(animation: Animator?) {}
-                            override fun onAnimationEnd(animation: Animator?) {
-                                //повторная прорисовка контекстного меню
-                                auth_container?.requestLayout()   //todo иногда обрезается контекстное меню
-                            }
-                        })
-            } else {
-                auth_container
-                        .animate()
-                        .translationY(0f)
-                        .setDuration(ANIMATION_CONTAINER_DURATION)
-                        .interpolator = OvershootInterpolator()
-            }
-        }
-    }*/
-
     private val mOnKeyboardToggleListener = object : KeyboardUtils.SoftKeyboardToggleListener {
         override fun onToggleSoftKeyboard(isVisible: Boolean) {
             if (!isVisible) {

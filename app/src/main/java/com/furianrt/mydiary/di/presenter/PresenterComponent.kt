@@ -33,7 +33,8 @@ import com.furianrt.mydiary.screens.note.fragments.notefragment.NoteFragment
 import com.furianrt.mydiary.screens.note.fragments.notefragment.content.NoteContentFragment
 import com.furianrt.mydiary.screens.note.fragments.notefragment.edit.NoteEditFragment
 import com.furianrt.mydiary.screens.pin.PinActivity
-import com.furianrt.mydiary.screens.pin.fragments.email.BackupEmailFragment
+import com.furianrt.mydiary.screens.pin.fragments.backupemail.BackupEmailFragment
+import com.furianrt.mydiary.screens.pin.fragments.sendemail.SendEmailFragment
 import com.furianrt.mydiary.screens.settings.global.GlobalSettingsFragment
 import com.furianrt.mydiary.screens.settings.note.NoteSettingsFragment
 import com.furianrt.mydiary.services.sync.SyncService
@@ -79,4 +80,5 @@ interface PresenterComponent {
     fun inject(fragment: TagAddFragment)
     fun inject(fragment: TagEditFragment)
     fun inject(fragment: CategoryAddFragment)
+    fun inject(fragment: SendEmailFragment)
 }

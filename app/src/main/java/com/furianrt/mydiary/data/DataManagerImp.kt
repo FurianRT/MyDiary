@@ -605,4 +605,9 @@ class DataManagerImp(
     override fun sendPasswordResetEmail(email: String): Completable =
             auth.sendPasswordResetEmail(email)
                     .subscribeOn(rxScheduler)
+
+    override fun sendPinResetEmail(): Completable =
+            Completable.fromAction {
+                auth.sendPinResetEmail(prefs.getBackupEmail(), decryptString(prefs.getPin()))
+            }.subscribeOn(rxScheduler)
 }

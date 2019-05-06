@@ -1,4 +1,4 @@
-package com.furianrt.mydiary.screens.pin.fragments.email
+package com.furianrt.mydiary.screens.pin.fragments.backupemail
 
 import android.util.Patterns
 import com.furianrt.mydiary.data.DataManager

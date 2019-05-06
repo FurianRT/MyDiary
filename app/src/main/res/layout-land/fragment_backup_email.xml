@@ -6,15 +6,15 @@
     android:layout_height="match_parent"
     android:layout_marginTop="4dp"
     android:background="@color/white"
-    tools:context=".screens.pin.fragments.email.BackupEmailFragment">
+    tools:context=".screens.pin.fragments.backupemail.BackupEmailFragment">
 
     <TextView
         android:id="@+id/textView"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="32dp"
+        android:layout_marginStart="48dp"
         android:layout_marginTop="24dp"
-        android:layout_marginEnd="32dp"
+        android:layout_marginEnd="48dp"
         android:gravity="center"
         android:text="@string/fragment_backup_email_message_land"
         android:textColor="?attr/colorAccent"

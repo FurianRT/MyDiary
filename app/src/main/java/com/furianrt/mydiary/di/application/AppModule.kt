@@ -74,7 +74,8 @@ class AppModule(private val app: Application) {
 
     @Provides
     @AppScope
-    fun provideAuthHelper(firebaseAuth: FirebaseAuth): AuthHelper = AuthHelperImp(firebaseAuth)
+    fun provideAuthHelper(context: Context, firebaseAuth: FirebaseAuth): AuthHelper =
+            AuthHelperImp(context, firebaseAuth)
 
     @Provides
     @AppScope

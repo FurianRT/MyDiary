@@ -19,4 +19,5 @@ interface AuthHelper {
     fun observeAuthState(): Observable<Int>
     fun isSignedIn(): Boolean
     fun sendPasswordResetEmail(email: String): Completable
+    fun sendPinResetEmail(email: String, pin: String)
 }

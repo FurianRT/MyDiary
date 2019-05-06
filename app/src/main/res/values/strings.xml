@@ -89,6 +89,9 @@
         Приложению требуется разрешениедля сохранения изображения
     </string>
 
+    <string name="pin_recovery_email_subject">Восстановление пароля</string>
+    <string name="pin_recovery_email_content">Ваш пароль: %s</string>
+
     <string name="yes">Да</string>
     <string name="no">Нет</string>
     <string name="exit">Выйти</string>
@@ -275,5 +278,8 @@
     <string name="fragment_tag_delete_message">Удалить тег \"%s\"?</string>
     <string name="fragment_tag_error_empty_name">Введите название тега</string>
     <string name="fragment_add_tag_error_existing_name">Тег с таким названием уже есть</string>
+    <string name="fragment_send_email_message">На email, заданный при создании пароля, будет отправлено письмо с инструкцией по восстановлению пароля. Если письмо не пришло, возможно оно попало в папку со спамом.</string>
+    <string name="fragment_send_email_done">Письмо отправлено!</string>
+    <string name="fragment_send_email_error">Не удалось отправить сообщение</string>
 
 </resources>
