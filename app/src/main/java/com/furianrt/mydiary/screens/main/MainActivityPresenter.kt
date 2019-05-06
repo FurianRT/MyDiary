@@ -14,6 +14,7 @@ import io.reactivex.schedulers.Schedulers
 import net.danlew.android.joda.DateUtils
 import org.joda.time.DateTime
 import java.util.*
+import java.util.concurrent.TimeUnit
 import kotlin.Comparator
 import kotlin.collections.ArrayList
 
@@ -21,23 +22,24 @@ class MainActivityPresenter(
         private val dataManager: DataManager
 ) : MainActivityContract.Presenter() {
 
-    private var mSelectedNotes = ArrayList<MyNoteWithProp>()
+    private var mSelectedNoteIds = HashSet<String>()
 
     override fun onButtonDeleteClick() {
-        view?.showDeleteConfirmationDialog(mSelectedNotes.map { it.note.id })
+        view?.showDeleteConfirmationDialog(mSelectedNoteIds.toList())
     }
 
     override fun onButtonDeleteConfirmClick() {
-        mSelectedNotes.clear()
+        mSelectedNoteIds.clear()
         view?.deactivateSelection()
     }
 
     override fun onButtonFolderClick() {
-        view?.showCategoriesView(mSelectedNotes.map { it.note.id })
+        view?.showCategoriesView(mSelectedNoteIds.toList())
     }
 
     override fun onCategorySelected() {
-        mSelectedNotes.clear()
+        mSelectedNoteIds.clear()
+        view?.updateItemSelection(mSelectedNoteIds)
         view?.deactivateSelection()
     }
 
@@ -46,9 +48,10 @@ class MainActivityPresenter(
                 .first(ArrayList())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { notes ->
-                    mSelectedNotes = ArrayList(notes)
+                    mSelectedNoteIds.clear()
+                    mSelectedNoteIds.addAll(notes.map { it.note.id })
                     view?.activateSelection()
-                    view?.updateItemSelection(mSelectedNotes)
+                    view?.updateItemSelection(mSelectedNoteIds)
                 })
     }
 
@@ -146,6 +149,7 @@ class MainActivityPresenter(
             view?.setSortDesc()
         }
         addDisposable(dataManager.getAllNotesWithProp()
+                .debounce(400, TimeUnit.MILLISECONDS)
                 .map { formatNotes(toMap(it)) }
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { items ->
@@ -161,7 +165,7 @@ class MainActivityPresenter(
                                 .size
                     })
                     view?.showNotesTotal(notes.size)
-                    view?.showNotes(items, mSelectedNotes)
+                    view?.showNotes(items, mSelectedNoteIds)
                 })
     }
 
@@ -221,12 +225,12 @@ class MainActivityPresenter(
     }
 
     override fun onFabMenuClick() {
-        if (mSelectedNotes.isEmpty()) {
+        if (mSelectedNoteIds.isEmpty()) {
             view?.showViewNewNote()
         } else {
-            mSelectedNotes.clear()
+            mSelectedNoteIds.clear()
             view?.deactivateSelection()
-            view?.updateItemSelection(mSelectedNotes)
+            view?.updateItemSelection(mSelectedNoteIds)
         }
     }
 
@@ -245,36 +249,39 @@ class MainActivityPresenter(
     }
 
     override fun onMainListItemClick(note: MyNoteWithProp, position: Int) {
-        if (mSelectedNotes.isEmpty()) {
+        if (mSelectedNoteIds.isEmpty()) {
             openNotePagerView(note)
         } else {
-            selectListItem(note)
+            selectListItem(note.note.id)
         }
     }
 
     override fun onMainListItemLongClick(note: MyNoteWithProp, position: Int) {
-        if (mSelectedNotes.isEmpty()) {
+        if (mSelectedNoteIds.isEmpty()) {
             view?.activateSelection()
         }
-        selectListItem(note)
+        selectListItem(note.note.id)
     }
 
-    override fun onSaveInstanceState() = mSelectedNotes
+    override fun onSaveInstanceState() = mSelectedNoteIds
 
-    override fun onRestoreInstanceState(selectedNotes: ArrayList<MyNoteWithProp>?) {
-        selectedNotes?.let { mSelectedNotes = selectedNotes }
+    override fun onRestoreInstanceState(selectedNoteIds: Set<String>?) {
+        selectedNoteIds?.let {
+            mSelectedNoteIds.clear()
+            mSelectedNoteIds.addAll(it)
+        }
     }
 
-    private fun selectListItem(note: MyNoteWithProp) {
+    private fun selectListItem(noteId: String) {
         when {
-            mSelectedNotes.contains(note) && mSelectedNotes.size == 1 -> {
-                mSelectedNotes.remove(note)
+            mSelectedNoteIds.contains(noteId) && mSelectedNoteIds.size == 1 -> {
+                mSelectedNoteIds.remove(noteId)
                 view?.deactivateSelection()
             }
-            mSelectedNotes.contains(note) -> mSelectedNotes.remove(note)
-            else -> mSelectedNotes.add(note)
+            mSelectedNoteIds.contains(noteId) -> mSelectedNoteIds.remove(noteId)
+            else -> mSelectedNoteIds.add(noteId)
         }
-        view?.updateItemSelection(mSelectedNotes)
+        view?.updateItemSelection(mSelectedNoteIds)
     }
 
     private fun openNotePagerView(note: MyNoteWithProp) {

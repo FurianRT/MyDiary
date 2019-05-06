@@ -23,7 +23,7 @@ class GalleryListAdapter(
         var listener: OnListItemInteractionListener,
         recyclerView: RecyclerView,
         var trashPoint: Point = Point(),
-        var selectedImages: MutableList<MyImage> = ArrayList()
+        var selectedImageNames: HashSet<String> = HashSet()
 ) : RecyclerView.Adapter<GalleryListAdapter.ViewHolder>() {
 
     data class ViewItem(
@@ -86,12 +86,12 @@ class GalleryListAdapter(
     }
 
     fun deactivateSelection() {
-        for (i in 0 until mList.size) {
-            if (selectedImages.find { it.name == mList[i].image?.name } != null) {
-                notifyItemChanged(i)
+        mList.map { it.image?.name }.forEach { imageName ->
+            if (imageName != null && selectedImageNames.contains(imageName)) {
+                notifyItemChanged(mList.indexOfFirst { it.image?.name == imageName })
             }
         }
-        selectedImages.clear()
+        selectedImageNames.clear()
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder =
@@ -163,7 +163,7 @@ class GalleryListAdapter(
                 itemView.visibility = View.GONE
             } else {
                 itemView.visibility = View.VISIBLE
-                if (selectedImages.find { it.name == mImage.name } != null) {
+                if (selectedImageNames.contains(mImage.name)) {
                     itemView.layout_selection.visibility = View.VISIBLE
                 } else {
                     itemView.layout_selection.visibility = View.INVISIBLE

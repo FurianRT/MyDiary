@@ -123,7 +123,8 @@ class GalleryPagerFragment : Fragment(), GalleryPagerContract.View {
     }
 
     override fun showDeleteConfirmationDialog(image: MyImage) {
-        DeleteImageDialog.newInstance(listOf(image)).show(activity?.supportFragmentManager, DeleteImageDialog.TAG)
+        DeleteImageDialog.newInstance(listOf(image.name))
+                .show(activity?.supportFragmentManager, DeleteImageDialog.TAG)
     }
 
     override fun showListImagesView(noteId: String) {

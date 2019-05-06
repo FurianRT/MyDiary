@@ -60,7 +60,6 @@ import kotlinx.android.synthetic.main.bottom_sheet_main.*
 import kotlinx.android.synthetic.main.nav_header_main.view.*
 import pub.devrel.easypermissions.AfterPermissionGranted
 import pub.devrel.easypermissions.EasyPermissions
-import java.util.*
 import javax.inject.Inject
 
 class MainActivity : BaseActivity(), MainActivityContract.View,
@@ -183,8 +182,8 @@ class MainActivity : BaseActivity(), MainActivityContract.View,
         })
         savedInstanceState?.let {
             mRecyclerViewState = it.getParcelable(BUNDLE_RECYCLER_VIEW_STATE)
-            val selectedListItems = it.getParcelableArrayList<MyNoteWithProp>(BUNDLE_SELECTED_LIST_ITEMS)
-            mPresenter.onRestoreInstanceState(selectedListItems)
+            val selectedListItems = it.getStringArrayList(BUNDLE_SELECTED_LIST_ITEMS)
+            mPresenter.onRestoreInstanceState(selectedListItems?.toSet())
             if (selectedListItems != null && selectedListItems.isNotEmpty()) {
                 activateSelection()
             }
@@ -375,7 +374,7 @@ class MainActivity : BaseActivity(), MainActivityContract.View,
 
     override fun onSaveInstanceState(outState: Bundle?) {
         outState?.putParcelable(BUNDLE_RECYCLER_VIEW_STATE, list_main.layoutManager?.onSaveInstanceState())
-        outState?.putParcelableArrayList(BUNDLE_SELECTED_LIST_ITEMS, mPresenter.onSaveInstanceState())
+        outState?.putStringArrayList(BUNDLE_SELECTED_LIST_ITEMS, ArrayList(mPresenter.onSaveInstanceState()))
         outState?.putFloat(BUNDLE_ROOT_LAYOUT_OFFSET, layout_main_root.translationX)
         outState?.putInt(BUNDLE_BOTTOM_SHEET_STATE, mBottomSheet.state)
         super.onSaveInstanceState(outState)
@@ -430,9 +429,10 @@ class MainActivity : BaseActivity(), MainActivityContract.View,
                 .start()
     }
 
-    override fun showNotes(notes: List<MainListItem>, selectedNotes: ArrayList<MyNoteWithProp>) {
+    override fun showNotes(notes: List<MainListItem>, selectedNoteIds: Set<String>) {
         Log.e(TAG, "showNotes")
-        mAdapter.selectedNotes = selectedNotes
+        mAdapter.selectedNoteIds.clear()
+        mAdapter.selectedNoteIds.addAll(selectedNoteIds)
         mAdapter.submitList(notes.toMutableList())
         empty_state.visibility = if (notes.isEmpty()) {
             app_bar_layout.setExpanded(false, true)
@@ -479,8 +479,9 @@ class MainActivity : BaseActivity(), MainActivityContract.View,
         fab_menu.close(true)
     }
 
-    override fun updateItemSelection(selectedNotes: ArrayList<MyNoteWithProp>) {
-        mAdapter.selectedNotes = selectedNotes
+    override fun updateItemSelection(selectedNoteIds: Set<String>) {
+        mAdapter.selectedNoteIds.clear()
+        mAdapter.selectedNoteIds.addAll(selectedNoteIds)
         mAdapter.notifyDataSetChanged()
     }
 

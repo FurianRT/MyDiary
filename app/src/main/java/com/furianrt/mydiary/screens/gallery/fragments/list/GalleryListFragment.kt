@@ -34,13 +34,13 @@ class GalleryListFragment : Fragment(), GalleryListAdapter.OnListItemInteraction
 
     companion object {
         const val TAG = "GalleryListFragment"
-        private const val ARG_NOTE_ID = "noteId"
+        private const val ARG_NOTE_ID = "note_id"
         private const val VERTICAL_LIST_SPAN_COUNT = 2
         private const val HORIZONTAL_LIST_SPAN_COUNT = 3
         private const val IMAGE_SPAN = 1
-        private const val BUNDLE_SELECTION_ACTIVE = "selectionActive"
-        private const val BUNDLE_SELECTED_IMAGES = "selectedImages"
-        private const val BUNDLE_RECYCLER_VIEW_STATE = "recyclerState"
+        private const val BUNDLE_SELECTION_ACTIVE = "selection_active"
+        private const val BUNDLE_SELECTED_IMAGE_NAMES = "selected_image_names"
+        private const val BUNDLE_RECYCLER_VIEW_STATE = "recycler_state"
         private const val STORAGE_PERMISSIONS_REQUEST_CODE = 1
         private val FAB_DEFAULT_SIZE = dpToPx(46f)
         private val FAB_HIGHLIGHTED_SIZE = dpToPx(60f)
@@ -81,7 +81,7 @@ class GalleryListFragment : Fragment(), GalleryListAdapter.OnListItemInteraction
         savedInstanceState?.let {
             mRecyclerViewState = it.getParcelable(BUNDLE_RECYCLER_VIEW_STATE)
             mSelectionActive = it.getBoolean(BUNDLE_SELECTION_ACTIVE, false)
-            mPresenter.onRestoreInstanceState(it.getParcelableArrayList(BUNDLE_SELECTED_IMAGES))
+            mPresenter.onRestoreInstanceState(it.getStringArrayList(BUNDLE_SELECTED_IMAGE_NAMES)?.toSet())
         }
     }
 
@@ -144,34 +144,34 @@ class GalleryListFragment : Fragment(), GalleryListAdapter.OnListItemInteraction
         super.onSaveInstanceState(outState)
         outState.putParcelable(BUNDLE_RECYCLER_VIEW_STATE,
                 list_gallery.layoutManager?.onSaveInstanceState())
-        outState.putParcelableArrayList(BUNDLE_SELECTED_IMAGES,
-                ArrayList(mPresenter.onSaveInstanceState()))
+        outState.putStringArrayList(BUNDLE_SELECTED_IMAGE_NAMES, ArrayList(mPresenter.onSaveInstanceState()))
         outState.putBoolean(BUNDLE_SELECTION_ACTIVE, mSelectionActive)
     }
 
-    override fun showImages(images: List<MyImage>, selectedImages: List<MyImage>) {
+    override fun showImages(images: List<MyImage>, selectedImageNames: Set<String>) {
         hideEmptyState()
         showImageCount(images.size)
         mRecyclerViewState?.let {
             list_gallery.layoutManager?.onRestoreInstanceState(mRecyclerViewState)
             mRecyclerViewState = null
         }
-        mAdapter.selectedImages = selectedImages.toMutableList()
+        mAdapter.selectedImageNames.clear()
+        mAdapter.selectedImageNames.addAll(selectedImageNames)
         mAdapter.submitList(images)
     }
 
     override fun showEmptyList() {
         showEmptyState()
         showImageCount(0)
-        mAdapter.selectedImages = mutableListOf()
+        mAdapter.selectedImageNames.clear()
         mAdapter.submitList(emptyList())
     }
 
-    override fun selectImages(images: MutableList<MyImage>) {
-        mAdapter.selectedImages.addAll(images)
+    override fun selectImages(imageNames: Set<String>) {
+        mAdapter.selectedImageNames.addAll(imageNames)
         val listImages = mAdapter.getImages()
-        for (image in images) {
-            mAdapter.notifyItemChanged(listImages.indexOfFirst { it.name == image.name })
+        for (imageName in imageNames) {
+            mAdapter.notifyItemChanged(listImages.indexOfFirst { it.name == imageName })
         }
     }
 
@@ -236,8 +236,8 @@ class GalleryListFragment : Fragment(), GalleryListAdapter.OnListItemInteraction
         mAdapter.deactivateSelection()
     }
 
-    override fun showDeleteConfirmationDialog(images: List<MyImage>) {
-        DeleteImageDialog.newInstance(images).apply {
+    override fun showDeleteConfirmationDialog(imageNames: List<String>) {
+        DeleteImageDialog.newInstance(imageNames).apply {
             setOnDeleteConfirmListener(this@GalleryListFragment)
         }.show(activity?.supportFragmentManager, DeleteImageDialog.TAG)
     }
@@ -246,22 +246,22 @@ class GalleryListFragment : Fragment(), GalleryListAdapter.OnListItemInteraction
         mPresenter.onButtonDeleteConfirmClick()
     }
 
-    override fun onDialogDeleteDismiss(images: List<MyImage>) {
-        images.forEach { image ->
-            mAdapter.notifyItemChanged(mAdapter.getImages().indexOfFirst { it.name == image.name })
+    override fun onDialogDeleteDismiss(imageNames: List<String>) {
+        imageNames.forEach { imageName ->
+            mAdapter.notifyItemChanged(mAdapter.getImages().indexOfFirst { it.name == imageName })
         }
     }
 
-    override fun selectImage(image: MyImage) {
-        mAdapter.selectedImages.add(image)
-        mAdapter.getImages().find { it.name == image.name }?.let {
+    override fun selectImage(imageName: String) {
+        mAdapter.selectedImageNames.add(imageName)
+        mAdapter.getImages().find { it.name == imageName }?.let {
             mAdapter.notifyItemChanged(mAdapter.getImages().indexOf(it))
         }
     }
 
-    override fun deselectImage(image: MyImage) {
-        mAdapter.selectedImages.removeAll { it.name == image.name }
-        mAdapter.getImages().find { it.name == image.name }?.let {
+    override fun deselectImage(imageName: String) {
+        mAdapter.selectedImageNames.remove(imageName)
+        mAdapter.getImages().find { it.name == imageName }?.let {
             mAdapter.notifyItemChanged(mAdapter.getImages().indexOf(it))
         }
     }

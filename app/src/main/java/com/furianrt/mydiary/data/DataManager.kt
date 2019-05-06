@@ -39,8 +39,8 @@ interface DataManager {
     fun updateNoteTagsSync(noteTags: List<NoteTag>): Completable
     fun deleteTag(tag: MyTag): Completable
     fun deleteNote(noteId: String): Completable
-    fun deleteImage(image: MyImage): Completable
-    fun deleteImage(images: List<MyImage>): Completable
+    fun deleteImage(imageName: String): Completable
+    fun deleteImage(imageNames: List<String>): Completable
     fun deleteImageFromStorage(fileName: String): Single<Boolean>
     fun deleteCategory(category: MyCategory): Completable
     fun deleteNotesFromCloud(notes: List<MyNote>): Completable

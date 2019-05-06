@@ -12,26 +12,25 @@ class GalleryListPresenter(
 ) : GalleryListContract.Presenter() {
 
     private lateinit var mNoteId: String
-    private var mSelectedImages: MutableList<MyImage> = ArrayList()
+    private var mSelectedImageNames = HashSet<String>()
 
     override fun onListItemClick(image: MyImage, position: Int, selectionActive: Boolean) {
         if (selectionActive) {
-            selectListItem(image)
+            selectListItem(image.name)
         } else {
             view?.showViewImagePager(image.noteId, position)
         }
     }
 
-    private fun selectListItem(image: MyImage) {
-        val foundedImage = mSelectedImages.find { it.name == image.name }
-        if (foundedImage != null) {
-            mSelectedImages.remove(foundedImage)
-            view?.deselectImage(image)
+    private fun selectListItem(imageName: String) {
+        if (mSelectedImageNames.contains(imageName)) {
+            mSelectedImageNames.remove(imageName)
+            view?.deselectImage(imageName)
         } else {
-            mSelectedImages.add(image)
-            view?.selectImage(image)
+            mSelectedImageNames.add(imageName)
+            view?.selectImage(imageName)
         }
-        view?.showSelectedImageCount(mSelectedImages.size)
+        view?.showSelectedImageCount(mSelectedImageNames.size)
     }
 
     override fun setNoteId(noteId: String) {
@@ -46,7 +45,7 @@ class GalleryListPresenter(
         addDisposable(dataManager.getImagesForNote(noteId)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { images ->
-                    view?.showSelectedImageCount(mSelectedImages.size)
+                    view?.showSelectedImageCount(mSelectedImageNames.size)
                     if (images.isEmpty()) {
                         view?.closeCab()
                         view?.showEmptyList()
@@ -54,7 +53,7 @@ class GalleryListPresenter(
                         var i = 0
                         view?.showImages(images
                                 .sortedWith(compareBy(MyImage::order, MyImage::addedTime))
-                                .apply { forEach { it.order = i++ } }, mSelectedImages)
+                                .apply { forEach { it.order = i++ } }, mSelectedImageNames)
                     }
                 })
     }
@@ -67,19 +66,19 @@ class GalleryListPresenter(
 
     override fun onButtonMultiSelectionClick() {
         view?.activateSelection()
-        view?.showSelectedImageCount(mSelectedImages.size)
+        view?.showSelectedImageCount(mSelectedImageNames.size)
     }
 
     override fun onButtonCabDeleteClick() {
-        if (mSelectedImages.isEmpty()) {
+        if (mSelectedImageNames.isEmpty()) {
             view?.closeCab()
         } else {
-            view?.showDeleteConfirmationDialog(mSelectedImages)
+            view?.showDeleteConfirmationDialog(mSelectedImageNames.toList())
         }
     }
 
     override fun onButtonDeleteConfirmClick() {
-        mSelectedImages.clear()
+        mSelectedImageNames.clear()
         view?.closeCab()
     }
 
@@ -88,24 +87,27 @@ class GalleryListPresenter(
                 .first(emptyList())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { images ->
-                    mSelectedImages.clear()
-                    mSelectedImages.addAll(images)
-                    view?.showSelectedImageCount(mSelectedImages.size)
-                    view?.selectImages(mSelectedImages)
+                    mSelectedImageNames.clear()
+                    mSelectedImageNames.addAll(images.map { it.name })
+                    view?.showSelectedImageCount(mSelectedImageNames.size)
+                    view?.selectImages(mSelectedImageNames)
                 })
     }
 
-    override fun onRestoreInstanceState(selectedImages: MutableList<MyImage>?) {
-        selectedImages?.let { mSelectedImages = selectedImages }
+    override fun onRestoreInstanceState(selectedImageNames: Set<String>?) {
+        selectedImageNames?.let {
+            mSelectedImageNames.clear()
+            mSelectedImageNames.addAll(it)
+        }
     }
 
     override fun onCabCloseSelection() {
-        mSelectedImages.clear()
-        view?.showSelectedImageCount(mSelectedImages.size)
+        mSelectedImageNames.clear()
+        view?.showSelectedImageCount(mSelectedImageNames.size)
         view?.deactivateSelection()
     }
 
-    override fun onSaveInstanceState() = mSelectedImages
+    override fun onSaveInstanceState() = mSelectedImageNames
 
     override fun onButtonAddImageClick() {
         view?.requestStoragePermissions()
@@ -132,6 +134,6 @@ class GalleryListPresenter(
     }
 
     override fun onImageTrashed(image: MyImage) {
-        view?.showDeleteConfirmationDialog(listOf(image))
+        view?.showDeleteConfirmationDialog(listOf(image.name))
     }
 }

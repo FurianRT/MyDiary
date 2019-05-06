@@ -11,7 +11,7 @@ import com.furianrt.mydiary.screens.main.listadapter.MainListItem
 interface MainActivityContract {
 
     interface View : BaseView {
-        fun showNotes(notes: List<MainListItem>, selectedNotes: ArrayList<MyNoteWithProp>)
+        fun showNotes(notes: List<MainListItem>, selectedNoteIds: Set<String>)
         fun openNotePager(position: Int, note: MyNoteWithProp)
         fun showHeaderImage(image: MyHeaderImage)
         fun requestStoragePermissions()
@@ -19,7 +19,7 @@ interface MainActivityContract {
         fun showImageExplorer()
         fun activateSelection()
         fun deactivateSelection()
-        fun updateItemSelection(selectedNotes: ArrayList<MyNoteWithProp>)
+        fun updateItemSelection(selectedNoteIds: Set<String>)
         fun showEmptyHeaderImage()
         fun showSettingsView()
         fun showPremiumView()
@@ -49,8 +49,8 @@ interface MainActivityContract {
         abstract fun onMainImageClick()
         abstract fun onStoragePermissionsGranted()
         abstract fun onMainListItemLongClick(note: MyNoteWithProp, position: Int)
-        abstract fun onSaveInstanceState(): ArrayList<MyNoteWithProp>?
-        abstract fun onRestoreInstanceState(selectedNotes: ArrayList<MyNoteWithProp>?)
+        abstract fun onSaveInstanceState(): Set<String>
+        abstract fun onRestoreInstanceState(selectedNoteIds: Set<String>?)
         abstract fun onFabMenuClick()
         abstract fun onMenuAllNotesClick()
         abstract fun onButtonSettingsClick()

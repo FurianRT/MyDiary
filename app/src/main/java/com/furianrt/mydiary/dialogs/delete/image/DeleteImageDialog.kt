@@ -7,7 +7,6 @@ import android.os.Bundle
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
 import com.furianrt.mydiary.R
-import com.furianrt.mydiary.data.model.MyImage
 import kotlinx.android.synthetic.main.dialog_delete_image.view.*
 import javax.inject.Inject
 
@@ -15,13 +14,13 @@ class DeleteImageDialog : DialogFragment(), DeleteImageContract.View {
 
     companion object {
         const val TAG = "DeleteImageDialog"
-        private const val ARG_IMAGES = "images"
+        private const val ARG_IMAGE_NAMES = "image_names"
 
         @JvmStatic
-        fun newInstance(images: List<MyImage>) =
+        fun newInstance(imageNames: List<String>) =
                 DeleteImageDialog().apply {
                     arguments = Bundle().apply {
-                        putParcelableArrayList(ARG_IMAGES, ArrayList(images))
+                        putStringArrayList(ARG_IMAGE_NAMES, ArrayList(imageNames))
                     }
                 }
     }
@@ -31,12 +30,12 @@ class DeleteImageDialog : DialogFragment(), DeleteImageContract.View {
 
     private var mListener: OnDeleteImageConfirmListener? = null
 
-    private lateinit var mImages: List<MyImage>
+    private lateinit var mImageNames: List<String>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         getPresenterComponent(requireContext()).inject(this)
         super.onCreate(savedInstanceState)
-        mImages = arguments?.getParcelableArrayList(ARG_IMAGES) ?: emptyList()
+        mImageNames = arguments?.getStringArrayList(ARG_IMAGE_NAMES) ?: emptyList()
     }
 
     @SuppressLint("InflateParams")
@@ -45,13 +44,13 @@ class DeleteImageDialog : DialogFragment(), DeleteImageContract.View {
 
         view.button_image_delete.setOnClickListener {
             mListener?.onButtonDeleteConfirmClick()
-            mPresenter.onButtonDeleteClick(mImages)
+            mPresenter.onButtonDeleteClick(mImageNames)
         }
         view.button_image_delete_cancel.setOnClickListener { mPresenter.onButtonCancelClick() }
         view.text_image_delete_title.text = resources.getQuantityString(
                 R.plurals.image_delete_confirmation,
-                mImages.size,
-                mImages.size)
+                mImageNames.size,
+                mImageNames.size)
 
         return AlertDialog.Builder(requireContext())
                 .setView(view)
@@ -78,11 +77,11 @@ class DeleteImageDialog : DialogFragment(), DeleteImageContract.View {
 
     override fun onDismiss(dialog: DialogInterface?) {
         super.onDismiss(dialog)
-        mListener?.onDialogDeleteDismiss(mImages)
+        mListener?.onDialogDeleteDismiss(mImageNames)
     }
 
     interface OnDeleteImageConfirmListener {
         fun onButtonDeleteConfirmClick()
-        fun onDialogDeleteDismiss(images: List<MyImage>)
+        fun onDialogDeleteDismiss(imageNames: List<String>)
     }
 }

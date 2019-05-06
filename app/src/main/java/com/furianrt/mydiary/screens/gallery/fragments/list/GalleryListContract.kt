@@ -8,12 +8,12 @@ interface GalleryListContract {
 
     interface View : BaseView {
         fun showViewImagePager(noteId: String, position: Int)
-        fun showImages(images: List<MyImage>, selectedImages: List<MyImage>)
+        fun showImages(images: List<MyImage>, selectedImageNames: Set<String>)
         fun activateSelection()
         fun deactivateSelection()
-        fun deselectImage(image: MyImage)
-        fun selectImage(image: MyImage)
-        fun selectImages(images: MutableList<MyImage>)
+        fun deselectImage(imageName: String)
+        fun selectImage(imageName: String)
+        fun selectImages(imageNames: Set<String>)
         fun closeCab()
         fun requestStoragePermissions()
         fun showImageExplorer()
@@ -21,7 +21,7 @@ interface GalleryListContract {
         fun showLoading()
         fun hideLoading()
         fun showSelectedImageCount(count: Int)
-        fun showDeleteConfirmationDialog(images: List<MyImage>)
+        fun showDeleteConfirmationDialog(imageNames: List<String>)
     }
 
     abstract class Presenter : BasePresenter<View>() {
@@ -32,8 +32,8 @@ interface GalleryListContract {
         abstract fun onButtonMultiSelectionClick()
         abstract fun onButtonCabDeleteClick()
         abstract fun onButtonCabSelectAllClick()
-        abstract fun onSaveInstanceState(): MutableList<MyImage>
-        abstract fun onRestoreInstanceState(selectedImages: MutableList<MyImage>?)
+        abstract fun onSaveInstanceState(): Set<String>
+        abstract fun onRestoreInstanceState(selectedImageNames: Set<String>?)
         abstract fun onCabCloseSelection()
         abstract fun onButtonAddImageClick()
         abstract fun onStoragePermissionsGranted()

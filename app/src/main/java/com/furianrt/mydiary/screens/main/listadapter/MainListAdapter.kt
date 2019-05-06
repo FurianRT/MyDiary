@@ -21,7 +21,7 @@ import kotlinx.android.synthetic.main.activity_main_list_header.view.*
 import java.util.*
 
 class MainListAdapter(
-        var selectedNotes: ArrayList<MyNoteWithProp> = ArrayList(),
+        var selectedNoteIds: HashSet<String> = HashSet(),
         val is24TimeFormat: Boolean
 ) : ListAdapter<MainListItem, MainListAdapter.MyViewHolder>(MainDiffCallback()),
         HeaderItemDecoration.StickyHeaderInterface {
@@ -110,7 +110,7 @@ class MainListAdapter(
                     setPreviewImage(item)
                     setTitle(item)
                     text_note_content.text = item.note.note.content
-                    selectItem(item.note)
+                    selectItem(item.note.note.id)
                 }
             }
         }
@@ -185,8 +185,8 @@ class MainListAdapter(
             }
         }
 
-        private fun selectItem(note: MyNoteWithProp) {
-            itemView.view_selected.visibility = if (selectedNotes.contains(note)) {
+        private fun selectItem(noteId: String) {
+            itemView.view_selected.visibility = if (selectedNoteIds.contains(noteId)) {
                 View.VISIBLE
             } else {
                 View.INVISIBLE
