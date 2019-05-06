@@ -18,19 +18,20 @@ class CategoriesDialog : DialogFragment(), CategoriesDialogContract.View {
     @Inject
     lateinit var mPresenter: CategoriesDialogContract.Presenter
 
-    private lateinit var mNoteId: String
+    private lateinit var mNoteIds: List<String>
     private var mView: View? = null
+    private var mListener: OnCategorySelectedListener? = null
 
     companion object {
 
         const val TAG = "CategoriesDialog"
-        private const val ARG_NOTE_ID = "noteId"
+        private const val ARG_NOTE_IDS = "noteIds"
 
         @JvmStatic
-        fun newInstance(noteId: String) =
+        fun newInstance(noteIds: List<String>) =
                 CategoriesDialog().apply {
                     arguments = Bundle().apply {
-                        putString(ARG_NOTE_ID, noteId)
+                        putStringArrayList(ARG_NOTE_IDS, ArrayList(noteIds))
                     }
                 }
     }
@@ -38,7 +39,7 @@ class CategoriesDialog : DialogFragment(), CategoriesDialogContract.View {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         getPresenterComponent(requireContext()).inject(this)
-        mNoteId = arguments?.getString(ARG_NOTE_ID) ?: throw IllegalArgumentException()
+        mNoteIds = arguments?.getStringArrayList(ARG_NOTE_IDS) ?: throw IllegalArgumentException()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -46,7 +47,7 @@ class CategoriesDialog : DialogFragment(), CategoriesDialogContract.View {
         childFragmentManager.apply {
             if (findFragmentByTag(CategoryListFragment.TAG) == null) {
                 inTransaction {
-                    add(R.id.container_categories, CategoryListFragment.newInstance(mNoteId),
+                    add(R.id.container_categories, CategoryListFragment.newInstance(mNoteIds),
                             CategoryListFragment.TAG)
                 }
             }
@@ -79,6 +80,14 @@ class CategoriesDialog : DialogFragment(), CategoriesDialogContract.View {
         return dialog
     }
 
+    fun onCategorySelected() {
+        mListener?.onCategorySelected()
+    }
+
+    fun setOnCategorySelectedListener(listener: OnCategorySelectedListener) {
+        mListener = listener
+    }
+
     override fun onResume() {
         super.onResume()
         dialog.window?.clearFlags(WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE
@@ -89,5 +98,9 @@ class CategoriesDialog : DialogFragment(), CategoriesDialogContract.View {
     override fun onPause() {
         super.onPause()
         mPresenter.detachView()
+    }
+
+    interface OnCategorySelectedListener {
+        fun onCategorySelected()
     }
 }

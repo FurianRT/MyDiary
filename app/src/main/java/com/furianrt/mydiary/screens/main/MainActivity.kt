@@ -31,6 +31,7 @@ import com.furianrt.mydiary.data.model.MyHeaderImage
 import com.furianrt.mydiary.data.model.MyNoteWithProp
 import com.furianrt.mydiary.data.model.MyProfile
 import com.furianrt.mydiary.data.model.SyncProgressMessage
+import com.furianrt.mydiary.dialogs.categories.CategoriesDialog
 import com.furianrt.mydiary.dialogs.delete.note.DeleteNoteDialog
 import com.furianrt.mydiary.general.AppBarLayoutBehavior
 import com.furianrt.mydiary.general.GlideApp
@@ -65,7 +66,7 @@ import javax.inject.Inject
 class MainActivity : BaseActivity(), MainActivityContract.View,
         MainListAdapter.OnMainListItemInteractionListener,
         ImageSettingsFragment.OnImageSettingsInteractionListener,
-        DeleteNoteDialog.OnDeleteNoteConfirmListener {
+        DeleteNoteDialog.OnDeleteNoteConfirmListener, CategoriesDialog.OnCategorySelectedListener {
 
     companion object {
         private const val TAG = "MainActivity"
@@ -193,9 +194,7 @@ class MainActivity : BaseActivity(), MainActivityContract.View,
 
         fab_menu.setOnClickListener { mPresenter.onFabMenuClick() }
         fab_delete.setOnClickListener { mPresenter.onButtonDeleteClick() }
-        fab_folder.setOnClickListener {
-            //todo
-        }
+        fab_folder.setOnClickListener { mPresenter.onButtonFolderClick() }
         fab_place.setOnClickListener {
             //todo
         }
@@ -554,14 +553,25 @@ class MainActivity : BaseActivity(), MainActivityContract.View,
     }
 
     override fun startSyncService() {
-        val serviceIntent = Intent(this, SyncService::class.java)
-        ContextCompat.startForegroundService(this, serviceIntent)
+        startService(Intent(this, SyncService::class.java))
     }
 
     override fun networkAvailable() = isNetworkAvailable()
 
-    override fun onStart() {
-        super.onStart()
+    override fun showCategoriesView(noteIds: List<String>) {
+        CategoriesDialog.newInstance(noteIds).apply {
+            setOnCategorySelectedListener(this@MainActivity)
+        }.show(supportFragmentManager, CategoriesDialog.TAG)
+    }
+
+    override fun onCategorySelected() {
+        mPresenter.onCategorySelected()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        mPresenter.attachView(this)
+        mAdapter.listener = this
         mOnDrawerListener = object : ActionBarDrawerToggle(this, drawer, toolbar_main, R.string.open, R.string.close) {
             override fun onDrawerSlide(drawerView: View, slideOffset: Float) {
                 super.onDrawerSlide(drawerView, slideOffset)
@@ -569,19 +579,11 @@ class MainActivity : BaseActivity(), MainActivityContract.View,
             }
         }
         drawer.addDrawerListener(mOnDrawerListener)
-    }
-
-    override fun onStop() {
-        super.onStop()
-        drawer.removeDrawerListener(mOnDrawerListener)
-    }
-
-    override fun onResume() {
-        super.onResume()
-        mPresenter.attachView(this)
-        mAdapter.listener = this
         (supportFragmentManager.findFragmentByTag(DeleteNoteDialog.TAG) as? DeleteNoteDialog)
                 ?.setOnDeleteConfirmListener(this)
+        supportFragmentManager.findFragmentByTag(CategoriesDialog.TAG)?.let {
+            (it as CategoriesDialog).setOnCategorySelectedListener(this)
+        }
         LocalBroadcastManager.getInstance(this)
                 .registerReceiver(mBroadcastReceiver, IntentFilter(Intent.ACTION_SYNC))
     }
@@ -591,6 +593,7 @@ class MainActivity : BaseActivity(), MainActivityContract.View,
         mNeedToOpenActionBar = false
         mBackPressCount = 0
         mAdapter.listener = null
+        drawer.removeDrawerListener(mOnDrawerListener)
         mHandler.removeCallbacks(mBottomSheetOpenRunnable)
         LocalBroadcastManager.getInstance(this).unregisterReceiver(mBroadcastReceiver)
         mPresenter.detachView()

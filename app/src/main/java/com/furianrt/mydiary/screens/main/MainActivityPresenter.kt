@@ -32,6 +32,15 @@ class MainActivityPresenter(
         view?.deactivateSelection()
     }
 
+    override fun onButtonFolderClick() {
+        view?.showCategoriesView(mSelectedNotes.map { it.note.id })
+    }
+
+    override fun onCategorySelected() {
+        mSelectedNotes.clear()
+        view?.deactivateSelection()
+    }
+
     override fun onMenuAllNotesClick() {
         addDisposable(dataManager.getAllNotesWithProp()
                 .first(ArrayList())

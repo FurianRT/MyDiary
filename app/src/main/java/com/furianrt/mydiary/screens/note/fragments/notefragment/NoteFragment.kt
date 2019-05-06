@@ -480,7 +480,7 @@ class NoteFragment : Fragment(), NoteFragmentContract.View, OnMapReadyCallback,
     }
 
     override fun showCategoriesDialog(noteId: String) {
-        CategoriesDialog.newInstance(noteId)
+        CategoriesDialog.newInstance(listOf(noteId))
                 .show(requireActivity().supportFragmentManager, CategoriesDialog.TAG)
     }
 

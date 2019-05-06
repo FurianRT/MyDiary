@@ -19,8 +19,8 @@ interface CategoryListContract {
         abstract fun onButtonAddCategoryClick()
         abstract fun onButtonDeleteCategoryClick(category: MyCategory)
         abstract fun onButtonEditCategoryClick(category: MyCategory)
-        abstract fun onCategoryClick(category: MyCategory, noteId: String)
-        abstract fun onButtonNoCategoryClick(noteId: String)
+        abstract fun onCategoryClick(category: MyCategory, noteIds: List<String>)
+        abstract fun onButtonNoCategoryClick(noteIds: List<String>)
         abstract fun onButtonCloseClick()
     }
 }

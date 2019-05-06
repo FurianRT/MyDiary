@@ -91,6 +91,7 @@ class SyncService : Service(), SyncContract.View {
 
     override fun close() {
         Log.e(TAG, "service closed")
+        stopForeground(true)
         stopSelf()
     }
 

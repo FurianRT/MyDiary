@@ -83,7 +83,7 @@ class AuthHelperImp(
         val message = MimeMessage(session)
         message.setFrom(InternetAddress(BuildConfig.SUPPORT_EMAIL))
         message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(email))
-        message.subject = context.getString(R.string.restore_pin_email_subject)
+        message.subject = context.getString(R.string.pin_recovery_email_subject)
         message.setText(context.getString(R.string.pin_recovery_email_content, pin))
         Transport.send(message)
     }

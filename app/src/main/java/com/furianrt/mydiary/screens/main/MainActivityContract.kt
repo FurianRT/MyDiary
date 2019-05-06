@@ -40,6 +40,7 @@ interface MainActivityContract {
         fun showDeleteConfirmationDialog(noteIds: List<String>)
         fun showSyncProgress(message: SyncProgressMessage)
         fun clearSyncProgress()
+        fun showCategoriesView(noteIds: List<String>)
     }
 
     abstract class Presenter : BasePresenter<View>() {
@@ -60,5 +61,7 @@ interface MainActivityContract {
         abstract fun onButtonImageSettingsClick()
         abstract fun onButtonDeleteClick()
         abstract fun onButtonDeleteConfirmClick()
+        abstract fun onButtonFolderClick()
+        abstract fun onCategorySelected()
     }
 }

@@ -2,6 +2,7 @@ package com.furianrt.mydiary.dialogs.categories.fragments.list
 
 import com.furianrt.mydiary.data.DataManager
 import com.furianrt.mydiary.data.model.MyCategory
+import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 
 class CategoryListPresenter(
@@ -26,21 +27,34 @@ class CategoryListPresenter(
                 .subscribe { categories -> view?.showCategories(categories) })
     }
 
-    override fun onCategoryClick(category: MyCategory, noteId: String) {
-        addDisposable(dataManager.getNote(noteId)
-                .firstOrError()
-                .flatMapCompletable { note ->
-                    note.categoryId = category.id
-                    return@flatMapCompletable dataManager.updateNote(note)
+    override fun onCategoryClick(category: MyCategory, noteIds: List<String>) {
+        addDisposable(Observable.fromIterable(noteIds)
+                .flatMapSingle {
+                    dataManager.getNote(it)
+                            .firstOrError()
                 }
+                .flatMapSingle {
+                    dataManager.updateNote(it.apply { categoryId = category.id })
+                            .toSingleDefault(true)
+                }
+                .collectInto(mutableListOf<Boolean>()) { l, i -> l.add(i) }
+                .ignoreElement()
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { view?.close() })
     }
 
-    override fun onButtonNoCategoryClick(noteId: String) {
-        addDisposable(dataManager.getNote(noteId)
-                .firstOrError()
-                .flatMapCompletable { dataManager.updateNote(it.apply { categoryId = "" }) }
+    override fun onButtonNoCategoryClick(noteIds: List<String>) {
+        addDisposable(Observable.fromIterable(noteIds)
+                .flatMapSingle {
+                    dataManager.getNote(it)
+                            .firstOrError()
+                }
+                .flatMapSingle {
+                    dataManager.updateNote(it.apply { categoryId = "" })
+                            .toSingleDefault(true)
+                }
+                .collectInto(mutableListOf<Boolean>()) { l, i -> l.add(i) }
+                .ignoreElement()
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { view?.close() })
     }

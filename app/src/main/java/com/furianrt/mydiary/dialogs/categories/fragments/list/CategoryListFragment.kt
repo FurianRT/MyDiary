@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.furianrt.mydiary.R
 import com.furianrt.mydiary.data.model.MyCategory
+import com.furianrt.mydiary.dialogs.categories.CategoriesDialog
 import com.furianrt.mydiary.dialogs.categories.fragments.add.CategoryAddFragment
 import com.furianrt.mydiary.dialogs.categories.fragments.delete.CategoryDeleteFragment
 import com.furianrt.mydiary.dialogs.categories.fragments.edit.CategoryEditFragment
@@ -23,13 +24,13 @@ class CategoryListFragment : Fragment(), CategoriesListAdapter.OnCategoryListInt
     companion object {
 
         const val TAG = "CategoryListFragment"
-        private const val ARG_NOTE_ID = "noteId"
+        private const val ARG_NOTE_IDS = "noteIds"
 
         @JvmStatic
-        fun newInstance(noteId: String) =
+        fun newInstance(noteIds: List<String>) =
                 CategoryListFragment().apply {
                     arguments = Bundle().apply {
-                        putString(ARG_NOTE_ID, noteId)
+                        putStringArrayList(ARG_NOTE_IDS, ArrayList(noteIds))
                     }
                 }
     }
@@ -38,12 +39,12 @@ class CategoryListFragment : Fragment(), CategoriesListAdapter.OnCategoryListInt
     lateinit var mPresenter: CategoryListContract.Presenter
 
     private val mListAdapter = CategoriesListAdapter(this)
-    private lateinit var mNoteId: String
+    private lateinit var mNoteIds: List<String>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         getPresenterComponent(requireContext()).inject(this)
-        mNoteId = arguments?.getString(ARG_NOTE_ID) ?: throw IllegalArgumentException()
+        mNoteIds = arguments?.getStringArrayList(ARG_NOTE_IDS) ?: throw IllegalArgumentException()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -52,7 +53,10 @@ class CategoryListFragment : Fragment(), CategoriesListAdapter.OnCategoryListInt
 
         view.button_add_category.setOnClickListener { mPresenter.onButtonAddCategoryClick() }
         view.button_categories_close.setOnClickListener { mPresenter.onButtonCloseClick() }
-        view.button_no_category.setOnClickListener { mPresenter.onButtonNoCategoryClick(mNoteId) }
+        view.button_no_category.setOnClickListener {
+            (parentFragment as? CategoriesDialog?)?.onCategorySelected()
+            mPresenter.onButtonNoCategoryClick(mNoteIds)
+        }
         with(view.list_categories) {
             val manager = LinearLayoutManager(context)
             layoutManager = manager
@@ -83,7 +87,8 @@ class CategoryListFragment : Fragment(), CategoriesListAdapter.OnCategoryListInt
     }
 
     override fun onCategoryClick(category: MyCategory) {
-        mPresenter.onCategoryClick(category, mNoteId)
+        (parentFragment as? CategoriesDialog?)?.onCategorySelected()
+        mPresenter.onCategoryClick(category, mNoteIds)
     }
 
     override fun onCategoryDelete(category: MyCategory) {
