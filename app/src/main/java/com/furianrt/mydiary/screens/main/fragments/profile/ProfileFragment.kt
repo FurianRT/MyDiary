@@ -69,7 +69,7 @@ class ProfileFragment : Fragment(), ProfileContract.View {
         (activity as? MainActivity?)?.closeBottomSheet()
     }
 
-    override fun onAttach(context: Context?) {
+    override fun onAttach(context: Context) {
         super.onAttach(context)
         activity?.window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING)
     }

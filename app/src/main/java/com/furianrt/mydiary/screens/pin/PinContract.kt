@@ -23,8 +23,8 @@ interface PinContract {
 
     abstract class Presenter : BasePresenter<View>() {
         abstract fun onButtonForgotPinClick()
-        abstract fun onRestoreInstanceState(bundle: Bundle?)
-        abstract fun onSaveInstanceState(bundle: Bundle?)
+        abstract fun onRestoreInstanceState(bundle: Bundle)
+        abstract fun onSaveInstanceState(bundle: Bundle)
         abstract fun onButtonBackspaceClick()
         abstract fun onEmailEntered(email: String)
         abstract fun onButtonCloseClick()

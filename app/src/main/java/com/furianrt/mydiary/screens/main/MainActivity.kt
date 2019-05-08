@@ -372,11 +372,11 @@ class MainActivity : BaseActivity(), MainActivityContract.View,
         return super.onCreateOptionsMenu(menu)
     }
 
-    override fun onSaveInstanceState(outState: Bundle?) {
-        outState?.putParcelable(BUNDLE_RECYCLER_VIEW_STATE, list_main.layoutManager?.onSaveInstanceState())
-        outState?.putStringArrayList(BUNDLE_SELECTED_LIST_ITEMS, ArrayList(mPresenter.onSaveInstanceState()))
-        outState?.putFloat(BUNDLE_ROOT_LAYOUT_OFFSET, layout_main_root.translationX)
-        outState?.putInt(BUNDLE_BOTTOM_SHEET_STATE, mBottomSheet.state)
+    override fun onSaveInstanceState(outState: Bundle) {
+        outState.putParcelable(BUNDLE_RECYCLER_VIEW_STATE, list_main.layoutManager?.onSaveInstanceState())
+        outState.putStringArrayList(BUNDLE_SELECTED_LIST_ITEMS, ArrayList(mPresenter.onSaveInstanceState()))
+        outState.putFloat(BUNDLE_ROOT_LAYOUT_OFFSET, layout_main_root.translationX)
+        outState.putInt(BUNDLE_BOTTOM_SHEET_STATE, mBottomSheet.state)
         super.onSaveInstanceState(outState)
     }
 

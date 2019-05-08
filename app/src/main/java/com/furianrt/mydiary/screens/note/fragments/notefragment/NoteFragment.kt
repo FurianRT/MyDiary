@@ -199,8 +199,8 @@ class NoteFragment : Fragment(), NoteFragmentContract.View, OnMapReadyCallback,
         text_time.text = getTime(time, is24TimeFormat)
     }
 
-    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-        return when (item?.itemId) {
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
             R.id.menu_image -> {
                 removeEditFragment()
                 mPresenter.onButtonAddImageClick()
@@ -609,7 +609,7 @@ class NoteFragment : Fragment(), NoteFragmentContract.View, OnMapReadyCallback,
             val themeAccentColor = getThemeAccentColor(this@NoteFragment.requireContext())
             setOkColor(themeAccentColor)
             setCancelColor(themeAccentColor)
-        }.show(fragmentManager, DATE_PICKER_TAG)
+        }.show(requireActivity().supportFragmentManager, DATE_PICKER_TAG)
     }
 
     override fun onDateSet(view: DatePickerDialog?, year: Int, monthOfYear: Int, dayOfMonth: Int) {
@@ -625,7 +625,7 @@ class NoteFragment : Fragment(), NoteFragmentContract.View, OnMapReadyCallback,
             setOkText(this@NoteFragment.getString(R.string.ok).toUpperCase())
             setCancelText(this@NoteFragment.getString(R.string.cancel).toUpperCase())
             setLocale(Locale.ENGLISH) //для отображения PM/AM на всех языках
-        }.show(fragmentManager, TIME_PICKER_TAG)
+        }.show(requireActivity().supportFragmentManager, TIME_PICKER_TAG)
     }
 
     override fun onTimeSet(view: TimePickerDialog?, hourOfDay: Int, minute: Int, second: Int) {

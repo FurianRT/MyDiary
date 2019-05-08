@@ -41,11 +41,11 @@ class MyApp : Application(), Application.ActivityLifecycleCallbacks {
     }
 
     private val mHandler = Handler(Looper.getMainLooper())
-    private val mLogoutRunnable = Runnable { setAuthorized(false) }
+    private val mLogoutRunnable = Runnable { unauthorized() }
 
     override fun onCreate() {
         super.onCreate()
-        setAuthorized(false)
+        unauthorized()
         registerActivityLifecycleCallbacks(this)
         createNotificationSyncChannel()
         createNotificationFirebaseChannel()
@@ -75,10 +75,10 @@ class MyApp : Application(), Application.ActivityLifecycleCallbacks {
         }
     }
 
-    private fun setAuthorized(authorized: Boolean) {
+    private fun unauthorized() {
         PreferenceManager.getDefaultSharedPreferences(this)
                 .edit()
-                .putBoolean(PreferencesHelper.SECURITY_IS_AUTHORIZED, authorized)
+                .putBoolean(PreferencesHelper.SECURITY_IS_AUTHORIZED, false)
                 .apply()
     }
 

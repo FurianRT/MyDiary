@@ -75,7 +75,7 @@ class DeleteImageDialog : DialogFragment(), DeleteImageContract.View {
         mPresenter.detachView()
     }
 
-    override fun onDismiss(dialog: DialogInterface?) {
+    override fun onDismiss(dialog: DialogInterface) {
         super.onDismiss(dialog)
         mListener?.onDialogDeleteDismiss(mImageNames)
     }

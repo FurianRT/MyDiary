@@ -20,14 +20,14 @@ class PinPresenter(
     private val mHandler = Handler()
     private val mCreatePinRunnable = Runnable { checkPinCreateMode() }
 
-    override fun onSaveInstanceState(bundle: Bundle?) {
-        bundle?.putString(BUNDLE_PIN, mPin)
-        bundle?.putString(BUNDLE_PREVIOUS_PIN, mPrevPin)
+    override fun onSaveInstanceState(bundle: Bundle) {
+        bundle.putString(BUNDLE_PIN, mPin)
+        bundle.putString(BUNDLE_PREVIOUS_PIN, mPrevPin)
     }
 
-    override fun onRestoreInstanceState(bundle: Bundle?) {
-        mPin = bundle?.getString(BUNDLE_PIN) ?: ""
-        mPrevPin = bundle?.getString(BUNDLE_PREVIOUS_PIN) ?: ""
+    override fun onRestoreInstanceState(bundle: Bundle) {
+        mPin = bundle.getString(BUNDLE_PIN, "")
+        mPrevPin = bundle.getString(BUNDLE_PREVIOUS_PIN, "")
     }
 
     override fun onViewResumedModeCreate() {

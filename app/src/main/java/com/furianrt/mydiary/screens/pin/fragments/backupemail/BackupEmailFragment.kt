@@ -101,7 +101,7 @@ class BackupEmailFragment : Fragment(), BackupEmailContract.View {
         mPresenter.detachView()
     }
 
-    override fun onAttach(context: Context?) {
+    override fun onAttach(context: Context) {
         super.onAttach(context)
         if (context is OnBackupEmailFragmentListener) {
             mListener = context

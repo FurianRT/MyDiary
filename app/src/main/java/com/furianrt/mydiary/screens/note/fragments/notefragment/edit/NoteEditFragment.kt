@@ -91,20 +91,20 @@ class NoteEditFragment : Fragment(), NoteEditFragmentContract.View {
         }
     }
 
-    override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         super.onCreateOptionsMenu(menu, inflater)
-        menu?.removeItem(R.id.menu_done)
-        menu?.removeItem(R.id.menu_edit)
-        menu?.removeItem(R.id.menu_delete)
-        menu?.removeItem(R.id.menu_undo)
-        menu?.removeItem(R.id.menu_redo)
-        inflater?.inflate(R.menu.fragment_edit_menu, menu)
+        menu.removeItem(R.id.menu_done)
+        menu.removeItem(R.id.menu_edit)
+        menu.removeItem(R.id.menu_delete)
+        menu.removeItem(R.id.menu_undo)
+        menu.removeItem(R.id.menu_redo)
+        inflater.inflate(R.menu.fragment_edit_menu, menu)
     }
 
-    override fun onPrepareOptionsMenu(menu: Menu?) {
+    override fun onPrepareOptionsMenu(menu: Menu) {
         super.onPrepareOptionsMenu(menu)
-        val itemUndo = menu?.findItem(R.id.menu_undo)
-        val itemRedo = menu?.findItem(R.id.menu_redo)
+        val itemUndo = menu.findItem(R.id.menu_undo)
+        val itemRedo = menu.findItem(R.id.menu_redo)
 
         itemUndo?.isEnabled = mEnableUndo
         itemRedo?.isEnabled = mEnableRedo
@@ -122,8 +122,8 @@ class NoteEditFragment : Fragment(), NoteEditFragmentContract.View {
         }
     }
 
-    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-        return when (item?.itemId) {
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
             R.id.menu_done -> {
                 mPresenter.onDoneButtonClick()
                 true
@@ -136,7 +136,7 @@ class NoteEditFragment : Fragment(), NoteEditFragmentContract.View {
         fragmentManager?.popBackStack()
     }
 
-    override fun onAttach(context: Context?) {
+    override fun onAttach(context: Context) {
         super.onAttach(context)
         if (context is OnNoteFragmentInteractionListener) {
             mListener = context

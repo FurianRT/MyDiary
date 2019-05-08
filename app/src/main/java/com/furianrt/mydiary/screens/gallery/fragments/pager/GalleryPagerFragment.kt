@@ -99,13 +99,13 @@ class GalleryPagerFragment : Fragment(), GalleryPagerContract.View {
         showImageCounter(mPagerPosition + 1, images.size)
     }
 
-    override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         super.onCreateOptionsMenu(menu, inflater)
-        inflater?.inflate(R.menu.fragment_gallery_pager_menu, menu)
+        inflater.inflate(R.menu.fragment_gallery_pager_menu, menu)
     }
 
-    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-        return when (item?.itemId) {
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
             R.id.menu_list_mode -> {
                 mPresenter.onButtonListModeClick()
                 true
@@ -124,7 +124,7 @@ class GalleryPagerFragment : Fragment(), GalleryPagerContract.View {
 
     override fun showDeleteConfirmationDialog(image: MyImage) {
         DeleteImageDialog.newInstance(listOf(image.name))
-                .show(activity?.supportFragmentManager, DeleteImageDialog.TAG)
+                .show(requireActivity().supportFragmentManager, DeleteImageDialog.TAG)
     }
 
     override fun showListImagesView(noteId: String) {

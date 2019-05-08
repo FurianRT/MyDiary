@@ -10,7 +10,7 @@ import com.furianrt.mydiary.screens.gallery.fragments.pager.image.GalleryImageFr
 class GalleryPagerAdapter(
         var images: List<MyImage>,
         fm: FragmentManager
-) : FragmentStatePagerAdapter(fm) {
+) : FragmentStatePagerAdapter(fm, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
 
     override fun getCount() = images.size
 

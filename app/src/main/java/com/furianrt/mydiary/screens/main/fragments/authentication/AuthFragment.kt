@@ -118,7 +118,7 @@ class AuthFragment : Fragment(), AuthContract.View {
         mPresenter.detachView()
     }
 
-    override fun onAttach(context: Context?) {
+    override fun onAttach(context: Context) {
         super.onAttach(context)
         activity?.window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING)
     }

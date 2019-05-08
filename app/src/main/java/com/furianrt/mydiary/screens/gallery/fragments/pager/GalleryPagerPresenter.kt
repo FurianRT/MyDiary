@@ -4,6 +4,7 @@ import com.furianrt.mydiary.data.DataManager
 import com.furianrt.mydiary.data.model.MyImage
 import io.reactivex.android.schedulers.AndroidSchedulers
 import org.joda.time.DateTime
+import java.util.concurrent.TimeUnit
 
 class GalleryPagerPresenter(
         private val dataManager: DataManager
@@ -18,6 +19,7 @@ class GalleryPagerPresenter(
 
     private fun loadImages(noteId: String) {
         addDisposable(dataManager.getImagesForNote(noteId)
+                .debounce(400L, TimeUnit.MILLISECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { images ->
                     if (images.isEmpty()) {

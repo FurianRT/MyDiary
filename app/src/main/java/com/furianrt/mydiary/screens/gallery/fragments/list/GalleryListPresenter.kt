@@ -6,6 +6,7 @@ import com.furianrt.mydiary.utils.generateUniqueId
 import io.reactivex.Flowable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import org.joda.time.DateTime
+import java.util.concurrent.TimeUnit
 
 class GalleryListPresenter(
         private val dataManager: DataManager
@@ -43,6 +44,7 @@ class GalleryListPresenter(
 
     private fun loadImages(noteId: String) {
         addDisposable(dataManager.getImagesForNote(noteId)
+                .debounce(400L, TimeUnit.MILLISECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { images ->
                     view?.showSelectedImageCount(mSelectedImageNames.size)

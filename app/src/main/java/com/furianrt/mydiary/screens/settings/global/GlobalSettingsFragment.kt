@@ -4,15 +4,15 @@ import android.app.Activity
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
-import android.preference.PreferenceFragment
 import android.preference.PreferenceManager
-import android.preference.SwitchPreference
+import androidx.preference.PreferenceFragmentCompat
+import androidx.preference.SwitchPreference
 import com.furianrt.mydiary.R
 import com.furianrt.mydiary.data.prefs.PreferencesHelper
 import com.furianrt.mydiary.screens.pin.PinActivity
 import javax.inject.Inject
 
-class GlobalSettingsFragment : PreferenceFragment(), GlobalSettingsContract.View,
+class GlobalSettingsFragment : PreferenceFragmentCompat(), GlobalSettingsContract.View,
         SharedPreferences.OnSharedPreferenceChangeListener {
 
     companion object {
@@ -23,18 +23,21 @@ class GlobalSettingsFragment : PreferenceFragment(), GlobalSettingsContract.View
     @Inject
     lateinit var mPresenter: GlobalSettingsContract.Presenter
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        getPresenterComponent(activity!!).inject(this)
-        super.onCreate(savedInstanceState)
-        addPreferencesFromResource(R.xml.pref_global)
+    override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
+        setPreferencesFromResource(R.xml.pref_global, rootKey)
         PreferenceManager.setDefaultValues(activity, R.xml.pref_global, false)
         mPresenter.attachView(this)
         mPresenter.onViewCreate()
 
-        findPreference(PreferencesHelper.SECURITY_KEY).setOnPreferenceClickListener {
+        findPreference<SwitchPreference>(PreferencesHelper.SECURITY_KEY)?.setOnPreferenceClickListener {
             mPresenter.onPrefSecurityKeyClick()
             return@setOnPreferenceClickListener true
         }
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        getPresenterComponent(requireActivity()).inject(this)
+        super.onCreate(savedInstanceState)
     }
 
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
@@ -47,36 +50,36 @@ class GlobalSettingsFragment : PreferenceFragment(), GlobalSettingsContract.View
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == REQUEST_CODE_CREATE_PIN) {
-            val keyPref = findPreference(PreferencesHelper.SECURITY_KEY) as SwitchPreference
+            val keyPref = findPreference<SwitchPreference>(PreferencesHelper.SECURITY_KEY)
             if (resultCode == Activity.RESULT_OK) {
-                keyPref.isChecked = true
+                keyPref?.isChecked = true
                 mPresenter.onPasswordCreated()
             } else {
-                keyPref.isChecked = false
+                keyPref?.isChecked = false
             }
         } else if (requestCode == REQUEST_CODE_REMOVE_PIN) {
-            val keyPref = findPreference(PreferencesHelper.SECURITY_KEY) as SwitchPreference
+            val keyPref = findPreference<SwitchPreference>(PreferencesHelper.SECURITY_KEY)
             if (resultCode == Activity.RESULT_OK) {
-                keyPref.isChecked = false
+                keyPref?.isChecked = false
                 mPresenter.onPasswordRemoved()
             } else {
-                keyPref.isChecked = true            }
+                keyPref?.isChecked = true            }
         }
     }
 
     override fun showBackupEmail(email: String) {
-        val keyPref = findPreference(PreferencesHelper.SECURITY_KEY) as SwitchPreference
-        keyPref.summaryOn = getString(R.string.global_settings_pin_on_summary, email)
+        val keyPref = findPreference<SwitchPreference>(PreferencesHelper.SECURITY_KEY)
+        keyPref?.summaryOn = getString(R.string.global_settings_pin_on_summary, email)
     }
 
     override fun showCreatePasswordView() {
-        (findPreference(PreferencesHelper.SECURITY_KEY) as SwitchPreference).isChecked = false
-        startActivityForResult(PinActivity.newIntentModeCreate(activity!!), REQUEST_CODE_CREATE_PIN)
+        findPreference<SwitchPreference>(PreferencesHelper.SECURITY_KEY)?.isChecked = false
+        startActivityForResult(PinActivity.newIntentModeCreate(requireActivity()), REQUEST_CODE_CREATE_PIN)
     }
 
     override fun showRemovePasswordView() {
-        (findPreference(PreferencesHelper.SECURITY_KEY) as SwitchPreference).isChecked = true
-        startActivityForResult(PinActivity.newIntentModeRemove(activity!!), REQUEST_CODE_REMOVE_PIN)
+        findPreference<SwitchPreference>(PreferencesHelper.SECURITY_KEY)?.isChecked = true
+        startActivityForResult(PinActivity.newIntentModeRemove(requireActivity()), REQUEST_CODE_REMOVE_PIN)
     }
 
     override fun onStart() {

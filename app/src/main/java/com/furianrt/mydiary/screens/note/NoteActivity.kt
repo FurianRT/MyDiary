@@ -3,7 +3,6 @@ package com.furianrt.mydiary.screens.note
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.Menu
 import android.view.View
 import android.view.WindowManager
@@ -88,10 +87,10 @@ class NoteActivity : BaseActivity(), NoteActivityContract.View,
         return super.onCreateOptionsMenu(menu)
     }
 
-    override fun onSaveInstanceState(outState: Bundle?) {
+    override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        outState?.putInt(EXTRA_CLICKED_NOTE_POSITION, pager_note.currentItem)
-        outState?.putString(BUNDLE_NOTE_ID, mNoteId)
+        outState.putInt(EXTRA_CLICKED_NOTE_POSITION, pager_note.currentItem)
+        outState.putString(BUNDLE_NOTE_ID, mNoteId)
     }
 
     override fun showNotes(notes: List<MyNoteWithProp>) {
@@ -99,7 +98,6 @@ class NoteActivity : BaseActivity(), NoteActivityContract.View,
             mPagerPosition = notes.size - 1
         }
         mPagerAdapter.list = notes
-        Log.e(TAG, "note_list_notify")
         mPagerAdapter.notifyDataSetChanged()
         pager_note.setCurrentItem(mPagerPosition, false)
         showImageCounter(mPagerPosition + 1, mPagerAdapter.count)

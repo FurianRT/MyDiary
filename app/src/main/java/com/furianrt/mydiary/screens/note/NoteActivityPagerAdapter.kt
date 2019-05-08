@@ -1,6 +1,5 @@
 package com.furianrt.mydiary.screens.note
 
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentStatePagerAdapter
 import androidx.viewpager.widget.PagerAdapter
@@ -10,7 +9,7 @@ import com.furianrt.mydiary.screens.note.fragments.notefragment.NoteFragment
 class NoteActivityPagerAdapter(
         fm: FragmentManager,
         private val mode: NoteActivity.Companion.Mode
-) : FragmentStatePagerAdapter(fm) {
+) : FragmentStatePagerAdapter(fm, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
 
     private var mIsSizeChanged = false
 
@@ -20,8 +19,7 @@ class NoteActivityPagerAdapter(
             field = value
         }
 
-    override fun getItem(position: Int): Fragment =
-            NoteFragment.newInstance(list[position].note, mode)
+    override fun getItem(position: Int) = NoteFragment.newInstance(list[position].note, mode)
 
     override fun getCount(): Int = list.count()
 

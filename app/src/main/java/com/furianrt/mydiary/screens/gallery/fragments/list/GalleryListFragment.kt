@@ -179,13 +179,13 @@ class GalleryListFragment : Fragment(), GalleryListAdapter.OnListItemInteraction
         mActionMode?.title = getString(R.string.fragment_gallery_list_selected, count)
     }
 
-    override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         super.onCreateOptionsMenu(menu, inflater)
-        inflater?.inflate(R.menu.fragment_gallery_list_menu, menu)
+        inflater.inflate(R.menu.fragment_gallery_list_menu, menu)
     }
 
-    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-        return when (item?.itemId) {
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
             R.id.menu_multi_select -> {
                 mPresenter.onButtonMultiSelectionClick()
                 true
@@ -239,7 +239,7 @@ class GalleryListFragment : Fragment(), GalleryListAdapter.OnListItemInteraction
     override fun showDeleteConfirmationDialog(imageNames: List<String>) {
         DeleteImageDialog.newInstance(imageNames).apply {
             setOnDeleteConfirmListener(this@GalleryListFragment)
-        }.show(activity?.supportFragmentManager, DeleteImageDialog.TAG)
+        }.show(requireActivity().supportFragmentManager, DeleteImageDialog.TAG)
     }
 
     override fun onButtonDeleteConfirmClick() {

@@ -105,10 +105,36 @@ class PinActivity : BaseActivity(), PinContract.View, View.OnClickListener,
         button_pin_close.setOnClickListener(this)
     }
 
-    override fun onSaveInstanceState(outState: Bundle?) {
+    override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        outState?.putInt(BUNDLE_BOTTOM_SHEET_STATE, mBottomSheet.state)
+        outState.putInt(BUNDLE_BOTTOM_SHEET_STATE, mBottomSheet.state)
         mPresenter.onSaveInstanceState(outState)
+    }
+
+    override fun onClick(v: View) {
+        when (v.id) {
+            R.id.button_one -> valueEntered(1)
+            R.id.button_two -> valueEntered(2)
+            R.id.button_three -> valueEntered(3)
+            R.id.button_four -> valueEntered(4)
+            R.id.button_five -> valueEntered(5)
+            R.id.button_six -> valueEntered(6)
+            R.id.button_seven -> valueEntered(7)
+            R.id.button_eight -> valueEntered(8)
+            R.id.button_nine -> valueEntered(9)
+            R.id.button_zero -> valueEntered(0)
+            R.id.button_backspace -> mPresenter.onButtonBackspaceClick()
+            R.id.button_forgot_pin -> mPresenter.onButtonForgotPinClick()
+            R.id.button_pin_close -> mPresenter.onButtonCloseClick()
+        }
+    }
+
+    private fun valueEntered(value: Int) {
+        when (mMode) {
+            MODE_CREATE -> mPresenter.onValueEnteredModeCreate(value)
+            MODE_REMOVE -> mPresenter.onValueEnteredModeRemove(value)
+            MODE_LOCK -> mPresenter.onValueEnteredModeLock(value)
+        }
     }
 
     override fun showPin(pin: String) {
@@ -176,32 +202,6 @@ class PinActivity : BaseActivity(), PinContract.View, View.OnClickListener,
             }
         }
         mHandler.postDelayed(mBottomSheetOpenRunnable, BOTTOM_SHEET_EXPAND_DELAY)
-    }
-
-    override fun onClick(v: View) {
-        when (v.id) {
-            R.id.button_one -> valueEntered(1)
-            R.id.button_two -> valueEntered(2)
-            R.id.button_three -> valueEntered(3)
-            R.id.button_four -> valueEntered(4)
-            R.id.button_five -> valueEntered(5)
-            R.id.button_six -> valueEntered(6)
-            R.id.button_seven -> valueEntered(7)
-            R.id.button_eight -> valueEntered(8)
-            R.id.button_nine -> valueEntered(9)
-            R.id.button_zero -> valueEntered(0)
-            R.id.button_backspace -> mPresenter.onButtonBackspaceClick()
-            R.id.button_forgot_pin -> mPresenter.onButtonForgotPinClick()
-            R.id.button_pin_close -> mPresenter.onButtonCloseClick()
-        }
-    }
-
-    private fun valueEntered(value: Int) {
-        when (mMode) {
-            MODE_CREATE -> mPresenter.onValueEnteredModeCreate(value)
-            MODE_REMOVE -> mPresenter.onValueEnteredModeRemove(value)
-            MODE_LOCK -> mPresenter.onValueEnteredModeLock(value)
-        }
     }
 
     override fun onEmailEntered(email: String) {

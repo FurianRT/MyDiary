@@ -10,7 +10,7 @@ import com.furianrt.mydiary.screens.note.fragments.notefragment.toolbarimage.Not
 class NoteFragmentPagerAdapter(
         fm: FragmentManager,
         var images: List<MyImage> = ArrayList()
-) : FragmentStatePagerAdapter(fm) {
+) : FragmentStatePagerAdapter(fm, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
 
     override fun getCount(): Int = images.count()
 

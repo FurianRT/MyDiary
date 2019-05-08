@@ -14,6 +14,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.functions.BiFunction
 import org.joda.time.DateTime
 import java.util.*
+import java.util.concurrent.TimeUnit
 import kotlin.collections.ArrayList
 
 class NoteFragmentPresenter(private val dataManager: DataManager) : NoteFragmentContract.Presenter() {
@@ -62,6 +63,7 @@ class NoteFragmentPresenter(private val dataManager: DataManager) : NoteFragment
 
     private fun loadImages() {
         addDisposable(dataManager.getImagesForNote(mNoteId)
+                .debounce(400L, TimeUnit.MILLISECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { images ->
                     if (images.isEmpty()) {
@@ -75,11 +77,11 @@ class NoteFragmentPresenter(private val dataManager: DataManager) : NoteFragment
     private fun loadTags() {
         val tagsFlowable = dataManager.getTagsForNote(mNoteId).defaultIfEmpty(emptyList())
         val appearanceFlowable = dataManager.getNoteAppearance(mNoteId)
-
         addDisposable(Flowable.combineLatest(tagsFlowable, appearanceFlowable,
                 BiFunction<List<MyTag>, MyNoteAppearance, TagsAndAppearance> { tags, appearance ->
                     return@BiFunction TagsAndAppearance(tags, appearance)
                 })
+                .debounce(400L, TimeUnit.MILLISECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe {
                     if (it.tags.isEmpty()) {
@@ -93,28 +95,19 @@ class NoteFragmentPresenter(private val dataManager: DataManager) : NoteFragment
     private fun loadNote(mode: NoteActivity.Companion.Mode, locationEnabled: Boolean,
                          networkAvailable: Boolean) {
         addDisposable(dataManager.getNote(mNoteId)
+                .debounce(400L, TimeUnit.MILLISECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { note ->
                     view?.showNoteText(note.title, note.content)
                     view?.showDateAndTime(note.time, dataManager.is24TimeFormat())
                     showNoteMood(note.moodId)
-                    showNoteCategory(note.categoryId)
                     //showNoteLocation(note, mode, locationEnabled, networkAvailable)
                 })
     }
 
-    private fun showNoteCategory(categoryId: String) {
-        addDisposable(dataManager.getCategory(categoryId)
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({ category ->
-                    view?.showCategory(category)
-                }, {
-                    view?.showNoCategoryMessage()
-                }))
-    }
-
     private fun loadNoteAppearance() {
         addDisposable(dataManager.getNoteAppearance(mNoteId)
+                .debounce(400L, TimeUnit.MILLISECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { appearance ->
                     appearance.textSize = appearance.textSize ?: dataManager.getTextSize()
@@ -170,6 +163,7 @@ class NoteFragmentPresenter(private val dataManager: DataManager) : NoteFragment
                         categories.find { it.id == note.categoryId } ?: MyCategory()
                     }
                 })
+                .debounce(400L, TimeUnit.MILLISECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { category ->
                     if (category.id.isBlank()) {
