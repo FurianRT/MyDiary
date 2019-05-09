@@ -115,8 +115,8 @@ class MainActivityPresenter(
                         dbImages.isEmpty() && view?.networkAvailable() == true ->
                             dataManager.loadHeaderImages()
                                     .map { it.first() }
-                                    .flatMap { dataManager.insertHeaderImage(it) }
-                                    .flatMap { dataManager.getHeaderImages().firstOrError() }
+                                    .flatMapCompletable { dataManager.insertHeaderImage(it) }
+                                    .andThen(dataManager.getHeaderImages().firstOrError())
                                     .map { it.first() }
                         dbImages.isNotEmpty() && view?.networkAvailable() == true ->
                             dataManager.loadHeaderImages()
@@ -126,8 +126,8 @@ class MainActivityPresenter(
                                             dbImages.find { it.id == apiImage.id } == null
                                         } ?: dbImages.first()
                                     }
-                                    .flatMap { dataManager.insertHeaderImage(it) }
-                                    .flatMap { dataManager.getHeaderImages().firstOrError() }
+                                    .flatMapCompletable { dataManager.insertHeaderImage(it) }
+                                    .andThen(dataManager.getHeaderImages().firstOrError())
                                     .map { it.first() }
                         else ->
                             throw Exception()

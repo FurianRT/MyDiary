@@ -24,8 +24,7 @@
             android:layout_marginStart="24dp"
             android:layout_marginTop="32dp"
             android:text="@string/fragment_about_profile_sign_in_date"
-            android:textColor="?attr/colorAccent"
-            android:textStyle="bold"
+            android:textColor="@color/black"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -36,8 +35,7 @@
             android:layout_marginStart="8dp"
             android:layout_marginTop="32dp"
             android:layout_marginEnd="24dp"
-            android:textColor="?attr/colorAccent"
-            android:textStyle="bold"
+            android:textColor="@color/black"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/textView1"
             app:layout_constraintTop_toTopOf="parent"
@@ -50,8 +48,7 @@
             android:layout_marginStart="24dp"
             android:layout_marginTop="16dp"
             android:text="@string/fragment_about_profile_premium"
-            android:textColor="?attr/colorAccent"
-            android:textStyle="bold"
+            android:textColor="@color/black"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/textView1" />
 
@@ -62,8 +59,7 @@
             android:layout_marginStart="8dp"
             android:layout_marginTop="16dp"
             android:layout_marginEnd="24dp"
-            android:textColor="?attr/colorAccent"
-            android:textStyle="bold"
+            android:textColor="@color/black"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/textView2"
             app:layout_constraintTop_toBottomOf="@+id/textView1"
@@ -77,8 +73,7 @@
             android:layout_marginTop="16dp"
             android:layout_marginBottom="32dp"
             android:text="@string/fragment_about_profile_last_sync"
-            android:textColor="?attr/colorAccent"
-            android:textStyle="bold"
+            android:textColor="@color/black"
             app:layout_constraintBottom_toTopOf="@id/button_about_back"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/textView2" />
@@ -91,8 +86,7 @@
             android:layout_marginTop="16dp"
             android:layout_marginEnd="24dp"
             android:layout_marginBottom="32dp"
-            android:textColor="?attr/colorAccent"
-            android:textStyle="bold"
+            android:textColor="@color/black"
             app:layout_constraintBottom_toTopOf="@id/button_about_back"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/textView3"
@@ -107,8 +101,6 @@
             android:layout_marginStart="24dp"
             android:layout_marginBottom="24dp"
             android:text="@string/back"
-            android:textAllCaps="false"
-            android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:rippleColor="@color/white" />

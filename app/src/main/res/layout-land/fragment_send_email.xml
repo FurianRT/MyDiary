@@ -43,13 +43,13 @@
         android:text="@string/back"
         app:layout_constraintEnd_toStartOf="@+id/button_send_email"
         app:layout_constraintTop_toBottomOf="@+id/textView"
-        app:rippleColor="?attr/colorAccent" />
+        app:rippleColor="?attr/colorPrimary" />
 
     <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:src="@drawable/email_image"
-        android:tint="?attr/colorAccent"
+        android:tint="?attr/colorPrimary"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

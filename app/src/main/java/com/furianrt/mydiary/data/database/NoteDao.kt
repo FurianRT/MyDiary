@@ -3,6 +3,7 @@ package com.furianrt.mydiary.data.database
 import androidx.room.*
 import com.furianrt.mydiary.data.model.MyNote
 import com.furianrt.mydiary.data.model.MyNoteWithProp
+import io.reactivex.Completable
 import io.reactivex.Flowable
 import io.reactivex.Maybe
 
@@ -10,25 +11,25 @@ import io.reactivex.Maybe
 interface NoteDao {
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    fun insert(note: MyNote)
+    fun insert(note: MyNote): Completable
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    fun insert(notes: List<MyNote>)
+    fun insert(notes: List<MyNote>): Completable
 
     @Update
-    fun update(note: MyNote)
+    fun update(note: MyNote): Completable
 
     @Update
-    fun update(notes: List<MyNote>)
+    fun update(notes: List<MyNote>): Completable
 
     @Query("UPDATE Notes SET title = :title, content = :content, note_sync_with = '[]' WHERE id_note = :noteId")
-    fun updateNoteText(noteId: String, title: String, content: String)
+    fun updateNoteText(noteId: String, title: String, content: String): Completable
 
     @Query("UPDATE Notes SET is_note_deleted = 1, note_sync_with = '[]' WHERE id_note = :noteId")
-    fun delete(noteId: String)
+    fun delete(noteId: String): Completable
 
     @Query("DELETE FROM Notes WHERE is_note_deleted = 1")
-    fun cleanup()
+    fun cleanup(): Completable
 
     @Query("SELECT * FROM Notes WHERE is_note_deleted = 1")
     fun getDeletedNotes(): Flowable<List<MyNote>>

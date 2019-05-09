@@ -2,30 +2,31 @@ package com.furianrt.mydiary.data.database
 
 import androidx.room.*
 import com.furianrt.mydiary.data.model.MyNoteAppearance
+import io.reactivex.Completable
 import io.reactivex.Flowable
 
 @Dao
 interface AppearanceDao {
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    fun insert(appearance: MyNoteAppearance)
+    fun insert(appearance: MyNoteAppearance): Completable
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    fun insert(appearance: List<MyNoteAppearance>)
+    fun insert(appearance: List<MyNoteAppearance>): Completable
 
     @Update
-    fun update(appearance: MyNoteAppearance)
+    fun update(appearance: MyNoteAppearance): Completable
 
     @Update
-    fun update(appearance: List<MyNoteAppearance>)
+    fun update(appearance: List<MyNoteAppearance>): Completable
 
     @Query("UPDATE NoteAppearances " +
             "SET is_appearance_deleted = 1, appearance_sync_with = '[]' " +
             "WHERE id_appearance = :noteId")
-    fun delete(noteId: String)
+    fun delete(noteId: String): Completable
 
     @Query("DELETE FROM NoteAppearances WHERE is_appearance_deleted = 1")
-    fun cleanup()
+    fun cleanup(): Completable
 
     @Query("SELECT * FROM NoteAppearances WHERE id_appearance = :appearanceId")
     fun getNoteAppearance(appearanceId: String): Flowable<MyNoteAppearance>

@@ -605,10 +605,10 @@ class NoteFragment : Fragment(), NoteFragmentContract.View, OnMapReadyCallback,
 
     override fun showDatePicker(calendar: Calendar) {
         DatePickerDialog.newInstance(this, calendar).apply {
-            accentColor = getThemePrimaryColor(this@NoteFragment.requireContext())
-            val themeAccentColor = getThemeAccentColor(this@NoteFragment.requireContext())
-            setOkColor(themeAccentColor)
-            setCancelColor(themeAccentColor)
+            val themePrimaryColor = getThemePrimaryColor(this@NoteFragment.requireContext())
+            accentColor = themePrimaryColor
+            setOkColor(themePrimaryColor)
+            setCancelColor(themePrimaryColor)
         }.show(requireActivity().supportFragmentManager, DATE_PICKER_TAG)
     }
 
@@ -618,13 +618,13 @@ class NoteFragment : Fragment(), NoteFragmentContract.View, OnMapReadyCallback,
 
     override fun showTimePicker(hourOfDay: Int, minute: Int, is24HourMode: Boolean) {
         TimePickerDialog.newInstance(this, hourOfDay, minute, is24HourMode).apply {
-            accentColor = getThemePrimaryColor(this@NoteFragment.requireContext())
-            val themeAccentColor = getThemeAccentColor(this@NoteFragment.requireContext())
-            setOkColor(themeAccentColor)
-            setCancelColor(themeAccentColor)
+            val themePrimaryColor = getThemePrimaryColor(this@NoteFragment.requireContext())
+            accentColor = themePrimaryColor
+            setOkColor(themePrimaryColor)
+            setCancelColor(themePrimaryColor)
             setOkText(this@NoteFragment.getString(R.string.ok).toUpperCase(Locale.getDefault()))
             setCancelText(this@NoteFragment.getString(R.string.cancel).toUpperCase(Locale.getDefault()))
-            setLocale(Locale.ENGLISH) //для отображения PM/AM на всех языках
+            setLocale(Locale.getDefault())
         }.show(requireActivity().supportFragmentManager, TIME_PICKER_TAG)
     }
 

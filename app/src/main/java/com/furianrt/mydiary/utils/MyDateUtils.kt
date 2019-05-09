@@ -3,39 +3,26 @@ package com.furianrt.mydiary.utils
 import java.text.SimpleDateFormat
 import java.util.*
 
-fun getDay(time: Long): String {
-    val spf = SimpleDateFormat("dd", Locale.getDefault())
-    return spf.format(Date(time))
+fun getDay(time: Long): String =
+        SimpleDateFormat("dd", Locale.getDefault()).format(Date(time))
 
-}
+fun getDayOfWeek(time: Long): String =
+        SimpleDateFormat("EEE", Locale.getDefault()).format(Date(time))
 
-fun getDayOfWeek(time: Long): String {
-    val spf = SimpleDateFormat("EEE", Locale.getDefault())
-    return spf.format(Date(time))
-}
+fun formatTime(time: Long): String =
+        SimpleDateFormat("EEE, dd MMM, yyyy", Locale.getDefault()).format(Date(time))
 
-fun formatTime(time: Long): String {
-    val spf = SimpleDateFormat("EEE, dd MMM, yyyy", Locale.getDefault())
-    return spf.format(Date(time))
-}
+fun getMonth(time: Long): String =
+        SimpleDateFormat("LLLL", Locale.getDefault()).format(Date(time))
 
-fun getMonth(time: Long): String {
-    val spf = SimpleDateFormat("LLLL", Locale.getDefault())
-    return spf.format(Date(time))
+fun getYear(time: Long): String =
+        SimpleDateFormat("yyyy", Locale.getDefault()).format(Date(time))
 
-}
-
-fun getYear(time: Long): String {
-    val spf = SimpleDateFormat("yyyy", Locale.getDefault())
-    return spf.format(Date(time))
-
-}
-
-fun getTime(time: Long, is24TimeFormat: Boolean): String {
-    val spf = if (is24TimeFormat) {
-        SimpleDateFormat("HH:mm", Locale.ENGLISH)
+fun getTime(time: Long, is24TimeFormat: Boolean): String =
+    if (is24TimeFormat) {
+        SimpleDateFormat("HH:mm", Locale.getDefault())
+                .format(Date(time)).toLowerCase(Locale.getDefault())
     } else {
-        SimpleDateFormat("hh:mm a", Locale.ENGLISH)
+        SimpleDateFormat("hh:mm a", Locale.getDefault())
+                .format(Date(time)).toLowerCase(Locale.getDefault())
     }
-    return spf.format(Date(time)).toLowerCase(Locale.ENGLISH)
-}

@@ -17,7 +17,7 @@ interface DataManager {
     fun insertTag(tags: List<MyTag>): Completable
     fun insertImage(image: MyImage): Completable
     fun insertImages(images: List<MyImage>): Completable
-    fun insertHeaderImage(headerImage: MyHeaderImage): Single<Long>
+    fun insertHeaderImage(headerImage: MyHeaderImage): Completable
     fun insertCategory(category: MyCategory): Completable
     fun insertCategory(categories: List<MyCategory>): Completable
     fun insertAppearance(appearance: MyNoteAppearance): Completable

@@ -5,6 +5,7 @@ import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Update
 import com.furianrt.mydiary.data.model.MyProfile
+import io.reactivex.Completable
 import io.reactivex.Observable
 import io.reactivex.Single
 
@@ -12,13 +13,13 @@ import io.reactivex.Single
 interface ProfileDao {
 
     @Insert
-    fun insert(profile: MyProfile)
+    fun insert(profile: MyProfile): Completable
 
     @Update
-    fun update(profile: MyProfile)
+    fun update(profile: MyProfile): Completable
 
     @Query("DELETE FROM Profile")
-    fun clearProfile()
+    fun clearProfile(): Completable
 
     @Query("SELECT * FROM Profile")
     fun getProfile(): Observable<MyProfile>

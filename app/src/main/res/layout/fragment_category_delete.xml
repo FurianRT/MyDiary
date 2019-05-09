@@ -26,8 +26,7 @@
                 android:layout_marginStart="24dp"
                 android:layout_marginTop="24dp"
                 android:layout_marginEnd="24dp"
-                android:textColor="?attr/colorAccent"
-                android:textStyle="bold"
+                android:textColor="@color/black"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
@@ -53,13 +52,10 @@
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="24dp"
                     android:layout_weight="1"
-                    android:letterSpacing="0.0"
                     android:padding="10dp"
                     android:text="@string/yes"
-                    android:textAllCaps="false"
-                    android:textStyle="bold"
-                    app:rippleColor="?attr/colorAccent"
-                    app:strokeColor="?attr/colorAccent"
+                    app:rippleColor="?attr/colorPrimary"
+                    app:strokeColor="?attr/colorPrimary"
                     app:strokeWidth="1dp" />
 
                 <com.google.android.material.button.MaterialButton
@@ -69,13 +65,10 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="24dp"
                     android:layout_weight="1"
-                    android:letterSpacing="0.0"
                     android:padding="10dp"
                     android:text="@string/no"
-                    android:textAllCaps="false"
-                    android:textStyle="bold"
-                    app:rippleColor="?attr/colorAccent"
-                    app:strokeColor="?attr/colorAccent"
+                    app:rippleColor="?attr/colorPrimary"
+                    app:strokeColor="?attr/colorPrimary"
                     app:strokeWidth="1dp" />
 
             </LinearLayout>

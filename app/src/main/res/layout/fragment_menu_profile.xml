@@ -25,13 +25,11 @@
             android:letterSpacing="0.0"
             android:padding="10dp"
             android:text="@string/change_password"
-            android:textAllCaps="false"
-            android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:rippleColor="?attr/colorAccent"
-            app:strokeColor="?attr/colorAccent"
+            app:rippleColor="?attr/colorPrimary"
+            app:strokeColor="?attr/colorPrimary"
             app:strokeWidth="1dp" />
 
         <com.google.android.material.button.MaterialButton
@@ -45,13 +43,11 @@
             android:letterSpacing="0.0"
             android:padding="10dp"
             android:text="@string/fragment_menu_profile_picture"
-            android:textAllCaps="false"
-            android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/button_change_password"
-            app:rippleColor="?attr/colorAccent"
-            app:strokeColor="?attr/colorAccent"
+            app:rippleColor="?attr/colorPrimary"
+            app:strokeColor="?attr/colorPrimary"
             app:strokeWidth="1dp" />
 
         <com.google.android.material.button.MaterialButton
@@ -65,13 +61,11 @@
             android:letterSpacing="0.0"
             android:padding="10dp"
             android:text="@string/fragment_menu_profile_about"
-            android:textAllCaps="false"
-            android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/button_profile_image"
-            app:rippleColor="?attr/colorAccent"
-            app:strokeColor="?attr/colorAccent"
+            app:rippleColor="?attr/colorPrimary"
+            app:strokeColor="?attr/colorPrimary"
             app:strokeWidth="1dp" />
 
         <com.google.android.material.button.MaterialButton
@@ -86,14 +80,12 @@
             android:letterSpacing="0.0"
             android:padding="10dp"
             android:text="@string/exit"
-            android:textAllCaps="false"
-            android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/button_about"
-            app:rippleColor="?attr/colorAccent"
-            app:strokeColor="?attr/colorAccent"
+            app:rippleColor="?attr/colorPrimary"
+            app:strokeColor="?attr/colorPrimary"
             app:strokeWidth="1dp" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

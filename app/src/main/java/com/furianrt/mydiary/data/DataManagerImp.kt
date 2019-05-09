@@ -54,161 +54,156 @@ class DataManagerImp(
             MyHeaderImage(id, largeImageURL, DateTime.now().millis)
 
     override fun insertNote(note: MyNote): Completable =
-            Completable.fromAction { database.noteDao().insert(note) }
+            database.noteDao().insert(note)
                     .subscribeOn(rxScheduler)
 
     override fun insertNote(notes: List<MyNote>): Completable =
-            Completable.fromAction { database.noteDao().insert(notes) }
+            database.noteDao().insert(notes)
                     .subscribeOn(rxScheduler)
 
     override fun insertNoteTag(noteTag: NoteTag): Completable =
-            Completable.fromAction { database.noteTagDao().insert(noteTag) }
+            database.noteTagDao().insert(noteTag)
                     .subscribeOn(rxScheduler)
 
     override fun insertNoteTag(noteTags: List<NoteTag>): Completable =
-            Completable.fromAction { database.noteTagDao().insert(noteTags) }
+            database.noteTagDao().insert(noteTags)
                     .subscribeOn(rxScheduler)
 
     override fun insertTag(tag: MyTag): Completable =
-            Completable.fromAction { database.tagDao().insert(tag) }
+            database.tagDao().insert(tag)
                     .subscribeOn(rxScheduler)
 
     override fun insertTag(tags: List<MyTag>): Completable =
-            Completable.fromAction { database.tagDao().insert(tags) }
+            database.tagDao().insert(tags)
                     .subscribeOn(rxScheduler)
 
     override fun insertImage(image: MyImage): Completable =
-            Completable.fromAction { database.imageDao().insert(image) }
+            database.imageDao().insert(image)
                     .subscribeOn(rxScheduler)
 
     override fun insertImages(images: List<MyImage>): Completable =
-            Completable.fromAction { database.imageDao().insert(images) }
+            database.imageDao().insert(images)
                     .subscribeOn(rxScheduler)
 
-    override fun insertHeaderImage(headerImage: MyHeaderImage): Single<Long> =
-            Single.fromCallable { database.headerImageDao().insert(headerImage) }
+    override fun insertHeaderImage(headerImage: MyHeaderImage): Completable =
+            database.headerImageDao().insert(headerImage)
                     .subscribeOn(rxScheduler)
 
     override fun insertCategory(category: MyCategory): Completable =
-            Completable.fromAction { database.categoryDao().insert(category) }
+            database.categoryDao().insert(category)
                     .subscribeOn(rxScheduler)
 
     override fun insertCategory(categories: List<MyCategory>): Completable =
-            Completable.fromAction { database.categoryDao().insert(categories) }
+            database.categoryDao().insert(categories)
                     .subscribeOn(rxScheduler)
 
     override fun insertAppearance(appearance: MyNoteAppearance): Completable =
-            Completable.fromAction { database.appearanceDao().insert(appearance) }
+            database.appearanceDao().insert(appearance)
                     .subscribeOn(rxScheduler)
 
     override fun insertAppearance(appearances: List<MyNoteAppearance>): Completable =
-            Completable.fromAction { database.appearanceDao().insert(appearances) }
+            database.appearanceDao().insert(appearances)
                     .subscribeOn(rxScheduler)
 
     override fun insertProfile(profile: MyProfile): Completable =
-            Completable.fromAction { database.profileDao().insert(profile) }
+            database.profileDao().insert(profile)
                     .subscribeOn(rxScheduler)
 
     override fun addLocation(location: MyLocation): Completable =
-            Completable.fromAction { database.locationDao().insert(location) }
+            database.locationDao().insert(location)
                     .subscribeOn(rxScheduler)
 
     override fun updateNote(note: MyNote): Completable =
-            Completable.fromAction { database.noteDao().update(note.apply { syncWith.clear() }) }
+            database.noteDao().update(note.apply { syncWith.clear() })
                     .subscribeOn(rxScheduler)
 
     override fun updateNoteText(noteId: String, title: String, content: String): Completable =
-            Completable.fromAction { database.noteDao().updateNoteText(noteId, title, content) }
+            database.noteDao().updateNoteText(noteId, title, content)
                     .subscribeOn(rxScheduler)
 
     override fun updateTag(tag: MyTag): Completable =
-            Completable.fromAction { database.tagDao().update(tag.apply { syncWith.clear() }) }
+            database.tagDao().update(tag.apply { syncWith.clear() })
                     .subscribeOn(rxScheduler)
 
     override fun updateImage(image: MyImage): Completable =
-            Completable.fromAction {
-                database.imageDao().update(image.apply { syncWith.clear() })
-            }.subscribeOn(rxScheduler)
+            database.imageDao().update(image.apply { syncWith.clear() })
+                    .subscribeOn(rxScheduler)
 
     override fun updateImage(images: List<MyImage>): Completable =
-            Completable.fromAction {
-                database.imageDao().update(images.map { it.apply { syncWith.clear() } })
-            }.subscribeOn(rxScheduler)
+            database.imageDao().update(images.map { it.apply { syncWith.clear() } })
+                    .subscribeOn(rxScheduler)
 
     override fun updateImageSync(images: List<MyImage>): Completable =
-            Completable.fromAction { database.imageDao().update(images) }
+            database.imageDao().update(images)
                     .subscribeOn(rxScheduler)
 
     override fun updateCategory(category: MyCategory): Completable =
-            Completable.fromAction { database.categoryDao().update(category.apply { syncWith.clear() }) }
+            database.categoryDao().update(category.apply { syncWith.clear() })
                     .andThen(database.noteDao().getAllNotes())
                     .first(emptyList())
                     .flatMapObservable { Observable.fromIterable(it) }
                     .filter { it.categoryId == category.id }
                     .map { it.apply { it.syncWith.clear() } }
-                    .flatMapSingle {
-                        Completable.fromAction { database.noteDao().update(it) }
-                                .toSingleDefault(true)
-                    }
+                    .flatMapSingle { database.noteDao().update(it).toSingleDefault(true) }
                     .collectInto(mutableListOf<Boolean>()) { l, i -> l.add(i) }
                     .ignoreElement()
                     .subscribeOn(rxScheduler)
 
     override fun updateAppearance(appearance: MyNoteAppearance): Completable =
-            Completable.fromAction { database.appearanceDao().update(appearance.apply { syncWith.clear() }) }
+            database.appearanceDao().update(appearance.apply { syncWith.clear() })
                     .andThen(database.noteDao().getNote(appearance.appearanceId))
                     .map { it.apply { it.syncWith.clear() } }
-                    .flatMapCompletable { Completable.fromAction { database.noteDao().update(it) } }
+                    .flatMapCompletable { database.noteDao().update(it) }
                     .subscribeOn(rxScheduler)
 
     override fun updateDbProfile(profile: MyProfile): Completable =
-            Completable.fromAction { database.profileDao().update(profile) }
+            database.profileDao().update(profile)
                     .subscribeOn(rxScheduler)
 
     override fun updateNotesSync(notes: List<MyNote>): Completable =
-            Completable.fromAction { database.noteDao().update(notes) }
+            database.noteDao().update(notes)
                     .subscribeOn(rxScheduler)
 
     override fun updateAppearancesSync(appearances: List<MyNoteAppearance>): Completable =
-            Completable.fromAction { database.appearanceDao().update(appearances) }
+            database.appearanceDao().update(appearances)
                     .subscribeOn(rxScheduler)
 
     override fun updateCategoriesSync(categories: List<MyCategory>): Completable =
-            Completable.fromAction { database.categoryDao().update(categories) }
+            database.categoryDao().update(categories)
                     .subscribeOn(rxScheduler)
 
     override fun updateNoteTagsSync(noteTags: List<NoteTag>): Completable =
-            Completable.fromAction { database.noteTagDao().update(noteTags) }
+            database.noteTagDao().update(noteTags)
                     .subscribeOn(rxScheduler)
 
     override fun updateTagsSync(tags: List<MyTag>): Completable =
-            Completable.fromAction { database.tagDao().update(tags) }
+            database.tagDao().update(tags)
                     .subscribeOn(rxScheduler)
 
     override fun deleteTag(tag: MyTag): Completable =
-            Completable.fromAction { database.tagDao().delete(tag.id) }
-                    .andThen(Completable.fromAction { database.noteTagDao().deleteWithTagId(tag.id) })
+            database.tagDao().delete(tag.id)
+                    .andThen(database.noteTagDao().deleteWithTagId(tag.id))
                     .subscribeOn(rxScheduler)
 
     override fun deleteNote(noteId: String): Completable =
-            Completable.fromAction { database.noteTagDao().deleteWithNoteId(noteId) }
-                    .andThen(Completable.fromAction { database.appearanceDao().delete(noteId) })
+            database.noteTagDao().deleteWithNoteId(noteId)
+                    .andThen(database.appearanceDao().delete(noteId))
                     .andThen(database.imageDao().getImagesForNote(noteId))
                     .first(emptyList())
                     .flatMapObservable { Observable.fromIterable(it) }
                     .flatMapSingle { Single.fromCallable { storage.deleteFile(it.name) } }
                     .collectInto(mutableListOf<Boolean>()) { l, i -> l.add(i) }
-                    .flatMapCompletable { Completable.fromAction { database.imageDao().deleteByNoteId(noteId) } }
-                    .andThen(Completable.fromAction { database.noteDao().delete(noteId) })
+                    .flatMapCompletable { database.imageDao().deleteByNoteId(noteId) }
+                    .andThen(database.noteDao().delete(noteId))
                     .subscribeOn(rxScheduler)
 
     override fun deleteImage(imageName: String): Completable =
-            Completable.fromAction { database.imageDao().delete(imageName) }
+            database.imageDao().delete(imageName)
                     .andThen(Completable.fromCallable { storage.deleteFile(imageName) })
                     .subscribeOn(rxScheduler)
 
     override fun deleteImage(imageNames: List<String>): Completable =
-            Completable.fromAction { database.imageDao().delete(imageNames) }
+            database.imageDao().delete(imageNames)
                     .andThen(Observable.fromIterable(imageNames))
                     .flatMapSingle { Single.fromCallable { storage.deleteFile(it) } }
                     .collectInto(mutableListOf<Boolean>()) { l, i -> l.add(i) }
@@ -216,15 +211,15 @@ class DataManagerImp(
                     .subscribeOn(rxScheduler)
 
     override fun deleteCategory(category: MyCategory): Completable =
-            Completable.fromAction { database.categoryDao().delete(category.id) }
+            database.categoryDao().delete(category.id)
                     .subscribeOn(rxScheduler)
 
     override fun deleteNoteTag(noteId: String, tagId: String): Completable =
-            Completable.fromAction { database.noteTagDao().delete(noteId, tagId) }
+            database.noteTagDao().delete(noteId, tagId)
                     .subscribeOn(rxScheduler)
 
     override fun clearDbProfile(): Completable =
-            Completable.fromAction { database.profileDao().clearProfile() }
+            database.profileDao().clearProfile()
                     .subscribeOn(rxScheduler)
 
     override fun deleteImageFromStorage(fileName: String): Single<Boolean> =
@@ -232,27 +227,27 @@ class DataManagerImp(
                     .subscribeOn(rxScheduler)
 
     override fun cleanupNotes(): Completable =
-            Completable.fromAction { database.noteDao().cleanup() }
+            database.noteDao().cleanup()
                     .subscribeOn(rxScheduler)
 
     override fun cleanupNoteTags(): Completable =
-            Completable.fromAction { database.noteTagDao().cleanup() }
+            database.noteTagDao().cleanup()
                     .subscribeOn(rxScheduler)
 
     override fun cleanupAppearances(): Completable =
-            Completable.fromAction { database.appearanceDao().cleanup() }
+            database.appearanceDao().cleanup()
                     .subscribeOn(rxScheduler)
 
     override fun cleanupCategories(): Completable =
-            Completable.fromAction { database.categoryDao().cleanup() }
+            database.categoryDao().cleanup()
                     .subscribeOn(rxScheduler)
 
     override fun cleanupTags(): Completable =
-            Completable.fromAction { database.tagDao().cleanup() }
+            database.tagDao().cleanup()
                     .subscribeOn(rxScheduler)
 
     override fun cleanupImages(): Completable =
-            Completable.fromAction { database.imageDao().cleanup() }
+            database.imageDao().cleanup()
                     .subscribeOn(rxScheduler)
 
     override fun getAllNotes(): Flowable<List<MyNote>> =
@@ -551,11 +546,9 @@ class DataManagerImp(
                     .map { MyProfile(it.id, it.email, it.photoUri) }
                     .flatMapCompletable { profile ->
                         Completable.concat(listOf(
-                                cloud.saveProfile(profile)
-                                        .doOnError { auth.signOut() },
-                                Completable.fromAction { database.profileDao().insert(profile) }
-                                        .doOnError { auth.signOut() }
-                                        .subscribeOn(rxScheduler)))
+                                cloud.saveProfile(profile).doOnError { auth.signOut() },
+                                database.profileDao().insert(profile).doOnError { auth.signOut() }
+                        ))
                     }
                     .subscribeOn(rxScheduler)
 
@@ -569,7 +562,7 @@ class DataManagerImp(
                                 .doOnError { auth.signOut() }
                     }
                     .flatMapCompletable { profile ->
-                        Completable.fromAction { database.profileDao().insert(profile) }
+                        database.profileDao().insert(profile)
                                 .doOnError { auth.signOut() }
                                 .subscribeOn(rxScheduler)
                     }
@@ -577,8 +570,7 @@ class DataManagerImp(
 
     override fun signOut(): Completable =
             auth.signOut()
-                    .andThen(Completable.fromAction { database.profileDao().clearProfile() }
-                            .subscribeOn(rxScheduler))
+                    .andThen(database.profileDao().clearProfile())
                     .subscribeOn(rxScheduler)
 
     override fun updatePassword(oldPassword: String, newPassword: String): Completable =
@@ -598,8 +590,7 @@ class DataManagerImp(
 
     override fun updateProfile(profile: MyProfile): Completable =
             cloud.saveProfile(profile)
-                    .andThen(Completable.fromAction { database.profileDao().update(profile) }
-                            .subscribeOn(rxScheduler))
+                    .andThen(database.profileDao().update(profile))
                     .subscribeOn(rxScheduler)
 
     override fun sendPasswordResetEmail(email: String): Completable =

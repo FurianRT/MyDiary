@@ -6,10 +6,7 @@ import android.content.res.Resources
 import android.view.View
 import android.view.animation.OvershootInterpolator
 
-fun dpToPx(dp: Float): Int {
-    val density = Resources.getSystem().displayMetrics.density
-    return Math.round(dp * density)
-}
+fun dpToPx(dp: Float): Int = Math.round(dp * Resources.getSystem().displayMetrics.density)
 
 fun View.animateScale(from: Float, to: Float, duration: Long) {
     ObjectAnimator.ofPropertyValuesHolder(

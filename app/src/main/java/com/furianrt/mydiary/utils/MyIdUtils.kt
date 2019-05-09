@@ -2,7 +2,4 @@ package com.furianrt.mydiary.utils
 
 import java.util.*
 
-fun generateUniqueId(): String {
-    val uuid = UUID.randomUUID()
-    return uuid.toString()
-}
+fun generateUniqueId(): String = UUID.randomUUID().toString()

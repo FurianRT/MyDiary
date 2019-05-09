@@ -79,7 +79,8 @@ class SyncPresenter(
                     .flatMapCompletable {
                         Completable.concat(listOf(
                                 dataManager.saveNotesInCloud(it),
-                                dataManager.updateNotesSync(it)))
+                                dataManager.updateNotesSync(it)
+                        ))
                     }
                     .andThen(dataManager.getDeletedNotes().first(emptyList()))
                     .flatMapCompletable { dataManager.deleteNotesFromCloud(it) }
@@ -96,7 +97,8 @@ class SyncPresenter(
                     .flatMapCompletable {
                         Completable.concat(listOf(
                                 dataManager.saveAppearancesInCloud(it),
-                                dataManager.updateAppearancesSync(it)))
+                                dataManager.updateAppearancesSync(it)
+                        ))
                     }
                     .andThen(dataManager.getDeletedAppearances().first(emptyList()))
                     .flatMapCompletable { dataManager.deleteAppearancesFromCloud(it) }
@@ -113,7 +115,8 @@ class SyncPresenter(
                     .flatMapCompletable {
                         Completable.concat(listOf(
                                 dataManager.saveCategoriesInCloud(it),
-                                dataManager.updateCategoriesSync(it)))
+                                dataManager.updateCategoriesSync(it)
+                        ))
                     }
                     .andThen(dataManager.getDeletedCategories().first(emptyList()))
                     .flatMapCompletable { dataManager.deleteCategoriesFromCloud(it) }
@@ -130,7 +133,8 @@ class SyncPresenter(
                     .flatMapCompletable {
                         Completable.concat(listOf(
                                 dataManager.saveTagsInCloud(it),
-                                dataManager.updateTagsSync(it)))
+                                dataManager.updateTagsSync(it)
+                        ))
                     }
                     .andThen(dataManager.getDeletedTags().first(emptyList()))
                     .flatMapCompletable { dataManager.deleteTagsFromCloud(it) }
@@ -147,7 +151,8 @@ class SyncPresenter(
                     .flatMapCompletable {
                         Completable.concat(listOf(
                                 dataManager.saveNoteTagsInCloud(it),
-                                dataManager.updateNoteTagsSync(it)))
+                                dataManager.updateNoteTagsSync(it)
+                        ))
                     }
                     .andThen(dataManager.getDeletedNoteTags().first(emptyList()))
                     .flatMapCompletable { dataManager.deleteNoteTagsFromCloud(it) }
@@ -184,7 +189,8 @@ class SyncPresenter(
                     .flatMapCompletable {
                         Completable.concat(listOf(
                                 dataManager.loadImageFiles(it),
-                                dataManager.insertImages(it)))
+                                dataManager.insertImages(it)
+                        ))
                     }
                     .andThen(Observable.just(SyncProgressMessage(SyncProgressMessage.CLEANUP, PROGRESS_CLEANUP)))
                     .onErrorResumeNext(Observable.error(SyncGoneWrongException(SyncProgressMessage.SYNC_IMAGES)))
