@@ -37,5 +37,5 @@ fun getTime(time: Long, is24TimeFormat: Boolean): String {
     } else {
         SimpleDateFormat("hh:mm a", Locale.ENGLISH)
     }
-    return spf.format(Date(time)).toLowerCase()
+    return spf.format(Date(time)).toLowerCase(Locale.ENGLISH)
 }

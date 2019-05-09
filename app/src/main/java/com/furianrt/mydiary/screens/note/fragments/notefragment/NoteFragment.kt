@@ -622,8 +622,8 @@ class NoteFragment : Fragment(), NoteFragmentContract.View, OnMapReadyCallback,
             val themeAccentColor = getThemeAccentColor(this@NoteFragment.requireContext())
             setOkColor(themeAccentColor)
             setCancelColor(themeAccentColor)
-            setOkText(this@NoteFragment.getString(R.string.ok).toUpperCase())
-            setCancelText(this@NoteFragment.getString(R.string.cancel).toUpperCase())
+            setOkText(this@NoteFragment.getString(R.string.ok).toUpperCase(Locale.getDefault()))
+            setCancelText(this@NoteFragment.getString(R.string.cancel).toUpperCase(Locale.getDefault()))
             setLocale(Locale.ENGLISH) //для отображения PM/AM на всех языках
         }.show(requireActivity().supportFragmentManager, TIME_PICKER_TAG)
     }

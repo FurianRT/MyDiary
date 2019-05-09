@@ -24,8 +24,8 @@ class NoteSettingsActivity : BaseActivity() {
     }
 
     private fun addSettingsFragment(noteId: String) {
-        if (fragmentManager.findFragmentByTag(NoteSettingsFragment.TAG) == null) {
-            fragmentManager.beginTransaction()
+        if (supportFragmentManager.findFragmentByTag(NoteSettingsFragment.TAG) == null) {
+            supportFragmentManager.beginTransaction()
                     .add(R.id.container_settings_note, NoteSettingsFragment.newInstance(noteId),
                             NoteSettingsFragment.TAG)
                     .commit()

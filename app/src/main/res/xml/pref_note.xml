@@ -2,25 +2,37 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <PreferenceCategory android:title="@string/background">
+    <PreferenceCategory
+        android:title="@string/background"
+        app:iconSpaceReserved="false">
 
-        <com.rarepebble.colorpicker.ColorPreference
+        <com.jaredrummler.android.colorpicker.ColorPreferenceCompat
             android:key="note_background"
+            android:persistent="false"
             android:summary="@string/note_background_summary"
             android:title="@string/note_background_title"
-            app:colorpicker_showHex="false"
-            android:persistent="false" />
+            app:cpv_allowPresets="false"
+            app:cpv_dialogType="custom"
+            app:cpv_previewSize="large"
+            app:cpv_showAlphaSlider="true"
+            app:iconSpaceReserved="false" />
 
-        <com.rarepebble.colorpicker.ColorPreference
+        <com.jaredrummler.android.colorpicker.ColorPreferenceCompat
             android:key="note_text_background"
+            android:persistent="false"
             android:summary="@string/note_text_background_summary"
             android:title="@string/note_text_background_title"
-            android:persistent="false"
-            app:colorpicker_showHex="false"/>
+            app:cpv_allowPresets="false"
+            app:cpv_dialogType="custom"
+            app:cpv_previewSize="large"
+            app:cpv_showAlphaSlider="true"
+            app:iconSpaceReserved="false" />
 
     </PreferenceCategory>
 
-    <PreferenceCategory android:title="@string/font">
+    <PreferenceCategory
+        android:title="@string/font"
+        app:iconSpaceReserved="false">
 
         <ListPreference
             android:entries="@array/pref_font_size_titles"
@@ -30,14 +42,19 @@
             android:persistent="false"
             android:positiveButtonText="@null"
             android:summary="%s"
-            android:title="@string/note_font_size_title" />
+            android:title="@string/note_font_size_title"
+            app:iconSpaceReserved="false" />
 
-        <com.rarepebble.colorpicker.ColorPreference
+        <com.jaredrummler.android.colorpicker.ColorPreferenceCompat
             android:key="note_text_color"
+            android:persistent="false"
             android:summary="@string/note_font_color_summary"
             android:title="@string/note_font_color_title"
-            app:colorpicker_showHex="false"
-            android:persistent="false" />
+            app:cpv_allowPresets="false"
+            app:cpv_dialogType="custom"
+            app:cpv_previewSize="large"
+            app:cpv_showAlphaSlider="true"
+            app:iconSpaceReserved="false" />
 
     </PreferenceCategory>
 

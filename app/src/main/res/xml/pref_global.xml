@@ -3,13 +3,15 @@
 
     <PreferenceCategory
         android:key="protection"
-        android:title="@string/settings_title_protection">
+        android:title="@string/settings_title_protection"
+        app:iconSpaceReserved="false">
 
         <SwitchPreference
             android:defaultValue="false"
             android:key="security_key"
             android:summaryOff="@string/security_key_settings_off"
-            android:title="@string/security_key_settings_title" />
+            android:title="@string/security_key_settings_title"
+            app:iconSpaceReserved="false" />
 
         <ListPreference
             android:defaultValue="1000"
@@ -20,45 +22,60 @@
             android:negativeButtonText="@null"
             android:positiveButtonText="@null"
             android:summary="%s"
-            android:title="@string/security_time_settings_title" />
+            android:title="@string/security_time_settings_title"
+            app:iconSpaceReserved="false" />
 
     </PreferenceCategory>
 
     <PreferenceCategory
         android:key="theme"
-        android:title="@string/settings_theme_title">
+        android:title="@string/settings_theme_title"
+        app:iconSpaceReserved="false">
 
-        <com.woalk.apps.lib.colorpicker.ColorPreference
+        <com.jaredrummler.android.colorpicker.ColorPreferenceCompat
             android:defaultValue="@color/colorPrimary"
             android:key="color_primary"
             android:summary="@string/primary_color_settings_summary"
             android:title="@string/primary_color_settings_title"
-            app:picker_allowCustomColor="false"
-            app:picker_colors="@array/colors"
-            app:picker_columns="5" />
+            app:cpv_allowCustom="false"
+            app:cpv_colorPresets="@array/colors"
+            app:cpv_previewSize="large"
+            app:cpv_showDialog="false"
+            app:cpv_showColorShades="false"
+            app:iconSpaceReserved="false" />
 
-        <com.woalk.apps.lib.colorpicker.ColorPreference
+        <com.jaredrummler.android.colorpicker.ColorPreferenceCompat
             android:defaultValue="@color/colorAccent"
             android:key="color_accent"
             android:summary="@string/accent_color_settings_summary"
             android:title="@string/accent_color_settings_title"
-            app:picker_allowCustomColor="false"
-            app:picker_colors="@array/colors"
-            app:picker_columns="5" />
+            app:cpv_allowCustom="false"
+            app:cpv_colorPresets="@array/colors"
+            app:cpv_previewSize="large"
+            app:cpv_showColorShades="false"
+            app:iconSpaceReserved="false" />
 
-        <com.rarepebble.colorpicker.ColorPreference
+        <com.jaredrummler.android.colorpicker.ColorPreferenceCompat
             android:defaultValue="@color/grey_light"
             android:key="all_notes_background_color"
             android:summary="@string/all_notes_background_settings_summary"
             android:title="@string/all_notes_background_settings_title"
-            app:colorpicker_showHex="false" />
+            app:cpv_allowPresets="false"
+            app:cpv_dialogType="custom"
+            app:cpv_previewSize="large"
+            app:cpv_showAlphaSlider="true"
+            app:iconSpaceReserved="false" />
 
-        <com.rarepebble.colorpicker.ColorPreference
+        <com.jaredrummler.android.colorpicker.ColorPreferenceCompat
             android:defaultValue="@color/white"
             android:key="all_notes_text_background_color"
             android:summary="@string/all_notes_text_background_settings_summary"
             android:title="@string/all_notes_text_background_settings_title"
-            app:colorpicker_showHex="false" />
+            app:cpv_allowPresets="false"
+            app:cpv_dialogType="custom"
+            app:cpv_previewSize="large"
+            app:cpv_showAlphaSlider="true"
+            app:iconSpaceReserved="false" />
 
         <ListPreference
             android:defaultValue="16"
@@ -68,27 +85,34 @@
             android:negativeButtonText="@null"
             android:positiveButtonText="@null"
             android:summary="%s"
-            android:title="@string/all_notes_text_size_settings_title" />
+            android:title="@string/all_notes_text_size_settings_title"
+            app:iconSpaceReserved="false" />
 
-        <com.rarepebble.colorpicker.ColorPreference
+        <com.jaredrummler.android.colorpicker.ColorPreferenceCompat
             android:defaultValue="@color/black"
             android:key="all_notes_text_color"
             android:summary="@string/all_notes_text_color_settings_summary"
             android:title="@string/all_notes_text_color_settings_title"
-            app:colorpicker_showHex="false" />
+            app:cpv_allowPresets="false"
+            app:cpv_dialogType="custom"
+            app:cpv_previewSize="large"
+            app:cpv_showAlphaSlider="true"
+            app:iconSpaceReserved="false" />
 
     </PreferenceCategory>
 
     <PreferenceCategory
         android:key="notes"
-        android:title="@string/settings_title_notes">
+        android:title="@string/settings_title_notes"
+        app:iconSpaceReserved="false">
 
         <SwitchPreference
             android:defaultValue="true"
             android:key="weather_activation"
             android:summaryOff="@string/weather_activation_settings_off"
             android:summaryOn="@string/weather_activation_settings_on"
-            android:title="@string/weather_activation_settings_title" />
+            android:title="@string/weather_activation_settings_title"
+            app:iconSpaceReserved="false" />
 
         <ListPreference
             android:defaultValue="0"
@@ -99,7 +123,8 @@
             android:negativeButtonText="@null"
             android:positiveButtonText="@null"
             android:summary="%s"
-            android:title="@string/weather_units_settings_title" />
+            android:title="@string/weather_units_settings_title"
+            app:iconSpaceReserved="false" />
 
         <ListPreference
             android:defaultValue="true"
@@ -109,21 +134,24 @@
             android:negativeButtonText="@null"
             android:positiveButtonText="@null"
             android:summary="%s"
-            android:title="Формат времени" />
+            android:title="Формат времени"
+            app:iconSpaceReserved="false" />
 
         <SwitchPreference
             android:defaultValue="true"
             android:key="mood_activation"
             android:summaryOff="@string/mood_activation_settings_off"
             android:summaryOn="@string/mood_activation_settings_on"
-            android:title="@string/mood_activation_settings_title" />
+            android:title="@string/mood_activation_settings_title"
+            app:iconSpaceReserved="false" />
 
         <SwitchPreference
             android:defaultValue="true"
             android:key="map_activation"
             android:summaryOff="@string/map_activation_settings_off"
             android:summaryOn="@string/map_activation_settings_on"
-            android:title="@string/map_activation_settings_title" />
+            android:title="@string/map_activation_settings_title"
+            app:iconSpaceReserved="false" />
 
     </PreferenceCategory>
 

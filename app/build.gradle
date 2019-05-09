@@ -44,8 +44,6 @@ dependencies {
 
     //Modules
     implementation project(path: ':fab')
-    implementation project(path: ':colorpicker')
-    implementation project(path: ':colorpickercustom')
 
     //Kotlin
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
@@ -102,6 +100,9 @@ dependencies {
 
     //Color picker
     implementation 'com.larswerkman:HoloColorPicker:1.5'
+
+    //Color picker preference
+    implementation 'com.jaredrummler:colorpicker:1.1.0'
 
     //DateTime
     implementation 'net.danlew:android.joda:2.10.1.2'

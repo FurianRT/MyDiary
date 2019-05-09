@@ -6,6 +6,8 @@ import com.furianrt.mydiary.data.model.NoteTag
 import io.reactivex.Flowable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.functions.BiFunction
+import java.util.*
+import kotlin.collections.ArrayList
 
 class TagListPresenter(
         private val dataManager: DataManager
@@ -24,7 +26,9 @@ class TagListPresenter(
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { tags ->
                     mTags = tags
-                    view?.showTags(mTags.filter { it.name.toLowerCase().contains(mQuery.toLowerCase()) })
+                    val matchingTags = mTags.filter { it.name.toLowerCase(Locale.getDefault())
+                            .contains(mQuery.toLowerCase(Locale.getDefault())) }
+                    view?.showTags(matchingTags)
                 })
     }
 
@@ -54,6 +58,8 @@ class TagListPresenter(
 
     override fun onSearchQueryChange(newText: String?) {
         mQuery = newText ?: ""
-        view?.showTags(mTags.filter { it.name.toLowerCase().contains(mQuery.toLowerCase()) })
+        val matchingTags = mTags.filter { it.name.toLowerCase(Locale.getDefault())
+                .contains(mQuery.toLowerCase(Locale.getDefault())) }
+        view?.showTags(matchingTags)
     }
 }

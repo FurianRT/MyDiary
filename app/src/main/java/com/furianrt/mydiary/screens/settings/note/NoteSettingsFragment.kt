@@ -1,15 +1,15 @@
 package com.furianrt.mydiary.screens.settings.note
 
 import android.os.Bundle
-import android.preference.ListPreference
-import android.preference.Preference
-import android.preference.PreferenceFragment
+import androidx.preference.ListPreference
+import androidx.preference.Preference
+import androidx.preference.PreferenceFragmentCompat
 import com.furianrt.mydiary.R
 import com.furianrt.mydiary.data.model.MyNoteAppearance
-import com.rarepebble.colorpicker.ColorPreference
+import com.jaredrummler.android.colorpicker.ColorPreferenceCompat
 import javax.inject.Inject
 
-class NoteSettingsFragment : PreferenceFragment(), NoteSettingsContract.View {
+class NoteSettingsFragment : PreferenceFragmentCompat(), NoteSettingsContract.View {
 
     @Inject
     lateinit var mPresenter: NoteSettingsContract.Presenter
@@ -18,15 +18,15 @@ class NoteSettingsFragment : PreferenceFragment(), NoteSettingsContract.View {
         when {
             preference.key == TEXT_SIZE -> mPresenter.onTextSizeChange((value as String).toInt())
             preference.key == TEXT_COLOR -> {
-                (preference as ColorPreference).setDefaultValue(value)
+                (preference as ColorPreferenceCompat).setDefaultValue(value)
                 mPresenter.onTextColorChange(value as Int)
             }
             preference.key == BACKGROUND_COLOR -> {
-                (preference as ColorPreference).setDefaultValue(value)
+                (preference as ColorPreferenceCompat).setDefaultValue(value)
                 mPresenter.onBackgroundColorChange(value as Int)
             }
             preference.key == TEXT_BACKGROUND_COLOR -> {
-                (preference as ColorPreference).setDefaultValue(value)
+                (preference as ColorPreferenceCompat).setDefaultValue(value)
                 mPresenter.onBackgroundTextColorChange(value as Int)
             }
         }
@@ -34,27 +34,29 @@ class NoteSettingsFragment : PreferenceFragment(), NoteSettingsContract.View {
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        getPresenterComponent(requireActivity()).inject(this)
         super.onCreate(savedInstanceState)
-        addPreferencesFromResource(R.xml.pref_note)
+    }
 
-        getPresenterComponent(activity).inject(this)
+    override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
+        setPreferencesFromResource(R.xml.pref_note, rootKey)
 
         mPresenter.attachView(this)
         mPresenter.onViewCreate(arguments?.getString(ARG_NOTE_ID))
 
-        (findPreference(TEXT_SIZE) as ListPreference).onPreferenceChangeListener = mPreferenceListener
-        (findPreference(TEXT_COLOR) as ColorPreference).onPreferenceChangeListener = mPreferenceListener
-        (findPreference(BACKGROUND_COLOR) as ColorPreference).onPreferenceChangeListener = mPreferenceListener
-        (findPreference(TEXT_BACKGROUND_COLOR) as ColorPreference).onPreferenceChangeListener = mPreferenceListener
+        findPreference<ListPreference>(TEXT_SIZE)?.onPreferenceChangeListener = mPreferenceListener
+        findPreference<ColorPreferenceCompat>(TEXT_COLOR)?.onPreferenceChangeListener = mPreferenceListener
+        findPreference<ColorPreferenceCompat>(BACKGROUND_COLOR)?.onPreferenceChangeListener = mPreferenceListener
+        findPreference<ColorPreferenceCompat>(TEXT_BACKGROUND_COLOR)?.onPreferenceChangeListener = mPreferenceListener
     }
 
     override fun updateSettings(appearance: MyNoteAppearance) {
-        (findPreference(TEXT_SIZE) as ListPreference).apply {
+        findPreference<ListPreference>(TEXT_SIZE)?.apply {
             setValueIndex(this.findIndexOfValue(appearance.textSize.toString()))
         }
-        (findPreference(TEXT_COLOR) as ColorPreference).setDefaultValue(appearance.textColor)
-        (findPreference(BACKGROUND_COLOR) as ColorPreference).setDefaultValue(appearance.background)
-        (findPreference(TEXT_BACKGROUND_COLOR) as ColorPreference).setDefaultValue(appearance.textBackground)
+        findPreference<ColorPreferenceCompat>(TEXT_COLOR)?.setDefaultValue(appearance.textColor)
+        findPreference<ColorPreferenceCompat>(BACKGROUND_COLOR)?.setDefaultValue(appearance.background)
+        findPreference<ColorPreferenceCompat>(TEXT_BACKGROUND_COLOR)?.setDefaultValue(appearance.textBackground)
     }
 
     override fun onDestroy() {
