@@ -305,7 +305,7 @@ class NoteFragment : Fragment(), NoteFragmentContract.View, OnMapReadyCallback,
 
         val image = layout_tags.getChildAt(0) as ImageView
         image.setColorFilter(
-                appearance.textColor ?: getColor(requireContext(), R.color.black),
+                appearance.surfaceTextColor ?: getColor(requireContext(), R.color.black),
                 PorterDuff.Mode.SRC_IN
         )
         image.alpha = 0.4f
@@ -331,7 +331,7 @@ class NoteFragment : Fragment(), NoteFragmentContract.View, OnMapReadyCallback,
         layout_tags.removeViews(1, layout_tags.flexItemCount - 1)
         val image = layout_tags.getChildAt(0) as ImageView
         image.setColorFilter(
-                tagsAndAppearance.appearance.textColor ?: getColor(requireContext(), R.color.black),
+                tagsAndAppearance.appearance.surfaceTextColor ?: getColor(requireContext(), R.color.black),
                 PorterDuff.Mode.SRC_IN
         )
         image.alpha = 1.0f
