@@ -31,7 +31,7 @@
         android:key="theme"
         android:title="@string/settings_theme_title"
         app:iconSpaceReserved="false">
-        <!--app:cpv_showDialog="false"-->
+
         <com.jaredrummler.android.colorpicker.ColorPreferenceCompat
             android:defaultValue="@color/colorPrimary"
             android:key="color_primary"
@@ -54,6 +54,13 @@
             app:cpv_previewSize="large"
             app:cpv_showColorShades="false"
             app:iconSpaceReserved="false" />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:key="theme_notes"
+        android:title="@string/settings_note_title"
+        app:iconSpaceReserved="false">
 
         <com.jaredrummler.android.colorpicker.ColorPreferenceCompat
             android:defaultValue="@color/grey_light"
@@ -93,6 +100,17 @@
             android:key="all_notes_text_color"
             android:summary="@string/all_notes_text_color_settings_summary"
             android:title="@string/all_notes_text_color_settings_title"
+            app:cpv_allowPresets="false"
+            app:cpv_dialogType="custom"
+            app:cpv_previewSize="large"
+            app:cpv_showAlphaSlider="true"
+            app:iconSpaceReserved="false" />
+
+        <com.jaredrummler.android.colorpicker.ColorPreferenceCompat
+            android:key="all_notes_surface_text_color"
+            android:persistent="false"
+            android:summary="@string/all_notes_surface_font_color_summary"
+            android:title="@string/all_notes_surface_font_color_title"
             app:cpv_allowPresets="false"
             app:cpv_dialogType="custom"
             app:cpv_previewSize="large"

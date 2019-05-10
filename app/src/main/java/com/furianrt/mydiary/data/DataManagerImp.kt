@@ -409,6 +409,8 @@ class DataManagerImp(
 
     override fun getTextColor(): Int = prefs.getTextColor()
 
+    override fun getSurfaceTextColor(): Int = prefs.getSurfaceTextColor()
+
     override fun getTextSize(): Int = prefs.getTextSize()
 
     override fun getNoteBackgroundColor(): Int = prefs.getNoteBackgroundColor()

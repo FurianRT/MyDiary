@@ -23,6 +23,8 @@ class NoteSettingsPresenter(
                     mAppearance = appearance
                     mAppearance.textSize = mAppearance.textSize ?: dataManager.getTextSize()
                     mAppearance.textColor = mAppearance.textColor ?: dataManager.getTextColor()
+                    mAppearance.surfaceTextColor =
+                            mAppearance.surfaceTextColor ?: dataManager.getSurfaceTextColor()
                     mAppearance.background =
                             mAppearance.background ?: dataManager.getNoteBackgroundColor()
                     mAppearance.textBackground =
@@ -34,28 +36,31 @@ class NoteSettingsPresenter(
 
     override fun onTextSizeChange(size: Int) {
         mAppearance.textSize = size
-        addDisposable(dataManager.updateAppearance(mAppearance)
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe())
+        updateAppearence(mAppearance)
     }
 
     override fun onTextColorChange(color: Int) {
         mAppearance.textColor = color
-        addDisposable(dataManager.updateAppearance(mAppearance)
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe())
+        updateAppearence(mAppearance)
+    }
+
+    override fun onSurfaceTextColorChange(color: Int) {
+        mAppearance.surfaceTextColor = color
+        updateAppearence(mAppearance)
     }
 
     override fun onBackgroundColorChange(color: Int) {
         mAppearance.background = color
-        addDisposable(dataManager.updateAppearance(mAppearance)
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe())
+        updateAppearence(mAppearance)
     }
 
     override fun onBackgroundTextColorChange(color: Int) {
         mAppearance.textBackground = color
-        addDisposable(dataManager.updateAppearance(mAppearance)
+        updateAppearence(mAppearance)
+    }
+
+    private fun updateAppearence(appearance: MyNoteAppearance) {
+        addDisposable(dataManager.updateAppearance(appearance)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe())
     }

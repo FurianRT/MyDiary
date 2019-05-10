@@ -16,5 +16,6 @@ interface NoteSettingsContract {
         abstract fun onTextColorChange(color: Int)
         abstract fun onBackgroundColorChange(color: Int)
         abstract fun onBackgroundTextColorChange(color: Int)
+        abstract fun onSurfaceTextColorChange(color: Int)
     }
 }

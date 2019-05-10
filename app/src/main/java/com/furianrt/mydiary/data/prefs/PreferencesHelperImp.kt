@@ -26,6 +26,10 @@ class PreferencesHelperImp(val context: Context) : PreferencesHelper {
             mPrefs.getInt(PreferencesHelper.TEXT_COLOR,
                     ContextCompat.getColor(context, R.color.black))
 
+    override fun getSurfaceTextColor(): Int =
+            mPrefs.getInt(PreferencesHelper.SURFACE_TEXT_COLOR,
+                    ContextCompat.getColor(context, R.color.black))
+
     override fun getTextSize(): Int =
             mPrefs.getString(PreferencesHelper.TEXT_SIZE, PreferencesHelper.DEFAULT_TEXT_SIZE)!!.toInt()
 

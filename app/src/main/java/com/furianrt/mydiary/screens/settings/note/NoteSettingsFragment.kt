@@ -17,7 +17,8 @@ class NoteSettingsFragment : PreferenceFragmentCompat(), NoteSettingsContract.Vi
     private val mPreferenceListener = Preference.OnPreferenceChangeListener { preference, value ->
         when {
             preference.key == TEXT_SIZE -> mPresenter.onTextSizeChange((value as String).toInt())
-            preference.key == TEXT_COLOR -> mPresenter.onTextColorChange(value as Int)
+            preference.key == NOTE_TEXT_COLOR -> mPresenter.onTextColorChange(value as Int)
+            preference.key == SURFACE_TEXT_COLOR -> mPresenter.onSurfaceTextColorChange(value as Int)
             preference.key == BACKGROUND_COLOR -> mPresenter.onBackgroundColorChange(value as Int)
             preference.key == TEXT_BACKGROUND_COLOR -> mPresenter.onBackgroundTextColorChange(value as Int)
         }
@@ -37,14 +38,21 @@ class NoteSettingsFragment : PreferenceFragmentCompat(), NoteSettingsContract.Vi
 
         findPreference<ListPreference>(TEXT_SIZE)?.onPreferenceChangeListener = mPreferenceListener
 
-        findPreference<ColorPreferenceCompat>(TEXT_COLOR)?.let {
+        findPreference<ColorPreferenceCompat>(NOTE_TEXT_COLOR)?.let {
             it.isPersistent = false
             it.onPreferenceChangeListener = mPreferenceListener
         }
+
+        findPreference<ColorPreferenceCompat>(SURFACE_TEXT_COLOR)?.let {
+            it.isPersistent = false
+            it.onPreferenceChangeListener = mPreferenceListener
+        }
+
         findPreference<ColorPreferenceCompat>(BACKGROUND_COLOR)?.let {
             it.isPersistent = false
             it.onPreferenceChangeListener = mPreferenceListener
         }
+
         findPreference<ColorPreferenceCompat>(TEXT_BACKGROUND_COLOR)?.let {
             it.isPersistent = false
             it.onPreferenceChangeListener = mPreferenceListener
@@ -55,7 +63,8 @@ class NoteSettingsFragment : PreferenceFragmentCompat(), NoteSettingsContract.Vi
         findPreference<ListPreference>(TEXT_SIZE)?.apply {
             setValueIndex(this.findIndexOfValue(appearance.textSize.toString()))
         }
-        findPreference<ColorPreferenceCompat>(TEXT_COLOR)?.saveValue(appearance.textColor!!)
+        findPreference<ColorPreferenceCompat>(NOTE_TEXT_COLOR)?.saveValue(appearance.textColor!!)
+        findPreference<ColorPreferenceCompat>(SURFACE_TEXT_COLOR)?.saveValue(appearance.surfaceTextColor!!)
         findPreference<ColorPreferenceCompat>(BACKGROUND_COLOR)?.saveValue(appearance.background!!)
         findPreference<ColorPreferenceCompat>(TEXT_BACKGROUND_COLOR)?.saveValue(appearance.textBackground!!)
     }
@@ -71,7 +80,8 @@ class NoteSettingsFragment : PreferenceFragmentCompat(), NoteSettingsContract.Vi
 
         private const val ARG_NOTE_ID = "noteId"
         private const val TEXT_SIZE = "font_size_note"
-        private const val TEXT_COLOR = "note_text_color"
+        private const val NOTE_TEXT_COLOR = "note_text_color"
+        private const val SURFACE_TEXT_COLOR = "surface_text_color"
         private const val TEXT_BACKGROUND_COLOR = "note_text_background"
         private const val BACKGROUND_COLOR = "note_background"
 

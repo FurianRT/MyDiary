@@ -7,6 +7,7 @@ interface PreferencesHelper {
     fun isMapEnabled(): Boolean
     fun isMoodEnabled(): Boolean
     fun getTextColor(): Int
+    fun getSurfaceTextColor(): Int
     fun getTextSize(): Int
     fun getNoteBackgroundColor(): Int
     fun getNoteTextBackgroundColor(): Int
@@ -36,6 +37,7 @@ interface PreferencesHelper {
         const val MOOD_AVAILABILITY = "mood_activation"
         const val MAP_AVAILABILITY = "map_activation"
         const val TEXT_COLOR = "all_notes_text_color"
+        const val SURFACE_TEXT_COLOR = "all_notes_surface_text_color"
         const val TEXT_SIZE = "all_notes_text_size"
         const val NOTE_BACKGROUND_COLOR = "all_notes_background_color"
         const val NOTE_TEXT_BACKGROUND_COLOR = "all_notes_text_background_color"

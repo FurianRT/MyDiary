@@ -31,7 +31,7 @@
     </PreferenceCategory>
 
     <PreferenceCategory
-        android:title="@string/font"
+        android:title="@string/text"
         app:iconSpaceReserved="false">
 
         <ListPreference
@@ -50,6 +50,17 @@
             android:persistent="false"
             android:summary="@string/note_font_color_summary"
             android:title="@string/note_font_color_title"
+            app:cpv_allowPresets="false"
+            app:cpv_dialogType="custom"
+            app:cpv_previewSize="large"
+            app:cpv_showAlphaSlider="true"
+            app:iconSpaceReserved="false" />
+
+        <com.jaredrummler.android.colorpicker.ColorPreferenceCompat
+            android:key="surface_text_color"
+            android:persistent="false"
+            android:summary="@string/surface_font_color_summary"
+            android:title="@string/surface_font_color_title"
             app:cpv_allowPresets="false"
             app:cpv_dialogType="custom"
             app:cpv_previewSize="large"

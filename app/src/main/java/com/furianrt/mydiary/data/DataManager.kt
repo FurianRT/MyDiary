@@ -88,6 +88,7 @@ interface DataManager {
     fun getAllImagesFromCloud(): Single<List<MyImage>>
     fun getDbProfileCount(): Single<Int>
     fun getTextColor(): Int
+    fun getSurfaceTextColor(): Int
     fun getTextSize(): Int
     fun getNoteBackgroundColor(): Int
     fun getNoteTextBackgroundColor(): Int

@@ -290,11 +290,11 @@ class NoteFragment : Fragment(), NoteFragmentContract.View, OnMapReadyCallback,
         appearance.background?.let { layout_root_note.setBackgroundColor(it) }
         appearance.textBackground?.let { card_note_edit.setCardBackgroundColor(it) }
         appearance.textColor?.let { text_mood.setTextColor(it) }
-        appearance.textColor?.let { text_location.setTextColor(it) }
-        appearance.textColor?.let { text_date.setTextColor(it) }
-        appearance.textColor?.let { text_time.setTextColor(it) }
-        appearance.textColor?.let { text_temp.setTextColor(it) }
         appearance.textColor?.let { text_category.setTextColor(it) }
+        appearance.surfaceTextColor?.let { text_location.setTextColor(it) }
+        appearance.surfaceTextColor?.let { text_date.setTextColor(it) }
+        appearance.surfaceTextColor?.let { text_time.setTextColor(it) }
+        appearance.surfaceTextColor?.let { text_temp.setTextColor(it) }
         childFragmentManager.findFragmentByTag(NoteContentFragment.TAG)?.let {
             (it as NoteContentFragment).setAppearance(appearance)
         }

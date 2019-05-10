@@ -24,6 +24,7 @@ data class MyNoteAppearance(
         @ColumnInfo(name = FIELD_BACKGROUND_COLOR) var background: Int? = null,
         @ColumnInfo(name = FIELD_TEXT_BACKGROUND_COLOR) var textBackground: Int? = null,
         @ColumnInfo(name = FIELD_TEXT_COLOR) var textColor: Int? = null,
+        @ColumnInfo(name = FIELD_SURFACE_TEXT_COLOR) var surfaceTextColor: Int? = null,
         @ColumnInfo(name = FIELD_TEXT_SIZE) var textSize: Int? = null,
         @ColumnInfo(name = FIELD_SYNC_WITH) var syncWith: MutableList<String> = mutableListOf(),
         @ColumnInfo(name = FIELD_IS_DELETED) var isDeleted: Boolean = false
@@ -35,6 +36,7 @@ data class MyNoteAppearance(
         const val FIELD_BACKGROUND_COLOR = "background_color"
         const val FIELD_TEXT_BACKGROUND_COLOR = "text_background_color"
         const val FIELD_TEXT_COLOR = "text_color"
+        const val FIELD_SURFACE_TEXT_COLOR = "surface_text_color"
         const val FIELD_TEXT_SIZE = "text_size"
         const val FIELD_SYNC_WITH = "appearance_sync_with"
         const val FIELD_IS_DELETED = "is_appearance_deleted"
