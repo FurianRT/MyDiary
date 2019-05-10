@@ -5,5 +5,5 @@
     <solid android:color="@android:color/transparent" />
     <stroke
         android:width="0.5dp"
-        android:color="?attr/colorAccent" />
+        android:color="?attr/colorPrimary" />
 </shape>

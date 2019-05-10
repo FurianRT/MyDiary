@@ -18,7 +18,7 @@ import android.widget.TextView
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.content.ContextCompat.getColor
 import androidx.fragment.app.Fragment
-import androidx.viewpager.widget.ViewPager
+import androidx.viewpager2.widget.ViewPager2
 import com.furianrt.mydiary.R
 import com.furianrt.mydiary.data.api.forecast.Forecast
 import com.furianrt.mydiary.data.model.*
@@ -61,7 +61,8 @@ import javax.inject.Inject
 import kotlin.collections.ArrayList
 
 class NoteFragment : Fragment(), NoteFragmentContract.View, OnMapReadyCallback,
-        View.OnClickListener, DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener {
+        View.OnClickListener, DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener,
+        NoteImagePagerAdapter.OnNoteImagePagerInteractionListener {
 
     companion object {
         const val TAG = "NoteFragment"
@@ -93,14 +94,12 @@ class NoteFragment : Fragment(), NoteFragmentContract.View, OnMapReadyCallback,
     @Inject
     lateinit var mPresenter: NoteFragmentContract.Presenter
 
-    private lateinit var mPagerAdapter: NoteFragmentPagerAdapter
+    private val mImagePagerAdapter = NoteImagePagerAdapter(listener = this)
     private lateinit var mMode: NoteActivity.Companion.Mode
 
     private var mGoogleMap: GoogleMap? = null
     private var mImagePagerPosition = 0
-    private val mOnPageChangeListener = object : ViewPager.OnPageChangeListener {
-        override fun onPageScrollStateChanged(state: Int) {}
-        override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {}
+    private val mOnPageChangeCallback = object : ViewPager2.OnPageChangeCallback() {
         override fun onPageSelected(position: Int) {
             text_image_position.text = (position + 1).toString()
         }
@@ -125,7 +124,7 @@ class NoteFragment : Fragment(), NoteFragmentContract.View, OnMapReadyCallback,
             mPresenter.setNoteTextBuffer(it.getParcelableArrayList(BUNDLE_NOTE_TEXT_BUFFER)
                     ?: ArrayList())
         }
-        mPresenter.init(note, mMode)
+        mPresenter.init(note, mMode)  //todo Режет глаз. Придумать как убрать эту херню
         setHasOptionsMenu(true)
     }
 
@@ -135,8 +134,8 @@ class NoteFragment : Fragment(), NoteFragmentContract.View, OnMapReadyCallback,
 
         someTemporaryFunction(view)
 
-        mPagerAdapter = NoteFragmentPagerAdapter(childFragmentManager)
-        view.pager_note_image.adapter = mPagerAdapter
+        view.pager_note_image.adapter = mImagePagerAdapter
+        view.pager_note_image.isSaveEnabled = false
 
         view.layout_mood.setOnClickListener(this@NoteFragment)
         view.layout_category.setOnClickListener(this@NoteFragment)
@@ -175,7 +174,7 @@ class NoteFragment : Fragment(), NoteFragmentContract.View, OnMapReadyCallback,
     override fun onResume() {
         super.onResume()
         requireActivity().window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE)
-        pager_note_image.addOnPageChangeListener(mOnPageChangeListener)
+        pager_note_image.registerOnPageChangeCallback(mOnPageChangeCallback)
         mPresenter.attachView(this)
         mPresenter.onViewStart(requireContext().isLocationEnabled(), requireContext().isNetworkAvailable())
     }
@@ -183,7 +182,7 @@ class NoteFragment : Fragment(), NoteFragmentContract.View, OnMapReadyCallback,
     override fun onPause() {
         super.onPause()
         mImagePagerPosition = pager_note_image.currentItem
-        pager_note_image.removeOnPageChangeListener(mOnPageChangeListener)
+        pager_note_image.unregisterOnPageChangeCallback(mOnPageChangeCallback)
         mPresenter.detachView()
     }
 
@@ -264,8 +263,8 @@ class NoteFragment : Fragment(), NoteFragmentContract.View, OnMapReadyCallback,
         }
     }
 
-    fun onToolbarImageClick() {
-        mPresenter.onToolbarImageClick()
+    override fun onImageClick(image: MyImage) {
+        mPresenter.onToolbarImageClick(image)
     }
 
     fun onNoteEditFinished(noteTitle: String, noteContent: String) {
@@ -275,7 +274,7 @@ class NoteFragment : Fragment(), NoteFragmentContract.View, OnMapReadyCallback,
         mPresenter.updateNoteText(noteTitle, noteContent)
     }
 
-    override fun showGalleryView(noteId: String) {
+    override fun showGalleryView(noteId: String, image: MyImage) {
         startActivity(GalleryActivity.newIntent(requireContext(), noteId, pager_note_image.currentItem))
     }
 
@@ -455,7 +454,7 @@ class NoteFragment : Fragment(), NoteFragmentContract.View, OnMapReadyCallback,
 
     fun enableActionBarExpanding(expanded: Boolean, animate: Boolean) {
         Log.e(TAG, "enableActionBarExpanding")
-        if (mPagerAdapter.images.isEmpty()) {
+        if (mImagePagerAdapter.itemCount == 0) {
             return
         }
         app_bar_layout.setExpanded(expanded, animate)
@@ -580,8 +579,7 @@ class NoteFragment : Fragment(), NoteFragmentContract.View, OnMapReadyCallback,
     override fun showImages(images: List<MyImage>) {
         Log.e(TAG, "showImages")
         text_image_count.text = images.size.toString()
-        mPagerAdapter.images = images
-        mPagerAdapter.notifyDataSetChanged()
+        mImagePagerAdapter.submitImages(images)
         pager_note_image.setCurrentItem(mImagePagerPosition, false)
         if (childFragmentManager.findFragmentByTag(NoteEditFragment.TAG) == null) {
             enableActionBarExpanding(expanded = true, animate = true)
@@ -591,8 +589,7 @@ class NoteFragment : Fragment(), NoteFragmentContract.View, OnMapReadyCallback,
     override fun showNoImages() {
         Log.e(TAG, "showNoImages")
         text_image_count.text = "0"
-        mPagerAdapter.images = emptyList()
-        mPagerAdapter.notifyDataSetChanged()
+        mImagePagerAdapter.submitImages(emptyList())
         disableActionBarExpanding(false)
     }
 

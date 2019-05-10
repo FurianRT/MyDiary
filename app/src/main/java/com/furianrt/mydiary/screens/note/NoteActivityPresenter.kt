@@ -4,7 +4,6 @@ import com.furianrt.mydiary.data.DataManager
 import com.furianrt.mydiary.data.model.MyNote
 import com.furianrt.mydiary.data.model.MyNoteAppearance
 import io.reactivex.android.schedulers.AndroidSchedulers
-import java.util.concurrent.TimeUnit
 
 class NoteActivityPresenter(
         private val dataManager: DataManager
@@ -12,7 +11,6 @@ class NoteActivityPresenter(
 
     override fun loadNotes() {
         addDisposable(dataManager.getAllNotesWithProp()
-                .debounce(400L, TimeUnit.MILLISECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { notes ->
                     if (notes.isEmpty()) {
@@ -35,7 +33,6 @@ class NoteActivityPresenter(
                         .andThen(dataManager.insertAppearance(noteAppearance))
                         .toSingleDefault(newNote))
                 .flatMapPublisher { dataManager.getAllNotesWithProp() }
-                .debounce(400L, TimeUnit.MILLISECONDS)
                 .map { notes -> notes.filter { it.note.id == noteId } }
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { notes ->

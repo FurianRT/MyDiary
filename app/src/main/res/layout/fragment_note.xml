@@ -108,6 +108,8 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/text_date">
 
+                <!--CompoundDrawables не используется из-за применения colorFilter к самому Drawable, а не к View.
+                    И при переходе к следующей заметке, к ней применяется цвет старой-->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
@@ -147,6 +149,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="match_parent"
                                 android:gravity="center"
+                                android:maxLines="1"
                                 android:text="@string/choose_mood"
                                 android:textColor="@color/black" />
 
@@ -173,7 +176,9 @@
                                 android:id="@+id/text_category"
                                 android:layout_width="wrap_content"
                                 android:layout_height="match_parent"
+                                android:ellipsize="end"
                                 android:gravity="center"
+                                android:maxLines="1"
                                 android:text="@string/choose_category"
                                 android:textColor="@color/black" />
 

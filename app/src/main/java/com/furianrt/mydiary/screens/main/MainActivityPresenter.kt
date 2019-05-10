@@ -97,7 +97,7 @@ class MainActivityPresenter(
                 .filter { it == DataManager.SIGN_STATE_SIGN_OUT }
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe {
-                    addDisposable(dataManager.clearDbProfile()  //todo вынужденный Disposable в subscribe
+                    addDisposable(dataManager.clearDbProfile()
                             .observeOn(AndroidSchedulers.mainThread())
                             .subscribe { view?.showAnonymousProfile() })
                 })

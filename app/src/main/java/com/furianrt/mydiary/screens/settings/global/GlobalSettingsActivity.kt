@@ -1,7 +1,7 @@
 package com.furianrt.mydiary.screens.settings.global
 
 import android.os.Bundle
-import android.preference.PreferenceManager
+import androidx.preference.PreferenceManager
 import com.furianrt.mydiary.R
 import com.furianrt.mydiary.base.BaseActivity
 import kotlinx.android.synthetic.main.activity_global_settings.*

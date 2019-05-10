@@ -4,22 +4,19 @@ import com.furianrt.mydiary.data.DataManager
 import com.furianrt.mydiary.data.model.MyImage
 import io.reactivex.android.schedulers.AndroidSchedulers
 import org.joda.time.DateTime
-import java.util.concurrent.TimeUnit
 
 class GalleryPagerPresenter(
         private val dataManager: DataManager
 ) : GalleryPagerContract.Presenter() {
 
-    private lateinit var mNoteId: String
     private var mEditedImage: MyImage? = null
 
-    override fun onViewStart() {
-        loadImages(mNoteId)
+    override fun onViewResume(noteId: String) {
+        loadImages(noteId)
     }
 
     private fun loadImages(noteId: String) {
         addDisposable(dataManager.getImagesForNote(noteId)
-                .debounce(400L, TimeUnit.MILLISECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { images ->
                     if (images.isEmpty()) {
@@ -30,12 +27,8 @@ class GalleryPagerPresenter(
                 })
     }
 
-    override fun onButtonListModeClick() {
-        view?.showListImagesView(mNoteId)
-    }
-
-    override fun setNoteId(noteId: String) {
-        mNoteId = noteId
+    override fun onButtonListModeClick(noteId: String) {
+        view?.showListImagesView(noteId)
     }
 
     override fun onButtonDeleteClick(image: MyImage) {
@@ -48,15 +41,11 @@ class GalleryPagerPresenter(
     }
 
     override fun onImageEdited() {
-        mEditedImage?.let { image ->
-            addDisposable(dataManager.getDbProfile()
-                    .firstOrError()
-                    .flatMapCompletable {
-                        dataManager.updateImage(image.apply {
-                            fileSyncWith.clear()
-                            editedTime = DateTime.now().millis
-                        })
-                    }
+        mEditedImage?.let {
+            val image = it.copy()
+            image.fileSyncWith.clear()
+            image.editedTime = DateTime.now().millis
+            addDisposable(dataManager.updateImage(image)
                     .subscribe())
         }
     }

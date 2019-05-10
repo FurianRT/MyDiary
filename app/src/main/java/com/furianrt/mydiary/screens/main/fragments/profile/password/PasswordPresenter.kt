@@ -44,14 +44,13 @@ class PasswordPresenter(
                             view?.hideLoading()
                             view?.showErrorWrongOldPassword()
                         }
-                        is FirebaseAuthInvalidUserException -> {
-                            addDisposable(dataManager.signOut() //todo вынужденный Disposable в subscribe.
+                        is FirebaseAuthInvalidUserException ->
+                            addDisposable(dataManager.signOut()
                                     .observeOn(AndroidSchedulers.mainThread())
                                     .subscribe {
                                         view?.hideLoading()
                                         view?.close()
                                     })
-                        }
                         else -> {
                             it.printStackTrace()
                             view?.hideLoading()

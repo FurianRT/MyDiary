@@ -1,5 +1,6 @@
 package com.furianrt.mydiary.data
 
+import android.annotation.SuppressLint
 import android.util.Base64
 import com.furianrt.mydiary.BuildConfig
 import com.furianrt.mydiary.data.api.forecast.Forecast
@@ -32,7 +33,8 @@ class DataManagerImp(
         private val rxScheduler: Scheduler
 ) : DataManager {
 
-    private fun decryptString(string: String): String {   //todo сделать более надежный алгоритм шифрования
+    @SuppressLint("GetInstance")
+    private fun decryptString(string: String): String {
         val keyBytes = BuildConfig.PREFS_PASSWORD.toByteArray()
         val aesKey = SecretKeySpec(keyBytes, "AES")
         val cipher = Cipher.getInstance("AES")
@@ -41,6 +43,7 @@ class DataManagerImp(
         return String(decryptedByteValue)
     }
 
+    @SuppressLint("GetInstance")
     private fun encryptString(string: String): String {
         val keyBytes = BuildConfig.PREFS_PASSWORD.toByteArray()
         val aesKey = SecretKeySpec(keyBytes, "AES")
@@ -590,7 +593,7 @@ class DataManagerImp(
 
     override fun updateProfile(profile: MyProfile): Completable =
             cloud.saveProfile(profile)
-                    .andThen(database.profileDao().update(profile))
+                    .andThen(database.profileDao().update(profile).subscribeOn(rxScheduler))
                     .subscribeOn(rxScheduler)
 
     override fun sendPasswordResetEmail(email: String): Completable =

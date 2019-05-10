@@ -1,4 +1,4 @@
-package com.furianrt.mydiary.screens.gallery.fragments.pager
+package com.furianrt.mydiary.screens.note.fragments.notefragment
 
 import android.net.Uri
 import android.view.LayoutInflater
@@ -11,41 +11,45 @@ import com.bumptech.glide.signature.ObjectKey
 import com.furianrt.mydiary.R
 import com.furianrt.mydiary.data.model.MyImage
 import com.furianrt.mydiary.general.GlideApp
-import kotlinx.android.synthetic.main.gallery_pager_item.view.*
+import kotlinx.android.synthetic.main.note_image_pager_item.view.*
 
-class GalleryPagerAdapter(
-        private val images: ArrayList<MyImage> = ArrayList()
-) : RecyclerView.Adapter<GalleryPagerAdapter.GalleryPagerViewHolder>() {
+class NoteImagePagerAdapter(
+        private var images: ArrayList<MyImage> = ArrayList(),
+        var listener: OnNoteImagePagerInteractionListener? = null
+) : RecyclerView.Adapter<NoteImagePagerAdapter.NoteImageViewHolder>() {
 
     fun submitImages(images: List<MyImage>) {
-        val diffCallback = GalleryPagerDiffCallback(this.images, images)
+        val diffCallback = NoteImagePagerDiffCallback(this.images, images)
         val diffResult = DiffUtil.calculateDiff(diffCallback)
         this.images.clear()
         this.images.addAll(images)
         diffResult.dispatchUpdatesTo(this)
     }
 
-    fun getItem(position: Int): MyImage = images[position]
-
     override fun getItemCount(): Int = images.size
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): GalleryPagerViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): NoteImageViewHolder {
         val view = LayoutInflater.from(parent.context)
-                .inflate(R.layout.gallery_pager_item, parent, false)
-        return GalleryPagerViewHolder(view)
+                .inflate(R.layout.note_image_pager_item, parent, false)
+        return NoteImageViewHolder(view)
     }
 
-    override fun onBindViewHolder(holder: GalleryPagerViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: NoteImageViewHolder, position: Int) {
         holder.bind(images[position])
     }
 
-    class GalleryPagerViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+    inner class NoteImageViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         fun bind(image: MyImage) {
+            itemView.setOnClickListener { listener?.onImageClick(image) }
             GlideApp.with(itemView)
                     .load(Uri.parse(image.uri))
                     .signature(ObjectKey(image.editedTime))
                     .transition(DrawableTransitionOptions.withCrossFade())
-                    .into(itemView.image_gallery)
+                    .into(itemView.image_note)
         }
+    }
+
+    interface OnNoteImagePagerInteractionListener {
+        fun onImageClick(image: MyImage)
     }
 }

@@ -9,7 +9,7 @@ import com.furianrt.mydiary.screens.note.fragments.notefragment.NoteFragment
 class NoteActivityPagerAdapter(
         fm: FragmentManager,
         private val mode: NoteActivity.Companion.Mode
-) : FragmentStatePagerAdapter(fm, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
+) : FragmentStatePagerAdapter(fm, BEHAVIOR_SET_USER_VISIBLE_HINT) {
 
     private var mIsSizeChanged = false
 

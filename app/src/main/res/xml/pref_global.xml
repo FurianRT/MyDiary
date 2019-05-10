@@ -31,7 +31,7 @@
         android:key="theme"
         android:title="@string/settings_theme_title"
         app:iconSpaceReserved="false">
-
+        <!--app:cpv_showDialog="false"-->
         <com.jaredrummler.android.colorpicker.ColorPreferenceCompat
             android:defaultValue="@color/colorPrimary"
             android:key="color_primary"
@@ -40,7 +40,7 @@
             app:cpv_allowCustom="false"
             app:cpv_colorPresets="@array/colors"
             app:cpv_previewSize="large"
-            app:cpv_showDialog="false"
+
             app:cpv_showColorShades="false"
             app:iconSpaceReserved="false" />
 

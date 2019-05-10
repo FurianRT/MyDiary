@@ -21,7 +21,7 @@ class NoteFragmentPresenter(private val dataManager: DataManager) : NoteFragment
 
     companion object {
         private const val TAG = "NoteFragmentPresenter"
-        private const val UNDO_REDO_BUFFER_SIZE = 10
+        private const val UNDO_REDO_BUFFER_SIZE = 20
     }
 
     private lateinit var mMode: NoteActivity.Companion.Mode
@@ -63,7 +63,6 @@ class NoteFragmentPresenter(private val dataManager: DataManager) : NoteFragment
 
     private fun loadImages() {
         addDisposable(dataManager.getImagesForNote(mNoteId)
-                .debounce(400L, TimeUnit.MILLISECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { images ->
                     if (images.isEmpty()) {
@@ -95,7 +94,6 @@ class NoteFragmentPresenter(private val dataManager: DataManager) : NoteFragment
     private fun loadNote(mode: NoteActivity.Companion.Mode, locationEnabled: Boolean,
                          networkAvailable: Boolean) {
         addDisposable(dataManager.getNote(mNoteId)
-                .debounce(400L, TimeUnit.MILLISECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { note ->
                     view?.showNoteText(note.title, note.content)
@@ -107,7 +105,6 @@ class NoteFragmentPresenter(private val dataManager: DataManager) : NoteFragment
 
     private fun loadNoteAppearance() {
         addDisposable(dataManager.getNoteAppearance(mNoteId)
-                .debounce(400L, TimeUnit.MILLISECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { appearance ->
                     appearance.textSize = appearance.textSize ?: dataManager.getTextSize()
@@ -163,7 +160,6 @@ class NoteFragmentPresenter(private val dataManager: DataManager) : NoteFragment
                         categories.find { it.id == note.categoryId } ?: MyCategory()
                     }
                 })
-                .debounce(400L, TimeUnit.MILLISECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { category ->
                     if (category.id.isBlank()) {
@@ -260,8 +256,8 @@ class NoteFragmentPresenter(private val dataManager: DataManager) : NoteFragment
         view?.showDeleteConfirmationDialog(mNoteId)
     }
 
-    override fun onToolbarImageClick() {
-        view?.showGalleryView(mNoteId)
+    override fun onToolbarImageClick(image: MyImage) {
+        view?.showGalleryView(mNoteId, image)
     }
 
     override fun onButtonAppearanceClick() {

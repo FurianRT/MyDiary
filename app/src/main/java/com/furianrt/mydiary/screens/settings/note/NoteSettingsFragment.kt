@@ -17,18 +17,9 @@ class NoteSettingsFragment : PreferenceFragmentCompat(), NoteSettingsContract.Vi
     private val mPreferenceListener = Preference.OnPreferenceChangeListener { preference, value ->
         when {
             preference.key == TEXT_SIZE -> mPresenter.onTextSizeChange((value as String).toInt())
-            preference.key == TEXT_COLOR -> {
-                (preference as ColorPreferenceCompat).setDefaultValue(value)
-                mPresenter.onTextColorChange(value as Int)
-            }
-            preference.key == BACKGROUND_COLOR -> {
-                (preference as ColorPreferenceCompat).setDefaultValue(value)
-                mPresenter.onBackgroundColorChange(value as Int)
-            }
-            preference.key == TEXT_BACKGROUND_COLOR -> {
-                (preference as ColorPreferenceCompat).setDefaultValue(value)
-                mPresenter.onBackgroundTextColorChange(value as Int)
-            }
+            preference.key == TEXT_COLOR -> mPresenter.onTextColorChange(value as Int)
+            preference.key == BACKGROUND_COLOR -> mPresenter.onBackgroundColorChange(value as Int)
+            preference.key == TEXT_BACKGROUND_COLOR -> mPresenter.onBackgroundTextColorChange(value as Int)
         }
         return@OnPreferenceChangeListener true
     }
@@ -45,18 +36,28 @@ class NoteSettingsFragment : PreferenceFragmentCompat(), NoteSettingsContract.Vi
         mPresenter.onViewCreate(arguments?.getString(ARG_NOTE_ID))
 
         findPreference<ListPreference>(TEXT_SIZE)?.onPreferenceChangeListener = mPreferenceListener
-        findPreference<ColorPreferenceCompat>(TEXT_COLOR)?.onPreferenceChangeListener = mPreferenceListener
-        findPreference<ColorPreferenceCompat>(BACKGROUND_COLOR)?.onPreferenceChangeListener = mPreferenceListener
-        findPreference<ColorPreferenceCompat>(TEXT_BACKGROUND_COLOR)?.onPreferenceChangeListener = mPreferenceListener
+
+        findPreference<ColorPreferenceCompat>(TEXT_COLOR)?.let {
+            it.isPersistent = false
+            it.onPreferenceChangeListener = mPreferenceListener
+        }
+        findPreference<ColorPreferenceCompat>(BACKGROUND_COLOR)?.let {
+            it.isPersistent = false
+            it.onPreferenceChangeListener = mPreferenceListener
+        }
+        findPreference<ColorPreferenceCompat>(TEXT_BACKGROUND_COLOR)?.let {
+            it.isPersistent = false
+            it.onPreferenceChangeListener = mPreferenceListener
+        }
     }
 
     override fun updateSettings(appearance: MyNoteAppearance) {
         findPreference<ListPreference>(TEXT_SIZE)?.apply {
             setValueIndex(this.findIndexOfValue(appearance.textSize.toString()))
         }
-        findPreference<ColorPreferenceCompat>(TEXT_COLOR)?.setDefaultValue(appearance.textColor)
-        findPreference<ColorPreferenceCompat>(BACKGROUND_COLOR)?.setDefaultValue(appearance.background)
-        findPreference<ColorPreferenceCompat>(TEXT_BACKGROUND_COLOR)?.setDefaultValue(appearance.textBackground)
+        findPreference<ColorPreferenceCompat>(TEXT_COLOR)?.saveValue(appearance.textColor!!)
+        findPreference<ColorPreferenceCompat>(BACKGROUND_COLOR)?.saveValue(appearance.background!!)
+        findPreference<ColorPreferenceCompat>(TEXT_BACKGROUND_COLOR)?.saveValue(appearance.textBackground!!)
     }
 
     override fun onDestroy() {

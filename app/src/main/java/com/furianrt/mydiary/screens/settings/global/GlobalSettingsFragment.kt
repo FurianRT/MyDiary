@@ -4,8 +4,9 @@ import android.app.Activity
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
-import android.preference.PreferenceManager
+import android.os.Handler
 import androidx.preference.PreferenceFragmentCompat
+import androidx.preference.PreferenceManager
 import androidx.preference.SwitchPreference
 import com.furianrt.mydiary.R
 import com.furianrt.mydiary.data.prefs.PreferencesHelper
@@ -18,10 +19,13 @@ class GlobalSettingsFragment : PreferenceFragmentCompat(), GlobalSettingsContrac
     companion object {
         private const val REQUEST_CODE_CREATE_PIN = 1
         private const val REQUEST_CODE_REMOVE_PIN = 2
+        private const val RECREATE_DELAY = 100L
     }
 
     @Inject
     lateinit var mPresenter: GlobalSettingsContract.Presenter
+    private val mHandler = Handler()
+    private val mRecreateRunnable = Runnable { activity?.recreate() }
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         setPreferencesFromResource(R.xml.pref_global, rootKey)
@@ -42,8 +46,8 @@ class GlobalSettingsFragment : PreferenceFragmentCompat(), GlobalSettingsContrac
 
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
         when (key) {
-            PreferencesHelper.COLOR_PRIMARY -> activity?.recreate()
-            PreferencesHelper.COLOR_ACCENT -> activity?.recreate()
+            PreferencesHelper.COLOR_PRIMARY -> mHandler.postDelayed(mRecreateRunnable, RECREATE_DELAY)
+            PreferencesHelper.COLOR_ACCENT -> mHandler.postDelayed(mRecreateRunnable, RECREATE_DELAY)
         }
     }
 
