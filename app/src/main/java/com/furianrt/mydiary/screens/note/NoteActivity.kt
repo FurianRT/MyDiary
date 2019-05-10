@@ -10,7 +10,7 @@ import androidx.viewpager.widget.ViewPager
 import com.furianrt.mydiary.R
 import com.furianrt.mydiary.base.BaseActivity
 import com.furianrt.mydiary.data.model.MyNoteWithProp
-import com.furianrt.mydiary.screens.note.fragments.notefragment.edit.NoteEditFragment
+import com.furianrt.mydiary.screens.note.fragments.mainnote.edit.NoteEditFragment
 import com.furianrt.mydiary.utils.generateUniqueId
 import kotlinx.android.synthetic.main.activity_note.*
 import javax.inject.Inject

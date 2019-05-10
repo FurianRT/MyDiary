@@ -1,4 +1,4 @@
-package com.furianrt.mydiary.screens.note.fragments.notefragment.edit
+package com.furianrt.mydiary.screens.note.fragments.mainnote.edit
 
 import com.furianrt.mydiary.data.DataManager
 

@@ -1,4 +1,4 @@
-package com.furianrt.mydiary.screens.note.fragments.notefragment
+package com.furianrt.mydiary.screens.note.fragments.mainnote
 
 import android.Manifest
 import android.annotation.SuppressLint
@@ -32,8 +32,8 @@ import com.furianrt.mydiary.general.AppBarLayoutBehavior
 import com.furianrt.mydiary.general.GlideApp
 import com.furianrt.mydiary.screens.gallery.GalleryActivity
 import com.furianrt.mydiary.screens.note.NoteActivity
-import com.furianrt.mydiary.screens.note.fragments.notefragment.content.NoteContentFragment
-import com.furianrt.mydiary.screens.note.fragments.notefragment.edit.NoteEditFragment
+import com.furianrt.mydiary.screens.note.fragments.mainnote.content.NoteContentFragment
+import com.furianrt.mydiary.screens.note.fragments.mainnote.edit.NoteEditFragment
 import com.furianrt.mydiary.screens.settings.note.NoteSettingsActivity
 import com.furianrt.mydiary.utils.*
 import com.google.android.gms.location.FusedLocationProviderClient

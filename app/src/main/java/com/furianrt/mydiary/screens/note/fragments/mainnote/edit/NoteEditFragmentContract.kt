@@ -1,4 +1,4 @@
-package com.furianrt.mydiary.screens.note.fragments.notefragment.edit
+package com.furianrt.mydiary.screens.note.fragments.mainnote.edit
 
 import com.furianrt.mydiary.base.BasePresenter
 import com.furianrt.mydiary.base.BaseView

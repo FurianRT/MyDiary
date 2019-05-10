@@ -29,9 +29,9 @@ import com.furianrt.mydiary.screens.main.fragments.profile.menu.MenuProfileFragm
 import com.furianrt.mydiary.screens.main.fragments.profile.password.PasswordFragment
 import com.furianrt.mydiary.screens.main.fragments.profile.signout.SignOutFragment
 import com.furianrt.mydiary.screens.note.NoteActivity
-import com.furianrt.mydiary.screens.note.fragments.notefragment.NoteFragment
-import com.furianrt.mydiary.screens.note.fragments.notefragment.content.NoteContentFragment
-import com.furianrt.mydiary.screens.note.fragments.notefragment.edit.NoteEditFragment
+import com.furianrt.mydiary.screens.note.fragments.mainnote.NoteFragment
+import com.furianrt.mydiary.screens.note.fragments.mainnote.content.NoteContentFragment
+import com.furianrt.mydiary.screens.note.fragments.mainnote.edit.NoteEditFragment
 import com.furianrt.mydiary.screens.pin.PinActivity
 import com.furianrt.mydiary.screens.pin.fragments.backupemail.BackupEmailFragment
 import com.furianrt.mydiary.screens.pin.fragments.sendemail.SendEmailFragment

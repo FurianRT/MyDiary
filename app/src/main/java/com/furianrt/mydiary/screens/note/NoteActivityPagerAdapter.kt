@@ -4,7 +4,7 @@ import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentStatePagerAdapter
 import androidx.viewpager.widget.PagerAdapter
 import com.furianrt.mydiary.data.model.MyNoteWithProp
-import com.furianrt.mydiary.screens.note.fragments.notefragment.NoteFragment
+import com.furianrt.mydiary.screens.note.fragments.mainnote.NoteFragment
 
 class NoteActivityPagerAdapter(
         fm: FragmentManager,

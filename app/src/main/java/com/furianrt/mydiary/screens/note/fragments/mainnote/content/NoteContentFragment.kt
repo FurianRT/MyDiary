@@ -1,4 +1,4 @@
-package com.furianrt.mydiary.screens.note.fragments.notefragment.content
+package com.furianrt.mydiary.screens.note.fragments.mainnote.content
 
 import android.os.Bundle
 import android.util.Log
@@ -11,8 +11,8 @@ import androidx.fragment.app.Fragment
 import com.furianrt.mydiary.R
 import com.furianrt.mydiary.data.model.MyNoteAppearance
 import com.furianrt.mydiary.screens.note.NoteActivity
-import com.furianrt.mydiary.screens.note.fragments.notefragment.NoteFragment
-import com.furianrt.mydiary.screens.note.fragments.notefragment.edit.NoteEditFragment
+import com.furianrt.mydiary.screens.note.fragments.mainnote.NoteFragment
+import com.furianrt.mydiary.screens.note.fragments.mainnote.edit.NoteEditFragment
 import com.furianrt.mydiary.utils.inTransaction
 import kotlinx.android.synthetic.main.fragment_note_content.*
 import kotlinx.android.synthetic.main.fragment_note_content.view.*

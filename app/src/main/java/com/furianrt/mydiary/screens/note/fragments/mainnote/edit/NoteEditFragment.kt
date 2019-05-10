@@ -1,4 +1,4 @@
-package com.furianrt.mydiary.screens.note.fragments.notefragment.edit
+package com.furianrt.mydiary.screens.note.fragments.mainnote.edit
 
 import android.content.Context
 import android.graphics.Color
@@ -12,8 +12,8 @@ import androidx.core.graphics.ColorUtils
 import androidx.fragment.app.Fragment
 import com.furianrt.mydiary.R
 import com.furianrt.mydiary.data.model.MyNoteAppearance
-import com.furianrt.mydiary.screens.note.fragments.notefragment.NoteFragment
-import com.furianrt.mydiary.screens.note.fragments.notefragment.content.NoteContentFragment
+import com.furianrt.mydiary.screens.note.fragments.mainnote.NoteFragment
+import com.furianrt.mydiary.screens.note.fragments.mainnote.content.NoteContentFragment
 import com.furianrt.mydiary.utils.showKeyboard
 import kotlinx.android.synthetic.main.fragment_note_edit.*
 import kotlinx.android.synthetic.main.fragment_note_edit.view.*

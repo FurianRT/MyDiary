@@ -1,4 +1,4 @@
-package com.furianrt.mydiary.screens.note.fragments.notefragment
+package com.furianrt.mydiary.screens.note.fragments.mainnote
 
 import android.location.Address
 import android.util.Log

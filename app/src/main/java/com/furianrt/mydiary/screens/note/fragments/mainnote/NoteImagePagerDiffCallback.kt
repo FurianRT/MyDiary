@@ -1,4 +1,4 @@
-package com.furianrt.mydiary.screens.note.fragments.notefragment
+package com.furianrt.mydiary.screens.note.fragments.mainnote
 
 import androidx.recyclerview.widget.DiffUtil
 import com.furianrt.mydiary.data.model.MyImage

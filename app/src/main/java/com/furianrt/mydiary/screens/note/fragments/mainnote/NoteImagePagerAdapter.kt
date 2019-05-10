@@ -1,4 +1,4 @@
-package com.furianrt.mydiary.screens.note.fragments.notefragment
+package com.furianrt.mydiary.screens.note.fragments.mainnote
 
 import android.net.Uri
 import android.view.LayoutInflater
