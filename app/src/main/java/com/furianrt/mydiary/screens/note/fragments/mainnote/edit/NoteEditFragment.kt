@@ -14,6 +14,7 @@ import com.furianrt.mydiary.R
 import com.furianrt.mydiary.data.model.MyNoteAppearance
 import com.furianrt.mydiary.screens.note.fragments.mainnote.NoteFragment
 import com.furianrt.mydiary.screens.note.fragments.mainnote.content.NoteContentFragment
+import com.furianrt.mydiary.utils.hideKeyboard
 import com.furianrt.mydiary.utils.showKeyboard
 import kotlinx.android.synthetic.main.fragment_note_edit.*
 import kotlinx.android.synthetic.main.fragment_note_edit.view.*
@@ -153,6 +154,8 @@ class NoteEditFragment : Fragment(), NoteEditFragmentContract.View {
 
     override fun onDestroy() {
         super.onDestroy()
+        activity?.currentFocus?.hideKeyboard()
+        activity?.currentFocus?.clearFocus()
         fragmentManager?.findFragmentByTag(NoteContentFragment.TAG)?.let {
             (it as NoteContentFragment).setVisibility(View.VISIBLE)
         }
@@ -163,29 +166,21 @@ class NoteEditFragment : Fragment(), NoteEditFragmentContract.View {
         mPresenter.attachView(this)
         (parentFragment as? NoteFragment?)?.onNoteFragmentEditModeEnabled()
         mListener?.onNoteFragmentEditModeEnabled()
-    }
-
-    override fun onPause() {
-        super.onPause()
-        val noteTitle = view?.edit_note_title?.text.toString()
-        val noteContent = view?.edit_note_content?.text.toString()
-        val noteFragment = (parentFragment as? NoteFragment?)
-        noteFragment?.onNoteEditFinished(noteTitle, noteContent)
-        noteFragment?.enableActionBarExpanding(expanded = false, animate = false)
-        mListener?.onNoteFragmentEditModeDisabled()
-        mPresenter.detachView()
-    }
-
-    override fun onStart() {
-        super.onStart()
         edit_note_title.addTextChangedListener(mTextChangeListener)
         edit_note_content.addTextChangedListener(mTextChangeListener)
     }
 
-    override fun onStop() {
-        super.onStop()
+    override fun onPause() {
+        super.onPause()
+        val noteTitle = edit_note_title.text.toString()
+        val noteContent = edit_note_content.text.toString()
+        val noteFragment = (parentFragment as? NoteFragment?)
+        noteFragment?.onNoteEditFinished(noteTitle, noteContent)
+        noteFragment?.enableActionBarExpanding(expanded = false, animate = false)
         edit_note_title.removeTextChangedListener(mTextChangeListener)
         edit_note_content.removeTextChangedListener(mTextChangeListener)
+        mListener?.onNoteFragmentEditModeDisabled()
+        mPresenter.detachView()
     }
 
     fun setAppearance(appearance: MyNoteAppearance) {

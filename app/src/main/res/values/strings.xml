@@ -150,7 +150,7 @@
     <string name="note_text_background_title">Цвет поверхности с текстом</string>
     <string name="note_font_size_title">Размер шрифта</string>
     <string name="note_font_color_title">Цвет текста</string>
-    <string name="note_font_color_summary">Цвет текста заметки и тегов</string>
+    <string name="note_font_color_summary">Цвет тегов и текста заметки</string>
     <string name="surface_font_color_title">Цвет надписей</string>
     <string name="surface_font_color_summary">Цвет даты, прогноза погоды и местоположения</string>
     <string name="all_notes_surface_font_color_title">Цвет надписей</string>
