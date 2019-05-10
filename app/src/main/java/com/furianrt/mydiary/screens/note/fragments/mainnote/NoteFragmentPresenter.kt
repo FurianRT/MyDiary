@@ -109,6 +109,8 @@ class NoteFragmentPresenter(private val dataManager: DataManager) : NoteFragment
                 .subscribe { appearance ->
                     appearance.textSize = appearance.textSize ?: dataManager.getTextSize()
                     appearance.textColor = appearance.textColor ?: dataManager.getTextColor()
+                    appearance.surfaceTextColor =
+                            appearance.surfaceTextColor ?: dataManager.getSurfaceTextColor()
                     appearance.background =
                             appearance.background ?: dataManager.getNoteBackgroundColor()
                     appearance.textBackground =
