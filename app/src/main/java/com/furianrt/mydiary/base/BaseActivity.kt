@@ -25,8 +25,8 @@ abstract class BaseActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState, persistentState)
     }
 
-    override fun onResume() {
-        super.onResume()
+    override fun onStart() {
+        super.onStart()
         if (needLockScreen) {
             val prefs = PreferenceManager.getDefaultSharedPreferences(this)
             val isPinEnabled = prefs.getBoolean(PreferencesHelper.SECURITY_KEY, false)

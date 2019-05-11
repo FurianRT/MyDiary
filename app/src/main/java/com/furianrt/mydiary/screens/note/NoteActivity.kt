@@ -11,6 +11,7 @@ import com.furianrt.mydiary.R
 import com.furianrt.mydiary.base.BaseActivity
 import com.furianrt.mydiary.data.model.MyNoteWithProp
 import com.furianrt.mydiary.screens.note.fragments.mainnote.edit.NoteEditFragment
+import com.furianrt.mydiary.utils.KeyboardUtils
 import com.furianrt.mydiary.utils.generateUniqueId
 import com.google.android.gms.ads.AdListener
 import com.google.android.gms.ads.AdRequest
@@ -52,6 +53,16 @@ class NoteActivity : BaseActivity(), NoteActivityContract.View,
         override fun onPageSelected(position: Int) {
             mPagerPosition = position
             showImageCounter(mPagerPosition + 1, mPagerAdapter.count)
+        }
+    }
+
+    private val mKeyboardListener = object : KeyboardUtils.SoftKeyboardToggleListener {
+        override fun onToggleSoftKeyboard(isVisible: Boolean) {
+            if (isVisible) {
+                view_ad?.visibility = View.GONE
+            } else {
+                view_ad?.postDelayed({ view_ad?.visibility = View.VISIBLE }, 150L)
+            }
         }
     }
 
@@ -144,6 +155,7 @@ class NoteActivity : BaseActivity(), NoteActivityContract.View,
         super.onStart()
         mPresenter.attachView(this)
         pager_note.addOnPageChangeListener(mOnPageChangeListener)
+        KeyboardUtils.addKeyboardToggleListener(this, mKeyboardListener)
         if (mMode == Companion.Mode.READ) {
             mPresenter.loadNotes()
         } else {
@@ -154,6 +166,7 @@ class NoteActivity : BaseActivity(), NoteActivityContract.View,
     override fun onStop() {
         super.onStop()
         pager_note.removeOnPageChangeListener(mOnPageChangeListener)
+        KeyboardUtils.removeKeyboardToggleListener(mKeyboardListener)
         mPresenter.detachView()
     }
 }

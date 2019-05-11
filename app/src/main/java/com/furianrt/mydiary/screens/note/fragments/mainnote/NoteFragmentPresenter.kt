@@ -410,7 +410,7 @@ class NoteFragmentPresenter(private val dataManager: DataManager) : NoteFragment
 
     override fun onSpeechRecorded(curTitle: String, curContent: String, recordedText: String) {
         val content = if (curContent.isBlank()) {
-            curContent
+            recordedText
         } else {
             "$curContent $recordedText"
         }

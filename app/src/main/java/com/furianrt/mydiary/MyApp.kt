@@ -42,11 +42,11 @@ class MyApp : Application(), Application.ActivityLifecycleCallbacks {
     }
 
     private val mHandler = Handler(Looper.getMainLooper())
-    private val mLogoutRunnable = Runnable { unauthorized() }
+    private val mLogoutRunnable = Runnable { setAuthorized(false) }
 
     override fun onCreate() {
         super.onCreate()
-        unauthorized()
+        setAuthorized(false)
         registerActivityLifecycleCallbacks(this)
         createNotificationSyncChannel()
         createNotificationFirebaseChannel()
@@ -58,14 +58,20 @@ class MyApp : Application(), Application.ActivityLifecycleCallbacks {
 
     override fun onActivityDestroyed(activity: Activity?) {}
     override fun onActivitySaveInstanceState(activity: Activity?, outState: Bundle?) {}
-    override fun onActivityCreated(activity: Activity?, savedInstanceState: Bundle?) {}
-    override fun onActivityStarted(activity: Activity?) {}
-    override fun onActivityStopped(activity: Activity?) {}
-    override fun onActivityResumed(activity: Activity?) {
+    override fun onActivityResumed(activity: Activity?) {}
+    override fun onActivityCreated(activity: Activity?, savedInstanceState: Bundle?) {
+        mHandler.removeCallbacks(mLogoutRunnable)
+    }
+
+    override fun onActivityStarted(activity: Activity?) {
         mHandler.removeCallbacks(mLogoutRunnable)
     }
 
     override fun onActivityPaused(activity: Activity?) {
+        setAuthorized(true)
+    }
+
+    override fun onActivityStopped(activity: Activity?) {
         val prefs = PreferenceManager.getDefaultSharedPreferences(this)
         val isPasswordEnabled = prefs.getBoolean(PreferencesHelper.SECURITY_KEY, false)
         if (isPasswordEnabled && activity !is PinActivity) {
@@ -77,10 +83,10 @@ class MyApp : Application(), Application.ActivityLifecycleCallbacks {
         }
     }
 
-    private fun unauthorized() {
+    private fun setAuthorized(authorized: Boolean) {
         PreferenceManager.getDefaultSharedPreferences(this)
                 .edit()
-                .putBoolean(PreferencesHelper.SECURITY_IS_AUTHORIZED, false)
+                .putBoolean(PreferencesHelper.SECURITY_IS_AUTHORIZED, authorized)
                 .apply()
     }
 
