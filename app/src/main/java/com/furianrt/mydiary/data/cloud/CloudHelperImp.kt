@@ -28,6 +28,8 @@ class CloudHelperImp(
         private const val COLLECTION_NOTE_TAGS = "note_tags"
         private const val COLLECTION_TAGS = "tags"
         private const val COLLECTION_APPEARANCES = "appearances"
+        private const val COLLECTION_LOCATIONS = "locations"
+        private const val COLLECTION_FORECASTS = "forecasts"
         private const val COLLECTION_IMAGES = "images"
     }
 
@@ -85,6 +87,26 @@ class CloudHelperImp(
                             .document(userId)
                             .collection(COLLECTION_APPEARANCES)
                             .document(appearance.appearanceId), appearance)
+                }
+            }.timeout(1, TimeUnit.MINUTES)
+
+    override fun saveLocations(locations: List<MyLocation>, userId: String): Completable =
+            RxFirestore.runTransaction(firestore) { transaction ->
+                locations.forEach { location ->
+                    transaction.set(firestore.collection(COLLECTION_USERS)
+                            .document(userId)
+                            .collection(COLLECTION_LOCATIONS)
+                            .document(location.noteId), location)
+                }
+            }.timeout(1, TimeUnit.MINUTES)
+
+    override fun saveForecasts(forecasts: List<MyForecast>, userId: String): Completable =
+            RxFirestore.runTransaction(firestore) { transaction ->
+                forecasts.forEach { forecast ->
+                    transaction.set(firestore.collection(COLLECTION_USERS)
+                            .document(userId)
+                            .collection(COLLECTION_FORECASTS)
+                            .document(forecast.noteId), forecast)
                 }
             }.timeout(1, TimeUnit.MINUTES)
 
@@ -229,6 +251,20 @@ class CloudHelperImp(
             RxFirestore.getCollection(firestore.collection(COLLECTION_USERS)
                     .document(userId)
                     .collection(COLLECTION_NOTE_TAGS), NoteTag::class.java)
+                    .timeout(1, TimeUnit.MINUTES)
+                    .toSingle(emptyList())
+
+    override fun getAllLocations(userId: String): Single<List<MyLocation>> =
+            RxFirestore.getCollection(firestore.collection(COLLECTION_USERS)
+                    .document(userId)
+                    .collection(COLLECTION_LOCATIONS), MyLocation::class.java)
+                    .timeout(1, TimeUnit.MINUTES)
+                    .toSingle(emptyList())
+
+    override fun getAllForecasts(userId: String): Single<List<MyForecast>> =
+            RxFirestore.getCollection(firestore.collection(COLLECTION_USERS)
+                    .document(userId)
+                    .collection(COLLECTION_FORECASTS), MyForecast::class.java)
                     .timeout(1, TimeUnit.MINUTES)
                     .toSingle(emptyList())
 

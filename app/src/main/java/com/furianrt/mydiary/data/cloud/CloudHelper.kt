@@ -12,6 +12,8 @@ interface CloudHelper {
     fun saveTags(tags: List<MyTag>, userId: String): Completable
     fun saveNoteTags(noteTags: List<NoteTag>, userId: String): Completable
     fun saveAppearances(appearances: List<MyNoteAppearance>, userId: String): Completable
+    fun saveLocations(locations: List<MyLocation>, userId: String): Completable
+    fun saveForecasts(forecasts: List<MyForecast>, userId: String): Completable
     fun saveImages(images: List<MyImage>, userId: String): Completable
     fun saveImagesFiles(images: List<MyImage>, userId: String): Completable
     fun deleteNotes(notes: List<MyNote>, userId: String): Completable
@@ -26,6 +28,8 @@ interface CloudHelper {
     fun getAllTags(userId: String): Single<List<MyTag>>
     fun getAllAppearances(userId: String): Single<List<MyNoteAppearance>>
     fun getAllNoteTags(userId: String): Single<List<NoteTag>>
+    fun getAllLocations(userId: String): Single<List<MyLocation>>
+    fun getAllForecasts(userId: String): Single<List<MyForecast>>
     fun getAllImages(userId: String): Single<List<MyImage>>
     fun loadImageFiles(images: List<MyImage>, userId: String): Completable
 }

@@ -46,7 +46,6 @@ interface NoteDao {
     @Transaction
     @Query("SELECT * FROM Notes " +
             "LEFT JOIN Moods ON mood = id_mood AND is_note_deleted = 0 " +
-            "LEFT JOIN Locations ON location = name_location AND is_location_deleted = 0 " +
             "LEFT JOIN NoteAppearances ON id_note = id_appearance " +
             "LEFT JOIN Categories ON category = id_category AND is_category_deleted = 0 " +
             "WHERE is_note_deleted = 0 " +

@@ -4,7 +4,6 @@ import android.net.Uri
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.bumptech.glide.signature.ObjectKey
@@ -19,11 +18,12 @@ class NoteImagePagerAdapter(
 ) : RecyclerView.Adapter<NoteImagePagerAdapter.NoteImageViewHolder>() {
 
     fun submitImages(images: List<MyImage>) {
-        val diffCallback = NoteImagePagerDiffCallback(this.images, images)
-        val diffResult = DiffUtil.calculateDiff(diffCallback)
+        //val diffCallback = NoteImagePagerDiffCallback(this.images, images)
+        //val diffResult = DiffUtil.calculateDiff(diffCallback)
         this.images.clear()
         this.images.addAll(images)
-        diffResult.dispatchUpdatesTo(this)
+        //diffResult.dispatchUpdatesTo(this)
+        notifyDataSetChanged() //todo из-за diffCallback VuewPager2.currentItem возвращает неверное значение, при изменении порядка итемов
     }
 
     override fun getItemCount(): Int = images.size

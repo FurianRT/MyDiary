@@ -290,9 +290,7 @@ class AppModule(private val app: Application) {
                 time = DateTime.now().millis,
                 moodId = app.resources.getStringArray(R.array.moods).size,
                 categoryId = "default_category_4",
-                creationTime = DateTime.now().millis,
-                locationName = null,
-                forecast = null
+                creationTime = DateTime.now().millis
         )
 
         val noteAppearance = MyNoteAppearance(appearanceId = note.id)

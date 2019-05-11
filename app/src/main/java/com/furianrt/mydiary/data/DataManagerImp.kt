@@ -3,7 +3,6 @@ package com.furianrt.mydiary.data
 import android.annotation.SuppressLint
 import android.util.Base64
 import com.furianrt.mydiary.BuildConfig
-import com.furianrt.mydiary.data.api.forecast.Forecast
 import com.furianrt.mydiary.data.api.forecast.WeatherApiService
 import com.furianrt.mydiary.data.api.images.Image
 import com.furianrt.mydiary.data.api.images.ImageApiService
@@ -72,6 +71,14 @@ class DataManagerImp(
             database.noteTagDao().insert(noteTags)
                     .subscribeOn(rxScheduler)
 
+    override fun insertLocation(locations: List<MyLocation>): Completable =
+            database.locationDao().insert(locations)
+                    .subscribeOn(rxScheduler)
+
+    override fun insertForecast(forecasts: List<MyForecast>): Completable =
+            database.forecastDao().insert(forecasts)
+                    .subscribeOn(rxScheduler)
+
     override fun insertTag(tag: MyTag): Completable =
             database.tagDao().insert(tag)
                     .subscribeOn(rxScheduler)
@@ -112,7 +119,11 @@ class DataManagerImp(
             database.profileDao().insert(profile)
                     .subscribeOn(rxScheduler)
 
-    override fun addLocation(location: MyLocation): Completable =
+    override fun insertForecast(forecast: MyForecast): Completable =
+            database.forecastDao().insert(forecast)
+                    .subscribeOn(rxScheduler)
+
+    override fun insertLocation(location: MyLocation): Completable =
             database.locationDao().insert(location)
                     .subscribeOn(rxScheduler)
 
@@ -177,6 +188,14 @@ class DataManagerImp(
 
     override fun updateNoteTagsSync(noteTags: List<NoteTag>): Completable =
             database.noteTagDao().update(noteTags)
+                    .subscribeOn(rxScheduler)
+
+    override fun updateLocationsSync(locations: List<MyLocation>): Completable =
+            database.locationDao().update(locations)
+                    .subscribeOn(rxScheduler)
+
+    override fun updateForecastsSync(forecasts: List<MyForecast>): Completable =
+            database.forecastDao().update(forecasts)
                     .subscribeOn(rxScheduler)
 
     override fun updateTagsSync(tags: List<MyTag>): Completable =
@@ -338,8 +357,22 @@ class DataManagerImp(
                     .findNote(noteId)
                     .subscribeOn(rxScheduler)
 
-    override fun getForecast(lat: Double, lon: Double): Single<Forecast?> =
+    override fun loadForecast(lat: Double, lon: Double): Single<MyForecast> =
             weatherApi.getForecast(lat, lon)
+                    .map {
+                        MyForecast(
+                                temp = it.main.temp,
+                                icon =  DataManager.BASE_WEATHER_IMAGE_URL + it.weather[0].icon + ".png"
+                        )
+                    }
+                    .subscribeOn(rxScheduler)
+
+    override fun getAllDbForecasts(): Single<List<MyForecast>> =
+            database.forecastDao().getAllForecasts()
+                    .subscribeOn(rxScheduler)
+
+    override fun getAllDbLocations(): Single<List<MyLocation>> =
+            database.locationDao().getAllLocations()
                     .subscribeOn(rxScheduler)
 
     override fun getCategory(categoryId: String): Single<MyCategory> =
@@ -479,6 +512,14 @@ class DataManagerImp(
             cloud.saveAppearances(appearances, auth.getUserId())
                     .subscribeOn(rxScheduler)
 
+    override fun saveLocationsInCloud(locations: List<MyLocation>): Completable =
+            cloud.saveLocations(locations, auth.getUserId())
+                    .subscribeOn(rxScheduler)
+
+    override fun saveForecastsInCloud(forecasts: List<MyForecast>): Completable =
+            cloud.saveForecasts(forecasts, auth.getUserId())
+                    .subscribeOn(rxScheduler)
+
     override fun saveImagesInCloud(images: List<MyImage>): Completable =
             cloud.saveImages(images, auth.getUserId())
                     .subscribeOn(rxScheduler)
@@ -531,6 +572,14 @@ class DataManagerImp(
             cloud.getAllNoteTags(auth.getUserId())
                     .subscribeOn(rxScheduler)
 
+    override fun getAllLocationsFromCloud(): Single<List<MyLocation>> =
+            cloud.getAllLocations(auth.getUserId())
+                    .subscribeOn(rxScheduler)
+
+    override fun getAllForecastsFromCloud(): Single<List<MyForecast>> =
+            cloud.getAllForecasts(auth.getUserId())
+                    .subscribeOn(rxScheduler)
+
     override fun getAllImagesFromCloud(): Single<List<MyImage>> =
             cloud.getAllImages(auth.getUserId())
                     .subscribeOn(rxScheduler)
@@ -551,8 +600,10 @@ class DataManagerImp(
                     .map { MyProfile(it.id, it.email, it.photoUri) }
                     .flatMapCompletable { profile ->
                         Completable.concat(listOf(
-                                cloud.saveProfile(profile).doOnError { auth.signOut() },
+                                cloud.saveProfile(profile).doOnError { auth.signOut() }
+                                        .subscribeOn(rxScheduler),
                                 database.profileDao().insert(profile).doOnError { auth.signOut() }
+                                        .subscribeOn(rxScheduler)
                         ))
                     }
                     .subscribeOn(rxScheduler)

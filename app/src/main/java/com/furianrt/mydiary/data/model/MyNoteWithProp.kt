@@ -11,7 +11,6 @@ import kotlinx.android.parcel.Parcelize
 data class MyNoteWithProp(
         @Embedded var note: MyNote,
         @Embedded var mood: MyMood? = null,
-        @Embedded var location: MyLocation? = null,
         @Embedded var category: MyCategory? = null,
         @Embedded var appearance: MyNoteAppearance? = null
 ) : Parcelable {

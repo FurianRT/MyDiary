@@ -3,7 +3,6 @@ package com.furianrt.mydiary.screens.note.fragments.mainnote
 import android.location.Address
 import android.util.Log
 import com.furianrt.mydiary.data.DataManager
-import com.furianrt.mydiary.data.api.forecast.Forecast
 import com.furianrt.mydiary.data.model.*
 import com.furianrt.mydiary.data.model.pojo.TagsAndAppearance
 import com.furianrt.mydiary.screens.note.NoteActivity
@@ -37,12 +36,13 @@ class NoteFragmentPresenter(private val dataManager: DataManager) : NoteFragment
         }
     }
 
-    override fun onViewStart(locationEnabled: Boolean, networkAvailable: Boolean) {
-        loadNote(mMode, locationEnabled, networkAvailable)
+    override fun onViewStart(locationAvailable: Boolean, networkAvailable: Boolean) {
+        loadNote()
         loadNoteAppearance()
         loadTags()
         loadImages()
         loadNoteCategory()
+        loadLocation(mNoteId, mMode, locationAvailable, networkAvailable)
     }
 
     override fun onMoodFieldClick() {
@@ -55,10 +55,6 @@ class NoteFragmentPresenter(private val dataManager: DataManager) : NoteFragment
 
     override fun onCategoryFieldClick() {
         view?.showCategoriesDialog(mNoteId)
-    }
-
-    override fun onMapReady() {
-        //mNote.location?.let { view?.zoomMap(it.lat, it.lon) }
     }
 
     private fun loadImages() {
@@ -91,15 +87,13 @@ class NoteFragmentPresenter(private val dataManager: DataManager) : NoteFragment
                 })
     }
 
-    private fun loadNote(mode: NoteActivity.Companion.Mode, locationEnabled: Boolean,
-                         networkAvailable: Boolean) {
+    private fun loadNote() {
         addDisposable(dataManager.getNote(mNoteId)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { note ->
                     view?.showNoteText(note.title, note.content)
                     view?.showDateAndTime(note.time, dataManager.is24TimeFormat())
                     showNoteMood(note.moodId)
-                    //showNoteLocation(note, mode, locationEnabled, networkAvailable)
                 })
     }
 
@@ -119,27 +113,40 @@ class NoteFragmentPresenter(private val dataManager: DataManager) : NoteFragment
                 })
     }
 
-    private fun showForecast(forecast: Forecast?, location: MyLocation, mode: NoteActivity.Companion.Mode) {
+    private fun showForecast() {
         if (dataManager.isWeatherEnabled()) {
-            if (forecast != null) {
-                view?.showForecast(forecast)
-            } else if (mode == NoteActivity.Companion.Mode.ADD) {
-                addForecast(location)
-            }
+            addDisposable(dataManager.getAllDbForecasts()
+                    .map { forecasts -> forecasts.filter { it.noteId == mNoteId } }
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe { forecasts ->
+                        if (forecasts.isNotEmpty()) {
+                            view?.showForecast(forecasts.first())
+                        }
+                    })
         }
     }
 
-    private fun showNoteLocation(note: MyNoteWithProp, mode: NoteActivity.Companion.Mode, locationEnabled: Boolean,
-                                 networkAvailable: Boolean) {
-        val location = note.location
-        if (location != null) {
-            if (dataManager.isLocationEnabled()) {
-                view?.showLocation(location)
-            }
-            showForecast(note.note.forecast, location, mode)
-        } else if (mode == NoteActivity.Companion.Mode.ADD) {
-            findLocation(locationEnabled, networkAvailable)
+    private fun showLocation(location: MyLocation) {
+        if (dataManager.isLocationEnabled()) {
+            view?.showLocation(location)
         }
+    }
+
+    private fun loadLocation(noteId: String, mode: NoteActivity.Companion.Mode, locationAvailable: Boolean,
+                             networkAvailable: Boolean) {
+            addDisposable(dataManager.getAllDbLocations()
+                    .map { locations -> locations.filter { it.noteId == noteId } }
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe { locations ->
+                        if (locations.isNotEmpty()) {
+                            showLocation(locations.first())
+                            showForecast()
+                        } else if (mode == NoteActivity.Companion.Mode.ADD) {
+                            if (locationAvailable && networkAvailable) {
+                                findLocation()
+                            }
+                        }
+                    })
     }
 
     private fun showNoteMood(moodId: Int) {
@@ -172,8 +179,8 @@ class NoteFragmentPresenter(private val dataManager: DataManager) : NoteFragment
                 })
     }
 
-    private fun findLocation(locationEnabled: Boolean, networkAvailable: Boolean) {
-        if (locationEnabled && networkAvailable) {
+    private fun findLocation() {
+        if (dataManager.isLocationEnabled() || dataManager.isMoodEnabled()) {
             view?.requestLocationPermissions()
         }
     }
@@ -183,51 +190,48 @@ class NoteFragmentPresenter(private val dataManager: DataManager) : NoteFragment
     }
 
     override fun onLocationReceived(result: LocationResult) {
-        val lastLocation = result.lastLocation
-        view?.findAddress(lastLocation.latitude, lastLocation.longitude)
+        if (dataManager.isWeatherEnabled()) {
+            addForecast(result.lastLocation.latitude, result.lastLocation.longitude)
+        }
+        if (dataManager.isLocationEnabled()) {
+            view?.findAddress(result.lastLocation.latitude, result.lastLocation.longitude)
+        }
     }
 
     override fun onAddressFound(addresses: List<Address>, latitude: Double, longitude: Double) {
         if (addresses.isNotEmpty()) {
             val address = addresses[0].getAddressLine(0)
             if (address != null) {
-                val location = MyLocation(address, latitude, longitude)
-                addLocation(location)
-                addForecast(location)
+                addLocation(MyLocation(
+                        noteId = mNoteId,
+                        name = address,
+                        lat = latitude,
+                        lon = longitude
+                ))
             }
         }
     }
 
-    private fun addForecast(location: MyLocation) {
-        /* addDisposable(dataManager.getForecast(location.lat, location.lon)
-                 .onErrorReturn { null }
-                 .flatMapCompletable { forecast ->
-                     Log.e(TAG, "addForecast")
-                     mNote.forecast = forecast
-                     return@flatMapCompletable dataManager.updateNote(mNote)
-                 }
-                 .observeOn(AndroidSchedulers.mainThread())
-                 .subscribe({
-                     val forecast = mNote.forecast
-                     if (forecast != null && dataManager.isWeatherEnabled()) {
-                         view?.showForecast(forecast)
-                     }
-                 }, { error ->
-                     Log.i(TAG, "Could't load weather: ${error.stackTrace}")
-                 }))*/
+    private fun addForecast(latitude: Double, longitude: Double) {
+        var forecast: MyForecast? = null
+        addDisposable(dataManager.loadForecast(latitude, longitude)
+                .flatMapCompletable {
+                    forecast = it.apply { noteId = mNoteId }
+                    dataManager.insertForecast(it)
+                }
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe({
+                    forecast?.let { view?.showForecast(it) }
+                }, {
+                    it.printStackTrace()
+                }))
     }
 
     private fun addLocation(location: MyLocation) {
-        /* Log.e(TAG, "addLocation")
-         mNote.locationName = location.name
-         addDisposable(dataManager.addLocation(location)
-                 .andThen(dataManager.updateNote(mNote))
-                 .observeOn(AndroidSchedulers.mainThread())
-                 .subscribe {
-                     if (dataManager.isLocationEnabled()) {
-                         view?.showLocation(location)
-                     }
-                 })*/
+        Log.e(TAG, "insertLocation")
+        addDisposable(dataManager.insertLocation(location)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe { view?.showLocation(location) })
     }
 
     override fun onButtonAddImageClick() {

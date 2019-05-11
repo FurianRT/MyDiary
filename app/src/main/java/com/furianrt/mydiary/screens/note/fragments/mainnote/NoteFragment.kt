@@ -1,7 +1,6 @@
 package com.furianrt.mydiary.screens.note.fragments.mainnote
 
 import android.Manifest
-import android.annotation.SuppressLint
 import android.content.Intent
 import android.graphics.Color
 import android.graphics.PorterDuff
@@ -20,7 +19,6 @@ import androidx.core.content.ContextCompat.getColor
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.widget.ViewPager2
 import com.furianrt.mydiary.R
-import com.furianrt.mydiary.data.api.forecast.Forecast
 import com.furianrt.mydiary.data.model.*
 import com.furianrt.mydiary.data.model.pojo.TagsAndAppearance
 import com.furianrt.mydiary.data.prefs.PreferencesHelper
@@ -40,10 +38,6 @@ import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationResult
-import com.google.android.gms.maps.CameraUpdateFactory
-import com.google.android.gms.maps.GoogleMap
-import com.google.android.gms.maps.OnMapReadyCallback
-import com.google.android.gms.maps.model.LatLng
 import com.google.android.material.card.MaterialCardView
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog
 import com.wdullaer.materialdatetimepicker.time.TimePickerDialog
@@ -60,8 +54,8 @@ import java.util.*
 import javax.inject.Inject
 import kotlin.collections.ArrayList
 
-class NoteFragment : Fragment(), NoteFragmentContract.View, OnMapReadyCallback,
-        View.OnClickListener, DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener,
+class NoteFragment : Fragment(), NoteFragmentContract.View, View.OnClickListener,
+        DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener,
         NoteImagePagerAdapter.OnNoteImagePagerInteractionListener {
 
     companion object {
@@ -71,10 +65,8 @@ class NoteFragment : Fragment(), NoteFragmentContract.View, OnMapReadyCallback,
         private const val LOCATION_INTERVAL = 400L
         private const val LOCATION_PERMISSIONS_REQUEST_CODE = 1
         private const val STORAGE_PERMISSIONS_REQUEST_CODE = 2
-        private const val ZOOM = 15f
         private const val BUNDLE_IMAGE_PAGER_POSITION = "imagePagerPosition"
         private const val BUNDLE_NOTE_TEXT_BUFFER = "noteTextBuffer"
-        private const val BASE_WEATHER_IMAGE_URL = "http://openweathermap.org/img/w/"
         private const val TIME_PICKER_TAG = "timePicker"
         private const val DATE_PICKER_TAG = "datePicker"
 
@@ -97,11 +89,15 @@ class NoteFragment : Fragment(), NoteFragmentContract.View, OnMapReadyCallback,
     private val mImagePagerAdapter = NoteImagePagerAdapter(listener = this)
     private lateinit var mMode: NoteActivity.Companion.Mode
 
-    private var mGoogleMap: GoogleMap? = null
     private var mImagePagerPosition = 0
     private val mOnPageChangeCallback = object : ViewPager2.OnPageChangeCallback() {
         override fun onPageSelected(position: Int) {
-            text_image_position.text = (position + 1).toString()
+            mImagePagerPosition = pager_note_image.currentItem
+            text_note_image_counter.text = getString(
+                    R.string.counter_format,
+                    position + 1,
+                    mImagePagerAdapter.itemCount
+            )
         }
     }
     private val mLocationCallback = object : LocationCallback() {
@@ -144,7 +140,6 @@ class NoteFragment : Fragment(), NoteFragmentContract.View, OnMapReadyCallback,
         view.text_time.setOnClickListener(this@NoteFragment)
         view.fab_add_image.setOnClickListener(this@NoteFragment)
         view.layout_loading.setOnTouchListener { _, _ -> true }
-        view.map_touch_event_interceptor.setOnTouchListener { _, _ -> true }
 
         if (childFragmentManager.findFragmentByTag(NoteContentFragment.TAG) == null) {
             childFragmentManager.inTransaction {
@@ -165,23 +160,20 @@ class NoteFragment : Fragment(), NoteFragmentContract.View, OnMapReadyCallback,
         val isMapEnabled = PreferenceManager.getDefaultSharedPreferences(context)
                 .getBoolean(PreferencesHelper.MAP_AVAILABILITY, true)
         if (!isMapEnabled) {
-            view.map_view.visibility = View.GONE
             view.text_location.visibility = View.GONE
-            view.map_touch_event_interceptor.visibility = View.GONE
         }
     }
 
-    override fun onResume() {
-        super.onResume()
+    override fun onStart() {
+        super.onStart()
         requireActivity().window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE)
         pager_note_image.registerOnPageChangeCallback(mOnPageChangeCallback)
         mPresenter.attachView(this)
         mPresenter.onViewStart(requireContext().isLocationEnabled(), requireContext().isNetworkAvailable())
     }
 
-    override fun onPause() {
-        super.onPause()
-        mImagePagerPosition = pager_note_image.currentItem
+    override fun onStop() {
+        super.onStop()
         pager_note_image.unregisterOnPageChangeCallback(mOnPageChangeCallback)
         mPresenter.detachView()
     }
@@ -278,23 +270,24 @@ class NoteFragment : Fragment(), NoteFragmentContract.View, OnMapReadyCallback,
         startActivity(GalleryActivity.newIntent(requireContext(), noteId, pager_note_image.currentItem))
     }
 
-    override fun hideLocation() {
-        text_location.visibility = View.GONE
-    }
-
-    override fun hideMood() {
-        text_mood.visibility = View.GONE
-    }
-
     override fun updateNoteAppearance(appearance: MyNoteAppearance) {
         appearance.background?.let { layout_root_note.setBackgroundColor(it) }
         appearance.textBackground?.let { card_note_edit.setCardBackgroundColor(it) }
-        appearance.textColor?.let { text_mood.setTextColor(it) }
-        appearance.textColor?.let { text_category.setTextColor(it) }
-        appearance.surfaceTextColor?.let { text_location.setTextColor(it) }
-        appearance.surfaceTextColor?.let { text_date.setTextColor(it) }
-        appearance.surfaceTextColor?.let { text_time.setTextColor(it) }
-        appearance.surfaceTextColor?.let { text_temp.setTextColor(it) }
+        appearance.textColor?.let {
+            text_mood.setTextColor(it)
+            text_category.setTextColor(it)
+        }
+        appearance.surfaceTextColor?.let {
+            text_location.setTextColor(it)
+            text_date.setTextColor(it)
+            text_time.setTextColor(it)
+            text_temp.setTextColor(it)
+            text_location.setTextColor(it)
+        }
+        image_location.setColorFilter(
+                appearance.surfaceTextColor ?: Color.BLACK,
+                PorterDuff.Mode.SRC_IN
+        )
         childFragmentManager.findFragmentByTag(NoteContentFragment.TAG)?.let {
             (it as NoteContentFragment).setAppearance(appearance)
         }
@@ -312,7 +305,7 @@ class NoteFragment : Fragment(), NoteFragmentContract.View, OnMapReadyCallback,
 
         val textNoTags = TextView(requireContext())
         textNoTags.setTextColor(
-                appearance.textColor ?: getColor(requireContext(), R.color.black)
+                appearance.textColor ?: Color.BLACK
         )
         textNoTags.setText(R.string.choose_tags)
         textNoTags.alpha = 0.4f
@@ -331,7 +324,7 @@ class NoteFragment : Fragment(), NoteFragmentContract.View, OnMapReadyCallback,
         layout_tags.removeViews(1, layout_tags.flexItemCount - 1)
         val image = layout_tags.getChildAt(0) as ImageView
         image.setColorFilter(
-                tagsAndAppearance.appearance.surfaceTextColor ?: getColor(requireContext(), R.color.black),
+                tagsAndAppearance.appearance.surfaceTextColor ?: Color.BLACK,
                 PorterDuff.Mode.SRC_IN
         )
         image.alpha = 1.0f
@@ -402,29 +395,8 @@ class NoteFragment : Fragment(), NoteFragmentContract.View, OnMapReadyCallback,
     }
 
     override fun showLocation(location: MyLocation) {
+        layout_location.visibility = View.VISIBLE
         text_location.text = location.name
-        text_location.alpha = 1f
-        map_touch_event_interceptor.visibility = View.VISIBLE
-        map_view.apply {
-            visibility = View.VISIBLE
-            onCreate(null)
-            onResume()
-            getMapAsync(this@NoteFragment)
-        }
-    }
-
-    override fun onMapReady(map: GoogleMap?) {
-        mGoogleMap = map
-        mGoogleMap?.let {
-            it.uiSettings.isScrollGesturesEnabled = false
-            mPresenter.onMapReady()
-        }
-    }
-
-    override fun zoomMap(latitude: Double, longitude: Double) {
-        val camera = CameraUpdateFactory
-                .newLatLngZoom(LatLng(latitude, longitude), ZOOM)
-        mGoogleMap?.moveCamera(camera)
     }
 
     override fun requestLocationPermissions() {
@@ -487,13 +459,12 @@ class NoteFragment : Fragment(), NoteFragmentContract.View, OnMapReadyCallback,
         TagsDialog.newInstance(noteId).show(requireActivity().supportFragmentManager, TagsDialog.TAG)
     }
 
-    override fun showForecast(forecast: Forecast) {
-        val url = BASE_WEATHER_IMAGE_URL + forecast.weather[0].icon + ".png"
+    override fun showForecast(forecast: MyForecast) {
         GlideApp.with(this)
-                .load(url)
+                .load(forecast.icon)
                 .into(image_weather)
 
-        val temp = forecast.main.temp.toInt().toString() + " °C"
+        val temp = forecast.temp.toInt().toString() + " °C"     //todo приделать форенгейт
         text_temp.text = temp
     }
 
@@ -503,7 +474,6 @@ class NoteFragment : Fragment(), NoteFragmentContract.View, OnMapReadyCallback,
         EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults, this)
     }
 
-    @SuppressLint("MissingPermission")
     @AfterPermissionGranted(LOCATION_PERMISSIONS_REQUEST_CODE)
     override fun requestLocation() {
         val locationRequest = LocationRequest.create()
@@ -578,9 +548,13 @@ class NoteFragment : Fragment(), NoteFragmentContract.View, OnMapReadyCallback,
 
     override fun showImages(images: List<MyImage>) {
         Log.e(TAG, "showImages")
-        text_image_count.text = images.size.toString()
-        mImagePagerAdapter.submitImages(images)
+        mImagePagerAdapter.submitImages(images.toMutableList())
         pager_note_image.setCurrentItem(mImagePagerPosition, false)
+        text_note_image_counter.text = getString(
+                R.string.counter_format,
+                mImagePagerPosition + 1,
+                mImagePagerAdapter.itemCount
+        )
         if (childFragmentManager.findFragmentByTag(NoteEditFragment.TAG) == null) {
             enableActionBarExpanding(expanded = true, animate = true)
         }
@@ -588,7 +562,7 @@ class NoteFragment : Fragment(), NoteFragmentContract.View, OnMapReadyCallback,
 
     override fun showNoImages() {
         Log.e(TAG, "showNoImages")
-        text_image_count.text = "0"
+        text_note_image_counter.text = getString(R.string.counter_format, 0, 0)
         mImagePagerAdapter.submitImages(emptyList())
         disableActionBarExpanding(false)
     }

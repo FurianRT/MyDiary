@@ -3,7 +3,6 @@ package com.furianrt.mydiary.screens.note.fragments.mainnote
 import android.location.Address
 import com.furianrt.mydiary.base.BasePresenter
 import com.furianrt.mydiary.base.BaseView
-import com.furianrt.mydiary.data.api.forecast.Forecast
 import com.furianrt.mydiary.data.model.*
 import com.furianrt.mydiary.data.model.pojo.TagsAndAppearance
 import com.furianrt.mydiary.screens.note.NoteActivity
@@ -13,13 +12,12 @@ import java.util.*
 interface NoteFragmentContract {
 
     interface View : BaseView {
-        fun showForecast(forecast: Forecast)
+        fun showForecast(forecast: MyForecast)
         fun showTagsDialog(noteId: String)
         fun showTags(tagsAndAppearance: TagsAndAppearance)
         fun requestLocationPermissions()
         fun requestLocation()
         fun findAddress(latitude: Double, longitude: Double)
-        fun zoomMap(latitude: Double, longitude: Double)
         fun showCategory(category: MyCategory)
         fun showMood(mood: MyMood)
         fun showNoTagsMessage(appearance: MyNoteAppearance)
@@ -33,8 +31,6 @@ interface NoteFragmentContract {
         fun showGalleryView(noteId: String, image: MyImage)
         fun showMoodsDialog(noteId: String)
         fun showCategoriesDialog(noteId: String)
-        fun hideLocation()
-        fun hideMood()
         fun showNoteSettingsView(noteId: String)
         fun updateNoteAppearance(appearance: MyNoteAppearance)
         fun showNoteText(title: String, content: String)
@@ -54,7 +50,6 @@ interface NoteFragmentContract {
         abstract fun onLocationReceived(result: LocationResult)
         abstract fun onLocationPermissionsGranted()
         abstract fun onAddressFound(addresses: List<Address>, latitude: Double, longitude: Double)
-        abstract fun onMapReady()
         abstract fun onButtonAddImageClick()
         abstract fun onStoragePermissionsGranted()
         abstract fun onNoteImagesPicked(imageUrls: List<String>)
@@ -69,7 +64,7 @@ interface NoteFragmentContract {
         abstract fun onDateSelected(year: Int, monthOfYear: Int, dayOfMonth: Int)
         abstract fun onTimeSelected(hourOfDay: Int, minute: Int)
         abstract fun onButtonEditClick()
-        abstract fun onViewStart(locationEnabled: Boolean, networkAvailable: Boolean)
+        abstract fun onViewStart(locationAvailable: Boolean, networkAvailable: Boolean)
         abstract fun init(note: MyNote, mode: NoteActivity.Companion.Mode)
         abstract fun getNoteTextBuffer(): ArrayList<UndoRedoEntry>
         abstract fun setNoteTextBuffer(buffer: ArrayList<UndoRedoEntry>)

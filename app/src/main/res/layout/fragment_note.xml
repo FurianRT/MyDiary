@@ -58,7 +58,7 @@
                 android:id="@+id/text_time"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="4dp"
+                android:layout_marginStart="12dp"
                 android:layout_marginTop="12dp"
                 android:layout_marginEnd="4dp"
                 android:alpha="0.7"
@@ -67,34 +67,33 @@
                 android:textColor="@color/black"
                 android:textSize="15sp"
                 android:textStyle="italic"
-                app:layout_constraintEnd_toStartOf="@+id/image_weather"
                 app:layout_constraintStart_toEndOf="@id/text_date"
                 app:layout_constraintTop_toTopOf="parent"
                 tools:text="20:15" />
-
-            <TextView
-                android:id="@+id/text_temp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:layout_marginEnd="20dp"
-                android:alpha="0.7"
-                android:textColor="@color/black"
-                android:textSize="15sp"
-                android:textStyle="italic"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                tools:text="24°C" />
 
             <ImageView
                 android:id="@+id/image_weather"
                 android:layout_width="40dp"
                 android:layout_height="35dp"
+                android:layout_marginStart="4dp"
                 app:layout_constraintBottom_toTopOf="@id/card_note_edit"
-                app:layout_constraintEnd_toStartOf="@id/text_temp"
+                app:layout_constraintStart_toEndOf="@+id/text_time"
                 app:layout_constraintTop_toTopOf="parent"
                 tools:ignore="ContentDescription"
                 tools:src="@color/grey" />
+
+            <TextView
+                android:id="@+id/text_temp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:alpha="0.7"
+                android:textColor="@color/black"
+                android:textSize="15sp"
+                android:textStyle="italic"
+                app:layout_constraintBottom_toTopOf="@id/card_note_edit"
+                app:layout_constraintStart_toEndOf="@+id/image_weather"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="24°C" />
 
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/card_note_edit"
@@ -212,45 +211,37 @@
 
             </com.google.android.flexbox.FlexboxLayout>
 
-            <com.google.android.gms.maps.MapView
-                android:id="@+id/map_view"
-                android:layout_width="0dp"
-                android:layout_height="100dp"
-                android:layout_marginStart="16dp"
-                android:layout_marginEnd="16dp"
-                android:visibility="gone"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/layout_tags" />
-
-            <TextView
-                android:id="@+id/text_location"
+            <LinearLayout
+                android:id="@+id/layout_location"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="8dp"
                 android:layout_marginEnd="16dp"
-                android:alpha="0.5"
-                android:background="?android:selectableItemBackground"
-                android:drawableStart="@drawable/ic_place_big"
-                android:drawablePadding="4dp"
-                android:text="@string/choose_location"
-                android:textColor="@color/black"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/map_view" />
-
-            <FrameLayout
-                android:id="@+id/map_touch_event_interceptor"
-                android:layout_width="0dp"
-                android:layout_height="100dp"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="8dp"
-                android:layout_marginEnd="16dp"
+                android:alpha="0.7"
+                android:orientation="horizontal"
                 android:visibility="gone"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/layout_tags" />
+                app:layout_constraintTop_toBottomOf="@id/layout_tags"
+                tools:ignore="UseCompoundDrawables"
+                tools:visibility="visible">
+
+                <ImageView
+                    android:id="@+id/image_location"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="4dp"
+                    android:src="@drawable/ic_place_big"
+                    tools:ignore="ContentDescription" />
+
+                <TextView
+                    android:id="@+id/text_location"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+
+            </LinearLayout>
+
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.core.widget.NestedScrollView>

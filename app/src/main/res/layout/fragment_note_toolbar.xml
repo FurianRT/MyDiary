@@ -23,45 +23,18 @@
             android:layout_height="match_parent"
             app:layout_collapseMode="parallax" />
 
-        <LinearLayout
+        <TextView
+            android:id="@+id/text_note_image_counter"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|start"
             android:layout_marginStart="8dp"
             android:layout_marginBottom="8dp"
-            android:orientation="horizontal"
-            app:layout_collapseMode="parallax">
-
-            <TextView
-                android:id="@+id/text_image_position"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textColor="@color/white"
-                android:textSize="14sp"
-                android:textStyle="bold"
-                android:text="1"
-                tools:ignore="HardcodedText" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textColor="@color/white"
-                android:textSize="14sp"
-                android:textStyle="bold"
-                android:text="/"
-                tools:ignore="HardcodedText" />
-
-            <TextView
-                android:id="@+id/text_image_count"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textColor="@color/white"
-                android:textSize="14sp"
-                android:textStyle="bold"
-                android:text="1"
-                tools:ignore="HardcodedText" />
-
-        </LinearLayout>
+            android:textColor="@color/white"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            app:layout_collapseMode="parallax"
+            tools:text="1/2" />
 
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar_note_fragment"

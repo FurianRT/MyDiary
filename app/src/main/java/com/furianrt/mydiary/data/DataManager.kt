@@ -1,6 +1,5 @@
 package com.furianrt.mydiary.data
 
-import com.furianrt.mydiary.data.api.forecast.Forecast
 import com.furianrt.mydiary.data.model.*
 import io.reactivex.*
 
@@ -8,11 +7,14 @@ interface DataManager {
     companion object {
         const val SIGN_STATE_SIGN_OUT = 0
         const val SIGN_STATE_SIGN_IN = 1
+        const val BASE_WEATHER_IMAGE_URL = "http://openweathermap.org/img/w/"
     }
     fun insertNote(note: MyNote): Completable
     fun insertNote(notes: List<MyNote>): Completable
     fun insertNoteTag(noteTag: NoteTag): Completable
     fun insertNoteTag(noteTags: List<NoteTag>): Completable
+    fun insertLocation(locations: List<MyLocation>): Completable
+    fun insertForecast(forecasts: List<MyForecast>): Completable
     fun insertTag(tag: MyTag): Completable
     fun insertTag(tags: List<MyTag>): Completable
     fun insertImage(image: MyImage): Completable
@@ -23,6 +25,7 @@ interface DataManager {
     fun insertAppearance(appearance: MyNoteAppearance): Completable
     fun insertAppearance(appearances: List<MyNoteAppearance>): Completable
     fun insertProfile(profile: MyProfile): Completable
+    fun insertForecast(forecast: MyForecast): Completable
     fun updateNote(note: MyNote): Completable
     fun updateNoteText(noteId: String, title: String, content: String): Completable
     fun updateTag(tag: MyTag): Completable
@@ -37,6 +40,8 @@ interface DataManager {
     fun updateCategoriesSync(categories: List<MyCategory>): Completable
     fun updateTagsSync(tags: List<MyTag>): Completable
     fun updateNoteTagsSync(noteTags: List<NoteTag>): Completable
+    fun updateLocationsSync(locations: List<MyLocation>): Completable
+    fun updateForecastsSync(forecasts: List<MyForecast>): Completable
     fun deleteTag(tag: MyTag): Completable
     fun deleteNote(noteId: String): Completable
     fun deleteImage(imageName: String): Completable
@@ -64,7 +69,7 @@ interface DataManager {
     fun getNote(noteId: String): Flowable<MyNote>
     fun getAllTags(): Flowable<List<MyTag>>
     fun getDeletedTags(): Flowable<List<MyTag>>
-    fun getForecast(lat: Double, lon: Double): Single<Forecast?>
+    fun loadForecast(lat: Double, lon: Double): Single<MyForecast>
     fun getMood(moodId: Int): Single<MyMood>
     fun getCategory(categoryId: String): Single<MyCategory>
     fun getAllCategories(): Flowable<List<MyCategory>>
@@ -85,7 +90,11 @@ interface DataManager {
     fun getAllTagsFromCloud(): Single<List<MyTag>>
     fun getAllAppearancesFromCloud(): Single<List<MyNoteAppearance>>
     fun getAllNoteTagsFromCloud(): Single<List<NoteTag>>
+    fun getAllLocationsFromCloud(): Single<List<MyLocation>>
+    fun getAllForecastsFromCloud(): Single<List<MyForecast>>
     fun getAllImagesFromCloud(): Single<List<MyImage>>
+    fun getAllDbLocations(): Single<List<MyLocation>>
+    fun getAllDbForecasts(): Single<List<MyForecast>>
     fun getDbProfileCount(): Single<Int>
     fun getTextColor(): Int
     fun getSurfaceTextColor(): Int
@@ -112,7 +121,7 @@ interface DataManager {
     fun setLastSyncMessage(message: SyncProgressMessage)
     fun getLastSyncMessage(): SyncProgressMessage?
     fun findNote(noteId: String): Maybe<MyNote>
-    fun addLocation(location: MyLocation): Completable
+    fun insertLocation(location: MyLocation): Completable
     fun loadHeaderImages(page: Int = 1, perPage: Int = 20): Single<List<MyHeaderImage>>
     fun saveImageToStorage(image: MyImage): Single<MyImage>
     fun saveNotesInCloud(notes: List<MyNote>): Completable
@@ -120,6 +129,8 @@ interface DataManager {
     fun saveTagsInCloud(tags: List<MyTag>): Completable
     fun saveNoteTagsInCloud(noteTags: List<NoteTag>): Completable
     fun saveAppearancesInCloud(appearances: List<MyNoteAppearance>): Completable
+    fun saveLocationsInCloud(locations: List<MyLocation>): Completable
+    fun saveForecastsInCloud(forecasts: List<MyForecast>): Completable
     fun saveImagesInCloud(images: List<MyImage>): Completable
     fun saveImagesFilesInCloud(images: List<MyImage>): Completable
     fun loadImageFiles(images: List<MyImage>): Completable

@@ -83,10 +83,11 @@
     <string name="sync_progress_format" translatable="false">%1$d%% %2$s</string>
 
     <string name="location_permission_request">
-        Приложению требуется разрешение для определения местоположения вашей новой записи
+        Приложению требуется разрешение для определения прогноза погоды и местоположения вашей новой записи.
+        Вы можете отключить прогноз погоды и определение местоположения, в настройках приложения.
     </string>
     <string name="storage_permission_request">
-        Приложению требуется разрешениедля сохранения изображения
+        Приложению требуется разрешение для сохранения изображения
     </string>
 
     <string name="pin_recovery_email_subject">Восстановление пароля</string>
@@ -221,9 +222,13 @@
     <string name="sync_error_categories">Ошибка загрузки папок</string>
     <string name="sync_error_tags">Ошибка загрузки тегов</string>
     <string name="sync_error_note_tags">Ошибка загрузки связей</string>
+    <string name="sync_error_locations">Ошибка загрузки мест</string>
+    <string name="sync_error_forecasts">Ошибка загрузки погоды</string>
     <string name="sync_error_images">Ошибка загрузки картинок</string>
     <string name="sync_error_cleanup">Ошибка очистки</string>
     <string name="sync_note_tags">Загрузка связей</string>
+    <string name="sync_locations">Загрузка мест</string>
+    <string name="sync_forecasts">Загрузка прогноза</string>
     <string name="sync_error">Ошибка!</string>
     <string name="fragment_menu_profile_about">О профиле</string>
     <string name="fragment_menu_profile_picture">Картинка профиля</string>
