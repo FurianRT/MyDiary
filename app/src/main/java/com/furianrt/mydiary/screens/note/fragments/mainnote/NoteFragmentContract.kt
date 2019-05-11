@@ -12,7 +12,7 @@ import java.util.*
 interface NoteFragmentContract {
 
     interface View : BaseView {
-        fun showForecast(forecast: MyForecast)
+        fun showForecast(temp: String, iconUri: String)
         fun showTagsDialog(noteId: String)
         fun showTags(tagsAndAppearance: TagsAndAppearance)
         fun requestLocationPermissions()

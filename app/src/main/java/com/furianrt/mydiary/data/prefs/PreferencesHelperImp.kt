@@ -11,7 +11,7 @@ class PreferencesHelperImp(val context: Context) : PreferencesHelper {
     private val mPrefs = PreferenceManager.getDefaultSharedPreferences(context)
 
     override fun getWeatherUnits(): Int =
-            mPrefs.getInt(PreferencesHelper.WEATHER_UNITS, 0)
+            mPrefs.getString(PreferencesHelper.WEATHER_UNITS, "0")!!.toInt()
 
     override fun isWeatherEnabled(): Boolean =
             mPrefs.getBoolean(PreferencesHelper.WEATHER_AVAILABILITY, true)

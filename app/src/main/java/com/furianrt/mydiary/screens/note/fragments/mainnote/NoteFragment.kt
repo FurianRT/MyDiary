@@ -459,12 +459,11 @@ class NoteFragment : Fragment(), NoteFragmentContract.View, View.OnClickListener
         TagsDialog.newInstance(noteId).show(requireActivity().supportFragmentManager, TagsDialog.TAG)
     }
 
-    override fun showForecast(forecast: MyForecast) {
+    override fun showForecast(temp: String, iconUri: String) {
         GlideApp.with(this)
-                .load(forecast.icon)
+                .load(iconUri)
                 .into(image_weather)
 
-        val temp = forecast.temp.toInt().toString() + " °C"     //todo приделать форенгейт
         text_temp.text = temp
     }
 

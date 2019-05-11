@@ -120,7 +120,7 @@ class NoteFragmentPresenter(private val dataManager: DataManager) : NoteFragment
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe { forecasts ->
                         if (forecasts.isNotEmpty()) {
-                            view?.showForecast(forecasts.first())
+                            view?.showForecast(getWeatherTemp(forecasts.first()), forecasts.first().icon)
                         }
                     })
         }
@@ -221,11 +221,18 @@ class NoteFragmentPresenter(private val dataManager: DataManager) : NoteFragment
                 }
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({
-                    forecast?.let { view?.showForecast(it) }
+                    forecast?.let { view?.showForecast(getWeatherTemp(it), it.icon) }
                 }, {
                     it.printStackTrace()
                 }))
     }
+
+    private fun getWeatherTemp(forecast: MyForecast): String =
+            if (dataManager.getWeatherUnits() == DataManager.WEATHER_UNITS_CELSIUS) {
+                "${forecast.temp.toInt()} °C"
+            } else {
+                "${(forecast.temp * 1.8 + 32).toInt()} °F"
+            }
 
     private fun addLocation(location: MyLocation) {
         Log.e(TAG, "insertLocation")

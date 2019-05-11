@@ -8,6 +8,8 @@ interface DataManager {
         const val SIGN_STATE_SIGN_OUT = 0
         const val SIGN_STATE_SIGN_IN = 1
         const val BASE_WEATHER_IMAGE_URL = "http://openweathermap.org/img/w/"
+        const val WEATHER_UNITS_CELSIUS = 0
+        const val WEATHER_UNITS_FAHRENHEIT = 1
     }
     fun insertNote(note: MyNote): Completable
     fun insertNote(notes: List<MyNote>): Completable
@@ -96,6 +98,7 @@ interface DataManager {
     fun getAllDbLocations(): Single<List<MyLocation>>
     fun getAllDbForecasts(): Single<List<MyForecast>>
     fun getDbProfileCount(): Single<Int>
+    fun getWeatherUnits(): Int
     fun getTextColor(): Int
     fun getSurfaceTextColor(): Int
     fun getTextSize(): Int

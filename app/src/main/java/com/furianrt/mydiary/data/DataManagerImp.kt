@@ -426,6 +426,8 @@ class DataManagerImp(
 
     override fun isWeatherEnabled(): Boolean = prefs.isWeatherEnabled()
 
+    override fun getWeatherUnits(): Int = prefs.getWeatherUnits()
+
     override fun isLocationEnabled(): Boolean = prefs.isMapEnabled()
 
     override fun isMoodEnabled(): Boolean = prefs.isMoodEnabled()
