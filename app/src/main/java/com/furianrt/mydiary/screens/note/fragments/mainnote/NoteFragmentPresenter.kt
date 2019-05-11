@@ -403,4 +403,18 @@ class NoteFragmentPresenter(private val dataManager: DataManager) : NoteFragment
         view?.enableUndoButton(selectedIndex > 0)
         view?.enableRedoButton(selectedIndex < mNoteTextBuffer.size - 1)
     }
+
+    override fun onButtonMicClick() {
+        view?.recordSpeech()
+    }
+
+    override fun onSpeechRecorded(curTitle: String, curContent: String, recordedText: String) {
+        val content = if (curContent.isBlank()) {
+            curContent
+        } else {
+            "$curContent $recordedText"
+        }
+        addDisposable(dataManager.updateNoteText(mNoteId, curTitle, content)
+                .subscribe())
+    }
 }

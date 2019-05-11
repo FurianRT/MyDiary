@@ -1,8 +1,11 @@
 package com.furianrt.mydiary.screens.settings.note
 
 import android.os.Bundle
+import android.view.View
 import com.furianrt.mydiary.R
 import com.furianrt.mydiary.base.BaseActivity
+import com.google.android.gms.ads.AdListener
+import com.google.android.gms.ads.AdRequest
 import kotlinx.android.synthetic.main.activity_note_settings.*
 
 class NoteSettingsActivity : BaseActivity() {
@@ -21,6 +24,14 @@ class NoteSettingsActivity : BaseActivity() {
         setSupportActionBar(toolbar_settings_note)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setDisplayShowHomeEnabled(true)
+
+        view_ad.loadAd(AdRequest.Builder().build())
+        view_ad.adListener = object : AdListener() {
+            override fun onAdLoaded() {
+                super.onAdLoaded()
+                view_ad?.visibility = View.VISIBLE
+            }
+        }
     }
 
     private fun addSettingsFragment(noteId: String) {

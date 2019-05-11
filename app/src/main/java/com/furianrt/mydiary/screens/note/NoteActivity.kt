@@ -12,6 +12,8 @@ import com.furianrt.mydiary.base.BaseActivity
 import com.furianrt.mydiary.data.model.MyNoteWithProp
 import com.furianrt.mydiary.screens.note.fragments.mainnote.edit.NoteEditFragment
 import com.furianrt.mydiary.utils.generateUniqueId
+import com.google.android.gms.ads.AdListener
+import com.google.android.gms.ads.AdRequest
 import kotlinx.android.synthetic.main.activity_note.*
 import javax.inject.Inject
 
@@ -80,6 +82,14 @@ class NoteActivity : BaseActivity(), NoteActivityContract.View,
 
         mPagerAdapter = NoteActivityPagerAdapter(supportFragmentManager, mMode)
         pager_note.adapter = mPagerAdapter
+
+        view_ad.loadAd(AdRequest.Builder().build())
+        view_ad.adListener = object : AdListener() {
+            override fun onAdLoaded() {
+                super.onAdLoaded()
+                view_ad?.visibility = View.VISIBLE
+            }
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -130,8 +140,8 @@ class NoteActivity : BaseActivity(), NoteActivityContract.View,
         text_toolbar_title.text = getString(R.string.counter_format, current, count)
     }
 
-    override fun onResume() {
-        super.onResume()
+    override fun onStart() {
+        super.onStart()
         mPresenter.attachView(this)
         pager_note.addOnPageChangeListener(mOnPageChangeListener)
         if (mMode == Companion.Mode.READ) {
@@ -141,8 +151,8 @@ class NoteActivity : BaseActivity(), NoteActivityContract.View,
         }
     }
 
-    override fun onPause() {
-        super.onPause()
+    override fun onStop() {
+        super.onStop()
         pager_note.removeOnPageChangeListener(mOnPageChangeListener)
         mPresenter.detachView()
     }

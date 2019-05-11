@@ -90,13 +90,13 @@ class NoteContentFragment : Fragment(), NoteContentFragmentContract.View {
         }
     }
 
-    override fun onResume() {
-        super.onResume()
+    override fun onStart() {
+        super.onStart()
         mPresenter.attachView(this)
     }
 
-    override fun onPause() {
-        super.onPause()
+    override fun onStop() {
+        super.onStop()
         mPresenter.detachView()
     }
 
@@ -136,6 +136,10 @@ class NoteContentFragment : Fragment(), NoteContentFragmentContract.View {
             }
         }
     }
+
+    fun getNoteTitleText(): String = text_note_title?.text?.toString() ?: ""
+
+    fun getNoteContentText(): String = text_note_content?.text?.toString() ?: ""
 
     fun removeEditFragment() {
         fragmentManager?.findFragmentByTag(NoteEditFragment.TAG)?.let {

@@ -2,7 +2,7 @@
 
     <string name="app_name">YourBestDiary</string>
 
-    <!-- <string name="banner_ad_unit_id" translatable="false">ca-app-pub-3940256099942544/6300978111</string>-->
+    <string name="banner_ad_unit_id" translatable="false">ca-app-pub-9518936645258348~9000751532</string>
 
     <string-array name="tags">
         <item>Мечта</item>
@@ -103,6 +103,7 @@
     <string name="edit">Редактировать</string>
     <string name="delete">Удалить</string>
     <string name="back">Назад</string>
+    <string name="microphone">Микрофон</string>
     <string name="email">Email</string>
     <string name="send">Отправить</string>
     <string name="done">Готово</string>
@@ -291,5 +292,6 @@
     <string name="fragment_send_email_message">На email, заданный при создании пароля, будет отправлено письмо с инструкцией по восстановлению пароля. Если письмо не пришло, возможно оно попало в папку со спамом.</string>
     <string name="fragment_send_email_done">Письмо отправлено!</string>
     <string name="fragment_send_email_error">Не удалось отправить сообщение</string>
+    <string name="speech_to_text_title">Привет, скажи что-нибудь!</string>
 
 </resources>

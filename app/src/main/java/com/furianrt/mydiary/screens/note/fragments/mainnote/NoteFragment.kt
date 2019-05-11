@@ -1,6 +1,7 @@
 package com.furianrt.mydiary.screens.note.fragments.mainnote
 
 import android.Manifest
+import android.app.Activity
 import android.content.Intent
 import android.graphics.Color
 import android.graphics.PorterDuff
@@ -8,6 +9,7 @@ import android.location.Geocoder
 import android.os.Bundle
 import android.os.Looper
 import android.preference.PreferenceManager
+import android.speech.RecognizerIntent
 import android.util.Log
 import android.view.*
 import android.widget.FrameLayout
@@ -54,9 +56,8 @@ import java.util.*
 import javax.inject.Inject
 import kotlin.collections.ArrayList
 
-class NoteFragment : Fragment(), NoteFragmentContract.View, View.OnClickListener,
-        DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener,
-        NoteImagePagerAdapter.OnNoteImagePagerInteractionListener {
+class NoteFragment : Fragment(), NoteFragmentContract.View, DatePickerDialog.OnDateSetListener,
+        TimePickerDialog.OnTimeSetListener, NoteImagePagerAdapter.OnNoteImagePagerInteractionListener {
 
     companion object {
         const val TAG = "NoteFragment"
@@ -65,6 +66,7 @@ class NoteFragment : Fragment(), NoteFragmentContract.View, View.OnClickListener
         private const val LOCATION_INTERVAL = 400L
         private const val LOCATION_PERMISSIONS_REQUEST_CODE = 1
         private const val STORAGE_PERMISSIONS_REQUEST_CODE = 2
+        private const val SPEECH_TO_TEXT_REQUEST_CODE = 3
         private const val BUNDLE_IMAGE_PAGER_POSITION = "imagePagerPosition"
         private const val BUNDLE_NOTE_TEXT_BUFFER = "noteTextBuffer"
         private const val TIME_PICKER_TAG = "timePicker"
@@ -133,12 +135,30 @@ class NoteFragment : Fragment(), NoteFragmentContract.View, View.OnClickListener
         view.pager_note_image.adapter = mImagePagerAdapter
         view.pager_note_image.isSaveEnabled = false
 
-        view.layout_mood.setOnClickListener(this@NoteFragment)
-        view.layout_category.setOnClickListener(this@NoteFragment)
-        view.layout_tags.setOnClickListener(this@NoteFragment)
-        view.text_date.setOnClickListener(this@NoteFragment)
-        view.text_time.setOnClickListener(this@NoteFragment)
-        view.fab_add_image.setOnClickListener(this@NoteFragment)
+        view.layout_mood.setOnClickListener {
+            removeEditFragment()
+            mPresenter.onMoodFieldClick()
+        }
+        view.layout_category.setOnClickListener {
+            removeEditFragment()
+            mPresenter.onCategoryFieldClick()
+        }
+        view.layout_tags.setOnClickListener {
+            removeEditFragment()
+            mPresenter.onTagsFieldClick()
+        }
+        view.text_date.setOnClickListener {
+            removeEditFragment()
+            mPresenter.onDateFieldClick()
+        }
+        view.text_time.setOnClickListener {
+            removeEditFragment()
+            mPresenter.onTimeFieldClick()
+        }
+        view.fab_add_image.setOnClickListener {
+            removeEditFragment()
+            mPresenter.onButtonAddImageClick()
+        }
         view.layout_loading.setOnTouchListener { _, _ -> true }
 
         if (childFragmentManager.findFragmentByTag(NoteContentFragment.TAG) == null) {
@@ -228,7 +248,48 @@ class NoteFragment : Fragment(), NoteFragmentContract.View, View.OnClickListener
                 mPresenter.onButtonRedoClick()
                 true
             }
+            R.id.menu_mic -> {
+                mPresenter.onButtonMicClick()
+                true
+            }
             else -> super.onOptionsItemSelected(item)
+        }
+    }
+
+    override fun recordSpeech() {
+        val intent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH)
+        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM)
+        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.getDefault())
+        intent.putExtra(RecognizerIntent.EXTRA_PROMPT, getString(R.string.speech_to_text_title))
+        startActivityForResult(intent, SPEECH_TO_TEXT_REQUEST_CODE)
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == SPEECH_TO_TEXT_REQUEST_CODE) {
+            if (resultCode == Activity.RESULT_OK && data != null) {
+                val result = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS)?.first()
+                result?.let { appendToCurrentText(it) }
+            }
+        }
+    }
+
+    private fun appendToCurrentText(text: String) {
+        val editFragment = childFragmentManager.findFragmentByTag(NoteEditFragment.TAG) as? NoteEditFragment?
+        if (editFragment != null) {
+            mPresenter.onSpeechRecorded(
+                    editFragment.getNoteTitleText(),
+                    editFragment.getNoteContentText(),
+                    text
+            )
+        } else {
+            childFragmentManager.findFragmentByTag(NoteContentFragment.TAG)?.let {
+                mPresenter.onSpeechRecorded(
+                        (it as NoteContentFragment).getNoteTitleText(),
+                        it.getNoteContentText(),
+                        text
+                )
+            }
         }
     }
 
@@ -433,21 +494,6 @@ class NoteFragment : Fragment(), NoteFragmentContract.View, View.OnClickListener
 
         val params = app_bar_layout.layoutParams as CoordinatorLayout.LayoutParams
         (params.behavior as AppBarLayoutBehavior).shouldScroll = true
-    }
-
-    override fun onClick(v: View) {
-        removeEditFragment()
-        when (v.id) {
-            R.id.layout_tags -> mPresenter.onTagsFieldClick()
-            R.id.layout_mood -> mPresenter.onMoodFieldClick()
-            R.id.layout_category -> mPresenter.onCategoryFieldClick()
-            R.id.text_date -> mPresenter.onDateFieldClick()
-            R.id.text_time -> mPresenter.onTimeFieldClick()
-            R.id.fab_add_image -> {
-                removeEditFragment()
-                mPresenter.onButtonAddImageClick()
-            }
-        }
     }
 
     override fun showCategoriesDialog(noteId: String) {

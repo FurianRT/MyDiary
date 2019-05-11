@@ -161,8 +161,8 @@ class NoteEditFragment : Fragment(), NoteEditFragmentContract.View {
         }
     }
 
-    override fun onResume() {
-        super.onResume()
+    override fun onStart() {
+        super.onStart()
         mPresenter.attachView(this)
         (parentFragment as? NoteFragment?)?.onNoteFragmentEditModeEnabled()
         mListener?.onNoteFragmentEditModeEnabled()
@@ -170,8 +170,8 @@ class NoteEditFragment : Fragment(), NoteEditFragmentContract.View {
         edit_note_content.addTextChangedListener(mTextChangeListener)
     }
 
-    override fun onPause() {
-        super.onPause()
+    override fun onStop() {
+        super.onStop()
         val noteTitle = edit_note_title.text.toString()
         val noteContent = edit_note_content.text.toString()
         val noteFragment = (parentFragment as? NoteFragment?)
@@ -232,6 +232,10 @@ class NoteEditFragment : Fragment(), NoteEditFragmentContract.View {
             contentSelection
         })
     }
+
+    fun getNoteTitleText(): String = edit_note_title?.text?.toString() ?: ""
+
+    fun getNoteContentText(): String = edit_note_content?.text?.toString() ?: ""
 
     fun enableRedoButton(enable: Boolean) {
         mEnableRedo = enable

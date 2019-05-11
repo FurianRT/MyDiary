@@ -1,9 +1,12 @@
 package com.furianrt.mydiary.screens.settings.global
 
 import android.os.Bundle
+import android.view.View
 import androidx.preference.PreferenceManager
 import com.furianrt.mydiary.R
 import com.furianrt.mydiary.base.BaseActivity
+import com.google.android.gms.ads.AdListener
+import com.google.android.gms.ads.AdRequest
 import kotlinx.android.synthetic.main.activity_global_settings.*
 
 class GlobalSettingsActivity : BaseActivity() {
@@ -17,6 +20,14 @@ class GlobalSettingsActivity : BaseActivity() {
         supportActionBar?.setDisplayShowHomeEnabled(true)
 
         PreferenceManager.setDefaultValues(this, R.xml.pref_global, false)
+
+        view_ad.loadAd(AdRequest.Builder().build())
+        view_ad.adListener = object : AdListener() {
+            override fun onAdLoaded() {
+                super.onAdLoaded()
+                view_ad?.visibility = View.VISIBLE
+            }
+        }
     }
 
     override fun onSupportNavigateUp(): Boolean {

@@ -12,7 +12,7 @@ android {
         applicationId "com.furianrt.mydiary"
         minSdkVersion 21
         targetSdkVersion 28
-        versionCode 1
+        versionCode 5
         versionName "1.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -76,7 +76,6 @@ dependencies {
     kapt "com.google.dagger:dagger-compiler:$dagger_version"
 
     //Play services
-    implementation 'com.google.android.gms:play-services-maps:16.1.0'
     implementation 'com.google.android.gms:play-services-location:16.0.0'
 
     //Permissions
@@ -96,7 +95,7 @@ dependencies {
     implementation 'com.yanzhenjie:album:2.1.2'
 
     //Image editor
-    implementation 'com.github.yalantis:ucrop:2.2.2-native'
+    implementation 'com.github.yalantis:ucrop:2.2.3'
 
     //Color picker
     implementation 'com.larswerkman:HoloColorPicker:1.5'
@@ -110,9 +109,6 @@ dependencies {
     //DateTime pickers
     implementation 'com.wdullaer:materialdatetimepicker:4.1.2'
     implementation 'com.github.applikeysolutions:cosmocalendar:1.0.4'
-
-    //Circular imageView
-    implementation 'com.jackandphantom.android:circularimageview:1.2.0'
 
     //Firebase
     implementation 'com.google.firebase:firebase-core:16.0.9'
@@ -128,7 +124,7 @@ dependencies {
     implementation 'com.crashlytics.sdk.android:crashlytics:2.10.0'
 
     //Advertising
-    // implementation 'com.google.firebase:firebase-ads:17.2.0'
+    implementation 'com.google.firebase:firebase-ads:17.2.0'
 
     //ImageView with zoom
     implementation 'com.jsibbold:zoomage:1.2.0'

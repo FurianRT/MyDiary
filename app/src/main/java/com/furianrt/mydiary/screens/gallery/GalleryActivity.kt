@@ -3,11 +3,14 @@ package com.furianrt.mydiary.screens.gallery
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.view.View
 import com.furianrt.mydiary.R
 import com.furianrt.mydiary.base.BaseActivity
 import com.furianrt.mydiary.screens.gallery.fragments.list.GalleryListFragment
 import com.furianrt.mydiary.screens.gallery.fragments.pager.GalleryPagerFragment
 import com.furianrt.mydiary.utils.inTransaction
+import com.google.android.gms.ads.AdListener
+import com.google.android.gms.ads.AdRequest
 import kotlinx.android.synthetic.main.activity_gallery.*
 import javax.inject.Inject
 
@@ -45,6 +48,14 @@ class GalleryActivity : BaseActivity(), GalleryActivityContract.View {
             supportFragmentManager.inTransaction {
                 add(R.id.container_gallery, GalleryPagerFragment.newInstance(noteId, position),
                         GalleryPagerFragment.TAG)
+            }
+        }
+
+        view_ad.loadAd(AdRequest.Builder().build())
+        view_ad.adListener = object : AdListener() {
+            override fun onAdLoaded() {
+                super.onAdLoaded()
+                view_ad?.visibility = View.VISIBLE
             }
         }
     }

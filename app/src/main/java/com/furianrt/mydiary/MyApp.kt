@@ -16,6 +16,7 @@ import com.furianrt.mydiary.di.application.AppModule
 import com.furianrt.mydiary.di.application.DaggerAppComponent
 import com.furianrt.mydiary.general.GlideApp
 import com.furianrt.mydiary.screens.pin.PinActivity
+import com.google.android.gms.ads.MobileAds
 import com.yanzhenjie.album.Album
 import com.yanzhenjie.album.AlbumConfig
 import com.yanzhenjie.album.AlbumFile
@@ -52,6 +53,7 @@ class MyApp : Application(), Application.ActivityLifecycleCallbacks {
         JodaTimeAndroid.init(this)
         initializeImageAlbum()
         resetSyncProgress()
+        MobileAds.initialize(this, getString(R.string.banner_ad_unit_id))
     }
 
     override fun onActivityDestroyed(activity: Activity?) {}

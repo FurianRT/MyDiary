@@ -49,6 +49,8 @@ import com.furianrt.mydiary.utils.getThemePrimaryColor
 import com.furianrt.mydiary.utils.getThemePrimaryDarkColor
 import com.furianrt.mydiary.utils.inTransaction
 import com.furianrt.mydiary.utils.isNetworkAvailable
+import com.google.android.gms.ads.AdListener
+import com.google.android.gms.ads.AdRequest
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.yanzhenjie.album.Album
@@ -211,6 +213,14 @@ class MainActivity : BaseActivity(), MainActivityContract.View,
         list_main.addItemDecoration(HeaderItemDecoration(list_main, mAdapter))
         list_main.adapter = mAdapter
         list_main.itemAnimator = LandingAnimator()
+
+        view_ad.loadAd(AdRequest.Builder().build())
+        view_ad.adListener = object : AdListener() {
+            override fun onAdLoaded() {
+                super.onAdLoaded()
+                view_ad?.visibility = View.VISIBLE
+            }
+        }
     }
 
     private fun animateProgressAlpha() {

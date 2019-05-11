@@ -43,6 +43,7 @@ interface NoteFragmentContract {
         fun showDeleteConfirmationDialog(noteId: String)
         fun enableRedoButton(enable: Boolean)
         fun enableUndoButton(enable: Boolean)
+        fun recordSpeech()
     }
 
     abstract class Presenter : BasePresenter<View>() {
@@ -72,5 +73,7 @@ interface NoteFragmentContract {
         abstract fun onButtonUndoClick()
         abstract fun onButtonRedoClick()
         abstract fun onEditModeEnabled()
+        abstract fun onButtonMicClick()
+        abstract fun onSpeechRecorded(curTitle: String, curContent: String, recordedText: String)
     }
 }
