@@ -4,6 +4,8 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
+import com.anjlab.android.iab.v3.TransactionDetails
+import com.furianrt.mydiary.BuildConfig
 import com.furianrt.mydiary.R
 import com.furianrt.mydiary.base.BaseActivity
 import com.furianrt.mydiary.screens.gallery.fragments.list.GalleryListFragment
@@ -60,13 +62,40 @@ class GalleryActivity : BaseActivity(), GalleryActivityContract.View {
         }
     }
 
-    override fun onResume() {
-        super.onResume()
+    override fun onBillingInitialized() {
+        super.onBillingInitialized()
+        if (!isItemPurshased(BuildConfig.ITEM_SYNC_SKU)) {
+            showAdView()
+        }
+    }
+
+    override fun onProductPurchased(productId: String, details: TransactionDetails?) {
+        super.onProductPurchased(productId, details)
+        hideAdView()
+    }
+
+    private fun showAdView() {
+        view_ad?.adListener = object : AdListener() {
+            override fun onAdLoaded() {
+                super.onAdLoaded()
+                view_ad?.visibility = View.VISIBLE
+            }
+        }
+        view_ad?.loadAd(AdRequest.Builder().build())
+    }
+
+    private fun hideAdView() {
+        view_ad?.destroy()
+        view_ad?.visibility = View.GONE
+    }
+
+    override fun onStart() {
+        super.onStart()
         mPresenter.attachView(this)
     }
 
-    override fun onPause() {
-        super.onPause()
+    override fun onStop() {
+        super.onStop()
         mPresenter.detachView()
     }
 

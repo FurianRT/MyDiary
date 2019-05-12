@@ -127,16 +127,16 @@ class GalleryListFragment : Fragment(), GalleryListAdapter.OnListItemInteraction
         return view
     }
 
-    override fun onResume() {
-        super.onResume()
+    override fun onStart() {
+        super.onStart()
         mPresenter.attachView(this)
         mPresenter.onViewStart()
         (activity?.supportFragmentManager?.findFragmentByTag(DeleteImageDialog.TAG) as? DeleteImageDialog?)
                 ?.setOnDeleteConfirmListener(this)
     }
 
-    override fun onPause() {
-        super.onPause()
+    override fun onStop() {
+        super.onStop()
         mPresenter.detachView()
     }
 

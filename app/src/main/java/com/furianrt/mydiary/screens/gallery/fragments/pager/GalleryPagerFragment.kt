@@ -78,15 +78,15 @@ class GalleryPagerFragment : Fragment(), GalleryPagerContract.View {
         outState.putInt(ARG_POSITION, pager_gallery.currentItem)
     }
 
-    override fun onResume() {
-        super.onResume()
+    override fun onStart() {
+        super.onStart()
         pager_gallery.registerOnPageChangeCallback(mOnPageChangeCallback)
         mPresenter.attachView(this)
         mPresenter.onViewResume(mNoteId)
     }
 
-    override fun onPause() {
-        super.onPause()
+    override fun onStop() {
+        super.onStop()
         pager_gallery.unregisterOnPageChangeCallback(mOnPageChangeCallback)
         mPresenter.detachView()
     }

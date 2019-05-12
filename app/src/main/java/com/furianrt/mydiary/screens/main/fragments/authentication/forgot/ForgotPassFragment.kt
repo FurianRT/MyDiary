@@ -121,13 +121,13 @@ class ForgotPassFragment : Fragment(), ForgotPassContract.View {
         (parentFragment as? AuthFragment?)?.showRegistrationButton()
     }
 
-    override fun onResume() {
-        super.onResume()
+    override fun onStart() {
+        super.onStart()
         mPresenter.attachView(this)
     }
 
-    override fun onPause() {
-        super.onPause()
+    override fun onStop() {
+        super.onStop()
         mHandler.removeCallbacks(mChangeActivityFlag)
         mPresenter.detachView()
     }

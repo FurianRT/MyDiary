@@ -202,7 +202,8 @@
     <string name="nav_header_main_regular">Премиум статус: нет</string>
     <string name="nav_header_main_premium">Премиум статус: есть</string>
     <string name="nav_header_main_photos">Фото:</string>
-    <string name="nav_header_main_button_sync">Синхронизация (PRO)</string>
+    <string name="nav_header_main_button_sync_pro">Синхронизация (PRO)</string>
+    <string name="nav_header_main_button_sync">Синхронизация</string>
     <string name="nav_header_main_today">Сегодня:</string>
     <string name="nav_header_main_total">Всего:</string>
     <string name="sort_new_first">Сначала новые</string>

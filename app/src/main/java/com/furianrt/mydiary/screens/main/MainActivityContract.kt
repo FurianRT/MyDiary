@@ -12,7 +12,7 @@ interface MainActivityContract {
 
     interface View : BaseView {
         fun showNotes(notes: List<MainListItem>, selectedNoteIds: Set<String>)
-        fun openNotePager(position: Int, note: MyNoteWithProp)
+        fun showNotePager(position: Int, note: MyNoteWithProp)
         fun showHeaderImage(image: MyHeaderImage)
         fun requestStoragePermissions()
         fun showViewNewNote()
@@ -63,5 +63,6 @@ interface MainActivityContract {
         abstract fun onButtonDeleteConfirmClick()
         abstract fun onButtonFolderClick()
         abstract fun onCategorySelected()
+        abstract fun onButtonPremiumClick()
     }
 }

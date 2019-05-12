@@ -25,6 +25,8 @@ import androidx.core.content.ContextCompat
 import androidx.core.view.GravityCompat
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.anjlab.android.iab.v3.TransactionDetails
+import com.furianrt.mydiary.BuildConfig
 import com.furianrt.mydiary.R
 import com.furianrt.mydiary.base.BaseActivity
 import com.furianrt.mydiary.data.model.MyHeaderImage
@@ -89,8 +91,9 @@ class MainActivity : BaseActivity(), MainActivityContract.View,
     lateinit var mPresenter: MainActivityContract.Presenter
 
     private lateinit var mAdapter: MainListAdapter
-    private var mRecyclerViewState: Parcelable? = null
     private lateinit var mBottomSheet: BottomSheetBehavior<FrameLayout>
+    private lateinit var mOnDrawerListener: ActionBarDrawerToggle
+    private var mRecyclerViewState: Parcelable? = null
     private var mBackPressCount = 0
     private var mNeedToOpenActionBar = true
     private var mMenu: Menu? = null
@@ -98,6 +101,7 @@ class MainActivity : BaseActivity(), MainActivityContract.View,
     private val mBottomSheetOpenRunnable: Runnable = Runnable {
         mBottomSheet.state = BottomSheetBehavior.STATE_EXPANDED
     }
+
     private val mProgressAnimationListener = object : Animator.AnimatorListener {
         override fun onAnimationRepeat(animation: Animator?) {}
         override fun onAnimationCancel(animation: Animator?) {}
@@ -106,7 +110,6 @@ class MainActivity : BaseActivity(), MainActivityContract.View,
             clearSyncProgress()
         }
     }
-    private lateinit var mOnDrawerListener: ActionBarDrawerToggle
 
     private val mBroadcastReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
@@ -146,7 +149,11 @@ class MainActivity : BaseActivity(), MainActivityContract.View,
             view_sync.visibility = View.INVISIBLE
             view_sync.layoutParams.width = 0
             button_sync.isEnabled = true
-            button_sync.text = getString(R.string.nav_header_main_button_sync)
+            if (isBillingInitialized() && isItemPurshased(BuildConfig.ITEM_SYNC_SKU)) {
+                button_sync.text = getString(R.string.nav_header_main_button_sync)
+            } else {
+                button_sync.text = getString(R.string.nav_header_main_button_sync_pro)
+            }
             view_sync.requestLayout()
         }
     }
@@ -161,13 +168,20 @@ class MainActivity : BaseActivity(), MainActivityContract.View,
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_menu)
 
+        mOnDrawerListener = object : ActionBarDrawerToggle(this, drawer, toolbar_main, R.string.open, R.string.close) {
+            override fun onDrawerSlide(drawerView: View, slideOffset: Float) {
+                super.onDrawerSlide(drawerView, slideOffset)
+                layout_main_root.translationX = slideOffset * drawerView.width
+            }
+        }
+
         mBottomSheet = BottomSheetBehavior.from(main_sheet_container)
         mBottomSheet.setBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
             override fun onSlide(bottomSheet: View, slideOffset: Float) {}
             override fun onStateChanged(bottomSheet: View, newState: Int) {
                 if (newState == BottomSheetBehavior.STATE_COLLAPSED) {
                     supportFragmentManager.findFragmentByTag(PremiumFragment.TAG)?.let {
-                        supportFragmentManager.popBackStack() //todo странная фигня
+                        supportFragmentManager.inTransaction { remove(it) }
                     }
                     supportFragmentManager.findFragmentByTag(ProfileFragment.TAG)?.let {
                         supportFragmentManager.inTransaction { remove(it) }
@@ -182,6 +196,7 @@ class MainActivity : BaseActivity(), MainActivityContract.View,
                 }
             }
         })
+
         savedInstanceState?.let {
             mRecyclerViewState = it.getParcelable(BUNDLE_RECYCLER_VIEW_STATE)
             val selectedListItems = it.getStringArrayList(BUNDLE_SELECTED_LIST_ITEMS)
@@ -202,7 +217,15 @@ class MainActivity : BaseActivity(), MainActivityContract.View,
         image_toolbar_main.setOnClickListener { mPresenter.onMainImageClick() }
         button_main_image_settings.setOnClickListener { mPresenter.onButtonImageSettingsClick() }
         with(nav_view.getHeaderView(0)) {
-            button_sync.setOnClickListener { mPresenter.onButtonSyncClick() }
+            button_sync.setOnClickListener {
+                if (isBillingInitialized()) {
+                    if (isItemPurshased(BuildConfig.ITEM_SYNC_SKU)) {
+                        mPresenter.onButtonSyncClick()
+                    } else {
+                        mPresenter.onButtonPremiumClick()
+                    }
+                }
+            }
             button_profile_settings.setOnClickListener { mPresenter.onButtonProfileClick() }
             layout_profile_name.setOnClickListener { mPresenter.onButtonProfileClick() }
             image_profile.setOnClickListener { mPresenter.onButtonProfileClick() }
@@ -213,14 +236,37 @@ class MainActivity : BaseActivity(), MainActivityContract.View,
         list_main.addItemDecoration(HeaderItemDecoration(list_main, mAdapter))
         list_main.adapter = mAdapter
         list_main.itemAnimator = LandingAnimator()
+    }
 
-        view_ad.loadAd(AdRequest.Builder().build())
-        view_ad.adListener = object : AdListener() {
+    override fun onBillingInitialized() {
+        super.onBillingInitialized()
+        if (isItemPurshased(BuildConfig.ITEM_SYNC_SKU)) {
+            nav_view?.getHeaderView(0)?.button_sync?.text = getString(R.string.nav_header_main_button_sync)
+        } else {
+            nav_view?.getHeaderView(0)?.button_sync?.text = getString(R.string.nav_header_main_button_sync_pro)
+            showAdView()
+        }
+    }
+
+    override fun onProductPurchased(productId: String, details: TransactionDetails?) {
+        super.onProductPurchased(productId, details)
+        nav_view?.getHeaderView(0)?.button_sync?.text = getString(R.string.nav_header_main_button_sync)
+        hideAdView()
+    }
+
+    private fun showAdView() {
+        view_ad?.adListener = object : AdListener() {
             override fun onAdLoaded() {
                 super.onAdLoaded()
                 view_ad?.visibility = View.VISIBLE
             }
         }
+        view_ad?.loadAd(AdRequest.Builder().build())
+    }
+
+    private fun hideAdView() {
+        view_ad?.destroy()
+        view_ad?.visibility = View.GONE
     }
 
     private fun animateProgressAlpha() {
@@ -370,7 +416,7 @@ class MainActivity : BaseActivity(), MainActivityContract.View,
     override fun showPremiumView() {
         if (supportFragmentManager.findFragmentByTag(PremiumFragment.TAG) == null) {
             supportFragmentManager.inTransaction {
-                add(R.id.main_sheet_container, PremiumFragment(), PremiumFragment.TAG)
+                replace(R.id.main_sheet_container, PremiumFragment(), PremiumFragment.TAG)
             }
         }
         mHandler.postDelayed(mBottomSheetOpenRunnable, BOTTOM_SHEET_EXPAND_DELAY)
@@ -495,7 +541,7 @@ class MainActivity : BaseActivity(), MainActivityContract.View,
         mAdapter.notifyDataSetChanged()
     }
 
-    override fun openNotePager(position: Int, note: MyNoteWithProp) {
+    override fun showNotePager(position: Int, note: MyNoteWithProp) {
         startActivity(NoteActivity.newIntentModeRead(this, position))
     }
 
@@ -579,16 +625,10 @@ class MainActivity : BaseActivity(), MainActivityContract.View,
         mPresenter.onCategorySelected()
     }
 
-    override fun onResume() {
-        super.onResume()
+    override fun onStart() {
+        super.onStart()
         mPresenter.attachView(this)
         mAdapter.listener = this
-        mOnDrawerListener = object : ActionBarDrawerToggle(this, drawer, toolbar_main, R.string.open, R.string.close) {
-            override fun onDrawerSlide(drawerView: View, slideOffset: Float) {
-                super.onDrawerSlide(drawerView, slideOffset)
-                layout_main_root.translationX = slideOffset * drawerView.width
-            }
-        }
         drawer.addDrawerListener(mOnDrawerListener)
         (supportFragmentManager.findFragmentByTag(DeleteNoteDialog.TAG) as? DeleteNoteDialog)
                 ?.setOnDeleteConfirmListener(this)
@@ -599,8 +639,8 @@ class MainActivity : BaseActivity(), MainActivityContract.View,
                 .registerReceiver(mBroadcastReceiver, IntentFilter(Intent.ACTION_SYNC))
     }
 
-    override fun onPause() {
-        super.onPause()
+    override fun onStop() {
+        super.onStop()
         mNeedToOpenActionBar = false
         mBackPressCount = 0
         mAdapter.listener = null

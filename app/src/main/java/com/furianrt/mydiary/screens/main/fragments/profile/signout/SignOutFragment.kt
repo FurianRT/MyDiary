@@ -49,13 +49,13 @@ class SignOutFragment : Fragment(), SignOutContract.View {
         fragmentManager?.popBackStack()
     }
 
-    override fun onResume() {
-        super.onResume()
+    override fun onStart() {
+        super.onStart()
         mPresenter.attachView(this)
     }
 
-    override fun onPause() {
-        super.onPause()
+    override fun onStop() {
+        super.onStop()
         mHandler.removeCallbacks(mBottomSheetCloseRunnable)
         mPresenter.detachView()
     }

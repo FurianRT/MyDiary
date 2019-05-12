@@ -106,14 +106,14 @@ class AuthFragment : Fragment(), AuthContract.View {
         (activity as? MainActivity?)?.closeBottomSheet()
     }
 
-    override fun onResume() {
-        super.onResume()
+    override fun onStart() {
+        super.onStart()
         mPresenter.attachView(this)
         KeyboardUtils.addKeyboardToggleListener(requireActivity(), mOnKeyboardToggleListener)
     }
 
-    override fun onPause() {
-        super.onPause()
+    override fun onStop() {
+        super.onStop()
         KeyboardUtils.removeKeyboardToggleListener(mOnKeyboardToggleListener)
         mPresenter.detachView()
     }

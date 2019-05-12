@@ -229,8 +229,8 @@ class PinActivity : BaseActivity(), PinContract.View, View.OnClickListener,
         overridePendingTransition(R.anim.activity_stay_slide_bottom, R.anim.slide_bottom_down)
     }
 
-    override fun onResume() {
-        super.onResume()
+    override fun onStart() {
+        super.onStart()
         mPresenter.attachView(this)
         when (mMode) {
             MODE_CREATE -> mPresenter.onViewResumedModeCreate()
@@ -239,8 +239,8 @@ class PinActivity : BaseActivity(), PinContract.View, View.OnClickListener,
         }
     }
 
-    override fun onPause() {
-        super.onPause()
+    override fun onStop() {
+        super.onStop()
         mHandler.removeCallbacks(mBottomSheetOpenRunnable)
         mPresenter.detachView()
     }

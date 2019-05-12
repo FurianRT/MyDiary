@@ -95,15 +95,15 @@ class MenuProfileFragment : Fragment(), MenuProfileContract.View, View.OnClickLi
         button_sign_out.isEnabled = !disable
     }
 
-    override fun onResume() {
-        super.onResume()
+    override fun onStart() {
+        super.onStart()
         LocalBroadcastManager.getInstance(requireContext())
                 .registerReceiver(mBroadcastReceiver, IntentFilter(Intent.ACTION_SYNC))
         mPresenter.attachView(this)
     }
 
-    override fun onPause() {
-        super.onPause()
+    override fun onStop() {
+        super.onStop()
         LocalBroadcastManager.getInstance(requireContext()).unregisterReceiver(mBroadcastReceiver)
         mPresenter.detachView()
     }

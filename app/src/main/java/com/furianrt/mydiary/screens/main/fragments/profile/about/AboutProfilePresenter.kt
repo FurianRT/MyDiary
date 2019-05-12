@@ -7,7 +7,7 @@ class AboutProfilePresenter(
         private val dataManager: DataManager
 ) : AboutProfileContract.Presenter() {
 
-    override fun onViewResume() {
+    override fun onViewStart() {
         addDisposable(dataManager.getDbProfile()
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { view?.showProfileInfo(it) })

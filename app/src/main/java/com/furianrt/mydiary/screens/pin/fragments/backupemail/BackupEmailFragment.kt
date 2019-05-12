@@ -87,15 +87,15 @@ class BackupEmailFragment : Fragment(), BackupEmailContract.View {
         Toast.makeText(requireContext(), getString(R.string.fragment_backup_email_enter_email), Toast.LENGTH_SHORT).show()
     }
 
-    override fun onResume() {
-        super.onResume()
+    override fun onStart() {
+        super.onStart()
         KeyboardUtils.addKeyboardToggleListener(requireActivity(), mOnKeyboardToggleListener)
         edit_backup_email.addTextChangedListener(mTextChangeListener)
         mPresenter.attachView(this)
     }
 
-    override fun onPause() {
-        super.onPause()
+    override fun onStop() {
+        super.onStop()
         KeyboardUtils.removeKeyboardToggleListener(mOnKeyboardToggleListener)
         edit_backup_email.removeTextChangedListener(mTextChangeListener)
         mPresenter.detachView()

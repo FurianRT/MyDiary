@@ -147,13 +147,13 @@ class PasswordFragment : Fragment(), PasswordContract.View {
                 BottomSheetBehavior.STATE_COLLAPSED
     }
 
-    override fun onResume() {
-        super.onResume()
+    override fun onStart() {
+        super.onStart()
         mPresenter.attachView(this)
     }
 
-    override fun onPause() {
-        super.onPause()
+    override fun onStop() {
+        super.onStop()
         mHandler.removeCallbacks(mChangeActivityFlag)
         mPresenter.detachView()
     }

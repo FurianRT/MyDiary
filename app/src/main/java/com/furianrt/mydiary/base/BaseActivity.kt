@@ -1,15 +1,26 @@
 package com.furianrt.mydiary.base
 
+import android.content.Intent
 import android.os.Bundle
 import android.os.PersistableBundle
 import android.preference.PreferenceManager
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import com.anjlab.android.iab.v3.BillingProcessor
+import com.anjlab.android.iab.v3.TransactionDetails
+import com.furianrt.mydiary.BuildConfig
 import com.furianrt.mydiary.R
 import com.furianrt.mydiary.data.prefs.PreferencesHelper
 import com.furianrt.mydiary.screens.pin.PinActivity
 
-abstract class BaseActivity : AppCompatActivity() {
+abstract class BaseActivity : AppCompatActivity(), BillingProcessor.IBillingHandler {
+
+    companion object {
+        const val TAG = "BaseActivity"
+    }
+
+    private lateinit var mBillingProcessor: BillingProcessor
 
     open var needLockScreen = true
 
@@ -17,32 +28,64 @@ abstract class BaseActivity : AppCompatActivity() {
         application.setTheme(R.style.AppTheme)
         applyStyleToTheme()
         super.onCreate(savedInstanceState)
+        mBillingProcessor = BillingProcessor(this, BuildConfig.LICENSE_KEY, this)
+        mBillingProcessor.initialize()
     }
 
     override fun onCreate(savedInstanceState: Bundle?, persistentState: PersistableBundle?) {
         application.setTheme(R.style.AppTheme)
         applyStyleToTheme()
         super.onCreate(savedInstanceState, persistentState)
+        mBillingProcessor = BillingProcessor(this, BuildConfig.LICENSE_KEY, this)
+        mBillingProcessor.initialize()
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        if (!mBillingProcessor.handleActivityResult(requestCode, resultCode, data)) {
+            super.onActivityResult(requestCode, resultCode, data)
+        }
+    }
+
+    @Suppress("SameParameterValue")
+    protected fun isItemPurshased(productId: String) = mBillingProcessor.isPurchased(productId)
+
+    protected fun isBillingInitialized() = mBillingProcessor.isInitialized
+
+    override fun onBillingInitialized() {
+        Log.e(TAG, "onBillingInitialized")
+    }
+
+    override fun onPurchaseHistoryRestored() {
+        Log.e(TAG, "onPurchaseHistoryRestored")
+    }
+
+    override fun onProductPurchased(productId: String, details: TransactionDetails?) {
+        Log.e(TAG, "onProductPurchased")
+    }
+
+    override fun onBillingError(errorCode: Int, error: Throwable?) {
+        Log.e(TAG, "onBillingError: ${error?.printStackTrace()}")
     }
 
     override fun onStart() {
         super.onStart()
         if (needLockScreen) {
-            val prefs = PreferenceManager.getDefaultSharedPreferences(this)
-            val isPinEnabled = prefs.getBoolean(PreferencesHelper.SECURITY_KEY, false)
-            val isAuthorized = prefs.getBoolean(PreferencesHelper.SECURITY_IS_AUTHORIZED, true)
-            if (isPinEnabled && !isAuthorized) {
-                startActivity(PinActivity.newIntentModeLock(this))
-            }
+            openPinScreen()
         }
     }
 
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        PreferenceManager.getDefaultSharedPreferences(this)
-                .edit()
-                .putBoolean(PreferencesHelper.SECURITY_IS_AUTHORIZED, true)
-                .apply()
+    private fun openPinScreen() {
+        val prefs = PreferenceManager.getDefaultSharedPreferences(this)
+        val isPinEnabled = prefs.getBoolean(PreferencesHelper.SECURITY_KEY, false)
+        val isAuthorized = prefs.getBoolean(PreferencesHelper.SECURITY_IS_AUTHORIZED, true)
+        if (isPinEnabled && !isAuthorized) {
+            startActivity(PinActivity.newIntentModeLock(this))
+        }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        mBillingProcessor.release()
     }
 
     // Похоже, что динамическое создание стиля в андроиде не предусмотрено,

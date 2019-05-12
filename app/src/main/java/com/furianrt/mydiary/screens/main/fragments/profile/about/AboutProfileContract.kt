@@ -13,7 +13,7 @@ interface AboutProfileContract {
     }
 
     abstract class Presenter : BasePresenter<View>() {
-        abstract fun onViewResume()
+        abstract fun onViewStart()
         abstract fun onButtonBackClick()
     }
 }

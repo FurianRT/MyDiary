@@ -79,14 +79,14 @@ class ProfileFragment : Fragment(), ProfileContract.View {
         activity?.window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN)
     }
 
-    override fun onResume() {
-        super.onResume()
+    override fun onStart() {
+        super.onStart()
         KeyboardUtils.addKeyboardToggleListener(activity!!, mOnKeyboardToggleListener)
         mPresenter.attachView(this)
     }
 
-    override fun onPause() {
-        super.onPause()
+    override fun onStop() {
+        super.onStop()
         KeyboardUtils.removeKeyboardToggleListener(mOnKeyboardToggleListener)
         mPresenter.detachView()
     }

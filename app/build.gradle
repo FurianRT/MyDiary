@@ -12,7 +12,7 @@ android {
         applicationId "com.furianrt.mydiary"
         minSdkVersion 21
         targetSdkVersion 28
-        versionCode 5
+        versionCode 6
         versionName "1.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -28,6 +28,9 @@ android {
         it.buildConfigField 'String', 'PREFS_PASSWORD', prefsPassword
         it.buildConfigField 'String', 'SUPPORT_EMAIL', supportEmail
         it.buildConfigField 'String', 'SUPPORT_EMAIL_PASSWORD', supportEmailPassword
+        it.buildConfigField 'String', 'MERCHANT_ID', merchantId
+        it.buildConfigField 'String', 'LICENSE_KEY', licenseKey
+        it.buildConfigField 'String', 'ITEM_SYNC_SKU', itemSyncSku
     }
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
@@ -132,6 +135,9 @@ dependencies {
     //Sending email
     implementation 'com.sun.mail:android-mail:1.6.3'
     implementation 'com.sun.mail:android-activation:1.6.3'
+
+    //In-App purchases
+    implementation 'com.anjlab.android.iab.v3:library:1.0.44'
 
     //Tests
     testImplementation "junit:junit:$junit_version"
