@@ -197,14 +197,4 @@
         tools:layout_width="100dp"
         tools:visibility="visible" />
 
-    <com.applikeysolutions.cosmocalendar.view.CalendarView
-        android:id="@+id/calendar_search"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/button_sync"
-        app:orientation="horizontal"
-        app:selectionType="range" />
-
 </androidx.constraintlayout.widget.ConstraintLayout>

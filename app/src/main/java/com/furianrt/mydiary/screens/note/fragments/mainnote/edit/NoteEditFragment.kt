@@ -81,13 +81,13 @@ class NoteEditFragment : Fragment(), NoteEditFragmentContract.View {
             ClickedView.TITLE -> {
                 edit_note_title.requestFocus()
                 edit_note_title.setSelection(mClickPosition)
-                edit_note_title.postDelayed({ edit_note_title?.showKeyboard() }, 400)
+                edit_note_title.showKeyboard()
 
             }
             ClickedView.CONTENT -> {
                 edit_note_content.requestFocus()
                 edit_note_content.setSelection(mClickPosition)
-                edit_note_content.postDelayed({ edit_note_content?.showKeyboard() }, 400)
+                edit_note_content.showKeyboard()
             }
         }
     }
@@ -189,6 +189,7 @@ class NoteEditFragment : Fragment(), NoteEditFragmentContract.View {
             edit_note_content.setTextColor(it)
             edit_note_title.setHintTextColor(ColorUtils.setAlphaComponent(it, 50))
             edit_note_content.setHintTextColor(ColorUtils.setAlphaComponent(it, 50))
+            edit_note_content.setLineColor(ColorUtils.setAlphaComponent(it, 40))
         }
         appearance.textSize?.let {
             edit_note_title.textSize = it.toFloat()

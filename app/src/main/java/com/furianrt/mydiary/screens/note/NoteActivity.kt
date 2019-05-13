@@ -62,8 +62,12 @@ class NoteActivity : BaseActivity(), NoteActivityContract.View,
         override fun onToggleSoftKeyboard(isVisible: Boolean) {
             if (isVisible) {
                 view_ad?.visibility = View.GONE
-            } else {
-                view_ad?.postDelayed({ view_ad?.visibility = View.VISIBLE }, 150L)
+            } else if (!isItemPurshased(BuildConfig.ITEM_SYNC_SKU) && !isItemPurshased(ITEM_TEST_SKU)) {
+                view_ad?.postDelayed({
+                    if (view_ad?.isLoading == false) {
+                        view_ad?.visibility = View.VISIBLE
+                    }
+                }, 150L)
             }
         }
     }
@@ -95,14 +99,6 @@ class NoteActivity : BaseActivity(), NoteActivityContract.View,
 
         mPagerAdapter = NoteActivityPagerAdapter(supportFragmentManager, mMode)
         pager_note.adapter = mPagerAdapter
-
-        view_ad.loadAd(AdRequest.Builder().build())
-        view_ad.adListener = object : AdListener() {
-            override fun onAdLoaded() {
-                super.onAdLoaded()
-                view_ad?.visibility = View.VISIBLE
-            }
-        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -118,21 +114,25 @@ class NoteActivity : BaseActivity(), NoteActivityContract.View,
 
     override fun onBillingInitialized() {
         super.onBillingInitialized()
-        if (!isItemPurshased(BuildConfig.ITEM_SYNC_SKU)) {
+        if (!isItemPurshased(BuildConfig.ITEM_SYNC_SKU) && !isItemPurshased(ITEM_TEST_SKU)) {
             showAdView()
         }
     }
 
     override fun onProductPurchased(productId: String, details: TransactionDetails?) {
         super.onProductPurchased(productId, details)
-        hideAdView()
+        if (isItemPurshased(BuildConfig.ITEM_SYNC_SKU) || isItemPurshased(ITEM_TEST_SKU)) {
+            hideAdView()
+        }
     }
 
     private fun showAdView() {
         view_ad?.adListener = object : AdListener() {
             override fun onAdLoaded() {
                 super.onAdLoaded()
-                view_ad?.visibility = View.VISIBLE
+                if (!KeyboardUtils.isKeyboardVisible()) {
+                    view_ad?.visibility = View.VISIBLE
+                }
             }
         }
         view_ad?.loadAd(AdRequest.Builder().build())

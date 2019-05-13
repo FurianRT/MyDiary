@@ -5,7 +5,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.bumptech.glide.signature.ObjectKey
 import com.furianrt.mydiary.R
 import com.furianrt.mydiary.data.model.MyImage
@@ -44,7 +43,6 @@ class NoteImagePagerAdapter(
             GlideApp.with(itemView)
                     .load(Uri.parse(image.uri))
                     .signature(ObjectKey(image.editedTime))
-                    .transition(DrawableTransitionOptions.withCrossFade())
                     .into(itemView.image_note)
         }
     }

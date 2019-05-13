@@ -81,7 +81,7 @@ class ProfileFragment : Fragment(), ProfileContract.View {
 
     override fun onStart() {
         super.onStart()
-        KeyboardUtils.addKeyboardToggleListener(activity!!, mOnKeyboardToggleListener)
+        KeyboardUtils.addKeyboardToggleListener(requireActivity(), mOnKeyboardToggleListener)
         mPresenter.attachView(this)
     }
 

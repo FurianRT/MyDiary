@@ -111,7 +111,6 @@ dependencies {
 
     //DateTime pickers
     implementation 'com.wdullaer:materialdatetimepicker:4.1.2'
-    implementation 'com.github.applikeysolutions:cosmocalendar:1.0.4'
 
     //Firebase
     implementation 'com.google.firebase:firebase-core:16.0.9'

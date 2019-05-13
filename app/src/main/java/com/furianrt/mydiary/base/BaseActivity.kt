@@ -18,6 +18,7 @@ abstract class BaseActivity : AppCompatActivity(), BillingProcessor.IBillingHand
 
     companion object {
         const val TAG = "BaseActivity"
+        const val ITEM_TEST_SKU = "android.test.purchased"
     }
 
     private lateinit var mBillingProcessor: BillingProcessor
@@ -28,16 +29,14 @@ abstract class BaseActivity : AppCompatActivity(), BillingProcessor.IBillingHand
         application.setTheme(R.style.AppTheme)
         applyStyleToTheme()
         super.onCreate(savedInstanceState)
-        mBillingProcessor = BillingProcessor(this, BuildConfig.LICENSE_KEY, this)
-        mBillingProcessor.initialize()
+        mBillingProcessor = BillingProcessor(this, BuildConfig.LICENSE_KEY, BuildConfig.MERCHANT_ID, this)
     }
 
     override fun onCreate(savedInstanceState: Bundle?, persistentState: PersistableBundle?) {
         application.setTheme(R.style.AppTheme)
         applyStyleToTheme()
         super.onCreate(savedInstanceState, persistentState)
-        mBillingProcessor = BillingProcessor(this, BuildConfig.LICENSE_KEY, this)
-        mBillingProcessor.initialize()
+        mBillingProcessor = BillingProcessor(this, BuildConfig.LICENSE_KEY, BuildConfig.MERCHANT_ID, this)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -46,7 +45,10 @@ abstract class BaseActivity : AppCompatActivity(), BillingProcessor.IBillingHand
         }
     }
 
-    @Suppress("SameParameterValue")
+    protected fun purshaseItem(productId: String) = mBillingProcessor.purchase(this, productId)
+
+    protected fun consumePurchase(productId: String) = mBillingProcessor.consumePurchase(productId)
+
     protected fun isItemPurshased(productId: String) = mBillingProcessor.isPurchased(productId)
 
     protected fun isBillingInitialized() = mBillingProcessor.isInitialized

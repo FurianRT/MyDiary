@@ -1,4 +1,4 @@
-<resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
+<resources>
 
     <string name="app_name">YourBestDiary</string>
 
@@ -87,7 +87,7 @@
         Вы можете отключить прогноз погоды и определение местоположения, в настройках приложения.
     </string>
     <string name="storage_permission_request">
-        Приложению требуется разрешение для сохранения изображения
+        Приложению требуется разрешение для доступа к картинкам на вашем устройве.
     </string>
 
     <string name="pin_recovery_email_subject">Восстановление пароля</string>
@@ -116,7 +116,6 @@
     <string name="empty_password">Введите пароль</string>
     <string name="empty_email">Введите email</string>
     <string name="wrong_email_format">Некорректный email</string>
-
     <string name="tags">Теги</string>
     <string name="choose_tags">Выберите теги</string>
     <string name="choose_category">Категория</string>
@@ -146,6 +145,7 @@
     <string name="appearance">Внешний вид</string>
     <string name="background">Фон</string>
     <string name="text">Текст</string>
+
     <string name="note_background_summary">Цвет заднего плана записи</string>
     <string name="note_background_title">Цвет фона</string>
     <string name="note_text_background_summary">Цвет фона на котором пишется текст записи</string>

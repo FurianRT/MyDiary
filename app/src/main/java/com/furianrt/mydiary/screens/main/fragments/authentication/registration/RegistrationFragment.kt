@@ -12,10 +12,7 @@ import androidx.fragment.app.Fragment
 import com.furianrt.mydiary.R
 import com.furianrt.mydiary.screens.main.fragments.authentication.AuthFragment
 import com.furianrt.mydiary.screens.main.fragments.authentication.done.DoneAuthFragment
-import com.furianrt.mydiary.utils.animateShake
-import com.furianrt.mydiary.utils.getThemeAccentColor
-import com.furianrt.mydiary.utils.inTransaction
-import com.furianrt.mydiary.utils.isNetworkAvailable
+import com.furianrt.mydiary.utils.*
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import kotlinx.android.synthetic.main.bottom_sheet_main.*
 import kotlinx.android.synthetic.main.fragment_registration.*
@@ -197,5 +194,7 @@ class RegistrationFragment : Fragment(), RegistrationContract.View {
     override fun onDetach() {
         super.onDetach()
         (parentFragment as? AuthFragment?)?.showRegistrationButton()
+        activity?.currentFocus?.hideKeyboard()
+        activity?.currentFocus?.clearFocus()
     }
 }

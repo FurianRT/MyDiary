@@ -3,6 +3,7 @@ package com.furianrt.mydiary.screens.gallery.fragments.list
 import android.Manifest
 import android.animation.Animator
 import android.content.res.Configuration
+import android.graphics.Color
 import android.os.Bundle
 import android.os.Parcelable
 import android.view.*
@@ -10,7 +11,6 @@ import android.view.animation.AccelerateInterpolator
 import android.view.animation.DecelerateInterpolator
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.view.ActionMode
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import com.furianrt.mydiary.R
@@ -116,7 +116,7 @@ class GalleryListFragment : Fragment(), GalleryListAdapter.OnListItemInteraction
         view.list_gallery.adapter = mAdapter
         view.list_gallery.itemAnimator = FadeInUpAnimator()
 
-        view.fab_trash.drawable.mutate().setTint(ContextCompat.getColor(requireContext(), R.color.white))
+        view.fab_trash.drawable.mutate().setTint(Color.WHITE)
 
         if (mSelectionActive) {
             mActionMode = (activity as AppCompatActivity).startSupportActionMode(this)
@@ -317,13 +317,8 @@ class GalleryListFragment : Fragment(), GalleryListAdapter.OnListItemInteraction
         if (EasyPermissions.hasPermissions(requireContext(), readExtStorage, camera)) {
             mPresenter.onStoragePermissionsGranted()
         } else {
-            EasyPermissions.requestPermissions(
-                    this,
-                    getString(R.string.storage_permission_request),
-                    STORAGE_PERMISSIONS_REQUEST_CODE,
-                    readExtStorage,
-                    camera
-            )
+            EasyPermissions.requestPermissions(this, getString(R.string.storage_permission_request),
+                    STORAGE_PERMISSIONS_REQUEST_CODE, readExtStorage, camera)
         }
     }
 
@@ -338,10 +333,9 @@ class GalleryListFragment : Fragment(), GalleryListAdapter.OnListItemInteraction
         val widget = Widget.newDarkBuilder(requireContext())
                 .statusBarColor(getThemePrimaryDarkColor(requireContext()))
                 .toolBarColor(getThemePrimaryColor(requireContext()))
-                .navigationBarColor(ContextCompat.getColor(requireContext(), R.color.black))
+                .navigationBarColor(Color.BLACK)
                 .title(R.string.album)
                 .build()
-
         Album.image(this)
                 .multipleChoice()
                 .columnCount(3)

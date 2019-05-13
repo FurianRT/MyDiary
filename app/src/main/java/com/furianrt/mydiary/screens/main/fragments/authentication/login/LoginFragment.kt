@@ -13,6 +13,7 @@ import com.furianrt.mydiary.screens.main.fragments.authentication.AuthFragment
 import com.furianrt.mydiary.screens.main.fragments.authentication.done.DoneAuthFragment
 import com.furianrt.mydiary.screens.main.fragments.authentication.forgot.ForgotPassFragment
 import com.furianrt.mydiary.utils.animateShake
+import com.furianrt.mydiary.utils.hideKeyboard
 import com.furianrt.mydiary.utils.inTransaction
 import com.furianrt.mydiary.utils.isNetworkAvailable
 import com.google.android.material.bottomsheet.BottomSheetBehavior
@@ -146,5 +147,7 @@ class LoginFragment : Fragment(), LoginContract.View {
         super.onStop()
         mHandler.removeCallbacks(mChangeActivityFlag)
         mPresenter.detachView()
+        activity?.currentFocus?.hideKeyboard()
+        activity?.currentFocus?.clearFocus()
     }
 }

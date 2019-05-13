@@ -7,6 +7,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.content.res.Configuration
+import android.graphics.Color
 import android.os.Bundle
 import android.os.Handler
 import android.os.Parcelable
@@ -21,7 +22,6 @@ import android.widget.FrameLayout
 import android.widget.Toast
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.coordinatorlayout.widget.CoordinatorLayout
-import androidx.core.content.ContextCompat
 import androidx.core.view.GravityCompat
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -69,7 +69,8 @@ import javax.inject.Inject
 class MainActivity : BaseActivity(), MainActivityContract.View,
         MainListAdapter.OnMainListItemInteractionListener,
         ImageSettingsFragment.OnImageSettingsInteractionListener,
-        DeleteNoteDialog.OnDeleteNoteConfirmListener, CategoriesDialog.OnCategorySelectedListener {
+        DeleteNoteDialog.OnDeleteNoteConfirmListener, CategoriesDialog.OnCategorySelectedListener,
+        PremiumFragment.OnPremiumFragmentInteractionListener {
 
     companion object {
         private const val TAG = "MainActivity"
@@ -149,7 +150,7 @@ class MainActivity : BaseActivity(), MainActivityContract.View,
             view_sync.visibility = View.INVISIBLE
             view_sync.layoutParams.width = 0
             button_sync.isEnabled = true
-            if (isBillingInitialized() && isItemPurshased(BuildConfig.ITEM_SYNC_SKU)) {
+            if (isBillingInitialized() && (isItemPurshased(BuildConfig.ITEM_SYNC_SKU) || isItemPurshased(ITEM_TEST_SKU))) {
                 button_sync.text = getString(R.string.nav_header_main_button_sync)
             } else {
                 button_sync.text = getString(R.string.nav_header_main_button_sync_pro)
@@ -212,14 +213,19 @@ class MainActivity : BaseActivity(), MainActivityContract.View,
         fab_delete.setOnClickListener { mPresenter.onButtonDeleteClick() }
         fab_folder.setOnClickListener { mPresenter.onButtonFolderClick() }
         fab_place.setOnClickListener {
+            if (BuildConfig.DEBUG) {
+                consumePurchase(ITEM_TEST_SKU)
+            }
             //todo
         }
+
         image_toolbar_main.setOnClickListener { mPresenter.onMainImageClick() }
         button_main_image_settings.setOnClickListener { mPresenter.onButtonImageSettingsClick() }
+
         with(nav_view.getHeaderView(0)) {
             button_sync.setOnClickListener {
                 if (isBillingInitialized()) {
-                    if (isItemPurshased(BuildConfig.ITEM_SYNC_SKU)) {
+                    if (isItemPurshased(BuildConfig.ITEM_SYNC_SKU) || isItemPurshased(ITEM_TEST_SKU)) {
                         mPresenter.onButtonSyncClick()
                     } else {
                         mPresenter.onButtonPremiumClick()
@@ -240,7 +246,7 @@ class MainActivity : BaseActivity(), MainActivityContract.View,
 
     override fun onBillingInitialized() {
         super.onBillingInitialized()
-        if (isItemPurshased(BuildConfig.ITEM_SYNC_SKU)) {
+        if (isItemPurshased(BuildConfig.ITEM_SYNC_SKU) || isItemPurshased(ITEM_TEST_SKU)) {
             nav_view?.getHeaderView(0)?.button_sync?.text = getString(R.string.nav_header_main_button_sync)
         } else {
             nav_view?.getHeaderView(0)?.button_sync?.text = getString(R.string.nav_header_main_button_sync_pro)
@@ -250,8 +256,10 @@ class MainActivity : BaseActivity(), MainActivityContract.View,
 
     override fun onProductPurchased(productId: String, details: TransactionDetails?) {
         super.onProductPurchased(productId, details)
-        nav_view?.getHeaderView(0)?.button_sync?.text = getString(R.string.nav_header_main_button_sync)
-        hideAdView()
+        if (isItemPurshased(BuildConfig.ITEM_SYNC_SKU) || isItemPurshased(ITEM_TEST_SKU)) {
+            nav_view?.getHeaderView(0)?.button_sync?.text = getString(R.string.nav_header_main_button_sync)
+            hideAdView()
+        }
     }
 
     private fun showAdView() {
@@ -446,8 +454,7 @@ class MainActivity : BaseActivity(), MainActivityContract.View,
         if (EasyPermissions.hasPermissions(this, readExtStorage, camera)) {
             mPresenter.onStoragePermissionsGranted()
         } else {
-            EasyPermissions.requestPermissions(this,
-                    getString(R.string.storage_permission_request),
+            EasyPermissions.requestPermissions(this, getString(R.string.storage_permission_request),
                     STORAGE_PERMISSIONS_REQUEST_CODE, readExtStorage, camera)
         }
     }
@@ -462,7 +469,7 @@ class MainActivity : BaseActivity(), MainActivityContract.View,
         val widget = Widget.newDarkBuilder(this)
                 .statusBarColor(getThemePrimaryDarkColor(this))
                 .toolBarColor(getThemePrimaryColor(this))
-                .navigationBarColor(ContextCompat.getColor(this, R.color.black))
+                .navigationBarColor(Color.BLACK)
                 .title(R.string.album)
                 .build()
         Album.image(this)
@@ -623,6 +630,10 @@ class MainActivity : BaseActivity(), MainActivityContract.View,
 
     override fun onCategorySelected() {
         mPresenter.onCategorySelected()
+    }
+
+    override fun onButtonPurshaseClick(productId: String) {
+        purshaseItem(productId)
     }
 
     override fun onStart() {

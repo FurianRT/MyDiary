@@ -26,14 +26,6 @@ class NoteSettingsActivity : BaseActivity() {
         setSupportActionBar(toolbar_settings_note)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setDisplayShowHomeEnabled(true)
-
-        view_ad.loadAd(AdRequest.Builder().build())
-        view_ad.adListener = object : AdListener() {
-            override fun onAdLoaded() {
-                super.onAdLoaded()
-                view_ad?.visibility = View.VISIBLE
-            }
-        }
     }
 
     private fun addSettingsFragment(noteId: String) {
@@ -47,14 +39,16 @@ class NoteSettingsActivity : BaseActivity() {
 
     override fun onBillingInitialized() {
         super.onBillingInitialized()
-        if (!isItemPurshased(BuildConfig.ITEM_SYNC_SKU)) {
+        if (!isItemPurshased(BuildConfig.ITEM_SYNC_SKU) && !isItemPurshased(ITEM_TEST_SKU)) {
             showAdView()
         }
     }
 
     override fun onProductPurchased(productId: String, details: TransactionDetails?) {
         super.onProductPurchased(productId, details)
-        hideAdView()
+        if (isItemPurshased(BuildConfig.ITEM_SYNC_SKU) || isItemPurshased(ITEM_TEST_SKU)) {
+            hideAdView()
+        }
     }
 
     private fun showAdView() {

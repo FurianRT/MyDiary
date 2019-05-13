@@ -28,6 +28,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="1dp"
         android:gravity="top|start"
+        android:lineSpacingExtra="1dp"
         android:minHeight="130dp"
         android:padding="8dp"
         android:textColor="@color/black"

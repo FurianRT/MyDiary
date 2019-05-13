@@ -20,6 +20,7 @@
         android:layout_width="0dp"
         android:layout_height="?android:attr/actionBarSize"
         android:alpha="0.3"
+        android:fitsSystemWindows="true"
         android:background="?attr/colorPrimary"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -28,6 +29,7 @@
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar_note_activity"
         style="@style/AppTheme.Toolbar"
+        android:fitsSystemWindows="true"
         android:layout_width="0dp"
         android:layout_height="?android:attr/actionBarSize"
         android:background="@color/transparent"
