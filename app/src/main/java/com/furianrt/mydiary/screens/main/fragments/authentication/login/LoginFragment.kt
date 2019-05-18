@@ -27,7 +27,6 @@ class LoginFragment : Fragment(), LoginContract.View {
     companion object {
         const val TAG = "LoginFragment"
         private const val CLOSE_AFTER_DONE_DELAY = 2000L
-        private const val ANIMATION_SHAKE_DURATION = 400L
         private const val CHANGE_ACTIVITY_FLAG_DELAY = 200L
     }
 
@@ -81,18 +80,18 @@ class LoginFragment : Fragment(), LoginContract.View {
     }
 
     override fun showErrorEmptyPassword() {
-        layout_password.animateShake(ANIMATION_SHAKE_DURATION)
+        layout_password.animateShake()
         Toast.makeText(requireContext(), getString(R.string.empty_password), Toast.LENGTH_SHORT).show()
     }
 
     override fun showErrorEmptyEmail() {
-        layout_email.animateShake(ANIMATION_SHAKE_DURATION)
+        layout_email.animateShake()
         Toast.makeText(requireContext(), getString(R.string.empty_email), Toast.LENGTH_SHORT).show()
     }
 
     override fun showErrorWrongCredential() {
-        layout_password.animateShake(ANIMATION_SHAKE_DURATION)
-        layout_email.animateShake(ANIMATION_SHAKE_DURATION)
+        layout_password.animateShake()
+        layout_email.animateShake()
         Toast.makeText(requireContext(), getString(R.string.fragment_login_wrong_credential), Toast.LENGTH_SHORT).show()
     }
 

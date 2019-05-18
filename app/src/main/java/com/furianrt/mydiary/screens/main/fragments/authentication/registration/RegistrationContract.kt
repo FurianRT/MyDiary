@@ -18,11 +18,11 @@ interface RegistrationContract {
         fun hideLoadingEmail()
         fun showLoading()
         fun hideLoading()
-        fun showMessageSuccessRegistration()
         fun showErrorShortPassword()
         fun showErrorEmptyPassword()
         fun showErrorEmptyPasswordRepeat()
         fun showErrorEmptyEmail()
+        fun showPrivacyView(email: String, password: String)
     }
 
     abstract class Presenter : BasePresenter<View>() {

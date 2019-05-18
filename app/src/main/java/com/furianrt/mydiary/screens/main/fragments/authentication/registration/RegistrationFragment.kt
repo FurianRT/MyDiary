@@ -11,10 +11,8 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.furianrt.mydiary.R
 import com.furianrt.mydiary.screens.main.fragments.authentication.AuthFragment
-import com.furianrt.mydiary.screens.main.fragments.authentication.done.DoneAuthFragment
+import com.furianrt.mydiary.screens.main.fragments.authentication.privacy.PrivacyFragment
 import com.furianrt.mydiary.utils.*
-import com.google.android.material.bottomsheet.BottomSheetBehavior
-import kotlinx.android.synthetic.main.bottom_sheet_main.*
 import kotlinx.android.synthetic.main.fragment_registration.*
 import kotlinx.android.synthetic.main.fragment_registration.view.*
 import javax.inject.Inject
@@ -23,8 +21,6 @@ class RegistrationFragment : Fragment(), RegistrationContract.View {
 
     companion object {
         const val TAG = "RegistrationFragment"
-        private const val ANIMATION_SHAKE_DURATION = 400L
-        private const val CLOSE_AFTER_DONE_DELAY = 2000L
         private const val CHANGE_ACTIVITY_FLAG_DELAY = 200L
     }
 
@@ -79,8 +75,8 @@ class RegistrationFragment : Fragment(), RegistrationContract.View {
     }
 
     override fun showErrorPassword() {
-        layout_password.animateShake(ANIMATION_SHAKE_DURATION)
-        layout_password_repeat.animateShake(ANIMATION_SHAKE_DURATION)
+        layout_password.animateShake()
+        layout_password_repeat.animateShake()
         text_error.text = getString(R.string.fragment_registration_password_error)
     }
 
@@ -98,40 +94,24 @@ class RegistrationFragment : Fragment(), RegistrationContract.View {
         showEmailSuccess()
     }
 
-    override fun showMessageSuccessRegistration() {
-        fragmentManager?.let {
-            if (it.findFragmentByTag(DoneAuthFragment.TAG) == null) {
-                it.inTransaction {
-                    val message = getString(R.string.fragment_done_auth_done)
-                    setCustomAnimations(R.anim.scale_up, R.anim.scale_up)
-                    add(R.id.auth_container, DoneAuthFragment.newInstance(message), DoneAuthFragment.TAG)
-                }
-            }
-        }
-        activity?.let {
-            it.main_sheet_container.postDelayed({
-                BottomSheetBehavior.from(it.main_sheet_container).state = BottomSheetBehavior.STATE_COLLAPSED
-            }, CLOSE_AFTER_DONE_DELAY)
-        }
-    }
-
     override fun showErrorShortPassword() {
-        layout_password.animateShake(ANIMATION_SHAKE_DURATION)
+        layout_password.animateShake()
         text_error.text = getString(R.string.fragment_registration_error_short_password)
     }
 
     override fun showErrorEmptyPassword() {
-        layout_password.animateShake(ANIMATION_SHAKE_DURATION)
+        layout_password.animateShake()
         text_error.text = getString(R.string.empty_password)
     }
 
     override fun showErrorEmptyPasswordRepeat() {
-        layout_password_repeat.animateShake(ANIMATION_SHAKE_DURATION)
+        layout_password_repeat.animateShake()
         text_error.text = getString(R.string.empty_password)
     }
 
     override fun showErrorEmptyEmail() {
         showEmailError()
+        layout_email.animateShake()
         text_error.text = getString(R.string.empty_email)
     }
 
@@ -174,6 +154,18 @@ class RegistrationFragment : Fragment(), RegistrationContract.View {
     override fun hideLoading() {
         view_alpha.visibility = View.GONE
         progress_sign_up.visibility = View.GONE
+    }
+
+    override fun showPrivacyView(email: String, password: String) {
+        activity?.currentFocus?.hideKeyboard()
+        activity?.currentFocus?.clearFocus()
+        if (fragmentManager?.findFragmentByTag(PrivacyFragment.TAG) == null) {
+            fragmentManager?.inTransaction {
+                setCustomAnimations(R.anim.from_right, R.anim.to_left, R.anim.from_left, R.anim.to_right)
+                replace(R.id.auth_container, PrivacyFragment.newInstance(email, password), PrivacyFragment.TAG)
+                addToBackStack(null)
+            }
+        }
     }
 
     override fun close() {

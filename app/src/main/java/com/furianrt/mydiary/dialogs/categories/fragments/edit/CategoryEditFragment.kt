@@ -69,7 +69,7 @@ class CategoryEditFragment : Fragment(), CategoryEditContract.View {
     }
 
     override fun showErrorEmptyName() {
-        text_input_category.animateShake(ANIMATION_SHAKE_DURATION)
+        text_input_category.animateShake()
         Toast.makeText(requireContext(), getString(R.string.fragment_category_edit_error_empty_name), Toast.LENGTH_SHORT).show()
     }
 
@@ -96,7 +96,6 @@ class CategoryEditFragment : Fragment(), CategoryEditContract.View {
         const val TAG = "CategoryEditFragment"
         private const val ARG_CATEGORY = "category"
         private const val BUNDLE_CATEGORY_COLOR = "category_color"
-        private const val ANIMATION_SHAKE_DURATION = 400L
 
         @JvmStatic
         fun newInstance(category: MyCategory) =

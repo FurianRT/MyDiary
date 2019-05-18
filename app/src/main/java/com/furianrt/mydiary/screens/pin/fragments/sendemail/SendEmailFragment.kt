@@ -21,7 +21,6 @@ class SendEmailFragment : Fragment(), SendEmailContract.View {
     companion object {
         const val TAG = "SendEmailFragment"
 
-        private const val ANIMATION_SHAKE_DURATION = 400L
         private const val CLOSE_AFTER_DONE_DELAY = 2000L
     }
 
@@ -61,7 +60,7 @@ class SendEmailFragment : Fragment(), SendEmailContract.View {
     }
 
     override fun showErrorMessageSend() {
-        button_send_email.animateShake(ANIMATION_SHAKE_DURATION)
+        button_send_email.animateShake()
         Toast.makeText(requireContext(), getString(R.string.fragment_send_email_error), Toast.LENGTH_SHORT).show()
     }
 

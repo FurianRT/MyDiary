@@ -120,7 +120,6 @@
     <string name="choose_tags">Выберите теги</string>
     <string name="choose_category">Категория</string>
     <string name="choose_mood">Настроение</string>
-    <string name="choose_location">Выберите локацию</string>
     <string name="add_tag">Добавить тег</string>
     <string name="tag_name">Название тега</string>
     <string name="open">Открыть</string>
@@ -294,5 +293,7 @@
     <string name="fragment_send_email_done">Письмо отправлено!</string>
     <string name="fragment_send_email_error">Не удалось отправить сообщение</string>
     <string name="speech_to_text_title">Привет, скажи что-нибудь!</string>
+    <string name="privacy_accept">Принимаю</string>
+    <string name="privacy_title">Регистрируясь в приложении, вы принимаетe <a href="https://docs.google.com/document/d/1jW6ik5s4digfAURnKo48kx_oXUryP7QOc-mFNBstxtA/edit?usp=sharing/">условия его использования.</a></string>
 
 </resources>

@@ -47,7 +47,7 @@ class CategoryAddFragment : Fragment(), CategoryAddContract.View {
     }
 
     override fun showErrorEmptyName() {
-        text_input_category.animateShake(ANIMATION_SHAKE_DURATION)
+        text_input_category.animateShake()
         Toast.makeText(requireContext(), getString(R.string.fragment_category_edit_error_empty_name), Toast.LENGTH_SHORT).show()
     }
 
@@ -67,7 +67,5 @@ class CategoryAddFragment : Fragment(), CategoryAddContract.View {
 
     companion object {
         const val TAG = "CategoryAddFragment"
-
-        private const val ANIMATION_SHAKE_DURATION = 400L
     }
 }

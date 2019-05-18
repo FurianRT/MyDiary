@@ -2,7 +2,6 @@ package com.furianrt.mydiary.screens.main.fragments.authentication.registration
 
 import android.util.Patterns
 import com.furianrt.mydiary.data.DataManager
-import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
 import io.reactivex.android.schedulers.AndroidSchedulers
 
 class RegistrationPresenter(
@@ -12,8 +11,6 @@ class RegistrationPresenter(
     companion object {
         private const val PASSWORD_MIN_LENGTH = 6
     }
-
-    private class ProfileExistsException : Throwable()
 
     private var mPrevEmail = ""
 
@@ -29,7 +26,22 @@ class RegistrationPresenter(
             }
             if (validateEmail(email) && validatePassword(password, passwordRepeat)) {
                 v.clearEmailMessages()
-                signUp(email, password)
+                v.showLoading()
+                addDisposable(dataManager.isProfileExists(email)
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe({ exists ->
+                            if (exists) {
+                                v.showErrorEmailExists()
+                            } else {
+                                v.hideLoading()
+                                v.showPrivacyView(email, password)
+                            }
+
+                        }, {
+                            v.hideLoading()
+                            it.printStackTrace()
+                            v.showErrorNetworkConnection()
+                        }))
             }
         }
     }
@@ -61,33 +73,6 @@ class RegistrationPresenter(
         }
     }
 
-    private fun signUp(email: String, password: String) {
-        view?.showLoading()
-        addDisposable(dataManager.isProfileExists(email)
-                .flatMapCompletable { exists ->
-                    if (exists) {
-                        throw ProfileExistsException()
-                    } else {
-                        return@flatMapCompletable dataManager.signUp(email, password)
-                    }
-                }
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({
-                    view?.hideLoading()
-                    view?.showMessageSuccessRegistration()
-                }, {
-                    view?.hideLoading()
-                    when (it) {
-                        is ProfileExistsException -> view?.showErrorEmailExists()
-                        is FirebaseAuthInvalidCredentialsException -> view?.showErrorEmailFormat()
-                        else -> {
-                            it.printStackTrace()
-                            view?.showErrorNetworkConnection()
-                        }
-                    }
-                }))
-    }
-
     private fun validateEmail(email: String): Boolean {
         return when {
             email.isEmpty() -> {
@@ -95,6 +80,10 @@ class RegistrationPresenter(
                 return false
             }
             !Patterns.EMAIL_ADDRESS.matcher(email).matches() -> {
+                view?.showErrorEmailFormat()
+                return false
+            }
+            email.substring(email.lastIndexOf(".") + 1, email.length).length < 2 -> {
                 view?.showErrorEmailFormat()
                 return false
             }

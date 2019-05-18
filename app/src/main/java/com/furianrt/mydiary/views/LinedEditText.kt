@@ -6,11 +6,11 @@ import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.Rect
 import android.util.AttributeSet
-import android.widget.EditText
+import androidx.appcompat.widget.AppCompatEditText
 import com.furianrt.mydiary.utils.dpToPx
 
 
-class LinedEditText(context: Context, attributes: AttributeSet) : EditText(context, attributes) {
+class LinedEditText(context: Context, attributes: AttributeSet) : AppCompatEditText(context, attributes) {
 
     private var mLinePaint: Paint = Paint()
     private var mBounds =  Rect()

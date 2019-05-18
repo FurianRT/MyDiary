@@ -21,7 +21,6 @@ class BackupEmailFragment : Fragment(), BackupEmailContract.View {
 
     companion object {
         const val TAG = "BackupEmailFragment"
-        private const val ANIMATION_SHAKE_DURATION = 400L
     }
 
     @Inject
@@ -77,13 +76,13 @@ class BackupEmailFragment : Fragment(), BackupEmailContract.View {
 
     override fun showErrorEmailFormat() {
         image_email_error.visibility = View.VISIBLE
-        edit_backup_email.animateShake(ANIMATION_SHAKE_DURATION)
+        edit_backup_email.animateShake()
         Toast.makeText(requireContext(), getString(R.string.fragment_backup_email_invalid_email), Toast.LENGTH_SHORT).show()
     }
 
     override fun showErrorEmptyEmail() {
         image_email_error.visibility = View.VISIBLE
-        edit_backup_email.animateShake(ANIMATION_SHAKE_DURATION)
+        edit_backup_email.animateShake()
         Toast.makeText(requireContext(), getString(R.string.fragment_backup_email_enter_email), Toast.LENGTH_SHORT).show()
     }
 

@@ -3,8 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/layout_toolbar_image_root"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".screens.note.fragments.mainnote.toolbarimage.NoteImageFragment">
+    android:layout_height="match_parent">
 
     <ImageView
         android:id="@+id/image_note"

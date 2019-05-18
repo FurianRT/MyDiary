@@ -42,6 +42,8 @@ import com.furianrt.mydiary.screens.main.fragments.authentication.forgot.ForgotP
 import com.furianrt.mydiary.screens.main.fragments.authentication.forgot.ForgotPassPresenter
 import com.furianrt.mydiary.screens.main.fragments.authentication.login.LoginContract
 import com.furianrt.mydiary.screens.main.fragments.authentication.login.LoginPresenter
+import com.furianrt.mydiary.screens.main.fragments.authentication.privacy.PrivacyContract
+import com.furianrt.mydiary.screens.main.fragments.authentication.privacy.PrivacyPresenter
 import com.furianrt.mydiary.screens.main.fragments.authentication.registration.RegistrationContract
 import com.furianrt.mydiary.screens.main.fragments.authentication.registration.RegistrationPresenter
 import com.furianrt.mydiary.screens.main.fragments.imagesettings.ImageSettingsContract
@@ -280,4 +282,9 @@ class PresenterModule(private val context: Context) {
     @PresenterScope
     fun provideSendEmailPresenter(dataManager: DataManager): SendEmailContract.Presenter =
             SendEmailPresenter(dataManager)
+
+    @Provides
+    @PresenterScope
+    fun providePrivacyPresenter(dataManager: DataManager): PrivacyContract.Presenter =
+            PrivacyPresenter(dataManager)
 }

@@ -40,12 +40,12 @@ class TagAddFragment : Fragment(), TagAddContract.View {
     }
 
     override fun showErrorEmptyTagName() {
-        input_add_tag.animateShake(ANIMATION_SHAKE_DURATION)
+        input_add_tag.animateShake()
         Toast.makeText(requireContext(), getString(R.string.fragment_tag_error_empty_name), Toast.LENGTH_SHORT).show()
     }
 
     override fun showErrorExistingTagName() {
-        input_add_tag.animateShake(ANIMATION_SHAKE_DURATION)
+        input_add_tag.animateShake()
         Toast.makeText(requireContext(), getString(R.string.fragment_add_tag_error_existing_name), Toast.LENGTH_SHORT).show()
     }
 
@@ -70,7 +70,6 @@ class TagAddFragment : Fragment(), TagAddContract.View {
     companion object {
         const val TAG = "TagAddFragment"
         private const val ARG_NOTE_ID = "note_id"
-        private const val ANIMATION_SHAKE_DURATION = 400L
 
         @JvmStatic
         fun newInstance(noteId: String) =

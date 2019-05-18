@@ -12,6 +12,7 @@ import com.furianrt.mydiary.R
 import com.furianrt.mydiary.screens.main.fragments.authentication.AuthFragment
 import com.furianrt.mydiary.screens.main.fragments.authentication.done.DoneAuthFragment
 import com.furianrt.mydiary.utils.animateShake
+import com.furianrt.mydiary.utils.hideKeyboard
 import com.furianrt.mydiary.utils.inTransaction
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import kotlinx.android.synthetic.main.bottom_sheet_main.*
@@ -24,7 +25,6 @@ class ForgotPassFragment : Fragment(), ForgotPassContract.View {
     companion object {
         const val TAG = "ForgotPassFragment"
         private const val ARG_EMAIL = "email"
-        private const val ANIMATION_SHAKE_DURATION = 400L
         private const val CLOSE_AFTER_DONE_DELAY = 2000L
         private const val CHANGE_ACTIVITY_FLAG_DELAY = 200L
 
@@ -73,12 +73,12 @@ class ForgotPassFragment : Fragment(), ForgotPassContract.View {
     }
 
     override fun showErrorEmailFormat() {
-        layout_email.animateShake(ANIMATION_SHAKE_DURATION)
+        layout_email.animateShake()
         Toast.makeText(requireContext(), getString(R.string.wrong_email_format), Toast.LENGTH_SHORT).show()
     }
 
     override fun showErrorEmptyEmail() {
-        layout_email.animateShake(ANIMATION_SHAKE_DURATION)
+        layout_email.animateShake()
         Toast.makeText(requireContext(), getString(R.string.empty_email), Toast.LENGTH_SHORT).show()
     }
 
@@ -119,6 +119,8 @@ class ForgotPassFragment : Fragment(), ForgotPassContract.View {
     override fun onDetach() {
         super.onDetach()
         (parentFragment as? AuthFragment?)?.showRegistrationButton()
+        activity?.currentFocus?.hideKeyboard()
+        activity?.currentFocus?.clearFocus()
     }
 
     override fun onStart() {

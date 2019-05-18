@@ -46,6 +46,7 @@ class NoteActivity : BaseActivity(), NoteActivityContract.View,
 
     private var mPagerPosition = 0
     private var mMode = Companion.Mode.ADD
+    private var mIsEditModeEnabled = false
     private lateinit var mNoteId: String
 
     private lateinit var mPagerAdapter: NoteActivityPagerAdapter
@@ -64,7 +65,7 @@ class NoteActivity : BaseActivity(), NoteActivityContract.View,
                 view_ad?.visibility = View.GONE
             } else if (!isItemPurshased(BuildConfig.ITEM_SYNC_SKU) && !isItemPurshased(ITEM_TEST_SKU)) {
                 view_ad?.postDelayed({
-                    if (view_ad?.isLoading == false) {
+                    if (view_ad?.isLoading == false && !mIsEditModeEnabled) {
                         view_ad?.visibility = View.VISIBLE
                     }
                 }, 150L)
@@ -130,6 +131,9 @@ class NoteActivity : BaseActivity(), NoteActivityContract.View,
         view_ad?.adListener = object : AdListener() {
             override fun onAdLoaded() {
                 super.onAdLoaded()
+
+
+
                 if (!KeyboardUtils.isKeyboardVisible()) {
                     view_ad?.visibility = View.VISIBLE
                 }
@@ -156,11 +160,14 @@ class NoteActivity : BaseActivity(), NoteActivityContract.View,
     override fun onNoteFragmentEditModeDisabled() {
         pager_note.swipeEnabled = true
         text_toolbar_title.visibility = View.VISIBLE
+        mIsEditModeEnabled = false
     }
 
     override fun onNoteFragmentEditModeEnabled() {
         pager_note.swipeEnabled = false
         text_toolbar_title.visibility = View.GONE
+        view_ad.visibility = View.GONE
+        mIsEditModeEnabled = true
     }
 
     override fun onSupportNavigateUp(): Boolean {

@@ -26,7 +26,6 @@ class PinActivity : BaseActivity(), PinContract.View, View.OnClickListener,
         BackupEmailFragment.OnBackupEmailFragmentListener {
 
     companion object {
-        private const val ANIMATION_SHAKE_DURATION = 400L
         private const val BOTTOM_SHEET_EXPAND_DELAY = 200L
         private const val BUNDLE_BOTTOM_SHEET_STATE = "bottomSheetState"
         private const val EXTRA_MODE = "mode"
@@ -157,12 +156,12 @@ class PinActivity : BaseActivity(), PinContract.View, View.OnClickListener,
 
     override fun showErrorWrongPin() {
         Toast.makeText(this, getString(R.string.activity_pin_wrong_pin), Toast.LENGTH_SHORT).show()
-        layout_pins.animateShake(ANIMATION_SHAKE_DURATION)
+        layout_pins.animateShake()
     }
 
     override fun showErrorPinsDoNotMatch() {
         Toast.makeText(this, getString(R.string.activity_pin_do_not_match), Toast.LENGTH_SHORT).show()
-        layout_pins.animateShake(ANIMATION_SHAKE_DURATION)
+        layout_pins.animateShake()
     }
 
     override fun showMessageRepeatPin() {

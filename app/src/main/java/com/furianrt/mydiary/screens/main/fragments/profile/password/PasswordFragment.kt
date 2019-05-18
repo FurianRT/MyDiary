@@ -24,7 +24,6 @@ class PasswordFragment : Fragment(), PasswordContract.View {
 
     companion object {
         const val TAG = "PasswordFragment"
-        private const val ANIMATION_SHAKE_DURATION = 400L
         private const val CLOSE_AFTER_DONE_DELAY = 2000L
         private const val CHANGE_ACTIVITY_FLAG_DELAY = 200L
     }
@@ -83,28 +82,28 @@ class PasswordFragment : Fragment(), PasswordContract.View {
     }
 
     override fun showErrorEmptyOldPassword() {
-        layout_old_password.animateShake(ANIMATION_SHAKE_DURATION)
+        layout_old_password.animateShake()
         text_error.text = getString(R.string.fragment_password_enter_old_password)
     }
 
     override fun showErrorEmptyNewPassword() {
-        layout_new_password.animateShake(ANIMATION_SHAKE_DURATION)
+        layout_new_password.animateShake()
         text_error.text = getString(R.string.fragment_password_enter_new_password)
     }
 
     override fun showErrorEmptyRepeatPassword() {
-        layout_password_repeat.animateShake(ANIMATION_SHAKE_DURATION)
+        layout_password_repeat.animateShake()
         text_error.text = getString(R.string.fragment_registration_repeat_password)
     }
 
     override fun showErrorWrongOldPassword() {
-        layout_old_password.animateShake(ANIMATION_SHAKE_DURATION)
+        layout_old_password.animateShake()
         text_error.text = getString(R.string.wrong_password)
     }
 
     override fun showErrorWrongPasswordRepeat() {
-        layout_new_password.animateShake(ANIMATION_SHAKE_DURATION)
-        layout_password_repeat.animateShake(ANIMATION_SHAKE_DURATION)
+        layout_new_password.animateShake()
+        layout_password_repeat.animateShake()
         text_error.text = getString(R.string.fragment_registration_password_error)
     }
 
@@ -113,7 +112,7 @@ class PasswordFragment : Fragment(), PasswordContract.View {
     }
 
     override fun showErrorShortNewPassword() {
-        layout_new_password.animateShake(ANIMATION_SHAKE_DURATION)
+        layout_new_password.animateShake()
         text_error.text = getString(R.string.fragment_registration_error_short_password)
     }
 
