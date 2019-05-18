@@ -21,6 +21,7 @@ import android.view.animation.Animation
 import android.widget.FrameLayout
 import android.widget.Toast
 import androidx.appcompat.app.ActionBarDrawerToggle
+import androidx.appcompat.widget.SearchView
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.view.GravityCompat
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
@@ -29,21 +30,22 @@ import com.anjlab.android.iab.v3.TransactionDetails
 import com.furianrt.mydiary.BuildConfig
 import com.furianrt.mydiary.R
 import com.furianrt.mydiary.base.BaseActivity
-import com.furianrt.mydiary.data.model.MyHeaderImage
-import com.furianrt.mydiary.data.model.MyNoteWithProp
-import com.furianrt.mydiary.data.model.MyProfile
-import com.furianrt.mydiary.data.model.SyncProgressMessage
+import com.furianrt.mydiary.data.model.*
+import com.furianrt.mydiary.data.model.pojo.SearchEntries
 import com.furianrt.mydiary.dialogs.categories.CategoriesDialog
 import com.furianrt.mydiary.dialogs.delete.note.DeleteNoteDialog
 import com.furianrt.mydiary.general.AppBarLayoutBehavior
 import com.furianrt.mydiary.general.GlideApp
 import com.furianrt.mydiary.general.HeaderItemDecoration
+import com.furianrt.mydiary.screens.main.adapters.notelist.NoteListAdapter
+import com.furianrt.mydiary.screens.main.adapters.notelist.NoteListItem
+import com.furianrt.mydiary.screens.main.adapters.searchlist.SearchGroup
+import com.furianrt.mydiary.screens.main.adapters.searchlist.SearchItem
+import com.furianrt.mydiary.screens.main.adapters.searchlist.SearchListAdapter
 import com.furianrt.mydiary.screens.main.fragments.authentication.AuthFragment
 import com.furianrt.mydiary.screens.main.fragments.imagesettings.ImageSettingsFragment
 import com.furianrt.mydiary.screens.main.fragments.premium.PremiumFragment
 import com.furianrt.mydiary.screens.main.fragments.profile.ProfileFragment
-import com.furianrt.mydiary.screens.main.listadapter.MainListAdapter
-import com.furianrt.mydiary.screens.main.listadapter.MainListItem
 import com.furianrt.mydiary.screens.note.NoteActivity
 import com.furianrt.mydiary.screens.settings.global.GlobalSettingsActivity
 import com.furianrt.mydiary.services.sync.SyncService
@@ -67,10 +69,11 @@ import pub.devrel.easypermissions.EasyPermissions
 import javax.inject.Inject
 
 class MainActivity : BaseActivity(), MainActivityContract.View,
-        MainListAdapter.OnMainListItemInteractionListener,
+        NoteListAdapter.OnMainListItemInteractionListener,
         ImageSettingsFragment.OnImageSettingsInteractionListener,
         DeleteNoteDialog.OnDeleteNoteConfirmListener, CategoriesDialog.OnCategorySelectedListener,
-        PremiumFragment.OnPremiumFragmentInteractionListener {
+        PremiumFragment.OnPremiumFragmentInteractionListener,
+        SearchListAdapter.OnSearchListInteractionListener {
 
     companion object {
         private const val TAG = "MainActivity"
@@ -91,9 +94,10 @@ class MainActivity : BaseActivity(), MainActivityContract.View,
     @Inject
     lateinit var mPresenter: MainActivityContract.Presenter
 
-    private lateinit var mAdapter: MainListAdapter
+    private lateinit var mAdapter: NoteListAdapter
     private lateinit var mBottomSheet: BottomSheetBehavior<FrameLayout>
     private lateinit var mOnDrawerListener: ActionBarDrawerToggle
+    private lateinit var mSearchListAdapter: SearchListAdapter
     private var mRecyclerViewState: Parcelable? = null
     private var mBackPressCount = 0
     private var mNeedToOpenActionBar = true
@@ -222,7 +226,10 @@ class MainActivity : BaseActivity(), MainActivityContract.View,
         image_toolbar_main.setOnClickListener { mPresenter.onMainImageClick() }
         button_main_image_settings.setOnClickListener { mPresenter.onButtonImageSettingsClick() }
 
+
+
         with(nav_view.getHeaderView(0)) {
+            isNestedScrollingEnabled = true
             button_sync.setOnClickListener {
                 if (isBillingInitialized()) {
                     if (isItemPurshased(BuildConfig.ITEM_SYNC_SKU) || isItemPurshased(ITEM_TEST_SKU)) {
@@ -237,7 +244,7 @@ class MainActivity : BaseActivity(), MainActivityContract.View,
             image_profile.setOnClickListener { mPresenter.onButtonProfileClick() }
         }
 
-        mAdapter = MainListAdapter(is24TimeFormat = mPresenter.is24TimeFormat())
+        mAdapter = NoteListAdapter(is24TimeFormat = mPresenter.is24TimeFormat())
         list_main.layoutManager = LinearLayoutManager(this)
         list_main.addItemDecoration(HeaderItemDecoration(list_main, mAdapter))
         list_main.adapter = mAdapter
@@ -300,13 +307,13 @@ class MainActivity : BaseActivity(), MainActivityContract.View,
         disableActionBarExpanding()
     }
 
-    private fun disableActionBarExpanding() {
+    private fun disableActionBarExpanding(animate: Boolean = false) {
         val appBarParams =
                 collapsing_toolbar_main.layoutParams as AppBarLayout.LayoutParams
         appBarParams.scrollFlags = AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL or
                 AppBarLayout.LayoutParams.SCROLL_FLAG_EXIT_UNTIL_COLLAPSED
         collapsing_toolbar_main.layoutParams = appBarParams
-        app_bar_layout.setExpanded(false)
+        app_bar_layout.setExpanded(false, animate)
         val coordParams =
                 app_bar_layout.layoutParams as CoordinatorLayout.LayoutParams
         (coordParams.behavior as AppBarLayoutBehavior).shouldScroll = false
@@ -433,6 +440,25 @@ class MainActivity : BaseActivity(), MainActivityContract.View,
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         mMenu = menu
         menuInflater.inflate(R.menu.activity_main_toolbar_menu, menu)
+
+        val searchView = menu?.findItem(R.id.menu_search)?.actionView as SearchView?
+
+        searchView?.setOnSearchClickListener { disableActionBarExpanding(true) }
+        searchView?.setOnCloseListener {
+            enableActionBarExpanding(false)
+            return@setOnCloseListener false
+        }
+        searchView?.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                return false
+            }
+
+            override fun onQueryTextChange(newText: String?): Boolean {
+                mPresenter.onSearchQueryChange(newText ?: "")
+                return true
+            }
+        })
+
         return super.onCreateOptionsMenu(menu)
     }
 
@@ -492,7 +518,7 @@ class MainActivity : BaseActivity(), MainActivityContract.View,
                 .start()
     }
 
-    override fun showNotes(notes: List<MainListItem>, selectedNoteIds: Set<String>) {
+    override fun showNotes(notes: List<NoteListItem>, selectedNoteIds: Set<String>) {
         Log.e(TAG, "showNotes")
         mAdapter.selectedNoteIds.clear()
         mAdapter.selectedNoteIds.addAll(selectedNoteIds)
@@ -634,6 +660,45 @@ class MainActivity : BaseActivity(), MainActivityContract.View,
 
     override fun onButtonPurshaseClick(productId: String) {
         purshaseItem(productId)
+    }
+
+    override fun showSearchEntries(entries: SearchEntries) {
+        val tagGroup = SearchGroup(
+                "Tags",
+                entries.tags.map { SearchItem(type = SearchItem.TYPE_TAG, tag = it) }
+        )
+        val categoryGroup = SearchGroup(
+                "Categories",
+                entries.categories.map { SearchItem(type = SearchItem.TYPE_CATEGORY, category = it) }
+        )
+        val locationGroup = SearchGroup(
+                "Locations",
+                entries.location.map { SearchItem(type = SearchItem.TYPE_LOCATION, location = it) }
+        )
+        val moodGroup = SearchGroup(
+                "Moods",
+                entries.moods.map { SearchItem(type = SearchItem.TYPE_MOOD, mood = it) }
+        )
+        val groupList = mutableListOf(tagGroup, categoryGroup, locationGroup, moodGroup)
+        mSearchListAdapter = SearchListAdapter(groupList, this)
+        nav_view.getHeaderView(0).list_search.layoutManager = LinearLayoutManager(this)
+        nav_view.getHeaderView(0).list_search.adapter = mSearchListAdapter
+    }
+
+    override fun onTagChackStateChange(tag: MyTag, checked: Boolean) {
+
+    }
+
+    override fun onCategoryChackStateChange(category: MyCategory, checked: Boolean) {
+
+    }
+
+    override fun onLocationChackStateChange(location: MyLocation, checked: Boolean) {
+
+    }
+
+    override fun onMoodChackStateChange(mood: MyMood, checked: Boolean) {
+
     }
 
     override fun onStart() {

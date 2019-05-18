@@ -1,4 +1,4 @@
-package com.furianrt.mydiary.screens.main.listadapter
+package com.furianrt.mydiary.screens.main.adapters.notelist
 
 import android.graphics.Color
 import android.graphics.PorterDuff
@@ -20,10 +20,10 @@ import kotlinx.android.synthetic.main.activity_main_list_content.view.*
 import kotlinx.android.synthetic.main.activity_main_list_header.view.*
 import java.util.*
 
-class MainListAdapter(
+class NoteListAdapter(
         var selectedNoteIds: HashSet<String> = HashSet(),
         val is24TimeFormat: Boolean
-) : ListAdapter<MainListItem, MainListAdapter.MyViewHolder>(MainDiffCallback()),
+) : ListAdapter<NoteListItem, NoteListAdapter.MyViewHolder>(NoteListDiffCallback()),
         HeaderItemDecoration.StickyHeaderInterface {
 
     companion object {
@@ -38,7 +38,7 @@ class MainListAdapter(
             header.layoutParams.height = 0
         }
 
-        val time = (getItem(headerPosition) as MainHeaderItem).time
+        val time = (getItem(headerPosition) as NoteListHeader).time
         header.text_date.text = header.context.getString(
                 R.string.note_list_date_format,
                 getMonth(time),
@@ -57,7 +57,7 @@ class MainListAdapter(
     }
 
     override fun isHeader(itemPosition: Int): Boolean {
-        return getItem(itemPosition) is MainHeaderItem
+        return getItem(itemPosition) is NoteListHeader
     }
 
     override fun getHeaderPositionForItem(itemPosition: Int): Int =
@@ -74,12 +74,12 @@ class MainListAdapter(
     override fun getItemViewType(position: Int): Int = getItem(position).getType()
 
     abstract class MyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        abstract fun bind(item: MainListItem)
+        abstract fun bind(item: NoteListItem)
     }
 
     inner class HeaderViewHolder(view: View) : MyViewHolder(view) {
-        override fun bind(item: MainListItem) {
-            if (item is MainHeaderItem) {
+        override fun bind(item: NoteListItem) {
+            if (item is NoteListHeader) {
                 itemView.text_date.text = itemView.context.getString(
                         R.string.note_list_date_format,
                         getMonth(item.time),
@@ -90,8 +90,8 @@ class MainListAdapter(
     }
 
     inner class ContentViewHolder(view: View) : MyViewHolder(view) {
-        override fun bind(item: MainListItem) {
-            if (item is MainContentItem) {
+        override fun bind(item: NoteListItem) {
+            if (item is NoteListContent) {
                 with(itemView) {
                     setOnClickListener {
                         listener?.onMainListItemClick(item.note, layoutPosition)
@@ -115,7 +115,7 @@ class MainListAdapter(
             }
         }
 
-        private fun setCategory(item: MainContentItem) {
+        private fun setCategory(item: NoteListContent) {
             with(itemView) {
                 val categoryColor = item.note.category?.color
                 if (categoryColor != null) {
@@ -134,7 +134,7 @@ class MainListAdapter(
             }
         }
 
-        private fun setSyncIcon(item: MainContentItem) {
+        private fun setSyncIcon(item: NoteListContent) {
             with(itemView) {
                 val tempProfile = profile
                 if (tempProfile == null) {
@@ -156,7 +156,7 @@ class MainListAdapter(
             }
         }
 
-        private fun setPreviewImage(item: MainContentItem) {
+        private fun setPreviewImage(item: NoteListContent) {
             with(itemView) {
                 val notDeletedImages = item.note.images.filter { !it.isDeleted }
                 if (notDeletedImages.isEmpty()) {
@@ -173,7 +173,7 @@ class MainListAdapter(
             }
         }
 
-        private fun setTitle(item: MainContentItem) {
+        private fun setTitle(item: NoteListContent) {
             with(itemView) {
                 val title = item.note.note.title
                 if (title.isEmpty()) {

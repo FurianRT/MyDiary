@@ -36,17 +36,25 @@
 
         <activity
             android:name=".screens.main.MainActivity"
-            android:windowSoftInputMode="adjustPan">
+            android:windowSoftInputMode="adjustNothing">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
 
-        <activity android:name=".screens.note.NoteActivity" />
-        <activity android:name=".screens.gallery.GalleryActivity" />
-        <activity android:name=".screens.settings.global.GlobalSettingsActivity" />
-        <activity android:name=".screens.settings.note.NoteSettingsActivity" />
+        <activity
+            android:name=".screens.note.NoteActivity"
+            android:parentActivityName=".screens.main.MainActivity" />
+        <activity
+            android:name=".screens.gallery.GalleryActivity"
+            android:parentActivityName=".screens.note.NoteActivity" />
+        <activity
+            android:name=".screens.settings.global.GlobalSettingsActivity"
+            android:parentActivityName=".screens.main.MainActivity" />
+        <activity
+            android:name=".screens.settings.note.NoteSettingsActivity"
+            android:parentActivityName=".screens.note.NoteActivity" />
         <activity
             android:name=".screens.pin.PinActivity"
             android:launchMode="singleTop" />
@@ -71,7 +79,7 @@
 
         <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"
-            android:value="@string/banner_ad_unit_id"/>
+            android:value="@string/banner_ad_unit_id" />
 
     </application>
 

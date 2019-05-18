@@ -6,12 +6,13 @@ import com.furianrt.mydiary.data.model.MyHeaderImage
 import com.furianrt.mydiary.data.model.MyNoteWithProp
 import com.furianrt.mydiary.data.model.MyProfile
 import com.furianrt.mydiary.data.model.SyncProgressMessage
-import com.furianrt.mydiary.screens.main.listadapter.MainListItem
+import com.furianrt.mydiary.data.model.pojo.SearchEntries
+import com.furianrt.mydiary.screens.main.adapters.notelist.NoteListItem
 
 interface MainActivityContract {
 
     interface View : BaseView {
-        fun showNotes(notes: List<MainListItem>, selectedNoteIds: Set<String>)
+        fun showNotes(notes: List<NoteListItem>, selectedNoteIds: Set<String>)
         fun showNotePager(position: Int, note: MyNoteWithProp)
         fun showHeaderImage(image: MyHeaderImage)
         fun requestStoragePermissions()
@@ -41,6 +42,7 @@ interface MainActivityContract {
         fun showSyncProgress(message: SyncProgressMessage)
         fun clearSyncProgress()
         fun showCategoriesView(noteIds: List<String>)
+        fun showSearchEntries(entries: SearchEntries)
     }
 
     abstract class Presenter : BasePresenter<View>() {
@@ -64,5 +66,6 @@ interface MainActivityContract {
         abstract fun onButtonFolderClick()
         abstract fun onCategorySelected()
         abstract fun onButtonPremiumClick()
+        abstract fun onSearchQueryChange(query: String)
     }
 }

@@ -61,8 +61,11 @@ dependencies {
     implementation 'androidx.constraintlayout:constraintlayout:2.0.0-beta1'
     implementation 'com.google.android:flexbox:1.1.0'
 
-    //RecyclerView animations
+    //RecyclerView animators
     implementation 'jp.wasabeef:recyclerview-animators:3.0.0'
+
+    //RecyclerView with expandable items
+    implementation 'com.thoughtbot:expandablecheckrecyclerview:1.4'
 
     //ORM
     implementation "androidx.room:room-rxjava2:$room_version"

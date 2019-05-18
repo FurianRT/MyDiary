@@ -76,7 +76,7 @@ class ProfileFragment : Fragment(), ProfileContract.View {
 
     override fun onDetach() {
         super.onDetach()
-        activity?.window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN)
+        activity?.window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING)
     }
 
     override fun onStart() {

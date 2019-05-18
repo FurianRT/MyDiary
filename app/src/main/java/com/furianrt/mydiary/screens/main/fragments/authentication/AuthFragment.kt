@@ -125,7 +125,7 @@ class AuthFragment : Fragment(), AuthContract.View {
 
     override fun onDetach() {
         super.onDetach()
-        activity?.window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN)
+        activity?.window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING)
     }
 
     fun showRegistrationButton() {

@@ -1,15 +1,17 @@
 package com.furianrt.mydiary.screens.main
 
 import com.furianrt.mydiary.data.DataManager
-import com.furianrt.mydiary.data.model.MyNoteWithProp
-import com.furianrt.mydiary.data.model.SyncProgressMessage
-import com.furianrt.mydiary.screens.main.listadapter.MainContentItem
-import com.furianrt.mydiary.screens.main.listadapter.MainHeaderItem
-import com.furianrt.mydiary.screens.main.listadapter.MainListItem
+import com.furianrt.mydiary.data.model.*
+import com.furianrt.mydiary.data.model.pojo.SearchEntries
+import com.furianrt.mydiary.screens.main.adapters.notelist.NoteListContent
+import com.furianrt.mydiary.screens.main.adapters.notelist.NoteListHeader
+import com.furianrt.mydiary.screens.main.adapters.notelist.NoteListItem
 import io.reactivex.Completable
+import io.reactivex.Flowable
 import io.reactivex.Observable
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.functions.Function4
 import io.reactivex.schedulers.Schedulers
 import net.danlew.android.joda.DateUtils
 import org.joda.time.DateTime
@@ -60,6 +62,7 @@ class MainActivityPresenter(
         loadProfile()
         loadNotes()
         loadHeaderImage()
+        loadSearchEntries()
         updateSyncProgress()
         addDisposable(checkLogOut().subscribe())
     }
@@ -154,8 +157,8 @@ class MainActivityPresenter(
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { items ->
                     val notes = items
-                            .filter { it is MainContentItem }
-                            .map { (it as MainContentItem).note }
+                            .filter { it is NoteListContent }
+                            .map { (it as NoteListContent).note }
                     view?.showNotesCountToday(notes
                             .filter { DateUtils.isToday(DateTime(it.note.creationTime)) }
                             .size)
@@ -192,10 +195,10 @@ class MainActivityPresenter(
         return map
     }
 
-    private fun formatNotes(notes: Map<Long, List<MyNoteWithProp>>): ArrayList<MainListItem> {
-        val list = ArrayList<MainListItem>()
+    private fun formatNotes(notes: Map<Long, List<MyNoteWithProp>>): ArrayList<NoteListItem> {
+        val list = ArrayList<NoteListItem>()
         for (date in notes.keys) {
-            val header = MainHeaderItem(date)
+            val header = NoteListHeader(date)
             list.add(header)
             val values = if (dataManager.isSortDesc()) {
                 notes.getValue(date).sortedByDescending { it.note.time }
@@ -203,10 +206,24 @@ class MainActivityPresenter(
                 notes.getValue(date).sortedBy { it.note.time }
             }
             for (note in values) {
-                list.add(MainContentItem(note))
+                list.add(NoteListContent(note))
             }
         }
         return list
+    }
+
+    private fun loadSearchEntries() {
+        addDisposable(Flowable.combineLatest(
+                dataManager.getAllTags(),
+                dataManager.getAllCategories(),
+                dataManager.getAllDbLocations().toFlowable(),
+                dataManager.getAllMoods().toFlowable(),
+                Function4<List<MyTag>, List<MyCategory>, List<MyLocation>, List<MyMood>, SearchEntries>
+                { tags, categories, locations, moods -> SearchEntries(tags, categories, locations, moods) }
+        )
+                .delay(500L, TimeUnit.MILLISECONDS)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe { view?.showSearchEntries(it) })
     }
 
     private fun updateSyncProgress() {
@@ -306,10 +323,10 @@ class MainActivityPresenter(
     override fun is24TimeFormat(): Boolean = dataManager.is24TimeFormat()
 
     override fun onButtonSyncClick() {
-        when {
-            !dataManager.isSignedIn() -> view?.showLoginView()
-            //mProfile.hasPremium -> view?.startSyncService()
-            else -> view?.startSyncService()
+        if (!dataManager.isSignedIn()) {
+            view?.showLoginView()
+        } else {
+            view?.startSyncService()
         }
     }
 
@@ -341,5 +358,9 @@ class MainActivityPresenter(
 
     override fun onButtonPremiumClick() {
         view?.showPremiumView()
+    }
+
+    override fun onSearchQueryChange(query: String) {
+
     }
 }
