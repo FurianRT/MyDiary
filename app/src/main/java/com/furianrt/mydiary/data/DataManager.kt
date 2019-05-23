@@ -53,6 +53,8 @@ interface DataManager {
     fun deleteNotesFromCloud(notes: List<MyNote>): Completable
     fun deleteCategoriesFromCloud(categories: List<MyCategory>): Completable
     fun deleteNoteTagsFromCloud(noteTags: List<NoteTag>): Completable
+    fun deleteLocationsFromCloud(locations: List<MyLocation>): Completable
+    fun deleteForecastsFromCloud(forecasts: List<MyForecast>): Completable
     fun deleteTagsFromCloud(tags: List<MyTag>): Completable
     fun deleteAppearancesFromCloud(appearances: List<MyNoteAppearance>): Completable
     fun deleteImagesFromCloud(images: List<MyImage>): Completable
@@ -64,10 +66,14 @@ interface DataManager {
     fun cleanupCategories(): Completable
     fun cleanupTags(): Completable
     fun cleanupImages(): Completable
+    fun cleanupLocations(): Completable
+    fun cleanupForecasts(): Completable
     fun getAllNotes(): Flowable<List<MyNote>>
     fun getDeletedNotes(): Flowable<List<MyNote>>
     fun getTagsForNote(noteId: String): Flowable<List<MyTag>>
     fun getDeletedNoteTags(): Flowable<List<NoteTag>>
+    fun getDeletedLocations(): Flowable<List<MyLocation>>
+    fun getDeletedForecasts(): Flowable<List<MyForecast>>
     fun getNote(noteId: String): Flowable<MyNote>
     fun getAllTags(): Flowable<List<MyTag>>
     fun getDeletedTags(): Flowable<List<MyTag>>
@@ -95,7 +101,7 @@ interface DataManager {
     fun getAllLocationsFromCloud(): Single<List<MyLocation>>
     fun getAllForecastsFromCloud(): Single<List<MyForecast>>
     fun getAllImagesFromCloud(): Single<List<MyImage>>
-    fun getAllDbLocations(): Single<List<MyLocation>>
+    fun getAllDbLocations(): Flowable<List<MyLocation>>
     fun getAllDbForecasts(): Single<List<MyForecast>>
     fun getDbProfileCount(): Single<Int>
     fun getWeatherUnits(): Int

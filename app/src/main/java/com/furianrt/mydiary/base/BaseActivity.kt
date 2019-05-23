@@ -12,6 +12,7 @@ import com.anjlab.android.iab.v3.TransactionDetails
 import com.furianrt.mydiary.BuildConfig
 import com.furianrt.mydiary.R
 import com.furianrt.mydiary.data.prefs.PreferencesHelper
+import com.furianrt.mydiary.general.Analytics
 import com.furianrt.mydiary.screens.pin.PinActivity
 
 abstract class BaseActivity : AppCompatActivity(), BillingProcessor.IBillingHandler {
@@ -62,6 +63,7 @@ abstract class BaseActivity : AppCompatActivity(), BillingProcessor.IBillingHand
     }
 
     override fun onProductPurchased(productId: String, details: TransactionDetails?) {
+        Analytics.sendEvent(this, Analytics.EVENT_PREMIUM_PURSHASED)
         Log.e(TAG, "onProductPurchased")
     }
 

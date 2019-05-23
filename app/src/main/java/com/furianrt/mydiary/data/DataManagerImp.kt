@@ -217,6 +217,8 @@ class DataManagerImp(
                     .collectInto(mutableListOf<Boolean>()) { l, i -> l.add(i) }
                     .flatMapCompletable { database.imageDao().deleteByNoteId(noteId) }
                     .andThen(database.noteDao().delete(noteId))
+                    .andThen(database.locationDao().delete(noteId))
+                    .andThen(database.forecastDao().delete(noteId))
                     .subscribeOn(rxScheduler)
 
     override fun deleteImage(imageName: String): Completable =
@@ -272,6 +274,14 @@ class DataManagerImp(
             database.imageDao().cleanup()
                     .subscribeOn(rxScheduler)
 
+    override fun cleanupLocations(): Completable =
+            database.locationDao().cleanup()
+                    .subscribeOn(rxScheduler)
+
+    override fun cleanupForecasts(): Completable =
+            database.forecastDao().cleanup()
+                    .subscribeOn(rxScheduler)
+
     override fun getAllNotes(): Flowable<List<MyNote>> =
             database.noteDao()
                     .getAllNotes()
@@ -290,6 +300,16 @@ class DataManagerImp(
     override fun getDeletedNoteTags(): Flowable<List<NoteTag>> =
             database.noteTagDao()
                     .getDeletedNoteTags()
+                    .subscribeOn(rxScheduler)
+
+    override fun getDeletedLocations(): Flowable<List<MyLocation>> =
+            database.locationDao()
+                    .getDeletedLocations()
+                    .subscribeOn(rxScheduler)
+
+    override fun getDeletedForecasts(): Flowable<List<MyForecast>> =
+            database.forecastDao()
+                    .getDeletedForecasts()
                     .subscribeOn(rxScheduler)
 
     override fun getNote(noteId: String): Flowable<MyNote> =
@@ -362,7 +382,7 @@ class DataManagerImp(
                     .map {
                         MyForecast(
                                 temp = it.main.temp,
-                                icon =  DataManager.BASE_WEATHER_IMAGE_URL + it.weather[0].icon + ".png"
+                                icon = DataManager.BASE_WEATHER_IMAGE_URL + it.weather[0].icon + ".png"
                         )
                     }
                     .subscribeOn(rxScheduler)
@@ -371,7 +391,7 @@ class DataManagerImp(
             database.forecastDao().getAllForecasts()
                     .subscribeOn(rxScheduler)
 
-    override fun getAllDbLocations(): Single<List<MyLocation>> =
+    override fun getAllDbLocations(): Flowable<List<MyLocation>> =
             database.locationDao().getAllLocations()
                     .subscribeOn(rxScheduler)
 
@@ -540,6 +560,14 @@ class DataManagerImp(
 
     override fun deleteNoteTagsFromCloud(noteTags: List<NoteTag>): Completable =
             cloud.deleteNoteTags(noteTags, auth.getUserId())
+                    .subscribeOn(rxScheduler)
+
+    override fun deleteLocationsFromCloud(locations: List<MyLocation>): Completable =
+            cloud.deleteLocations(locations, auth.getUserId())
+                    .subscribeOn(rxScheduler)
+
+    override fun deleteForecastsFromCloud(forecasts: List<MyForecast>): Completable =
+            cloud.deleteForecasts(forecasts, auth.getUserId())
                     .subscribeOn(rxScheduler)
 
     override fun deleteTagsFromCloud(tags: List<MyTag>): Completable =

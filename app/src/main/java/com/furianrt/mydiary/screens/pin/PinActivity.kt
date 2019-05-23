@@ -9,6 +9,7 @@ import android.view.View
 import android.widget.Toast
 import com.furianrt.mydiary.R
 import com.furianrt.mydiary.base.BaseActivity
+import com.furianrt.mydiary.general.Analytics
 import com.furianrt.mydiary.general.LockableBottomSheetBehavior
 import com.furianrt.mydiary.screens.pin.PinActivity.Mode.*
 import com.furianrt.mydiary.screens.pin.fragments.backupemail.BackupEmailFragment
@@ -22,8 +23,7 @@ import kotlinx.android.synthetic.main.activity_pin.*
 import kotlinx.android.synthetic.main.bottom_sheet_pin.*
 import javax.inject.Inject
 
-class PinActivity : BaseActivity(), PinContract.View, View.OnClickListener,
-        BackupEmailFragment.OnBackupEmailFragmentListener {
+class PinActivity : BaseActivity(), PinContract.View, BackupEmailFragment.OnBackupEmailFragmentListener {
 
     companion object {
         private const val BOTTOM_SHEET_EXPAND_DELAY = 200L
@@ -89,43 +89,20 @@ class PinActivity : BaseActivity(), PinContract.View, View.OnClickListener,
             mPresenter.onRestoreInstanceState(it)
         }
 
-        button_one.setOnClickListener(this)
-        button_two.setOnClickListener(this)
-        button_three.setOnClickListener(this)
-        button_four.setOnClickListener(this)
-        button_five.setOnClickListener(this)
-        button_six.setOnClickListener(this)
-        button_seven.setOnClickListener(this)
-        button_eight.setOnClickListener(this)
-        button_nine.setOnClickListener(this)
-        button_zero.setOnClickListener(this)
-        button_backspace.setOnClickListener(this)
-        button_forgot_pin.setOnClickListener(this)
-        button_pin_close.setOnClickListener(this)
-    }
-
-    override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
-        outState.putInt(BUNDLE_BOTTOM_SHEET_STATE, mBottomSheet.state)
-        mPresenter.onSaveInstanceState(outState)
-    }
-
-    override fun onClick(v: View) {
-        when (v.id) {
-            R.id.button_one -> valueEntered(1)
-            R.id.button_two -> valueEntered(2)
-            R.id.button_three -> valueEntered(3)
-            R.id.button_four -> valueEntered(4)
-            R.id.button_five -> valueEntered(5)
-            R.id.button_six -> valueEntered(6)
-            R.id.button_seven -> valueEntered(7)
-            R.id.button_eight -> valueEntered(8)
-            R.id.button_nine -> valueEntered(9)
-            R.id.button_zero -> valueEntered(0)
-            R.id.button_backspace -> mPresenter.onButtonBackspaceClick()
-            R.id.button_forgot_pin -> mPresenter.onButtonForgotPinClick()
-            R.id.button_pin_close -> mPresenter.onButtonCloseClick()
-        }
+        button_one.setOnClickListener { valueEntered(1) }
+        button_two.setOnClickListener { valueEntered(21) }
+        button_three.setOnClickListener { valueEntered(3) }
+        button_four.setOnClickListener { valueEntered(4) }
+        button_five.setOnClickListener { valueEntered(5) }
+        button_six.setOnClickListener { valueEntered(6) }
+        button_seven.setOnClickListener { valueEntered(7) }
+        button_eight.setOnClickListener { valueEntered(8) }
+        button_nine.setOnClickListener { valueEntered(9) }
+        button_zero.setOnClickListener { valueEntered(0) }
+        button_backspace.setOnClickListener { mPresenter.onButtonBackspaceClick() }
+        button_forgot_pin.setOnClickListener { mPresenter.onButtonForgotPinClick() }
+        button_pin_close.setOnClickListener { mPresenter.onButtonCloseClick() }
+        button_fingerprint.setOnClickListener { mPresenter.onButtonFingerprintClick() }
     }
 
     private fun valueEntered(value: Int) {
@@ -134,6 +111,12 @@ class PinActivity : BaseActivity(), PinContract.View, View.OnClickListener,
             MODE_REMOVE -> mPresenter.onValueEnteredModeRemove(value)
             MODE_LOCK -> mPresenter.onValueEnteredModeLock(value)
         }
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putInt(BUNDLE_BOTTOM_SHEET_STATE, mBottomSheet.state)
+        mPresenter.onSaveInstanceState(outState)
     }
 
     override fun showPin(pin: String) {
@@ -186,6 +169,7 @@ class PinActivity : BaseActivity(), PinContract.View, View.OnClickListener,
     }
 
     override fun showForgotPinView() {
+        Analytics.sendEvent(this, Analytics.EVENT_FORGOT_PIN)
         if (supportFragmentManager.findFragmentByTag(SendEmailFragment.TAG) == null) {
             supportFragmentManager.inTransaction {
                 add(R.id.pin_sheet_container, SendEmailFragment(), SendEmailFragment.TAG)

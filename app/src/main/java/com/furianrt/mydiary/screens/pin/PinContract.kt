@@ -34,5 +34,6 @@ interface PinContract {
         abstract fun onValueEnteredModeCreate(value: Int)
         abstract fun onValueEnteredModeRemove(value: Int)
         abstract fun onValueEnteredModeLock(value: Int)
+        abstract fun onButtonFingerprintClick()
     }
 }

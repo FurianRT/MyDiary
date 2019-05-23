@@ -167,6 +167,7 @@ class SyncPresenter(
 
     private fun syncLocations(): Observable<SyncProgressMessage> =
             dataManager.getAllDbLocations()
+                    .first(emptyList())
                     .map { locations -> locations.filter { !it.isSync(mProfile.email) } }
                     .map { locations -> locations.apply { forEach { it.syncWith.add(mProfile.email) } } }
                     .flatMapCompletable {
@@ -175,6 +176,8 @@ class SyncPresenter(
                                 dataManager.updateLocationsSync(it)
                         ))
                     }
+                    .andThen(dataManager.getDeletedLocations().first(emptyList()))
+                    .flatMapCompletable { dataManager.deleteLocationsFromCloud(it) }
                     .andThen(dataManager.getAllLocationsFromCloud())
                     .flatMapCompletable { dataManager.insertLocation(it) }
                     .andThen(Observable.just(SyncProgressMessage(SyncProgressMessage.SYNC_FORECAST, PROGRESS_FORECAST)))
@@ -190,6 +193,8 @@ class SyncPresenter(
                                 dataManager.updateForecastsSync(it)
                         ))
                     }
+                    .andThen(dataManager.getDeletedForecasts().first(emptyList()))
+                    .flatMapCompletable { dataManager.deleteForecastsFromCloud(it) }
                     .andThen(dataManager.getAllForecastsFromCloud())
                     .flatMapCompletable { dataManager.insertForecast(it) }
                     .andThen(Observable.just(SyncProgressMessage(SyncProgressMessage.SYNC_IMAGES, PROGRESS_IMAGES)))
@@ -236,6 +241,8 @@ class SyncPresenter(
                     .andThen(dataManager.cleanupNoteTags())
                     .andThen(dataManager.cleanupTags())
                     .andThen(dataManager.cleanupImages())
+                    .andThen(dataManager.cleanupLocations())
+                    .andThen(dataManager.cleanupForecasts())
                     .andThen(dataManager.getDbProfile().firstOrError())
                     .flatMapCompletable { dataManager.updateProfile(it.apply { lastSyncTime = DateTime.now().millis }) }
                     .andThen(Observable.just(SyncProgressMessage(SyncProgressMessage.SYNC_FINISHED, PROGRESS_FINISHED)))

@@ -64,14 +64,15 @@ class DrawerMenuPresenter(
     }
 
     private fun loadSearchEntries() {
-        addDisposable(Flowable.combineLatest(
-                dataManager.getAllTags(),
+        addDisposable(Flowable.combineLatest(dataManager.getAllTags(),
                 dataManager.getAllCategories(),
-                dataManager.getAllDbLocations().toFlowable(),
+                dataManager.getAllDbLocations(),
                 dataManager.getAllMoods().toFlowable(),
                 Function4<List<MyTag>, List<MyCategory>, List<MyLocation>, List<MyMood>, SearchEntries>
-                { tags , categories, locations, moods -> SearchEntries(tags, categories, locations, moods) }
-        )
+                { tags, categories, locations, moods ->
+                    SearchEntries(tags, categories, locations, moods)
+                })
+                .map { entries -> entries.apply { locations = locations.distinctBy { it.name } } }
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { view?.showSearchEntries(it) })
     }

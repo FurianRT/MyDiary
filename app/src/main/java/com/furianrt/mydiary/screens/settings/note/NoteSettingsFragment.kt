@@ -6,6 +6,7 @@ import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import com.furianrt.mydiary.R
 import com.furianrt.mydiary.data.model.MyNoteAppearance
+import com.furianrt.mydiary.general.Analytics
 import com.jaredrummler.android.colorpicker.ColorPreferenceCompat
 import javax.inject.Inject
 
@@ -16,11 +17,26 @@ class NoteSettingsFragment : PreferenceFragmentCompat(), NoteSettingsContract.Vi
 
     private val mPreferenceListener = Preference.OnPreferenceChangeListener { preference, value ->
         when {
-            preference.key == TEXT_SIZE -> mPresenter.onTextSizeChange((value as String).toInt())
-            preference.key == NOTE_TEXT_COLOR -> mPresenter.onTextColorChange(value as Int)
-            preference.key == SURFACE_TEXT_COLOR -> mPresenter.onSurfaceTextColorChange(value as Int)
-            preference.key == BACKGROUND_COLOR -> mPresenter.onBackgroundColorChange(value as Int)
-            preference.key == TEXT_BACKGROUND_COLOR -> mPresenter.onBackgroundTextColorChange(value as Int)
+            preference.key == TEXT_SIZE -> {
+                Analytics.sendEvent(requireContext(), Analytics.EVENT_NOTE_TEXT_SIZE_CHANGED)
+                mPresenter.onTextSizeChange((value as String).toInt())
+            }
+            preference.key == NOTE_TEXT_COLOR -> {
+                Analytics.sendEvent(requireContext(), Analytics.EVENT_NOTE_TEXT_COLOR_CHANGED)
+                mPresenter.onTextColorChange(value as Int)
+            }
+            preference.key == SURFACE_TEXT_COLOR -> {
+                Analytics.sendEvent(requireContext(), Analytics.EVENT_NOTE_SURFACE_TEXT_COLOR_CHANGED)
+                mPresenter.onSurfaceTextColorChange(value as Int)
+            }
+            preference.key == BACKGROUND_COLOR -> {
+                Analytics.sendEvent(requireContext(), Analytics.EVENT_NOTE_BACKGROUD_CHANGED)
+                mPresenter.onBackgroundColorChange(value as Int)
+            }
+            preference.key == TEXT_BACKGROUND_COLOR -> {
+                Analytics.sendEvent(requireContext(), Analytics.EVENT_NOTE_TEXT_BACKGROUD_CHANGED)
+                mPresenter.onBackgroundTextColorChange(value as Int)
+            }
         }
         return@OnPreferenceChangeListener true
     }

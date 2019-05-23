@@ -11,6 +11,7 @@ import android.view.animation.AnticipateOvershootInterpolator
 import android.view.animation.OvershootInterpolator
 import androidx.fragment.app.Fragment
 import com.furianrt.mydiary.R
+import com.furianrt.mydiary.general.Analytics
 import com.furianrt.mydiary.screens.main.MainActivity
 import com.furianrt.mydiary.screens.main.fragments.authentication.login.LoginFragment
 import com.furianrt.mydiary.screens.main.fragments.authentication.registration.RegistrationFragment
@@ -80,6 +81,7 @@ class AuthFragment : Fragment(), AuthContract.View {
     }
 
     override fun showRegistrationView() {
+        Analytics.sendEvent(requireContext(), Analytics.EVENT_SIGN_UP)
         if (childFragmentManager.findFragmentByTag(RegistrationFragment.TAG) == null) {
             activity?.supportFragmentManager?.inTransaction {
                 setPrimaryNavigationFragment(this@AuthFragment)

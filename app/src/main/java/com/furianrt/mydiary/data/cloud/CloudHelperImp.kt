@@ -167,6 +167,28 @@ class CloudHelperImp(
                 }
             }.timeout(1, TimeUnit.MINUTES).onErrorComplete()
 
+    override fun deleteLocations(locations: List<MyLocation>, userId: String): Completable =
+            RxFirestore.runTransaction(firestore) { transaction ->
+                locations.forEach { location ->
+                    Log.e(TAG, "deleting location from cloud id: " + location.noteId)
+                    transaction.delete(firestore.collection(COLLECTION_USERS)
+                            .document(userId)
+                            .collection(COLLECTION_LOCATIONS)
+                            .document(location.noteId))
+                }
+            }.timeout(1, TimeUnit.MINUTES).onErrorComplete()
+
+    override fun deleteForecasts(forecasts: List<MyForecast>, userId: String): Completable =
+            RxFirestore.runTransaction(firestore) { transaction ->
+                forecasts.forEach { forecast ->
+                    Log.e(TAG, "deleting forecast from cloud id: " + forecast.noteId)
+                    transaction.delete(firestore.collection(COLLECTION_USERS)
+                            .document(userId)
+                            .collection(COLLECTION_FORECASTS)
+                            .document(forecast.noteId))
+                }
+            }.timeout(1, TimeUnit.MINUTES).onErrorComplete()
+
     override fun deleteTags(tags: List<MyTag>, userId: String): Completable =
             RxFirestore.runTransaction(firestore) { transaction ->
                 tags.forEach { tag ->

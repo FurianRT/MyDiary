@@ -189,7 +189,7 @@ class NoteEditFragment : Fragment(), NoteEditFragmentContract.View {
             edit_note_content.setTextColor(it)
             edit_note_title.setHintTextColor(ColorUtils.setAlphaComponent(it, 50))
             edit_note_content.setHintTextColor(ColorUtils.setAlphaComponent(it, 50))
-            edit_note_content.setLineColor(ColorUtils.setAlphaComponent(it, 40))
+            edit_note_content.setLineColor(ColorUtils.setAlphaComponent(it, 35))
         }
         appearance.textSize?.let {
             edit_note_title.textSize = it.toFloat()

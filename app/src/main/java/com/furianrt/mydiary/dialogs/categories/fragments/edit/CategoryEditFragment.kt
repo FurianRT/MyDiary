@@ -8,6 +8,7 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.furianrt.mydiary.R
 import com.furianrt.mydiary.data.model.MyCategory
+import com.furianrt.mydiary.general.Analytics
 import com.furianrt.mydiary.utils.animateShake
 import com.furianrt.mydiary.utils.hideKeyboard
 import com.furianrt.mydiary.utils.showKeyboard
@@ -40,6 +41,7 @@ class CategoryEditFragment : Fragment(), CategoryEditContract.View {
             mPresenter.onButtonCancelClick()
         }
         view.button_category_edit_save.setOnClickListener {
+            Analytics.sendEvent(requireContext(), Analytics.EVENT_NOTE_CATEGORY_EDITED)
             val color = color_picker_category.color
             val name = edit_category.text?.toString() ?: ""
             mPresenter.onButtonDoneClick(mCategory, name, color)

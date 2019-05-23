@@ -12,6 +12,7 @@ import androidx.fragment.app.Fragment
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.furianrt.mydiary.R
 import com.furianrt.mydiary.data.model.SyncProgressMessage
+import com.furianrt.mydiary.general.Analytics
 import com.furianrt.mydiary.screens.main.fragments.profile.about.AboutProfileFragment
 import com.furianrt.mydiary.screens.main.fragments.profile.password.PasswordFragment
 import com.furianrt.mydiary.screens.main.fragments.profile.signout.SignOutFragment
@@ -61,9 +62,18 @@ class MenuProfileFragment : Fragment(), MenuProfileContract.View, View.OnClickLi
             setPrimaryNavigationFragment(parentFragment)
         }
         when (v.id) {
-            R.id.button_sign_out -> mPresenter.onButtonSignOutClick()
-            R.id.button_change_password -> mPresenter.onButtonChangePasswordClick()
-            R.id.button_about -> mPresenter.onButtonAboutClick()
+            R.id.button_sign_out -> {
+                Analytics.sendEvent(requireContext(), Analytics.EVENT_SIGN_OUT)
+                mPresenter.onButtonSignOutClick()
+            }
+            R.id.button_change_password -> {
+                Analytics.sendEvent(requireContext(), Analytics.EVENT_PASSWORD_CHANGE)
+                mPresenter.onButtonChangePasswordClick()
+            }
+            R.id.button_about -> {
+                Analytics.sendEvent(requireContext(), Analytics.EVENT_PROFILE_ABOUT)
+                mPresenter.onButtonAboutClick()
+            }
         }
     }
 

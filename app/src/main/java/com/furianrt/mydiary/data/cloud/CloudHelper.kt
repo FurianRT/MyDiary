@@ -19,6 +19,8 @@ interface CloudHelper {
     fun deleteNotes(notes: List<MyNote>, userId: String): Completable
     fun deleteCategories(categories: List<MyCategory>, userId: String): Completable
     fun deleteNoteTags(noteTags: List<NoteTag>, userId: String): Completable
+    fun deleteLocations(locations: List<MyLocation>, userId: String): Completable
+    fun deleteForecasts(forecasts: List<MyForecast>, userId: String): Completable
     fun deleteTags(tags: List<MyTag>, userId: String): Completable
     fun deleteAppearances(appearances: List<MyNoteAppearance>, userId: String): Completable
     fun deleteImages(images: List<MyImage>, userId: String): Completable

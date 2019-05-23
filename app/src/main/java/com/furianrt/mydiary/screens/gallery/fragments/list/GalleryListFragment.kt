@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.furianrt.mydiary.R
 import com.furianrt.mydiary.data.model.MyImage
 import com.furianrt.mydiary.dialogs.delete.image.DeleteImageDialog
+import com.furianrt.mydiary.general.Analytics
 import com.furianrt.mydiary.screens.gallery.fragments.pager.GalleryPagerFragment
 import com.furianrt.mydiary.utils.*
 import com.yanzhenjie.album.Album
@@ -191,6 +192,7 @@ class GalleryListFragment : Fragment(), GalleryListAdapter.OnListItemInteraction
                 true
             }
             R.id.menu_add_image -> {
+                Analytics.sendEvent(requireContext(), Analytics.EVENT_NOTE_IMAGE_LIST_IMAGE_ADD)
                 mPresenter.onButtonAddImageClick()
                 true
             }
@@ -210,6 +212,7 @@ class GalleryListFragment : Fragment(), GalleryListAdapter.OnListItemInteraction
     override fun onActionItemClicked(mode: ActionMode?, item: MenuItem?): Boolean {
         return when (item?.itemId) {
             R.id.menu_delete -> {
+                Analytics.sendEvent(requireContext(), Analytics.EVENT_NOTE_IMAGE_LIST_IMAGE_DELETE)
                 mPresenter.onButtonCabDeleteClick()
                 true
             }
@@ -299,6 +302,7 @@ class GalleryListFragment : Fragment(), GalleryListAdapter.OnListItemInteraction
 
     override fun onItemTrashed(image: MyImage) {
         hideTrash()
+        Analytics.sendEvent(requireContext(), Analytics.EVENT_NOTE_IMAGE_LIST_DRAG_DELETE)
         mPresenter.onImageTrashed(image)
     }
 

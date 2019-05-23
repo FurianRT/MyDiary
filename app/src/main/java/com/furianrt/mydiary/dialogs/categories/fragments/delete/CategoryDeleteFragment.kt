@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.furianrt.mydiary.R
 import com.furianrt.mydiary.data.model.MyCategory
+import com.furianrt.mydiary.general.Analytics
 import kotlinx.android.synthetic.main.fragment_category_delete.view.*
 import javax.inject.Inject
 
@@ -30,7 +31,10 @@ class CategoryDeleteFragment : Fragment(), CategoryDeleteContract.View {
         view.text_category_delete_message.text =
                 getString(R.string.fragment_category_delete_message, mCategory.name)
 
-        view.button_delete_category.setOnClickListener { mPresenter.onButtonDeleteClick(mCategory) }
+        view.button_delete_category.setOnClickListener {
+            Analytics.sendEvent(requireContext(), Analytics.EVENT_NOTE_CATEGORY_DELETED)
+            mPresenter.onButtonDeleteClick(mCategory)
+        }
         view.button_delete_category_cancel.setOnClickListener { mPresenter.onButtonCancelClick() }
 
         return view

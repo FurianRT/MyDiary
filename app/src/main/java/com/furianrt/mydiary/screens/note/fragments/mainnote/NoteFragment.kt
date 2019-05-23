@@ -28,6 +28,7 @@ import com.furianrt.mydiary.dialogs.categories.CategoriesDialog
 import com.furianrt.mydiary.dialogs.delete.note.DeleteNoteDialog
 import com.furianrt.mydiary.dialogs.moods.MoodsDialog
 import com.furianrt.mydiary.dialogs.tags.TagsDialog
+import com.furianrt.mydiary.general.Analytics
 import com.furianrt.mydiary.general.AppBarLayoutBehavior
 import com.furianrt.mydiary.general.GlideApp
 import com.furianrt.mydiary.screens.gallery.GalleryActivity
@@ -157,6 +158,7 @@ class NoteFragment : Fragment(), NoteFragmentContract.View, DatePickerDialog.OnD
         }
         view.fab_add_image.setOnClickListener {
             removeEditFragment()
+            Analytics.sendEvent(requireContext(), Analytics.EVENT_NOTE_IMAGE_PAGER_OPENED)
             mPresenter.onButtonAddImageClick()
         }
         view.layout_loading.setOnTouchListener { _, _ -> true }
@@ -223,6 +225,7 @@ class NoteFragment : Fragment(), NoteFragmentContract.View, DatePickerDialog.OnD
             }
             R.id.menu_appearance -> {
                 removeEditFragment()
+                Analytics.sendEvent(requireContext(), Analytics.EVENT_NOTE_SETTINGS)
                 mPresenter.onButtonAppearanceClick()
                 true
             }
@@ -241,14 +244,17 @@ class NoteFragment : Fragment(), NoteFragmentContract.View, DatePickerDialog.OnD
                 true
             }
             R.id.menu_undo -> {
+                Analytics.sendEvent(requireContext(), Analytics.EVENT_NOTE_UNDO)
                 mPresenter.onButtonUndoClick()
                 true
             }
             R.id.menu_redo -> {
+                Analytics.sendEvent(requireContext(), Analytics.EVENT_NORE_REDO)
                 mPresenter.onButtonRedoClick()
                 true
             }
             R.id.menu_mic -> {
+                Analytics.sendEvent(requireContext(), Analytics.EVENT_SPEECH_TO_TEXT)
                 mPresenter.onButtonMicClick()
                 true
             }
@@ -317,6 +323,7 @@ class NoteFragment : Fragment(), NoteFragmentContract.View, DatePickerDialog.OnD
     }
 
     override fun onImageClick(image: MyImage) {
+        Analytics.sendEvent(requireContext(), Analytics.EVENT_NOTE_IMAGE_PAGER_OPENED)
         mPresenter.onToolbarImageClick(image)
     }
 
@@ -629,6 +636,7 @@ class NoteFragment : Fragment(), NoteFragmentContract.View, DatePickerDialog.OnD
     }
 
     override fun onDateSet(view: DatePickerDialog?, year: Int, monthOfYear: Int, dayOfMonth: Int) {
+        Analytics.sendEvent(requireContext(), Analytics.EVENT_NOTE_DATE_CHANGED)
         mPresenter.onDateSelected(year, monthOfYear, dayOfMonth)
     }
 
@@ -645,6 +653,7 @@ class NoteFragment : Fragment(), NoteFragmentContract.View, DatePickerDialog.OnD
     }
 
     override fun onTimeSet(view: TimePickerDialog?, hourOfDay: Int, minute: Int, second: Int) {
+        Analytics.sendEvent(requireContext(), Analytics.EVENT_NOTE_TIME_CHANGED)
         mPresenter.onTimeSelected(hourOfDay, minute)
     }
 
@@ -656,6 +665,14 @@ class NoteFragment : Fragment(), NoteFragmentContract.View, DatePickerDialog.OnD
     override fun enableUndoButton(enable: Boolean) {
         (childFragmentManager.findFragmentByTag(NoteEditFragment.TAG) as? NoteEditFragment?)
                 ?.enableUndoButton(enable)
+    }
+
+    override fun sendUndoErrorEvent() {
+        Analytics.sendEvent(requireContext(), Analytics.EVENT_UNDO_ERROR)
+    }
+
+    override fun sendRedoErrorEvent() {
+        Analytics.sendEvent(requireContext(), Analytics.EVENT_REDO_ERROR)
     }
 
     fun onNoteFragmentEditModeEnabled() {

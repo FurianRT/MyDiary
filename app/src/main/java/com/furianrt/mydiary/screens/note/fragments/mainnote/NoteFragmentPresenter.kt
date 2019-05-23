@@ -135,6 +135,7 @@ class NoteFragmentPresenter(private val dataManager: DataManager) : NoteFragment
     private fun loadLocation(noteId: String, mode: NoteActivity.Companion.Mode, locationAvailable: Boolean,
                              networkAvailable: Boolean) {
             addDisposable(dataManager.getAllDbLocations()
+                    .first(emptyList())
                     .map { locations -> locations.filter { it.noteId == noteId } }
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe { locations ->
@@ -378,8 +379,8 @@ class NoteFragmentPresenter(private val dataManager: DataManager) : NoteFragment
             view?.enableRedoButton(true)
             view?.showNoteText(nextSelectedEntry.title, nextSelectedEntry.content)
         } else {
-            //todo отправить эвент
             Log.e(TAG, "Undo button should be disabled")
+            view?.sendUndoErrorEvent()
         }
     }
 
@@ -393,8 +394,8 @@ class NoteFragmentPresenter(private val dataManager: DataManager) : NoteFragment
             view?.enableUndoButton(true)
             view?.showNoteText(nextSelectedEntry.title, nextSelectedEntry.content)
         } else {
-            //todo отправить эвент
             Log.e(TAG, "Redo button should be disabled")
+            view?.sendRedoErrorEvent()
         }
     }
 

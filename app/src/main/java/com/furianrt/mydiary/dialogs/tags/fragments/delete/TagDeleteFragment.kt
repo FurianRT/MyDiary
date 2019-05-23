@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.furianrt.mydiary.R
 import com.furianrt.mydiary.data.model.MyTag
+import com.furianrt.mydiary.general.Analytics
 import kotlinx.android.synthetic.main.fragment_tag_delete.*
 import kotlinx.android.synthetic.main.fragment_tag_delete.view.*
 import javax.inject.Inject
@@ -31,6 +32,7 @@ class TagDeleteFragment : Fragment(), TagDeleteContract.View {
 
         view.text_tag_delete_message.text = getString(R.string.fragment_tag_delete_message, mTag.name)
         view.button_delete_tag.setOnClickListener {
+            Analytics.sendEvent(requireContext(), Analytics.EVENT_NOTE_TAG_DELETED)
             button_delete_tag.isEnabled = false
             mPresenter.onButtonDeleteClick(mTag)
         }

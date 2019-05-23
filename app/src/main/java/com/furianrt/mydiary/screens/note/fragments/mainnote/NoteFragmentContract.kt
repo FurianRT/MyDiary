@@ -44,6 +44,8 @@ interface NoteFragmentContract {
         fun enableRedoButton(enable: Boolean)
         fun enableUndoButton(enable: Boolean)
         fun recordSpeech()
+        fun sendUndoErrorEvent()
+        fun sendRedoErrorEvent()
     }
 
     abstract class Presenter : BasePresenter<View>() {

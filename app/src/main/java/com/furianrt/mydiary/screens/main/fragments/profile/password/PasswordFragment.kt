@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import android.view.WindowManager
 import androidx.fragment.app.Fragment
 import com.furianrt.mydiary.R
+import com.furianrt.mydiary.general.Analytics
 import com.furianrt.mydiary.screens.main.fragments.profile.ProfileFragment
 import com.furianrt.mydiary.screens.main.fragments.profile.password.success.PasswordSuccessFragment
 import com.furianrt.mydiary.utils.animateShake
@@ -117,6 +118,7 @@ class PasswordFragment : Fragment(), PasswordContract.View {
     }
 
     override fun showSuccessPasswordChange() {
+        Analytics.sendEvent(requireContext(), Analytics.EVENT_PASSWORD_CHANGED)
         fragmentManager?.let {
             if (it.findFragmentByTag(PasswordSuccessFragment.TAG) == null) {
                 it.inTransaction {

@@ -154,6 +154,10 @@ class PinPresenter(
         view?.showForgotPinView()
     }
 
+    override fun onButtonFingerprintClick() {
+
+    }
+
     override fun detachView() {
         super.detachView()
         mHandler.removeCallbacks(mCreatePinRunnable)

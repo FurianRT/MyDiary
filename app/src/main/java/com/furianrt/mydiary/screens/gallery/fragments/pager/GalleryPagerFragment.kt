@@ -10,6 +10,7 @@ import androidx.viewpager2.widget.ViewPager2
 import com.furianrt.mydiary.R
 import com.furianrt.mydiary.data.model.MyImage
 import com.furianrt.mydiary.dialogs.delete.image.DeleteImageDialog
+import com.furianrt.mydiary.general.Analytics
 import com.furianrt.mydiary.screens.gallery.fragments.list.GalleryListFragment
 import com.furianrt.mydiary.utils.getThemeAccentColor
 import com.furianrt.mydiary.utils.getThemePrimaryColor
@@ -108,10 +109,12 @@ class GalleryPagerFragment : Fragment(), GalleryPagerContract.View {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.menu_list_mode -> {
+                Analytics.sendEvent(requireContext(), Analytics.EVENT_NOTE_IMAGE_LIST_OPENED)
                 mPresenter.onButtonListModeClick(mNoteId)
                 true
             }
             R.id.menu_delete -> {
+                Analytics.sendEvent(requireContext(), Analytics.EVENT_NOTE_IMAGE_PAGER_IMAGE_DELETE)
                 mPresenter.onButtonDeleteClick(mPagerAdapter.getItem(mPagerPosition))
                 true
             }
@@ -151,6 +154,7 @@ class GalleryPagerFragment : Fragment(), GalleryPagerContract.View {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == IMAGE_EDITOR_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
+            Analytics.sendEvent(requireContext(), Analytics.EVENT_NOTE_IMAGE_PAGER_IMAGE_EDITED)
             mPresenter.onImageEdited()
         }
     }

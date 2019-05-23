@@ -96,6 +96,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
+            android:gravity="center_vertical"
             android:orientation="horizontal">
 
             <com.google.android.material.button.MaterialButton
@@ -104,7 +105,6 @@
                 android:layout_width="50dp"
                 android:layout_height="60dp"
                 android:layout_marginEnd="32dp"
-                android:gravity="center"
                 android:text="1"
                 android:textColor="@color/white"
                 android:textSize="18sp"
@@ -119,7 +119,6 @@
                 android:layout_width="50dp"
                 android:layout_height="60dp"
                 android:layout_marginEnd="32dp"
-                android:gravity="center"
                 android:text="2"
                 android:textColor="@color/white"
                 android:textSize="18sp"
@@ -133,7 +132,6 @@
                 style="@style/Widget.MaterialComponents.Button.TextButton"
                 android:layout_width="50dp"
                 android:layout_height="60dp"
-                android:gravity="center"
                 android:text="3"
                 android:textColor="@color/white"
                 android:textSize="18sp"
@@ -145,9 +143,10 @@
         </LinearLayout>
 
         <LinearLayout
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
+            android:gravity="center_vertical"
             android:orientation="horizontal">
 
             <com.google.android.material.button.MaterialButton
@@ -156,7 +155,6 @@
                 android:layout_width="50dp"
                 android:layout_height="60dp"
                 android:layout_marginEnd="32dp"
-                android:gravity="center"
                 android:text="4"
                 android:textColor="@color/white"
                 android:textSize="18sp"
@@ -171,7 +169,6 @@
                 android:layout_width="50dp"
                 android:layout_height="60dp"
                 android:layout_marginEnd="32dp"
-                android:gravity="center"
                 android:text="5"
                 android:textColor="@color/white"
                 android:textSize="18sp"
@@ -185,7 +182,6 @@
                 style="@style/Widget.MaterialComponents.Button.TextButton"
                 android:layout_width="50dp"
                 android:layout_height="60dp"
-                android:gravity="center"
                 android:text="6"
                 android:textColor="@color/white"
                 android:textSize="18sp"
@@ -197,9 +193,10 @@
         </LinearLayout>
 
         <LinearLayout
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
+            android:gravity="center_vertical"
             android:orientation="horizontal">
 
             <com.google.android.material.button.MaterialButton
@@ -208,7 +205,6 @@
                 android:layout_width="50dp"
                 android:layout_height="60dp"
                 android:layout_marginEnd="32dp"
-                android:gravity="center"
                 android:text="7"
                 android:textColor="@color/white"
                 android:textSize="18sp"
@@ -223,7 +219,6 @@
                 android:layout_width="50dp"
                 android:layout_height="60dp"
                 android:layout_marginEnd="32dp"
-                android:gravity="center"
                 android:text="8"
                 android:textColor="@color/white"
                 android:textSize="18sp"
@@ -237,7 +232,6 @@
                 style="@style/Widget.MaterialComponents.Button.TextButton"
                 android:layout_width="50dp"
                 android:layout_height="60dp"
-                android:gravity="center"
                 android:text="9"
                 android:textColor="@color/white"
                 android:textSize="18sp"
@@ -249,10 +243,22 @@
         </LinearLayout>
 
         <LinearLayout
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="end"
+            android:gravity="center_vertical|end"
             android:orientation="horizontal">
+
+            <ImageButton
+                android:id="@+id/button_fingerprint"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginEnd="24dp"
+                android:background="?android:selectableItemBackground"
+                android:padding="8dp"
+                android:src="@drawable/ic_fingerprint"
+                tools:ignore="ContentDescription" />
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/button_zero"
@@ -260,7 +266,6 @@
                 android:layout_width="50dp"
                 android:layout_height="60dp"
                 android:layout_marginEnd="32dp"
-                android:gravity="center"
                 android:text="0"
                 android:textColor="@color/white"
                 android:textSize="18sp"
@@ -274,7 +279,6 @@
                 style="@style/Widget.MaterialComponents.Button.TextButton"
                 android:layout_width="50dp"
                 android:layout_height="60dp"
-                android:gravity="center"
                 android:text="&lt;"
                 android:textColor="@color/white"
                 android:textSize="18sp"

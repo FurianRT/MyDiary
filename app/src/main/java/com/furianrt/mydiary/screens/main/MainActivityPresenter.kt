@@ -1,7 +1,7 @@
 package com.furianrt.mydiary.screens.main
 
 import com.furianrt.mydiary.data.DataManager
-import com.furianrt.mydiary.data.model.MyNoteWithProp
+import com.furianrt.mydiary.data.model.*
 import com.furianrt.mydiary.screens.main.adapter.NoteListContent
 import com.furianrt.mydiary.screens.main.adapter.NoteListHeader
 import com.furianrt.mydiary.screens.main.adapter.NoteListItem
@@ -281,6 +281,22 @@ class MainActivityPresenter(
     }
 
     override fun onSearchQueryChange(query: String) {
+
+    }
+
+    override fun onTagFilterChange(tag: MyTag, checked: Boolean) {
+
+    }
+
+    override fun onCategoryFilterChange(category: MyCategory, checked: Boolean) {
+
+    }
+
+    override fun onLocationFilterChange(location: MyLocation, checked: Boolean) {
+
+    }
+
+    override fun onMoodFilterChange(mood: MyMood, checked: Boolean) {
 
     }
 }

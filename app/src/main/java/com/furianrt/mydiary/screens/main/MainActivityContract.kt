@@ -2,9 +2,7 @@ package com.furianrt.mydiary.screens.main
 
 import com.furianrt.mydiary.base.BasePresenter
 import com.furianrt.mydiary.base.BaseView
-import com.furianrt.mydiary.data.model.MyHeaderImage
-import com.furianrt.mydiary.data.model.MyNoteWithProp
-import com.furianrt.mydiary.data.model.MyProfile
+import com.furianrt.mydiary.data.model.*
 import com.furianrt.mydiary.screens.main.adapter.NoteListItem
 
 interface MainActivityContract {
@@ -51,5 +49,9 @@ interface MainActivityContract {
         abstract fun onButtonFolderClick()
         abstract fun onCategorySelected()
         abstract fun onSearchQueryChange(query: String)
+        abstract fun onTagFilterChange(tag: MyTag, checked: Boolean)
+        abstract fun onCategoryFilterChange(category: MyCategory, checked: Boolean)
+        abstract fun onLocationFilterChange(location: MyLocation, checked: Boolean)
+        abstract fun onMoodFilterChange(mood: MyMood, checked: Boolean)
     }
 }

@@ -26,11 +26,10 @@ import com.anjlab.android.iab.v3.TransactionDetails
 import com.furianrt.mydiary.BuildConfig
 import com.furianrt.mydiary.R
 import com.furianrt.mydiary.base.BaseActivity
-import com.furianrt.mydiary.data.model.MyHeaderImage
-import com.furianrt.mydiary.data.model.MyNoteWithProp
-import com.furianrt.mydiary.data.model.MyProfile
+import com.furianrt.mydiary.data.model.*
 import com.furianrt.mydiary.dialogs.categories.CategoriesDialog
 import com.furianrt.mydiary.dialogs.delete.note.DeleteNoteDialog
+import com.furianrt.mydiary.general.Analytics
 import com.furianrt.mydiary.general.AppBarLayoutBehavior
 import com.furianrt.mydiary.general.GlideApp
 import com.furianrt.mydiary.general.HeaderItemDecoration
@@ -38,6 +37,7 @@ import com.furianrt.mydiary.screens.main.adapter.NoteListAdapter
 import com.furianrt.mydiary.screens.main.adapter.NoteListItem
 import com.furianrt.mydiary.screens.main.fragments.authentication.AuthFragment
 import com.furianrt.mydiary.screens.main.fragments.drawer.DrawerMenuFragment
+import com.furianrt.mydiary.screens.main.fragments.drawer.adapter.SearchListAdapter
 import com.furianrt.mydiary.screens.main.fragments.imagesettings.ImageSettingsFragment
 import com.furianrt.mydiary.screens.main.fragments.premium.PremiumFragment
 import com.furianrt.mydiary.screens.main.fragments.profile.ProfileFragment
@@ -63,7 +63,8 @@ class MainActivity : BaseActivity(), MainActivityContract.View,
         ImageSettingsFragment.OnImageSettingsInteractionListener,
         DeleteNoteDialog.OnDeleteNoteConfirmListener, CategoriesDialog.OnCategorySelectedListener,
         PremiumFragment.OnPremiumFragmentInteractionListener,
-        DrawerMenuFragment.OnDrawerMenuInteractionListener {
+        DrawerMenuFragment.OnDrawerMenuInteractionListener,
+        SearchListAdapter.OnSearchListInteractionListener {
 
     companion object {
         private const val TAG = "MainActivity"
@@ -166,13 +167,32 @@ class MainActivity : BaseActivity(), MainActivityContract.View,
         }
 
         image_toolbar_main.setOnClickListener { mPresenter.onMainImageClick() }
-        button_main_image_settings.setOnClickListener { mPresenter.onButtonImageSettingsClick() }
+        button_main_image_settings.setOnClickListener {
+            Analytics.sendEvent(this, Analytics.EVENT_HEADER_IMAGE_SETTINGS)
+            mPresenter.onButtonImageSettingsClick()
+        }
 
         mAdapter = NoteListAdapter(is24TimeFormat = mPresenter.is24TimeFormat())
         list_main.layoutManager = LinearLayoutManager(this)
         list_main.addItemDecoration(HeaderItemDecoration(list_main, mAdapter))
         list_main.adapter = mAdapter
         list_main.itemAnimator = LandingAnimator()
+    }
+
+    override fun onTagChackStateChange(tag: MyTag, checked: Boolean) {
+        mPresenter.onTagFilterChange(tag, checked)
+    }
+
+    override fun onCategoryChackStateChange(category: MyCategory, checked: Boolean) {
+        mPresenter.onCategoryFilterChange(category, checked)
+    }
+
+    override fun onLocationChackStateChange(location: MyLocation, checked: Boolean) {
+        mPresenter.onLocationFilterChange(location, checked)
+    }
+
+    override fun onMoodChackStateChange(mood: MyMood, checked: Boolean) {
+        mPresenter.onMoodFilterChange(mood, checked)
     }
 
     override fun onBillingInitialized() {
@@ -269,10 +289,12 @@ class MainActivity : BaseActivity(), MainActivityContract.View,
                 true
             }
             R.id.menu_image -> {
+                Analytics.sendEvent(this, Analytics.EVENT_HEADER_IMAGE_SETTINGS)
                 mPresenter.onButtonImageSettingsClick()
                 true
             }
             R.id.menu_settings -> {
+                Analytics.sendEvent(this, Analytics.EVENT_MAIN_SETTINGS)
                 mPresenter.onButtonSettingsClick()
                 true
             }
@@ -365,6 +387,7 @@ class MainActivity : BaseActivity(), MainActivityContract.View,
     }
 
     override fun showViewNewNote() {
+        Analytics.sendEvent(this, Analytics.EVENT_NOTE_ADDED)
         startActivity(NoteActivity.newIntentModeAdd(this))
     }
 
@@ -457,6 +480,7 @@ class MainActivity : BaseActivity(), MainActivityContract.View,
     }
 
     override fun showNotePager(position: Int, note: MyNoteWithProp) {
+        Analytics.sendEvent(this, Analytics.EVENT_NOTE_OPENED)
         startActivity(NoteActivity.newIntentModeRead(this, position))
     }
 

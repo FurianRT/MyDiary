@@ -9,6 +9,7 @@ import android.view.WindowManager
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.furianrt.mydiary.R
+import com.furianrt.mydiary.general.Analytics
 import com.furianrt.mydiary.screens.main.fragments.authentication.AuthFragment
 import com.furianrt.mydiary.screens.main.fragments.authentication.done.DoneAuthFragment
 import com.furianrt.mydiary.screens.main.fragments.authentication.forgot.ForgotPassFragment
@@ -109,6 +110,7 @@ class LoginFragment : Fragment(), LoginContract.View {
     }
 
     override fun showLoginSuccess() {
+        Analytics.sendEvent(requireContext(), Analytics.EVENT_SIGNED_IN)
         if (fragmentManager?.findFragmentByTag(DoneAuthFragment.TAG) == null) {
             fragmentManager?.inTransaction {
                 val message = getString(R.string.fragment_done_auth_done)
@@ -125,6 +127,7 @@ class LoginFragment : Fragment(), LoginContract.View {
     }
 
     override fun showForgotPassView(email: String) {
+        Analytics.sendEvent(requireContext(), Analytics.EVENT_FORGOT_PASSWORD)
         if (fragmentManager?.findFragmentByTag(ForgotPassFragment.TAG) == null) {
             activity?.supportFragmentManager?.inTransaction {
                 setPrimaryNavigationFragment(parentFragment)

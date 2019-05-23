@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.furianrt.mydiary.R
+import com.furianrt.mydiary.general.Analytics
 import com.furianrt.mydiary.utils.animateShake
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import kotlinx.android.synthetic.main.bottom_sheet_main.*
@@ -70,6 +71,7 @@ class PrivacyFragment : Fragment(), PrivacyContract.View {
     }
 
     override fun showMessageSuccessRegistration() {
+        Analytics.sendEvent(requireContext(), Analytics.EVENT_SIGNED_UP)
         activity?.let {
             BottomSheetBehavior.from(it.main_sheet_container).state = BottomSheetBehavior.STATE_COLLAPSED
         }

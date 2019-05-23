@@ -7,7 +7,6 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.os.Bundle
 import android.os.Handler
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -20,6 +19,7 @@ import com.furianrt.mydiary.R
 import com.furianrt.mydiary.base.BaseActivity.Companion.ITEM_TEST_SKU
 import com.furianrt.mydiary.data.model.*
 import com.furianrt.mydiary.data.model.pojo.SearchEntries
+import com.furianrt.mydiary.general.Analytics
 import com.furianrt.mydiary.screens.main.fragments.authentication.AuthFragment
 import com.furianrt.mydiary.screens.main.fragments.drawer.adapter.SearchGroup
 import com.furianrt.mydiary.screens.main.fragments.drawer.adapter.SearchItem
@@ -69,6 +69,10 @@ class DrawerMenuFragment : Fragment(), DrawerMenuContract.View,
             SyncService.getProgressMessage(intent)?.let {
                 view_sync.alpha = 0.35f
                 if (it.hasError) {
+                    val bundle = Bundle()
+                    bundle.putInt("task_index", it.taskIndex)
+                    Analytics.sendEvent(requireContext(), Analytics.EVENT_SYNC_FAILED, bundle)
+
                     button_sync.text = it.message
                     view_sync.layoutParams.width = button_sync.width
                     view_sync.requestLayout()
@@ -76,6 +80,7 @@ class DrawerMenuFragment : Fragment(), DrawerMenuContract.View,
                 } else {
                     showSyncProgress(it)
                     if (it.taskIndex == SyncProgressMessage.SYNC_FINISHED) {
+                        Analytics.sendEvent(requireContext(), Analytics.EVENT_SYNC_COMPLETED)
                         animateProgressAlpha()
                     }
                 }
@@ -214,7 +219,7 @@ class DrawerMenuFragment : Fragment(), DrawerMenuContract.View,
         val locationGroup = SearchGroup(
                 SearchGroup.TYPE_LOCATION,
                 getString(R.string.locations),
-                entries.location.map { SearchItem(type = SearchItem.TYPE_LOCATION, location = it) }
+                entries.locations.map { SearchItem(type = SearchItem.TYPE_LOCATION, location = it) }
         )
         val groupList = mutableListOf(tagGroup, categoryGroup, moodGroup, locationGroup)
                 .filter { it.groupItems.isNotEmpty() }
@@ -223,22 +228,23 @@ class DrawerMenuFragment : Fragment(), DrawerMenuContract.View,
     }
 
     override fun onTagChackStateChange(tag: MyTag, checked: Boolean) {
-        Log.e(TAG, "onTagChackStateChange")
+        mListener?.onTagChackStateChange(tag, checked)
     }
 
     override fun onCategoryChackStateChange(category: MyCategory, checked: Boolean) {
-        Log.e(TAG, "onCategoryChackStateChange")
+        mListener?.onCategoryChackStateChange(category, checked)
     }
 
     override fun onLocationChackStateChange(location: MyLocation, checked: Boolean) {
-        Log.e(TAG, "onLocationChackStateChange")
+        mListener?.onLocationChackStateChange(location, checked)
     }
 
     override fun onMoodChackStateChange(mood: MyMood, checked: Boolean) {
-        Log.e(TAG, "onMoodChackStateChange")
+        mListener?.onMoodChackStateChange(mood, checked)
     }
 
     override fun showProfileSettings() {
+        Analytics.sendEvent(requireContext(), Analytics.EVENT_PROFILE_SETTINGS)
         if (fragmentManager?.findFragmentByTag(ProfileFragment.TAG) == null) {
             fragmentManager?.inTransaction {
                 replace(R.id.main_sheet_container, ProfileFragment(), ProfileFragment.TAG)
@@ -248,6 +254,7 @@ class DrawerMenuFragment : Fragment(), DrawerMenuContract.View,
     }
 
     override fun showLoginView() {
+        Analytics.sendEvent(requireContext(), Analytics.EVENT_SIGN_IN)
         if (fragmentManager?.findFragmentByTag(AuthFragment.TAG) == null) {
             fragmentManager?.inTransaction {
                 replace(R.id.main_sheet_container, AuthFragment(), AuthFragment.TAG)
@@ -300,5 +307,9 @@ class DrawerMenuFragment : Fragment(), DrawerMenuContract.View,
     interface OnDrawerMenuInteractionListener {
         fun getIsBillingInitialized(): Boolean
         fun getIsItemPurshased(productId: String): Boolean
+        fun onTagChackStateChange(tag: MyTag, checked: Boolean)
+        fun onCategoryChackStateChange(category: MyCategory, checked: Boolean)
+        fun onLocationChackStateChange(location: MyLocation, checked: Boolean)
+        fun onMoodChackStateChange(mood: MyMood, checked: Boolean)
     }
 }

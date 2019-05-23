@@ -10,6 +10,7 @@ import androidx.preference.PreferenceManager
 import androidx.preference.SwitchPreference
 import com.furianrt.mydiary.R
 import com.furianrt.mydiary.data.prefs.PreferencesHelper
+import com.furianrt.mydiary.general.Analytics
 import com.furianrt.mydiary.screens.pin.PinActivity
 import javax.inject.Inject
 
@@ -46,8 +47,14 @@ class GlobalSettingsFragment : PreferenceFragmentCompat(), GlobalSettingsContrac
 
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
         when (key) {
-            PreferencesHelper.COLOR_PRIMARY -> mHandler.postDelayed(mRecreateRunnable, RECREATE_DELAY)
-            PreferencesHelper.COLOR_ACCENT -> mHandler.postDelayed(mRecreateRunnable, RECREATE_DELAY)
+            PreferencesHelper.COLOR_PRIMARY -> {
+                Analytics.sendEvent(requireContext(), Analytics.EVENT_PRIMARY_COLOR_CHANGED)
+                mHandler.postDelayed(mRecreateRunnable, RECREATE_DELAY)
+            }
+            PreferencesHelper.COLOR_ACCENT -> {
+                Analytics.sendEvent(requireContext(), Analytics.EVENT_ACCENT_COLOR_CHANGED)
+                mHandler.postDelayed(mRecreateRunnable, RECREATE_DELAY)
+            }
         }
     }
 
@@ -56,6 +63,7 @@ class GlobalSettingsFragment : PreferenceFragmentCompat(), GlobalSettingsContrac
         if (requestCode == REQUEST_CODE_CREATE_PIN) {
             val keyPref = findPreference<SwitchPreference>(PreferencesHelper.SECURITY_KEY)
             if (resultCode == Activity.RESULT_OK) {
+                Analytics.sendEvent(requireContext(), Analytics.EVENT_PIN_CREATED)
                 keyPref?.isChecked = true
                 mPresenter.onPasswordCreated()
             } else {
@@ -64,6 +72,7 @@ class GlobalSettingsFragment : PreferenceFragmentCompat(), GlobalSettingsContrac
         } else if (requestCode == REQUEST_CODE_REMOVE_PIN) {
             val keyPref = findPreference<SwitchPreference>(PreferencesHelper.SECURITY_KEY)
             if (resultCode == Activity.RESULT_OK) {
+                Analytics.sendEvent(requireContext(), Analytics.EVENT_PIN_REMOVED)
                 keyPref?.isChecked = false
                 mPresenter.onPasswordRemoved()
             } else {

@@ -12,9 +12,7 @@ import com.furianrt.mydiary.data.model.MyMood
 import com.furianrt.mydiary.data.model.MyTag
 import com.furianrt.mydiary.screens.main.fragments.drawer.adapter.SearchListAdapter.SearchChildViewHolder
 import com.furianrt.mydiary.screens.main.fragments.drawer.adapter.SearchListAdapter.SearchGroupViewHolder
-import com.thoughtbot.expandablecheckrecyclerview.ChildCheckController
 import com.thoughtbot.expandablecheckrecyclerview.listeners.OnChildCheckChangedListener
-import com.thoughtbot.expandablecheckrecyclerview.listeners.OnChildrenCheckStateChangedListener
 import com.thoughtbot.expandablecheckrecyclerview.viewholders.CheckableChildViewHolder
 import com.thoughtbot.expandablerecyclerview.MultiTypeExpandableRecyclerViewAdapter
 import com.thoughtbot.expandablerecyclerview.models.ExpandableGroup
@@ -26,18 +24,11 @@ import kotlinx.android.synthetic.main.nav_search_item_mood.view.*
 import kotlinx.android.synthetic.main.nav_search_item_tag.view.*
 import java.util.HashSet
 import kotlin.collections.ArrayList
-import kotlin.collections.List
-import kotlin.collections.MutableList
-import kotlin.collections.emptyList
-import kotlin.collections.find
-import kotlin.collections.forEach
-import kotlin.collections.mutableListOf
-import kotlin.collections.sortedByDescending
 
 class SearchListAdapter(
-        private val listener: OnSearchListInteractionListener? = null
+        var listener: OnSearchListInteractionListener? = null
 ) : MultiTypeExpandableRecyclerViewAdapter<SearchGroupViewHolder, SearchChildViewHolder>(mutableListOf()),
-        OnChildCheckChangedListener, OnChildrenCheckStateChangedListener {
+        OnChildCheckChangedListener {
 
     companion object {
         private const val ANIM_ARROW_RATATION_DURATION = 350L
@@ -48,7 +39,6 @@ class SearchListAdapter(
         private const val BUNDLE_SELECTED_LOCATION_IDS = "selected_location_ids"
     }
 
-    private val mChildCheckController = ChildCheckController(expandableList, this)
     private val mExpandedGroupTypes = HashSet<Int>()
     private val mSelectedTagIds = HashSet<String>()
     private val mSelectedCategoryIds = HashSet<String>()
@@ -106,8 +96,6 @@ class SearchListAdapter(
                     .forEach { groupType ->
                         find { it.type == groupType }?.let {
                             expandableList.expandedGroupIndexes[indexOf(it)] = true
-
-
                         }
                     }
         }
@@ -124,16 +112,12 @@ class SearchListAdapter(
         return when (viewType) {
             SearchItem.TYPE_TAG ->
                 SearchTagsViewHolder(inflater.inflate(R.layout.nav_search_item_tag, parent, false))
-                        .apply { setOnChildCheckedListener(this@SearchListAdapter) }
             SearchItem.TYPE_CATEGORY ->
                 SearchCategoriesViewHolder(inflater.inflate(R.layout.nav_search_item_category, parent, false))
-                        .apply { setOnChildCheckedListener(this@SearchListAdapter) }
             SearchItem.TYPE_LOCATION ->
                 SearchLocationsViewHolder(inflater.inflate(R.layout.nav_search_item_location, parent, false))
-                        .apply { setOnChildCheckedListener(this@SearchListAdapter) }
             SearchItem.TYPE_MOOD ->
                 SearchMoodsViewHolder(inflater.inflate(R.layout.nav_search_item_mood, parent, false))
-                        .apply { setOnChildCheckedListener(this@SearchListAdapter) }
             else -> throw IllegalStateException("Wrong view type")
         }
     }
@@ -147,26 +131,22 @@ class SearchListAdapter(
         when (item.type) {
             SearchItem.TYPE_TAG ->
                 with(holder as SearchTagsViewHolder) {
-                    val listPosition = expandableList.getUnflattenedPosition(flatPosition)
-                    onBindViewHolder(flatPosition, mChildCheckController.isChildChecked(listPosition))
+                    onBindViewHolder(flatPosition, mSelectedTagIds.contains(item.tag!!.id))
                     bind(item)
                 }
             SearchItem.TYPE_CATEGORY ->
                 with(holder as SearchCategoriesViewHolder) {
-                    val listPosition = expandableList.getUnflattenedPosition(flatPosition)
-                    onBindViewHolder(flatPosition, mChildCheckController.isChildChecked(listPosition))
+                    onBindViewHolder(flatPosition, mSelectedCategoryIds.contains(item.category!!.id))
                     bind(item)
                 }
             SearchItem.TYPE_LOCATION ->
                 with(holder as SearchLocationsViewHolder) {
-                    val listPosition = expandableList.getUnflattenedPosition(flatPosition)
-                    onBindViewHolder(flatPosition, mChildCheckController.isChildChecked(listPosition))
+                    onBindViewHolder(flatPosition, mSelectedLocationIds.contains(item.location!!.noteId))
                     bind(item)
                 }
             SearchItem.TYPE_MOOD ->
                 with(holder as SearchMoodsViewHolder) {
-                    val listPosition = expandableList.getUnflattenedPosition(flatPosition)
-                    onBindViewHolder(flatPosition, mChildCheckController.isChildChecked(listPosition))
+                    onBindViewHolder(flatPosition, mSelectedMoodIds.contains(item.mood!!.id))
                     bind(item)
                 }
         }
@@ -192,48 +172,41 @@ class SearchListAdapter(
 
     override fun onChildCheckChanged(view: View?, checked: Boolean, flatPos: Int) {
         val listPos = expandableList.getUnflattenedPosition(flatPos)
-        mChildCheckController.onChildCheckChanged(checked, listPos)
-        listener?.let {
-            val item = (expandableList.getExpandableGroup(listPos) as SearchGroup).groupItems[listPos.childPos]
-            when (item.type) {
-                SearchItem.TYPE_TAG -> {
-                    if (checked) {
-                        mSelectedTagIds.add(item.tag!!.id)
-                    } else {
-                        mSelectedTagIds.remove(item.tag!!.id)
-                    }
-                    it.onTagChackStateChange(item.tag, checked)
+        val item = (expandableList.getExpandableGroup(listPos) as SearchGroup).groupItems[listPos.childPos]
+        when (item.type) {
+            SearchItem.TYPE_TAG -> {
+                if (checked) {
+                    mSelectedTagIds.add(item.tag!!.id)
+                } else {
+                    mSelectedTagIds.remove(item.tag!!.id)
                 }
-                SearchItem.TYPE_CATEGORY -> {
-                    if (checked) {
-                        mSelectedCategoryIds.add(item.category!!.id)
-                    } else {
-                        mSelectedCategoryIds.remove(item.category!!.id)
-                    }
-                    it.onCategoryChackStateChange(item.category, checked)
+                listener?.onTagChackStateChange(item.tag, checked)
+            }
+            SearchItem.TYPE_CATEGORY -> {
+                if (checked) {
+                    mSelectedCategoryIds.add(item.category!!.id)
+                } else {
+                    mSelectedCategoryIds.remove(item.category!!.id)
                 }
-                SearchItem.TYPE_LOCATION -> {
-                    if (checked) {
-                        mSelectedLocationIds.add(item.location!!.noteId)
-                    } else {
-                        mSelectedLocationIds.remove(item.location!!.noteId)
-                    }
-                    it.onLocationChackStateChange(item.location, checked)
+                listener?.onCategoryChackStateChange(item.category, checked)
+            }
+            SearchItem.TYPE_LOCATION -> {
+                if (checked) {
+                    mSelectedLocationIds.add(item.location!!.noteId)
+                } else {
+                    mSelectedLocationIds.remove(item.location!!.noteId)
                 }
-                SearchItem.TYPE_MOOD -> {
-                    if (checked) {
-                        mSelectedMoodIds.add(item.mood!!.id)
-                    } else {
-                        mSelectedMoodIds.remove(item.mood!!.id)
-                    }
-                    it.onMoodChackStateChange(item.mood, checked)
+                listener?.onLocationChackStateChange(item.location, checked)
+            }
+            SearchItem.TYPE_MOOD -> {
+                if (checked) {
+                    mSelectedMoodIds.add(item.mood!!.id)
+                } else {
+                    mSelectedMoodIds.remove(item.mood!!.id)
                 }
+                listener?.onMoodChackStateChange(item.mood, checked)
             }
         }
-    }
-
-    override fun updateChildrenCheckState(firstChildFlattenedIndex: Int, numChildren: Int) {
-        notifyItemRangeChanged(firstChildFlattenedIndex, numChildren)
     }
 
     inner class SearchGroupViewHolder(view: View) : GroupViewHolder(view) {
@@ -251,8 +224,8 @@ class SearchListAdapter(
             when (group.type) {
                 SearchGroup.TYPE_TAG -> itemView.image_group.setImageResource(R.drawable.ic_tag_big)
                 SearchGroup.TYPE_CATEGORY -> itemView.image_group.setImageResource(R.drawable.ic_folder_big)
+                SearchGroup.TYPE_MOOD -> itemView.image_group.setImageResource(R.drawable.ic_smile_bold)
                 SearchGroup.TYPE_LOCATION -> itemView.image_group.setImageResource(R.drawable.ic_place_big)
-                SearchGroup.TYPE_MOOD -> itemView.image_group.setImageResource(R.drawable.ic_smile)
             }
         }
 
@@ -280,8 +253,8 @@ class SearchListAdapter(
     inner class SearchTagsViewHolder(view: View) : SearchChildViewHolder(view) {
         override fun bind(item: SearchItem) {
             val tag = item.tag!!
+            setOnChildCheckedListener(this@SearchListAdapter)
             itemView.check_search_item_tag.text = tag.name
-            itemView.check_search_item_tag.isChecked = mSelectedTagIds.contains(tag.id)
         }
 
         override fun getCheckable(): Checkable = itemView.check_search_item_tag
@@ -290,9 +263,9 @@ class SearchListAdapter(
     inner class SearchCategoriesViewHolder(view: View) : SearchChildViewHolder(view) {
         override fun bind(item: SearchItem) {
             val category = item.category!!
+            setOnChildCheckedListener(this@SearchListAdapter)
             itemView.check_search_item_category.text = category.name
             itemView.view_category_color.setBackgroundColor(category.color)
-            itemView.check_search_item_category.isChecked = mSelectedCategoryIds.contains(category.id)
         }
 
         override fun getCheckable(): Checkable = itemView.check_search_item_category
@@ -301,8 +274,8 @@ class SearchListAdapter(
     inner class SearchLocationsViewHolder(view: View) : SearchChildViewHolder(view) {
         override fun bind(item: SearchItem) {
             val location = item.location!!
+            setOnChildCheckedListener(this@SearchListAdapter)
             itemView.check_search_item_location.text = location.name
-            itemView.check_search_item_location.isChecked = mSelectedLocationIds.contains(location.noteId)
         }
 
         override fun getCheckable(): Checkable = itemView.check_search_item_location
@@ -311,11 +284,11 @@ class SearchListAdapter(
     inner class SearchMoodsViewHolder(view: View) : SearchChildViewHolder(view) {
         override fun bind(item: SearchItem) {
             val mood = item.mood!!
+            setOnChildCheckedListener(this@SearchListAdapter)
             itemView.check_search_item_mood.text = mood.name
             val smile = itemView.context.resources
                     .getIdentifier(mood.iconName, "drawable", itemView.context.packageName)
             itemView.check_search_item_mood.setCompoundDrawablesWithIntrinsicBounds(smile, 0, 0, 0)
-            itemView.check_search_item_mood.isChecked = mSelectedMoodIds.contains(mood.id)
         }
 
         override fun getCheckable(): Checkable = itemView.check_search_item_mood
