@@ -228,18 +228,22 @@ class DrawerMenuFragment : Fragment(), DrawerMenuContract.View,
     }
 
     override fun onTagChackStateChange(tag: MyTag, checked: Boolean) {
+        Analytics.sendEvent(requireContext(), Analytics.EVENT_SEARCH_TAG_CHANGED)
         mListener?.onTagChackStateChange(tag, checked)
     }
 
     override fun onCategoryChackStateChange(category: MyCategory, checked: Boolean) {
+        Analytics.sendEvent(requireContext(), Analytics.EVENT_SEARCH_CATEGORY_CHANGED)
         mListener?.onCategoryChackStateChange(category, checked)
     }
 
     override fun onLocationChackStateChange(location: MyLocation, checked: Boolean) {
+        Analytics.sendEvent(requireContext(), Analytics.EVENT_SEARCH_LOCATION_CHANGED)
         mListener?.onLocationChackStateChange(location, checked)
     }
 
     override fun onMoodChackStateChange(mood: MyMood, checked: Boolean) {
+        Analytics.sendEvent(requireContext(), Analytics.EVENT_SEARCH_MOOD_CHANGED)
         mListener?.onMoodChackStateChange(mood, checked)
     }
 

@@ -359,7 +359,10 @@ class MainActivity : BaseActivity(), MainActivityContract.View,
 
         val searchView = menu?.findItem(R.id.menu_search)?.actionView as SearchView?
 
-        searchView?.setOnSearchClickListener { disableActionBarExpanding(true) }
+        searchView?.setOnSearchClickListener {
+            Analytics.sendEvent(this, Analytics.EVENT_SEARCH_WORD_OPENED)
+            disableActionBarExpanding(true)
+        }
         searchView?.setOnCloseListener {
             enableActionBarExpanding(false)
             return@setOnCloseListener false

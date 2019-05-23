@@ -56,6 +56,11 @@ object Analytics {
     const val EVENT_PIN_REMOVED = "pin_removed"
     const val EVENT_UNDO_ERROR = "undo_error"
     const val EVENT_REDO_ERROR = "redo_error"
+    const val EVENT_SEARCH_WORD_OPENED = "search_word_opened"
+    const val EVENT_SEARCH_TAG_CHANGED = "search_tag_changed"
+    const val EVENT_SEARCH_CATEGORY_CHANGED = "search_category_changed"
+    const val EVENT_SEARCH_LOCATION_CHANGED = "search_location_changed"
+    const val EVENT_SEARCH_MOOD_CHANGED = "search_mood_changed"
 
     fun sendEvent(context: Context, event: String, bundle: Bundle? = null) {
         if (!BuildConfig.DEBUG) {
