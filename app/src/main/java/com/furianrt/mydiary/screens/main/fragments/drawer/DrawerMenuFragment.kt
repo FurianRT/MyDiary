@@ -47,11 +47,8 @@ class DrawerMenuFragment : Fragment(), DrawerMenuContract.View,
     @Inject
     lateinit var mPresenter: DrawerMenuContract.Presenter
 
-    //Костыль для восстановления состояния списка.
-    private var mSavedInstanse: Bundle? = Bundle()
-
     private var mListener: OnDrawerMenuInteractionListener? = null
-    private var mSearchListAdapter = SearchListAdapter()
+    private var mSearchListAdapter = SearchListAdapter(listener = this)
     private val mHandler = Handler()
     private val mBottomSheetOpenRunnable: Runnable = Runnable {
         BottomSheetBehavior.from(requireActivity().main_sheet_container).state =
@@ -89,7 +86,7 @@ class DrawerMenuFragment : Fragment(), DrawerMenuContract.View,
     override fun onCreate(savedInstanceState: Bundle?) {
         getPresenterComponent(requireContext()).inject(this)
         super.onCreate(savedInstanceState)
-        savedInstanceState?.let { mSavedInstanse = it }
+        mSearchListAdapter.onRestoreInstanceState(savedInstanceState)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -220,11 +217,9 @@ class DrawerMenuFragment : Fragment(), DrawerMenuContract.View,
                 entries.location.map { SearchItem(type = SearchItem.TYPE_LOCATION, location = it) }
         )
         val groupList = mutableListOf(tagGroup, categoryGroup, moodGroup, locationGroup)
+                .filter { it.groupItems.isNotEmpty() }
 
-        mSearchListAdapter = SearchListAdapter(groupList, this)
-        list_search.adapter = mSearchListAdapter
-        mSearchListAdapter.onRestoreInstanceState(mSavedInstanse)
-
+        mSearchListAdapter.submitGroups(groupList)
     }
 
     override fun onTagChackStateChange(tag: MyTag, checked: Boolean) {
@@ -298,7 +293,6 @@ class DrawerMenuFragment : Fragment(), DrawerMenuContract.View,
 
     override fun onStop() {
         super.onStop()
-        mSearchListAdapter.onSaveInstanceState(mSavedInstanse)
         LocalBroadcastManager.getInstance(requireContext()).unregisterReceiver(mBroadcastReceiver)
         mPresenter.detachView()
     }
