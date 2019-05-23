@@ -1,4 +1,4 @@
-package com.furianrt.mydiary.screens.main.adapters.notelist
+package com.furianrt.mydiary.screens.main.adapter
 
 import androidx.recyclerview.widget.DiffUtil
 

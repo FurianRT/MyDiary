@@ -1,4 +1,4 @@
-package com.furianrt.mydiary.screens.main.adapters.notelist
+package com.furianrt.mydiary.screens.main.adapter
 
 import com.furianrt.mydiary.R
 import com.furianrt.mydiary.data.model.MyNoteWithProp

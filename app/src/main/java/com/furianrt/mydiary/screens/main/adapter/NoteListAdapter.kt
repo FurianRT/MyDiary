@@ -1,4 +1,4 @@
-package com.furianrt.mydiary.screens.main.adapters.notelist
+package com.furianrt.mydiary.screens.main.adapter
 
 import android.graphics.Color
 import android.graphics.PorterDuff
@@ -12,7 +12,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.signature.ObjectKey
 import com.furianrt.mydiary.R
 import com.furianrt.mydiary.data.model.MyNoteWithProp
-import com.furianrt.mydiary.data.model.MyProfile
 import com.furianrt.mydiary.general.GlideApp
 import com.furianrt.mydiary.general.HeaderItemDecoration
 import com.furianrt.mydiary.utils.*
@@ -31,7 +30,7 @@ class NoteListAdapter(
     }
 
     var listener: OnMainListItemInteractionListener? = null
-    var profile: MyProfile? = null
+    var syncEmail: String? = null
 
     override fun bindHeaderData(header: View, headerPosition: Int) {
         if (headerPosition == RecyclerView.NO_POSITION) {
@@ -136,13 +135,13 @@ class NoteListAdapter(
 
         private fun setSyncIcon(item: NoteListContent) {
             with(itemView) {
-                val tempProfile = profile
-                if (tempProfile == null) {
+                val email = syncEmail
+                if (email == null) {
                     image_sync.visibility = View.INVISIBLE
                 } else {
-                    if (item.note.note.isSync(tempProfile.email)
-                            && item.note.images.find { !it.isSync(tempProfile.email) } == null
-                            && item.note.tags.find { !it.isSync(tempProfile.email) } == null) {
+                    if (item.note.note.isSync(syncEmail!!)
+                            && item.note.images.find { !it.isSync(email) } == null
+                            && item.note.tags.find { !it.isSync(email) } == null) {
                         image_sync.setImageResource(R.drawable.ic_cloud_done)
                         image_sync.setColorFilter(getThemeAccentColor(itemView.context), PorterDuff.Mode.SRC_IN)
                     } else {

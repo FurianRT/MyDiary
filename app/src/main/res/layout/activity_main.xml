@@ -94,20 +94,11 @@
         </LinearLayout>
 
         <FrameLayout
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent">
-
-            <com.google.android.material.navigation.NavigationView
-                android:id="@+id/nav_view"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_gravity="start"
-                android:background="@color/grey_light"
-                app:headerLayout="@layout/nav_header_main" />
-
-        </FrameLayout>
-
-
+            android:id="@+id/container_main_drawer"
+            android:layout_width="100dp"
+            android:background="@color/red"
+            android:layout_height="match_parent"
+            android:layout_gravity="start" />
 
     </androidx.drawerlayout.widget.DrawerLayout>
 

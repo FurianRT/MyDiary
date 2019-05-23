@@ -5,9 +5,7 @@ import com.furianrt.mydiary.base.BaseView
 import com.furianrt.mydiary.data.model.MyHeaderImage
 import com.furianrt.mydiary.data.model.MyNoteWithProp
 import com.furianrt.mydiary.data.model.MyProfile
-import com.furianrt.mydiary.data.model.SyncProgressMessage
-import com.furianrt.mydiary.data.model.pojo.SearchEntries
-import com.furianrt.mydiary.screens.main.adapters.notelist.NoteListItem
+import com.furianrt.mydiary.screens.main.adapter.NoteListItem
 
 interface MainActivityContract {
 
@@ -23,26 +21,15 @@ interface MainActivityContract {
         fun updateItemSelection(selectedNoteIds: Set<String>)
         fun showEmptyHeaderImage()
         fun showSettingsView()
-        fun showPremiumView()
-        fun showLoginView()
         fun networkAvailable(): Boolean
-        fun showAnonymousProfile()
-        fun showPremiumProfile(profile: MyProfile)
-        fun showRegularProfile(profile: MyProfile)
-        fun showProfileSettings()
-        fun showNotesCountToday(count: Int)
-        fun showImageCount(count: Int)
-        fun showNotesTotal(count: Int)
         fun setSortDesc()
         fun setSortAsc()
         fun showViewImageSettings()
         fun showImageOptions()
-        fun startSyncService()
         fun showDeleteConfirmationDialog(noteIds: List<String>)
-        fun showSyncProgress(message: SyncProgressMessage)
-        fun clearSyncProgress()
         fun showCategoriesView(noteIds: List<String>)
-        fun showSearchEntries(entries: SearchEntries)
+        fun showProfile(profile: MyProfile)
+        fun showAnonymousProfile()
     }
 
     abstract class Presenter : BasePresenter<View>() {
@@ -57,15 +44,12 @@ interface MainActivityContract {
         abstract fun onMenuAllNotesClick()
         abstract fun onButtonSettingsClick()
         abstract fun is24TimeFormat(): Boolean
-        abstract fun onButtonSyncClick()
-        abstract fun onButtonProfileClick()
         abstract fun onButtonSortClick()
         abstract fun onButtonImageSettingsClick()
         abstract fun onButtonDeleteClick()
         abstract fun onButtonDeleteConfirmClick()
         abstract fun onButtonFolderClick()
         abstract fun onCategorySelected()
-        abstract fun onButtonPremiumClick()
         abstract fun onSearchQueryChange(query: String)
     }
 }

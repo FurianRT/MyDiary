@@ -22,6 +22,7 @@ import com.furianrt.mydiary.screens.main.fragments.authentication.forgot.ForgotP
 import com.furianrt.mydiary.screens.main.fragments.authentication.login.LoginFragment
 import com.furianrt.mydiary.screens.main.fragments.authentication.privacy.PrivacyFragment
 import com.furianrt.mydiary.screens.main.fragments.authentication.registration.RegistrationFragment
+import com.furianrt.mydiary.screens.main.fragments.drawer.DrawerMenuFragment
 import com.furianrt.mydiary.screens.main.fragments.imagesettings.ImageSettingsFragment
 import com.furianrt.mydiary.screens.main.fragments.premium.PremiumFragment
 import com.furianrt.mydiary.screens.main.fragments.profile.ProfileFragment
@@ -83,4 +84,5 @@ interface PresenterComponent {
     fun inject(fragment: CategoryAddFragment)
     fun inject(fragment: SendEmailFragment)
     fun inject(fragment: PrivacyFragment)
+    fun inject(fragment: DrawerMenuFragment)
 }

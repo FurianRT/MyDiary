@@ -1,4 +1,4 @@
-package com.furianrt.mydiary.screens.main.adapters.searchlist
+package com.furianrt.mydiary.screens.main.fragments.drawer.adapter
 
 import android.os.Parcelable
 import com.furianrt.mydiary.data.model.MyCategory

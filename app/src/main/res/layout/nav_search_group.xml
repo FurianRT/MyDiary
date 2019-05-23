@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="2dp"
+    app:cardBackgroundColor="?android:attr/colorPrimary"
+    app:cardCornerRadius="6dp">
+
+    <ImageView
+        android:id="@+id/image_group"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical|start"
+        android:layout_marginStart="16dp"
+        android:tint="@color/white"
+        tools:ignore="ContentDescription"
+        tools:src="@drawable/ic_folder_big" />
+
+    <TextView
+        android:id="@+id/text_search_group_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:ellipsize="end"
+        android:paddingTop="8dp"
+        android:paddingBottom="8dp"
+        android:textColor="@color/white"
+        android:textSize="16sp"
+        tools:text="Categories" />
+
+    <ImageView
+        android:id="@+id/image_group_arrow"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical|end"
+        android:layout_marginEnd="16dp"
+        android:src="@drawable/ic_arrow_down"
+        android:tint="@color/white"
+        tools:ignore="ContentDescription" />
+
+</com.google.android.material.card.MaterialCardView>

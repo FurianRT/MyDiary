@@ -1,22 +1,17 @@
 package com.furianrt.mydiary.screens.main
 
 import com.furianrt.mydiary.data.DataManager
-import com.furianrt.mydiary.data.model.*
-import com.furianrt.mydiary.data.model.pojo.SearchEntries
-import com.furianrt.mydiary.screens.main.adapters.notelist.NoteListContent
-import com.furianrt.mydiary.screens.main.adapters.notelist.NoteListHeader
-import com.furianrt.mydiary.screens.main.adapters.notelist.NoteListItem
+import com.furianrt.mydiary.data.model.MyNoteWithProp
+import com.furianrt.mydiary.screens.main.adapter.NoteListContent
+import com.furianrt.mydiary.screens.main.adapter.NoteListHeader
+import com.furianrt.mydiary.screens.main.adapter.NoteListItem
 import io.reactivex.Completable
-import io.reactivex.Flowable
 import io.reactivex.Observable
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.functions.Function4
-import io.reactivex.schedulers.Schedulers
 import net.danlew.android.joda.DateUtils
 import org.joda.time.DateTime
 import java.util.*
-import java.util.concurrent.TimeUnit
 import kotlin.Comparator
 import kotlin.collections.ArrayList
 
@@ -59,11 +54,9 @@ class MainActivityPresenter(
 
     override fun attachView(view: MainActivityContract.View) {
         super.attachView(view)
-        loadProfile()
         loadNotes()
+        loadProfile()
         loadHeaderImage()
-        loadSearchEntries()
-        updateSyncProgress()
         addDisposable(checkLogOut().subscribe())
     }
 
@@ -84,26 +77,6 @@ class MainActivityPresenter(
                 .flatMapCompletable { savedImage -> dataManager.insertHeaderImage(savedImage) }
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe())*/
-    }
-
-    private fun loadProfile() {
-        addDisposable(dataManager.getDbProfile()
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { profile ->
-                    //if (profile.hasPremium) {
-                    view?.showPremiumProfile(profile)
-                    //} else {
-                    //     view?.showRegularProfile(profile)
-                    //}
-                })
-        addDisposable(dataManager.observeAuthState()
-                .filter { it == DataManager.SIGN_STATE_SIGN_OUT }
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe {
-                    addDisposable(dataManager.clearDbProfile()
-                            .observeOn(AndroidSchedulers.mainThread())
-                            .subscribe { view?.showAnonymousProfile() })
-                })
     }
 
     private fun loadHeaderImage() {     //todo порефакторить
@@ -152,24 +125,9 @@ class MainActivityPresenter(
             view?.setSortDesc()
         }
         addDisposable(dataManager.getAllNotesWithProp()
-                .debounce(400, TimeUnit.MILLISECONDS)
                 .map { formatNotes(toMap(it)) }
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { items ->
-                    val notes = items
-                            .filter { it is NoteListContent }
-                            .map { (it as NoteListContent).note }
-                    view?.showNotesCountToday(notes
-                            .filter { DateUtils.isToday(DateTime(it.note.creationTime)) }
-                            .size)
-                    view?.showImageCount(notes.sumBy {
-                        it.images
-                                .filter { image -> !image.isDeleted }
-                                .size
-                    })
-                    view?.showNotesTotal(notes.size)
-                    view?.showNotes(items, mSelectedNoteIds)
-                })
+                .subscribe { view?.showNotes(it, mSelectedNoteIds) })
     }
 
     private fun toMap(notes: List<MyNoteWithProp>): Map<Long, ArrayList<MyNoteWithProp>> {
@@ -210,35 +168,6 @@ class MainActivityPresenter(
             }
         }
         return list
-    }
-
-    private fun loadSearchEntries() {
-        addDisposable(Flowable.combineLatest(
-                dataManager.getAllTags(),
-                dataManager.getAllCategories(),
-                dataManager.getAllDbLocations().toFlowable(),
-                dataManager.getAllMoods().toFlowable(),
-                Function4<List<MyTag>, List<MyCategory>, List<MyLocation>, List<MyMood>, SearchEntries>
-                { tags, categories, locations, moods -> SearchEntries(tags, categories, locations, moods) }
-        )
-                .delay(500L, TimeUnit.MILLISECONDS)
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { view?.showSearchEntries(it) })
-    }
-
-    private fun updateSyncProgress() {
-        addDisposable(Single.fromCallable { dataManager.getLastSyncMessage() }
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({ message ->
-                    if (message != null && message.taskIndex != SyncProgressMessage.SYNC_FINISHED) {
-                        view?.showSyncProgress(message)
-                    } else {
-                        view?.clearSyncProgress()
-                    }
-                }, {
-                    view?.clearSyncProgress()
-                }))
     }
 
     override fun onFabMenuClick() {
@@ -322,13 +251,7 @@ class MainActivityPresenter(
 
     override fun is24TimeFormat(): Boolean = dataManager.is24TimeFormat()
 
-    override fun onButtonSyncClick() {
-        if (!dataManager.isSignedIn()) {
-            view?.showLoginView()
-        } else {
-            view?.startSyncService()
-        }
-    }
+
 
     private fun checkLogOut(): Completable =
             dataManager.getDbProfileCount()
@@ -342,22 +265,19 @@ class MainActivityPresenter(
                         }
                     }
 
-    override fun onButtonProfileClick() {
-        addDisposable(checkLogOut()
+    private fun loadProfile() {
+        addDisposable(dataManager.getDbProfile()
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({
-                    if (dataManager.isSignedIn()) {
-                        view?.showProfileSettings()
-                    } else {
-                        view?.showLoginView()
-                    }
-                }, {
-                    it.printStackTrace()
-                }))
-    }
+                .subscribe { profile -> view?.showProfile(profile) })
 
-    override fun onButtonPremiumClick() {
-        view?.showPremiumView()
+        addDisposable(dataManager.observeAuthState()
+                .filter { it == DataManager.SIGN_STATE_SIGN_OUT }
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe {
+                    addDisposable(dataManager.clearDbProfile()
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .subscribe { view?.showAnonymousProfile() })
+                })
     }
 
     override fun onSearchQueryChange(query: String) {

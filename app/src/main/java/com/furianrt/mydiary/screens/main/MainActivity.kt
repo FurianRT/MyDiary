@@ -1,11 +1,8 @@
 package com.furianrt.mydiary.screens.main
 
 import android.Manifest
-import android.animation.Animator
-import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import android.content.IntentFilter
 import android.content.res.Configuration
 import android.graphics.Color
 import android.os.Bundle
@@ -24,35 +21,29 @@ import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.widget.SearchView
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.view.GravityCompat
-import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.anjlab.android.iab.v3.TransactionDetails
 import com.furianrt.mydiary.BuildConfig
 import com.furianrt.mydiary.R
 import com.furianrt.mydiary.base.BaseActivity
-import com.furianrt.mydiary.data.model.*
-import com.furianrt.mydiary.data.model.pojo.SearchEntries
+import com.furianrt.mydiary.data.model.MyHeaderImage
+import com.furianrt.mydiary.data.model.MyNoteWithProp
+import com.furianrt.mydiary.data.model.MyProfile
 import com.furianrt.mydiary.dialogs.categories.CategoriesDialog
 import com.furianrt.mydiary.dialogs.delete.note.DeleteNoteDialog
 import com.furianrt.mydiary.general.AppBarLayoutBehavior
 import com.furianrt.mydiary.general.GlideApp
 import com.furianrt.mydiary.general.HeaderItemDecoration
-import com.furianrt.mydiary.screens.main.adapters.notelist.NoteListAdapter
-import com.furianrt.mydiary.screens.main.adapters.notelist.NoteListItem
-import com.furianrt.mydiary.screens.main.adapters.searchlist.SearchGroup
-import com.furianrt.mydiary.screens.main.adapters.searchlist.SearchItem
-import com.furianrt.mydiary.screens.main.adapters.searchlist.SearchListAdapter
+import com.furianrt.mydiary.screens.main.adapter.NoteListAdapter
+import com.furianrt.mydiary.screens.main.adapter.NoteListItem
 import com.furianrt.mydiary.screens.main.fragments.authentication.AuthFragment
+import com.furianrt.mydiary.screens.main.fragments.drawer.DrawerMenuFragment
 import com.furianrt.mydiary.screens.main.fragments.imagesettings.ImageSettingsFragment
 import com.furianrt.mydiary.screens.main.fragments.premium.PremiumFragment
 import com.furianrt.mydiary.screens.main.fragments.profile.ProfileFragment
 import com.furianrt.mydiary.screens.note.NoteActivity
 import com.furianrt.mydiary.screens.settings.global.GlobalSettingsActivity
-import com.furianrt.mydiary.services.sync.SyncService
-import com.furianrt.mydiary.utils.getThemePrimaryColor
-import com.furianrt.mydiary.utils.getThemePrimaryDarkColor
-import com.furianrt.mydiary.utils.inTransaction
-import com.furianrt.mydiary.utils.isNetworkAvailable
+import com.furianrt.mydiary.utils.*
 import com.google.android.gms.ads.AdListener
 import com.google.android.gms.ads.AdRequest
 import com.google.android.material.appbar.AppBarLayout
@@ -63,7 +54,6 @@ import jp.wasabeef.recyclerview.animators.LandingAnimator
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.activity_main_toolbar.*
 import kotlinx.android.synthetic.main.bottom_sheet_main.*
-import kotlinx.android.synthetic.main.nav_header_main.view.*
 import pub.devrel.easypermissions.AfterPermissionGranted
 import pub.devrel.easypermissions.EasyPermissions
 import javax.inject.Inject
@@ -73,7 +63,7 @@ class MainActivity : BaseActivity(), MainActivityContract.View,
         ImageSettingsFragment.OnImageSettingsInteractionListener,
         DeleteNoteDialog.OnDeleteNoteConfirmListener, CategoriesDialog.OnCategorySelectedListener,
         PremiumFragment.OnPremiumFragmentInteractionListener,
-        SearchListAdapter.OnSearchListInteractionListener {
+        DrawerMenuFragment.OnDrawerMenuInteractionListener {
 
     companion object {
         private const val TAG = "MainActivity"
@@ -84,11 +74,9 @@ class MainActivity : BaseActivity(), MainActivityContract.View,
         private const val STORAGE_PERMISSIONS_REQUEST_CODE = 1
         private const val ACTIVITY_SETTING_REQUEST_CODE = 2
         private const val ITEM_LONG_CLICK_VIBRATION_DURATION = 30L
+        private const val BOTTOM_SHEET_EXPAND_DELAY = 300L
         private const val ANIMATION_IMAGE_SETTINGS_FADE_OUT_DURATION = 350L
         private const val ANIMATION_IMAGE_SETTINGS_FADE_OUT_OFFSET = 2000L
-        private const val ANIMATION_PROGRESS_FADE_OUT_OFFSET = 2000L
-        private const val ANIMATION_PROGRESS_DURATION = 500L
-        private const val BOTTOM_SHEET_EXPAND_DELAY = 300L
     }
 
     @Inject
@@ -97,7 +85,6 @@ class MainActivity : BaseActivity(), MainActivityContract.View,
     private lateinit var mAdapter: NoteListAdapter
     private lateinit var mBottomSheet: BottomSheetBehavior<FrameLayout>
     private lateinit var mOnDrawerListener: ActionBarDrawerToggle
-    private lateinit var mSearchListAdapter: SearchListAdapter
     private var mRecyclerViewState: Parcelable? = null
     private var mBackPressCount = 0
     private var mNeedToOpenActionBar = true
@@ -107,71 +94,20 @@ class MainActivity : BaseActivity(), MainActivityContract.View,
         mBottomSheet.state = BottomSheetBehavior.STATE_EXPANDED
     }
 
-    private val mProgressAnimationListener = object : Animator.AnimatorListener {
-        override fun onAnimationRepeat(animation: Animator?) {}
-        override fun onAnimationCancel(animation: Animator?) {}
-        override fun onAnimationStart(animation: Animator?) {}
-        override fun onAnimationEnd(animation: Animator?) {
-            clearSyncProgress()
-        }
-    }
-
-    private val mBroadcastReceiver = object : BroadcastReceiver() {
-        override fun onReceive(context: Context?, intent: Intent?) {
-            SyncService.getProgressMessage(intent)?.let {
-                with(nav_view.getHeaderView(0)) {
-                    view_sync.alpha = 0.35f
-                    if (it.hasError) {
-                        button_sync.text = it.message
-                        view_sync.layoutParams.width = button_sync.width
-                        view_sync.requestLayout()
-                        animateProgressAlpha()
-                    } else {
-                        showSyncProgress(it)
-                        if (it.taskIndex == SyncProgressMessage.SYNC_FINISHED) {
-                            animateProgressAlpha()
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-    override fun showSyncProgress(message: SyncProgressMessage) {
-        with(nav_view.getHeaderView(0)) {
-            button_sync.isEnabled = false
-            view_sync.alpha = 0.35f
-            view_sync.visibility = View.VISIBLE
-            view_sync.layoutParams.width =
-                    (button_sync.width.toFloat() * message.progress.toFloat() / 100f).toInt()
-            button_sync.text = getString(R.string.sync_progress_format, message.progress, message.message)
-            view_sync.requestLayout()
-        }
-    }
-
-    override fun clearSyncProgress() {
-        with(nav_view.getHeaderView(0)) {
-            view_sync.visibility = View.INVISIBLE
-            view_sync.layoutParams.width = 0
-            button_sync.isEnabled = true
-            if (isBillingInitialized() && (isItemPurshased(BuildConfig.ITEM_SYNC_SKU) || isItemPurshased(ITEM_TEST_SKU))) {
-                button_sync.text = getString(R.string.nav_header_main_button_sync)
-            } else {
-                button_sync.text = getString(R.string.nav_header_main_button_sync_pro)
-            }
-            view_sync.requestLayout()
-        }
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         getPresenterComponent(this).inject(this)
         setContentView(R.layout.activity_main)
 
         setSupportActionBar(toolbar_main)
-        supportActionBar?.setDisplayShowTitleEnabled(false)
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_menu)
+        supportActionBar?.let {
+            it.setDisplayShowTitleEnabled(false)
+            it.setDisplayHomeAsUpEnabled(true)
+            it.setHomeAsUpIndicator(R.drawable.ic_menu)
+        }
+
+        val drawerWidth = Math.min(getDisplayWidth() - dpToPx(56f), dpToPx(56f) * 5)
+        container_main_drawer.layoutParams.width = drawerWidth
 
         mOnDrawerListener = object : ActionBarDrawerToggle(this, drawer, toolbar_main, R.string.open, R.string.close) {
             override fun onDrawerSlide(drawerView: View, slideOffset: Float) {
@@ -180,11 +116,20 @@ class MainActivity : BaseActivity(), MainActivityContract.View,
             }
         }
 
+        if (supportFragmentManager.findFragmentByTag(DrawerMenuFragment.TAG) == null) {
+            supportFragmentManager.inTransaction {
+                add(R.id.container_main_drawer, DrawerMenuFragment(), DrawerMenuFragment.TAG)
+            }
+        }
+
         mBottomSheet = BottomSheetBehavior.from(main_sheet_container)
         mBottomSheet.setBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
             override fun onSlide(bottomSheet: View, slideOffset: Float) {}
             override fun onStateChanged(bottomSheet: View, newState: Int) {
                 if (newState == BottomSheetBehavior.STATE_COLLAPSED) {
+                    supportFragmentManager.findFragmentByTag(ImageSettingsFragment.TAG)?.let {
+                        supportFragmentManager.inTransaction { remove(it) }
+                    }
                     supportFragmentManager.findFragmentByTag(PremiumFragment.TAG)?.let {
                         supportFragmentManager.inTransaction { remove(it) }
                     }
@@ -193,9 +138,6 @@ class MainActivity : BaseActivity(), MainActivityContract.View,
                     }
                     supportFragmentManager.findFragmentByTag(AuthFragment.TAG)?.let {
                         (it as AuthFragment).clearFocus()
-                        supportFragmentManager.inTransaction { remove(it) }
-                    }
-                    supportFragmentManager.findFragmentByTag(ImageSettingsFragment.TAG)?.let {
                         supportFragmentManager.inTransaction { remove(it) }
                     }
                 }
@@ -226,24 +168,6 @@ class MainActivity : BaseActivity(), MainActivityContract.View,
         image_toolbar_main.setOnClickListener { mPresenter.onMainImageClick() }
         button_main_image_settings.setOnClickListener { mPresenter.onButtonImageSettingsClick() }
 
-
-
-        with(nav_view.getHeaderView(0)) {
-            isNestedScrollingEnabled = true
-            button_sync.setOnClickListener {
-                if (isBillingInitialized()) {
-                    if (isItemPurshased(BuildConfig.ITEM_SYNC_SKU) || isItemPurshased(ITEM_TEST_SKU)) {
-                        mPresenter.onButtonSyncClick()
-                    } else {
-                        mPresenter.onButtonPremiumClick()
-                    }
-                }
-            }
-            button_profile_settings.setOnClickListener { mPresenter.onButtonProfileClick() }
-            layout_profile_name.setOnClickListener { mPresenter.onButtonProfileClick() }
-            image_profile.setOnClickListener { mPresenter.onButtonProfileClick() }
-        }
-
         mAdapter = NoteListAdapter(is24TimeFormat = mPresenter.is24TimeFormat())
         list_main.layoutManager = LinearLayoutManager(this)
         list_main.addItemDecoration(HeaderItemDecoration(list_main, mAdapter))
@@ -253,21 +177,27 @@ class MainActivity : BaseActivity(), MainActivityContract.View,
 
     override fun onBillingInitialized() {
         super.onBillingInitialized()
-        if (isItemPurshased(BuildConfig.ITEM_SYNC_SKU) || isItemPurshased(ITEM_TEST_SKU)) {
-            nav_view?.getHeaderView(0)?.button_sync?.text = getString(R.string.nav_header_main_button_sync)
-        } else {
-            nav_view?.getHeaderView(0)?.button_sync?.text = getString(R.string.nav_header_main_button_sync_pro)
+        supportFragmentManager.findFragmentByTag(DrawerMenuFragment.TAG)?.let {
+            (it as DrawerMenuFragment).onBillingInitialized()
+        }
+        if (!getIsItemPurshased(BuildConfig.ITEM_SYNC_SKU) && !getIsItemPurshased(ITEM_TEST_SKU)) {
             showAdView()
         }
     }
 
     override fun onProductPurchased(productId: String, details: TransactionDetails?) {
         super.onProductPurchased(productId, details)
-        if (isItemPurshased(BuildConfig.ITEM_SYNC_SKU) || isItemPurshased(ITEM_TEST_SKU)) {
-            nav_view?.getHeaderView(0)?.button_sync?.text = getString(R.string.nav_header_main_button_sync)
+        if (productId == BuildConfig.ITEM_SYNC_SKU || productId == ITEM_TEST_SKU) {
             hideAdView()
+            supportFragmentManager.findFragmentByTag(DrawerMenuFragment.TAG)?.let {
+                (it as DrawerMenuFragment).onProductPurchased(productId)
+            }
         }
     }
+
+    override fun getIsBillingInitialized(): Boolean = isBillingInitialized()
+
+    override fun getIsItemPurshased(productId: String): Boolean = isItemPurshased(productId)
 
     private fun showAdView() {
         view_ad?.adListener = object : AdListener() {
@@ -282,15 +212,6 @@ class MainActivity : BaseActivity(), MainActivityContract.View,
     private fun hideAdView() {
         view_ad?.destroy()
         view_ad?.visibility = View.GONE
-    }
-
-    private fun animateProgressAlpha() {
-        nav_view.getHeaderView(0).view_sync
-                .animate()
-                .alpha(0f)
-                .setDuration(ANIMATION_PROGRESS_DURATION)
-                .setStartDelay(ANIMATION_PROGRESS_FADE_OUT_OFFSET)
-                .setListener(mProgressAnimationListener)
     }
 
     override fun showHeaderImage(image: MyHeaderImage) {
@@ -399,7 +320,7 @@ class MainActivity : BaseActivity(), MainActivityContract.View,
                 Log.e(TAG, "ImageSettingsFragment added")
             }
         }
-        mBottomSheet.state = BottomSheetBehavior.STATE_EXPANDED
+        mHandler.postDelayed(mBottomSheetOpenRunnable, BOTTOM_SHEET_EXPAND_DELAY)
     }
 
     override fun setSortDesc() {
@@ -408,33 +329,6 @@ class MainActivity : BaseActivity(), MainActivityContract.View,
 
     override fun setSortAsc() {
         mMenu?.findItem(R.id.menu_sort)?.setTitle(R.string.sort_old_first)
-    }
-
-    override fun showProfileSettings() {
-        if (supportFragmentManager.findFragmentByTag(ProfileFragment.TAG) == null) {
-            supportFragmentManager.inTransaction {
-                replace(R.id.main_sheet_container, ProfileFragment(), ProfileFragment.TAG)
-            }
-        }
-        mHandler.postDelayed(mBottomSheetOpenRunnable, BOTTOM_SHEET_EXPAND_DELAY)
-    }
-
-    override fun showLoginView() {
-        if (supportFragmentManager.findFragmentByTag(AuthFragment.TAG) == null) {
-            supportFragmentManager.inTransaction {
-                replace(R.id.main_sheet_container, AuthFragment(), AuthFragment.TAG)
-            }
-        }
-        mHandler.postDelayed(mBottomSheetOpenRunnable, BOTTOM_SHEET_EXPAND_DELAY)
-    }
-
-    override fun showPremiumView() {
-        if (supportFragmentManager.findFragmentByTag(PremiumFragment.TAG) == null) {
-            supportFragmentManager.inTransaction {
-                replace(R.id.main_sheet_container, PremiumFragment(), PremiumFragment.TAG)
-            }
-        }
-        mHandler.postDelayed(mBottomSheetOpenRunnable, BOTTOM_SHEET_EXPAND_DELAY)
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -535,18 +429,6 @@ class MainActivity : BaseActivity(), MainActivityContract.View,
         }
     }
 
-    override fun showNotesTotal(count: Int) {
-        nav_view.getHeaderView(0).text_notes_total.text = count.toString()
-    }
-
-    override fun showNotesCountToday(count: Int) {
-        nav_view.getHeaderView(0).text_notes_today.text = count.toString()
-    }
-
-    override fun showImageCount(count: Int) {
-        nav_view.getHeaderView(0).text_image_total.text = count.toString()
-    }
-
     override fun onMainListItemClick(note: MyNoteWithProp, position: Int) {
         mPresenter.onMainListItemClick(note, position)
     }
@@ -591,29 +473,17 @@ class MainActivity : BaseActivity(), MainActivityContract.View,
     }
 
     override fun showAnonymousProfile() {
-        mAdapter.profile = null
+        mAdapter.syncEmail = null
         mAdapter.notifyDataSetChanged()
-        nav_view.getHeaderView(0).text_email.text = getString(R.string.nav_header_main_anonymous)
-        nav_view.getHeaderView(0).text_profile_description.text =
-                getString(R.string.nav_header_main_sing_in)
     }
 
-    override fun showRegularProfile(profile: MyProfile) {
-        mAdapter.profile = null
+    override fun showProfile(profile: MyProfile) {
+        if (isItemPurshased(BuildConfig.ITEM_SYNC_SKU) || isItemPurshased(ITEM_TEST_SKU)) {
+            mAdapter.syncEmail = profile.email
+        } else {
+            mAdapter.syncEmail = null
+        }
         mAdapter.notifyDataSetChanged()
-        //todo Добавить загрузку картинки профиля
-        nav_view.getHeaderView(0).text_email.text = profile.email
-        nav_view.getHeaderView(0).text_profile_description.text =
-                getString(R.string.nav_header_main_regular)
-    }
-
-    override fun showPremiumProfile(profile: MyProfile) {
-        mAdapter.profile = profile
-        mAdapter.notifyDataSetChanged()
-        //todo Добавить загрузку картинки профиля
-        nav_view.getHeaderView(0).text_email.text = profile.email
-        nav_view.getHeaderView(0).text_profile_description.text =
-                getString(R.string.nav_header_main_premium)
     }
 
     fun closeBottomSheet() {
@@ -642,10 +512,6 @@ class MainActivity : BaseActivity(), MainActivityContract.View,
         }
     }
 
-    override fun startSyncService() {
-        startService(Intent(this, SyncService::class.java))
-    }
-
     override fun networkAvailable() = isNetworkAvailable()
 
     override fun showCategoriesView(noteIds: List<String>) {
@@ -662,45 +528,6 @@ class MainActivity : BaseActivity(), MainActivityContract.View,
         purshaseItem(productId)
     }
 
-    override fun showSearchEntries(entries: SearchEntries) {
-        val tagGroup = SearchGroup(
-                "Tags",
-                entries.tags.map { SearchItem(type = SearchItem.TYPE_TAG, tag = it) }
-        )
-        val categoryGroup = SearchGroup(
-                "Categories",
-                entries.categories.map { SearchItem(type = SearchItem.TYPE_CATEGORY, category = it) }
-        )
-        val locationGroup = SearchGroup(
-                "Locations",
-                entries.location.map { SearchItem(type = SearchItem.TYPE_LOCATION, location = it) }
-        )
-        val moodGroup = SearchGroup(
-                "Moods",
-                entries.moods.map { SearchItem(type = SearchItem.TYPE_MOOD, mood = it) }
-        )
-        val groupList = mutableListOf(tagGroup, categoryGroup, locationGroup, moodGroup)
-        mSearchListAdapter = SearchListAdapter(groupList, this)
-        nav_view.getHeaderView(0).list_search.layoutManager = LinearLayoutManager(this)
-        nav_view.getHeaderView(0).list_search.adapter = mSearchListAdapter
-    }
-
-    override fun onTagChackStateChange(tag: MyTag, checked: Boolean) {
-
-    }
-
-    override fun onCategoryChackStateChange(category: MyCategory, checked: Boolean) {
-
-    }
-
-    override fun onLocationChackStateChange(location: MyLocation, checked: Boolean) {
-
-    }
-
-    override fun onMoodChackStateChange(mood: MyMood, checked: Boolean) {
-
-    }
-
     override fun onStart() {
         super.onStart()
         mPresenter.attachView(this)
@@ -711,8 +538,6 @@ class MainActivity : BaseActivity(), MainActivityContract.View,
         supportFragmentManager.findFragmentByTag(CategoriesDialog.TAG)?.let {
             (it as CategoriesDialog).setOnCategorySelectedListener(this)
         }
-        LocalBroadcastManager.getInstance(this)
-                .registerReceiver(mBroadcastReceiver, IntentFilter(Intent.ACTION_SYNC))
     }
 
     override fun onStop() {
@@ -722,7 +547,6 @@ class MainActivity : BaseActivity(), MainActivityContract.View,
         mAdapter.listener = null
         drawer.removeDrawerListener(mOnDrawerListener)
         mHandler.removeCallbacks(mBottomSheetOpenRunnable)
-        LocalBroadcastManager.getInstance(this).unregisterReceiver(mBroadcastReceiver)
         mPresenter.detachView()
     }
 }

@@ -116,7 +116,6 @@
     <string name="empty_password">Введите пароль</string>
     <string name="empty_email">Введите email</string>
     <string name="wrong_email_format">Некорректный email</string>
-    <string name="tags">Теги</string>
     <string name="choose_tags">Выберите теги</string>
     <string name="choose_category">Категория</string>
     <string name="choose_mood">Настроение</string>
@@ -134,6 +133,10 @@
     <string name="share">Поделиться</string>
     <string name="title">Загловок…</string>
     <string name="content">Остальное…</string>
+    <string name="tags">Теги</string>
+    <string name="categories">Категории</string>
+    <string name="moods">Настроения</string>
+    <string name="locations">Места</string>
     <string name="list">Лист</string>
     <string name="multi_selection">Множественный выбор</string>
     <string name="choose_all_images">Выбрать все картинки</string>

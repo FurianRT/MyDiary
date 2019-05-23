@@ -46,6 +46,8 @@ import com.furianrt.mydiary.screens.main.fragments.authentication.privacy.Privac
 import com.furianrt.mydiary.screens.main.fragments.authentication.privacy.PrivacyPresenter
 import com.furianrt.mydiary.screens.main.fragments.authentication.registration.RegistrationContract
 import com.furianrt.mydiary.screens.main.fragments.authentication.registration.RegistrationPresenter
+import com.furianrt.mydiary.screens.main.fragments.drawer.DrawerMenuContract
+import com.furianrt.mydiary.screens.main.fragments.drawer.DrawerMenuPresenter
 import com.furianrt.mydiary.screens.main.fragments.imagesettings.ImageSettingsContract
 import com.furianrt.mydiary.screens.main.fragments.imagesettings.ImageSettingsPresenter
 import com.furianrt.mydiary.screens.main.fragments.premium.PremiumContract
@@ -287,4 +289,9 @@ class PresenterModule(private val context: Context) {
     @PresenterScope
     fun providePrivacyPresenter(dataManager: DataManager): PrivacyContract.Presenter =
             PrivacyPresenter(dataManager)
+
+    @Provides
+    @PresenterScope
+    fun provideDrawerMenuPresenter(dataManager: DataManager): DrawerMenuContract.Presenter =
+            DrawerMenuPresenter(dataManager)
 }
