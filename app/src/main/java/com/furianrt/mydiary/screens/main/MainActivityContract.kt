@@ -1,5 +1,6 @@
 package com.furianrt.mydiary.screens.main
 
+import android.os.Bundle
 import com.furianrt.mydiary.base.BasePresenter
 import com.furianrt.mydiary.base.BaseView
 import com.furianrt.mydiary.data.model.*
@@ -36,8 +37,8 @@ interface MainActivityContract {
         abstract fun onMainImageClick()
         abstract fun onStoragePermissionsGranted()
         abstract fun onMainListItemLongClick(note: MyNoteWithProp, position: Int)
-        abstract fun onSaveInstanceState(): Set<String>
-        abstract fun onRestoreInstanceState(selectedNoteIds: Set<String>?)
+        abstract fun onSaveInstanceState(bundle: Bundle?)
+        abstract fun onRestoreInstanceState(bundle: Bundle?)
         abstract fun onFabMenuClick()
         abstract fun onMenuAllNotesClick()
         abstract fun onButtonSettingsClick()
@@ -53,5 +54,6 @@ interface MainActivityContract {
         abstract fun onCategoryFilterChange(category: MyCategory, checked: Boolean)
         abstract fun onLocationFilterChange(location: MyLocation, checked: Boolean)
         abstract fun onMoodFilterChange(mood: MyMood, checked: Boolean)
+        abstract fun onClearFilters()
     }
 }

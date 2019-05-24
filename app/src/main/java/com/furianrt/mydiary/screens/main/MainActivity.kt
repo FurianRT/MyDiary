@@ -37,7 +37,6 @@ import com.furianrt.mydiary.screens.main.adapter.NoteListAdapter
 import com.furianrt.mydiary.screens.main.adapter.NoteListItem
 import com.furianrt.mydiary.screens.main.fragments.authentication.AuthFragment
 import com.furianrt.mydiary.screens.main.fragments.drawer.DrawerMenuFragment
-import com.furianrt.mydiary.screens.main.fragments.drawer.adapter.SearchListAdapter
 import com.furianrt.mydiary.screens.main.fragments.imagesettings.ImageSettingsFragment
 import com.furianrt.mydiary.screens.main.fragments.premium.PremiumFragment
 import com.furianrt.mydiary.screens.main.fragments.profile.ProfileFragment
@@ -63,15 +62,14 @@ class MainActivity : BaseActivity(), MainActivityContract.View,
         ImageSettingsFragment.OnImageSettingsInteractionListener,
         DeleteNoteDialog.OnDeleteNoteConfirmListener, CategoriesDialog.OnCategorySelectedListener,
         PremiumFragment.OnPremiumFragmentInteractionListener,
-        DrawerMenuFragment.OnDrawerMenuInteractionListener,
-        SearchListAdapter.OnSearchListInteractionListener {
+        DrawerMenuFragment.OnDrawerMenuInteractionListener {
 
     companion object {
         private const val TAG = "MainActivity"
         private const val BUNDLE_RECYCLER_VIEW_STATE = "recycler_state"
-        private const val BUNDLE_SELECTED_LIST_ITEMS = "selected_list_items"
         private const val BUNDLE_ROOT_LAYOUT_OFFSET = "root_layout_offset"
         private const val BUNDLE_BOTTOM_SHEET_STATE = "bottom_sheet_state"
+        private const val BUNDLE_SEARCH_QUERY = "query"
         private const val STORAGE_PERMISSIONS_REQUEST_CODE = 1
         private const val ACTIVITY_SETTING_REQUEST_CODE = 2
         private const val ITEM_LONG_CLICK_VIBRATION_DURATION = 30L
@@ -86,6 +84,7 @@ class MainActivity : BaseActivity(), MainActivityContract.View,
     private lateinit var mAdapter: NoteListAdapter
     private lateinit var mBottomSheet: BottomSheetBehavior<FrameLayout>
     private lateinit var mOnDrawerListener: ActionBarDrawerToggle
+    private var mSearchQury = ""
     private var mRecyclerViewState: Parcelable? = null
     private var mBackPressCount = 0
     private var mNeedToOpenActionBar = true
@@ -99,6 +98,8 @@ class MainActivity : BaseActivity(), MainActivityContract.View,
         super.onCreate(savedInstanceState)
         getPresenterComponent(this).inject(this)
         setContentView(R.layout.activity_main)
+
+        mPresenter.onRestoreInstanceState(savedInstanceState)
 
         setSupportActionBar(toolbar_main)
         supportActionBar?.let {
@@ -147,13 +148,9 @@ class MainActivity : BaseActivity(), MainActivityContract.View,
 
         savedInstanceState?.let {
             mRecyclerViewState = it.getParcelable(BUNDLE_RECYCLER_VIEW_STATE)
-            val selectedListItems = it.getStringArrayList(BUNDLE_SELECTED_LIST_ITEMS)
-            mPresenter.onRestoreInstanceState(selectedListItems?.toSet())
-            if (selectedListItems != null && selectedListItems.isNotEmpty()) {
-                activateSelection()
-            }
             layout_main_root.translationX = it.getFloat(BUNDLE_ROOT_LAYOUT_OFFSET, 0f)
             mBottomSheet.state = it.getInt(BUNDLE_BOTTOM_SHEET_STATE, BottomSheetBehavior.STATE_COLLAPSED)
+            mSearchQury = it.getString(BUNDLE_SEARCH_QUERY, "")
         }
 
         fab_menu.setOnClickListener { mPresenter.onFabMenuClick() }
@@ -359,6 +356,12 @@ class MainActivity : BaseActivity(), MainActivityContract.View,
 
         val searchView = menu?.findItem(R.id.menu_search)?.actionView as SearchView?
 
+        if (mSearchQury.isNotEmpty()) {
+            disableActionBarExpanding()
+            searchView?.isIconified = false
+            searchView?.setQuery(mSearchQury, false)
+        }
+
         searchView?.setOnSearchClickListener {
             Analytics.sendEvent(this, Analytics.EVENT_SEARCH_WORD_OPENED)
             disableActionBarExpanding(true)
@@ -373,7 +376,8 @@ class MainActivity : BaseActivity(), MainActivityContract.View,
             }
 
             override fun onQueryTextChange(newText: String?): Boolean {
-                mPresenter.onSearchQueryChange(newText ?: "")
+                mSearchQury = newText ?: ""
+                mPresenter.onSearchQueryChange(mSearchQury)
                 return true
             }
         })
@@ -383,9 +387,10 @@ class MainActivity : BaseActivity(), MainActivityContract.View,
 
     override fun onSaveInstanceState(outState: Bundle) {
         outState.putParcelable(BUNDLE_RECYCLER_VIEW_STATE, list_main.layoutManager?.onSaveInstanceState())
-        outState.putStringArrayList(BUNDLE_SELECTED_LIST_ITEMS, ArrayList(mPresenter.onSaveInstanceState()))
         outState.putFloat(BUNDLE_ROOT_LAYOUT_OFFSET, layout_main_root.translationX)
         outState.putInt(BUNDLE_BOTTOM_SHEET_STATE, mBottomSheet.state)
+        outState.putString(BUNDLE_SEARCH_QUERY, mSearchQury)
+        mPresenter.onSaveInstanceState(outState)
         super.onSaveInstanceState(outState)
     }
 
@@ -549,6 +554,10 @@ class MainActivity : BaseActivity(), MainActivityContract.View,
 
     override fun onCategorySelected() {
         mPresenter.onCategorySelected()
+    }
+
+    override fun onClearFilters() {
+        mPresenter.onClearFilters()
     }
 
     override fun onButtonPurshaseClick(productId: String) {

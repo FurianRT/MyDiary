@@ -1,5 +1,6 @@
 package com.furianrt.mydiary.screens.main
 
+import android.os.Bundle
 import com.furianrt.mydiary.data.DataManager
 import com.furianrt.mydiary.data.model.*
 import com.furianrt.mydiary.screens.main.adapter.NoteListContent
@@ -14,12 +15,28 @@ import org.joda.time.DateTime
 import java.util.*
 import kotlin.Comparator
 import kotlin.collections.ArrayList
+import kotlin.collections.HashSet
 
 class MainActivityPresenter(
         private val dataManager: DataManager
 ) : MainActivityContract.Presenter() {
 
+    companion object {
+        private const val BUNDLE_SELECTED_LIST_ITEMS = "selected_list_items"
+        private const val BUNDLE_FILTERED_TAG_IDS = "filtered_tag_ids"
+        private const val BUNDLE_FILTERED_CATEGORY_IDS = "filtered_category_ids"
+        private const val BUNDLE_FILTERED_MOOD_IDS = "filtered_mood_ids"
+        private const val BUNDLE_FILTERED_LOCATION_IDS = "filtered_location_ids"
+        private const val BUNDLE_SEARCH_QUERY = "search_query"
+    }
+
+    private lateinit var mNoteList: List<MyNoteWithProp>
     private var mSelectedNoteIds = HashSet<String>()
+    private val mFilteredTagIds = HashSet<String>()
+    private val mFilteredCategoryIds = HashSet<String>()
+    private val mFilteredMoodIds = HashSet<Int>()
+    private val mFilteredLocationIds = HashSet<String>()
+    private var mSearchQuery = ""
 
     override fun onButtonDeleteClick() {
         view?.showDeleteConfirmationDialog(mSelectedNoteIds.toList())
@@ -58,6 +75,9 @@ class MainActivityPresenter(
         loadProfile()
         loadHeaderImage()
         addDisposable(checkLogOut().subscribe())
+        if (mSelectedNoteIds.isNotEmpty()) {
+            view.activateSelection()
+        }
     }
 
     override fun onStoragePermissionsGranted() {
@@ -125,9 +145,15 @@ class MainActivityPresenter(
             view?.setSortDesc()
         }
         addDisposable(dataManager.getAllNotesWithProp()
+                .map {
+                    mNoteList = it
+                    applySearchFilter(it)
+                }
                 .map { formatNotes(toMap(it)) }
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { view?.showNotes(it, mSelectedNoteIds) })
+                .subscribe {
+                    view?.showNotes(it, mSelectedNoteIds)
+                })
     }
 
     private fun toMap(notes: List<MyNoteWithProp>): Map<Long, ArrayList<MyNoteWithProp>> {
@@ -170,6 +196,36 @@ class MainActivityPresenter(
         return list
     }
 
+    private fun applySearchFilter(notes: List<MyNoteWithProp>): List<MyNoteWithProp> {
+        return notes.asSequence()
+                .filter {
+                    it.note.title.toLowerCase(Locale.getDefault()).contains(mSearchQuery.toLowerCase(Locale.getDefault()))
+                            || it.note.content.toLowerCase(Locale.getDefault()).contains(mSearchQuery.toLowerCase(Locale.getDefault()))
+                }
+                .filter { note ->
+                    if (mFilteredTagIds.isNotEmpty()) {
+                        mFilteredTagIds.forEach { tagId ->
+                            if (note.tags.find { it.tagId == tagId } == null) {
+                                return@filter false
+                            }
+                        }
+                    }
+                    return@filter true
+                }
+                .filter { note ->
+                    mFilteredCategoryIds.isEmpty()
+                            || mFilteredCategoryIds.find { it == note.category?.id } != null
+                }
+                .filter { note ->
+                    mFilteredMoodIds.isEmpty()
+                            || mFilteredMoodIds.find { it == note.mood?.id } != null
+                }
+                .filter { note ->
+                    mFilteredLocationIds.isEmpty()
+                            || mFilteredLocationIds.find { it == note.note.id } != null
+                }.toList()
+    }
+
     override fun onFabMenuClick() {
         if (mSelectedNoteIds.isEmpty()) {
             view?.showViewNewNote()
@@ -209,12 +265,37 @@ class MainActivityPresenter(
         selectListItem(note.note.id)
     }
 
-    override fun onSaveInstanceState() = mSelectedNoteIds
+    override fun onSaveInstanceState(bundle: Bundle?) {
+        bundle?.let {
+            it.putStringArrayList(BUNDLE_SELECTED_LIST_ITEMS, ArrayList(mSelectedNoteIds))
+            it.putStringArrayList(BUNDLE_FILTERED_TAG_IDS, ArrayList(mFilteredTagIds))
+            it.putStringArrayList(BUNDLE_FILTERED_CATEGORY_IDS, ArrayList(mFilteredCategoryIds))
+            it.putIntegerArrayList(BUNDLE_FILTERED_MOOD_IDS, ArrayList(mFilteredMoodIds))
+            it.putStringArrayList(BUNDLE_FILTERED_LOCATION_IDS, ArrayList(mFilteredLocationIds))
+            it.putString(BUNDLE_SEARCH_QUERY, mSearchQuery)
+        }
+    }
 
-    override fun onRestoreInstanceState(selectedNoteIds: Set<String>?) {
-        selectedNoteIds?.let {
-            mSelectedNoteIds.clear()
-            mSelectedNoteIds.addAll(it)
+    override fun onRestoreInstanceState(bundle: Bundle?) {
+        bundle?.let {
+            mSelectedNoteIds = it.getStringArrayList(BUNDLE_SELECTED_LIST_ITEMS)?.toHashSet()
+                    ?: HashSet()
+
+            mFilteredTagIds.clear()
+            mFilteredTagIds.addAll(it.getStringArrayList(BUNDLE_FILTERED_TAG_IDS) ?: emptyList())
+
+            mFilteredCategoryIds.clear()
+            mFilteredCategoryIds.addAll(it.getStringArrayList(BUNDLE_FILTERED_CATEGORY_IDS)
+                    ?: emptyList())
+
+            mFilteredMoodIds.clear()
+            mFilteredMoodIds.addAll(it.getIntegerArrayList(BUNDLE_FILTERED_MOOD_IDS) ?: emptyList())
+
+            mFilteredLocationIds.clear()
+            mFilteredLocationIds.addAll(it.getStringArrayList(BUNDLE_FILTERED_LOCATION_IDS)
+                    ?: emptyList())
+
+            mSearchQuery = it.getString(BUNDLE_SEARCH_QUERY, "")
         }
     }
 
@@ -252,7 +333,6 @@ class MainActivityPresenter(
     override fun is24TimeFormat(): Boolean = dataManager.is24TimeFormat()
 
 
-
     private fun checkLogOut(): Completable =
             dataManager.getDbProfileCount()
                     .flatMapCompletable { count ->
@@ -281,22 +361,51 @@ class MainActivityPresenter(
     }
 
     override fun onSearchQueryChange(query: String) {
-
+        mSearchQuery = query
+        view?.showNotes(formatNotes(toMap(applySearchFilter(mNoteList))), mSelectedNoteIds)
     }
 
     override fun onTagFilterChange(tag: MyTag, checked: Boolean) {
-
+        if (checked) {
+            mFilteredTagIds.add(tag.id)
+        } else {
+            mFilteredTagIds.remove(tag.id)
+        }
+        view?.showNotes(formatNotes(toMap(applySearchFilter(mNoteList))), mSelectedNoteIds)
     }
 
     override fun onCategoryFilterChange(category: MyCategory, checked: Boolean) {
-
+        if (checked) {
+            mFilteredCategoryIds.add(category.id)
+        } else {
+            mFilteredCategoryIds.remove(category.id)
+        }
+        view?.showNotes(formatNotes(toMap(applySearchFilter(mNoteList))), mSelectedNoteIds)
     }
 
     override fun onLocationFilterChange(location: MyLocation, checked: Boolean) {
-
+        if (checked) {
+            mFilteredLocationIds.add(location.noteId)
+        } else {
+            mFilteredLocationIds.remove(location.noteId)
+        }
+        view?.showNotes(formatNotes(toMap(applySearchFilter(mNoteList))), mSelectedNoteIds)
     }
 
     override fun onMoodFilterChange(mood: MyMood, checked: Boolean) {
+        if (checked) {
+            mFilteredMoodIds.add(mood.id)
+        } else {
+            mFilteredMoodIds.remove(mood.id)
+        }
+        view?.showNotes(formatNotes(toMap(applySearchFilter(mNoteList))), mSelectedNoteIds)
+    }
 
+    override fun onClearFilters() {
+        mFilteredTagIds.clear()
+        mFilteredCategoryIds.clear()
+        mFilteredMoodIds.clear()
+        mFilteredLocationIds.clear()
+        view?.showNotes(formatNotes(toMap(applySearchFilter(mNoteList))), mSelectedNoteIds)
     }
 }

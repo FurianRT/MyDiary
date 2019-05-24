@@ -95,15 +95,6 @@ class AuthFragment : Fragment(), AuthContract.View {
         hideRegistrationButton()
     }
 
-    fun hideRegistrationButton() {
-        button_create_account?.isEnabled = false
-        card_create_account.animate()
-                .translationY(dpToPx(ANIMATION_BUTTON_TRANSLATION_VALUE_DP).toFloat())
-                .setDuration(ANIMATION_BUTTON_DURATION)
-                .setInterpolator(AnticipateOvershootInterpolator())
-                .startDelay = ANIMATION_BUTTON_START_DELAY
-    }
-
     override fun closeSheet() {
         (activity as? MainActivity?)?.closeBottomSheet()
     }
@@ -143,6 +134,15 @@ class AuthFragment : Fragment(), AuthContract.View {
                         button_create_account?.isEnabled = true
                     }
                 })
+    }
+
+    fun hideRegistrationButton() {
+        button_create_account?.isEnabled = false
+        card_create_account.animate()
+                .translationY(dpToPx(ANIMATION_BUTTON_TRANSLATION_VALUE_DP).toFloat())
+                .setDuration(ANIMATION_BUTTON_DURATION)
+                .setInterpolator(AnticipateOvershootInterpolator())
+                .startDelay = ANIMATION_BUTTON_START_DELAY
     }
 
     fun isBackStackEmpty() = childFragmentManager.backStackEntryCount == 0

@@ -117,4 +117,8 @@ class DrawerMenuPresenter(
                     it.printStackTrace()
                 }))
     }
+
+    override fun onButtonClearFiltersClick() {
+        view?.clearFilters()
+    }
 }

@@ -298,5 +298,5 @@
     <string name="speech_to_text_title">Привет, скажи что-нибудь!</string>
     <string name="privacy_accept">Принимаю</string>
     <string name="privacy_title">Регистрируясь в приложении, вы принимаетe <a href="https://docs.google.com/document/d/1jW6ik5s4digfAURnKo48kx_oXUryP7QOc-mFNBstxtA/edit?usp=sharing/">условия его использования.</a></string>
-
+    <string name="fragment_drawer_menu_clear_filters">Очистить фильтры</string>
 </resources>

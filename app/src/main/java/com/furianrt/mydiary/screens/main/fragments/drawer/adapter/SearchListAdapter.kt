@@ -22,8 +22,6 @@ import kotlinx.android.synthetic.main.nav_search_item_category.view.*
 import kotlinx.android.synthetic.main.nav_search_item_location.view.*
 import kotlinx.android.synthetic.main.nav_search_item_mood.view.*
 import kotlinx.android.synthetic.main.nav_search_item_tag.view.*
-import java.util.HashSet
-import kotlin.collections.ArrayList
 
 class SearchListAdapter(
         var listener: OnSearchListInteractionListener? = null
@@ -82,6 +80,22 @@ class SearchListAdapter(
         for (i in 0 until groups.size) {
             expandableList.expandedGroupIndexes[i] = false
         }
+    }
+
+    fun clearChoices() {
+        mSelectedTagIds.clear()
+        mSelectedCategoryIds.clear()
+        mSelectedMoodIds.clear()
+        mSelectedLocationIds.clear()
+
+        //only update the child views that are visible (i.e. their group is expanded)
+        for (i in 0 until groups.size) {
+            val group = groups[i]
+            if (isGroupExpanded(group)) {
+                notifyItemRangeChanged(expandableList.getFlattenedFirstChildIndex(i), group.itemCount)
+            }
+        }
+        listener?.onCheckCleared()
     }
 
     @Suppress("UNCHECKED_CAST")
@@ -177,35 +191,60 @@ class SearchListAdapter(
             SearchItem.TYPE_TAG -> {
                 if (checked) {
                     mSelectedTagIds.add(item.tag!!.id)
+                    isFirstCheck()
                 } else {
                     mSelectedTagIds.remove(item.tag!!.id)
+                    isLastCheck()
                 }
                 listener?.onTagChackStateChange(item.tag, checked)
             }
             SearchItem.TYPE_CATEGORY -> {
                 if (checked) {
                     mSelectedCategoryIds.add(item.category!!.id)
+                    isFirstCheck()
                 } else {
                     mSelectedCategoryIds.remove(item.category!!.id)
+                    isLastCheck()
                 }
                 listener?.onCategoryChackStateChange(item.category, checked)
             }
             SearchItem.TYPE_LOCATION -> {
                 if (checked) {
                     mSelectedLocationIds.add(item.location!!.noteId)
+                    isFirstCheck()
                 } else {
                     mSelectedLocationIds.remove(item.location!!.noteId)
+                    isLastCheck()
                 }
                 listener?.onLocationChackStateChange(item.location, checked)
             }
             SearchItem.TYPE_MOOD -> {
                 if (checked) {
                     mSelectedMoodIds.add(item.mood!!.id)
+                    isFirstCheck()
                 } else {
                     mSelectedMoodIds.remove(item.mood!!.id)
+                    isLastCheck()
                 }
                 listener?.onMoodChackStateChange(item.mood, checked)
             }
+        }
+    }
+
+    private fun isLastCheck() {
+        if (mSelectedTagIds.isEmpty()
+                && mSelectedCategoryIds.isEmpty()
+                && mSelectedMoodIds.isEmpty()
+                && mSelectedLocationIds.isEmpty()) {
+            listener?.onCheckCleared()
+        }
+    }
+
+    private fun isFirstCheck() {
+        val checkCount = mSelectedTagIds.size+ mSelectedCategoryIds.size + mSelectedMoodIds.size +
+                mSelectedLocationIds.size
+        if (checkCount == 1) {
+            listener?.onFirstCheck()
         }
     }
 
@@ -299,5 +338,7 @@ class SearchListAdapter(
         fun onCategoryChackStateChange(category: MyCategory, checked: Boolean)
         fun onLocationChackStateChange(location: MyLocation, checked: Boolean)
         fun onMoodChackStateChange(mood: MyMood, checked: Boolean)
+        fun onCheckCleared()
+        fun onFirstCheck()
     }
 }

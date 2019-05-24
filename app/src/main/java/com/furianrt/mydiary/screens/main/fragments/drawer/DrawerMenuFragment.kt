@@ -10,6 +10,8 @@ import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.AnticipateOvershootInterpolator
+import android.view.animation.OvershootInterpolator
 import androidx.fragment.app.Fragment
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.recyclerview.widget.DefaultItemAnimator
@@ -27,6 +29,7 @@ import com.furianrt.mydiary.screens.main.fragments.drawer.adapter.SearchListAdap
 import com.furianrt.mydiary.screens.main.fragments.premium.PremiumFragment
 import com.furianrt.mydiary.screens.main.fragments.profile.ProfileFragment
 import com.furianrt.mydiary.services.sync.SyncService
+import com.furianrt.mydiary.utils.dpToPx
 import com.furianrt.mydiary.utils.inTransaction
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import kotlinx.android.synthetic.main.bottom_sheet_main.*
@@ -42,6 +45,10 @@ class DrawerMenuFragment : Fragment(), DrawerMenuContract.View,
         private const val ANIMATION_PROGRESS_FADE_OUT_OFFSET = 2000L
         private const val ANIMATION_PROGRESS_DURATION = 500L
         private const val BOTTOM_SHEET_EXPAND_DELAY = 300L
+        private const val ANIMATION_BUTTON_DURATION = 500L
+        private const val ANIMATION_BUTTON_START_DELAY = 400L
+        private const val ANIMATION_BUTTON_TRANSLATION_VALUE_DP = 100f
+        private const val BUNDLE_CLEAR_CHOICES_TRANSLATION_Y = "clear_choices_translation_y"
     }
 
     @Inject
@@ -112,6 +119,11 @@ class DrawerMenuFragment : Fragment(), DrawerMenuContract.View,
             }
         }
 
+        savedInstanceState?.let {
+            view.button_clear_filters.translationY = it.getFloat(BUNDLE_CLEAR_CHOICES_TRANSLATION_Y, 0f)
+        }
+        view.button_clear_filters.setOnClickListener { mPresenter.onButtonClearFiltersClick() }
+
         view.list_search.layoutManager = LinearLayoutManager(requireContext())
         view.list_search.adapter = mSearchListAdapter
 
@@ -125,6 +137,7 @@ class DrawerMenuFragment : Fragment(), DrawerMenuContract.View,
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
+        outState.putFloat(BUNDLE_CLEAR_CHOICES_TRANSLATION_Y, button_clear_filters.translationY)
         mSearchListAdapter.onSaveInstanceState(outState)
     }
 
@@ -280,6 +293,34 @@ class DrawerMenuFragment : Fragment(), DrawerMenuContract.View,
         requireContext().startService(Intent(requireContext(), SyncService::class.java))
     }
 
+    override fun onFirstCheck() {
+        showClearChoicesButton()
+    }
+
+    override fun onCheckCleared() {
+        hideClearChoicesButton()
+    }
+
+    override fun clearFilters() {
+        mSearchListAdapter.clearChoices()
+        mListener?.onClearFilters()
+    }
+
+    private fun showClearChoicesButton() {
+        button_clear_filters.animate()
+                .translationY(0f)
+                .setDuration(ANIMATION_BUTTON_DURATION)
+                .setInterpolator(OvershootInterpolator())
+                .startDelay = ANIMATION_BUTTON_START_DELAY
+    }
+
+    private fun hideClearChoicesButton() {
+        button_clear_filters.animate()
+                .translationY(dpToPx(ANIMATION_BUTTON_TRANSLATION_VALUE_DP).toFloat())
+                .setDuration(ANIMATION_BUTTON_DURATION)
+                .setInterpolator(AnticipateOvershootInterpolator())
+                .startDelay = ANIMATION_BUTTON_START_DELAY
+    }
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -315,5 +356,6 @@ class DrawerMenuFragment : Fragment(), DrawerMenuContract.View,
         fun onCategoryChackStateChange(category: MyCategory, checked: Boolean)
         fun onLocationChackStateChange(location: MyLocation, checked: Boolean)
         fun onMoodChackStateChange(mood: MyMood, checked: Boolean)
+        fun onClearFilters()
     }
 }

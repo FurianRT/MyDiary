@@ -21,11 +21,13 @@ interface DrawerMenuContract {
         fun showPremiumView()
         fun showLoginView()
         fun startSyncService()
+        fun clearFilters()
     }
 
     abstract class Presenter : BasePresenter<View>() {
         abstract fun onButtonProfileClick()
         abstract fun onButtonSyncClick()
         abstract fun onButtonPremiumClick()
+        abstract fun onButtonClearFiltersClick()
     }
 }
