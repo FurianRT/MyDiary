@@ -73,16 +73,16 @@ class TagsDialog : DialogFragment(), TagsDialogContract.View {
         return dialog
     }
 
-    override fun onResume() {
-        super.onResume()
+    override fun onStart() {
+        super.onStart()
         dialog?.window?.clearFlags(WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE
                 or WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM)
         mPresenter.attachView(this)
         mPresenter.onViewCreated(mNoteId)
     }
 
-    override fun onPause() {
-        super.onPause()
+    override fun onStop() {
+        super.onStop()
         mPresenter.detachView()
     }
 

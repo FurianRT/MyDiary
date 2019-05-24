@@ -51,15 +51,15 @@ class CategoryAddFragment : Fragment(), CategoryAddContract.View {
         Toast.makeText(requireContext(), getString(R.string.fragment_category_edit_error_empty_name), Toast.LENGTH_SHORT).show()
     }
 
-    override fun onResume() {
-        super.onResume()
+    override fun onStart() {
+        super.onStart()
         edit_category.requestFocus()
         edit_category.showKeyboard()
         mPresenter.attachView(this)
     }
 
-    override fun onPause() {
-        super.onPause()
+    override fun onStop() {
+        super.onStop()
         edit_category.clearFocus()
         edit_category.hideKeyboard()
         mPresenter.detachView()

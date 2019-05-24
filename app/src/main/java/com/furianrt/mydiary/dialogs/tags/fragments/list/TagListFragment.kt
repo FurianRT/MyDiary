@@ -105,17 +105,16 @@ class TagListFragment : Fragment(), TagListContract.View, TagListAdapter.OnTagLi
         }
     }
 
-    override fun onResume() {
-        super.onResume()
+    override fun onStart() {
+        super.onStart()
         mPresenter.attachView(this)
         mPresenter.onViewResume(mNoteId)
     }
 
-    override fun onPause() {
-        super.onPause()
+    override fun onStop() {
+        super.onStop()
         mPresenter.detachView()
     }
-
 
     companion object {
 

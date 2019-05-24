@@ -53,15 +53,15 @@ class TagAddFragment : Fragment(), TagAddContract.View {
         fragmentManager?.popBackStack()
     }
 
-    override fun onResume() {
-        super.onResume()
+    override fun onStart() {
+        super.onStart()
         mPresenter.attachView(this)
         edit_add_tag.requestFocus()
         edit_add_tag.showKeyboard()
     }
 
-    override fun onPause() {
-        super.onPause()
+    override fun onStop() {
+        super.onStop()
         edit_add_tag.clearFocus()
         edit_add_tag.hideKeyboard()
         mPresenter.detachView()

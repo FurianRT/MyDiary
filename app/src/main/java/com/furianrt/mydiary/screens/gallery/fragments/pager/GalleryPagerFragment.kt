@@ -2,6 +2,7 @@ package com.furianrt.mydiary.screens.gallery.fragments.pager
 
 import android.app.Activity
 import android.content.Intent
+import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
 import android.view.*
@@ -142,6 +143,7 @@ class GalleryPagerFragment : Fragment(), GalleryPagerContract.View {
         UCrop.of(uri, uri)
                 .withOptions(UCrop.Options().apply {
                     setToolbarTitle(getString(R.string.fragment_gallery_pager_edit_photo))
+                    setToolbarWidgetColor(Color.WHITE)
                     setActiveWidgetColor(getThemeAccentColor(requireContext()))
                     setStatusBarColor(getThemePrimaryDarkColor(requireContext()))
                     setToolbarColor(getThemePrimaryColor(requireContext()))

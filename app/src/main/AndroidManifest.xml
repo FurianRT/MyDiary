@@ -62,6 +62,7 @@
         <!--Этого требует библиотека для редактирования картинок-->
         <activity
             android:name="com.yalantis.ucrop.UCropActivity"
+            android:parentActivityName=".screens.gallery.GalleryActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme" />
 

@@ -79,15 +79,15 @@ class CategoryEditFragment : Fragment(), CategoryEditContract.View {
         fragmentManager?.popBackStack()
     }
 
-    override fun onResume() {
-        super.onResume()
+    override fun onStart() {
+        super.onStart()
         edit_category.requestFocus()
         edit_category.showKeyboard()
         mPresenter.attachView(this)
     }
 
-    override fun onPause() {
-        super.onPause()
+    override fun onStop() {
+        super.onStop()
         edit_category.clearFocus()
         edit_category.hideKeyboard()
         mPresenter.detachView()
