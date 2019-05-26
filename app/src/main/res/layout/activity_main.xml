@@ -36,8 +36,12 @@
                 <include
                     android:id="@+id/empty_state"
                     layout="@layout/empty_state_note_list"
-                    android:visibility="gone"
-                    tools:visibility="visible" />
+                    android:visibility="gone" />
+
+                <include
+                    android:id="@+id/empty_search"
+                    layout="@layout/empty_search_note_list"
+                    android:visibility="visible" />
 
                 <com.furian.fab.FloatingActionMenu
                     android:id="@+id/fab_menu"

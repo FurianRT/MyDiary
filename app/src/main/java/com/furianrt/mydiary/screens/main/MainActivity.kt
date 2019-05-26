@@ -458,16 +458,27 @@ class MainActivity : BaseActivity(), MainActivityContract.View,
         mAdapter.selectedNoteIds.clear()
         mAdapter.selectedNoteIds.addAll(selectedNoteIds)
         mAdapter.submitList(notes.toMutableList())
-        empty_state.visibility = if (notes.isEmpty()) {
-            app_bar_layout.setExpanded(false, true)
-            View.VISIBLE
-        } else {
-            View.GONE
-        }
         mRecyclerViewState?.let {
             list_main.layoutManager?.onRestoreInstanceState(it)
             mRecyclerViewState = null
         }
+    }
+
+    override fun showEmptyNoteList() {
+        empty_state.visibility = View.VISIBLE
+        app_bar_layout.setExpanded(false, true)
+    }
+
+    override fun hideEmptyNoteList() {
+        empty_state.visibility = View.GONE
+    }
+
+    override fun showNoSearchResults() {
+        empty_search.visibility = View.VISIBLE
+    }
+
+    override fun hideNoSearchResults() {
+        empty_search.visibility = View.GONE
     }
 
     override fun onMainListItemClick(note: MyNoteWithProp, position: Int) {

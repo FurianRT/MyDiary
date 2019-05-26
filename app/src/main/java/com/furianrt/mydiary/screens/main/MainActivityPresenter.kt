@@ -149,11 +149,8 @@ class MainActivityPresenter(
                     mNoteList = it
                     applySearchFilter(it)
                 }
-                .map { formatNotes(toMap(it)) }
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe {
-                    view?.showNotes(it, mSelectedNoteIds)
-                })
+                .subscribe { showNotes(it) })
     }
 
     private fun toMap(notes: List<MyNoteWithProp>): Map<Long, ArrayList<MyNoteWithProp>> {
@@ -378,9 +375,7 @@ class MainActivityPresenter(
         mSearchQuery = query.toLowerCase(Locale.getDefault())
         addDisposable(applySearchFilter(mNoteList)
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { notes ->
-                    view?.showNotes(formatNotes(toMap(notes)), mSelectedNoteIds)
-                })
+                .subscribe { notes -> showNotes(notes) })
     }
 
     override fun onTagFilterChange(tag: MyTag, checked: Boolean) {
@@ -391,9 +386,7 @@ class MainActivityPresenter(
         }
         addDisposable(applySearchFilter(mNoteList)
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { notes ->
-                    view?.showNotes(formatNotes(toMap(notes)), mSelectedNoteIds)
-                })
+                .subscribe { notes -> showNotes(notes) })
     }
 
     override fun onCategoryFilterChange(category: MyCategory, checked: Boolean) {
@@ -404,9 +397,7 @@ class MainActivityPresenter(
         }
         addDisposable(applySearchFilter(mNoteList)
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { notes ->
-                    view?.showNotes(formatNotes(toMap(notes)), mSelectedNoteIds)
-                })
+                .subscribe { notes -> showNotes(notes) })
     }
 
     override fun onLocationFilterChange(location: MyLocation, checked: Boolean) {
@@ -417,9 +408,7 @@ class MainActivityPresenter(
         }
         addDisposable(applySearchFilter(mNoteList)
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { notes ->
-                    view?.showNotes(formatNotes(toMap(notes)), mSelectedNoteIds)
-                })
+                .subscribe { notes -> showNotes(notes) })
     }
 
     override fun onMoodFilterChange(mood: MyMood, checked: Boolean) {
@@ -430,9 +419,7 @@ class MainActivityPresenter(
         }
         addDisposable(applySearchFilter(mNoteList)
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { notes ->
-                    view?.showNotes(formatNotes(toMap(notes)), mSelectedNoteIds)
-                })
+                .subscribe { notes -> showNotes(notes) })
     }
 
     override fun onNoTagsFilterChange(checked: Boolean) {
@@ -443,9 +430,7 @@ class MainActivityPresenter(
         }
         addDisposable(applySearchFilter(mNoteList)
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { notes ->
-                    view?.showNotes(formatNotes(toMap(notes)), mSelectedNoteIds)
-                })
+                .subscribe { notes -> showNotes(notes) })
     }
 
     override fun onNoCategoryFilterChange(checked: Boolean) {
@@ -456,9 +441,7 @@ class MainActivityPresenter(
         }
         addDisposable(applySearchFilter(mNoteList)
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { notes ->
-                    view?.showNotes(formatNotes(toMap(notes)), mSelectedNoteIds)
-                })
+                .subscribe { notes -> showNotes(notes) })
     }
 
     override fun onNoMoodFilterChange(checked: Boolean) {
@@ -469,9 +452,7 @@ class MainActivityPresenter(
         }
         addDisposable(applySearchFilter(mNoteList)
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { notes ->
-                    view?.showNotes(formatNotes(toMap(notes)), mSelectedNoteIds)
-                })
+                .subscribe { notes -> showNotes(notes) })
     }
 
     override fun onNoLocationFilterChange(checked: Boolean) {
@@ -482,9 +463,7 @@ class MainActivityPresenter(
         }
         addDisposable(applySearchFilter(mNoteList)
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { notes ->
-                    view?.showNotes(formatNotes(toMap(notes)), mSelectedNoteIds)
-                })
+                .subscribe { notes -> showNotes(notes) })
     }
 
     override fun onClearFilters() {
@@ -494,8 +473,26 @@ class MainActivityPresenter(
         mFilteredLocationNames.clear()
         addDisposable(applySearchFilter(mNoteList)
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { notes ->
-                    view?.showNotes(formatNotes(toMap(notes)), mSelectedNoteIds)
-                })
+                .subscribe { notes -> showNotes(notes) })
+    }
+
+    private fun isSearchFiltersEmpty() = mSearchQuery.isEmpty()
+            && mFilteredTagIds.isEmpty()
+            && mFilteredCategoryIds.isEmpty()
+            && mFilteredMoodIds.isEmpty()
+            && mFilteredLocationNames.isEmpty()
+
+    private fun showNotes(notes: List<MyNoteWithProp>) {
+        view?.showNotes(formatNotes(toMap(notes)), mSelectedNoteIds)
+        if (notes.isEmpty()) {
+            if (isSearchFiltersEmpty()) {
+                view?.showEmptyNoteList()
+            } else {
+                view?.showNoSearchResults()
+            }
+        } else {
+            view?.hideEmptyNoteList()
+            view?.hideNoSearchResults()
+        }
     }
 }

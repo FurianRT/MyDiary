@@ -302,4 +302,6 @@
     <string name="fragment_drawer_menu_no_category">Нет категории</string>
     <string name="fragment_drawer_menu_no_mood">Нет настроения</string>
     <string name="fragment_drawer_menu_no_location">Нет места</string>
+    <string name="empty_search_note_list_empty">Ничего не найдено :-(</string>
+    <string name="empty_search_note_list_hint">Попробуте изменить фильтры</string>
 </resources>

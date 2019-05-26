@@ -29,6 +29,10 @@ interface MainActivityContract {
         fun showCategoriesView(noteIds: List<String>)
         fun showProfile(profile: MyProfile)
         fun showAnonymousProfile()
+        fun showEmptyNoteList()
+        fun showNoSearchResults()
+        fun hideEmptyNoteList()
+        fun hideNoSearchResults()
     }
 
     abstract class Presenter : BasePresenter<View>() {
