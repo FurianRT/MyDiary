@@ -55,5 +55,9 @@ interface MainActivityContract {
         abstract fun onLocationFilterChange(location: MyLocation, checked: Boolean)
         abstract fun onMoodFilterChange(mood: MyMood, checked: Boolean)
         abstract fun onClearFilters()
+        abstract fun onNoTagsFilterChange(checked: Boolean)
+        abstract fun onNoCategoryFilterChange(checked: Boolean)
+        abstract fun onNoMoodFilterChange(checked: Boolean)
+        abstract fun onNoLocationFilterChange(checked: Boolean)
     }
 }

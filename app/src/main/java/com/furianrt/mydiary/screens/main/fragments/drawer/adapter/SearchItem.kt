@@ -19,7 +19,11 @@ data class SearchItem(
     companion object {
         const val TYPE_TAG = 3
         const val TYPE_CATEGORY = 4
-        const val TYPE_LOCATION = 5
-        const val TYPE_MOOD = 6
+        const val TYPE_MOOD = 5
+        const val TYPE_LOCATION = 6
+        const val TYPE_NO_TAGS = 7
+        const val TYPE_NO_CATEGORY = 8
+        const val TYPE_NO_MOOD = 9
+        const val TYPE_NO_LOCATION = 10
     }
 }

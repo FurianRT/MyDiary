@@ -26,7 +26,7 @@ class MainActivityPresenter(
         private const val BUNDLE_FILTERED_TAG_IDS = "filtered_tag_ids"
         private const val BUNDLE_FILTERED_CATEGORY_IDS = "filtered_category_ids"
         private const val BUNDLE_FILTERED_MOOD_IDS = "filtered_mood_ids"
-        private const val BUNDLE_FILTERED_LOCATION_IDS = "filtered_location_ids"
+        private const val BUNDLE_FILTERED_LOCATION_NAMES = "filtered_location_names"
         private const val BUNDLE_SEARCH_QUERY = "search_query"
     }
 
@@ -35,7 +35,7 @@ class MainActivityPresenter(
     private val mFilteredTagIds = HashSet<String>()
     private val mFilteredCategoryIds = HashSet<String>()
     private val mFilteredMoodIds = HashSet<Int>()
-    private val mFilteredLocationIds = HashSet<String>()
+    private val mFilteredLocationNames = HashSet<String>()
     private var mSearchQuery = ""
 
     override fun onButtonDeleteClick() {
@@ -145,7 +145,7 @@ class MainActivityPresenter(
             view?.setSortDesc()
         }
         addDisposable(dataManager.getAllNotesWithProp()
-                .map {
+                .flatMapSingle {
                     mNoteList = it
                     applySearchFilter(it)
                 }
@@ -196,35 +196,49 @@ class MainActivityPresenter(
         return list
     }
 
-    private fun applySearchFilter(notes: List<MyNoteWithProp>): List<MyNoteWithProp> {
-        return notes.asSequence()
-                .filter {
-                    it.note.title.toLowerCase(Locale.getDefault()).contains(mSearchQuery.toLowerCase(Locale.getDefault()))
-                            || it.note.content.toLowerCase(Locale.getDefault()).contains(mSearchQuery.toLowerCase(Locale.getDefault()))
-                }
-                .filter { note ->
-                    if (mFilteredTagIds.isNotEmpty()) {
-                        mFilteredTagIds.forEach { tagId ->
-                            if (note.tags.find { it.tagId == tagId } == null) {
-                                return@filter false
-                            }
-                        }
+    private fun applySearchFilter(notes: List<MyNoteWithProp>): Single<List<MyNoteWithProp>> =
+            dataManager.getAllDbLocations()
+                    .first(emptyList())
+                    .map { locations ->
+                        notes.asSequence()
+                                .filter {
+                                    it.note.title.toLowerCase(Locale.getDefault()).contains(mSearchQuery)
+                                            || it.note.content.toLowerCase(Locale.getDefault()).contains(mSearchQuery)
+                                }
+                                .filter { note ->
+                                    if (mFilteredTagIds.isEmpty()) {
+                                        return@filter true
+                                    }
+                                    if (note.tags.isEmpty()) {
+                                        return@filter mFilteredTagIds.contains(MyTag.TABLE_NAME)
+                                    }
+                                    val tagIds =  mFilteredTagIds.filter { it != MyTag.TABLE_NAME }
+                                    if (tagIds.isEmpty()) {
+                                        return@filter false
+                                    }
+                                    tagIds.filter { it != MyTag.TABLE_NAME }
+                                            .forEach { tagId ->
+                                                if (note.tags.find { it.tagId == tagId } == null) {
+                                                    return@filter false
+                                                }
+                                            }
+                                    return@filter true
+                                }
+                                .filter { note ->
+                                    mFilteredCategoryIds.isEmpty()
+                                            || mFilteredCategoryIds.find { it == note.category?.id ?: MyCategory.TABLE_NAME } != null
+                                }
+                                .filter { note ->
+                                    mFilteredMoodIds.isEmpty()
+                                            || mFilteredMoodIds.find { it == note.mood?.id ?: -1 } != null
+                                }
+                                .filter { note ->
+                                    val location = locations.find { it.noteId == note.note.id }
+                                    mFilteredLocationNames.isEmpty()
+                                            || mFilteredLocationNames.find { it == location?.name ?: MyLocation.TABLE_NAME } != null
+                                }
+                                .toList()
                     }
-                    return@filter true
-                }
-                .filter { note ->
-                    mFilteredCategoryIds.isEmpty()
-                            || mFilteredCategoryIds.find { it == note.category?.id } != null
-                }
-                .filter { note ->
-                    mFilteredMoodIds.isEmpty()
-                            || mFilteredMoodIds.find { it == note.mood?.id } != null
-                }
-                .filter { note ->
-                    mFilteredLocationIds.isEmpty()
-                            || mFilteredLocationIds.find { it == note.note.id } != null
-                }.toList()
-    }
 
     override fun onFabMenuClick() {
         if (mSelectedNoteIds.isEmpty()) {
@@ -271,7 +285,7 @@ class MainActivityPresenter(
             it.putStringArrayList(BUNDLE_FILTERED_TAG_IDS, ArrayList(mFilteredTagIds))
             it.putStringArrayList(BUNDLE_FILTERED_CATEGORY_IDS, ArrayList(mFilteredCategoryIds))
             it.putIntegerArrayList(BUNDLE_FILTERED_MOOD_IDS, ArrayList(mFilteredMoodIds))
-            it.putStringArrayList(BUNDLE_FILTERED_LOCATION_IDS, ArrayList(mFilteredLocationIds))
+            it.putStringArrayList(BUNDLE_FILTERED_LOCATION_NAMES, ArrayList(mFilteredLocationNames))
             it.putString(BUNDLE_SEARCH_QUERY, mSearchQuery)
         }
     }
@@ -291,8 +305,8 @@ class MainActivityPresenter(
             mFilteredMoodIds.clear()
             mFilteredMoodIds.addAll(it.getIntegerArrayList(BUNDLE_FILTERED_MOOD_IDS) ?: emptyList())
 
-            mFilteredLocationIds.clear()
-            mFilteredLocationIds.addAll(it.getStringArrayList(BUNDLE_FILTERED_LOCATION_IDS)
+            mFilteredLocationNames.clear()
+            mFilteredLocationNames.addAll(it.getStringArrayList(BUNDLE_FILTERED_LOCATION_NAMES)
                     ?: emptyList())
 
             mSearchQuery = it.getString(BUNDLE_SEARCH_QUERY, "")
@@ -361,8 +375,12 @@ class MainActivityPresenter(
     }
 
     override fun onSearchQueryChange(query: String) {
-        mSearchQuery = query
-        view?.showNotes(formatNotes(toMap(applySearchFilter(mNoteList))), mSelectedNoteIds)
+        mSearchQuery = query.toLowerCase(Locale.getDefault())
+        addDisposable(applySearchFilter(mNoteList)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe { notes ->
+                    view?.showNotes(formatNotes(toMap(notes)), mSelectedNoteIds)
+                })
     }
 
     override fun onTagFilterChange(tag: MyTag, checked: Boolean) {
@@ -371,7 +389,11 @@ class MainActivityPresenter(
         } else {
             mFilteredTagIds.remove(tag.id)
         }
-        view?.showNotes(formatNotes(toMap(applySearchFilter(mNoteList))), mSelectedNoteIds)
+        addDisposable(applySearchFilter(mNoteList)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe { notes ->
+                    view?.showNotes(formatNotes(toMap(notes)), mSelectedNoteIds)
+                })
     }
 
     override fun onCategoryFilterChange(category: MyCategory, checked: Boolean) {
@@ -380,16 +402,24 @@ class MainActivityPresenter(
         } else {
             mFilteredCategoryIds.remove(category.id)
         }
-        view?.showNotes(formatNotes(toMap(applySearchFilter(mNoteList))), mSelectedNoteIds)
+        addDisposable(applySearchFilter(mNoteList)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe { notes ->
+                    view?.showNotes(formatNotes(toMap(notes)), mSelectedNoteIds)
+                })
     }
 
     override fun onLocationFilterChange(location: MyLocation, checked: Boolean) {
         if (checked) {
-            mFilteredLocationIds.add(location.noteId)
+            mFilteredLocationNames.add(location.name)
         } else {
-            mFilteredLocationIds.remove(location.noteId)
+            mFilteredLocationNames.remove(location.name)
         }
-        view?.showNotes(formatNotes(toMap(applySearchFilter(mNoteList))), mSelectedNoteIds)
+        addDisposable(applySearchFilter(mNoteList)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe { notes ->
+                    view?.showNotes(formatNotes(toMap(notes)), mSelectedNoteIds)
+                })
     }
 
     override fun onMoodFilterChange(mood: MyMood, checked: Boolean) {
@@ -398,14 +428,74 @@ class MainActivityPresenter(
         } else {
             mFilteredMoodIds.remove(mood.id)
         }
-        view?.showNotes(formatNotes(toMap(applySearchFilter(mNoteList))), mSelectedNoteIds)
+        addDisposable(applySearchFilter(mNoteList)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe { notes ->
+                    view?.showNotes(formatNotes(toMap(notes)), mSelectedNoteIds)
+                })
+    }
+
+    override fun onNoTagsFilterChange(checked: Boolean) {
+        if (checked) {
+            mFilteredTagIds.add(MyTag.TABLE_NAME)
+        } else {
+            mFilteredTagIds.remove(MyTag.TABLE_NAME)
+        }
+        addDisposable(applySearchFilter(mNoteList)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe { notes ->
+                    view?.showNotes(formatNotes(toMap(notes)), mSelectedNoteIds)
+                })
+    }
+
+    override fun onNoCategoryFilterChange(checked: Boolean) {
+        if (checked) {
+            mFilteredCategoryIds.add(MyCategory.TABLE_NAME)
+        } else {
+            mFilteredCategoryIds.remove(MyCategory.TABLE_NAME)
+        }
+        addDisposable(applySearchFilter(mNoteList)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe { notes ->
+                    view?.showNotes(formatNotes(toMap(notes)), mSelectedNoteIds)
+                })
+    }
+
+    override fun onNoMoodFilterChange(checked: Boolean) {
+        if (checked) {
+            mFilteredMoodIds.add(-1)
+        } else {
+            mFilteredMoodIds.remove(-1)
+        }
+        addDisposable(applySearchFilter(mNoteList)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe { notes ->
+                    view?.showNotes(formatNotes(toMap(notes)), mSelectedNoteIds)
+                })
+    }
+
+    override fun onNoLocationFilterChange(checked: Boolean) {
+        if (checked) {
+            mFilteredLocationNames.add(MyLocation.TABLE_NAME)
+        } else {
+            mFilteredLocationNames.remove(MyLocation.TABLE_NAME)
+        }
+        addDisposable(applySearchFilter(mNoteList)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe { notes ->
+                    view?.showNotes(formatNotes(toMap(notes)), mSelectedNoteIds)
+                })
     }
 
     override fun onClearFilters() {
         mFilteredTagIds.clear()
         mFilteredCategoryIds.clear()
         mFilteredMoodIds.clear()
-        mFilteredLocationIds.clear()
-        view?.showNotes(formatNotes(toMap(applySearchFilter(mNoteList))), mSelectedNoteIds)
+        mFilteredLocationNames.clear()
+        addDisposable(applySearchFilter(mNoteList)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe { notes ->
+                    view?.showNotes(formatNotes(toMap(notes)), mSelectedNoteIds)
+                })
     }
 }

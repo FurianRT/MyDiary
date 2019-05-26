@@ -11,9 +11,9 @@ class SearchGroup(
         val groupItems: List<SearchItem>
 ): Parcelable, MultiCheckExpandableGroup(groupTitle, groupItems) {
     companion object {
-        const val TYPE_TAG = 7
-        const val TYPE_CATEGORY = 8
-        const val TYPE_LOCATION = 9
-        const val TYPE_MOOD = 10
+        const val TYPE_TAG = 31
+        const val TYPE_CATEGORY = 41
+        const val TYPE_LOCATION = 51
+        const val TYPE_MOOD = 61
     }
 }

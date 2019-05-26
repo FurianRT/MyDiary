@@ -77,7 +77,7 @@ class DrawerMenuFragment : Fragment(), DrawerMenuContract.View,
                 view_sync.alpha = 0.35f
                 if (it.hasError) {
                     val bundle = Bundle()
-                    bundle.putInt("task_index", it.taskIndex)
+                    bundle.putInt(Analytics.BUNDLE_TASK_INDEX, it.taskIndex)
                     Analytics.sendEvent(requireContext(), Analytics.EVENT_SYNC_FAILED, bundle)
 
                     button_sync.text = it.message
@@ -141,28 +141,11 @@ class DrawerMenuFragment : Fragment(), DrawerMenuContract.View,
         mSearchListAdapter.onSaveInstanceState(outState)
     }
 
-    fun onBillingInitialized() {
-        mListener?.let {
-            if (it.getIsItemPurshased(BuildConfig.ITEM_SYNC_SKU) || it.getIsItemPurshased(ITEM_TEST_SKU)) {
-                button_sync?.text = getString(R.string.nav_header_main_button_sync)
-            } else {
-                button_sync?.text = getString(R.string.nav_header_main_button_sync_pro)
-            }
-        }
-    }
-
-    fun onProductPurchased(productId: String) {
-        if (productId == BuildConfig.ITEM_SYNC_SKU || productId == ITEM_TEST_SKU) {
-            button_sync?.text = getString(R.string.nav_header_main_button_sync)
-        }
-    }
-
     override fun showSyncProgress(message: SyncProgressMessage) {
         button_sync.isEnabled = false
         view_sync.alpha = 0.35f
         view_sync.visibility = View.VISIBLE
-        view_sync.layoutParams.width =
-                (button_sync.width.toFloat() * message.progress.toFloat() / 100f).toInt()
+        view_sync.layoutParams.width = (button_sync.width.toFloat() * message.progress.toFloat() / 100f).toInt()
         button_sync.text = getString(R.string.sync_progress_format, message.progress, message.message)
         view_sync.requestLayout()
     }
@@ -171,15 +154,7 @@ class DrawerMenuFragment : Fragment(), DrawerMenuContract.View,
         view_sync.visibility = View.INVISIBLE
         view_sync.layoutParams.width = 0
         button_sync.isEnabled = true
-        mListener?.let {
-            if (it.getIsBillingInitialized()
-                    && (it.getIsItemPurshased(BuildConfig.ITEM_SYNC_SKU) || it.getIsItemPurshased(ITEM_TEST_SKU))) {
-                button_sync.text = getString(R.string.nav_header_main_button_sync)
-            } else {
-                button_sync.text = getString(R.string.nav_header_main_button_sync_pro)
-            }
-        }
-
+        button_sync.text = getString(R.string.nav_header_main_button_sync)
         view_sync.requestLayout()
     }
 
@@ -218,21 +193,29 @@ class DrawerMenuFragment : Fragment(), DrawerMenuContract.View,
                 SearchGroup.TYPE_TAG,
                 getString(R.string.tags),
                 entries.tags.map { SearchItem(type = SearchItem.TYPE_TAG, tag = it) }
+                        .toMutableList()
+                        .apply { add(SearchItem(type = SearchItem.TYPE_NO_TAGS)) }
         )
         val categoryGroup = SearchGroup(
                 SearchGroup.TYPE_CATEGORY,
                 getString(R.string.categories),
                 entries.categories.map { SearchItem(type = SearchItem.TYPE_CATEGORY, category = it) }
+                        .toMutableList()
+                        .apply { add(SearchItem(type = SearchItem.TYPE_NO_CATEGORY)) }
         )
         val moodGroup = SearchGroup(
                 SearchGroup.TYPE_MOOD,
                 getString(R.string.moods),
                 entries.moods.map { SearchItem(type = SearchItem.TYPE_MOOD, mood = it) }
+                        .toMutableList()
+                        .apply { add(SearchItem(type = SearchItem.TYPE_NO_MOOD)) }
         )
         val locationGroup = SearchGroup(
                 SearchGroup.TYPE_LOCATION,
                 getString(R.string.locations),
                 entries.locations.map { SearchItem(type = SearchItem.TYPE_LOCATION, location = it) }
+                        .toMutableList()
+                        .apply { add(SearchItem(type = SearchItem.TYPE_NO_LOCATION)) }
         )
         val groupList = mutableListOf(tagGroup, categoryGroup, moodGroup, locationGroup)
                 .filter { it.groupItems.isNotEmpty() }
@@ -240,24 +223,44 @@ class DrawerMenuFragment : Fragment(), DrawerMenuContract.View,
         mSearchListAdapter.submitGroups(groupList)
     }
 
-    override fun onTagChackStateChange(tag: MyTag, checked: Boolean) {
+    override fun onTagCheckStateChange(tag: MyTag, checked: Boolean) {
         Analytics.sendEvent(requireContext(), Analytics.EVENT_SEARCH_TAG_CHANGED)
         mListener?.onTagChackStateChange(tag, checked)
     }
 
-    override fun onCategoryChackStateChange(category: MyCategory, checked: Boolean) {
+    override fun onCategoryCheckStateChange(category: MyCategory, checked: Boolean) {
         Analytics.sendEvent(requireContext(), Analytics.EVENT_SEARCH_CATEGORY_CHANGED)
         mListener?.onCategoryChackStateChange(category, checked)
     }
 
-    override fun onLocationChackStateChange(location: MyLocation, checked: Boolean) {
+    override fun onLocationCheckStateChange(location: MyLocation, checked: Boolean) {
         Analytics.sendEvent(requireContext(), Analytics.EVENT_SEARCH_LOCATION_CHANGED)
         mListener?.onLocationChackStateChange(location, checked)
     }
 
-    override fun onMoodChackStateChange(mood: MyMood, checked: Boolean) {
+    override fun onMoodCheckStateChange(mood: MyMood, checked: Boolean) {
         Analytics.sendEvent(requireContext(), Analytics.EVENT_SEARCH_MOOD_CHANGED)
         mListener?.onMoodChackStateChange(mood, checked)
+    }
+
+    override fun onNoTagsCheckStateChange(checked: Boolean) {
+        Analytics.sendEvent(requireContext(), Analytics.EVENT_SEARCH_NO_TAGS_CHANGED)
+        mListener?.onNoTagsChackStateChange(checked)
+    }
+
+    override fun onNoCategoryCheckStateChange(checked: Boolean) {
+        Analytics.sendEvent(requireContext(), Analytics.EVENT_SEARCH_NO_CATEGORY_CHANGED)
+        mListener?.onNoCategoryChackStateChange(checked)
+    }
+
+    override fun onNoMoodCheckStateChange(checked: Boolean) {
+        Analytics.sendEvent(requireContext(), Analytics.EVENT_SEARCH_NO_MOOD_CHANGED)
+        mListener?.onNoMoodChackStateChange(checked)
+    }
+
+    override fun onNoLocationChackStateChange(checked: Boolean) {
+        Analytics.sendEvent(requireContext(), Analytics.EVENT_SEARCH_NO_LOCATION_CHANGED)
+        mListener?.onNoLocationChackStateChange(checked)
     }
 
     override fun showProfileSettings() {
@@ -357,5 +360,9 @@ class DrawerMenuFragment : Fragment(), DrawerMenuContract.View,
         fun onLocationChackStateChange(location: MyLocation, checked: Boolean)
         fun onMoodChackStateChange(mood: MyMood, checked: Boolean)
         fun onClearFilters()
+        fun onNoTagsChackStateChange(checked: Boolean)
+        fun onNoCategoryChackStateChange(checked: Boolean)
+        fun onNoMoodChackStateChange(checked: Boolean)
+        fun onNoLocationChackStateChange(checked: Boolean)
     }
 }

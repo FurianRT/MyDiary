@@ -21,6 +21,10 @@ import kotlinx.android.synthetic.main.nav_search_group.view.*
 import kotlinx.android.synthetic.main.nav_search_item_category.view.*
 import kotlinx.android.synthetic.main.nav_search_item_location.view.*
 import kotlinx.android.synthetic.main.nav_search_item_mood.view.*
+import kotlinx.android.synthetic.main.nav_search_item_no_category.view.*
+import kotlinx.android.synthetic.main.nav_search_item_no_location.view.*
+import kotlinx.android.synthetic.main.nav_search_item_no_mood.view.*
+import kotlinx.android.synthetic.main.nav_search_item_no_tags.view.*
 import kotlinx.android.synthetic.main.nav_search_item_tag.view.*
 
 class SearchListAdapter(
@@ -35,6 +39,7 @@ class SearchListAdapter(
         private const val BUNDLE_SELECTED_CATEGORY_IDS = "selected_category_ids"
         private const val BUNDLE_SELECTED_MOOD_IDS = "selected_mood_ids"
         private const val BUNDLE_SELECTED_LOCATION_IDS = "selected_location_ids"
+        private const val BUNDLE_SELECTED_ITEM_NON_TYPES = "selected_item_non_types"
     }
 
     private val mExpandedGroupTypes = HashSet<Int>()
@@ -42,6 +47,7 @@ class SearchListAdapter(
     private val mSelectedCategoryIds = HashSet<String>()
     private val mSelectedMoodIds = HashSet<Int>()
     private val mSelectedLocationIds = HashSet<String>()
+    private val mSelectedNoItemTypes = HashSet<Int>()
 
     override fun onSaveInstanceState(savedInstanceState: Bundle?) {
         savedInstanceState?.let {
@@ -50,6 +56,7 @@ class SearchListAdapter(
             it.putStringArrayList(BUNDLE_SELECTED_CATEGORY_IDS, ArrayList(mSelectedCategoryIds))
             it.putIntegerArrayList(BUNDLE_SELECTED_MOOD_IDS, ArrayList(mSelectedMoodIds))
             it.putStringArrayList(BUNDLE_SELECTED_LOCATION_IDS, ArrayList(mSelectedLocationIds))
+            it.putIntegerArrayList(BUNDLE_SELECTED_ITEM_NON_TYPES, ArrayList(mSelectedNoItemTypes))
         }
     }
 
@@ -72,6 +79,10 @@ class SearchListAdapter(
             mSelectedLocationIds.clear()
             mSelectedLocationIds.addAll(it.getStringArrayList(BUNDLE_SELECTED_LOCATION_IDS)
                     ?: emptyList())
+
+            mSelectedNoItemTypes.clear()
+            mSelectedNoItemTypes.addAll(it.getIntegerArrayList(BUNDLE_SELECTED_ITEM_NON_TYPES)
+                    ?: emptyList())
         }
     }
 
@@ -87,6 +98,7 @@ class SearchListAdapter(
         mSelectedCategoryIds.clear()
         mSelectedMoodIds.clear()
         mSelectedLocationIds.clear()
+        mSelectedNoItemTypes.clear()
 
         //only update the child views that are visible (i.e. their group is expanded)
         for (i in 0 until groups.size) {
@@ -132,7 +144,15 @@ class SearchListAdapter(
                 SearchLocationsViewHolder(inflater.inflate(R.layout.nav_search_item_location, parent, false))
             SearchItem.TYPE_MOOD ->
                 SearchMoodsViewHolder(inflater.inflate(R.layout.nav_search_item_mood, parent, false))
-            else -> throw IllegalStateException("Wrong view type")
+            SearchItem.TYPE_NO_TAGS ->
+                SearchNoTagsViewHolder(inflater.inflate(R.layout.nav_search_item_no_tags, parent, false))
+            SearchItem.TYPE_NO_CATEGORY ->
+                SearchNoCategoryViewHolder(inflater.inflate(R.layout.nav_search_item_no_category, parent, false))
+            SearchItem.TYPE_NO_MOOD ->
+                SearchNoMoodViewHolder(inflater.inflate(R.layout.nav_search_item_no_mood, parent, false))
+            SearchItem.TYPE_NO_LOCATION ->
+                SearchNoLocationViewHolder(inflater.inflate(R.layout.nav_search_item_no_location, parent, false))
+            else -> throw IllegalStateException("Unsupported holder type")
         }
     }
 
@@ -144,26 +164,17 @@ class SearchListAdapter(
         val item = (group as SearchGroup).groupItems[childIndex]
         when (item.type) {
             SearchItem.TYPE_TAG ->
-                with(holder as SearchTagsViewHolder) {
-                    onBindViewHolder(flatPosition, mSelectedTagIds.contains(item.tag!!.id))
-                    bind(item)
-                }
+                holder?.onBindViewHolder(flatPosition, mSelectedTagIds.contains(item.tag!!.id))
             SearchItem.TYPE_CATEGORY ->
-                with(holder as SearchCategoriesViewHolder) {
-                    onBindViewHolder(flatPosition, mSelectedCategoryIds.contains(item.category!!.id))
-                    bind(item)
-                }
+                holder?.onBindViewHolder(flatPosition, mSelectedCategoryIds.contains(item.category!!.id))
             SearchItem.TYPE_LOCATION ->
-                with(holder as SearchLocationsViewHolder) {
-                    onBindViewHolder(flatPosition, mSelectedLocationIds.contains(item.location!!.noteId))
-                    bind(item)
-                }
+                holder?.onBindViewHolder(flatPosition, mSelectedLocationIds.contains(item.location!!.noteId))
             SearchItem.TYPE_MOOD ->
-                with(holder as SearchMoodsViewHolder) {
-                    onBindViewHolder(flatPosition, mSelectedMoodIds.contains(item.mood!!.id))
-                    bind(item)
-                }
+                holder?.onBindViewHolder(flatPosition, mSelectedMoodIds.contains(item.mood!!.id))
+            else ->
+                holder?.onBindViewHolder(flatPosition, mSelectedNoItemTypes.contains(item.type))
         }
+        holder?.bind(item)
     }
 
     override fun getGroupViewType(position: Int, group: ExpandableGroup<*>?): Int =
@@ -183,6 +194,10 @@ class SearchListAdapter(
                     || viewType == SearchItem.TYPE_CATEGORY
                     || viewType == SearchItem.TYPE_LOCATION
                     || viewType == SearchItem.TYPE_MOOD
+                    || viewType == SearchItem.TYPE_NO_TAGS
+                    || viewType == SearchItem.TYPE_NO_CATEGORY
+                    || viewType == SearchItem.TYPE_NO_MOOD
+                    || viewType == SearchItem.TYPE_NO_LOCATION
 
     override fun onChildCheckChanged(view: View?, checked: Boolean, flatPos: Int) {
         val listPos = expandableList.getUnflattenedPosition(flatPos)
@@ -196,7 +211,7 @@ class SearchListAdapter(
                     mSelectedTagIds.remove(item.tag!!.id)
                     isLastCheck()
                 }
-                listener?.onTagChackStateChange(item.tag, checked)
+                listener?.onTagCheckStateChange(item.tag, checked)
             }
             SearchItem.TYPE_CATEGORY -> {
                 if (checked) {
@@ -206,7 +221,7 @@ class SearchListAdapter(
                     mSelectedCategoryIds.remove(item.category!!.id)
                     isLastCheck()
                 }
-                listener?.onCategoryChackStateChange(item.category, checked)
+                listener?.onCategoryCheckStateChange(item.category, checked)
             }
             SearchItem.TYPE_LOCATION -> {
                 if (checked) {
@@ -216,7 +231,7 @@ class SearchListAdapter(
                     mSelectedLocationIds.remove(item.location!!.noteId)
                     isLastCheck()
                 }
-                listener?.onLocationChackStateChange(item.location, checked)
+                listener?.onLocationCheckStateChange(item.location, checked)
             }
             SearchItem.TYPE_MOOD -> {
                 if (checked) {
@@ -226,7 +241,47 @@ class SearchListAdapter(
                     mSelectedMoodIds.remove(item.mood!!.id)
                     isLastCheck()
                 }
-                listener?.onMoodChackStateChange(item.mood, checked)
+                listener?.onMoodCheckStateChange(item.mood, checked)
+            }
+            SearchItem.TYPE_NO_TAGS -> {
+                if (checked) {
+                    mSelectedNoItemTypes.add(item.type)
+                    isFirstCheck()
+                } else {
+                    mSelectedNoItemTypes.remove(item.type)
+                    isLastCheck()
+                }
+                listener?.onNoTagsCheckStateChange(checked)
+            }
+            SearchItem.TYPE_NO_CATEGORY -> {
+                if (checked) {
+                    mSelectedNoItemTypes.add(item.type)
+                    isFirstCheck()
+                } else {
+                    mSelectedNoItemTypes.remove(item.type)
+                    isLastCheck()
+                }
+                listener?.onNoCategoryCheckStateChange(checked)
+            }
+            SearchItem.TYPE_NO_MOOD -> {
+                if (checked) {
+                    mSelectedNoItemTypes.add(item.type)
+                    isFirstCheck()
+                } else {
+                    mSelectedNoItemTypes.remove(item.type)
+                    isLastCheck()
+                }
+                listener?.onNoMoodCheckStateChange(checked)
+            }
+            SearchItem.TYPE_NO_LOCATION -> {
+                if (checked) {
+                    mSelectedNoItemTypes.add(item.type)
+                    isFirstCheck()
+                } else {
+                    mSelectedNoItemTypes.remove(item.type)
+                    isLastCheck()
+                }
+                listener?.onNoLocationChackStateChange(checked)
             }
         }
     }
@@ -235,14 +290,15 @@ class SearchListAdapter(
         if (mSelectedTagIds.isEmpty()
                 && mSelectedCategoryIds.isEmpty()
                 && mSelectedMoodIds.isEmpty()
-                && mSelectedLocationIds.isEmpty()) {
+                && mSelectedLocationIds.isEmpty()
+                && mSelectedNoItemTypes.isEmpty()) {
             listener?.onCheckCleared()
         }
     }
 
     private fun isFirstCheck() {
-        val checkCount = mSelectedTagIds.size+ mSelectedCategoryIds.size + mSelectedMoodIds.size +
-                mSelectedLocationIds.size
+        val checkCount = mSelectedTagIds.size + mSelectedCategoryIds.size + mSelectedMoodIds.size +
+                mSelectedLocationIds.size + mSelectedNoItemTypes.size
         if (checkCount == 1) {
             listener?.onFirstCheck()
         }
@@ -333,11 +389,55 @@ class SearchListAdapter(
         override fun getCheckable(): Checkable = itemView.check_search_item_mood
     }
 
+    inner class SearchNoTagsViewHolder(view: View) : SearchChildViewHolder(view) {
+        override fun bind(item: SearchItem) {
+            setOnChildCheckedListener(this@SearchListAdapter)
+            itemView.check_search_no_tags.text =
+                    itemView.context.getString(R.string.fragment_drawer_menu_no_tags)
+        }
+
+        override fun getCheckable(): Checkable = itemView.check_search_no_tags
+    }
+
+    inner class SearchNoCategoryViewHolder(view: View) : SearchChildViewHolder(view) {
+        override fun bind(item: SearchItem) {
+            setOnChildCheckedListener(this@SearchListAdapter)
+            itemView.check_search_no_category.text =
+                    itemView.context.getString(R.string.fragment_drawer_menu_no_category)
+        }
+
+        override fun getCheckable(): Checkable = itemView.check_search_no_category
+    }
+
+    inner class SearchNoMoodViewHolder(view: View) : SearchChildViewHolder(view) {
+        override fun bind(item: SearchItem) {
+            setOnChildCheckedListener(this@SearchListAdapter)
+            itemView.check_search_no_mood.text =
+                    itemView.context.getString(R.string.fragment_drawer_menu_no_mood)
+        }
+
+        override fun getCheckable(): Checkable = itemView.check_search_no_mood
+    }
+
+    inner class SearchNoLocationViewHolder(view: View) : SearchChildViewHolder(view) {
+        override fun bind(item: SearchItem) {
+            setOnChildCheckedListener(this@SearchListAdapter)
+            itemView.check_search_no_location.text =
+                    itemView.context.getString(R.string.fragment_drawer_menu_no_location)
+        }
+
+        override fun getCheckable(): Checkable = itemView.check_search_no_location
+    }
+
     interface OnSearchListInteractionListener {
-        fun onTagChackStateChange(tag: MyTag, checked: Boolean)
-        fun onCategoryChackStateChange(category: MyCategory, checked: Boolean)
-        fun onLocationChackStateChange(location: MyLocation, checked: Boolean)
-        fun onMoodChackStateChange(mood: MyMood, checked: Boolean)
+        fun onTagCheckStateChange(tag: MyTag, checked: Boolean)
+        fun onNoTagsCheckStateChange(checked: Boolean)
+        fun onCategoryCheckStateChange(category: MyCategory, checked: Boolean)
+        fun onNoCategoryCheckStateChange(checked: Boolean)
+        fun onLocationCheckStateChange(location: MyLocation, checked: Boolean)
+        fun onNoLocationChackStateChange(checked: Boolean)
+        fun onMoodCheckStateChange(mood: MyMood, checked: Boolean)
+        fun onNoMoodCheckStateChange(checked: Boolean)
         fun onCheckCleared()
         fun onFirstCheck()
     }

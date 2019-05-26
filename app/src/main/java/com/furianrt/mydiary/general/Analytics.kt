@@ -61,6 +61,12 @@ object Analytics {
     const val EVENT_SEARCH_CATEGORY_CHANGED = "search_category_changed"
     const val EVENT_SEARCH_LOCATION_CHANGED = "search_location_changed"
     const val EVENT_SEARCH_MOOD_CHANGED = "search_mood_changed"
+    const val EVENT_SEARCH_NO_TAGS_CHANGED = "search_tags_changed"
+    const val EVENT_SEARCH_NO_CATEGORY_CHANGED = "search_category_changed"
+    const val EVENT_SEARCH_NO_MOOD_CHANGED = "search_mood_changed"
+    const val EVENT_SEARCH_NO_LOCATION_CHANGED = "search_location_changed"
+
+    const val BUNDLE_TASK_INDEX = "task_index"
 
     fun sendEvent(context: Context, event: String, bundle: Bundle? = null) {
         if (!BuildConfig.DEBUG) {

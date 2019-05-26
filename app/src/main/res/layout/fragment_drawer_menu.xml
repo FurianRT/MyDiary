@@ -162,7 +162,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/image_drawer_header"
-        tools:text="@string/nav_header_main_button_sync_pro" />
+        tools:text="@string/nav_header_main_button_sync" />
 
     <View
         android:id="@+id/view_sync"
@@ -183,6 +183,7 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:clipToPadding="false"
+        android:paddingTop="4dp"
         android:paddingBottom="48dp"
         android:scrollbarStyle="outsideOverlay"
         android:scrollbars="vertical"

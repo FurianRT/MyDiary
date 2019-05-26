@@ -192,11 +192,24 @@ class MainActivity : BaseActivity(), MainActivityContract.View,
         mPresenter.onMoodFilterChange(mood, checked)
     }
 
+    override fun onNoTagsChackStateChange(checked: Boolean) {
+        mPresenter.onNoTagsFilterChange(checked)
+    }
+
+    override fun onNoCategoryChackStateChange(checked: Boolean) {
+        mPresenter.onNoCategoryFilterChange(checked)
+    }
+
+    override fun onNoMoodChackStateChange(checked: Boolean) {
+        mPresenter.onNoMoodFilterChange(checked)
+    }
+
+    override fun onNoLocationChackStateChange(checked: Boolean) {
+        mPresenter.onNoLocationFilterChange(checked)
+    }
+
     override fun onBillingInitialized() {
         super.onBillingInitialized()
-        supportFragmentManager.findFragmentByTag(DrawerMenuFragment.TAG)?.let {
-            (it as DrawerMenuFragment).onBillingInitialized()
-        }
         if (!getIsItemPurshased(BuildConfig.ITEM_SYNC_SKU) && !getIsItemPurshased(ITEM_TEST_SKU)) {
             showAdView()
         }
@@ -206,9 +219,6 @@ class MainActivity : BaseActivity(), MainActivityContract.View,
         super.onProductPurchased(productId, details)
         if (productId == BuildConfig.ITEM_SYNC_SKU || productId == ITEM_TEST_SKU) {
             hideAdView()
-            supportFragmentManager.findFragmentByTag(DrawerMenuFragment.TAG)?.let {
-                (it as DrawerMenuFragment).onProductPurchased(productId)
-            }
         }
     }
 
