@@ -6,6 +6,7 @@ import android.content.Intent
 import android.graphics.Color
 import android.graphics.PorterDuff
 import android.location.Geocoder
+import android.net.Uri
 import android.os.Bundle
 import android.os.Looper
 import android.preference.PreferenceManager
@@ -256,6 +257,11 @@ class NoteFragment : Fragment(), NoteFragmentContract.View, DatePickerDialog.OnD
             R.id.menu_mic -> {
                 Analytics.sendEvent(requireContext(), Analytics.EVENT_SPEECH_TO_TEXT)
                 mPresenter.onButtonMicClick()
+                true
+            }
+            R.id.menu_share -> {
+                Analytics.sendEvent(requireContext(), Analytics.EVENT_SHARE_NOTE)
+                mPresenter.onButtonShareClick()
                 true
             }
             else -> super.onOptionsItemSelected(item)
@@ -677,5 +683,29 @@ class NoteFragment : Fragment(), NoteFragmentContract.View, DatePickerDialog.OnD
 
     fun onNoteFragmentEditModeEnabled() {
         mPresenter.onEditModeEnabled()
+    }
+
+    override fun shareNote(note: MyNoteWithProp) {
+        val uris = note.images.map { Uri.parse(it.uri) }
+        val intent: Intent
+        when {
+            uris.size > 1 -> {
+                intent = Intent(Intent.ACTION_SEND_MULTIPLE)
+                intent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, ArrayList(uris))
+                intent.type = "image/*"
+            }
+            uris.size == 1 -> {
+                intent = Intent(Intent.ACTION_SEND)
+                intent.putExtra(Intent.EXTRA_STREAM, uris.first())
+                intent.type = "image/*"
+            }
+            else -> {
+                intent = Intent(Intent.ACTION_SEND)
+                intent.type = "text/plain"
+            }
+        }
+        intent.putExtra(Intent.EXTRA_SUBJECT, note.note.title)
+        intent.putExtra(Intent.EXTRA_TEXT, note.note.content)
+        startActivity(Intent.createChooser(intent, getString(R.string.share)))
     }
 }

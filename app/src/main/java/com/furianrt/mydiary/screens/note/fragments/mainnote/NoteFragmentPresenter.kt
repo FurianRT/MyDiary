@@ -418,4 +418,12 @@ class NoteFragmentPresenter(private val dataManager: DataManager) : NoteFragment
         addDisposable(dataManager.updateNoteText(mNoteId, curTitle, content)
                 .subscribe())
     }
+
+    override fun onButtonShareClick() {
+        addDisposable(dataManager.getAllNotesWithProp()
+                .firstOrError()
+                .map { notes -> notes.first { it.note.id == mNoteId } }
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe { note -> view?.shareNote(note) })
+    }
 }

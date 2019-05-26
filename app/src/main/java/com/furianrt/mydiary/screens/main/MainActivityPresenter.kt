@@ -212,7 +212,7 @@ class MainActivityPresenter(
                                     if (note.tags.isEmpty()) {
                                         return@filter mFilteredTagIds.contains(MyTag.TABLE_NAME)
                                     }
-                                    val tagIds =  mFilteredTagIds.filter { it != MyTag.TABLE_NAME }
+                                    val tagIds = mFilteredTagIds.filter { it != MyTag.TABLE_NAME }
                                     if (tagIds.isEmpty()) {
                                         return@filter false
                                     }

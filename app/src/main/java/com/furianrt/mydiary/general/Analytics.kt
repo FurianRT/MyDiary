@@ -37,7 +37,6 @@ object Analytics {
     const val EVENT_NORE_REDO = "note_redo"
     const val EVENT_NOTE_DATE_CHANGED = "note_date_changed"
     const val EVENT_NOTE_TIME_CHANGED = "note_time_changed"
-    const val EVENT_NOTE_SHARE = "note_share"
     const val EVENT_NOTE_IMAGE_PAGER_OPENED = "note_image_opened"
     const val EVENT_NOTE_IMAGE_PAGER_IMAGE_EDITED = "note_image_page_image_edited"
     const val EVENT_NOTE_IMAGE_PAGER_IMAGE_DELETE = "note_image_page_image_delete"
@@ -65,6 +64,7 @@ object Analytics {
     const val EVENT_SEARCH_NO_CATEGORY_CHANGED = "search_category_changed"
     const val EVENT_SEARCH_NO_MOOD_CHANGED = "search_mood_changed"
     const val EVENT_SEARCH_NO_LOCATION_CHANGED = "search_location_changed"
+    const val EVENT_SHARE_NOTE = "share_note"
 
     const val BUNDLE_TASK_INDEX = "task_index"
 

@@ -46,6 +46,7 @@ interface NoteFragmentContract {
         fun recordSpeech()
         fun sendUndoErrorEvent()
         fun sendRedoErrorEvent()
+        fun shareNote(note: MyNoteWithProp)
     }
 
     abstract class Presenter : BasePresenter<View>() {
@@ -77,5 +78,6 @@ interface NoteFragmentContract {
         abstract fun onEditModeEnabled()
         abstract fun onButtonMicClick()
         abstract fun onSpeechRecorded(curTitle: String, curContent: String, recordedText: String)
+        abstract fun onButtonShareClick()
     }
 }

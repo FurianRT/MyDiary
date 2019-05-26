@@ -4,10 +4,7 @@ import android.app.Activity
 import android.app.Application
 import android.app.NotificationChannel
 import android.app.NotificationManager
-import android.os.Build
-import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
+import android.os.*
 import android.widget.ImageView
 import androidx.preference.PreferenceManager
 import com.furianrt.mydiary.data.prefs.PreferencesHelper
@@ -54,6 +51,9 @@ class MyApp : Application(), Application.ActivityLifecycleCallbacks {
         initializeImageAlbum()
         resetSyncProgress()
         MobileAds.initialize(this, getString(R.string.banner_ad_unit_id))
+
+        val builder = StrictMode.VmPolicy.Builder()
+        StrictMode.setVmPolicy(builder.build())
     }
 
     override fun onActivityDestroyed(activity: Activity?) {}
