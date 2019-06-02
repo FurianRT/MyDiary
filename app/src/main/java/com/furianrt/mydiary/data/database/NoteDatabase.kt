@@ -8,7 +8,7 @@ import com.furianrt.mydiary.data.model.*
 @Database(
         entities = [MyNote::class, MyCategory::class, MyTag::class, MyLocation::class, MyMood::class,
             NoteTag::class, MyImage::class, MyHeaderImage::class, MyNoteAppearance::class,
-            MyProfile::class, MyForecast::class],
+            MyProfile::class, MyForecast::class, NoteLocation::class],
         version = 1,
         exportSchema = false
 )
@@ -25,4 +25,5 @@ abstract class NoteDatabase : RoomDatabase() {
     abstract fun appearanceDao(): AppearanceDao
     abstract fun profileDao(): ProfileDao
     abstract fun forecastDao(): ForecastDao
+    abstract fun noteLocationDao(): NoteLocationDao
 }

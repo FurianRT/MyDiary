@@ -38,7 +38,7 @@ class SearchListAdapter(
         private const val BUNDLE_SELECTED_TAG_IDS = "selected_tag_ids"
         private const val BUNDLE_SELECTED_CATEGORY_IDS = "selected_category_ids"
         private const val BUNDLE_SELECTED_MOOD_IDS = "selected_mood_ids"
-        private const val BUNDLE_SELECTED_LOCATION_IDS = "selected_location_ids"
+        private const val BUNDLE_SELECTED_LOCATION_NAMES = "selected_location_names"
         private const val BUNDLE_SELECTED_ITEM_NON_TYPES = "selected_item_non_types"
     }
 
@@ -46,7 +46,7 @@ class SearchListAdapter(
     private val mSelectedTagIds = HashSet<String>()
     private val mSelectedCategoryIds = HashSet<String>()
     private val mSelectedMoodIds = HashSet<Int>()
-    private val mSelectedLocationIds = HashSet<String>()
+    private val mSelectedLocationNames = HashSet<String>()
     private val mSelectedNoItemTypes = HashSet<Int>()
 
     override fun onSaveInstanceState(savedInstanceState: Bundle?) {
@@ -55,7 +55,7 @@ class SearchListAdapter(
             it.putStringArrayList(BUNDLE_SELECTED_TAG_IDS, ArrayList(mSelectedTagIds))
             it.putStringArrayList(BUNDLE_SELECTED_CATEGORY_IDS, ArrayList(mSelectedCategoryIds))
             it.putIntegerArrayList(BUNDLE_SELECTED_MOOD_IDS, ArrayList(mSelectedMoodIds))
-            it.putStringArrayList(BUNDLE_SELECTED_LOCATION_IDS, ArrayList(mSelectedLocationIds))
+            it.putStringArrayList(BUNDLE_SELECTED_LOCATION_NAMES, ArrayList(mSelectedLocationNames))
             it.putIntegerArrayList(BUNDLE_SELECTED_ITEM_NON_TYPES, ArrayList(mSelectedNoItemTypes))
         }
     }
@@ -76,8 +76,8 @@ class SearchListAdapter(
             mSelectedMoodIds.clear()
             mSelectedMoodIds.addAll(it.getIntegerArrayList(BUNDLE_SELECTED_MOOD_IDS) ?: emptyList())
 
-            mSelectedLocationIds.clear()
-            mSelectedLocationIds.addAll(it.getStringArrayList(BUNDLE_SELECTED_LOCATION_IDS)
+            mSelectedLocationNames.clear()
+            mSelectedLocationNames.addAll(it.getStringArrayList(BUNDLE_SELECTED_LOCATION_NAMES)
                     ?: emptyList())
 
             mSelectedNoItemTypes.clear()
@@ -97,7 +97,7 @@ class SearchListAdapter(
         mSelectedTagIds.clear()
         mSelectedCategoryIds.clear()
         mSelectedMoodIds.clear()
-        mSelectedLocationIds.clear()
+        mSelectedLocationNames.clear()
         mSelectedNoItemTypes.clear()
 
         //only update the child views that are visible (i.e. their group is expanded)
@@ -168,7 +168,7 @@ class SearchListAdapter(
             SearchItem.TYPE_CATEGORY ->
                 holder?.onBindViewHolder(flatPosition, mSelectedCategoryIds.contains(item.category!!.id))
             SearchItem.TYPE_LOCATION ->
-                holder?.onBindViewHolder(flatPosition, mSelectedLocationIds.contains(item.location!!.noteId))
+                holder?.onBindViewHolder(flatPosition, mSelectedLocationNames.contains(item.location!!.name))
             SearchItem.TYPE_MOOD ->
                 holder?.onBindViewHolder(flatPosition, mSelectedMoodIds.contains(item.mood!!.id))
             else ->
@@ -225,10 +225,10 @@ class SearchListAdapter(
             }
             SearchItem.TYPE_LOCATION -> {
                 if (checked) {
-                    mSelectedLocationIds.add(item.location!!.noteId)
+                    mSelectedLocationNames.add(item.location!!.name)
                     isFirstCheck()
                 } else {
-                    mSelectedLocationIds.remove(item.location!!.noteId)
+                    mSelectedLocationNames.remove(item.location!!.name)
                     isLastCheck()
                 }
                 listener?.onLocationCheckStateChange(item.location, checked)
@@ -290,7 +290,7 @@ class SearchListAdapter(
         if (mSelectedTagIds.isEmpty()
                 && mSelectedCategoryIds.isEmpty()
                 && mSelectedMoodIds.isEmpty()
-                && mSelectedLocationIds.isEmpty()
+                && mSelectedLocationNames.isEmpty()
                 && mSelectedNoItemTypes.isEmpty()) {
             listener?.onCheckCleared()
         }
@@ -298,7 +298,7 @@ class SearchListAdapter(
 
     private fun isFirstCheck() {
         val checkCount = mSelectedTagIds.size + mSelectedCategoryIds.size + mSelectedMoodIds.size +
-                mSelectedLocationIds.size + mSelectedNoItemTypes.size
+                mSelectedLocationNames.size + mSelectedNoItemTypes.size
         if (checkCount == 1) {
             listener?.onFirstCheck()
         }

@@ -72,7 +72,6 @@ class DrawerMenuPresenter(
                 { tags, categories, locations, moods ->
                     SearchEntries(tags, categories, locations, moods)
                 })
-                .map { entries -> entries.apply { locations = locations.distinctBy { it.name } } }
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { view?.showSearchEntries(it) })
     }

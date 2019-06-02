@@ -1,0 +1,31 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <PreferenceCategory
+        android:key="image_settings"
+        android:title="@string/load"
+        app:iconSpaceReserved="false">
+
+        <SwitchPreference
+            android:defaultValue="true"
+            android:key="load_daily_image"
+            android:summaryOff="@string/pref_daily_image_load_off_state"
+            android:summaryOn="@string/pref_daily_image_load_on_state"
+            android:title="@string/pref_daily_image_load_title"
+            app:iconSpaceReserved="false" />
+
+        <ListPreference
+            android:defaultValue="backgrounds"
+            android:dependency="load_daily_image"
+            android:entries="@array/pref_key_image_category_titles"
+            android:entryValues="@array/pref_key_image_category_values"
+            android:key="daily_image_category"
+            android:negativeButtonText="@null"
+            android:positiveButtonText="@null"
+            android:summary="%s"
+            android:title="@string/pref_daily_image_category_title"
+            app:iconSpaceReserved="false" />
+
+    </PreferenceCategory>
+
+</PreferenceScreen>

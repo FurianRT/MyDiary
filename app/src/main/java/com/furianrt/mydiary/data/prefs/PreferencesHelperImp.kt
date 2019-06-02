@@ -73,7 +73,7 @@ class PreferencesHelperImp(val context: Context) : PreferencesHelper {
     }
 
     override fun getPasswordRequestDelay(): Long =
-            mPrefs.getLong(PreferencesHelper.SECURITY_REQUEST_DELAY, 1000L)
+            mPrefs.getLong(PreferencesHelper.SECURITY_REQUEST_DELAY, PreferencesHelper.DEFAULT_PIN_DELAY.toLong())
 
     override fun setPasswordRequestDelay(delay: Long) {
         mPrefs.edit().putLong(PreferencesHelper.SECURITY_REQUEST_DELAY, delay).apply()
@@ -99,4 +99,11 @@ class PreferencesHelperImp(val context: Context) : PreferencesHelper {
 
     override fun getLastAppLaunchTime(): Long =
             mPrefs.getLong(PreferencesHelper.LAST_APP_LAUNCH_TIME, DateTime.now().millis)
+
+    override fun getDailyImageCategory(): String =
+            mPrefs.getString(PreferencesHelper.DAILY_IMAGE_CATEGORY, PreferencesHelper.DAILY_IMAGE_CATEGORY_DEFAULT)
+                    ?: PreferencesHelper.DAILY_IMAGE_CATEGORY_DEFAULT
+
+    override fun isDailyImageEnabled(): Boolean =
+            mPrefs.getBoolean(PreferencesHelper.LOAD_DAILY_IMAGE, true)
 }

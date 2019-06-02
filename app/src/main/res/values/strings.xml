@@ -2,81 +2,10 @@
 
     <string name="app_name">YourBestDiary</string>
 
-    <string name="banner_ad_unit_id" translatable="false">ca-app-pub-9518936645258348~9000751532</string>
+    <string name="banner_ad_app_id" translatable="false">ca-app-pub-9518936645258348~9000751532</string>
+    <string name="banner_ad_unit_id" translatable="false">ca-app-pub-9518936645258348/9547546445</string>
 
-    <string-array name="tags">
-        <item>Мечта</item>
-        <item>Идея</item>
-        <item>Планы</item>
-    </string-array>
-
-    <string-array name="moods">
-        <item>Злость</item>
-        <item>Ужасное</item>
-        <item>Плохое</item>
-        <item>Нормальное</item>
-        <item>Хорошее</item>
-        <item>Отличное</item>
-    </string-array>
-
-    <string-array name="categories">
-        <item>Развлечение</item>
-        <item>Бизнес</item>
-        <item>Друзья</item>
-        <item>Любовь</item>
-        <item>План</item>
-    </string-array>
-
-    <string-array name="pref_font_size_titles">
-        <item>Мелкий</item>
-        <item>Обычный</item>
-        <item>Большой</item>
-        <item>Огромный</item>
-    </string-array>
-
-    <string-array name="pref_font_size_values">
-        <item>14</item>
-        <item>16</item>
-        <item>18</item>
-        <item>20</item>
-    </string-array>
-
-    <string-array name="pref_weather_units_titles">
-        <item>°C</item>
-        <item>°F</item>
-    </string-array>
-
-    <string-array name="pref_weather_units_values">
-        <item>0</item>
-        <item>1</item>
-    </string-array>
-
-    <string-array name="pref_time_format_titles">
-        <item>12-часовой</item>
-        <item>24-часовой</item>
-    </string-array>
-
-    <string-array name="pref_time_format_values">
-        <item>false</item>
-        <item>true</item>
-    </string-array>
-
-    <string-array name="pref_key_frequency_titles">
-        <item>Без задержки</item>
-        <item>15 секунд</item>
-        <item>30 секунд</item>
-        <item>1 минута</item>
-        <item>5 минут</item>
-        <item>10 минут</item>
-    </string-array>
-    <string-array name="pref_key_frequency_values">
-        <item>1000</item>
-        <item>15000</item>
-        <item>30000</item>
-        <item>60000</item>
-        <item>300000</item>
-        <item>600000</item>
-    </string-array>
+    <string name="geo_api_key" translatable="false">AIzaSyBqIaX5gl6vGr0C5xZA29CKXoYyJPW2pxI</string>
 
     <string name="note_list_date_format" translatable="false">%1$s, %2$s</string>
     <string name="counter_format" translatable="false">%1$d/%2$d</string>
@@ -147,6 +76,7 @@
     <string name="appearance">Внешний вид</string>
     <string name="background">Фон</string>
     <string name="text">Текст</string>
+    <string name="load">Загрузка</string>
 
     <string name="note_background_summary">Цвет заднего плана записи</string>
     <string name="note_background_title">Цвет фона</string>
@@ -201,8 +131,9 @@
     <string name="fragment_done_email_sent">Письмо отправлено!</string>
     <string name="nav_header_main_sing_in">Войти в аккаунт</string>
     <string name="nav_header_main_anonymous">Аноним</string>
-    <string name="nav_header_main_regular">Премиум статус: нет</string>
-    <string name="nav_header_main_premium">Премиум статус: есть</string>
+   <!-- <string name="nav_header_main_regular">Премиум статус: нет</string>
+    <string name="nav_header_main_premium">Премиум статус: есть</string>-->
+    <string name="nav_header_main_profile_description">Открыть настройки</string>
     <string name="nav_header_main_photos">Фото:</string>
     <string name="nav_header_main_button_sync">Синхронизация</string>
     <string name="nav_header_main_today">Сегодня:</string>
@@ -224,12 +155,14 @@
     <string name="sync_error_appearance">Ошибка загрузки настроек</string>
     <string name="sync_error_categories">Ошибка загрузки папок</string>
     <string name="sync_error_tags">Ошибка загрузки тегов</string>
-    <string name="sync_error_note_tags">Ошибка загрузки связей</string>
+    <string name="sync_error_note_tags">Ошибка связей тегов</string>
     <string name="sync_error_locations">Ошибка загрузки мест</string>
+    <string name="sync_error_note_locations">Ошибка связей мест</string>
     <string name="sync_error_forecasts">Ошибка загрузки погоды</string>
     <string name="sync_error_images">Ошибка загрузки картинок</string>
     <string name="sync_error_cleanup">Ошибка очистки</string>
     <string name="sync_note_tags">Загрузка связей</string>
+    <string name="sync_note_locations">Загрузка связей</string>
     <string name="sync_locations">Загрузка мест</string>
     <string name="sync_forecasts">Загрузка прогноза</string>
     <string name="sync_error">Ошибка!</string>
@@ -304,4 +237,10 @@
     <string name="fragment_drawer_menu_no_location">Нет места</string>
     <string name="empty_search_note_list_empty">Ничего не найдено :-(</string>
     <string name="empty_search_note_list_hint">Попробуте изменить фильтры</string>
+    <string name="image_settings">Настройки картинки</string>
+    <string name="pref_daily_image_load_off_state">Включить загрузку дейли картинки</string>
+    <string name="pref_daily_image_load_on_state">Отключить загрузку дейли картинки</string>
+    <string name="pref_daily_image_load_title">Загрузка картинки</string>
+    <string name="pref_daily_image_category_title">Категория картинки</string>
+    <string name="fragment_premium_get_premium">Приобрести премиум версию</string>
 </resources>

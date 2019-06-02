@@ -12,13 +12,11 @@ interface MainActivityContract {
         fun showNotes(notes: List<NoteListItem>, selectedNoteIds: Set<String>)
         fun showNotePager(position: Int, note: MyNoteWithProp)
         fun showHeaderImage(image: MyHeaderImage)
-        fun requestStoragePermissions()
         fun showViewNewNote()
-        fun showImageExplorer()
         fun activateSelection()
         fun deactivateSelection()
         fun updateItemSelection(selectedNoteIds: Set<String>)
-        fun showEmptyHeaderImage()
+        fun showEmptyHeaderImage(hasError: Boolean)
         fun showSettingsView()
         fun networkAvailable(): Boolean
         fun setSortDesc()
@@ -33,13 +31,12 @@ interface MainActivityContract {
         fun showNoSearchResults()
         fun hideEmptyNoteList()
         fun hideNoSearchResults()
+        fun showChangeFilters()
     }
 
     abstract class Presenter : BasePresenter<View>() {
         abstract fun onMainListItemClick(note: MyNoteWithProp, position: Int)
-        abstract fun onHeaderImagesPicked(imageUrls: List<String>)
         abstract fun onMainImageClick()
-        abstract fun onStoragePermissionsGranted()
         abstract fun onMainListItemLongClick(note: MyNoteWithProp, position: Int)
         abstract fun onSaveInstanceState(bundle: Bundle?)
         abstract fun onRestoreInstanceState(bundle: Bundle?)
@@ -63,5 +60,7 @@ interface MainActivityContract {
         abstract fun onNoCategoryFilterChange(checked: Boolean)
         abstract fun onNoMoodFilterChange(checked: Boolean)
         abstract fun onNoLocationFilterChange(checked: Boolean)
+        abstract fun onButtonChangeFiltersClick()
+        abstract fun onDailyImageLoadStateChange()
     }
 }

@@ -1,10 +1,8 @@
 package com.furianrt.mydiary.screens.main
 
-import android.Manifest
 import android.content.Context
 import android.content.Intent
 import android.content.res.Configuration
-import android.graphics.Color
 import android.os.Bundle
 import android.os.Handler
 import android.os.Parcelable
@@ -13,14 +11,18 @@ import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.view.animation.AccelerateInterpolator
 import android.view.animation.AlphaAnimation
 import android.view.animation.Animation
+import android.view.animation.DecelerateInterpolator
 import android.widget.FrameLayout
 import android.widget.Toast
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.widget.SearchView
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.view.GravityCompat
+import androidx.core.view.ViewCompat
+import androidx.core.view.ViewPropertyAnimatorListener
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.anjlab.android.iab.v3.TransactionDetails
 import com.furianrt.mydiary.BuildConfig
@@ -38,28 +40,29 @@ import com.furianrt.mydiary.screens.main.adapter.NoteListItem
 import com.furianrt.mydiary.screens.main.fragments.authentication.AuthFragment
 import com.furianrt.mydiary.screens.main.fragments.drawer.DrawerMenuFragment
 import com.furianrt.mydiary.screens.main.fragments.imagesettings.ImageSettingsFragment
+import com.furianrt.mydiary.screens.main.fragments.imagesettings.settings.DailySettingsFragment
 import com.furianrt.mydiary.screens.main.fragments.premium.PremiumFragment
 import com.furianrt.mydiary.screens.main.fragments.profile.ProfileFragment
 import com.furianrt.mydiary.screens.note.NoteActivity
 import com.furianrt.mydiary.screens.settings.global.GlobalSettingsActivity
-import com.furianrt.mydiary.utils.*
+import com.furianrt.mydiary.utils.dpToPx
+import com.furianrt.mydiary.utils.getDisplayWidth
+import com.furianrt.mydiary.utils.inTransaction
+import com.furianrt.mydiary.utils.isNetworkAvailable
 import com.google.android.gms.ads.AdListener
 import com.google.android.gms.ads.AdRequest
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.bottomsheet.BottomSheetBehavior
-import com.yanzhenjie.album.Album
-import com.yanzhenjie.album.api.widget.Widget
 import jp.wasabeef.recyclerview.animators.LandingAnimator
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.activity_main_toolbar.*
 import kotlinx.android.synthetic.main.bottom_sheet_main.*
-import pub.devrel.easypermissions.AfterPermissionGranted
-import pub.devrel.easypermissions.EasyPermissions
+import kotlinx.android.synthetic.main.empty_search_note_list.*
 import javax.inject.Inject
 
 class MainActivity : BaseActivity(), MainActivityContract.View,
         NoteListAdapter.OnMainListItemInteractionListener,
-        ImageSettingsFragment.OnImageSettingsInteractionListener,
+        DailySettingsFragment.OnImageSettingsInteractionListener,
         DeleteNoteDialog.OnDeleteNoteConfirmListener, CategoriesDialog.OnCategorySelectedListener,
         PremiumFragment.OnPremiumFragmentInteractionListener,
         DrawerMenuFragment.OnDrawerMenuInteractionListener {
@@ -70,12 +73,13 @@ class MainActivity : BaseActivity(), MainActivityContract.View,
         private const val BUNDLE_ROOT_LAYOUT_OFFSET = "root_layout_offset"
         private const val BUNDLE_BOTTOM_SHEET_STATE = "bottom_sheet_state"
         private const val BUNDLE_SEARCH_QUERY = "query"
-        private const val STORAGE_PERMISSIONS_REQUEST_CODE = 1
         private const val ACTIVITY_SETTING_REQUEST_CODE = 2
         private const val ITEM_LONG_CLICK_VIBRATION_DURATION = 30L
         private const val BOTTOM_SHEET_EXPAND_DELAY = 300L
         private const val ANIMATION_IMAGE_SETTINGS_FADE_OUT_DURATION = 350L
         private const val ANIMATION_IMAGE_SETTINGS_FADE_OUT_OFFSET = 2000L
+        private const val ANIMATION_NO_SEARCH_RESULT_DURATION = 200L
+        private const val ANIMATION_NO_SEARCH_RESULT_SIZE = 1.4f
     }
 
     @Inject
@@ -153,14 +157,15 @@ class MainActivity : BaseActivity(), MainActivityContract.View,
             mSearchQury = it.getString(BUNDLE_SEARCH_QUERY, "")
         }
 
+        button_change_filters.setOnClickListener { mPresenter.onButtonChangeFiltersClick() }
+
         fab_menu.setOnClickListener { mPresenter.onFabMenuClick() }
         fab_delete.setOnClickListener { mPresenter.onButtonDeleteClick() }
-        fab_folder.setOnClickListener { mPresenter.onButtonFolderClick() }
-        fab_place.setOnClickListener {
+        fab_folder.setOnClickListener {
             if (BuildConfig.DEBUG) {
                 consumePurchase(ITEM_TEST_SKU)
             }
-            //todo
+            mPresenter.onButtonFolderClick()
         }
 
         image_toolbar_main.setOnClickListener { mPresenter.onMainImageClick() }
@@ -218,6 +223,7 @@ class MainActivity : BaseActivity(), MainActivityContract.View,
     override fun onProductPurchased(productId: String, details: TransactionDetails?) {
         super.onProductPurchased(productId, details)
         if (productId == BuildConfig.ITEM_SYNC_SKU || productId == ITEM_TEST_SKU) {
+            closeBottomSheet()
             hideAdView()
         }
     }
@@ -250,8 +256,11 @@ class MainActivity : BaseActivity(), MainActivityContract.View,
                 .into(image_toolbar_main)
     }
 
-    override fun showEmptyHeaderImage() {
+    override fun showEmptyHeaderImage(hasError: Boolean) {
         Log.e(TAG, "showEmptyHeaderImage")
+        if (hasError) {
+            Analytics.sendEvent(this, Analytics.EVENT_DAILY_IMAGE_LOAD_ERROR)
+        }
         disableActionBarExpanding()
     }
 
@@ -309,10 +318,6 @@ class MainActivity : BaseActivity(), MainActivityContract.View,
                 mPresenter.onButtonSortClick()
                 true
             }
-            android.R.id.home -> {
-                drawer.openDrawer(drawer, true)
-                true
-            }
             else -> super.onOptionsItemSelected(item)
         }
     }
@@ -343,6 +348,7 @@ class MainActivity : BaseActivity(), MainActivityContract.View,
     }
 
     override fun showViewImageSettings() {
+        Analytics.sendEvent(this, Analytics.EVENT_DAILY_IMAGE_OPEN)
         if (supportFragmentManager.findFragmentByTag(ImageSettingsFragment.TAG) == null) {
             supportFragmentManager.inTransaction {
                 replace(R.id.main_sheet_container, ImageSettingsFragment(), ImageSettingsFragment.TAG)
@@ -409,50 +415,6 @@ class MainActivity : BaseActivity(), MainActivityContract.View,
         startActivity(NoteActivity.newIntentModeAdd(this))
     }
 
-    override fun requestStoragePermissions() {
-        val readExtStorage = Manifest.permission.READ_EXTERNAL_STORAGE
-        val camera = Manifest.permission.CAMERA
-        if (EasyPermissions.hasPermissions(this, readExtStorage, camera)) {
-            mPresenter.onStoragePermissionsGranted()
-        } else {
-            EasyPermissions.requestPermissions(this, getString(R.string.storage_permission_request),
-                    STORAGE_PERMISSIONS_REQUEST_CODE, readExtStorage, camera)
-        }
-    }
-
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults, this)
-    }
-
-    @AfterPermissionGranted(STORAGE_PERMISSIONS_REQUEST_CODE)
-    override fun showImageExplorer() {
-        val widget = Widget.newDarkBuilder(this)
-                .statusBarColor(getThemePrimaryDarkColor(this))
-                .toolBarColor(getThemePrimaryColor(this))
-                .navigationBarColor(Color.BLACK)
-                .title(R.string.album)
-                .build()
-        Album.image(this)
-                .singleChoice()
-                .columnCount(3)
-                .filterMimeType {
-                    when (it) {
-                        "jpeg" -> true
-                        "jpg " -> true
-                        else -> false
-                    }
-                }
-                .afterFilterVisibility(false)
-                .camera(true)
-                .widget(widget)
-                .onResult { albImg ->
-                    if (albImg.isNotEmpty()) mNeedToOpenActionBar = true
-                    mPresenter.onHeaderImagesPicked(albImg.map { it.path })
-                }
-                .start()
-    }
-
     override fun showNotes(notes: List<NoteListItem>, selectedNoteIds: Set<String>) {
         Log.e(TAG, "showNotes")
         mAdapter.selectedNoteIds.clear()
@@ -475,10 +437,33 @@ class MainActivity : BaseActivity(), MainActivityContract.View,
 
     override fun showNoSearchResults() {
         empty_search.visibility = View.VISIBLE
+        ViewCompat.animate(empty_search)
+                .alpha(1f)
+                .scaleX(1f)
+                .scaleY(1f)
+                .setDuration(ANIMATION_NO_SEARCH_RESULT_DURATION)
+                .setInterpolator(DecelerateInterpolator())
+                .setListener(null)
+                .start()
     }
 
     override fun hideNoSearchResults() {
-        empty_search.visibility = View.GONE
+        ViewCompat.animate(empty_search)
+                .alpha(0f)
+                .scaleX(ANIMATION_NO_SEARCH_RESULT_SIZE)
+                .scaleY(ANIMATION_NO_SEARCH_RESULT_SIZE)
+                .setDuration(ANIMATION_NO_SEARCH_RESULT_DURATION)
+                .setInterpolator(AccelerateInterpolator())
+                .setListener(object : ViewPropertyAnimatorListener {
+                    override fun onAnimationCancel(view: View?) {
+                        view?.visibility = View.GONE
+                    }
+                    override fun onAnimationStart(view: View?) {}
+                    override fun onAnimationEnd(view: View?) {
+                        view?.visibility = View.GONE
+                    }
+                })
+                .start()
     }
 
     override fun onMainListItemClick(note: MyNoteWithProp, position: Int) {
@@ -583,6 +568,14 @@ class MainActivity : BaseActivity(), MainActivityContract.View,
 
     override fun onButtonPurshaseClick(productId: String) {
         purshaseItem(productId)
+    }
+
+    override fun showChangeFilters() {
+        drawer.openDrawer(GravityCompat.START, true)
+    }
+
+    override fun onDailyImageLoadStateChange() {
+        mPresenter.onDailyImageLoadStateChange()
     }
 
     override fun onStart() {

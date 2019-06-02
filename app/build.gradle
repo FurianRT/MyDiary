@@ -12,7 +12,7 @@ android {
         applicationId "com.furianrt.mydiary"
         minSdkVersion 21
         targetSdkVersion 28
-        versionCode 7
+        versionCode 9
         versionName "1.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -55,7 +55,7 @@ dependencies {
     implementation "androidx.recyclerview:recyclerview:$support_version"
     implementation "androidx.cardview:cardview:1.0.0"
     implementation "androidx.preference:preference:$support_version"
-    implementation "com.google.android.material:material:1.1.0-alpha06"
+    implementation "com.google.android.material:material:1.1.0-alpha07"
     implementation "androidx.appcompat:appcompat:$support_version"
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.0.0-beta1'
@@ -118,7 +118,7 @@ dependencies {
     //Firebase
     implementation 'com.google.firebase:firebase-core:16.0.9'
     implementation 'com.google.firebase:firebase-storage:17.0.0'
-    implementation 'com.google.firebase:firebase-firestore:19.0.0'
+    implementation 'com.google.firebase:firebase-firestore:19.0.2'
     implementation 'com.google.firebase:firebase-messaging:18.0.0'
     implementation 'com.google.firebase:firebase-auth:17.0.0'
 
@@ -126,7 +126,7 @@ dependencies {
     implementation 'com.github.FrangSierra:RxFirebase:1.5.6'
 
     //Crash tracking
-    implementation 'com.crashlytics.sdk.android:crashlytics:2.10.0'
+    implementation 'com.crashlytics.sdk.android:crashlytics:2.10.1'
 
     //Advertising
     implementation 'com.google.firebase:firebase-ads:17.2.1'

@@ -150,12 +150,13 @@ class DrawerMenuFragment : Fragment(), DrawerMenuContract.View,
         view_sync.requestLayout()
     }
 
+    //Не убирать проверку на null
     override fun clearSyncProgress() {
-        view_sync.visibility = View.INVISIBLE
-        view_sync.layoutParams.width = 0
-        button_sync.isEnabled = true
-        button_sync.text = getString(R.string.nav_header_main_button_sync)
-        view_sync.requestLayout()
+        view_sync?.visibility = View.INVISIBLE
+        view_sync?.layoutParams?.width = 0
+        button_sync?.isEnabled = true
+        button_sync?.text = getString(R.string.nav_header_main_button_sync)
+        view_sync?.requestLayout()
     }
 
     private fun animateProgressAlpha() {
@@ -185,7 +186,7 @@ class DrawerMenuFragment : Fragment(), DrawerMenuContract.View,
 
     override fun showProfile(profile: MyProfile) {
         text_email.text = profile.email
-        text_profile_description.text = getString(R.string.nav_header_main_premium)
+        text_profile_description.text = getString(R.string.nav_header_main_profile_description)
     }
 
     override fun showSearchEntries(entries: SearchEntries) {

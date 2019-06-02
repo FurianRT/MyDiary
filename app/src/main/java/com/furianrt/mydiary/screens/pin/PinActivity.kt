@@ -90,7 +90,7 @@ class PinActivity : BaseActivity(), PinContract.View, BackupEmailFragment.OnBack
         }
 
         button_one.setOnClickListener { valueEntered(1) }
-        button_two.setOnClickListener { valueEntered(21) }
+        button_two.setOnClickListener { valueEntered(2) }
         button_three.setOnClickListener { valueEntered(3) }
         button_four.setOnClickListener { valueEntered(4) }
         button_five.setOnClickListener { valueEntered(5) }
@@ -106,6 +106,9 @@ class PinActivity : BaseActivity(), PinContract.View, BackupEmailFragment.OnBack
     }
 
     private fun valueEntered(value: Int) {
+        if (value !in 0..9) {
+            throw IllegalArgumentException()
+        }
         when (mMode) {
             MODE_CREATE -> mPresenter.onValueEnteredModeCreate(value)
             MODE_REMOVE -> mPresenter.onValueEnteredModeRemove(value)

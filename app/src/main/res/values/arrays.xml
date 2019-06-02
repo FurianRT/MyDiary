@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string-array name="tags">
+        <item>Мечта</item>
+        <item>Идея</item>
+        <item>Планы</item>
+    </string-array>
+
+    <string-array name="moods">
+        <item>Злость</item>
+        <item>Ужасное</item>
+        <item>Плохое</item>
+        <item>Нормальное</item>
+        <item>Хорошее</item>
+        <item>Отличное</item>
+    </string-array>
+
+    <string-array name="categories">
+        <item>Любовь</item>
+        <item>План</item>
+        <item>Друзья</item>
+        <item>Развлечение</item>
+        <item>Бизнес</item>
+    </string-array>
+
+    <string-array name="default_category_colors">
+        <item>#9C27B0</item>
+        <item>#1E88E5</item>
+        <item>#43A047</item>
+        <item>#FB8C00</item>
+        <item>#D81B60</item>
+    </string-array>
+
+    <string-array name="pref_font_size_titles">
+        <item>Мелкий</item>
+        <item>Обычный</item>
+        <item>Большой</item>
+        <item>Огромный</item>
+    </string-array>
+
+    <string-array name="pref_font_size_values">
+        <item>14</item>
+        <item>16</item>
+        <item>18</item>
+        <item>20</item>
+    </string-array>
+
+    <string-array name="pref_weather_units_titles">
+        <item>°C</item>
+        <item>°F</item>
+    </string-array>
+
+    <string-array name="pref_weather_units_values">
+        <item>0</item>
+        <item>1</item>
+    </string-array>
+
+    <string-array name="pref_time_format_titles">
+        <item>12-часовой</item>
+        <item>24-часовой</item>
+    </string-array>
+
+    <string-array name="pref_time_format_values">
+        <item>false</item>
+        <item>true</item>
+    </string-array>
+
+    <string-array name="pref_key_frequency_titles">
+        <item>Без задержки</item>
+        <item>15 секунд</item>
+        <item>30 секунд</item>
+        <item>1 минута</item>
+        <item>5 минут</item>
+        <item>10 минут</item>
+    </string-array>
+
+    <string-array name="pref_key_frequency_values">
+        <item>1000</item>
+        <item>15000</item>
+        <item>30000</item>
+        <item>60000</item>
+        <item>300000</item>
+        <item>600000</item>
+    </string-array>
+
+    <string-array name="pref_key_image_category_titles">
+        <item>Фоны</item>
+        <item>Мода</item>
+        <item>Природа</item>
+        <item>Наука</item>
+        <item>Образование</item>
+        <item>Люди</item>
+        <item>Чувства</item>
+        <item>Религия</item>
+        <item>Здоровье</item>
+        <item>Места</item>
+        <item>Животные</item>
+        <item>Индустрия</item>
+        <item>Еда</item>
+        <item>Компьютеры</item>
+        <item>Спорт</item>
+        <item>Транспорт</item>
+        <item>Путишевствия</item>
+        <item>Здания</item>
+        <item>Бизнес</item>
+        <item>Музыка</item>
+    </string-array>
+
+    <string-array name="pref_key_image_category_values">
+        <item>backgrounds</item>
+        <item>fashion</item>
+        <item>nature</item>
+        <item>science</item>
+        <item>education</item>
+        <item>people</item>
+        <item>feelings</item>
+        <item>religion</item>
+        <item>health</item>
+        <item>places</item>
+        <item>animals</item>
+        <item>industry</item>
+        <item>food</item>
+        <item>computer</item>
+        <item>sports</item>
+        <item>transportation</item>
+        <item>travel</item>
+        <item>buildings</item>
+        <item>business</item>
+        <item>music</item>
+    </string-array>
+
+</resources>

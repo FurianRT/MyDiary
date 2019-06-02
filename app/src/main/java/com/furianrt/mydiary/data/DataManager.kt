@@ -15,6 +15,8 @@ interface DataManager {
     fun insertNote(notes: List<MyNote>): Completable
     fun insertNoteTag(noteTag: NoteTag): Completable
     fun insertNoteTag(noteTags: List<NoteTag>): Completable
+    fun insertNoteLocation(noteLocation: NoteLocation): Completable
+    fun insertNoteLocation(noteLocation: List<NoteLocation>): Completable
     fun insertLocation(locations: List<MyLocation>): Completable
     fun insertForecast(forecasts: List<MyForecast>): Completable
     fun insertTag(tag: MyTag): Completable
@@ -42,6 +44,7 @@ interface DataManager {
     fun updateCategoriesSync(categories: List<MyCategory>): Completable
     fun updateTagsSync(tags: List<MyTag>): Completable
     fun updateNoteTagsSync(noteTags: List<NoteTag>): Completable
+    fun updateNoteLocationsSync(noteLocations: List<NoteLocation>): Completable
     fun updateLocationsSync(locations: List<MyLocation>): Completable
     fun updateForecastsSync(forecasts: List<MyForecast>): Completable
     fun deleteTag(tag: MyTag): Completable
@@ -53,6 +56,7 @@ interface DataManager {
     fun deleteNotesFromCloud(notes: List<MyNote>): Completable
     fun deleteCategoriesFromCloud(categories: List<MyCategory>): Completable
     fun deleteNoteTagsFromCloud(noteTags: List<NoteTag>): Completable
+    fun deleteNoteLocationsFromCloud(noteLocations: List<NoteLocation>): Completable
     fun deleteLocationsFromCloud(locations: List<MyLocation>): Completable
     fun deleteForecastsFromCloud(forecasts: List<MyForecast>): Completable
     fun deleteTagsFromCloud(tags: List<MyTag>): Completable
@@ -72,11 +76,13 @@ interface DataManager {
     fun getDeletedNotes(): Flowable<List<MyNote>>
     fun getTagsForNote(noteId: String): Flowable<List<MyTag>>
     fun getDeletedNoteTags(): Flowable<List<NoteTag>>
+    fun getDeletedNoteLocations(): Flowable<List<NoteLocation>>
     fun getDeletedLocations(): Flowable<List<MyLocation>>
     fun getDeletedForecasts(): Flowable<List<MyForecast>>
     fun getNote(noteId: String): Flowable<MyNote>
     fun getAllTags(): Flowable<List<MyTag>>
     fun getDeletedTags(): Flowable<List<MyTag>>
+    fun getLocationsForNote(noteId: String): Flowable<List<MyLocation>>
     fun loadForecast(lat: Double, lon: Double): Single<MyForecast>
     fun getMood(moodId: Int): Single<MyMood>
     fun getCategory(categoryId: String): Single<MyCategory>
@@ -92,12 +98,14 @@ interface DataManager {
     fun getAllNotesWithProp(): Flowable<List<MyNoteWithProp>>
     fun getHeaderImages(): Flowable<List<MyHeaderImage>>
     fun getAllNoteTags(): Flowable<List<NoteTag>>
+    fun getAllNoteLocations(): Flowable<List<NoteLocation>>
     fun getDbProfile(): Observable<MyProfile>
     fun getAllNotesFromCloud(): Single<List<MyNote>>
     fun getAllCategoriesFromCloud(): Single<List<MyCategory>>
     fun getAllTagsFromCloud(): Single<List<MyTag>>
     fun getAllAppearancesFromCloud(): Single<List<MyNoteAppearance>>
     fun getAllNoteTagsFromCloud(): Single<List<NoteTag>>
+    fun getAllNoteLocationsFromCloud(): Single<List<NoteLocation>>
     fun getAllLocationsFromCloud(): Single<List<MyLocation>>
     fun getAllForecastsFromCloud(): Single<List<MyForecast>>
     fun getAllImagesFromCloud(): Single<List<MyImage>>
@@ -125,6 +133,7 @@ interface DataManager {
     fun setPasswordRequestDelay(delay: Long)
     fun isPasswordEnabled(): Boolean
     fun setPasswordEnabled(enable: Boolean)
+    fun isDailyImageEnabled(): Boolean
     fun isProfileExists(email: String): Single<Boolean>
     fun setSortDesc(desc: Boolean)
     fun setLastSyncMessage(message: SyncProgressMessage)
@@ -137,6 +146,7 @@ interface DataManager {
     fun saveCategoriesInCloud(categories: List<MyCategory>): Completable
     fun saveTagsInCloud(tags: List<MyTag>): Completable
     fun saveNoteTagsInCloud(noteTags: List<NoteTag>): Completable
+    fun saveNoteLocationsInCloud(noteLocations: List<NoteLocation>): Completable
     fun saveAppearancesInCloud(appearances: List<MyNoteAppearance>): Completable
     fun saveLocationsInCloud(locations: List<MyLocation>): Completable
     fun saveForecastsInCloud(forecasts: List<MyForecast>): Completable

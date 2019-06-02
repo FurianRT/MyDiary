@@ -1,6 +1,5 @@
 package com.furianrt.mydiary.screens.main.fragments.imagesettings
 
-import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -8,6 +7,8 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.furianrt.mydiary.R
 import com.furianrt.mydiary.screens.main.MainActivity
+import com.furianrt.mydiary.screens.main.fragments.imagesettings.settings.DailySettingsFragment
+import com.furianrt.mydiary.utils.inTransaction
 import kotlinx.android.synthetic.main.fragment_image_settings.view.*
 import javax.inject.Inject
 
@@ -19,8 +20,6 @@ class ImageSettingsFragment : Fragment(), ImageSettingsContract.View {
 
     @Inject
     lateinit var mPresenter: ImageSettingsContract.Presenter
-
-    private var listener: OnImageSettingsInteractionListener? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         getPresenterComponent(requireContext()).inject(this)
@@ -36,17 +35,17 @@ class ImageSettingsFragment : Fragment(), ImageSettingsContract.View {
         return view
     }
 
-    override fun close() {
-        (activity as? MainActivity?)?.closeBottomSheet()
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        if (childFragmentManager.findFragmentByTag(DailySettingsFragment.TAG) == null) {
+            childFragmentManager.inTransaction {
+                add(R.id.container_image_settings, DailySettingsFragment(), DailySettingsFragment.TAG)
+            }
+        }
     }
 
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-        if (context is OnImageSettingsInteractionListener) {
-            listener = context
-        } else {
-            throw RuntimeException("$context must implement OnImageSettingsInteractionListener")
-        }
+    override fun close() {
+        (activity as? MainActivity?)?.closeBottomSheet()
     }
 
     override fun onStart() {
@@ -57,14 +56,5 @@ class ImageSettingsFragment : Fragment(), ImageSettingsContract.View {
     override fun onStop() {
         super.onStop()
         mPresenter.detachView()
-    }
-
-    override fun onDetach() {
-        super.onDetach()
-        listener = null
-    }
-
-    interface OnImageSettingsInteractionListener {
-
     }
 }

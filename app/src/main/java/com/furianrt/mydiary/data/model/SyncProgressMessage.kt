@@ -20,9 +20,10 @@ data class SyncProgressMessage(
         const val SYNC_NOTE_TAGS = 5
         const val SYNC_LOCATION = 6
         const val SYNC_FORECAST = 7
-        const val SYNC_IMAGES = 8
-        const val CLEANUP = 9
-        const val SYNC_FINISHED = 10
+        const val SYNC_NOTE_LOCATIONS = 8
+        const val SYNC_IMAGES = 9
+        const val CLEANUP = 10
+        const val SYNC_FINISHED = 11
         const val UNKNOWN = -1
     }
 }

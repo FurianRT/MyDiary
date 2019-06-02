@@ -65,8 +65,14 @@ object Analytics {
     const val EVENT_SEARCH_NO_MOOD_CHANGED = "search_mood_changed"
     const val EVENT_SEARCH_NO_LOCATION_CHANGED = "search_location_changed"
     const val EVENT_SHARE_NOTE = "share_note"
+    const val EVENT_DAILY_IMAGE_LOAD_ERROR = "daily_image_load_error"
+    const val EVENT_DAILY_IMAGE_OPEN = "daily_image_open"
+    const val EVENT_DAILY_IMAGE_TURN_OFF = "daily_image_turn_off"
+    const val EVENT_DAILY_IMAGE_TURN_ON = "daily_image_turn_on"
+    const val EVENT_DAILY_IMAGE_CATEGORY_CHANGED = "daily_image_category_changed"
 
     const val BUNDLE_TASK_INDEX = "task_index"
+    const val BUNDLE_CATEGORY = "category"
 
     fun sendEvent(context: Context, event: String, bundle: Bundle? = null) {
         if (!BuildConfig.DEBUG) {

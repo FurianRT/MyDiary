@@ -71,6 +71,18 @@ class DataManagerImp(
             database.noteTagDao().insert(noteTags)
                     .subscribeOn(rxScheduler)
 
+    override fun insertNoteLocation(noteLocation: NoteLocation): Completable =
+            database.noteLocationDao().insert(noteLocation)
+                    .subscribeOn(rxScheduler)
+
+    override fun insertNoteLocation(noteLocation: List<NoteLocation>): Completable =
+            database.noteLocationDao().insert(noteLocation)
+                    .subscribeOn(rxScheduler)
+
+    override fun insertLocation(location: MyLocation): Completable =
+            database.locationDao().insert(location)
+                    .subscribeOn(rxScheduler)
+
     override fun insertLocation(locations: List<MyLocation>): Completable =
             database.locationDao().insert(locations)
                     .subscribeOn(rxScheduler)
@@ -121,10 +133,6 @@ class DataManagerImp(
 
     override fun insertForecast(forecast: MyForecast): Completable =
             database.forecastDao().insert(forecast)
-                    .subscribeOn(rxScheduler)
-
-    override fun insertLocation(location: MyLocation): Completable =
-            database.locationDao().insert(location)
                     .subscribeOn(rxScheduler)
 
     override fun updateNote(note: MyNote): Completable =
@@ -190,6 +198,10 @@ class DataManagerImp(
             database.noteTagDao().update(noteTags)
                     .subscribeOn(rxScheduler)
 
+    override fun updateNoteLocationsSync(noteLocations: List<NoteLocation>): Completable =
+            database.noteLocationDao().update(noteLocations)
+                    .subscribeOn(rxScheduler)
+
     override fun updateLocationsSync(locations: List<MyLocation>): Completable =
             database.locationDao().update(locations)
                     .subscribeOn(rxScheduler)
@@ -209,6 +221,7 @@ class DataManagerImp(
 
     override fun deleteNote(noteId: String): Completable =
             database.noteTagDao().deleteWithNoteId(noteId)
+                    .andThen(database.noteLocationDao().deleteWithNoteId(noteId))
                     .andThen(database.appearanceDao().delete(noteId))
                     .andThen(database.imageDao().getImagesForNote(noteId))
                     .first(emptyList())
@@ -217,7 +230,6 @@ class DataManagerImp(
                     .collectInto(mutableListOf<Boolean>()) { l, i -> l.add(i) }
                     .flatMapCompletable { database.imageDao().deleteByNoteId(noteId) }
                     .andThen(database.noteDao().delete(noteId))
-                    .andThen(database.locationDao().delete(noteId))
                     .andThen(database.forecastDao().delete(noteId))
                     .subscribeOn(rxScheduler)
 
@@ -302,6 +314,11 @@ class DataManagerImp(
                     .getDeletedNoteTags()
                     .subscribeOn(rxScheduler)
 
+    override fun getDeletedNoteLocations(): Flowable<List<NoteLocation>> =
+            database.noteLocationDao()
+                    .getDeletedNoteLocations()
+                    .subscribeOn(rxScheduler)
+
     override fun getDeletedLocations(): Flowable<List<MyLocation>> =
             database.locationDao()
                     .getDeletedLocations()
@@ -311,6 +328,9 @@ class DataManagerImp(
             database.forecastDao()
                     .getDeletedForecasts()
                     .subscribeOn(rxScheduler)
+
+    override fun getLocationsForNote(noteId: String): Flowable<List<MyLocation>> =
+            database.noteLocationDao().getLocationsForNote(noteId)
 
     override fun getNote(noteId: String): Flowable<MyNote> =
             database.noteDao()
@@ -410,6 +430,11 @@ class DataManagerImp(
                     .getAllNoteTags()
                     .subscribeOn(rxScheduler)
 
+    override fun getAllNoteLocations(): Flowable<List<NoteLocation>> =
+            database.noteLocationDao()
+                    .getAllNoteLocations()
+                    .subscribeOn(rxScheduler)
+
     override fun saveImageToStorage(image: MyImage): Single<MyImage> =
             Single.fromCallable { storage.copyImageToStorage(image.uri, image.name) }
                     .map { file -> MyImage(file.name, file.toURI().toString(), image.noteId, image.addedTime) }
@@ -492,6 +517,8 @@ class DataManagerImp(
         prefs.setPasswordEnabled(enable)
     }
 
+    override fun isDailyImageEnabled(): Boolean = prefs.isDailyImageEnabled()
+
     override fun getLastSyncMessage(): SyncProgressMessage? {
         val message = prefs.getLastSyncMessage()
         return if (message.isNullOrBlank()) {
@@ -506,7 +533,7 @@ class DataManagerImp(
     }
 
     override fun loadHeaderImages(page: Int, perPage: Int): Single<List<MyHeaderImage>> =
-            imageApi.getImages()
+            imageApi.getImages(category = prefs.getDailyImageCategory())
                     .map { response ->
                         response.images
                                 .map { it.toMyHeaderImage() }
@@ -524,6 +551,10 @@ class DataManagerImp(
 
     override fun saveNoteTagsInCloud(noteTags: List<NoteTag>): Completable =
             cloud.saveNoteTags(noteTags, auth.getUserId())
+                    .subscribeOn(rxScheduler)
+
+    override fun saveNoteLocationsInCloud(noteLocations: List<NoteLocation>): Completable =
+            cloud.saveNoteLocations(noteLocations, auth.getUserId())
                     .subscribeOn(rxScheduler)
 
     override fun saveTagsInCloud(tags: List<MyTag>): Completable =
@@ -560,6 +591,10 @@ class DataManagerImp(
 
     override fun deleteNoteTagsFromCloud(noteTags: List<NoteTag>): Completable =
             cloud.deleteNoteTags(noteTags, auth.getUserId())
+                    .subscribeOn(rxScheduler)
+
+    override fun deleteNoteLocationsFromCloud(noteLocations: List<NoteLocation>): Completable =
+            cloud.deleteNoteLocations(noteLocations, auth.getUserId())
                     .subscribeOn(rxScheduler)
 
     override fun deleteLocationsFromCloud(locations: List<MyLocation>): Completable =
@@ -600,6 +635,10 @@ class DataManagerImp(
 
     override fun getAllNoteTagsFromCloud(): Single<List<NoteTag>> =
             cloud.getAllNoteTags(auth.getUserId())
+                    .subscribeOn(rxScheduler)
+
+    override fun getAllNoteLocationsFromCloud(): Single<List<NoteLocation>> =
+            cloud.getAllNoteLocations(auth.getUserId())
                     .subscribeOn(rxScheduler)
 
     override fun getAllLocationsFromCloud(): Single<List<MyLocation>> =

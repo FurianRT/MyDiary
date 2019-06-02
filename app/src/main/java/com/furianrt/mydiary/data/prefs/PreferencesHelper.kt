@@ -28,6 +28,8 @@ interface PreferencesHelper {
     fun getLastSyncMessage(): String?
     fun setLastAppLaunchTime(time: Long)
     fun getLastAppLaunchTime(): Long
+    fun getDailyImageCategory(): String
+    fun isDailyImageEnabled(): Boolean
 
     companion object {
         const val COLOR_PRIMARY = "color_primary"
@@ -49,8 +51,11 @@ interface PreferencesHelper {
         const val IS_NOTE_SORT_DESC = "is_note_sort_desc"
         const val DIARY_PIN = "diary_pin"
         const val DEFAULT_TEXT_SIZE = "16"
-        const val DEFAULT_PIN_DELAY = "1000"
+        const val DEFAULT_PIN_DELAY = "2000"
+        const val DAILY_IMAGE_CATEGORY_DEFAULT = "backgrounds"
         const val LAST_PROGRESS_MESSAGE = "last_progress_message"
         const val LAST_APP_LAUNCH_TIME = "last_app_launch_time"
+        const val LOAD_DAILY_IMAGE= "load_daily_image"
+        const val DAILY_IMAGE_CATEGORY= "daily_image_category"
     }
 }

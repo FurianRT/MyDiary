@@ -2,7 +2,6 @@ package com.furianrt.mydiary.screens.settings.global
 
 import android.os.Bundle
 import android.view.View
-import androidx.preference.PreferenceManager
 import com.anjlab.android.iab.v3.TransactionDetails
 import com.furianrt.mydiary.BuildConfig
 import com.furianrt.mydiary.R
@@ -20,8 +19,6 @@ class GlobalSettingsActivity : BaseActivity() {
         setSupportActionBar(toolbar_settings_global)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setDisplayShowHomeEnabled(true)
-
-        PreferenceManager.setDefaultValues(this, R.xml.pref_global, false)
     }
 
     override fun onBillingInitialized() {

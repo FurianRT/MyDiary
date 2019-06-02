@@ -26,6 +26,7 @@ class CloudHelperImp(
         private const val COLLECTION_NOTES = "notes"
         private const val COLLECTION_CATEGORIES = "categories"
         private const val COLLECTION_NOTE_TAGS = "note_tags"
+        private const val COLLECTION_NOTE_LOCATIONS = "note_locations"
         private const val COLLECTION_TAGS = "tags"
         private const val COLLECTION_APPEARANCES = "appearances"
         private const val COLLECTION_LOCATIONS = "locations"
@@ -70,6 +71,17 @@ class CloudHelperImp(
                 }
             }.timeout(1, TimeUnit.MINUTES)
 
+    override fun saveNoteLocations(noteLocations: List<NoteLocation>, userId: String): Completable =
+            RxFirestore.runTransaction(firestore) { transaction ->
+                noteLocations.forEach { noteLocation ->
+                    Log.e(TAG, "saving noteLocation in cloud Id: " + noteLocation.noteId + noteLocation.locationName)
+                    transaction.set(firestore.collection(COLLECTION_USERS)
+                            .document(userId)
+                            .collection(COLLECTION_NOTE_LOCATIONS)
+                            .document(noteLocation.noteId + noteLocation.locationName), noteLocation)
+                }
+            }.timeout(1, TimeUnit.MINUTES)
+
     override fun saveTags(tags: List<MyTag>, userId: String): Completable =
             RxFirestore.runTransaction(firestore) { transaction ->
                 tags.forEach { tag ->
@@ -96,7 +108,7 @@ class CloudHelperImp(
                     transaction.set(firestore.collection(COLLECTION_USERS)
                             .document(userId)
                             .collection(COLLECTION_LOCATIONS)
-                            .document(location.noteId), location)
+                            .document(location.name), location)
                 }
             }.timeout(1, TimeUnit.MINUTES)
 
@@ -167,14 +179,25 @@ class CloudHelperImp(
                 }
             }.timeout(1, TimeUnit.MINUTES).onErrorComplete()
 
+    override fun deleteNoteLocations(noteLocations: List<NoteLocation>, userId: String): Completable =
+            RxFirestore.runTransaction(firestore) { transaction ->
+                noteLocations.forEach { noteLocation ->
+                    Log.e(TAG, "deleting noteTag from cloud id: " + noteLocation.noteId + noteLocation.locationName)
+                    transaction.delete(firestore.collection(COLLECTION_USERS)
+                            .document(userId)
+                            .collection(COLLECTION_NOTE_LOCATIONS)
+                            .document(noteLocation.noteId + noteLocation.locationName))
+                }
+            }.timeout(1, TimeUnit.MINUTES).onErrorComplete()
+
     override fun deleteLocations(locations: List<MyLocation>, userId: String): Completable =
             RxFirestore.runTransaction(firestore) { transaction ->
                 locations.forEach { location ->
-                    Log.e(TAG, "deleting location from cloud id: " + location.noteId)
+                    Log.e(TAG, "deleting location from cloud name: " + location.name)
                     transaction.delete(firestore.collection(COLLECTION_USERS)
                             .document(userId)
                             .collection(COLLECTION_LOCATIONS)
-                            .document(location.noteId))
+                            .document(location.name))
                 }
             }.timeout(1, TimeUnit.MINUTES).onErrorComplete()
 
@@ -273,6 +296,13 @@ class CloudHelperImp(
             RxFirestore.getCollection(firestore.collection(COLLECTION_USERS)
                     .document(userId)
                     .collection(COLLECTION_NOTE_TAGS), NoteTag::class.java)
+                    .timeout(1, TimeUnit.MINUTES)
+                    .toSingle(emptyList())
+
+    override fun getAllNoteLocations(userId: String): Single<List<NoteLocation>> =
+            RxFirestore.getCollection(firestore.collection(COLLECTION_USERS)
+                    .document(userId)
+                    .collection(COLLECTION_NOTE_LOCATIONS), NoteLocation::class.java)
                     .timeout(1, TimeUnit.MINUTES)
                     .toSingle(emptyList())
 

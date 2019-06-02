@@ -5,9 +5,9 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_gravity="top"
+    android:layout_marginTop="56dp"
     android:gravity="center"
     android:orientation="vertical"
-    android:layout_marginTop="56dp"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:background="@color/white">
 
@@ -26,15 +26,16 @@
         android:textSize="18sp"
         android:textStyle="bold" />
 
-    <TextView
-        android:layout_width="match_parent"
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/button_change_filters"
+        style="@style/Widget.MaterialComponents.Button"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="4dp"
-        android:layout_marginEnd="16dp"
         android:gravity="center"
+        android:letterSpacing="0.0"
         android:text="@string/empty_search_note_list_hint"
-        android:textColor="@color/grey_dark"
+        android:textAllCaps="false"
+        android:textColor="@color/white"
         android:textSize="18sp" />
 
 </LinearLayout>

@@ -5,6 +5,7 @@ import android.content.ContentValues
 import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.graphics.BitmapFactory
+import android.graphics.Color
 import android.util.Log
 import androidx.room.Room
 import androidx.room.RoomDatabase
@@ -172,7 +173,6 @@ class AppModule(private val app: Application) {
                 .addQueryParameter("key", BuildConfig.IMAGE_API_KEY)
                 .addQueryParameter("image_type", "photo")
                 .addQueryParameter("orientation", "horizontal")
-                .addQueryParameter("travel", "backgrounds")
                 .addQueryParameter("min_width", "1280")
                 .addQueryParameter("min_height", "720")
                 .addQueryParameter("order", "latest")
@@ -270,10 +270,11 @@ class AppModule(private val app: Application) {
             }
             clear()
             val categoryNames = app.resources.getStringArray(R.array.categories)
+            val categoryColors = app.resources.getStringArray(R.array.default_category_colors)
             for (i in 0 until categoryNames.size) {
                 put(MyCategory.FIELD_ID, "default_category_$i")
                 put(MyCategory.FIELD_NAME, categoryNames[i])
-                put(MyCategory.FIELD_COLOR, MyCategory.DEFAULT_COLOR)
+                put(MyCategory.FIELD_COLOR, Color.parseColor(categoryColors[i]))
                 put(MyCategory.FIELD_SYNC_WITH, Gson().toJson(listOf(MyCategory.DEFAULT_SYNC_EMAIL)))
                 put(MyCategory.FIELD_IS_DELETED, false)
                 db.insert(MyCategory.TABLE_NAME, SQLiteDatabase.CONFLICT_IGNORE, this)
@@ -289,7 +290,7 @@ class AppModule(private val app: Application) {
                 content = app.getString(R.string.tutorial_note_content),
                 time = DateTime.now().millis,
                 moodId = app.resources.getStringArray(R.array.moods).size,
-                categoryId = "default_category_4",
+                categoryId = "default_category_1",
                 creationTime = DateTime.now().millis
         )
 

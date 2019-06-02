@@ -41,7 +41,7 @@
                 <include
                     android:id="@+id/empty_search"
                     layout="@layout/empty_search_note_list"
-                    android:visibility="visible" />
+                    android:visibility="gone" />
 
                 <com.furian.fab.FloatingActionMenu
                     android:id="@+id/fab_menu"
@@ -53,15 +53,6 @@
                     app:menu_colorNormal="?attr/colorAccent"
                     app:menu_colorPressed="?attr/colorAccent"
                     app:menu_colorRipple="@color/white">
-
-                    <com.furian.fab.FloatingActionButton
-                        android:id="@+id/fab_place"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:src="@drawable/ic_fab_place"
-                        app:fab_colorNormal="?attr/colorPrimary"
-                        app:fab_colorPressed="?attr/colorAccent"
-                        app:fab_colorRipple="@color/transparent" />
 
                     <com.furian.fab.FloatingActionButton
                         android:id="@+id/fab_folder"
@@ -92,7 +83,7 @@
                 android:layout_weight="0"
                 android:visibility="gone"
                 app:adSize="SMART_BANNER"
-                app:adUnitId="ca-app-pub-3940256099942544/6300978111"
+                app:adUnitId="@string/banner_ad_unit_id"
                 tools:visibility="visible" />
 
         </LinearLayout>

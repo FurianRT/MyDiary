@@ -134,20 +134,19 @@ class NoteFragmentPresenter(private val dataManager: DataManager) : NoteFragment
 
     private fun loadLocation(noteId: String, mode: NoteActivity.Companion.Mode, locationAvailable: Boolean,
                              networkAvailable: Boolean) {
-            addDisposable(dataManager.getAllDbLocations()
-                    .first(emptyList())
-                    .map { locations -> locations.filter { it.noteId == noteId } }
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe { locations ->
-                        if (locations.isNotEmpty()) {
-                            showLocation(locations.first())
-                            showForecast()
-                        } else if (mode == NoteActivity.Companion.Mode.ADD) {
-                            if (locationAvailable && networkAvailable) {
-                                findLocation()
-                            }
+        addDisposable(dataManager.getLocationsForNote(noteId)
+                .first(emptyList())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe { locations ->
+                    if (locations.isNotEmpty()) {
+                        showLocation(locations.first())
+                        showForecast()
+                    } else if (mode == NoteActivity.Companion.Mode.ADD) {
+                        if (locationAvailable && networkAvailable) {
+                            findLocation()
                         }
-                    })
+                    }
+                })
     }
 
     private fun showNoteMood(moodId: Int) {
@@ -204,7 +203,6 @@ class NoteFragmentPresenter(private val dataManager: DataManager) : NoteFragment
             val address = addresses[0].getAddressLine(0)
             if (address != null) {
                 addLocation(MyLocation(
-                        noteId = mNoteId,
                         name = address,
                         lat = latitude,
                         lon = longitude
@@ -229,15 +227,18 @@ class NoteFragmentPresenter(private val dataManager: DataManager) : NoteFragment
     }
 
     private fun getWeatherTemp(forecast: MyForecast): String =
-            if (dataManager.getWeatherUnits() == DataManager.WEATHER_UNITS_CELSIUS) {
-                "${forecast.temp.toInt()} °C"
-            } else {
-                "${(forecast.temp * 1.8 + 32).toInt()} °F"
+            when {
+                dataManager.getWeatherUnits() == DataManager.WEATHER_UNITS_CELSIUS ->
+                    "${forecast.temp.toInt()} °C"
+                dataManager.getWeatherUnits() == DataManager.WEATHER_UNITS_FAHRENHEIT ->
+                    "${(forecast.temp * 1.8 + 32).toInt()} °F"
+                else -> throw IllegalStateException()
             }
 
     private fun addLocation(location: MyLocation) {
         Log.e(TAG, "insertLocation")
         addDisposable(dataManager.insertLocation(location)
+                .andThen(dataManager.insertNoteLocation(NoteLocation(mNoteId, location.name)))
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { view?.showLocation(location) })
     }
@@ -416,7 +417,7 @@ class NoteFragmentPresenter(private val dataManager: DataManager) : NoteFragment
             "$curContent $recordedText"
         }
         addDisposable(dataManager.updateNoteText(mNoteId, curTitle, content)
-                .subscribe())
+                .subscribe { onNoteTextChange(curTitle, content) })
     }
 
     override fun onButtonShareClick() {

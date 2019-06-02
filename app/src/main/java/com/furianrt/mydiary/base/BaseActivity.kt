@@ -100,18 +100,10 @@ abstract class BaseActivity : AppCompatActivity(), BillingProcessor.IBillingHand
                 .getInt(PreferencesHelper.COLOR_PRIMARY, 0)) {
             ContextCompat.getColor(this, R.color.r1) ->
                 theme.applyStyle(R.style.OverlayPrimaryColorR1, true)
-            ContextCompat.getColor(this, R.color.r2) ->
-                theme.applyStyle(R.style.OverlayPrimaryColorR2, true)
-            ContextCompat.getColor(this, R.color.r3) ->
-                theme.applyStyle(R.style.OverlayPrimaryColorR3, true)
             ContextCompat.getColor(this, R.color.r4) ->
                 theme.applyStyle(R.style.OverlayPrimaryColorR4, true)
             ContextCompat.getColor(this, R.color.r5) ->
                 theme.applyStyle(R.style.OverlayPrimaryColorR5, true)
-            ContextCompat.getColor(this, R.color.r6) ->
-                theme.applyStyle(R.style.OverlayPrimaryColorR6, true)
-            ContextCompat.getColor(this, R.color.r7) ->
-                theme.applyStyle(R.style.OverlayPrimaryColorR7, true)
             ContextCompat.getColor(this, R.color.p1) ->
                 theme.applyStyle(R.style.OverlayPrimaryColorP1, true)
             ContextCompat.getColor(this, R.color.p2) ->
@@ -120,30 +112,20 @@ abstract class BaseActivity : AppCompatActivity(), BillingProcessor.IBillingHand
                 theme.applyStyle(R.style.OverlayPrimaryColorP3, true)
             ContextCompat.getColor(this, R.color.b1) ->
                 theme.applyStyle(R.style.OverlayPrimaryColorB1, true)
-            ContextCompat.getColor(this, R.color.b2) ->
-                theme.applyStyle(R.style.OverlayPrimaryColorB2, true)
-            ContextCompat.getColor(this, R.color.b3) ->
-                theme.applyStyle(R.style.OverlayPrimaryColorB3, true)
             ContextCompat.getColor(this, R.color.b4) ->
                 theme.applyStyle(R.style.OverlayPrimaryColorB4, true)
             ContextCompat.getColor(this, R.color.b5) ->
                 theme.applyStyle(R.style.OverlayPrimaryColorB5, true)
             ContextCompat.getColor(this, R.color.g1) ->
                 theme.applyStyle(R.style.OverlayPrimaryColorG1, true)
-            ContextCompat.getColor(this, R.color.g2) ->
-                theme.applyStyle(R.style.OverlayPrimaryColorG2, true)
             ContextCompat.getColor(this, R.color.g3) ->
                 theme.applyStyle(R.style.OverlayPrimaryColorG3, true)
             ContextCompat.getColor(this, R.color.g4) ->
                 theme.applyStyle(R.style.OverlayPrimaryColorG4, true)
             ContextCompat.getColor(this, R.color.g5) ->
                 theme.applyStyle(R.style.OverlayPrimaryColorG5, true)
-            ContextCompat.getColor(this, R.color.g6) ->
-                theme.applyStyle(R.style.OverlayPrimaryColorG6, true)
             ContextCompat.getColor(this, R.color.e1) ->
                 theme.applyStyle(R.style.OverlayPrimaryColorE1, true)
-            ContextCompat.getColor(this, R.color.e2) ->
-                theme.applyStyle(R.style.OverlayPrimaryColorE2, true)
             ContextCompat.getColor(this, R.color.e3) ->
                 theme.applyStyle(R.style.OverlayPrimaryColorE3, true)
             ContextCompat.getColor(this, R.color.e4) ->
@@ -162,8 +144,6 @@ abstract class BaseActivity : AppCompatActivity(), BillingProcessor.IBillingHand
                 theme.applyStyle(R.style.OverlayPrimaryColorU1, true)
             ContextCompat.getColor(this, R.color.u2) ->
                 theme.applyStyle(R.style.OverlayPrimaryColorU2, true)
-            ContextCompat.getColor(this, R.color.u3) ->
-                theme.applyStyle(R.style.OverlayPrimaryColorU3, true)
             ContextCompat.getColor(this, R.color.black) ->
                 theme.applyStyle(R.style.OverlayPrimaryColorBlack, true)
         }
@@ -173,18 +153,10 @@ abstract class BaseActivity : AppCompatActivity(), BillingProcessor.IBillingHand
                 .getInt(PreferencesHelper.COLOR_ACCENT, 0)) {
             ContextCompat.getColor(this, R.color.r1) ->
                 theme.applyStyle(R.style.OverlayAccentColorR1, true)
-            ContextCompat.getColor(this, R.color.r2) ->
-                theme.applyStyle(R.style.OverlayAccentColorR2, true)
-            ContextCompat.getColor(this, R.color.r3) ->
-                theme.applyStyle(R.style.OverlayAccentColorR3, true)
             ContextCompat.getColor(this, R.color.r4) ->
                 theme.applyStyle(R.style.OverlayAccentColorR4, true)
             ContextCompat.getColor(this, R.color.r5) ->
                 theme.applyStyle(R.style.OverlayAccentColorR5, true)
-            ContextCompat.getColor(this, R.color.r6) ->
-                theme.applyStyle(R.style.OverlayAccentColorR6, true)
-            ContextCompat.getColor(this, R.color.r7) ->
-                theme.applyStyle(R.style.OverlayAccentColorR7, true)
             ContextCompat.getColor(this, R.color.p1) ->
                 theme.applyStyle(R.style.OverlayAccentColorP1, true)
             ContextCompat.getColor(this, R.color.p2) ->
@@ -193,30 +165,20 @@ abstract class BaseActivity : AppCompatActivity(), BillingProcessor.IBillingHand
                 theme.applyStyle(R.style.OverlayAccentColorP3, true)
             ContextCompat.getColor(this, R.color.b1) ->
                 theme.applyStyle(R.style.OverlayAccentColorB1, true)
-            ContextCompat.getColor(this, R.color.b2) ->
-                theme.applyStyle(R.style.OverlayAccentColorB2, true)
-            ContextCompat.getColor(this, R.color.b3) ->
-                theme.applyStyle(R.style.OverlayAccentColorB3, true)
             ContextCompat.getColor(this, R.color.b4) ->
                 theme.applyStyle(R.style.OverlayAccentColorB4, true)
             ContextCompat.getColor(this, R.color.b5) ->
                 theme.applyStyle(R.style.OverlayAccentColorB5, true)
             ContextCompat.getColor(this, R.color.g1) ->
                 theme.applyStyle(R.style.OverlayAccentColorG1, true)
-            ContextCompat.getColor(this, R.color.g2) ->
-                theme.applyStyle(R.style.OverlayAccentColorG2, true)
             ContextCompat.getColor(this, R.color.g3) ->
                 theme.applyStyle(R.style.OverlayAccentColorG3, true)
             ContextCompat.getColor(this, R.color.g4) ->
                 theme.applyStyle(R.style.OverlayAccentColorG4, true)
             ContextCompat.getColor(this, R.color.g5) ->
                 theme.applyStyle(R.style.OverlayAccentColorG5, true)
-            ContextCompat.getColor(this, R.color.g6) ->
-                theme.applyStyle(R.style.OverlayAccentColorG6, true)
             ContextCompat.getColor(this, R.color.e1) ->
                 theme.applyStyle(R.style.OverlayAccentColorE1, true)
-            ContextCompat.getColor(this, R.color.e2) ->
-                theme.applyStyle(R.style.OverlayAccentColorE2, true)
             ContextCompat.getColor(this, R.color.e3) ->
                 theme.applyStyle(R.style.OverlayAccentColorE3, true)
             ContextCompat.getColor(this, R.color.e4) ->
@@ -235,8 +197,6 @@ abstract class BaseActivity : AppCompatActivity(), BillingProcessor.IBillingHand
                 theme.applyStyle(R.style.OverlayAccentColorU1, true)
             ContextCompat.getColor(this, R.color.u2) ->
                 theme.applyStyle(R.style.OverlayAccentColorU2, true)
-            ContextCompat.getColor(this, R.color.u3) ->
-                theme.applyStyle(R.style.OverlayAccentColorU3, true)
             ContextCompat.getColor(this, R.color.black) ->
                 theme.applyStyle(R.style.OverlayAccentColorBlack, true)
         }

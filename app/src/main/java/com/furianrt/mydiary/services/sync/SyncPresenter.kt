@@ -15,13 +15,13 @@ class SyncPresenter(
 ) : SyncContract.Presenter() {
 
     companion object {
-        private const val TAG = "SyncPresenter"
         private const val PROGRESS_NOTES = 5
         private const val PROGRESS_APPEARANCE = 20
         private const val PROGRESS_CATEGORIES = 30
         private const val PROGRESS_TAGS = 40
         private const val PROGRESS_NOTE_TAGS = 50
         private const val PROGRESS_LOCATION = 60
+        private const val PROGRESS_NOTE_LOCATIONS = 65
         private const val PROGRESS_FORECAST = 70
         private const val PROGRESS_IMAGES = 80
         private const val PROGRESS_CLEANUP = 95
@@ -42,6 +42,7 @@ class SyncPresenter(
                 syncTags(),
                 syncNoteTags(),
                 syncLocations(),
+                syncNoteLocations(),
                 syncForecast(),
                 syncImages(),
                 cleanup()
@@ -162,7 +163,7 @@ class SyncPresenter(
                     .flatMapCompletable { dataManager.deleteNoteTagsFromCloud(it) }
                     .andThen(dataManager.getAllNoteTagsFromCloud())
                     .flatMapCompletable { dataManager.insertNoteTag(it) }
-                    .andThen(Observable.just(SyncProgressMessage(SyncProgressMessage.SYNC_IMAGES, PROGRESS_LOCATION)))
+                    .andThen(Observable.just(SyncProgressMessage(SyncProgressMessage.SYNC_LOCATION, PROGRESS_LOCATION)))
                     .onErrorResumeNext(Observable.error(SyncGoneWrongException(SyncProgressMessage.SYNC_NOTE_TAGS)))
 
     private fun syncLocations(): Observable<SyncProgressMessage> =
@@ -180,8 +181,26 @@ class SyncPresenter(
                     .flatMapCompletable { dataManager.deleteLocationsFromCloud(it) }
                     .andThen(dataManager.getAllLocationsFromCloud())
                     .flatMapCompletable { dataManager.insertLocation(it) }
-                    .andThen(Observable.just(SyncProgressMessage(SyncProgressMessage.SYNC_FORECAST, PROGRESS_FORECAST)))
+                    .andThen(Observable.just(SyncProgressMessage(SyncProgressMessage.SYNC_NOTE_LOCATIONS, PROGRESS_NOTE_LOCATIONS)))
                     .onErrorResumeNext(Observable.error(SyncGoneWrongException(SyncProgressMessage.SYNC_LOCATION)))
+
+    private fun syncNoteLocations(): Observable<SyncProgressMessage> =
+            dataManager.getAllNoteLocations()
+                    .first(emptyList())
+                    .map { noteLocations -> noteLocations.filter { !it.isSync(mProfile.email) } }
+                    .map { noteLocations -> noteLocations.apply { forEach { it.syncWith.add(mProfile.email) } } }
+                    .flatMapCompletable {
+                        Completable.concat(listOf(
+                                dataManager.saveNoteLocationsInCloud(it),
+                                dataManager.updateNoteLocationsSync(it)
+                        ))
+                    }
+                    .andThen(dataManager.getDeletedNoteLocations().first(emptyList()))
+                    .flatMapCompletable { dataManager.deleteNoteLocationsFromCloud(it) }
+                    .andThen(dataManager.getAllNoteLocationsFromCloud())
+                    .flatMapCompletable { dataManager.insertNoteLocation(it) }
+                    .andThen(Observable.just(SyncProgressMessage(SyncProgressMessage.SYNC_FORECAST, PROGRESS_FORECAST)))
+                    .onErrorResumeNext(Observable.error(SyncGoneWrongException(SyncProgressMessage.SYNC_NOTE_LOCATIONS)))
 
     private fun syncForecast(): Observable<SyncProgressMessage> =
             dataManager.getAllDbForecasts()

@@ -50,10 +50,9 @@ class MyApp : Application(), Application.ActivityLifecycleCallbacks {
         JodaTimeAndroid.init(this)
         initializeImageAlbum()
         resetSyncProgress()
-        MobileAds.initialize(this, getString(R.string.banner_ad_unit_id))
+        MobileAds.initialize(this, getString(R.string.banner_ad_app_id))
 
-        val builder = StrictMode.VmPolicy.Builder()
-        StrictMode.setVmPolicy(builder.build())
+        StrictMode.setVmPolicy(StrictMode.VmPolicy.Builder().build())
     }
 
     override fun onActivityDestroyed(activity: Activity?) {}
@@ -148,21 +147,23 @@ class MyApp : Application(), Application.ActivityLifecycleCallbacks {
 /*TODO
 *
 * выбор шрифта
-* реклама
-*   улучшить дефолтные цвета
 * добавить notifications
 * добавить настройки внешнего вида основного экрана
-*   добавить настройки дейли картинки
-*   добавить экран с описанием премиума
-*   сделать действия для кнопок fab
-*   добавить лайауты для горизантальной ориентации
-*   сделать что-то с картинкой профиля и описанием
-* изменить цвета у дефолтных категорий
+* расширить настройки дейли картинки
+* добавить лайауты для горизонтальной ориентации
 * добавить ссылки на используемые библиотеки
 *   написать туториал
 * добавить анимацию открытия экранов
 * добавить отправку картинок или текста из других приложений
 * отпечаток пальца
+* английская локализация
+* добавить вывод в pdf
+* сделать ежеднейный локальный бэкап
+* добавить выбор локации
+* добавить выбор типа защиты
+* поддержка темной темы
+* добавить статистику по записям
+* разбить экран настроек на категории
 *
 * */
 
