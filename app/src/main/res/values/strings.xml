@@ -131,8 +131,6 @@
     <string name="fragment_done_email_sent">Письмо отправлено!</string>
     <string name="nav_header_main_sing_in">Войти в аккаунт</string>
     <string name="nav_header_main_anonymous">Аноним</string>
-   <!-- <string name="nav_header_main_regular">Премиум статус: нет</string>
-    <string name="nav_header_main_premium">Премиум статус: есть</string>-->
     <string name="nav_header_main_profile_description">Открыть настройки</string>
     <string name="nav_header_main_photos">Фото:</string>
     <string name="nav_header_main_button_sync">Синхронизация</string>
@@ -217,7 +215,7 @@
     <string name="empty_state_note_list_empty">Тут пусто!</string>
     <string name="empty_state_note_list_hint">Сделай свою первую запись!</string>
     <string name="tutorial_note_title">Туториал</string>
-    <string name="tutorial_note_content">Когда-нибудь тут появится подробное описание всех фич дневника</string>
+    <string name="tutorial_note_content">Привет! 😉 Данная заметка создана для демонстрации некоторых возможностей дневника.\n\nВ настройках можно изменить внешний вид по умолчанию для всех заметок. 📑\n\nВнешний вид каждой заметки отдельно изменяется в настройках заметки. 📝\n\n\n\nУдачных заметок! 😎</string>
     <string name="fragment_category_edit_error_empty_name">Введите название категории</string>
     <string name="fragment_category_delete_message">Удалить категорию \"%s\"?</string>
     <string name="fragment_tag_delete_message">Удалить тег \"%s\"?</string>
@@ -243,4 +241,10 @@
     <string name="pref_daily_image_load_title">Загрузка картинки</string>
     <string name="pref_daily_image_category_title">Категория картинки</string>
     <string name="fragment_premium_get_premium">Приобрести премиум версию</string>
+    <string name="fragment_premium_advantages">Преимущества премиум версии:</string>
+    <string name="fragment_premium_cloud_sync">Синхронизация с облаком</string>
+    <string name="fragment_premium_cloud_sync_description">Можно не опасаться потери накопленных заметок!</string>
+    <string name="fragment_premium_no_ads">Больше никакой рекламы</string>
+    <string name="fragment_premium_no_ads_description">Делайте заметки не отвлекаясь ни на что!</string>
+    <string name="fragment_premium_access_to_new_features">Доступ к будущим премиум функциям</string>
 </resources>
