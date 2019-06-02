@@ -62,10 +62,12 @@ class MainActivityPresenter(
                 .first(ArrayList())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { notes ->
-                    mSelectedNoteIds.clear()
-                    mSelectedNoteIds.addAll(notes.map { it.note.id })
-                    view?.activateSelection()
-                    view?.updateItemSelection(mSelectedNoteIds)
+                    if (notes.isNotEmpty()) {
+                        mSelectedNoteIds.clear()
+                        mSelectedNoteIds.addAll(notes.map { it.note.id })
+                        view?.activateSelection()
+                        view?.updateItemSelection(mSelectedNoteIds)
+                    }
                 })
     }
 
