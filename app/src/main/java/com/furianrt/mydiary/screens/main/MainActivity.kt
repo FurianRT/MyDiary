@@ -215,14 +215,14 @@ class MainActivity : BaseActivity(), MainActivityContract.View,
 
     override fun onBillingInitialized() {
         super.onBillingInitialized()
-        if (!getIsItemPurshased(BuildConfig.ITEM_SYNC_SKU) && !getIsItemPurshased(ITEM_TEST_SKU)) {
+        if (!getIsItemPurshased(BuildConfig.ITEM_SYNC_SKU)/* && !getIsItemPurshased(ITEM_TEST_SKU)*/) {
             showAdView()
         }
     }
 
     override fun onProductPurchased(productId: String, details: TransactionDetails?) {
         super.onProductPurchased(productId, details)
-        if (productId == BuildConfig.ITEM_SYNC_SKU || productId == ITEM_TEST_SKU) {
+        if (productId == BuildConfig.ITEM_SYNC_SKU/* || productId == ITEM_TEST_SKU*/) {
             closeBottomSheet()
             hideAdView()
         }
@@ -516,7 +516,7 @@ class MainActivity : BaseActivity(), MainActivityContract.View,
     }
 
     override fun showProfile(profile: MyProfile) {
-        if (isItemPurshased(BuildConfig.ITEM_SYNC_SKU) || isItemPurshased(ITEM_TEST_SKU)) {
+        if (isItemPurshased(BuildConfig.ITEM_SYNC_SKU)/* || isItemPurshased(ITEM_TEST_SKU)*/) {
             mAdapter.syncEmail = profile.email
         } else {
             mAdapter.syncEmail = null

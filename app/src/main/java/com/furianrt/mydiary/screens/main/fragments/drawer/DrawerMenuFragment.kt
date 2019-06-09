@@ -18,7 +18,6 @@ import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.furianrt.mydiary.BuildConfig
 import com.furianrt.mydiary.R
-import com.furianrt.mydiary.base.BaseActivity.Companion.ITEM_TEST_SKU
 import com.furianrt.mydiary.data.model.*
 import com.furianrt.mydiary.data.model.pojo.SearchEntries
 import com.furianrt.mydiary.general.Analytics
@@ -110,7 +109,7 @@ class DrawerMenuFragment : Fragment(), DrawerMenuContract.View,
         view.button_sync.setOnClickListener {
             mListener?.let {
                 if (it.getIsBillingInitialized()) {
-                    if (it.getIsItemPurshased(BuildConfig.ITEM_SYNC_SKU) || it.getIsItemPurshased(ITEM_TEST_SKU)) {
+                    if (it.getIsItemPurshased(BuildConfig.ITEM_SYNC_SKU)/* || it.getIsItemPurshased(ITEM_TEST_SKU)*/) {
                         mPresenter.onButtonSyncClick()
                     } else {
                         mPresenter.onButtonPremiumClick()
@@ -181,7 +180,7 @@ class DrawerMenuFragment : Fragment(), DrawerMenuContract.View,
 
     override fun showAnonymousProfile() {
         text_email.text = getString(R.string.nav_header_main_anonymous)
-        text_profile_description.text = getString(R.string.nav_header_main_sing_in)
+        text_profile_description.text = getString(R.string.nav_header_main_sign_in)
     }
 
     override fun showProfile(profile: MyProfile) {

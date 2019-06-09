@@ -2,26 +2,26 @@
 <resources>
 
     <string-array name="tags">
-        <item>Мечта</item>
-        <item>Идея</item>
-        <item>Планы</item>
+        <item>@string/tag_dream</item>
+        <item>@string/tag_idea</item>
+        <item>@string/tag_plans</item>
     </string-array>
 
     <string-array name="moods">
-        <item>Злость</item>
-        <item>Ужасное</item>
-        <item>Плохое</item>
-        <item>Нормальное</item>
-        <item>Хорошее</item>
-        <item>Отличное</item>
+        <item>@string/mood_angry</item>
+        <item>@string/mood_awful</item>
+        <item>@string/mood_bad</item>
+        <item>@string/mood_neutral</item>
+        <item>@string/mood_happy</item>
+        <item>@string/mood_awesome</item>
     </string-array>
 
     <string-array name="categories">
-        <item>Любовь</item>
-        <item>План</item>
-        <item>Друзья</item>
-        <item>Развлечение</item>
-        <item>Бизнес</item>
+        <item>@string/category_love</item>
+        <item>@string/category_plan</item>
+        <item>@string/category_friends</item>
+        <item>@string/category_entertainmment</item>
+        <item>@string/category_business</item>
     </string-array>
 
     <string-array name="default_category_colors">
@@ -33,10 +33,10 @@
     </string-array>
 
     <string-array name="pref_font_size_titles">
-        <item>Мелкий</item>
-        <item>Обычный</item>
-        <item>Большой</item>
-        <item>Огромный</item>
+        <item>@string/font_small</item>
+        <item>@string/font_normal</item>
+        <item>@string/font_big</item>
+        <item>@string/font_huge</item>
     </string-array>
 
     <string-array name="pref_font_size_values">
@@ -57,8 +57,8 @@
     </string-array>
 
     <string-array name="pref_time_format_titles">
-        <item>12-часовой</item>
-        <item>24-часовой</item>
+        <item>@string/twelve_hour_format</item>
+        <item>@string/twenty_four_hour_format</item>
     </string-array>
 
     <string-array name="pref_time_format_values">
@@ -67,12 +67,12 @@
     </string-array>
 
     <string-array name="pref_key_frequency_titles">
-        <item>Без задержки</item>
-        <item>15 секунд</item>
-        <item>30 секунд</item>
-        <item>1 минута</item>
-        <item>5 минут</item>
-        <item>10 минут</item>
+        <item>@string/pin_no_delay</item>
+        <item>@string/pin_delay_fifteen_seconds</item>
+        <item>@string/pin_delay_one_minute</item>
+        <item>@string/pin_delay_five_minutes</item>
+        <item>@string/pin_delay_fifteen_minutes</item>
+        <item>@string/pin_delay_thirty_minutes</item>
     </string-array>
 
     <string-array name="pref_key_frequency_values">
@@ -85,26 +85,26 @@
     </string-array>
 
     <string-array name="pref_key_image_category_titles">
-        <item>Фоны</item>
-        <item>Мода</item>
-        <item>Природа</item>
-        <item>Наука</item>
-        <item>Образование</item>
-        <item>Люди</item>
-        <item>Чувства</item>
-        <item>Религия</item>
-        <item>Здоровье</item>
-        <item>Места</item>
-        <item>Животные</item>
-        <item>Индустрия</item>
-        <item>Еда</item>
-        <item>Компьютеры</item>
-        <item>Спорт</item>
-        <item>Транспорт</item>
-        <item>Путишевствия</item>
-        <item>Здания</item>
-        <item>Бизнес</item>
-        <item>Музыка</item>
+        <item>@string/daily_image_category_backgrounds</item>
+        <item>@string/daily_image_category_fashion</item>
+        <item>@string/daily_image_category_nature</item>
+        <item>@string/daily_image_category_science</item>
+        <item>@string/daily_image_category_education</item>
+        <item>@string/daily_image_category_people</item>
+        <item>@string/daily_image_category_feelings</item>
+        <item>@string/daily_image_category_religion</item>
+        <item>@string/daily_image_category_health</item>
+        <item>@string/daily_image_category_places</item>
+        <item>@string/daily_image_category_animals</item>
+        <item>@string/daily_image_category_industry</item>
+        <item>@string/daily_image_category_food</item>
+        <item>@string/daily_image_category_computer</item>
+        <item>@string/daily_image_category_sports</item>
+        <item>@string/daily_image_category_transportation</item>
+        <item>@string/daily_image_category_travel</item>
+        <item>@string/daily_image_category_buildings</item>
+        <item>@string/daily_image_category_business</item>
+        <item>@string/daily_image_category_music</item>
     </string-array>
 
     <string-array name="pref_key_image_category_values">

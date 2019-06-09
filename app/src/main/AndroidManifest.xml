@@ -79,6 +79,10 @@
             android:name="com.google.android.gms.ads.APPLICATION_ID"
             android:value="@string/banner_ad_app_id" />
 
+        <meta-data
+            android:name="firebase_analytics_collection_deactivated"
+            android:value="@bool/FIREBASE_ANALYTICS_DEACTIVATED"/>
+
     </application>
 
 </manifest>

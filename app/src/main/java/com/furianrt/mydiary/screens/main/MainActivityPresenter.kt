@@ -133,12 +133,11 @@ class MainActivityPresenter(
             view?.setSortDesc()
         }
         addDisposable(dataManager.getAllNotesWithProp()
-                .map {
-                    mNoteList = it
-                    applySearchFilter(it)
-                }
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { showNotes(it) })
+                .subscribe {
+                    mNoteList = it
+                    showNotes(mNoteList)
+                })
     }
 
     private fun toMap(notes: List<MyNoteWithProp>): Map<Long, ArrayList<MyNoteWithProp>> {
@@ -180,60 +179,6 @@ class MainActivityPresenter(
         }
         return list
     }
-
-    private fun applySearchFilter(notes: List<MyNoteWithProp>): List<MyNoteWithProp> =
-            notes.asSequence()
-                    .filter {
-                        it.note.title.toLowerCase(Locale.getDefault()).contains(mSearchQuery)
-                                || it.note.content.toLowerCase(Locale.getDefault()).contains(mSearchQuery)
-                    }
-                    .filter { note ->
-                        if (mFilteredTagIds.isEmpty()) {
-                            return@filter true
-                        }
-                        if (note.tags.isEmpty()) {
-                            return@filter mFilteredTagIds.contains(MyTag.TABLE_NAME)
-                        }
-                        val tagIds = mFilteredTagIds.filter { it != MyTag.TABLE_NAME }
-                        if (tagIds.isEmpty()) {
-                            return@filter false
-                        }
-                        tagIds.filter { it != MyTag.TABLE_NAME }
-                                .forEach { tagId ->
-                                    if (note.tags.find { it.tagId == tagId } == null) {
-                                        return@filter false
-                                    }
-                                }
-                        return@filter true
-                    }
-                    .filter { note ->
-                        mFilteredCategoryIds.isEmpty()
-                                || mFilteredCategoryIds.find { it == note.category?.id ?: MyCategory.TABLE_NAME } != null
-                    }
-                    .filter { note ->
-                        mFilteredMoodIds.isEmpty()
-                                || mFilteredMoodIds.find { it == note.mood?.id ?: -1 } != null
-                    }
-                    .filter { note ->
-                        if (mFilteredLocationNames.isEmpty()) {
-                            return@filter true
-                        }
-                        if (note.locations.isEmpty()) {
-                            return@filter mFilteredLocationNames.contains(MyLocation.TABLE_NAME)
-                        }
-                        val locationNames = mFilteredLocationNames.filter { it != MyLocation.TABLE_NAME }
-                        if (locationNames.isEmpty()) {
-                            return@filter false
-                        }
-                        locationNames.filter { it != MyLocation.TABLE_NAME }
-                                .forEach { locationName ->
-                                    if (note.locations.find { it.locationName == locationName } == null) {
-                                        return@filter false
-                                    }
-                                }
-                        return@filter true
-                    }
-                    .toList()
 
     override fun onDailyImageLoadStateChange() {
         loadHeaderImage()
@@ -375,7 +320,7 @@ class MainActivityPresenter(
 
     override fun onSearchQueryChange(query: String) {
         mSearchQuery = query.toLowerCase(Locale.getDefault())
-        showNotes(applySearchFilter(mNoteList))
+        showNotes(mNoteList)
     }
 
     override fun onTagFilterChange(tag: MyTag, checked: Boolean) {
@@ -385,7 +330,7 @@ class MainActivityPresenter(
             mFilteredTagIds.remove(tag.id)
         }
 
-        showNotes(applySearchFilter(mNoteList))
+        showNotes(mNoteList)
     }
 
     override fun onCategoryFilterChange(category: MyCategory, checked: Boolean) {
@@ -395,7 +340,7 @@ class MainActivityPresenter(
             mFilteredCategoryIds.remove(category.id)
         }
 
-        showNotes(applySearchFilter(mNoteList))
+        showNotes(mNoteList)
     }
 
     override fun onLocationFilterChange(location: MyLocation, checked: Boolean) {
@@ -405,7 +350,7 @@ class MainActivityPresenter(
             mFilteredLocationNames.remove(location.name)
         }
 
-        showNotes(applySearchFilter(mNoteList))
+        showNotes(mNoteList)
     }
 
     override fun onMoodFilterChange(mood: MyMood, checked: Boolean) {
@@ -415,7 +360,7 @@ class MainActivityPresenter(
             mFilteredMoodIds.remove(mood.id)
         }
 
-        showNotes(applySearchFilter(mNoteList))
+        showNotes(mNoteList)
     }
 
     override fun onNoTagsFilterChange(checked: Boolean) {
@@ -425,7 +370,7 @@ class MainActivityPresenter(
             mFilteredTagIds.remove(MyTag.TABLE_NAME)
         }
 
-        showNotes(applySearchFilter(mNoteList))
+        showNotes(mNoteList)
     }
 
     override fun onNoCategoryFilterChange(checked: Boolean) {
@@ -435,7 +380,7 @@ class MainActivityPresenter(
             mFilteredCategoryIds.remove(MyCategory.TABLE_NAME)
         }
 
-        showNotes(applySearchFilter(mNoteList))
+        showNotes(mNoteList)
     }
 
     override fun onNoMoodFilterChange(checked: Boolean) {
@@ -445,7 +390,7 @@ class MainActivityPresenter(
             mFilteredMoodIds.remove(-1)
         }
 
-        showNotes(applySearchFilter(mNoteList))
+        showNotes(mNoteList)
     }
 
     override fun onNoLocationFilterChange(checked: Boolean) {
@@ -455,7 +400,7 @@ class MainActivityPresenter(
             mFilteredLocationNames.remove(MyLocation.TABLE_NAME)
         }
 
-        showNotes(applySearchFilter(mNoteList))
+        showNotes(mNoteList)
     }
 
     override fun onClearFilters() {
@@ -464,28 +409,78 @@ class MainActivityPresenter(
         mFilteredMoodIds.clear()
         mFilteredLocationNames.clear()
 
-        showNotes(applySearchFilter(mNoteList))
+        showNotes(mNoteList)
     }
-
-    private fun isSearchFiltersEmpty() = mSearchQuery.isEmpty()
-            && mFilteredTagIds.isEmpty()
-            && mFilteredCategoryIds.isEmpty()
-            && mFilteredMoodIds.isEmpty()
-            && mFilteredLocationNames.isEmpty()
 
     private fun showNotes(notes: List<MyNoteWithProp>) {
-        view?.showNotes(formatNotes(toMap(notes)), mSelectedNoteIds)
         if (notes.isEmpty()) {
-            if (isSearchFiltersEmpty()) {
-                view?.showEmptyNoteList()
-            } else {
-                view?.showNoSearchResults()
-            }
+            view?.showEmptyNoteList()
+            view?.showNotes(formatNotes(toMap(notes)), mSelectedNoteIds)
         } else {
             view?.hideEmptyNoteList()
-            view?.hideNoSearchResults()
+            val filteredNotes = applySearchFilter(notes)
+            view?.showNotes(formatNotes(toMap(filteredNotes)), mSelectedNoteIds)
+            if (filteredNotes.isEmpty()) {
+                view?.showNoSearchResults()
+            } else {
+                view?.hideNoSearchResults()
+            }
         }
     }
+
+    private fun applySearchFilter(notes: List<MyNoteWithProp>): List<MyNoteWithProp> =
+            notes.asSequence()
+                    .filter {
+                        it.note.title.toLowerCase(Locale.getDefault()).contains(mSearchQuery)
+                                || it.note.content.toLowerCase(Locale.getDefault()).contains(mSearchQuery)
+                    }
+                    .filter { note ->
+                        if (mFilteredTagIds.isEmpty()) {
+                            return@filter true
+                        }
+                        if (note.tags.isEmpty()) {
+                            return@filter mFilteredTagIds.contains(MyTag.TABLE_NAME)
+                        }
+                        val tagIds = mFilteredTagIds.filter { it != MyTag.TABLE_NAME }
+                        if (tagIds.isEmpty()) {
+                            return@filter false
+                        }
+                        tagIds.filter { it != MyTag.TABLE_NAME }
+                                .forEach { tagId ->
+                                    if (note.tags.find { it.tagId == tagId } == null) {
+                                        return@filter false
+                                    }
+                                }
+                        return@filter true
+                    }
+                    .filter { note ->
+                        mFilteredCategoryIds.isEmpty()
+                                || mFilteredCategoryIds.find { it == note.category?.id ?: MyCategory.TABLE_NAME } != null
+                    }
+                    .filter { note ->
+                        mFilteredMoodIds.isEmpty()
+                                || mFilteredMoodIds.find { it == note.mood?.id ?: -1 } != null
+                    }
+                    .filter { note ->
+                        if (mFilteredLocationNames.isEmpty()) {
+                            return@filter true
+                        }
+                        if (note.locations.isEmpty()) {
+                            return@filter mFilteredLocationNames.contains(MyLocation.TABLE_NAME)
+                        }
+                        val locationNames = mFilteredLocationNames.filter { it != MyLocation.TABLE_NAME }
+                        if (locationNames.isEmpty()) {
+                            return@filter false
+                        }
+                        locationNames.filter { it != MyLocation.TABLE_NAME }
+                                .forEach { locationName ->
+                                    if (note.locations.find { it.locationName == locationName } == null) {
+                                        return@filter false
+                                    }
+                                }
+                        return@filter true
+                    }
+                    .toList()
 
     override fun onButtonChangeFiltersClick() {
         view?.showChangeFilters()
