@@ -89,7 +89,7 @@ class MainActivityPresenter(
         }
 
         addDisposable(dataManager.getHeaderImages()
-                .firstOrError()
+                .first(emptyList())
                 .flatMap { dbImages ->
                     return@flatMap when {
                         dbImages.isNotEmpty() && DateUtils.isToday(DateTime(dbImages.first().addedTime)) ->
@@ -201,7 +201,6 @@ class MainActivityPresenter(
 
     override fun onMainImageClick() {
         view?.showImageOptions()
-        //view?.requestStoragePermissions()
     }
 
     override fun onButtonImageSettingsClick() {

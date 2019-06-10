@@ -260,6 +260,7 @@ class SyncPresenter(
                     .andThen(dataManager.cleanupNoteTags())
                     .andThen(dataManager.cleanupTags())
                     .andThen(dataManager.cleanupImages())
+                    .andThen(dataManager.cleanupNoteLocations())
                     .andThen(dataManager.cleanupLocations())
                     .andThen(dataManager.cleanupForecasts())
                     .andThen(dataManager.getDbProfile().firstOrError())

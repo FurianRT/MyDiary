@@ -27,9 +27,6 @@ interface NoteLocationDao {
     @Query("UPDATE NoteLocation SET is_notelocation_deleted = 1, notelocation_sync_with = '[]' WHERE name_location = :locationName")
     fun deleteWithLocationName(locationName: String): Completable
 
-    @Query("DELETE FROM NoteLocation WHERE is_notelocation_deleted = 1")
-    fun cleanup(): Completable
-
     @Query("SELECT * FROM NoteLocation WHERE is_notelocation_deleted = 0")
     fun getAllNoteLocations(): Flowable<List<NoteLocation>>
 
@@ -38,4 +35,7 @@ interface NoteLocationDao {
 
     @Query("SELECT Locations.* FROM Locations INNER JOIN NoteLocation ON Locations.name_location = NoteLocation.name_location AND is_notelocation_deleted = 0 WHERE id_note = :noteId AND is_location_deleted = 0")
     fun getLocationsForNote(noteId: String): Flowable<List<MyLocation>>
+
+    @Query("DELETE FROM NoteLocation WHERE is_notelocation_deleted = 1")
+    fun cleanup(): Completable
 }

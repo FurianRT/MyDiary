@@ -221,6 +221,9 @@ class DataManagerImp(
 
     override fun deleteNote(noteId: String): Completable =
             database.noteTagDao().deleteWithNoteId(noteId)
+                    .andThen(database.noteLocationDao().getLocationsForNote(noteId))
+                    .first(emptyList())
+                    .flatMapCompletable { locations -> database.locationDao().delete(locations.map { it.name }) }
                     .andThen(database.noteLocationDao().deleteWithNoteId(noteId))
                     .andThen(database.appearanceDao().delete(noteId))
                     .andThen(database.imageDao().getImagesForNote(noteId))
@@ -288,6 +291,10 @@ class DataManagerImp(
 
     override fun cleanupLocations(): Completable =
             database.locationDao().cleanup()
+                    .subscribeOn(rxScheduler)
+
+    override fun cleanupNoteLocations(): Completable =
+            database.noteLocationDao().cleanup()
                     .subscribeOn(rxScheduler)
 
     override fun cleanupForecasts(): Completable =

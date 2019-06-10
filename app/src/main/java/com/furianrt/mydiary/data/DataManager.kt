@@ -71,6 +71,7 @@ interface DataManager {
     fun cleanupTags(): Completable
     fun cleanupImages(): Completable
     fun cleanupLocations(): Completable
+    fun cleanupNoteLocations(): Completable
     fun cleanupForecasts(): Completable
     fun getAllNotes(): Flowable<List<MyNote>>
     fun getDeletedNotes(): Flowable<List<MyNote>>
