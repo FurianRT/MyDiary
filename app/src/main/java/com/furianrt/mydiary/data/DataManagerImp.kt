@@ -526,6 +526,12 @@ class DataManagerImp(
 
     override fun isDailyImageEnabled(): Boolean = prefs.isDailyImageEnabled()
 
+    override fun getNumberOfLaunches(): Int = prefs.getNumberOfLaunches()
+
+    override fun setNumberOfLaunches(count: Int) {
+        prefs.setNumberOfLaunches(count)
+    }
+
     override fun getLastSyncMessage(): SyncProgressMessage? {
         val message = prefs.getLastSyncMessage()
         return if (message.isNullOrBlank()) {

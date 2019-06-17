@@ -30,6 +30,8 @@ interface PreferencesHelper {
     fun getLastAppLaunchTime(): Long
     fun getDailyImageCategory(): String
     fun isDailyImageEnabled(): Boolean
+    fun getNumberOfLaunches(): Int
+    fun setNumberOfLaunches(count: Int)
 
     companion object {
         const val COLOR_PRIMARY = "color_primary"
@@ -57,5 +59,6 @@ interface PreferencesHelper {
         const val LAST_APP_LAUNCH_TIME = "last_app_launch_time"
         const val LOAD_DAILY_IMAGE= "load_daily_image"
         const val DAILY_IMAGE_CATEGORY= "daily_image_category"
+        const val NUMBER_OF_LAUNCHES = "number_of_launches"
     }
 }

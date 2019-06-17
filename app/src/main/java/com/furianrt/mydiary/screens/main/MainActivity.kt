@@ -31,6 +31,7 @@ import com.furianrt.mydiary.base.BaseActivity
 import com.furianrt.mydiary.data.model.*
 import com.furianrt.mydiary.dialogs.categories.CategoriesDialog
 import com.furianrt.mydiary.dialogs.delete.note.DeleteNoteDialog
+import com.furianrt.mydiary.dialogs.rate.RateDialog
 import com.furianrt.mydiary.general.Analytics
 import com.furianrt.mydiary.general.AppBarLayoutBehavior
 import com.furianrt.mydiary.general.GlideApp
@@ -576,6 +577,12 @@ class MainActivity : BaseActivity(), MainActivityContract.View,
 
     override fun onDailyImageLoadStateChange() {
         mPresenter.onDailyImageLoadStateChange()
+    }
+
+    override fun showRateProposal() {
+        if (supportFragmentManager.findFragmentByTag(RateDialog.TAG) == null) {
+            RateDialog().show(supportFragmentManager, RateDialog.TAG)
+        }
     }
 
     override fun onStart() {

@@ -50,6 +50,7 @@ class MyApp : Application(), Application.ActivityLifecycleCallbacks {
         JodaTimeAndroid.init(this)
         initializeImageAlbum()
         resetSyncProgress()
+        incrementLaunchCounter()
         MobileAds.initialize(this, getString(R.string.banner_ad_app_id))
 
         StrictMode.setVmPolicy(StrictMode.VmPolicy.Builder().build())
@@ -142,6 +143,12 @@ class MyApp : Application(), Application.ActivityLifecycleCallbacks {
         }
         prefs.edit().putLong(PreferencesHelper.LAST_APP_LAUNCH_TIME, currentTime).apply()
     }
+
+    private fun incrementLaunchCounter() {
+        val prefs = PreferenceManager.getDefaultSharedPreferences(this)
+        var launches = prefs.getInt(PreferencesHelper.NUMBER_OF_LAUNCHES, 0)
+        prefs.edit().putInt(PreferencesHelper.NUMBER_OF_LAUNCHES, ++launches).apply()
+    }
 }
 
 /*TODO
@@ -154,9 +161,9 @@ class MyApp : Application(), Application.ActivityLifecycleCallbacks {
 * добавить ссылки на используемые библиотеки
 * добавить анимацию открытия экранов
 * добавить отправку картинок или текста из других приложений
-* отпечаток пальца
+*   отпечаток пальца
 * добавить вывод в pdf
-* сделать ежеднейный локальный бэкап
+* сделать ежедневный локальный бэкап
 * добавить выбор локации
 * добавить выбор типа защиты
 * поддержка темной темы
@@ -168,7 +175,14 @@ class MyApp : Application(), Application.ActivityLifecycleCallbacks {
 * сделать напоминание - прочитать указанную заметку через указанный период
 * добавить поддержку ссылок внутри текста
 * добавить градиент на экран с паролем
-*   не удаляются локации после удаления заметки
-*   добавить иконци в настройках
+* добавить иконци в настройках
+*   сделать определение локации опциональным
+*   уменьшить размер картинок
+*   добавить предложение оценить приложение (в настройках)
+* добавить сканирование текста
+* добавить импорт текста с сайтов (как в EverNote)
+* прикрутить ProGuard
+* вынести модуль в git submodule
+*
 * */
 

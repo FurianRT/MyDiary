@@ -135,6 +135,8 @@ interface DataManager {
     fun isPasswordEnabled(): Boolean
     fun setPasswordEnabled(enable: Boolean)
     fun isDailyImageEnabled(): Boolean
+    fun getNumberOfLaunches(): Int
+    fun setNumberOfLaunches(count: Int)
     fun isProfileExists(email: String): Single<Boolean>
     fun setSortDesc(desc: Boolean)
     fun setLastSyncMessage(message: SyncProgressMessage)

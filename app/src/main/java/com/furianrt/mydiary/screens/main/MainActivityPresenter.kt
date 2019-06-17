@@ -28,6 +28,7 @@ class MainActivityPresenter(
         private const val BUNDLE_FILTERED_MOOD_IDS = "filtered_mood_ids"
         private const val BUNDLE_FILTERED_LOCATION_NAMES = "filtered_location_names"
         private const val BUNDLE_SEARCH_QUERY = "search_query"
+        private const val NUMBER_OF_LAUNCHES_FOR_RATE = 4
     }
 
     private lateinit var mNoteList: List<MyNoteWithProp>
@@ -79,6 +80,13 @@ class MainActivityPresenter(
         addDisposable(checkLogOut().subscribe())
         if (mSelectedNoteIds.isNotEmpty()) {
             view.activateSelection()
+        }
+        showRateProposal()
+    }
+
+    private fun showRateProposal() {
+        if (dataManager.getNumberOfLaunches() == NUMBER_OF_LAUNCHES_FOR_RATE) {
+            view?.showRateProposal()
         }
     }
 

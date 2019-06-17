@@ -32,6 +32,7 @@ interface MainActivityContract {
         fun hideEmptyNoteList()
         fun hideNoSearchResults()
         fun showChangeFilters()
+        fun showRateProposal()
     }
 
     abstract class Presenter : BasePresenter<View>() {

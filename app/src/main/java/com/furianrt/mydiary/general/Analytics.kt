@@ -70,6 +70,7 @@ object Analytics {
     const val EVENT_DAILY_IMAGE_TURN_OFF = "daily_image_turn_off"
     const val EVENT_DAILY_IMAGE_TURN_ON = "daily_image_turn_on"
     const val EVENT_DAILY_IMAGE_CATEGORY_CHANGED = "daily_image_category_changed"
+    const val EVENT_FIND_LOCATION_CLICKED = "find_location_clicked"
 
     const val BUNDLE_TASK_INDEX = "task_index"
     const val BUNDLE_CATEGORY = "category"

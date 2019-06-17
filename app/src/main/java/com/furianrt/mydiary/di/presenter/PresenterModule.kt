@@ -18,6 +18,8 @@ import com.furianrt.mydiary.dialogs.delete.note.DeleteNoteContract
 import com.furianrt.mydiary.dialogs.delete.note.DeleteNotePresenter
 import com.furianrt.mydiary.dialogs.moods.MoodsDialogContract
 import com.furianrt.mydiary.dialogs.moods.MoodsDialogPresenter
+import com.furianrt.mydiary.dialogs.rate.RateDialogContract
+import com.furianrt.mydiary.dialogs.rate.RateDialogPresenter
 import com.furianrt.mydiary.dialogs.tags.TagsDialogContract
 import com.furianrt.mydiary.dialogs.tags.TagsDialogPresenter
 import com.furianrt.mydiary.dialogs.tags.fragments.add.TagAddContract
@@ -294,4 +296,9 @@ class PresenterModule(private val context: Context) {
     @PresenterScope
     fun provideDrawerMenuPresenter(dataManager: DataManager): DrawerMenuContract.Presenter =
             DrawerMenuPresenter(dataManager)
+
+    @Provides
+    @PresenterScope
+    fun provideRateDialogPresenter(dataManager: DataManager): RateDialogContract.Presenter =
+            RateDialogPresenter(dataManager)
 }

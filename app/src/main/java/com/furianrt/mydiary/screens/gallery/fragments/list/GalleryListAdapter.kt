@@ -67,7 +67,7 @@ class GalleryListAdapter(
         }
     }
 
-    private var mList: MutableList<ViewItem> = mutableListOf()
+    private val mList: MutableList<ViewItem> = mutableListOf()
 
     fun getImages(): List<MyImage> = mList
             .filter { it.type == ViewItem.TYPE_IMAGE }

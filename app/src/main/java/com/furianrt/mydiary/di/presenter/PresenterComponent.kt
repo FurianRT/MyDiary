@@ -8,6 +8,7 @@ import com.furianrt.mydiary.dialogs.categories.fragments.list.CategoryListFragme
 import com.furianrt.mydiary.dialogs.delete.image.DeleteImageDialog
 import com.furianrt.mydiary.dialogs.delete.note.DeleteNoteDialog
 import com.furianrt.mydiary.dialogs.moods.MoodsDialog
+import com.furianrt.mydiary.dialogs.rate.RateDialog
 import com.furianrt.mydiary.dialogs.tags.TagsDialog
 import com.furianrt.mydiary.dialogs.tags.fragments.add.TagAddFragment
 import com.furianrt.mydiary.dialogs.tags.fragments.delete.TagDeleteFragment
@@ -55,6 +56,7 @@ interface PresenterComponent {
     fun inject(dialog: TagsDialog)
     fun inject(dialog: DeleteNoteDialog)
     fun inject(dialog: DeleteImageDialog)
+    fun inject(dialog: RateDialog)
     fun inject(fragment: NoteContentFragment)
     fun inject(fragment: NoteEditFragment)
     fun inject(fragment: NoteFragment)

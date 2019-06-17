@@ -106,4 +106,10 @@ class PreferencesHelperImp(val context: Context) : PreferencesHelper {
 
     override fun isDailyImageEnabled(): Boolean =
             mPrefs.getBoolean(PreferencesHelper.LOAD_DAILY_IMAGE, true)
+
+    override fun getNumberOfLaunches(): Int = mPrefs.getInt(PreferencesHelper.NUMBER_OF_LAUNCHES, 0)
+
+    override fun setNumberOfLaunches(count: Int) {
+        mPrefs.edit().putInt(PreferencesHelper.NUMBER_OF_LAUNCHES, count).apply()
+    }
 }
