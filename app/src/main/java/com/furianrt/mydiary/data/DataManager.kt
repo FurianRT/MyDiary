@@ -137,6 +137,7 @@ interface DataManager {
     fun isDailyImageEnabled(): Boolean
     fun getNumberOfLaunches(): Int
     fun setNumberOfLaunches(count: Int)
+    fun isFingerprintEnabled(): Boolean
     fun isProfileExists(email: String): Single<Boolean>
     fun setSortDesc(desc: Boolean)
     fun setLastSyncMessage(message: SyncProgressMessage)

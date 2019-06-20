@@ -25,6 +25,15 @@
             android:title="@string/security_time_settings_title"
             app:iconSpaceReserved="false" />
 
+        <SwitchPreference
+            android:defaultValue="true"
+            android:key="fingerprint_status"
+            android:dependency="security_key"
+            android:summaryOff="@string/fingerprint_settings_off"
+            android:summaryOn="@string/fingerprint_settings_on"
+            android:title="@string/fingerprint"
+            app:iconSpaceReserved="false" />
+
     </PreferenceCategory>
 
     <PreferenceCategory
@@ -126,10 +135,19 @@
 
         <SwitchPreference
             android:defaultValue="true"
+            android:key="map_activation"
+            android:summaryOff="@string/map_activation_settings_off"
+            android:summaryOn="@string/map_activation_settings_on"
+            android:title="@string/map_activation_settings_title"
+            app:iconSpaceReserved="false" />
+
+        <SwitchPreference
+            android:defaultValue="true"
             android:key="weather_activation"
             android:summaryOff="@string/weather_activation_settings_off"
             android:summaryOn="@string/weather_activation_settings_on"
             android:title="@string/weather_activation_settings_title"
+            android:dependency="map_activation"
             app:iconSpaceReserved="false" />
 
         <ListPreference
@@ -144,6 +162,14 @@
             android:title="@string/weather_units_settings_title"
             app:iconSpaceReserved="false" />
 
+        <SwitchPreference
+            android:defaultValue="true"
+            android:key="mood_activation"
+            android:summaryOff="@string/mood_activation_settings_off"
+            android:summaryOn="@string/mood_activation_settings_on"
+            android:title="@string/mood_activation_settings_title"
+            app:iconSpaceReserved="false" />
+
         <ListPreference
             android:defaultValue="true"
             android:entries="@array/pref_time_format_titles"
@@ -153,22 +179,6 @@
             android:positiveButtonText="@null"
             android:summary="%s"
             android:title="Формат времени"
-            app:iconSpaceReserved="false" />
-
-        <SwitchPreference
-            android:defaultValue="true"
-            android:key="mood_activation"
-            android:summaryOff="@string/mood_activation_settings_off"
-            android:summaryOn="@string/mood_activation_settings_on"
-            android:title="@string/mood_activation_settings_title"
-            app:iconSpaceReserved="false" />
-
-        <SwitchPreference
-            android:defaultValue="true"
-            android:key="map_activation"
-            android:summaryOff="@string/map_activation_settings_off"
-            android:summaryOn="@string/map_activation_settings_on"
-            android:title="@string/map_activation_settings_title"
             app:iconSpaceReserved="false" />
 
     </PreferenceCategory>

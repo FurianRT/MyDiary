@@ -62,6 +62,7 @@
     <string name="background">Фон</string>
     <string name="text">Текст</string>
     <string name="load">Загрузка</string>
+    <string name="fingerprint">Отпечаток пальца</string>
     <plurals name="note_delete_confirmation">
         <item quantity="one">Удалить %d запись?</item>
         <item quantity="few">Удалить %d записи?</item>
@@ -161,6 +162,8 @@
     <string name="security_key_settings_off">Включить защиту паролем</string>
     <string name="security_key_settings_title">Пароль</string>
     <string name="security_time_settings_title">Время до запроса пароля</string>
+    <string name="fingerprint_settings_off">Включить отпечаток пальца</string>
+    <string name="fingerprint_settings_on">Отключить отпечаток пальца</string>
     <string name="fragment_registration_password">Пароль</string>
     <string name="fragment_registration_repeat_password">Повторите пароль</string>
     <string name="fragment_registration_sign_up">Регистрация</string>
@@ -229,6 +232,7 @@
     <string name="activity_pin_wrong_pin">Неверный пароль</string>
     <string name="activity_pin_do_not_match">Пароли не совпадают</string>
     <string name="activity_pin_enter">Введите пароль</string>
+    <string name="activity_pin_use_pin">Ввести пароль</string>
     <string name="activity_pin_repeat">Повторите пароль</string>
     <string name="fragment_backup_email_message">Введите email\nдля восстановления пароля</string>
     <string name="fragment_backup_email_message_land">Введите email для восстановления пароля</string>
@@ -280,4 +284,5 @@
     <string name="low_rate_email_title">Скажите что не понравилось</string>
     <string name="low_rate_email_text">Что вам не понравилось в приложении? Мы исправимся, честно.</string>
     <string name="low_rate_email_subject">Serenity отзыв</string>
+    <string name="activity_pin_fingerprint_title">Пропускаем только хороших людей</string>
 </resources>

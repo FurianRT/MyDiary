@@ -5,6 +5,7 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.os.Handler
+import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.PreferenceManager
 import androidx.preference.SwitchPreference
@@ -12,6 +13,7 @@ import com.furianrt.mydiary.R
 import com.furianrt.mydiary.data.prefs.PreferencesHelper
 import com.furianrt.mydiary.general.Analytics
 import com.furianrt.mydiary.screens.pin.PinActivity
+import com.furianrt.mydiary.utils.isFingerprintAvailable
 import javax.inject.Inject
 
 class GlobalSettingsFragment : PreferenceFragmentCompat(), GlobalSettingsContract.View,
@@ -34,10 +36,14 @@ class GlobalSettingsFragment : PreferenceFragmentCompat(), GlobalSettingsContrac
         mPresenter.attachView(this)
         mPresenter.onViewCreate()
 
-        findPreference<SwitchPreference>(PreferencesHelper.SECURITY_KEY)?.setOnPreferenceClickListener {
-            mPresenter.onPrefSecurityKeyClick()
-            return@setOnPreferenceClickListener true
-        }
+        findPreference<SwitchPreference>(PreferencesHelper.FINGERPRINT_STATUS)?.isVisible =
+                requireContext().isFingerprintAvailable()
+
+        findPreference<SwitchPreference>(PreferencesHelper.SECURITY_KEY)?.onPreferenceClickListener =
+                Preference.OnPreferenceClickListener {
+                    mPresenter.onPrefSecurityKeyClick()
+                    return@OnPreferenceClickListener true
+                }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -76,7 +82,8 @@ class GlobalSettingsFragment : PreferenceFragmentCompat(), GlobalSettingsContrac
                 keyPref?.isChecked = false
                 mPresenter.onPasswordRemoved()
             } else {
-                keyPref?.isChecked = true            }
+                keyPref?.isChecked = true
+            }
         }
     }
 

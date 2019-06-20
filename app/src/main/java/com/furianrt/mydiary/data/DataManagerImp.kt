@@ -532,6 +532,8 @@ class DataManagerImp(
         prefs.setNumberOfLaunches(count)
     }
 
+    override fun isFingerprintEnabled(): Boolean = prefs.isFingerprintEnabled()
+
     override fun getLastSyncMessage(): SyncProgressMessage? {
         val message = prefs.getLastSyncMessage()
         return if (message.isNullOrBlank()) {

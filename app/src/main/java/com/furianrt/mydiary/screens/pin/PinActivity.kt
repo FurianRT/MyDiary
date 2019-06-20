@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.view.View
 import android.widget.Toast
+import androidx.biometric.BiometricPrompt
 import com.furianrt.mydiary.R
 import com.furianrt.mydiary.base.BaseActivity
 import com.furianrt.mydiary.general.Analytics
@@ -17,10 +18,12 @@ import com.furianrt.mydiary.screens.pin.fragments.done.DoneEmailFragment
 import com.furianrt.mydiary.screens.pin.fragments.sendemail.SendEmailFragment
 import com.furianrt.mydiary.utils.animateShake
 import com.furianrt.mydiary.utils.inTransaction
+import com.furianrt.mydiary.utils.isFingerprintAvailable
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.card.MaterialCardView
 import kotlinx.android.synthetic.main.activity_pin.*
 import kotlinx.android.synthetic.main.bottom_sheet_pin.*
+import java.util.concurrent.Executors
 import javax.inject.Inject
 
 class PinActivity : BaseActivity(), PinContract.View, BackupEmailFragment.OnBackupEmailFragmentListener {
@@ -51,6 +54,15 @@ class PinActivity : BaseActivity(), PinContract.View, BackupEmailFragment.OnBack
     private val mBottomSheetOpenRunnable: Runnable = Runnable {
         mBottomSheet.state = BottomSheetBehavior.STATE_EXPANDED
     }
+
+    private val mBiometricPrompt = BiometricPrompt(this, Executors.newSingleThreadExecutor(),
+            object : BiometricPrompt.AuthenticationCallback() {
+                override fun onAuthenticationSucceeded(result: BiometricPrompt.AuthenticationResult) {
+                    super.onAuthenticationSucceeded(result)
+                    Analytics.sendEvent(this@PinActivity, Analytics.EVENT_FINGERPRINT_SUCCESS)
+                    mPresenter.onFingerprintAccepted()
+                }
+            })
 
     override var needLockScreen = false
 
@@ -194,6 +206,23 @@ class PinActivity : BaseActivity(), PinContract.View, BackupEmailFragment.OnBack
         mPresenter.onEmailEntered(email)
     }
 
+    override fun showFingerprintScanner() {
+        mBiometricPrompt.authenticate(BiometricPrompt.PromptInfo.Builder()
+                .setTitle(getString(R.string.activity_pin_fingerprint_title))
+                .setNegativeButtonText(getString(R.string.activity_pin_use_pin))
+                .build())
+    }
+
+    override fun isFingerprintSupported(): Boolean = isFingerprintAvailable()
+
+    override fun hideFingerprintButton() {
+        button_fingerprint.visibility = View.INVISIBLE
+    }
+
+    override fun showFingerprintButton() {
+        button_fingerprint.visibility = View.VISIBLE
+    }
+
     override fun close() {
         if (mMode == MODE_LOCK) {
             moveTaskToBack(true)
@@ -219,9 +248,9 @@ class PinActivity : BaseActivity(), PinContract.View, BackupEmailFragment.OnBack
         super.onStart()
         mPresenter.attachView(this)
         when (mMode) {
-            MODE_CREATE -> mPresenter.onViewResumedModeCreate()
-            MODE_REMOVE -> mPresenter.onViewResumedModeRemove()
-            MODE_LOCK -> mPresenter.onViewResumedModeLock()
+            MODE_CREATE -> mPresenter.onViewStartedModeCreate()
+            MODE_REMOVE -> mPresenter.onViewStartedModeRemove()
+            MODE_LOCK -> mPresenter.onViewStartedModeLock()
         }
     }
 

@@ -19,6 +19,10 @@ interface PinContract {
         fun showForgotPinView()
         fun showEnterEmailView()
         fun close()
+        fun showFingerprintScanner()
+        fun isFingerprintSupported(): Boolean
+        fun hideFingerprintButton()
+        fun showFingerprintButton()
     }
 
     abstract class Presenter : BasePresenter<View>() {
@@ -28,12 +32,13 @@ interface PinContract {
         abstract fun onButtonBackspaceClick()
         abstract fun onEmailEntered(email: String)
         abstract fun onButtonCloseClick()
-        abstract fun onViewResumedModeCreate()
-        abstract fun onViewResumedModeRemove()
-        abstract fun onViewResumedModeLock()
+        abstract fun onViewStartedModeCreate()
+        abstract fun onViewStartedModeRemove()
+        abstract fun onViewStartedModeLock()
         abstract fun onValueEnteredModeCreate(value: Int)
         abstract fun onValueEnteredModeRemove(value: Int)
         abstract fun onValueEnteredModeLock(value: Int)
         abstract fun onButtonFingerprintClick()
+        abstract fun onFingerprintAccepted()
     }
 }

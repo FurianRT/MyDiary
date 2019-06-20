@@ -30,7 +30,8 @@ class PinPresenter(
         mPrevPin = bundle.getString(BUNDLE_PREVIOUS_PIN, "")
     }
 
-    override fun onViewResumedModeCreate() {
+    override fun onViewStartedModeCreate() {
+        view?.hideFingerprintButton()
         view?.showPin(mPin)
         if (mPrevPin.isNotEmpty()) {
             view?.showMessageRepeatPin()
@@ -39,14 +40,21 @@ class PinPresenter(
         }
     }
 
-    override fun onViewResumedModeRemove() {
+    override fun onViewStartedModeRemove() {
+        view?.hideFingerprintButton()
         view?.showPin(mPin)
         view?.showMessageCurrentPin()
     }
 
-    override fun onViewResumedModeLock() {
+    override fun onViewStartedModeLock() {
         view?.showPin(mPin)
         view?.showMessageEnterPin()
+        if (view?.isFingerprintSupported() == true && dataManager.isFingerprintEnabled()) {
+            view?.showFingerprintButton()
+            view?.showFingerprintScanner()
+        } else {
+            view?.hideFingerprintButton()
+        }
     }
 
     override fun onValueEnteredModeCreate(value: Int) {
@@ -155,7 +163,12 @@ class PinPresenter(
     }
 
     override fun onButtonFingerprintClick() {
+        view?.showFingerprintScanner()
+    }
 
+    override fun onFingerprintAccepted() {
+        dataManager.setAuthorized(true)
+        view?.showMessagePinCorrect()
     }
 
     override fun detachView() {

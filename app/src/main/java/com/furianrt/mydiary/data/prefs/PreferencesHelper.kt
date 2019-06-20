@@ -24,6 +24,7 @@ interface PreferencesHelper {
     fun setPasswordRequestDelay(delay: Long)
     fun isPasswordEnabled(): Boolean
     fun setPasswordEnabled(enable: Boolean)
+    fun isFingerprintEnabled(): Boolean
     fun setLastSyncMessage(message: String)
     fun getLastSyncMessage(): String?
     fun setLastAppLaunchTime(time: Long)
@@ -50,6 +51,7 @@ interface PreferencesHelper {
         const val SECURITY_EMAIL = "security_email"
         const val SECURITY_REQUEST_DELAY = "security_request_delay"
         const val SECURITY_KEY = "security_key"
+        const val FINGERPRINT_STATUS = "fingerprint_status"
         const val IS_NOTE_SORT_DESC = "is_note_sort_desc"
         const val DIARY_PIN = "diary_pin"
         const val DEFAULT_TEXT_SIZE = "16"

@@ -86,6 +86,9 @@ class PreferencesHelperImp(val context: Context) : PreferencesHelper {
         mPrefs.edit().putBoolean(PreferencesHelper.SECURITY_KEY, enable).apply()
     }
 
+    override fun isFingerprintEnabled(): Boolean =
+            mPrefs.getBoolean(PreferencesHelper.FINGERPRINT_STATUS, true)
+
     override fun setLastSyncMessage(message: String) {
         mPrefs.edit().putString(PreferencesHelper.LAST_PROGRESS_MESSAGE, message).apply()
     }
