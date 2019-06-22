@@ -12,18 +12,18 @@ android {
         applicationId "com.furianrt.mydiary"
         minSdkVersion 21
         targetSdkVersion 29
-        versionCode 21
-        versionName "1.2"
+        versionCode 22
+        versionName "1.2.1"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
         debug {
-            minifyEnabled false
+            minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             resValue("bool", "FIREBASE_ANALYTICS_DEACTIVATED", "true")
         }
         release {
-            minifyEnabled false
+            minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             resValue("bool", "FIREBASE_ANALYTICS_DEACTIVATED", "false")
         }
