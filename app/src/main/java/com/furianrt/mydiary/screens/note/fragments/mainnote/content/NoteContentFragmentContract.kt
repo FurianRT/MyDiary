@@ -1,7 +1,7 @@
 package com.furianrt.mydiary.screens.note.fragments.mainnote.content
 
-import com.furianrt.mydiary.base.BaseMvpView
-import com.furianrt.mydiary.base.BasePresenter
+import com.furianrt.mydiary.base.mvp.BaseMvpView
+import com.furianrt.mydiary.base.mvp.BaseMvpPresenter
 
 interface NoteContentFragmentContract {
 
@@ -11,7 +11,7 @@ interface NoteContentFragmentContract {
         fun showNoteEditViewForTitleEnd()
     }
 
-    abstract class Presenter : BasePresenter<MvpView>() {
+    abstract class Presenter : BaseMvpPresenter<MvpView>() {
         abstract fun onTouchPositionChange(touchPosition: Int)
         abstract fun onTitleClick()
         abstract fun onContentClick()

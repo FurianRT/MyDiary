@@ -1,7 +1,7 @@
 package com.furianrt.mydiary.screens.gallery
 
-import com.furianrt.mydiary.base.BaseMvpView
-import com.furianrt.mydiary.base.BasePresenter
+import com.furianrt.mydiary.base.mvp.BaseMvpView
+import com.furianrt.mydiary.base.mvp.BaseMvpPresenter
 
 interface GalleryActivityContract {
 
@@ -9,7 +9,7 @@ interface GalleryActivityContract {
 
     }
 
-    abstract class Presenter : BasePresenter<MvpView>() {
+    abstract class Presenter : BaseMvpPresenter<MvpView>() {
 
     }
 }

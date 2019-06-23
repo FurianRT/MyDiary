@@ -1,7 +1,7 @@
 package com.furianrt.mydiary.screens.main.fragments.authentication.login
 
-import com.furianrt.mydiary.base.BaseMvpView
-import com.furianrt.mydiary.base.BasePresenter
+import com.furianrt.mydiary.base.mvp.BaseMvpView
+import com.furianrt.mydiary.base.mvp.BaseMvpPresenter
 
 interface LoginContract {
 
@@ -17,7 +17,7 @@ interface LoginContract {
         fun showForgotPassView(email: String)
     }
 
-    abstract class Presenter : BasePresenter<MvpView>() {
+    abstract class Presenter : BaseMvpPresenter<MvpView>() {
         abstract fun onButtonForgotClick(email: String)
         abstract fun onButtonSignInClick(email: String, password: String)
 

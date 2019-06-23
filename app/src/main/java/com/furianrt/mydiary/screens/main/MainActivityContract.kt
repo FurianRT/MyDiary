@@ -1,8 +1,8 @@
 package com.furianrt.mydiary.screens.main
 
 import android.os.Bundle
-import com.furianrt.mydiary.base.BaseMvpView
-import com.furianrt.mydiary.base.BasePresenter
+import com.furianrt.mydiary.base.mvp.BaseMvpView
+import com.furianrt.mydiary.base.mvp.BaseMvpPresenter
 import com.furianrt.mydiary.data.model.*
 import com.furianrt.mydiary.screens.main.adapter.NoteListItem
 
@@ -35,7 +35,7 @@ interface MainActivityContract {
         fun showRateProposal()
     }
 
-    abstract class Presenter : BasePresenter<MvpView>() {
+    abstract class Presenter : BaseMvpPresenter<MvpView>() {
         abstract fun onMainListItemClick(note: MyNoteWithProp, position: Int)
         abstract fun onMainImageClick()
         abstract fun onMainListItemLongClick(note: MyNoteWithProp, position: Int)

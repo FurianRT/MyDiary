@@ -1,7 +1,7 @@
 package com.furianrt.mydiary.screens.main.fragments.profile.password
 
-import com.furianrt.mydiary.base.BaseMvpView
-import com.furianrt.mydiary.base.BasePresenter
+import com.furianrt.mydiary.base.mvp.BaseMvpView
+import com.furianrt.mydiary.base.mvp.BaseMvpPresenter
 
 interface PasswordContract {
 
@@ -22,7 +22,7 @@ interface PasswordContract {
         fun close()
     }
 
-    abstract class Presenter : BasePresenter<MvpView>() {
+    abstract class Presenter : BaseMvpPresenter<MvpView>() {
         abstract fun onButtonCancelClick()
         abstract fun onButtonSaveClick(oldPassword: String, newPassword: String, repeatPassword: String)
     }

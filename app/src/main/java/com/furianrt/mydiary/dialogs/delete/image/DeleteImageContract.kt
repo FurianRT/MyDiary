@@ -1,7 +1,7 @@
 package com.furianrt.mydiary.dialogs.delete.image
 
-import com.furianrt.mydiary.base.BaseMvpView
-import com.furianrt.mydiary.base.BasePresenter
+import com.furianrt.mydiary.base.mvp.BaseMvpView
+import com.furianrt.mydiary.base.mvp.BaseMvpPresenter
 
 interface DeleteImageContract {
 
@@ -9,7 +9,7 @@ interface DeleteImageContract {
         fun closeView()
     }
 
-    abstract class Presenter : BasePresenter<MvpView>() {
+    abstract class Presenter : BaseMvpPresenter<MvpView>() {
         abstract fun onButtonDeleteClick(imageNames: List<String>)
         abstract fun onButtonCancelClick()
     }

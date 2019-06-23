@@ -1,7 +1,7 @@
 package com.furianrt.mydiary.dialogs.categories.fragments.add
 
-import com.furianrt.mydiary.base.BaseMvpView
-import com.furianrt.mydiary.base.BasePresenter
+import com.furianrt.mydiary.base.mvp.BaseMvpView
+import com.furianrt.mydiary.base.mvp.BaseMvpPresenter
 
 interface CategoryAddContract {
 
@@ -10,7 +10,7 @@ interface CategoryAddContract {
         fun showErrorEmptyName()
     }
 
-    abstract class Presenter : BasePresenter<MvpView>() {
+    abstract class Presenter : BaseMvpPresenter<MvpView>() {
         abstract fun onButtonDoneClick(categoryName: String, categoryColor: Int)
         abstract fun onButtonCancelClick()
     }

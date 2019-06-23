@@ -1,7 +1,7 @@
 package com.furianrt.mydiary.dialogs.rate
 
-import com.furianrt.mydiary.base.BaseMvpView
-import com.furianrt.mydiary.base.BasePresenter
+import com.furianrt.mydiary.base.mvp.BaseMvpView
+import com.furianrt.mydiary.base.mvp.BaseMvpPresenter
 
 interface RateDialogContract {
     interface MvpView : BaseMvpView {
@@ -10,7 +10,7 @@ interface RateDialogContract {
         fun close()
     }
 
-    abstract class Presenter : BasePresenter<MvpView>() {
+    abstract class Presenter : BaseMvpPresenter<MvpView>() {
         abstract fun onButtonRateClick(rating: Int)
         abstract fun onButtonLaterClick()
         abstract fun onButtonNeverClick()

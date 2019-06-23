@@ -1,7 +1,7 @@
 package com.furianrt.mydiary.dialogs.tags.fragments.list
 
-import com.furianrt.mydiary.base.BaseMvpView
-import com.furianrt.mydiary.base.BasePresenter
+import com.furianrt.mydiary.base.mvp.BaseMvpView
+import com.furianrt.mydiary.base.mvp.BaseMvpPresenter
 import com.furianrt.mydiary.data.model.MyTag
 
 interface TagListContract {
@@ -14,7 +14,7 @@ interface TagListContract {
         fun showDeleteTagView(tag: MyTag)
     }
 
-    abstract class Presenter : BasePresenter<MvpView>() {
+    abstract class Presenter : BaseMvpPresenter<MvpView>() {
         abstract fun onViewResume(noteId: String)
         abstract fun onItemCheckChange(noteId: String, tag: MyTag, checked: Boolean)
         abstract fun onButtonCloseClick()

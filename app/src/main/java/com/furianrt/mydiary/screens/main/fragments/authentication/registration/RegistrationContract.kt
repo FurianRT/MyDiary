@@ -1,7 +1,7 @@
 package com.furianrt.mydiary.screens.main.fragments.authentication.registration
 
-import com.furianrt.mydiary.base.BaseMvpView
-import com.furianrt.mydiary.base.BasePresenter
+import com.furianrt.mydiary.base.mvp.BaseMvpView
+import com.furianrt.mydiary.base.mvp.BaseMvpPresenter
 
 interface RegistrationContract {
 
@@ -25,7 +25,7 @@ interface RegistrationContract {
         fun showPrivacyView(email: String, password: String)
     }
 
-    abstract class Presenter : BasePresenter<MvpView>() {
+    abstract class Presenter : BaseMvpPresenter<MvpView>() {
         abstract fun onButtonCancelClick()
         abstract fun onButtonSignUpClick(email: String, password: String, passwordRepeat: String)
         abstract fun onEmailFocusChange(email: String, hasFocus: Boolean)

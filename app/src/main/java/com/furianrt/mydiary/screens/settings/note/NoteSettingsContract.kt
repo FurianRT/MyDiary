@@ -1,7 +1,7 @@
 package com.furianrt.mydiary.screens.settings.note
 
-import com.furianrt.mydiary.base.BaseMvpView
-import com.furianrt.mydiary.base.BasePresenter
+import com.furianrt.mydiary.base.mvp.BaseMvpView
+import com.furianrt.mydiary.base.mvp.BaseMvpPresenter
 import com.furianrt.mydiary.data.model.MyNoteAppearance
 
 interface NoteSettingsContract {
@@ -10,7 +10,7 @@ interface NoteSettingsContract {
         fun updateSettings(appearance: MyNoteAppearance)
     }
 
-    abstract class Presenter : BasePresenter<MvpView>() {
+    abstract class Presenter : BaseMvpPresenter<MvpView>() {
         abstract fun onViewCreate(noteId: String?)
         abstract fun onTextSizeChange(size: Int)
         abstract fun onTextColorChange(color: Int)

@@ -1,7 +1,7 @@
 package com.furianrt.mydiary.screens.note
 
-import com.furianrt.mydiary.base.BaseMvpView
-import com.furianrt.mydiary.base.BasePresenter
+import com.furianrt.mydiary.base.mvp.BaseMvpView
+import com.furianrt.mydiary.base.mvp.BaseMvpPresenter
 import com.furianrt.mydiary.data.model.MyNoteWithProp
 
 interface NoteActivityContract {
@@ -11,7 +11,7 @@ interface NoteActivityContract {
         fun closeView()
     }
 
-    abstract class Presenter : BasePresenter<MvpView>() {
+    abstract class Presenter : BaseMvpPresenter<MvpView>() {
         abstract fun loadNotes()
         abstract fun loadNote(noteId: String)
     }

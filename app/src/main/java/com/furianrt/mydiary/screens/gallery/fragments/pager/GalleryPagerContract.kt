@@ -1,7 +1,7 @@
 package com.furianrt.mydiary.screens.gallery.fragments.pager
 
-import com.furianrt.mydiary.base.BaseMvpView
-import com.furianrt.mydiary.base.BasePresenter
+import com.furianrt.mydiary.base.mvp.BaseMvpView
+import com.furianrt.mydiary.base.mvp.BaseMvpPresenter
 import com.furianrt.mydiary.data.model.MyImage
 
 interface GalleryPagerContract {
@@ -13,7 +13,7 @@ interface GalleryPagerContract {
         fun showDeleteConfirmationDialog(image: MyImage)
     }
 
-    abstract class Presenter : BasePresenter<MvpView>() {
+    abstract class Presenter : BaseMvpPresenter<MvpView>() {
         abstract fun onViewResume(noteId: String)
         abstract fun onButtonListModeClick(noteId: String)
         abstract fun onButtonDeleteClick(image: MyImage)

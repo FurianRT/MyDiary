@@ -1,7 +1,7 @@
 package com.furianrt.mydiary.dialogs.tags.fragments.add
 
-import com.furianrt.mydiary.base.BaseMvpView
-import com.furianrt.mydiary.base.BasePresenter
+import com.furianrt.mydiary.base.mvp.BaseMvpView
+import com.furianrt.mydiary.base.mvp.BaseMvpPresenter
 
 interface TagAddContract {
 
@@ -11,7 +11,7 @@ interface TagAddContract {
         fun showErrorExistingTagName()
     }
 
-    abstract class Presenter : BasePresenter<MvpView>() {
+    abstract class Presenter : BaseMvpPresenter<MvpView>() {
         abstract fun onButtonAddClick(noteId: String, name: String)
         abstract fun onButtonCloseClick()
     }

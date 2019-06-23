@@ -1,7 +1,7 @@
 package com.furianrt.mydiary.screens.main.fragments.drawer
 
-import com.furianrt.mydiary.base.BaseMvpView
-import com.furianrt.mydiary.base.BasePresenter
+import com.furianrt.mydiary.base.mvp.BaseMvpView
+import com.furianrt.mydiary.base.mvp.BaseMvpPresenter
 import com.furianrt.mydiary.data.model.MyProfile
 import com.furianrt.mydiary.data.model.SyncProgressMessage
 import com.furianrt.mydiary.data.model.pojo.SearchEntries
@@ -24,7 +24,7 @@ interface DrawerMenuContract {
         fun clearFilters()
     }
 
-    abstract class Presenter : BasePresenter<MvpView>() {
+    abstract class Presenter : BaseMvpPresenter<MvpView>() {
         abstract fun onButtonProfileClick()
         abstract fun onButtonSyncClick()
         abstract fun onButtonPremiumClick()

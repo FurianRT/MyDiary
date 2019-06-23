@@ -1,8 +1,8 @@
 package com.furianrt.mydiary.screens.pin
 
 import android.os.Bundle
-import com.furianrt.mydiary.base.BaseMvpView
-import com.furianrt.mydiary.base.BasePresenter
+import com.furianrt.mydiary.base.mvp.BaseMvpView
+import com.furianrt.mydiary.base.mvp.BaseMvpPresenter
 
 interface PinContract {
 
@@ -25,7 +25,7 @@ interface PinContract {
         fun showFingerprintButton()
     }
 
-    abstract class Presenter : BasePresenter<MvpView>() {
+    abstract class Presenter : BaseMvpPresenter<MvpView>() {
         abstract fun onButtonForgotPinClick()
         abstract fun onRestoreInstanceState(bundle: Bundle)
         abstract fun onSaveInstanceState(bundle: Bundle)

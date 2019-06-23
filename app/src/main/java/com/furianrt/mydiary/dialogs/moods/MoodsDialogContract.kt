@@ -1,7 +1,7 @@
 package com.furianrt.mydiary.dialogs.moods
 
-import com.furianrt.mydiary.base.BaseMvpView
-import com.furianrt.mydiary.base.BasePresenter
+import com.furianrt.mydiary.base.mvp.BaseMvpView
+import com.furianrt.mydiary.base.mvp.BaseMvpPresenter
 import com.furianrt.mydiary.data.model.MyMood
 
 interface MoodsDialogContract {
@@ -11,7 +11,7 @@ interface MoodsDialogContract {
         fun closeView()
     }
 
-    abstract class Presenter : BasePresenter<MvpView>() {
+    abstract class Presenter : BaseMvpPresenter<MvpView>() {
         abstract fun onButtonCloseClick()
         abstract fun onButtonNoMoodClick(noteId: String)
         abstract fun onMoodPicked(noteId: String, mood: MyMood)

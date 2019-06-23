@@ -1,9 +1,9 @@
-package com.furianrt.mydiary.base
+package com.furianrt.mydiary.base.mvp
 
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
 
-abstract class BasePresenter<T : BaseMvpView> {
+abstract class BaseMvpPresenter<T : BaseMvpView> {
 
     protected var view: T? = null
 

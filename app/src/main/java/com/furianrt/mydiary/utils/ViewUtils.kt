@@ -5,8 +5,9 @@ import android.animation.PropertyValuesHolder
 import android.content.res.Resources
 import android.view.View
 import android.view.animation.OvershootInterpolator
+import kotlin.math.roundToInt
 
-fun dpToPx(dp: Float): Int = Math.round(dp * Resources.getSystem().displayMetrics.density)
+fun dpToPx(dp: Float): Int = (dp * Resources.getSystem().displayMetrics.density).roundToInt()
 
 fun View.animateScale(from: Float, to: Float, duration: Long) {
     ObjectAnimator.ofPropertyValuesHolder(

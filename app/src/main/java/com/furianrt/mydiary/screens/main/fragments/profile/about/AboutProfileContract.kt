@@ -1,7 +1,7 @@
 package com.furianrt.mydiary.screens.main.fragments.profile.about
 
-import com.furianrt.mydiary.base.BaseMvpView
-import com.furianrt.mydiary.base.BasePresenter
+import com.furianrt.mydiary.base.mvp.BaseMvpView
+import com.furianrt.mydiary.base.mvp.BaseMvpPresenter
 import com.furianrt.mydiary.data.model.MyProfile
 
 interface AboutProfileContract {
@@ -12,7 +12,7 @@ interface AboutProfileContract {
 
     }
 
-    abstract class Presenter : BasePresenter<MvpView>() {
+    abstract class Presenter : BaseMvpPresenter<MvpView>() {
         abstract fun onViewStart()
         abstract fun onButtonBackClick()
     }

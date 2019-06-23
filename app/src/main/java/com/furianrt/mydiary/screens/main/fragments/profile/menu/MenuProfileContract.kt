@@ -1,7 +1,7 @@
 package com.furianrt.mydiary.screens.main.fragments.profile.menu
 
-import com.furianrt.mydiary.base.BaseMvpView
-import com.furianrt.mydiary.base.BasePresenter
+import com.furianrt.mydiary.base.mvp.BaseMvpView
+import com.furianrt.mydiary.base.mvp.BaseMvpPresenter
 
 interface MenuProfileContract {
 
@@ -12,7 +12,7 @@ interface MenuProfileContract {
         fun disableSignOut(disable: Boolean)
     }
 
-    abstract class Presenter : BasePresenter<MvpView>() {
+    abstract class Presenter : BaseMvpPresenter<MvpView>() {
         abstract fun onButtonSignOutClick()
         abstract fun onButtonChangePasswordClick()
         abstract fun onButtonAboutClick()
