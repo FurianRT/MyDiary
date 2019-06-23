@@ -1,4 +1,4 @@
-package com.furianrt.mydiary.di.presenter
+package com.furianrt.mydiary.di.presenter.component
 
 import javax.inject.Scope
 

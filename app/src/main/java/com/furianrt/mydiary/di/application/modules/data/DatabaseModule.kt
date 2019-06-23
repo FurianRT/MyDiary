@@ -1,4 +1,4 @@
-package com.furianrt.mydiary.di.application.modules
+package com.furianrt.mydiary.di.application.modules.data
 
 import android.app.Application
 import android.content.ContentValues
@@ -13,7 +13,7 @@ import com.furianrt.mydiary.R
 import com.furianrt.mydiary.data.database.NoteDatabase
 import com.furianrt.mydiary.data.model.*
 import com.furianrt.mydiary.data.storage.StorageHelper
-import com.furianrt.mydiary.di.application.AppScope
+import com.furianrt.mydiary.di.application.component.AppScope
 import com.furianrt.mydiary.utils.generateUniqueId
 import com.google.gson.Gson
 import dagger.Module

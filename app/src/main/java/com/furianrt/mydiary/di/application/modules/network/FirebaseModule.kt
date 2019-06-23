@@ -1,6 +1,6 @@
-package com.furianrt.mydiary.di.application.modules
+package com.furianrt.mydiary.di.application.modules.network
 
-import com.furianrt.mydiary.di.application.AppScope
+import com.furianrt.mydiary.di.application.component.AppScope
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.FirebaseFirestoreSettings

@@ -10,7 +10,7 @@ import com.furianrt.mydiary.data.database.NoteDatabase
 import com.furianrt.mydiary.data.model.*
 import com.furianrt.mydiary.data.prefs.PreferencesHelper
 import com.furianrt.mydiary.data.storage.StorageHelper
-import com.furianrt.mydiary.di.application.AppScope
+import com.furianrt.mydiary.di.application.component.AppScope
 import com.google.gson.Gson
 import io.reactivex.*
 import javax.crypto.Cipher

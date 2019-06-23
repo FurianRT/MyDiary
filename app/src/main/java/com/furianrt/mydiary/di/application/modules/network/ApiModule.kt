@@ -1,12 +1,10 @@
-package com.furianrt.mydiary.di.application.modules
+package com.furianrt.mydiary.di.application.modules.network
 
 import android.util.Log
 import com.furianrt.mydiary.BuildConfig
 import com.furianrt.mydiary.data.api.forecast.WeatherApiService
 import com.furianrt.mydiary.data.api.images.ImageApiService
-import com.furianrt.mydiary.di.application.AppScope
-import com.furianrt.mydiary.di.application.ForecastApi
-import com.furianrt.mydiary.di.application.ImageApi
+import com.furianrt.mydiary.di.application.component.AppScope
 import dagger.Module
 import dagger.Provides
 import okhttp3.Interceptor

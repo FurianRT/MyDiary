@@ -1,7 +1,7 @@
-package com.furianrt.mydiary.di.presenter.modules
+package com.furianrt.mydiary.di.presenter.modules.presenter
 
 import com.furianrt.mydiary.data.DataManager
-import com.furianrt.mydiary.di.presenter.PresenterScope
+import com.furianrt.mydiary.di.presenter.component.PresenterScope
 import com.furianrt.mydiary.dialogs.categories.CategoriesDialogContract
 import com.furianrt.mydiary.dialogs.categories.CategoriesDialogPresenter
 import com.furianrt.mydiary.dialogs.categories.fragments.add.CategoryAddContract
@@ -84,8 +84,6 @@ import com.furianrt.mydiary.screens.settings.note.NoteSettingsContract
 import com.furianrt.mydiary.screens.settings.note.NoteSettingsPresenter
 import com.furianrt.mydiary.services.sync.SyncContract
 import com.furianrt.mydiary.services.sync.SyncPresenter
-import com.google.android.gms.location.FusedLocationProviderClient
-import com.google.android.gms.location.LocationServices
 import dagger.Module
 import dagger.Provides
 

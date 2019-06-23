@@ -1,7 +1,7 @@
-package com.furianrt.mydiary.di.presenter
+package com.furianrt.mydiary.di.presenter.component
 
-import com.furianrt.mydiary.di.presenter.modules.LocationModule
-import com.furianrt.mydiary.di.presenter.modules.PresenterModule
+import com.furianrt.mydiary.di.presenter.modules.location.LocationModule
+import com.furianrt.mydiary.di.presenter.modules.presenter.PresenterModule
 import com.furianrt.mydiary.dialogs.categories.CategoriesDialog
 import com.furianrt.mydiary.dialogs.categories.fragments.add.CategoryAddFragment
 import com.furianrt.mydiary.dialogs.categories.fragments.delete.CategoryDeleteFragment

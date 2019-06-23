@@ -1,4 +1,4 @@
-package com.furianrt.mydiary.di.application
+package com.furianrt.mydiary.di.application.component
 
 import javax.inject.Scope
 

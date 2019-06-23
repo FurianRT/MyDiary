@@ -1,7 +1,7 @@
-package com.furianrt.mydiary.di.presenter.modules
+package com.furianrt.mydiary.di.presenter.modules.location
 
 import android.content.Context
-import com.furianrt.mydiary.di.presenter.PresenterScope
+import com.furianrt.mydiary.di.presenter.component.PresenterScope
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import dagger.Module

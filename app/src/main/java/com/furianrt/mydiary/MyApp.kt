@@ -7,9 +7,9 @@ import android.app.NotificationManager
 import android.os.*
 import android.widget.ImageView
 import com.furianrt.mydiary.data.DataManager
-import com.furianrt.mydiary.di.application.AppComponent
-import com.furianrt.mydiary.di.application.modules.AppModule
 import com.furianrt.mydiary.di.application.DaggerAppComponent
+import com.furianrt.mydiary.di.application.component.AppComponent
+import com.furianrt.mydiary.di.application.modules.app.AppModule
 import com.furianrt.mydiary.general.GlideApp
 import com.furianrt.mydiary.screens.pin.PinActivity
 import com.google.android.gms.ads.MobileAds
@@ -19,7 +19,7 @@ import com.yanzhenjie.album.AlbumFile
 import com.yanzhenjie.album.AlbumLoader
 import net.danlew.android.joda.JodaTimeAndroid
 import org.joda.time.DateTime
-import java.util.Locale
+import java.util.*
 import javax.inject.Inject
 
 class MyApp : Application(), Application.ActivityLifecycleCallbacks {
