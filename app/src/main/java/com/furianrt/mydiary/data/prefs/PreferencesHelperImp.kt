@@ -1,8 +1,8 @@
 package com.furianrt.mydiary.data.prefs
 
 import android.content.Context
-import androidx.preference.PreferenceManager
 import androidx.core.content.ContextCompat
+import androidx.preference.PreferenceManager
 import com.furianrt.mydiary.R
 import org.joda.time.DateTime
 
@@ -73,10 +73,10 @@ class PreferencesHelperImp(val context: Context) : PreferencesHelper {
     }
 
     override fun getPasswordRequestDelay(): Long =
-            mPrefs.getLong(PreferencesHelper.SECURITY_REQUEST_DELAY, PreferencesHelper.DEFAULT_PIN_DELAY.toLong())
+            mPrefs.getString(PreferencesHelper.SECURITY_REQUEST_DELAY, PreferencesHelper.DEFAULT_PIN_DELAY)!!.toLong()
 
     override fun setPasswordRequestDelay(delay: Long) {
-        mPrefs.edit().putLong(PreferencesHelper.SECURITY_REQUEST_DELAY, delay).apply()
+        mPrefs.edit().putString(PreferencesHelper.SECURITY_REQUEST_DELAY, delay.toString()).apply()
     }
 
     override fun isPasswordEnabled(): Boolean =
