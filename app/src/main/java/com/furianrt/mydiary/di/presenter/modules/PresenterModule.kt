@@ -1,7 +1,7 @@
-package com.furianrt.mydiary.di.presenter
+package com.furianrt.mydiary.di.presenter.modules
 
-import android.content.Context
 import com.furianrt.mydiary.data.DataManager
+import com.furianrt.mydiary.di.presenter.PresenterScope
 import com.furianrt.mydiary.dialogs.categories.CategoriesDialogContract
 import com.furianrt.mydiary.dialogs.categories.CategoriesDialogPresenter
 import com.furianrt.mydiary.dialogs.categories.fragments.add.CategoryAddContract
@@ -90,12 +90,7 @@ import dagger.Module
 import dagger.Provides
 
 @Module
-class PresenterModule(private val context: Context) {
-
-    @Provides
-    @PresenterScope
-    fun provideFusedLocationProviderClient(): FusedLocationProviderClient =
-            LocationServices.getFusedLocationProviderClient(context)
+class PresenterModule() {
 
     @Provides
     @PresenterScope

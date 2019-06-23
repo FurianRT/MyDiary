@@ -8,8 +8,8 @@ interface ImageApiService {
 
     @GET(".")
     fun getImages(
+            @Query("category") category: String,
             @Query("page") page: Int = 1,
-            @Query("per_page") perPage: Int = 20,
-            @Query("category") category: String = "backgrounds"
+            @Query("per_page") perPage: Int = 20
     ): Single<ImageResponse>
 }

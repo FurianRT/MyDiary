@@ -7,7 +7,6 @@ interface DataManager {
     companion object {
         const val SIGN_STATE_SIGN_OUT = 0
         const val SIGN_STATE_SIGN_IN = 1
-        const val BASE_WEATHER_IMAGE_URL = "http://openweathermap.org/img/w/"
         const val WEATHER_UNITS_CELSIUS = 0
         const val WEATHER_UNITS_FAHRENHEIT = 1
     }
@@ -135,12 +134,14 @@ interface DataManager {
     fun isPasswordEnabled(): Boolean
     fun setPasswordEnabled(enable: Boolean)
     fun isDailyImageEnabled(): Boolean
+    fun setLastAppLaunchTime(time: Long)
+    fun getLastAppLaunchTime(): Long
     fun getNumberOfLaunches(): Int
     fun setNumberOfLaunches(count: Int)
     fun isFingerprintEnabled(): Boolean
     fun isProfileExists(email: String): Single<Boolean>
     fun setSortDesc(desc: Boolean)
-    fun setLastSyncMessage(message: SyncProgressMessage)
+    fun setLastSyncMessage(message: SyncProgressMessage?)
     fun getLastSyncMessage(): SyncProgressMessage?
     fun findNote(noteId: String): Maybe<MyNote>
     fun insertLocation(location: MyLocation): Completable

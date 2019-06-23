@@ -3,9 +3,7 @@ package com.furianrt.mydiary.data
 import android.annotation.SuppressLint
 import android.util.Base64
 import com.furianrt.mydiary.BuildConfig
-import com.furianrt.mydiary.data.api.forecast.WeatherApiService
-import com.furianrt.mydiary.data.api.images.Image
-import com.furianrt.mydiary.data.api.images.ImageApiService
+import com.furianrt.mydiary.data.api.ApiServiceHelper
 import com.furianrt.mydiary.data.auth.AuthHelper
 import com.furianrt.mydiary.data.cloud.CloudHelper
 import com.furianrt.mydiary.data.database.NoteDatabase
@@ -15,7 +13,6 @@ import com.furianrt.mydiary.data.storage.StorageHelper
 import com.furianrt.mydiary.di.application.AppScope
 import com.google.gson.Gson
 import io.reactivex.*
-import org.joda.time.DateTime
 import javax.crypto.Cipher
 import javax.crypto.spec.SecretKeySpec
 
@@ -25,8 +22,7 @@ class DataManagerImp(
         private val database: NoteDatabase,
         private val prefs: PreferencesHelper,
         private val storage: StorageHelper,
-        private val weatherApi: WeatherApiService,
-        private val imageApi: ImageApiService,
+        private val apiService: ApiServiceHelper,
         private val cloud: CloudHelper,
         private val auth: AuthHelper,
         private val rxScheduler: Scheduler
@@ -51,9 +47,6 @@ class DataManagerImp(
         val encrypted = cipher.doFinal(string.toByteArray())
         return Base64.encodeToString(encrypted, Base64.DEFAULT)
     }
-
-    private fun Image.toMyHeaderImage(): MyHeaderImage =
-            MyHeaderImage(id, largeImageURL, DateTime.now().millis)
 
     override fun insertNote(note: MyNote): Completable =
             database.noteDao().insert(note)
@@ -405,13 +398,7 @@ class DataManagerImp(
                     .subscribeOn(rxScheduler)
 
     override fun loadForecast(lat: Double, lon: Double): Single<MyForecast> =
-            weatherApi.getForecast(lat, lon)
-                    .map {
-                        MyForecast(
-                                temp = it.main.temp,
-                                icon = DataManager.BASE_WEATHER_IMAGE_URL + it.weather[0].icon + ".png"
-                        )
-                    }
+            apiService.getForecast(lat, lon)
                     .subscribeOn(rxScheduler)
 
     override fun getAllDbForecasts(): Single<List<MyForecast>> =
@@ -526,6 +513,12 @@ class DataManagerImp(
 
     override fun isDailyImageEnabled(): Boolean = prefs.isDailyImageEnabled()
 
+    override fun getLastAppLaunchTime(): Long = prefs.getLastAppLaunchTime()
+
+    override fun setLastAppLaunchTime(time: Long) {
+        prefs.setLastAppLaunchTime(time)
+    }
+
     override fun getNumberOfLaunches(): Int = prefs.getNumberOfLaunches()
 
     override fun setNumberOfLaunches(count: Int) {
@@ -543,17 +536,16 @@ class DataManagerImp(
         }
     }
 
-    override fun setLastSyncMessage(message: SyncProgressMessage) {
-        prefs.setLastSyncMessage(Gson().toJson(message))
+    override fun setLastSyncMessage(message: SyncProgressMessage?) {
+        prefs.setLastSyncMessage(if (message == null) {
+            ""
+        } else {
+            Gson().toJson(message)
+        })
     }
 
     override fun loadHeaderImages(page: Int, perPage: Int): Single<List<MyHeaderImage>> =
-            imageApi.getImages(category = prefs.getDailyImageCategory())
-                    .map { response ->
-                        response.images
-                                .map { it.toMyHeaderImage() }
-                                .sortedByDescending { it.addedTime }
-                    }
+            apiService.getImages(prefs.getDailyImageCategory(), page, perPage)
                     .subscribeOn(rxScheduler)
 
     override fun saveNotesInCloud(notes: List<MyNote>): Completable =

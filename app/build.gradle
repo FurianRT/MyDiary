@@ -18,6 +18,7 @@ android {
     }
     buildTypes {
         debug {
+            versionNameSuffix "-debug"
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             resValue("bool", "FIREBASE_ANALYTICS_DEACTIVATED", "true")

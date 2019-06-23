@@ -1,5 +1,7 @@
 package com.furianrt.mydiary.di.presenter
 
+import com.furianrt.mydiary.di.presenter.modules.LocationModule
+import com.furianrt.mydiary.di.presenter.modules.PresenterModule
 import com.furianrt.mydiary.dialogs.categories.CategoriesDialog
 import com.furianrt.mydiary.dialogs.categories.fragments.add.CategoryAddFragment
 import com.furianrt.mydiary.dialogs.categories.fragments.delete.CategoryDeleteFragment
@@ -44,7 +46,7 @@ import com.furianrt.mydiary.services.sync.SyncService
 import dagger.Subcomponent
 
 @PresenterScope
-@Subcomponent(modules = [PresenterModule::class])
+@Subcomponent(modules = [PresenterModule::class, LocationModule::class])
 interface PresenterComponent {
     fun inject(service: SyncService)
     fun inject(activity: MainActivity)

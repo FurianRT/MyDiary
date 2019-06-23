@@ -1,7 +1,7 @@
 package com.furianrt.mydiary.data.prefs
 
 import android.content.Context
-import android.preference.PreferenceManager
+import androidx.preference.PreferenceManager
 import androidx.core.content.ContextCompat
 import com.furianrt.mydiary.R
 import org.joda.time.DateTime

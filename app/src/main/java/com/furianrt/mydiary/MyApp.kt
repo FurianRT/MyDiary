@@ -6,10 +6,9 @@ import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.os.*
 import android.widget.ImageView
-import androidx.preference.PreferenceManager
-import com.furianrt.mydiary.data.prefs.PreferencesHelper
+import com.furianrt.mydiary.data.DataManager
 import com.furianrt.mydiary.di.application.AppComponent
-import com.furianrt.mydiary.di.application.AppModule
+import com.furianrt.mydiary.di.application.modules.AppModule
 import com.furianrt.mydiary.di.application.DaggerAppComponent
 import com.furianrt.mydiary.general.GlideApp
 import com.furianrt.mydiary.screens.pin.PinActivity
@@ -20,7 +19,8 @@ import com.yanzhenjie.album.AlbumFile
 import com.yanzhenjie.album.AlbumLoader
 import net.danlew.android.joda.JodaTimeAndroid
 import org.joda.time.DateTime
-import java.util.*
+import java.util.Locale
+import javax.inject.Inject
 
 class MyApp : Application(), Application.ActivityLifecycleCallbacks {
 
@@ -38,10 +38,14 @@ class MyApp : Application(), Application.ActivityLifecycleCallbacks {
                 .build()
     }
 
+    @Inject
+    lateinit var mDataManager: DataManager
+
     private val mHandler = Handler(Looper.getMainLooper())
     private val mLogoutRunnable = Runnable { setAuthorized(false) }
 
     override fun onCreate() {
+        component.inject(this)
         super.onCreate()
         setAuthorized(false)
         registerActivityLifecycleCallbacks(this)
@@ -52,7 +56,6 @@ class MyApp : Application(), Application.ActivityLifecycleCallbacks {
         resetSyncProgress()
         incrementLaunchCounter()
         MobileAds.initialize(this, getString(R.string.banner_ad_app_id))
-
         StrictMode.setVmPolicy(StrictMode.VmPolicy.Builder().build())
     }
 
@@ -72,22 +75,13 @@ class MyApp : Application(), Application.ActivityLifecycleCallbacks {
     }
 
     override fun onActivityStopped(activity: Activity?) {
-        val prefs = PreferenceManager.getDefaultSharedPreferences(this)
-        val isPasswordEnabled = prefs.getBoolean(PreferencesHelper.SECURITY_KEY, false)
-        if (isPasswordEnabled && activity !is PinActivity) {
-            val delay = prefs.getString(
-                    PreferencesHelper.SECURITY_REQUEST_DELAY,
-                    PreferencesHelper.DEFAULT_PIN_DELAY
-            )!!.toLong()
-            mHandler.postDelayed(mLogoutRunnable, delay)
+        if (mDataManager.isPasswordEnabled() && activity !is PinActivity) {
+            mHandler.postDelayed(mLogoutRunnable, mDataManager.getPasswordRequestDelay())
         }
     }
 
     private fun setAuthorized(authorized: Boolean) {
-        PreferenceManager.getDefaultSharedPreferences(this)
-                .edit()
-                .putBoolean(PreferencesHelper.SECURITY_IS_AUTHORIZED, authorized)
-                .apply()
+        mDataManager.setAuthorized(authorized)
     }
 
     private fun createNotificationSyncChannel() {
@@ -135,19 +129,16 @@ class MyApp : Application(), Application.ActivityLifecycleCallbacks {
     }
 
     private fun resetSyncProgress() {
-        val prefs = PreferenceManager.getDefaultSharedPreferences(this)
         val currentTime = DateTime.now().millis
-        val launchTimeDiff = currentTime - prefs.getLong(PreferencesHelper.LAST_APP_LAUNCH_TIME, currentTime)
+        val launchTimeDiff = currentTime - mDataManager.getLastAppLaunchTime()
         if (launchTimeDiff >= SYNC_PROGRESS_RESET_TIME) {
-            prefs.edit().putString(PreferencesHelper.LAST_PROGRESS_MESSAGE, "").apply()
+            mDataManager.setLastSyncMessage(null)
         }
-        prefs.edit().putLong(PreferencesHelper.LAST_APP_LAUNCH_TIME, currentTime).apply()
+        mDataManager.setLastAppLaunchTime(currentTime)
     }
 
     private fun incrementLaunchCounter() {
-        val prefs = PreferenceManager.getDefaultSharedPreferences(this)
-        var launches = prefs.getInt(PreferencesHelper.NUMBER_OF_LAUNCHES, 0)
-        prefs.edit().putInt(PreferencesHelper.NUMBER_OF_LAUNCHES, ++launches).apply()
+        mDataManager.setNumberOfLaunches(mDataManager.getNumberOfLaunches() + 1)
     }
 }
 
@@ -177,12 +168,11 @@ class MyApp : Application(), Application.ActivityLifecycleCallbacks {
 * (?)добавить градиент на экран с паролем
 * добавить иконци в настройках
 *   сделать определение локации опциональным
-*   уменьшить размер картинок
 *   добавить предложение оценить приложение (в настройках)
 *   сделать кнопку сброса настроек
+*   сделать дефолтную дейли-картинку
 * добавить сканирование текста
 * добавить импорт текста с сайтов (как в EverNote)
-* прикрутить ProGuard
 * вынести модуль в git submodule
 *
 * */
