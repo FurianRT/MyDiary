@@ -1,6 +1,7 @@
 package com.furianrt.mydiary.screens.note.fragments.mainnote
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.graphics.Color
@@ -208,9 +209,10 @@ class NoteFragment : BaseFragment(), NoteFragmentContract.MvpView, DatePickerDia
                 ?.showNoteText(title, content)
     }
 
+    @SuppressLint("SetTextI18n")
     override fun showDateAndTime(time: Long, is24TimeFormat: Boolean) {
-        text_date.text = formatTime(time)
-        text_time.text = getTime(time, is24TimeFormat)
+        text_date.text = formatTime(time) + " "
+        text_time.text = getTime(time, is24TimeFormat) + " "
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {

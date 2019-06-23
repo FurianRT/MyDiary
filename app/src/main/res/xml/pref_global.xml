@@ -49,7 +49,6 @@
             app:cpv_allowCustom="false"
             app:cpv_colorPresets="@array/colors"
             app:cpv_previewSize="large"
-
             app:cpv_showColorShades="false"
             app:iconSpaceReserved="false" />
 

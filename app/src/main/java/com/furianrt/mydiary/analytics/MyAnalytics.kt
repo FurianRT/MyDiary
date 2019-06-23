@@ -3,6 +3,9 @@ package com.furianrt.mydiary.analytics
 import android.os.Bundle
 
 interface MyAnalytics {
+
+    fun sendEvent(event: String, bundle: Bundle? = null)
+
     companion object {
         const val EVENT_HEADER_IMAGE_SETTINGS = "header_image_settings"
         const val EVENT_MAIN_SETTINGS = "main_settings"
@@ -72,6 +75,4 @@ interface MyAnalytics {
         const val BUNDLE_TASK_INDEX = "task_index"
         const val BUNDLE_CATEGORY = "category"
     }
-
-    fun sendEvent(event: String, bundle: Bundle? = null)
 }
