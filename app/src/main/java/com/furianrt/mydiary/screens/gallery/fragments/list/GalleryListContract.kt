@@ -1,12 +1,12 @@
 package com.furianrt.mydiary.screens.gallery.fragments.list
 
+import com.furianrt.mydiary.base.BaseMvpView
 import com.furianrt.mydiary.base.BasePresenter
-import com.furianrt.mydiary.base.BaseView
 import com.furianrt.mydiary.data.model.MyImage
 
 interface GalleryListContract {
 
-    interface View : BaseView {
+    interface MvpView : BaseMvpView {
         fun showViewImagePager(noteId: String, position: Int)
         fun showImages(images: List<MyImage>, selectedImageNames: Set<String>)
         fun activateSelection()
@@ -24,7 +24,7 @@ interface GalleryListContract {
         fun showDeleteConfirmationDialog(imageNames: List<String>)
     }
 
-    abstract class Presenter : BasePresenter<View>() {
+    abstract class Presenter : BasePresenter<MvpView>() {
         abstract fun onListItemClick(image: MyImage, position: Int, selectionActive: Boolean)
         abstract fun setNoteId(noteId: String)
         abstract fun onViewStart()

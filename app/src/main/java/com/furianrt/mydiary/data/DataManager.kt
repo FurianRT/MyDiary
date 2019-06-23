@@ -112,6 +112,8 @@ interface DataManager {
     fun getAllDbLocations(): Flowable<List<MyLocation>>
     fun getAllDbForecasts(): Single<List<MyForecast>>
     fun getDbProfileCount(): Single<Int>
+    fun getPrimaryColor(): Int
+    fun getAccentColor(): Int
     fun getWeatherUnits(): Int
     fun getTextColor(): Int
     fun getSurfaceTextColor(): Int
@@ -131,8 +133,8 @@ interface DataManager {
     fun setAuthorized(authorized: Boolean)
     fun getPasswordRequestDelay(): Long
     fun setPasswordRequestDelay(delay: Long)
-    fun isPasswordEnabled(): Boolean
-    fun setPasswordEnabled(enable: Boolean)
+    fun isPinEnabled(): Boolean
+    fun setPinEnabled(enable: Boolean)
     fun isDailyImageEnabled(): Boolean
     fun setLastAppLaunchTime(time: Long)
     fun getLastAppLaunchTime(): Long

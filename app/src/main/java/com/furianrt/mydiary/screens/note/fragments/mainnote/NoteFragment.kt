@@ -9,7 +9,6 @@ import android.location.Geocoder
 import android.net.Uri
 import android.os.Bundle
 import android.os.Looper
-import android.preference.PreferenceManager
 import android.speech.RecognizerIntent
 import android.util.Log
 import android.view.*
@@ -19,9 +18,11 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.content.ContextCompat.getColor
-import androidx.fragment.app.Fragment
+import androidx.preference.PreferenceManager
 import androidx.viewpager2.widget.ViewPager2
 import com.furianrt.mydiary.R
+import com.furianrt.mydiary.analytics.MyAnalytics
+import com.furianrt.mydiary.base.BaseFragment
 import com.furianrt.mydiary.data.model.*
 import com.furianrt.mydiary.data.model.pojo.TagsAndAppearance
 import com.furianrt.mydiary.data.prefs.PreferencesHelper
@@ -29,7 +30,6 @@ import com.furianrt.mydiary.dialogs.categories.CategoriesDialog
 import com.furianrt.mydiary.dialogs.delete.note.DeleteNoteDialog
 import com.furianrt.mydiary.dialogs.moods.MoodsDialog
 import com.furianrt.mydiary.dialogs.tags.TagsDialog
-import com.furianrt.mydiary.general.Analytics
 import com.furianrt.mydiary.general.AppBarLayoutBehavior
 import com.furianrt.mydiary.general.GlideApp
 import com.furianrt.mydiary.screens.gallery.GalleryActivity
@@ -58,7 +58,7 @@ import java.util.*
 import javax.inject.Inject
 import kotlin.collections.ArrayList
 
-class NoteFragment : Fragment(), NoteFragmentContract.View, DatePickerDialog.OnDateSetListener,
+class NoteFragment : BaseFragment(), NoteFragmentContract.MvpView, DatePickerDialog.OnDateSetListener,
         TimePickerDialog.OnTimeSetListener, NoteImagePagerAdapter.OnNoteImagePagerInteractionListener {
 
     companion object {
@@ -159,7 +159,7 @@ class NoteFragment : Fragment(), NoteFragmentContract.View, DatePickerDialog.OnD
         }
         view.fab_add_image.setOnClickListener {
             removeEditFragment()
-            Analytics.sendEvent(requireContext(), Analytics.EVENT_NOTE_IMAGE_PAGER_OPENED)
+            analytics.sendEvent(MyAnalytics.EVENT_NOTE_IMAGE_PAGER_OPENED)
             mPresenter.onButtonAddImageClick()
         }
         view.layout_loading.setOnTouchListener { _, _ -> true }
@@ -226,7 +226,7 @@ class NoteFragment : Fragment(), NoteFragmentContract.View, DatePickerDialog.OnD
             }
             R.id.menu_appearance -> {
                 removeEditFragment()
-                Analytics.sendEvent(requireContext(), Analytics.EVENT_NOTE_SETTINGS)
+                analytics.sendEvent(MyAnalytics.EVENT_NOTE_SETTINGS)
                 mPresenter.onButtonAppearanceClick()
                 true
             }
@@ -245,22 +245,22 @@ class NoteFragment : Fragment(), NoteFragmentContract.View, DatePickerDialog.OnD
                 true
             }
             R.id.menu_undo -> {
-                Analytics.sendEvent(requireContext(), Analytics.EVENT_NOTE_UNDO)
+                analytics.sendEvent(MyAnalytics.EVENT_NOTE_UNDO)
                 mPresenter.onButtonUndoClick()
                 true
             }
             R.id.menu_redo -> {
-                Analytics.sendEvent(requireContext(), Analytics.EVENT_NORE_REDO)
+                analytics.sendEvent(MyAnalytics.EVENT_NORE_REDO)
                 mPresenter.onButtonRedoClick()
                 true
             }
             R.id.menu_mic -> {
-                Analytics.sendEvent(requireContext(), Analytics.EVENT_SPEECH_TO_TEXT)
+                analytics.sendEvent(MyAnalytics.EVENT_SPEECH_TO_TEXT)
                 mPresenter.onButtonMicClick()
                 true
             }
             R.id.menu_share -> {
-                Analytics.sendEvent(requireContext(), Analytics.EVENT_SHARE_NOTE)
+                analytics.sendEvent(MyAnalytics.EVENT_SHARE_NOTE)
                 mPresenter.onButtonShareClick()
                 true
             }
@@ -329,7 +329,7 @@ class NoteFragment : Fragment(), NoteFragmentContract.View, DatePickerDialog.OnD
     }
 
     override fun onImageClick(image: MyImage) {
-        Analytics.sendEvent(requireContext(), Analytics.EVENT_NOTE_IMAGE_PAGER_OPENED)
+        analytics.sendEvent(MyAnalytics.EVENT_NOTE_IMAGE_PAGER_OPENED)
         mPresenter.onToolbarImageClick(image)
     }
 
@@ -569,8 +569,8 @@ class NoteFragment : Fragment(), NoteFragmentContract.View, DatePickerDialog.OnD
     @AfterPermissionGranted(STORAGE_PERMISSIONS_REQUEST_CODE)
     override fun showImageExplorer() {
         val widget = Widget.newDarkBuilder(context)
-                .statusBarColor(getThemePrimaryDarkColor(requireContext()))
-                .toolBarColor(getThemePrimaryColor(requireContext()))
+                .statusBarColor(requireContext().getThemePrimaryDarkColor())
+                .toolBarColor(requireContext().getThemePrimaryColor())
                 .navigationBarColor(getColor(requireContext(), R.color.black))
                 .title(R.string.album)
                 .build()
@@ -634,7 +634,7 @@ class NoteFragment : Fragment(), NoteFragmentContract.View, DatePickerDialog.OnD
 
     override fun showDatePicker(calendar: Calendar) {
         DatePickerDialog.newInstance(this, calendar).apply {
-            val themePrimaryColor = getThemePrimaryColor(this@NoteFragment.requireContext())
+            val themePrimaryColor = this@NoteFragment.requireContext().getThemePrimaryColor()
             accentColor = themePrimaryColor
             setOkColor(themePrimaryColor)
             setCancelColor(themePrimaryColor)
@@ -642,13 +642,13 @@ class NoteFragment : Fragment(), NoteFragmentContract.View, DatePickerDialog.OnD
     }
 
     override fun onDateSet(view: DatePickerDialog?, year: Int, monthOfYear: Int, dayOfMonth: Int) {
-        Analytics.sendEvent(requireContext(), Analytics.EVENT_NOTE_DATE_CHANGED)
+        analytics.sendEvent(MyAnalytics.EVENT_NOTE_DATE_CHANGED)
         mPresenter.onDateSelected(year, monthOfYear, dayOfMonth)
     }
 
     override fun showTimePicker(hourOfDay: Int, minute: Int, is24HourMode: Boolean) {
         TimePickerDialog.newInstance(this, hourOfDay, minute, is24HourMode).apply {
-            val themePrimaryColor = getThemePrimaryColor(this@NoteFragment.requireContext())
+            val themePrimaryColor = this@NoteFragment.requireContext().getThemePrimaryColor()
             accentColor = themePrimaryColor
             setOkColor(themePrimaryColor)
             setCancelColor(themePrimaryColor)
@@ -659,7 +659,7 @@ class NoteFragment : Fragment(), NoteFragmentContract.View, DatePickerDialog.OnD
     }
 
     override fun onTimeSet(view: TimePickerDialog?, hourOfDay: Int, minute: Int, second: Int) {
-        Analytics.sendEvent(requireContext(), Analytics.EVENT_NOTE_TIME_CHANGED)
+        analytics.sendEvent(MyAnalytics.EVENT_NOTE_TIME_CHANGED)
         mPresenter.onTimeSelected(hourOfDay, minute)
     }
 
@@ -674,11 +674,11 @@ class NoteFragment : Fragment(), NoteFragmentContract.View, DatePickerDialog.OnD
     }
 
     override fun sendUndoErrorEvent() {
-        Analytics.sendEvent(requireContext(), Analytics.EVENT_UNDO_ERROR)
+        analytics.sendEvent(MyAnalytics.EVENT_UNDO_ERROR)
     }
 
     override fun sendRedoErrorEvent() {
-        Analytics.sendEvent(requireContext(), Analytics.EVENT_REDO_ERROR)
+        analytics.sendEvent(MyAnalytics.EVENT_REDO_ERROR)
     }
 
     fun onNoteFragmentEditModeEnabled() {

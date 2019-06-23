@@ -5,14 +5,14 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.Fragment
 import com.furianrt.mydiary.BuildConfig
 import com.furianrt.mydiary.R
+import com.furianrt.mydiary.base.BaseFragment
 import com.furianrt.mydiary.screens.main.MainActivity
 import kotlinx.android.synthetic.main.fragment_premium.view.*
 import javax.inject.Inject
 
-class PremiumFragment : Fragment(), PremiumContract.View {
+class PremiumFragment : BaseFragment(), PremiumContract.MvpView {
 
     companion object {
         const val TAG = "PremiumFragment"
@@ -34,11 +34,7 @@ class PremiumFragment : Fragment(), PremiumContract.View {
 
         view.button_premium_close.setOnClickListener { mPresenter.onButtonCloseClick() }
         view.button_get_premium.setOnClickListener {
-            //if (BuildConfig.DEBUG) {
-            //    mListener?.onButtonPurshaseClick(BaseActivity.ITEM_TEST_SKU)
-           // } else {
-                mListener?.onButtonPurshaseClick(BuildConfig.ITEM_SYNC_SKU)
-           // }
+            mListener?.onButtonPurshaseClick(BuildConfig.ITEM_SYNC_SKU)
         }
 
         return view

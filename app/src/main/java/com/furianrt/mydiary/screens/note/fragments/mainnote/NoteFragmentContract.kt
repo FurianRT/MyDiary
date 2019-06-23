@@ -1,8 +1,8 @@
 package com.furianrt.mydiary.screens.note.fragments.mainnote
 
 import android.location.Address
+import com.furianrt.mydiary.base.BaseMvpView
 import com.furianrt.mydiary.base.BasePresenter
-import com.furianrt.mydiary.base.BaseView
 import com.furianrt.mydiary.data.model.*
 import com.furianrt.mydiary.data.model.pojo.TagsAndAppearance
 import com.furianrt.mydiary.screens.note.NoteActivity
@@ -11,7 +11,7 @@ import java.util.*
 
 interface NoteFragmentContract {
 
-    interface View : BaseView {
+    interface MvpView : BaseMvpView {
         fun showForecast(temp: String, iconUri: String)
         fun showTagsDialog(noteId: String)
         fun showTags(tagsAndAppearance: TagsAndAppearance)
@@ -49,7 +49,7 @@ interface NoteFragmentContract {
         fun shareNote(note: MyNoteWithProp)
     }
 
-    abstract class Presenter : BasePresenter<View>() {
+    abstract class Presenter : BasePresenter<MvpView>() {
         abstract fun onTagsFieldClick()
         abstract fun onLocationReceived(result: LocationResult)
         abstract fun onLocationPermissionsGranted()

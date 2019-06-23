@@ -6,12 +6,12 @@ import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
 import android.view.*
-import androidx.fragment.app.Fragment
 import androidx.viewpager2.widget.ViewPager2
 import com.furianrt.mydiary.R
+import com.furianrt.mydiary.analytics.MyAnalytics
+import com.furianrt.mydiary.base.BaseFragment
 import com.furianrt.mydiary.data.model.MyImage
 import com.furianrt.mydiary.dialogs.delete.image.DeleteImageDialog
-import com.furianrt.mydiary.general.Analytics
 import com.furianrt.mydiary.screens.gallery.fragments.list.GalleryListFragment
 import com.furianrt.mydiary.utils.getThemeAccentColor
 import com.furianrt.mydiary.utils.getThemePrimaryColor
@@ -23,7 +23,7 @@ import kotlinx.android.synthetic.main.fragment_gallery_pager.*
 import kotlinx.android.synthetic.main.fragment_gallery_pager.view.*
 import javax.inject.Inject
 
-class GalleryPagerFragment : Fragment(), GalleryPagerContract.View {
+class GalleryPagerFragment : BaseFragment(), GalleryPagerContract.MvpView {
 
     companion object {
 
@@ -110,12 +110,12 @@ class GalleryPagerFragment : Fragment(), GalleryPagerContract.View {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.menu_list_mode -> {
-                Analytics.sendEvent(requireContext(), Analytics.EVENT_NOTE_IMAGE_LIST_OPENED)
+                analytics.sendEvent(MyAnalytics.EVENT_NOTE_IMAGE_LIST_OPENED)
                 mPresenter.onButtonListModeClick(mNoteId)
                 true
             }
             R.id.menu_delete -> {
-                Analytics.sendEvent(requireContext(), Analytics.EVENT_NOTE_IMAGE_PAGER_IMAGE_DELETE)
+                analytics.sendEvent(MyAnalytics.EVENT_NOTE_IMAGE_PAGER_IMAGE_DELETE)
                 mPresenter.onButtonDeleteClick(mPagerAdapter.getItem(mPagerPosition))
                 true
             }
@@ -144,9 +144,9 @@ class GalleryPagerFragment : Fragment(), GalleryPagerContract.View {
                 .withOptions(UCrop.Options().apply {
                     setToolbarTitle(getString(R.string.fragment_gallery_pager_edit_photo))
                     setToolbarWidgetColor(Color.WHITE)
-                    setActiveWidgetColor(getThemeAccentColor(requireContext()))
-                    setStatusBarColor(getThemePrimaryDarkColor(requireContext()))
-                    setToolbarColor(getThemePrimaryColor(requireContext()))
+                    setActiveWidgetColor(requireContext().getThemeAccentColor())
+                    setStatusBarColor(requireContext().getThemePrimaryDarkColor())
+                    setToolbarColor(requireContext().getThemePrimaryColor())
                     setCompressionQuality(100)
                     setFreeStyleCropEnabled(true)
                 })
@@ -156,7 +156,7 @@ class GalleryPagerFragment : Fragment(), GalleryPagerContract.View {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == IMAGE_EDITOR_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
-            Analytics.sendEvent(requireContext(), Analytics.EVENT_NOTE_IMAGE_PAGER_IMAGE_EDITED)
+            analytics.sendEvent(MyAnalytics.EVENT_NOTE_IMAGE_PAGER_IMAGE_EDITED)
             mPresenter.onImageEdited()
         }
     }

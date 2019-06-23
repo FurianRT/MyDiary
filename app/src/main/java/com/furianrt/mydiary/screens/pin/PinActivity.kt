@@ -9,8 +9,8 @@ import android.view.View
 import android.widget.Toast
 import androidx.biometric.BiometricPrompt
 import com.furianrt.mydiary.R
+import com.furianrt.mydiary.analytics.MyAnalytics
 import com.furianrt.mydiary.base.BaseActivity
-import com.furianrt.mydiary.general.Analytics
 import com.furianrt.mydiary.general.LockableBottomSheetBehavior
 import com.furianrt.mydiary.screens.pin.PinActivity.Mode.*
 import com.furianrt.mydiary.screens.pin.fragments.backupemail.BackupEmailFragment
@@ -26,7 +26,7 @@ import kotlinx.android.synthetic.main.bottom_sheet_pin.*
 import java.util.concurrent.Executors
 import javax.inject.Inject
 
-class PinActivity : BaseActivity(), PinContract.View, BackupEmailFragment.OnBackupEmailFragmentListener {
+class PinActivity : BaseActivity(), PinContract.MvpView, BackupEmailFragment.OnBackupEmailFragmentListener {
 
     companion object {
         private const val BOTTOM_SHEET_EXPAND_DELAY = 200L
@@ -59,7 +59,7 @@ class PinActivity : BaseActivity(), PinContract.View, BackupEmailFragment.OnBack
             object : BiometricPrompt.AuthenticationCallback() {
                 override fun onAuthenticationSucceeded(result: BiometricPrompt.AuthenticationResult) {
                     super.onAuthenticationSucceeded(result)
-                    Analytics.sendEvent(this@PinActivity, Analytics.EVENT_FINGERPRINT_SUCCESS)
+                    analytics.sendEvent(MyAnalytics.EVENT_FINGERPRINT_SUCCESS)
                     mPresenter.onFingerprintAccepted()
                 }
             })
@@ -184,7 +184,7 @@ class PinActivity : BaseActivity(), PinContract.View, BackupEmailFragment.OnBack
     }
 
     override fun showForgotPinView() {
-        Analytics.sendEvent(this, Analytics.EVENT_FORGOT_PIN)
+        analytics.sendEvent(MyAnalytics.EVENT_FORGOT_PIN)
         if (supportFragmentManager.findFragmentByTag(SendEmailFragment.TAG) == null) {
             supportFragmentManager.inTransaction {
                 add(R.id.pin_sheet_container, SendEmailFragment(), SendEmailFragment.TAG)

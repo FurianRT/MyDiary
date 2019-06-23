@@ -5,10 +5,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.fragment.app.Fragment
 import com.furianrt.mydiary.R
+import com.furianrt.mydiary.analytics.MyAnalytics
+import com.furianrt.mydiary.base.BaseFragment
 import com.furianrt.mydiary.data.model.MyTag
-import com.furianrt.mydiary.general.Analytics
 import com.furianrt.mydiary.utils.animateShake
 import com.furianrt.mydiary.utils.hideKeyboard
 import com.furianrt.mydiary.utils.showKeyboard
@@ -16,7 +16,7 @@ import kotlinx.android.synthetic.main.fragment_tag_edit.*
 import kotlinx.android.synthetic.main.fragment_tag_edit.view.*
 import javax.inject.Inject
 
-class TagEditFragment : Fragment(), TagEditContract.View {
+class TagEditFragment : BaseFragment(), TagEditContract.MvpView {
 
     @Inject
     lateinit var mPresenter: TagEditContract.Presenter
@@ -36,7 +36,7 @@ class TagEditFragment : Fragment(), TagEditContract.View {
         view.edit_edit_tag.setText(mTag.name)
 
         view.button_tag_edit_confirm.setOnClickListener {
-            Analytics.sendEvent(requireContext(), Analytics.EVENT_NOTE_TAG_EDITED)
+            analytics.sendEvent(MyAnalytics.EVENT_NOTE_TAG_EDITED)
             mPresenter.onButtonConfirmClick(mTag, edit_edit_tag.text?.toString() ?: "")
         }
         view.button_tag_edit_close.setOnClickListener { mPresenter.onButtonCloseClick() }

@@ -1,15 +1,15 @@
 package com.furianrt.mydiary.dialogs.tags
 
+import com.furianrt.mydiary.base.BaseMvpView
 import com.furianrt.mydiary.base.BasePresenter
-import com.furianrt.mydiary.base.BaseView
 
 interface TagsDialogContract {
 
-    interface View : BaseView {
+    interface MvpView : BaseMvpView {
         fun showTagListView(noteId: String)
     }
 
-    abstract class Presenter : BasePresenter<View>() {
+    abstract class Presenter : BasePresenter<MvpView>() {
         abstract fun onViewCreated(noteId: String)
     }
 }

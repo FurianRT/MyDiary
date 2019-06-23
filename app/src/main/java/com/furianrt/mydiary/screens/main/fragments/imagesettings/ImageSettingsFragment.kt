@@ -4,15 +4,15 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.Fragment
 import com.furianrt.mydiary.R
+import com.furianrt.mydiary.base.BaseFragment
 import com.furianrt.mydiary.screens.main.MainActivity
 import com.furianrt.mydiary.screens.main.fragments.imagesettings.settings.DailySettingsFragment
 import com.furianrt.mydiary.utils.inTransaction
 import kotlinx.android.synthetic.main.fragment_image_settings.view.*
 import javax.inject.Inject
 
-class ImageSettingsFragment : Fragment(), ImageSettingsContract.View {
+class ImageSettingsFragment : BaseFragment(), ImageSettingsContract.MvpView {
 
     companion object {
         const val TAG = "ImageSettingsFragment"

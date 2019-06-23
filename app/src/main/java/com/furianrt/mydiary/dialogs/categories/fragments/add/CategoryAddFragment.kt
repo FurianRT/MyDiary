@@ -5,8 +5,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.fragment.app.Fragment
 import com.furianrt.mydiary.R
+import com.furianrt.mydiary.base.BaseFragment
 import com.furianrt.mydiary.utils.animateShake
 import com.furianrt.mydiary.utils.hideKeyboard
 import com.furianrt.mydiary.utils.showKeyboard
@@ -14,7 +14,7 @@ import kotlinx.android.synthetic.main.fragment_category_add.*
 import kotlinx.android.synthetic.main.fragment_category_add.view.*
 import javax.inject.Inject
 
-class CategoryAddFragment : Fragment(), CategoryAddContract.View {
+class CategoryAddFragment : BaseFragment(), CategoryAddContract.MvpView {
 
     @Inject
     lateinit var mPresenter: CategoryAddContract.Presenter

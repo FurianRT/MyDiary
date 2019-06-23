@@ -4,16 +4,16 @@ import android.annotation.SuppressLint
 import android.app.Dialog
 import android.os.Bundle
 import androidx.appcompat.app.AlertDialog
-import androidx.fragment.app.DialogFragment
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.furianrt.mydiary.R
+import com.furianrt.mydiary.analytics.MyAnalytics
+import com.furianrt.mydiary.base.BaseDialog
 import com.furianrt.mydiary.data.model.MyMood
-import com.furianrt.mydiary.general.Analytics
 import kotlinx.android.synthetic.main.dialog_moods.view.*
 import javax.inject.Inject
 
-class MoodsDialog : DialogFragment(), MoodsDialogContract.View,
+class MoodsDialog : BaseDialog(), MoodsDialogContract.MvpView,
         MoodsDialogListAdapter.OnMoodListInteractionListener {
 
     companion object {
@@ -69,7 +69,7 @@ class MoodsDialog : DialogFragment(), MoodsDialogContract.View,
     }
 
     override fun onMoodClicked(mood: MyMood) {
-        Analytics.sendEvent(requireContext(), Analytics.EVENT_NOTE_MOOD_CHANGED)
+        analytics.sendEvent(MyAnalytics.EVENT_NOTE_MOOD_CHANGED)
         mPresenter.onMoodPicked(mNoteId, mood)
     }
 

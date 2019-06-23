@@ -7,13 +7,13 @@ class GlobalSettingsPresenter(
 ) : GlobalSettingsContract.Presenter() {
 
     override fun onViewCreate() {
-        if (dataManager.isPasswordEnabled()) {
+        if (dataManager.isPinEnabled()) {
             view?.showBackupEmail(dataManager.getBackupEmail())
         }
     }
 
     override fun onPrefSecurityKeyClick() {
-        if (dataManager.isPasswordEnabled()) {
+        if (dataManager.isPinEnabled()) {
             view?.showCreatePasswordView()
         } else {
             view?.showRemovePasswordView()

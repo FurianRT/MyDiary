@@ -5,12 +5,12 @@ import android.app.Dialog
 import android.content.DialogInterface
 import android.os.Bundle
 import androidx.appcompat.app.AlertDialog
-import androidx.fragment.app.DialogFragment
 import com.furianrt.mydiary.R
+import com.furianrt.mydiary.base.BaseDialog
 import kotlinx.android.synthetic.main.dialog_delete_image.view.*
 import javax.inject.Inject
 
-class DeleteImageDialog : DialogFragment(), DeleteImageContract.View {
+class DeleteImageDialog : BaseDialog(), DeleteImageContract.MvpView {
 
     companion object {
         const val TAG = "DeleteImageDialog"

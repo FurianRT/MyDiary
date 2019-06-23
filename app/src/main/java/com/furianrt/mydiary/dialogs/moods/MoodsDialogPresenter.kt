@@ -8,7 +8,7 @@ class MoodsDialogPresenter(
         private val dataManager: DataManager
 ) : MoodsDialogContract.Presenter() {
 
-    override fun attachView(view: MoodsDialogContract.View) {
+    override fun attachView(view: MoodsDialogContract.MvpView) {
         super.attachView(view)
         addDisposable(dataManager.getAllMoods()
                 .observeOn(AndroidSchedulers.mainThread())

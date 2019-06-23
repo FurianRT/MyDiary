@@ -7,7 +7,7 @@ class ProfilePresenter(
         private val dataManager: DataManager
 ) : ProfileContract.Presenter() {
 
-    override fun attachView(view: ProfileContract.View) {
+    override fun attachView(view: ProfileContract.MvpView) {
         super.attachView(view)
         addDisposable(dataManager.getDbProfile()
                 .observeOn(AndroidSchedulers.mainThread())

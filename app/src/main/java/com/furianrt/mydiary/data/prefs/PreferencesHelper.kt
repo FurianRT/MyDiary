@@ -1,7 +1,8 @@
 package com.furianrt.mydiary.data.prefs
 
 interface PreferencesHelper {
-
+    fun getPrimaryColor(): Int
+    fun getAccentColor(): Int
     fun isWeatherEnabled(): Boolean
     fun getWeatherUnits(): Int
     fun isMapEnabled(): Boolean
@@ -22,8 +23,8 @@ interface PreferencesHelper {
     fun setAuthorized(authorized: Boolean)
     fun getPasswordRequestDelay(): Long
     fun setPasswordRequestDelay(delay: Long)
-    fun isPasswordEnabled(): Boolean
-    fun setPasswordEnabled(enable: Boolean)
+    fun isPinEnabled(): Boolean
+    fun setPinEnabled(enable: Boolean)
     fun isFingerprintEnabled(): Boolean
     fun setLastSyncMessage(message: String)
     fun getLastSyncMessage(): String?

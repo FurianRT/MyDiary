@@ -8,11 +8,11 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.Fragment
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.furianrt.mydiary.R
+import com.furianrt.mydiary.analytics.MyAnalytics
+import com.furianrt.mydiary.base.BaseFragment
 import com.furianrt.mydiary.data.model.SyncProgressMessage
-import com.furianrt.mydiary.general.Analytics
 import com.furianrt.mydiary.screens.main.fragments.profile.about.AboutProfileFragment
 import com.furianrt.mydiary.screens.main.fragments.profile.password.PasswordFragment
 import com.furianrt.mydiary.screens.main.fragments.profile.signout.SignOutFragment
@@ -22,7 +22,7 @@ import kotlinx.android.synthetic.main.fragment_menu_profile.*
 import kotlinx.android.synthetic.main.fragment_menu_profile.view.*
 import javax.inject.Inject
 
-class MenuProfileFragment : Fragment(), MenuProfileContract.View, View.OnClickListener {
+class MenuProfileFragment : BaseFragment(), MenuProfileContract.MvpView, View.OnClickListener {
 
     companion object {
         const val TAG = "MenuProfileFragment"
@@ -63,15 +63,15 @@ class MenuProfileFragment : Fragment(), MenuProfileContract.View, View.OnClickLi
         }
         when (v.id) {
             R.id.button_sign_out -> {
-                Analytics.sendEvent(requireContext(), Analytics.EVENT_SIGN_OUT)
+                analytics.sendEvent(MyAnalytics.EVENT_SIGN_OUT)
                 mPresenter.onButtonSignOutClick()
             }
             R.id.button_change_password -> {
-                Analytics.sendEvent(requireContext(), Analytics.EVENT_PASSWORD_CHANGE)
+                analytics.sendEvent(MyAnalytics.EVENT_PASSWORD_CHANGE)
                 mPresenter.onButtonChangePasswordClick()
             }
             R.id.button_about -> {
-                Analytics.sendEvent(requireContext(), Analytics.EVENT_PROFILE_ABOUT)
+                analytics.sendEvent(MyAnalytics.EVENT_PROFILE_ABOUT)
                 mPresenter.onButtonAboutClick()
             }
         }

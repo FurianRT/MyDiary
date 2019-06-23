@@ -16,7 +16,7 @@ class DrawerMenuPresenter(
         private val dataManager: DataManager
 ) : DrawerMenuContract.Presenter() {
 
-    override fun attachView(view: DrawerMenuContract.View) {
+    override fun attachView(view: DrawerMenuContract.MvpView) {
         super.attachView(view)
         loadNotes()
         loadProfile()

@@ -3,7 +3,7 @@ package com.furianrt.mydiary.base
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
 
-abstract class BasePresenter<T : BaseView> {
+abstract class BasePresenter<T : BaseMvpView> {
 
     protected var view: T? = null
 

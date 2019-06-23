@@ -1,17 +1,15 @@
 package com.furianrt.mydiary.screens.main.fragments.imagesettings
 
+import com.furianrt.mydiary.base.BaseMvpView
 import com.furianrt.mydiary.base.BasePresenter
-import com.furianrt.mydiary.base.BaseView
 
 interface ImageSettingsContract {
 
-    interface View : BaseView {
-
+    interface MvpView : BaseMvpView {
         fun close()
     }
 
-    abstract class Presenter : BasePresenter<View>() {
-
+    abstract class Presenter : BasePresenter<MvpView>() {
         abstract fun onButtonCloseClick()
     }
 }

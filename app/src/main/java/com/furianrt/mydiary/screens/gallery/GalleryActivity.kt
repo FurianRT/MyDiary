@@ -16,7 +16,7 @@ import com.google.android.gms.ads.AdRequest
 import kotlinx.android.synthetic.main.activity_gallery.*
 import javax.inject.Inject
 
-class GalleryActivity : BaseActivity(), GalleryActivityContract.View {
+class GalleryActivity : BaseActivity(), GalleryActivityContract.MvpView {
 
     companion object {
         private const val EXTRA_POSITION = "position"
@@ -43,7 +43,7 @@ class GalleryActivity : BaseActivity(), GalleryActivityContract.View {
         supportActionBar?.setDisplayShowTitleEnabled(false)
 
         val position = intent.getIntExtra(EXTRA_POSITION, 0)
-        val noteId = intent.getStringExtra(EXTRA_NOTE_ID)
+        val noteId = intent.getStringExtra(EXTRA_NOTE_ID) ?: throw IllegalArgumentException()
         if (supportFragmentManager.findFragmentByTag(GalleryPagerFragment.TAG) == null
                 && supportFragmentManager.findFragmentByTag(GalleryListFragment.TAG) == null) {
 

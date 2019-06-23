@@ -1,6 +1,9 @@
 package com.furianrt.mydiary.di.application.modules.network
 
+import android.content.Context
 import com.furianrt.mydiary.di.application.component.AppScope
+import com.furianrt.mydiary.di.application.modules.app.AppContext
+import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.FirebaseFirestoreSettings
@@ -26,5 +29,10 @@ class FirebaseModule {
 
     @Provides
     @AppScope
-    fun provideFirebaseStorage() = FirebaseStorage.getInstance()
+    fun provideFirebaseStorage(): FirebaseStorage = FirebaseStorage.getInstance()
+
+    @Provides
+    @AppScope
+    fun provideFirebaseAnalytics(@AppContext context: Context): FirebaseAnalytics =
+            FirebaseAnalytics.getInstance(context)
 }

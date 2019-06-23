@@ -4,9 +4,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.Fragment
-
 import com.furianrt.mydiary.R
+import com.furianrt.mydiary.base.BaseFragment
 import com.furianrt.mydiary.data.model.MyProfile
 import kotlinx.android.synthetic.main.fragment_about_profile.*
 import kotlinx.android.synthetic.main.fragment_about_profile.view.*
@@ -14,7 +13,7 @@ import org.joda.time.DateTime
 import java.util.*
 import javax.inject.Inject
 
-class AboutProfileFragment : Fragment(), AboutProfileContract.View {
+class AboutProfileFragment : BaseFragment(), AboutProfileContract.MvpView {
 
     companion object {
         const val TAG = "AboutProfileFragment"
@@ -40,11 +39,6 @@ class AboutProfileFragment : Fragment(), AboutProfileContract.View {
     override fun showProfileInfo(profile: MyProfile) {
         text_registration_date.text =
                 DateTime(profile.creationTime).toString("dd.MM.yyyy", Locale.getDefault())
-        /*text_has_premium.text = if (profile.hasPremium) {
-            getString(R.string.fragment_about_profile_yup)
-        } else {
-            getString(R.string.fragment_about_profile_sync_non)
-        }*/
         val lastSyncTime = profile.lastSyncTime
         if (lastSyncTime == null) {
             text_last_sync_date?.text = getString(R.string.fragment_about_profile_sync_non)

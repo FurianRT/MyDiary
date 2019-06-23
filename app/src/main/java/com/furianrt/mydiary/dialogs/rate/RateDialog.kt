@@ -5,14 +5,15 @@ import android.app.Dialog
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.widget.RatingBar
 import androidx.appcompat.app.AlertDialog
-import androidx.fragment.app.DialogFragment
 import com.furianrt.mydiary.BuildConfig
 import com.furianrt.mydiary.R
+import com.furianrt.mydiary.base.BaseDialog
 import kotlinx.android.synthetic.main.dialog_rate.view.*
 import javax.inject.Inject
 
-class RateDialog : DialogFragment(), RateDialogContract.View {
+class RateDialog : BaseDialog(), RateDialogContract.MvpView {
 
     companion object {
         const val TAG = "MoodsDialog"
@@ -33,7 +34,7 @@ class RateDialog : DialogFragment(), RateDialogContract.View {
         view.button_later.setOnClickListener { mPresenter.onButtonLaterClick() }
         view.button_never.setOnClickListener { mPresenter.onButtonNeverClick() }
         view.button_rate.setOnClickListener { mPresenter.onButtonRateClick(view.rating.rating.toInt()) }
-        view.rating.setOnRatingBarChangeListener { _, rating, _ ->
+        view.rating.onRatingBarChangeListener = RatingBar.OnRatingBarChangeListener { _, rating, _ ->
             view.button_rate.text = getString(R.string.dialog_rate_continue, rating.toInt(), view.rating.max)
         }
 

@@ -5,8 +5,8 @@ import android.app.Dialog
 import android.os.Bundle
 import android.view.*
 import androidx.appcompat.app.AlertDialog
-import androidx.fragment.app.DialogFragment
 import com.furianrt.mydiary.R
+import com.furianrt.mydiary.base.BaseDialog
 import com.furianrt.mydiary.dialogs.tags.fragments.add.TagAddFragment
 import com.furianrt.mydiary.dialogs.tags.fragments.delete.TagDeleteFragment
 import com.furianrt.mydiary.dialogs.tags.fragments.edit.TagEditFragment
@@ -14,7 +14,7 @@ import com.furianrt.mydiary.dialogs.tags.fragments.list.TagListFragment
 import com.furianrt.mydiary.utils.inTransaction
 import javax.inject.Inject
 
-class TagsDialog : DialogFragment(), TagsDialogContract.View {
+class TagsDialog : BaseDialog(), TagsDialogContract.MvpView {
 
     companion object {
         const val TAG = "TagsDialog"

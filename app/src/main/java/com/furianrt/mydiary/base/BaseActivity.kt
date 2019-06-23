@@ -3,7 +3,6 @@ package com.furianrt.mydiary.base
 import android.content.Intent
 import android.os.Bundle
 import android.os.PersistableBundle
-import android.preference.PreferenceManager
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
@@ -11,22 +10,30 @@ import com.anjlab.android.iab.v3.BillingProcessor
 import com.anjlab.android.iab.v3.TransactionDetails
 import com.furianrt.mydiary.BuildConfig
 import com.furianrt.mydiary.R
-import com.furianrt.mydiary.data.prefs.PreferencesHelper
-import com.furianrt.mydiary.general.Analytics
+import com.furianrt.mydiary.analytics.MyAnalytics
+import com.furianrt.mydiary.data.DataManager
 import com.furianrt.mydiary.screens.pin.PinActivity
+import javax.inject.Inject
 
-abstract class BaseActivity : AppCompatActivity(), BillingProcessor.IBillingHandler {
+abstract class BaseActivity : AppCompatActivity(), BaseView, BillingProcessor.IBillingHandler {
 
     companion object {
         const val TAG = "BaseActivity"
         const val ITEM_TEST_SKU = "android.test.purchased"
     }
 
+    @Inject
+    lateinit var mDataManager: DataManager
+
+    @Inject
+    lateinit var analytics: MyAnalytics
+
     private lateinit var mBillingProcessor: BillingProcessor
 
     open var needLockScreen = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        getPresenterComponent(this).inject(this)
         application.setTheme(R.style.AppTheme)
         applyStyleToTheme()
         super.onCreate(savedInstanceState)
@@ -63,7 +70,7 @@ abstract class BaseActivity : AppCompatActivity(), BillingProcessor.IBillingHand
     }
 
     override fun onProductPurchased(productId: String, details: TransactionDetails?) {
-        Analytics.sendEvent(this, Analytics.EVENT_PREMIUM_PURSHASED)
+        analytics.sendEvent(MyAnalytics.EVENT_PREMIUM_PURSHASED)
         Log.e(TAG, "onProductPurchased")
     }
 
@@ -79,10 +86,7 @@ abstract class BaseActivity : AppCompatActivity(), BillingProcessor.IBillingHand
     }
 
     private fun openPinScreen() {
-        val prefs = PreferenceManager.getDefaultSharedPreferences(this)
-        val isPinEnabled = prefs.getBoolean(PreferencesHelper.SECURITY_KEY, false)
-        val isAuthorized = prefs.getBoolean(PreferencesHelper.SECURITY_IS_AUTHORIZED, true)
-        if (isPinEnabled && !isAuthorized) {
+        if (mDataManager.isPinEnabled() && !mDataManager.isAuthorized()) {
             startActivity(PinActivity.newIntentModeLock(this))
         }
     }
@@ -95,9 +99,7 @@ abstract class BaseActivity : AppCompatActivity(), BillingProcessor.IBillingHand
     // Похоже, что динамическое создание стиля в андроиде не предусмотрено,
     // поэтому приходится хардкодить этот бред
     private fun applyStyleToTheme() {
-        when (PreferenceManager
-                .getDefaultSharedPreferences(this)
-                .getInt(PreferencesHelper.COLOR_PRIMARY, 0)) {
+        when (mDataManager.getPrimaryColor()) {
             ContextCompat.getColor(this, R.color.r1) ->
                 theme.applyStyle(R.style.OverlayPrimaryColorR1, true)
             ContextCompat.getColor(this, R.color.r4) ->
@@ -148,9 +150,7 @@ abstract class BaseActivity : AppCompatActivity(), BillingProcessor.IBillingHand
                 theme.applyStyle(R.style.OverlayPrimaryColorBlack, true)
         }
 
-        when (PreferenceManager
-                .getDefaultSharedPreferences(this)
-                .getInt(PreferencesHelper.COLOR_ACCENT, 0)) {
+        when (mDataManager.getAccentColor()) {
             ContextCompat.getColor(this, R.color.r1) ->
                 theme.applyStyle(R.style.OverlayAccentColorR1, true)
             ContextCompat.getColor(this, R.color.r4) ->

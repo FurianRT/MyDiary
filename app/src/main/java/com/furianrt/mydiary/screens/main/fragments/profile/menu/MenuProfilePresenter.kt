@@ -7,7 +7,7 @@ class MenuProfilePresenter(
         private val dataManager: DataManager
 ) : MenuProfileContract.Presenter() {
 
-    override fun attachView(view: MenuProfileContract.View) {
+    override fun attachView(view: MenuProfileContract.MvpView) {
         super.attachView(view)
         val message = dataManager.getLastSyncMessage()
         view.disableSignOut(message != null && message.taskIndex != SyncProgressMessage.SYNC_FINISHED)

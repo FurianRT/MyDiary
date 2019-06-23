@@ -10,11 +10,12 @@ import androidx.core.app.NotificationCompat
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.furianrt.mydiary.MyApp
 import com.furianrt.mydiary.R
+import com.furianrt.mydiary.base.BaseView
 import com.furianrt.mydiary.data.model.SyncProgressMessage
 import com.furianrt.mydiary.screens.main.MainActivity
 import javax.inject.Inject
 
-class SyncService : Service(), SyncContract.View {
+class SyncService : Service(), BaseView, SyncContract.MvpView {
 
     companion object {
         const val TAG = "SyncService"

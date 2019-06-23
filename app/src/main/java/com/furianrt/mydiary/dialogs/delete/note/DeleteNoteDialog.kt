@@ -4,13 +4,13 @@ import android.annotation.SuppressLint
 import android.app.Dialog
 import android.os.Bundle
 import androidx.appcompat.app.AlertDialog
-import androidx.fragment.app.DialogFragment
 import com.furianrt.mydiary.R
-import com.furianrt.mydiary.general.Analytics
+import com.furianrt.mydiary.analytics.MyAnalytics
+import com.furianrt.mydiary.base.BaseDialog
 import kotlinx.android.synthetic.main.dialog_delete_note.view.*
 import javax.inject.Inject
 
-class DeleteNoteDialog : DialogFragment(), DeleteNoteContract.View {
+class DeleteNoteDialog : BaseDialog(), DeleteNoteContract.MvpView {
 
     companion object {
         const val TAG = "DeleteNoteDialog"
@@ -42,7 +42,7 @@ class DeleteNoteDialog : DialogFragment(), DeleteNoteContract.View {
         val view = requireActivity().layoutInflater.inflate(R.layout.dialog_delete_note, null)
 
         view.button_note_delete.setOnClickListener {
-            Analytics.sendEvent(requireContext(), Analytics.EVENT_NOTE_DELETED)
+            analytics.sendEvent(MyAnalytics.EVENT_NOTE_DELETED)
             mPresenter.onButtonDeleteClick(mNotesIds)
             mListener?.onDialogButtonDeleteClick()
         }

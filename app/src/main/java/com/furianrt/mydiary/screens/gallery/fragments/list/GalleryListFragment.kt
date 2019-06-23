@@ -11,12 +11,12 @@ import android.view.animation.AccelerateInterpolator
 import android.view.animation.DecelerateInterpolator
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.view.ActionMode
-import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import com.furianrt.mydiary.R
+import com.furianrt.mydiary.analytics.MyAnalytics
+import com.furianrt.mydiary.base.BaseFragment
 import com.furianrt.mydiary.data.model.MyImage
 import com.furianrt.mydiary.dialogs.delete.image.DeleteImageDialog
-import com.furianrt.mydiary.general.Analytics
 import com.furianrt.mydiary.screens.gallery.fragments.pager.GalleryPagerFragment
 import com.furianrt.mydiary.utils.*
 import com.yanzhenjie.album.Album
@@ -30,8 +30,8 @@ import pub.devrel.easypermissions.AfterPermissionGranted
 import pub.devrel.easypermissions.EasyPermissions
 import javax.inject.Inject
 
-class GalleryListFragment : Fragment(), GalleryListAdapter.OnListItemInteractionListener,
-        GalleryListContract.View, ActionMode.Callback, DeleteImageDialog.OnDeleteImageConfirmListener {
+class GalleryListFragment : BaseFragment(), GalleryListAdapter.OnListItemInteractionListener,
+        GalleryListContract.MvpView, ActionMode.Callback, DeleteImageDialog.OnDeleteImageConfirmListener {
 
     companion object {
         const val TAG = "GalleryListFragment"
@@ -192,7 +192,7 @@ class GalleryListFragment : Fragment(), GalleryListAdapter.OnListItemInteraction
                 true
             }
             R.id.menu_add_image -> {
-                Analytics.sendEvent(requireContext(), Analytics.EVENT_NOTE_IMAGE_LIST_IMAGE_ADD)
+                analytics.sendEvent(MyAnalytics.EVENT_NOTE_IMAGE_LIST_IMAGE_ADD)
                 mPresenter.onButtonAddImageClick()
                 true
             }
@@ -212,7 +212,7 @@ class GalleryListFragment : Fragment(), GalleryListAdapter.OnListItemInteraction
     override fun onActionItemClicked(mode: ActionMode?, item: MenuItem?): Boolean {
         return when (item?.itemId) {
             R.id.menu_delete -> {
-                Analytics.sendEvent(requireContext(), Analytics.EVENT_NOTE_IMAGE_LIST_IMAGE_DELETE)
+                analytics.sendEvent(MyAnalytics.EVENT_NOTE_IMAGE_LIST_IMAGE_DELETE)
                 mPresenter.onButtonCabDeleteClick()
                 true
             }
@@ -302,7 +302,7 @@ class GalleryListFragment : Fragment(), GalleryListAdapter.OnListItemInteraction
 
     override fun onItemTrashed(image: MyImage) {
         hideTrash()
-        Analytics.sendEvent(requireContext(), Analytics.EVENT_NOTE_IMAGE_LIST_DRAG_DELETE)
+        analytics.sendEvent(MyAnalytics.EVENT_NOTE_IMAGE_LIST_DRAG_DELETE)
         mPresenter.onImageTrashed(image)
     }
 
@@ -335,8 +335,8 @@ class GalleryListFragment : Fragment(), GalleryListAdapter.OnListItemInteraction
     @AfterPermissionGranted(STORAGE_PERMISSIONS_REQUEST_CODE)
     override fun showImageExplorer() {
         val widget = Widget.newDarkBuilder(requireContext())
-                .statusBarColor(getThemePrimaryDarkColor(requireContext()))
-                .toolBarColor(getThemePrimaryColor(requireContext()))
+                .statusBarColor(requireContext().getThemePrimaryDarkColor())
+                .toolBarColor(requireContext().getThemePrimaryColor())
                 .navigationBarColor(Color.BLACK)
                 .title(R.string.album)
                 .build()

@@ -9,8 +9,8 @@ import android.text.TextWatcher
 import android.util.Log
 import android.view.*
 import androidx.core.graphics.ColorUtils
-import androidx.fragment.app.Fragment
 import com.furianrt.mydiary.R
+import com.furianrt.mydiary.base.BaseFragment
 import com.furianrt.mydiary.data.model.MyNoteAppearance
 import com.furianrt.mydiary.screens.note.fragments.mainnote.NoteFragment
 import com.furianrt.mydiary.screens.note.fragments.mainnote.content.NoteContentFragment
@@ -20,7 +20,7 @@ import kotlinx.android.synthetic.main.fragment_note_edit.*
 import kotlinx.android.synthetic.main.fragment_note_edit.view.*
 import javax.inject.Inject
 
-class NoteEditFragment : Fragment(), NoteEditFragmentContract.View {
+class NoteEditFragment : BaseFragment(), NoteEditFragmentContract.MvpView {
 
     private var mClickedView: ClickedView? = null
     private var mClickPosition = 0

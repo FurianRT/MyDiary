@@ -4,11 +4,19 @@ import android.content.Context
 import androidx.core.content.ContextCompat
 import androidx.preference.PreferenceManager
 import com.furianrt.mydiary.R
+import com.furianrt.mydiary.utils.getThemeAccentColor
+import com.furianrt.mydiary.utils.getThemePrimaryColor
 import org.joda.time.DateTime
 
 class PreferencesHelperImp(val context: Context) : PreferencesHelper {
 
     private val mPrefs = PreferenceManager.getDefaultSharedPreferences(context)
+
+    override fun getPrimaryColor(): Int =
+            mPrefs.getInt(PreferencesHelper.COLOR_PRIMARY, context.getThemePrimaryColor())
+
+    override fun getAccentColor(): Int =
+            mPrefs.getInt(PreferencesHelper.COLOR_ACCENT, context.getThemeAccentColor())
 
     override fun getWeatherUnits(): Int =
             mPrefs.getString(PreferencesHelper.WEATHER_UNITS, "0")!!.toInt()
@@ -79,10 +87,10 @@ class PreferencesHelperImp(val context: Context) : PreferencesHelper {
         mPrefs.edit().putString(PreferencesHelper.SECURITY_REQUEST_DELAY, delay.toString()).apply()
     }
 
-    override fun isPasswordEnabled(): Boolean =
+    override fun isPinEnabled(): Boolean =
             mPrefs.getBoolean(PreferencesHelper.SECURITY_KEY, false)
 
-    override fun setPasswordEnabled(enable: Boolean) {
+    override fun setPinEnabled(enable: Boolean) {
         mPrefs.edit().putBoolean(PreferencesHelper.SECURITY_KEY, enable).apply()
     }
 

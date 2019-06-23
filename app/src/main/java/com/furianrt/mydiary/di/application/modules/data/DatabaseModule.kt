@@ -14,6 +14,7 @@ import com.furianrt.mydiary.data.database.NoteDatabase
 import com.furianrt.mydiary.data.model.*
 import com.furianrt.mydiary.data.storage.StorageHelper
 import com.furianrt.mydiary.di.application.component.AppScope
+import com.furianrt.mydiary.di.application.modules.app.AppContext
 import com.furianrt.mydiary.utils.generateUniqueId
 import com.google.gson.Gson
 import dagger.Module
@@ -40,7 +41,7 @@ class DatabaseModule {
     @Provides
     @AppScope
     fun provideNoteDatabase(
-            context: Context,
+            @AppContext context: Context,
             callback: RoomDatabase.Callback
     ) = Room.databaseBuilder(context, NoteDatabase::class.java, DATABASE_NAME)
             .addCallback(callback)

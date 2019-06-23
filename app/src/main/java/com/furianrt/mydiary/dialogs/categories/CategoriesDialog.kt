@@ -5,15 +5,15 @@ import android.app.Dialog
 import android.os.Bundle
 import android.view.*
 import androidx.appcompat.app.AlertDialog
-import androidx.fragment.app.DialogFragment
 import com.furianrt.mydiary.R
+import com.furianrt.mydiary.base.BaseDialog
 import com.furianrt.mydiary.dialogs.categories.fragments.delete.CategoryDeleteFragment
 import com.furianrt.mydiary.dialogs.categories.fragments.edit.CategoryEditFragment
 import com.furianrt.mydiary.dialogs.categories.fragments.list.CategoryListFragment
 import com.furianrt.mydiary.utils.inTransaction
 import javax.inject.Inject
 
-class CategoriesDialog : DialogFragment(), CategoriesDialogContract.View {
+class CategoriesDialog : BaseDialog(), CategoriesDialogContract.MvpView {
 
     @Inject
     lateinit var mPresenter: CategoriesDialogContract.Presenter

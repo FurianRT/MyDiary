@@ -4,11 +4,11 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.Fragment
 import com.furianrt.mydiary.R
+import com.furianrt.mydiary.base.BaseFragment
 import kotlinx.android.synthetic.main.fragment_done_email.view.*
 
-class DoneEmailFragment : Fragment() {
+class DoneEmailFragment : BaseFragment() {
 
     companion object {
         const val TAG = "DoneEmailFragment"

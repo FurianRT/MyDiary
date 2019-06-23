@@ -12,15 +12,15 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AnticipateOvershootInterpolator
 import android.view.animation.OvershootInterpolator
-import androidx.fragment.app.Fragment
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.furianrt.mydiary.BuildConfig
 import com.furianrt.mydiary.R
+import com.furianrt.mydiary.analytics.MyAnalytics
+import com.furianrt.mydiary.base.BaseFragment
 import com.furianrt.mydiary.data.model.*
 import com.furianrt.mydiary.data.model.pojo.SearchEntries
-import com.furianrt.mydiary.general.Analytics
 import com.furianrt.mydiary.screens.main.fragments.authentication.AuthFragment
 import com.furianrt.mydiary.screens.main.fragments.drawer.adapter.SearchGroup
 import com.furianrt.mydiary.screens.main.fragments.drawer.adapter.SearchItem
@@ -36,7 +36,7 @@ import kotlinx.android.synthetic.main.fragment_drawer_menu.*
 import kotlinx.android.synthetic.main.fragment_drawer_menu.view.*
 import javax.inject.Inject
 
-class DrawerMenuFragment : Fragment(), DrawerMenuContract.View,
+class DrawerMenuFragment : BaseFragment(), DrawerMenuContract.MvpView,
         SearchListAdapter.OnSearchListInteractionListener {
 
     companion object {
@@ -76,8 +76,8 @@ class DrawerMenuFragment : Fragment(), DrawerMenuContract.View,
                 view_sync.alpha = 0.35f
                 if (it.hasError) {
                     val bundle = Bundle()
-                    bundle.putInt(Analytics.BUNDLE_TASK_INDEX, it.taskIndex)
-                    Analytics.sendEvent(requireContext(), Analytics.EVENT_SYNC_FAILED, bundle)
+                    bundle.putInt(MyAnalytics.BUNDLE_TASK_INDEX, it.taskIndex)
+                    analytics.sendEvent(MyAnalytics.EVENT_SYNC_FAILED, bundle)
 
                     button_sync.text = it.message
                     view_sync.layoutParams.width = button_sync.width
@@ -86,7 +86,7 @@ class DrawerMenuFragment : Fragment(), DrawerMenuContract.View,
                 } else {
                     showSyncProgress(it)
                     if (it.taskIndex == SyncProgressMessage.SYNC_FINISHED) {
-                        Analytics.sendEvent(requireContext(), Analytics.EVENT_SYNC_COMPLETED)
+                        analytics.sendEvent(MyAnalytics.EVENT_SYNC_COMPLETED)
                         animateProgressAlpha()
                     }
                 }
@@ -224,47 +224,47 @@ class DrawerMenuFragment : Fragment(), DrawerMenuContract.View,
     }
 
     override fun onTagCheckStateChange(tag: MyTag, checked: Boolean) {
-        Analytics.sendEvent(requireContext(), Analytics.EVENT_SEARCH_TAG_CHANGED)
+        analytics.sendEvent(MyAnalytics.EVENT_SEARCH_TAG_CHANGED)
         mListener?.onTagChackStateChange(tag, checked)
     }
 
     override fun onCategoryCheckStateChange(category: MyCategory, checked: Boolean) {
-        Analytics.sendEvent(requireContext(), Analytics.EVENT_SEARCH_CATEGORY_CHANGED)
+        analytics.sendEvent(MyAnalytics.EVENT_SEARCH_CATEGORY_CHANGED)
         mListener?.onCategoryChackStateChange(category, checked)
     }
 
     override fun onLocationCheckStateChange(location: MyLocation, checked: Boolean) {
-        Analytics.sendEvent(requireContext(), Analytics.EVENT_SEARCH_LOCATION_CHANGED)
+        analytics.sendEvent(MyAnalytics.EVENT_SEARCH_LOCATION_CHANGED)
         mListener?.onLocationChackStateChange(location, checked)
     }
 
     override fun onMoodCheckStateChange(mood: MyMood, checked: Boolean) {
-        Analytics.sendEvent(requireContext(), Analytics.EVENT_SEARCH_MOOD_CHANGED)
+        analytics.sendEvent(MyAnalytics.EVENT_SEARCH_MOOD_CHANGED)
         mListener?.onMoodChackStateChange(mood, checked)
     }
 
     override fun onNoTagsCheckStateChange(checked: Boolean) {
-        Analytics.sendEvent(requireContext(), Analytics.EVENT_SEARCH_NO_TAGS_CHANGED)
+        analytics.sendEvent(MyAnalytics.EVENT_SEARCH_NO_TAGS_CHANGED)
         mListener?.onNoTagsChackStateChange(checked)
     }
 
     override fun onNoCategoryCheckStateChange(checked: Boolean) {
-        Analytics.sendEvent(requireContext(), Analytics.EVENT_SEARCH_NO_CATEGORY_CHANGED)
+        analytics.sendEvent(MyAnalytics.EVENT_SEARCH_NO_CATEGORY_CHANGED)
         mListener?.onNoCategoryChackStateChange(checked)
     }
 
     override fun onNoMoodCheckStateChange(checked: Boolean) {
-        Analytics.sendEvent(requireContext(), Analytics.EVENT_SEARCH_NO_MOOD_CHANGED)
+        analytics.sendEvent(MyAnalytics.EVENT_SEARCH_NO_MOOD_CHANGED)
         mListener?.onNoMoodChackStateChange(checked)
     }
 
     override fun onNoLocationChackStateChange(checked: Boolean) {
-        Analytics.sendEvent(requireContext(), Analytics.EVENT_SEARCH_NO_LOCATION_CHANGED)
+        analytics.sendEvent(MyAnalytics.EVENT_SEARCH_NO_LOCATION_CHANGED)
         mListener?.onNoLocationChackStateChange(checked)
     }
 
     override fun showProfileSettings() {
-        Analytics.sendEvent(requireContext(), Analytics.EVENT_PROFILE_SETTINGS)
+        analytics.sendEvent(MyAnalytics.EVENT_PROFILE_SETTINGS)
         if (fragmentManager?.findFragmentByTag(ProfileFragment.TAG) == null) {
             fragmentManager?.inTransaction {
                 replace(R.id.main_sheet_container, ProfileFragment(), ProfileFragment.TAG)
@@ -274,7 +274,7 @@ class DrawerMenuFragment : Fragment(), DrawerMenuContract.View,
     }
 
     override fun showLoginView() {
-        Analytics.sendEvent(requireContext(), Analytics.EVENT_SIGN_IN)
+        analytics.sendEvent(MyAnalytics.EVENT_SIGN_IN)
         if (fragmentManager?.findFragmentByTag(AuthFragment.TAG) == null) {
             fragmentManager?.inTransaction {
                 replace(R.id.main_sheet_container, AuthFragment(), AuthFragment.TAG)

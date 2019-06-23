@@ -1,19 +1,18 @@
 package com.furianrt.mydiary.dialogs.tags.fragments.delete
 
-
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.Fragment
 import com.furianrt.mydiary.R
+import com.furianrt.mydiary.analytics.MyAnalytics
+import com.furianrt.mydiary.base.BaseFragment
 import com.furianrt.mydiary.data.model.MyTag
-import com.furianrt.mydiary.general.Analytics
 import kotlinx.android.synthetic.main.fragment_tag_delete.*
 import kotlinx.android.synthetic.main.fragment_tag_delete.view.*
 import javax.inject.Inject
 
-class TagDeleteFragment : Fragment(), TagDeleteContract.View {
+class TagDeleteFragment : BaseFragment(), TagDeleteContract.MvpView {
 
     @Inject
     lateinit var mPresenter: TagDeleteContract.Presenter
@@ -32,7 +31,7 @@ class TagDeleteFragment : Fragment(), TagDeleteContract.View {
 
         view.text_tag_delete_message.text = getString(R.string.fragment_tag_delete_message, mTag.name)
         view.button_delete_tag.setOnClickListener {
-            Analytics.sendEvent(requireContext(), Analytics.EVENT_NOTE_TAG_DELETED)
+            analytics.sendEvent(MyAnalytics.EVENT_NOTE_TAG_DELETED)
             button_delete_tag.isEnabled = false
             mPresenter.onButtonDeleteClick(mTag)
         }

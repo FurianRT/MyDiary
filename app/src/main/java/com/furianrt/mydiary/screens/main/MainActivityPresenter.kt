@@ -72,7 +72,7 @@ class MainActivityPresenter(
                 })
     }
 
-    override fun attachView(view: MainActivityContract.View) {
+    override fun attachView(view: MainActivityContract.MvpView) {
         super.attachView(view)
         loadNotes()
         loadProfile()

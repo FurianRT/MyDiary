@@ -7,8 +7,8 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import androidx.fragment.app.Fragment
 import com.furianrt.mydiary.R
+import com.furianrt.mydiary.base.BaseFragment
 import com.furianrt.mydiary.data.model.MyNoteAppearance
 import com.furianrt.mydiary.screens.note.NoteActivity
 import com.furianrt.mydiary.screens.note.fragments.mainnote.NoteFragment
@@ -18,7 +18,7 @@ import kotlinx.android.synthetic.main.fragment_note_content.*
 import kotlinx.android.synthetic.main.fragment_note_content.view.*
 import javax.inject.Inject
 
-class NoteContentFragment : Fragment(), NoteContentFragmentContract.View {
+class NoteContentFragment : BaseFragment(), NoteContentFragmentContract.MvpView {
 
     private var mAppearance: MyNoteAppearance? = null
     private lateinit var mMode: NoteActivity.Companion.Mode

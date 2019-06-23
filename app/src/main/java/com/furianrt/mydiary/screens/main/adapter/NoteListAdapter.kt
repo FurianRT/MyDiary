@@ -143,7 +143,7 @@ class NoteListAdapter(
                             && item.note.images.find { !it.isSync(email) } == null
                             && item.note.tags.find { !it.isSync(email) } == null) {
                         image_sync.setImageResource(R.drawable.ic_cloud_done)
-                        image_sync.setColorFilter(getThemeAccentColor(itemView.context), PorterDuff.Mode.SRC_IN)
+                        image_sync.setColorFilter(itemView.context.getThemeAccentColor(), PorterDuff.Mode.SRC_IN)
                     } else {
                         image_sync.setImageResource(R.drawable.ic_cloud_off)
                         image_sync.setColorFilter(

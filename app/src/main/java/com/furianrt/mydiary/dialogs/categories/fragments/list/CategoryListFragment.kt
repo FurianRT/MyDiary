@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.furianrt.mydiary.R
+import com.furianrt.mydiary.base.BaseFragment
 import com.furianrt.mydiary.data.model.MyCategory
 import com.furianrt.mydiary.dialogs.categories.CategoriesDialog
 import com.furianrt.mydiary.dialogs.categories.fragments.add.CategoryAddFragment
@@ -18,8 +19,8 @@ import com.furianrt.mydiary.utils.inTransaction
 import kotlinx.android.synthetic.main.fragment_category_list.view.*
 import javax.inject.Inject
 
-class CategoryListFragment : Fragment(), CategoriesListAdapter.OnCategoryListInteractionListener,
-        CategoryListContract.View {
+class CategoryListFragment : BaseFragment(), CategoriesListAdapter.OnCategoryListInteractionListener,
+        CategoryListContract.MvpView {
 
     companion object {
 

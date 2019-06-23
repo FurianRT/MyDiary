@@ -9,7 +9,14 @@ import android.widget.ImageView
 import com.furianrt.mydiary.data.DataManager
 import com.furianrt.mydiary.di.application.component.AppComponent
 import com.furianrt.mydiary.di.application.component.DaggerAppComponent
-import com.furianrt.mydiary.di.application.modules.app.AppModule
+import com.furianrt.mydiary.di.application.modules.app.AnalyticsModule
+import com.furianrt.mydiary.di.application.modules.app.AppContextModule
+import com.furianrt.mydiary.di.application.modules.data.DatabaseModule
+import com.furianrt.mydiary.di.application.modules.data.HelperModule
+import com.furianrt.mydiary.di.application.modules.data.ManagerModule
+import com.furianrt.mydiary.di.application.modules.network.ApiModule
+import com.furianrt.mydiary.di.application.modules.network.FirebaseModule
+import com.furianrt.mydiary.di.application.modules.rx.RxModule
 import com.furianrt.mydiary.general.GlideApp
 import com.furianrt.mydiary.screens.pin.PinActivity
 import com.google.android.gms.ads.MobileAds
@@ -34,7 +41,14 @@ class MyApp : Application(), Application.ActivityLifecycleCallbacks {
 
     val component: AppComponent by lazy {
         DaggerAppComponent.builder()
-                .appModule(AppModule(this))
+                .appContextModule(AppContextModule(this))
+                .analyticsModule(AnalyticsModule())
+                .apiModule(ApiModule())
+                .firebaseModule(FirebaseModule())
+                .databaseModule(DatabaseModule())
+                .helperModule(HelperModule())
+                .managerModule(ManagerModule())
+                .rxModule(RxModule())
                 .build()
     }
 
@@ -75,7 +89,7 @@ class MyApp : Application(), Application.ActivityLifecycleCallbacks {
     }
 
     override fun onActivityStopped(activity: Activity?) {
-        if (mDataManager.isPasswordEnabled() && activity !is PinActivity) {
+        if (mDataManager.isPinEnabled() && activity !is PinActivity) {
             mHandler.postDelayed(mLogoutRunnable, mDataManager.getPasswordRequestDelay())
         }
     }

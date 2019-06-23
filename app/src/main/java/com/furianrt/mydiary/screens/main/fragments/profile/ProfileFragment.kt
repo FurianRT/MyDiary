@@ -8,8 +8,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
 import android.view.animation.OvershootInterpolator
-import androidx.fragment.app.Fragment
 import com.furianrt.mydiary.R
+import com.furianrt.mydiary.base.BaseFragment
 import com.furianrt.mydiary.data.model.MyProfile
 import com.furianrt.mydiary.screens.main.MainActivity
 import com.furianrt.mydiary.screens.main.fragments.profile.menu.MenuProfileFragment
@@ -19,7 +19,7 @@ import kotlinx.android.synthetic.main.fragment_profile.*
 import kotlinx.android.synthetic.main.fragment_profile.view.*
 import javax.inject.Inject
 
-class ProfileFragment : Fragment(), ProfileContract.View {
+class ProfileFragment : BaseFragment(), ProfileContract.MvpView {
 
     companion object {
         const val TAG = "ProfileFragment"

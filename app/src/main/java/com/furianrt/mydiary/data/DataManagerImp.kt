@@ -463,6 +463,10 @@ class DataManagerImp(
         prefs.setBackupEmail(email)
     }
 
+    override fun getPrimaryColor(): Int = prefs.getPrimaryColor()
+
+    override fun getAccentColor(): Int = prefs.getAccentColor()
+
     override fun isWeatherEnabled(): Boolean = prefs.isWeatherEnabled()
 
     override fun getWeatherUnits(): Int = prefs.getWeatherUnits()
@@ -505,10 +509,10 @@ class DataManagerImp(
         prefs.setPasswordRequestDelay(delay)
     }
 
-    override fun isPasswordEnabled(): Boolean = prefs.isPasswordEnabled()
+    override fun isPinEnabled(): Boolean = prefs.isPinEnabled()
 
-    override fun setPasswordEnabled(enable: Boolean) {
-        prefs.setPasswordEnabled(enable)
+    override fun setPinEnabled(enable: Boolean) {
+        prefs.setPinEnabled(enable)
     }
 
     override fun isDailyImageEnabled(): Boolean = prefs.isDailyImageEnabled()

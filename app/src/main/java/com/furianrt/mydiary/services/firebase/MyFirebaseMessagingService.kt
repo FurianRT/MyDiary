@@ -8,11 +8,12 @@ import android.util.Log
 import androidx.core.app.NotificationCompat
 import com.furianrt.mydiary.MyApp
 import com.furianrt.mydiary.R
+import com.furianrt.mydiary.base.BaseView
 import com.furianrt.mydiary.screens.main.MainActivity
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 
-class MyFirebaseMessagingService : FirebaseMessagingService() {
+class MyFirebaseMessagingService : FirebaseMessagingService(), BaseView {
 
     companion object {
         private const val TAG = "MessagingService"

@@ -7,9 +7,9 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
 import android.widget.Toast
-import androidx.fragment.app.Fragment
 import com.furianrt.mydiary.R
-import com.furianrt.mydiary.general.Analytics
+import com.furianrt.mydiary.analytics.MyAnalytics
+import com.furianrt.mydiary.base.BaseFragment
 import com.furianrt.mydiary.screens.main.fragments.authentication.AuthFragment
 import com.furianrt.mydiary.screens.main.fragments.authentication.done.DoneAuthFragment
 import com.furianrt.mydiary.screens.main.fragments.authentication.forgot.ForgotPassFragment
@@ -23,7 +23,7 @@ import kotlinx.android.synthetic.main.fragment_login.*
 import kotlinx.android.synthetic.main.fragment_login.view.*
 import javax.inject.Inject
 
-class LoginFragment : Fragment(), LoginContract.View {
+class LoginFragment : BaseFragment(), LoginContract.MvpView {
 
     companion object {
         const val TAG = "LoginFragment"
@@ -38,7 +38,8 @@ class LoginFragment : Fragment(), LoginContract.View {
     private val mChangeActivityFlag: Runnable = Runnable {
         activity?.window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN)
     }
-    private val mOnEditFocusChangeListener: (v: View, hasFocus: Boolean) -> Unit = { _, hasFocus ->
+
+    private val mOnEditFocusChangeListener = View.OnFocusChangeListener { _, hasFocus ->
         if (hasFocus) {
             (parentFragment as AuthFragment).pushContainerUp()
             mHandler.postDelayed(mChangeActivityFlag, CHANGE_ACTIVITY_FLAG_DELAY)
@@ -64,10 +65,10 @@ class LoginFragment : Fragment(), LoginContract.View {
                     view.edit_password.text?.toString() ?: ""
             )
         }
-        view.edit_email.setOnFocusChangeListener(mOnEditFocusChangeListener)
-        view.edit_password.setOnFocusChangeListener(mOnEditFocusChangeListener)
-        view.edit_email.setOnClickListener { mOnEditFocusChangeListener.invoke(it, true) }
-        view.edit_password.setOnClickListener { mOnEditFocusChangeListener.invoke(it, true) }
+        view.edit_email.onFocusChangeListener = mOnEditFocusChangeListener
+        view.edit_password.onFocusChangeListener = mOnEditFocusChangeListener
+        view.edit_email.setOnClickListener { mOnEditFocusChangeListener.onFocusChange(it, true) }
+        view.edit_password.setOnClickListener { mOnEditFocusChangeListener.onFocusChange(it, true) }
         view.view_alpha.setOnTouchListener { _, _ -> true }
 
         return view
@@ -110,7 +111,7 @@ class LoginFragment : Fragment(), LoginContract.View {
     }
 
     override fun showLoginSuccess() {
-        Analytics.sendEvent(requireContext(), Analytics.EVENT_SIGNED_IN)
+        analytics.sendEvent(MyAnalytics.EVENT_SIGNED_IN)
         if (fragmentManager?.findFragmentByTag(DoneAuthFragment.TAG) == null) {
             fragmentManager?.inTransaction {
                 val message = getString(R.string.fragment_done_auth_done)
@@ -127,7 +128,7 @@ class LoginFragment : Fragment(), LoginContract.View {
     }
 
     override fun showForgotPassView(email: String) {
-        Analytics.sendEvent(requireContext(), Analytics.EVENT_FORGOT_PASSWORD)
+        analytics.sendEvent(MyAnalytics.EVENT_FORGOT_PASSWORD)
         if (fragmentManager?.findFragmentByTag(ForgotPassFragment.TAG) == null) {
             activity?.supportFragmentManager?.inTransaction {
                 setPrimaryNavigationFragment(parentFragment)

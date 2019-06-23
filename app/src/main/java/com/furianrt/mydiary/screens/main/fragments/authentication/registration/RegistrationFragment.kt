@@ -8,8 +8,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
 import androidx.core.content.ContextCompat
-import androidx.fragment.app.Fragment
 import com.furianrt.mydiary.R
+import com.furianrt.mydiary.base.BaseFragment
 import com.furianrt.mydiary.screens.main.fragments.authentication.AuthFragment
 import com.furianrt.mydiary.screens.main.fragments.authentication.privacy.PrivacyFragment
 import com.furianrt.mydiary.utils.*
@@ -17,7 +17,7 @@ import kotlinx.android.synthetic.main.fragment_registration.*
 import kotlinx.android.synthetic.main.fragment_registration.view.*
 import javax.inject.Inject
 
-class RegistrationFragment : Fragment(), RegistrationContract.View {
+class RegistrationFragment : BaseFragment(), RegistrationContract.MvpView {
 
     companion object {
         const val TAG = "RegistrationFragment"
@@ -31,7 +31,7 @@ class RegistrationFragment : Fragment(), RegistrationContract.View {
     private val mChangeActivityFlag: Runnable = Runnable {
         activity?.window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN)
     }
-    private val mOnEditFocusChangeListener: (v: View, hasFocus: Boolean) -> Unit = { _, hasFocus ->
+    private val mOnEditFocusChangeListener = View.OnFocusChangeListener { _, hasFocus ->
         if (hasFocus) {
             (parentFragment as AuthFragment).pushContainerUp()
             mHandler.postDelayed(mChangeActivityFlag, CHANGE_ACTIVITY_FLAG_DELAY)
@@ -55,15 +55,15 @@ class RegistrationFragment : Fragment(), RegistrationContract.View {
                     view.edit_password_repeat.text.toString()
             )
         }
-        view.edit_email.setOnFocusChangeListener { v, hasFocus ->
-            mOnEditFocusChangeListener.invoke(v, hasFocus)
+        view.edit_email.onFocusChangeListener = View.OnFocusChangeListener { v, hasFocus ->
+            mOnEditFocusChangeListener.onFocusChange(v, hasFocus)
             mPresenter.onEmailFocusChange(view.edit_email.text.toString(), hasFocus)
         }
-        view.edit_password.setOnFocusChangeListener(mOnEditFocusChangeListener)
-        view.edit_password_repeat.setOnFocusChangeListener(mOnEditFocusChangeListener)
-        view.edit_email.setOnClickListener { mOnEditFocusChangeListener.invoke(it, true) }
-        view.edit_password.setOnClickListener { mOnEditFocusChangeListener.invoke(it, true) }
-        view.edit_password_repeat.setOnClickListener { mOnEditFocusChangeListener.invoke(it, true) }
+        view.edit_password.onFocusChangeListener = mOnEditFocusChangeListener
+        view.edit_password_repeat.onFocusChangeListener = mOnEditFocusChangeListener
+        view.edit_email.setOnClickListener { mOnEditFocusChangeListener.onFocusChange(it, true) }
+        view.edit_password.setOnClickListener { mOnEditFocusChangeListener.onFocusChange(it, true) }
+        view.edit_password_repeat.setOnClickListener { mOnEditFocusChangeListener.onFocusChange(it, true) }
         view.view_alpha.setOnTouchListener { _, _ -> true }
         return view
     }
@@ -125,7 +125,7 @@ class RegistrationFragment : Fragment(), RegistrationContract.View {
     private fun showEmailSuccess() {
         text_error.text = ""
         image_email.setImageResource(R.drawable.ic_done)
-        image_email.setColorFilter(getThemeAccentColor(requireContext()), PorterDuff.Mode.SRC_IN)
+        image_email.setColorFilter(requireContext().getThemeAccentColor(), PorterDuff.Mode.SRC_IN)
         hideLoadingEmail()
         image_email.visibility = View.VISIBLE
     }

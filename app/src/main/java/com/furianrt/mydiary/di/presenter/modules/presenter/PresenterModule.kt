@@ -52,6 +52,8 @@ import com.furianrt.mydiary.screens.main.fragments.drawer.DrawerMenuContract
 import com.furianrt.mydiary.screens.main.fragments.drawer.DrawerMenuPresenter
 import com.furianrt.mydiary.screens.main.fragments.imagesettings.ImageSettingsContract
 import com.furianrt.mydiary.screens.main.fragments.imagesettings.ImageSettingsPresenter
+import com.furianrt.mydiary.screens.main.fragments.imagesettings.settings.DailySettingsContract
+import com.furianrt.mydiary.screens.main.fragments.imagesettings.settings.DailySettingsPresenter
 import com.furianrt.mydiary.screens.main.fragments.premium.PremiumContract
 import com.furianrt.mydiary.screens.main.fragments.premium.PremiumPresenter
 import com.furianrt.mydiary.screens.main.fragments.profile.ProfileContract
@@ -88,7 +90,7 @@ import dagger.Module
 import dagger.Provides
 
 @Module
-class PresenterModule() {
+class PresenterModule {
 
     @Provides
     @PresenterScope
@@ -294,4 +296,9 @@ class PresenterModule() {
     @PresenterScope
     fun provideRateDialogPresenter(dataManager: DataManager): RateDialogContract.Presenter =
             RateDialogPresenter(dataManager)
+
+    @Provides
+    @PresenterScope
+    fun provideDailySettingsPresenter(dataManager: DataManager): DailySettingsContract.Presenter =
+            DailySettingsPresenter(dataManager)
 }

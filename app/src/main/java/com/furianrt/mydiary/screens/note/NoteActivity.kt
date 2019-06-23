@@ -20,11 +20,10 @@ import com.google.android.gms.ads.AdRequest
 import kotlinx.android.synthetic.main.activity_note.*
 import javax.inject.Inject
 
-class NoteActivity : BaseActivity(), NoteActivityContract.View,
+class NoteActivity : BaseActivity(), NoteActivityContract.MvpView,
         NoteEditFragment.OnNoteFragmentInteractionListener {
 
     companion object {
-        private const val TAG = "NoteActivity"
         private const val BUNDLE_NOTE_ID = "noteId"
         private const val EXTRA_MODE = "mode"
         private const val EXTRA_CLICKED_NOTE_POSITION = "notePosition"

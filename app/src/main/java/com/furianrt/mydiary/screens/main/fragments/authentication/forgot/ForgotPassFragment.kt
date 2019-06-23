@@ -7,8 +7,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
 import android.widget.Toast
-import androidx.fragment.app.Fragment
 import com.furianrt.mydiary.R
+import com.furianrt.mydiary.base.BaseFragment
 import com.furianrt.mydiary.screens.main.fragments.authentication.AuthFragment
 import com.furianrt.mydiary.screens.main.fragments.authentication.done.DoneAuthFragment
 import com.furianrt.mydiary.utils.animateShake
@@ -20,7 +20,7 @@ import kotlinx.android.synthetic.main.fragment_forgot_pass.*
 import kotlinx.android.synthetic.main.fragment_forgot_pass.view.*
 import javax.inject.Inject
 
-class ForgotPassFragment : Fragment(), ForgotPassContract.View {
+class ForgotPassFragment : BaseFragment(), ForgotPassContract.MvpView {
 
     companion object {
         const val TAG = "ForgotPassFragment"

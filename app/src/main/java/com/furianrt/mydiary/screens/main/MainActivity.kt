@@ -27,12 +27,12 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.anjlab.android.iab.v3.TransactionDetails
 import com.furianrt.mydiary.BuildConfig
 import com.furianrt.mydiary.R
+import com.furianrt.mydiary.analytics.MyAnalytics
 import com.furianrt.mydiary.base.BaseActivity
 import com.furianrt.mydiary.data.model.*
 import com.furianrt.mydiary.dialogs.categories.CategoriesDialog
 import com.furianrt.mydiary.dialogs.delete.note.DeleteNoteDialog
 import com.furianrt.mydiary.dialogs.rate.RateDialog
-import com.furianrt.mydiary.general.Analytics
 import com.furianrt.mydiary.general.AppBarLayoutBehavior
 import com.furianrt.mydiary.general.GlideApp
 import com.furianrt.mydiary.general.HeaderItemDecoration
@@ -60,8 +60,9 @@ import kotlinx.android.synthetic.main.activity_main_toolbar.*
 import kotlinx.android.synthetic.main.bottom_sheet_main.*
 import kotlinx.android.synthetic.main.empty_search_note_list.*
 import javax.inject.Inject
+import kotlin.math.min
 
-class MainActivity : BaseActivity(), MainActivityContract.View,
+class MainActivity : BaseActivity(), MainActivityContract.MvpView,
         NoteListAdapter.OnMainListItemInteractionListener,
         DailySettingsFragment.OnImageSettingsInteractionListener,
         DeleteNoteDialog.OnDeleteNoteConfirmListener, CategoriesDialog.OnCategorySelectedListener,
@@ -113,7 +114,7 @@ class MainActivity : BaseActivity(), MainActivityContract.View,
             it.setHomeAsUpIndicator(R.drawable.ic_menu)
         }
 
-        val drawerWidth = Math.min(getDisplayWidth() - dpToPx(56f), dpToPx(56f) * 5)
+        val drawerWidth = min(getDisplayWidth() - dpToPx(56f), dpToPx(56f) * 5)
         container_main_drawer.layoutParams.width = drawerWidth
 
         mOnDrawerListener = object : ActionBarDrawerToggle(this, drawer, toolbar_main, R.string.open, R.string.close) {
@@ -171,7 +172,7 @@ class MainActivity : BaseActivity(), MainActivityContract.View,
 
         image_toolbar_main.setOnClickListener { mPresenter.onMainImageClick() }
         button_main_image_settings.setOnClickListener {
-            Analytics.sendEvent(this, Analytics.EVENT_HEADER_IMAGE_SETTINGS)
+            analytics.sendEvent(MyAnalytics.EVENT_HEADER_IMAGE_SETTINGS)
             mPresenter.onButtonImageSettingsClick()
         }
 
@@ -260,7 +261,7 @@ class MainActivity : BaseActivity(), MainActivityContract.View,
     override fun showEmptyHeaderImage(hasError: Boolean) {
         Log.e(TAG, "showEmptyHeaderImage")
         if (hasError) {
-            Analytics.sendEvent(this, Analytics.EVENT_DAILY_IMAGE_LOAD_ERROR)
+            analytics.sendEvent(MyAnalytics.EVENT_DAILY_IMAGE_LOAD_ERROR)
         }
         disableActionBarExpanding()
     }
@@ -299,19 +300,19 @@ class MainActivity : BaseActivity(), MainActivityContract.View,
         (coordParams.behavior as AppBarLayoutBehavior).shouldScroll = true
     }
 
-    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-        return when (item?.itemId) {
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
             R.id.menu_all_notes -> {
                 mPresenter.onMenuAllNotesClick()
                 true
             }
             R.id.menu_image -> {
-                Analytics.sendEvent(this, Analytics.EVENT_HEADER_IMAGE_SETTINGS)
+                analytics.sendEvent(MyAnalytics.EVENT_HEADER_IMAGE_SETTINGS)
                 mPresenter.onButtonImageSettingsClick()
                 true
             }
             R.id.menu_settings -> {
-                Analytics.sendEvent(this, Analytics.EVENT_MAIN_SETTINGS)
+                analytics.sendEvent(MyAnalytics.EVENT_MAIN_SETTINGS)
                 mPresenter.onButtonSettingsClick()
                 true
             }
@@ -349,7 +350,7 @@ class MainActivity : BaseActivity(), MainActivityContract.View,
     }
 
     override fun showViewImageSettings() {
-        Analytics.sendEvent(this, Analytics.EVENT_DAILY_IMAGE_OPEN)
+        analytics.sendEvent(MyAnalytics.EVENT_DAILY_IMAGE_OPEN)
         if (supportFragmentManager.findFragmentByTag(ImageSettingsFragment.TAG) == null) {
             supportFragmentManager.inTransaction {
                 replace(R.id.main_sheet_container, ImageSettingsFragment(), ImageSettingsFragment.TAG)
@@ -380,7 +381,7 @@ class MainActivity : BaseActivity(), MainActivityContract.View,
         }
 
         searchView?.setOnSearchClickListener {
-            Analytics.sendEvent(this, Analytics.EVENT_SEARCH_WORD_OPENED)
+            analytics.sendEvent(MyAnalytics.EVENT_SEARCH_WORD_OPENED)
             disableActionBarExpanding(true)
         }
         searchView?.setOnCloseListener {
@@ -412,7 +413,7 @@ class MainActivity : BaseActivity(), MainActivityContract.View,
     }
 
     override fun showViewNewNote() {
-        Analytics.sendEvent(this, Analytics.EVENT_NOTE_ADDED)
+        analytics.sendEvent(MyAnalytics.EVENT_NOTE_ADDED)
         startActivity(NoteActivity.newIntentModeAdd(this))
     }
 
@@ -495,7 +496,7 @@ class MainActivity : BaseActivity(), MainActivityContract.View,
     }
 
     override fun showNotePager(position: Int, note: MyNoteWithProp) {
-        Analytics.sendEvent(this, Analytics.EVENT_NOTE_OPENED)
+        analytics.sendEvent(MyAnalytics.EVENT_NOTE_OPENED)
         startActivity(NoteActivity.newIntentModeRead(this, position))
     }
 

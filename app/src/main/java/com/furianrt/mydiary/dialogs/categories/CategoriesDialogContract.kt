@@ -1,13 +1,13 @@
 package com.furianrt.mydiary.dialogs.categories
 
+import com.furianrt.mydiary.base.BaseMvpView
 import com.furianrt.mydiary.base.BasePresenter
-import com.furianrt.mydiary.base.BaseView
 
 interface CategoriesDialogContract {
 
-    interface View : BaseView {
+    interface MvpView : BaseMvpView {
     }
 
-    abstract class Presenter : BasePresenter<View>() {
+    abstract class Presenter : BasePresenter<MvpView>() {
     }
 }

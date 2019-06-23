@@ -9,9 +9,9 @@ import android.view.ViewGroup
 import android.view.WindowManager
 import android.view.animation.AnticipateOvershootInterpolator
 import android.view.animation.OvershootInterpolator
-import androidx.fragment.app.Fragment
 import com.furianrt.mydiary.R
-import com.furianrt.mydiary.general.Analytics
+import com.furianrt.mydiary.analytics.MyAnalytics
+import com.furianrt.mydiary.base.BaseFragment
 import com.furianrt.mydiary.screens.main.MainActivity
 import com.furianrt.mydiary.screens.main.fragments.authentication.login.LoginFragment
 import com.furianrt.mydiary.screens.main.fragments.authentication.registration.RegistrationFragment
@@ -23,7 +23,7 @@ import kotlinx.android.synthetic.main.fragment_auth.*
 import kotlinx.android.synthetic.main.fragment_auth.view.*
 import javax.inject.Inject
 
-class AuthFragment : Fragment(), AuthContract.View {
+class AuthFragment : BaseFragment(), AuthContract.MvpView {
 
     companion object {
         const val TAG = "AuthFragment"
@@ -81,7 +81,7 @@ class AuthFragment : Fragment(), AuthContract.View {
     }
 
     override fun showRegistrationView() {
-        Analytics.sendEvent(requireContext(), Analytics.EVENT_SIGN_UP)
+        analytics.sendEvent(MyAnalytics.EVENT_SIGN_UP)
         if (childFragmentManager.findFragmentByTag(RegistrationFragment.TAG) == null) {
             activity?.supportFragmentManager?.inTransaction {
                 setPrimaryNavigationFragment(this@AuthFragment)

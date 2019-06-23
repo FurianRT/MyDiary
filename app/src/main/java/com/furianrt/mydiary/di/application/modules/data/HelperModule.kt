@@ -14,6 +14,7 @@ import com.furianrt.mydiary.data.prefs.PreferencesHelperImp
 import com.furianrt.mydiary.data.storage.StorageHelper
 import com.furianrt.mydiary.data.storage.StorageHelperImp
 import com.furianrt.mydiary.di.application.component.AppScope
+import com.furianrt.mydiary.di.application.modules.app.AppContext
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
@@ -32,16 +33,17 @@ class HelperModule {
 
     @Provides
     @AppScope
-    fun provideAuthHelper(context: Context, firebaseAuth: FirebaseAuth): AuthHelper =
+    fun provideAuthHelper(@AppContext context: Context, firebaseAuth: FirebaseAuth): AuthHelper =
             AuthHelperImp(context, firebaseAuth)
 
     @Provides
     @AppScope
-    fun provideStorageHelper(context: Context): StorageHelper = StorageHelperImp(context)
+    fun provideStorageHelper(@AppContext context: Context): StorageHelper = StorageHelperImp(context)
 
     @Provides
     @AppScope
-    fun providePreferencesHelper(context: Context): PreferencesHelper = PreferencesHelperImp(context)
+    fun providePreferencesHelper(@AppContext context: Context): PreferencesHelper =
+            PreferencesHelperImp(context)
 
     @Provides
     @AppScope

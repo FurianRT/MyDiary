@@ -5,10 +5,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.widget.SearchView
-import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.furianrt.mydiary.R
+import com.furianrt.mydiary.base.BaseFragment
 import com.furianrt.mydiary.data.model.MyTag
 import com.furianrt.mydiary.dialogs.tags.TagsDialog
 import com.furianrt.mydiary.dialogs.tags.fragments.add.TagAddFragment
@@ -18,14 +18,13 @@ import com.furianrt.mydiary.utils.inTransaction
 import kotlinx.android.synthetic.main.fragment_tag_list.view.*
 import javax.inject.Inject
 
-class TagListFragment : Fragment(), TagListContract.View, TagListAdapter.OnTagListItemInteractionListener {
+class TagListFragment : BaseFragment(), TagListContract.MvpView, TagListAdapter.OnTagListItemInteractionListener {
 
     @Inject
     lateinit var mPresenter: TagListContract.Presenter
 
     private lateinit var mNoteId: String
     private val mListAdapter = TagListAdapter(this)
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         getPresenterComponent(requireContext()).inject(this)
