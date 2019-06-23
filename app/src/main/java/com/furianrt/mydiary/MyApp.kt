@@ -7,8 +7,8 @@ import android.app.NotificationManager
 import android.os.*
 import android.widget.ImageView
 import com.furianrt.mydiary.data.DataManager
-import com.furianrt.mydiary.di.application.DaggerAppComponent
 import com.furianrt.mydiary.di.application.component.AppComponent
+import com.furianrt.mydiary.di.application.component.DaggerAppComponent
 import com.furianrt.mydiary.di.application.modules.app.AppModule
 import com.furianrt.mydiary.general.GlideApp
 import com.furianrt.mydiary.screens.pin.PinActivity
