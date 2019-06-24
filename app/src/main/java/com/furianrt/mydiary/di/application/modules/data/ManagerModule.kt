@@ -6,6 +6,7 @@ import com.furianrt.mydiary.data.api.ApiServiceHelper
 import com.furianrt.mydiary.data.auth.AuthHelper
 import com.furianrt.mydiary.data.cloud.CloudHelper
 import com.furianrt.mydiary.data.database.NoteDatabase
+import com.furianrt.mydiary.data.encryption.EncryptionHelper
 import com.furianrt.mydiary.data.prefs.PreferencesHelper
 import com.furianrt.mydiary.data.storage.StorageHelper
 import com.furianrt.mydiary.di.application.component.AppScope
@@ -25,7 +26,8 @@ class ManagerModule {
             apiService: ApiServiceHelper,
             cloudHelper: CloudHelper,
             authHelper: AuthHelper,
-            rxScheduler: Scheduler
+            rxScheduler: Scheduler,
+            encryption: EncryptionHelper
     ): DataManager = DataManagerImp(
             database,
             prefs,
@@ -33,6 +35,7 @@ class ManagerModule {
             apiService,
             cloudHelper,
             authHelper,
-            rxScheduler
+            rxScheduler,
+            encryption
     )
 }

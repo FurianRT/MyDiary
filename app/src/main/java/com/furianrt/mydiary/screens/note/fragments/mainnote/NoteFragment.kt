@@ -125,7 +125,7 @@ class NoteFragment : BaseFragment(), NoteFragmentContract.MvpView, DatePickerDia
             mPresenter.setNoteTextBuffer(it.getParcelableArrayList(BUNDLE_NOTE_TEXT_BUFFER)
                     ?: ArrayList())
         }
-        mPresenter.init(note, mMode)  //todo Режет глаз. Придумать как убрать эту херню
+        mPresenter.init(note, mMode)  //todo Режет глаз. Придумать как убрать
         setHasOptionsMenu(true)
     }
 

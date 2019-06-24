@@ -9,6 +9,8 @@ import com.furianrt.mydiary.data.auth.AuthHelper
 import com.furianrt.mydiary.data.auth.AuthHelperImp
 import com.furianrt.mydiary.data.cloud.CloudHelper
 import com.furianrt.mydiary.data.cloud.CloudHelperImp
+import com.furianrt.mydiary.data.encryption.EncryptionHelper
+import com.furianrt.mydiary.data.encryption.EncryptionHelperImp
 import com.furianrt.mydiary.data.prefs.PreferencesHelper
 import com.furianrt.mydiary.data.prefs.PreferencesHelperImp
 import com.furianrt.mydiary.data.storage.StorageHelper
@@ -49,4 +51,8 @@ class HelperModule {
     @AppScope
     fun provideApiServiceHelper(weatherApi: WeatherApiService, imageApi: ImageApiService): ApiServiceHelper =
             ApiServiceHelperImp(weatherApi, imageApi)
+
+    @Provides
+    @AppScope
+    fun provideEncryptionHelper(): EncryptionHelper = EncryptionHelperImp()
 }
