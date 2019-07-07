@@ -34,7 +34,7 @@ class PremiumFragment : BaseFragment(), PremiumContract.MvpView {
 
         view.button_premium_close.setOnClickListener { mPresenter.onButtonCloseClick() }
         view.button_get_premium.setOnClickListener {
-            mListener?.onButtonPurshaseClick(BuildConfig.ITEM_SYNC_SKU)
+            mListener?.onButtonPurshaseClick(BuildConfig.ITEM_PREMIUM_SKU)
         }
 
         return view

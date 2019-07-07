@@ -4,8 +4,9 @@ import com.furianrt.mydiary.data.DataManager
 import com.furianrt.mydiary.data.model.MyNote
 import com.furianrt.mydiary.data.model.MyNoteAppearance
 import io.reactivex.android.schedulers.AndroidSchedulers
+import javax.inject.Inject
 
-class NoteActivityPresenter(
+class NoteActivityPresenter @Inject constructor(
         private val dataManager: DataManager
 ) : NoteActivityContract.Presenter() {
 

@@ -6,6 +6,7 @@ import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.os.*
 import android.widget.ImageView
+import com.facebook.stetho.Stetho
 import com.furianrt.mydiary.data.DataManager
 import com.furianrt.mydiary.di.application.component.AppComponent
 import com.furianrt.mydiary.di.application.component.DaggerAppComponent
@@ -20,6 +21,7 @@ import com.furianrt.mydiary.di.application.modules.rx.RxModule
 import com.furianrt.mydiary.general.GlideApp
 import com.furianrt.mydiary.screens.pin.PinActivity
 import com.google.android.gms.ads.MobileAds
+import com.jakewharton.threetenabp.AndroidThreeTen
 import com.yanzhenjie.album.Album
 import com.yanzhenjie.album.AlbumConfig
 import com.yanzhenjie.album.AlbumFile
@@ -42,12 +44,9 @@ class MyApp : Application(), Application.ActivityLifecycleCallbacks {
     val component: AppComponent by lazy {
         DaggerAppComponent.builder()
                 .appContextModule(AppContextModule(this))
-                .analyticsModule(AnalyticsModule())
                 .apiModule(ApiModule())
                 .firebaseModule(FirebaseModule())
                 .databaseModule(DatabaseModule())
-                .helperModule(HelperModule())
-                .managerModule(ManagerModule())
                 .rxModule(RxModule())
                 .build()
     }
@@ -71,6 +70,10 @@ class MyApp : Application(), Application.ActivityLifecycleCallbacks {
         incrementLaunchCounter()
         MobileAds.initialize(this, getString(R.string.banner_ad_app_id))
         StrictMode.setVmPolicy(StrictMode.VmPolicy.Builder().build())
+        AndroidThreeTen.init(this)
+        if (BuildConfig.DEBUG) {
+            Stetho.initializeWithDefaults(this)
+        }
     }
 
     override fun onActivityDestroyed(activity: Activity?) {}
@@ -188,6 +191,12 @@ class MyApp : Application(), Application.ActivityLifecycleCallbacks {
 * добавить сканирование текста
 * добавить импорт текста с сайтов (как в EverNote)
 * вынести модуль в git submodule
+* добавить таймер к паролю
+* добавить картинки с диалогам
+* добавить достижения с анимацией
+* добавить превью возможностей дневника
+* изменить дизайн даты в списке заметок
+* изменить дизайн окна профиля
 *
 * */
 

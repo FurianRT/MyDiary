@@ -7,12 +7,13 @@ import io.reactivex.Completable
 import io.reactivex.Flowable
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.functions.Function4
+import io.reactivex.functions.Function5
 import io.reactivex.schedulers.Schedulers
 import net.danlew.android.joda.DateUtils
 import org.joda.time.DateTime
+import javax.inject.Inject
 
-class DrawerMenuPresenter(
+class DrawerMenuPresenter @Inject constructor(
         private val dataManager: DataManager
 ) : DrawerMenuContract.Presenter() {
 
@@ -64,13 +65,14 @@ class DrawerMenuPresenter(
     }
 
     private fun loadSearchEntries() {
-        addDisposable(Flowable.combineLatest(dataManager.getAllTags(),
+        addDisposable(Flowable.combineLatest(dataManager.getAllNotesWithProp(),
+                dataManager.getAllTags(),
                 dataManager.getAllCategories(),
                 dataManager.getAllDbLocations(),
                 dataManager.getAllMoods().toFlowable(),
-                Function4<List<MyTag>, List<MyCategory>, List<MyLocation>, List<MyMood>, SearchEntries>
-                { tags, categories, locations, moods ->
-                    SearchEntries(tags, categories, locations, moods)
+                Function5<List<MyNoteWithProp>, List<MyTag>, List<MyCategory>, List<MyLocation>, List<MyMood>, SearchEntries>
+                { notes, tags, categories, locations, moods ->
+                    SearchEntries(notes, tags, categories, locations, moods)
                 })
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { view?.showSearchEntries(it) })

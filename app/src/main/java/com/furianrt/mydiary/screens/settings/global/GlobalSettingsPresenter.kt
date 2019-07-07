@@ -1,8 +1,9 @@
 package com.furianrt.mydiary.screens.settings.global
 
 import com.furianrt.mydiary.data.DataManager
+import javax.inject.Inject
 
-class GlobalSettingsPresenter(
+class GlobalSettingsPresenter @Inject constructor(
         private val dataManager: DataManager
 ) : GlobalSettingsContract.Presenter() {
 

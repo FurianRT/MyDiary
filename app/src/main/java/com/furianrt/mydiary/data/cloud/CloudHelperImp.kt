@@ -14,8 +14,9 @@ import io.reactivex.Maybe
 import io.reactivex.Observable
 import io.reactivex.Single
 import java.util.concurrent.TimeUnit
+import javax.inject.Inject
 
-class CloudHelperImp(
+class CloudHelperImp @Inject constructor(
         private val firestore: FirebaseFirestore,
         private val firebaseStorage: FirebaseStorage
 ) : CloudHelper {

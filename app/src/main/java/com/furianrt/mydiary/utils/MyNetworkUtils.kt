@@ -1,24 +1,8 @@
 package com.furianrt.mydiary.utils
 
-import android.app.Activity
 import android.content.Context
 import android.net.ConnectivityManager
 import android.provider.Settings
-import com.google.android.gms.common.ConnectionResult
-import com.google.android.gms.common.GoogleApiAvailability
-
-fun Activity.isGoogleServicesAvailable(resolutionCode: Int): Boolean {
-    val googleApiAvailability = GoogleApiAvailability.getInstance()
-    val status = googleApiAvailability.isGooglePlayServicesAvailable(this)
-    if (status != ConnectionResult.SUCCESS) {
-        if (googleApiAvailability.isUserResolvableError(status)) {
-            googleApiAvailability.getErrorDialog(this, status, resolutionCode)
-                    .show()
-        }
-        return false
-    }
-    return true
-}
 
 fun Context.isNetworkAvailable(): Boolean {
     val cm = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager

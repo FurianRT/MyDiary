@@ -4,8 +4,9 @@ import android.util.Patterns
 import com.furianrt.mydiary.data.DataManager
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
 import io.reactivex.android.schedulers.AndroidSchedulers
+import javax.inject.Inject
 
-class ForgotPassPresenter(
+class ForgotPassPresenter @Inject constructor(
         private val dataManager: DataManager
 ) : ForgotPassContract.Presenter() {
 

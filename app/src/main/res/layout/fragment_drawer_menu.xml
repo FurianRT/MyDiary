@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/grey_light"
+    android:background="@color/white"
     tools:context=".screens.main.fragments.drawer.DrawerMenuFragment">
 
     <ImageView
@@ -22,7 +22,7 @@
         android:id="@+id/linearLayout"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:background="#59000000"
+        android:background="@color/black35"
         android:gravity="center"
         android:padding="4dp"
         app:layout_constraintBottom_toBottomOf="@id/image_drawer_header"
@@ -171,7 +171,7 @@
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/list_search"
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="0dp"
         android:clipToPadding="false"
         android:paddingTop="4dp"
@@ -182,7 +182,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/button_sync"
-        tools:itemCount="4"
+        tools:itemCount="5"
         tools:listitem="@layout/nav_search_group" />
 
     <com.google.android.material.button.MaterialButton
@@ -193,9 +193,8 @@
         android:layout_marginStart="2dp"
         android:layout_marginEnd="2dp"
         android:gravity="center"
-        android:shadowColor="@color/red"
-        android:text="@string/fragment_drawer_menu_clear_filters"
         android:letterSpacing="0.0"
+        android:text="@string/fragment_drawer_menu_clear_filters"
         android:textAllCaps="false"
         android:textColor="@color/white"
         android:textSize="14sp"

@@ -55,7 +55,7 @@ import kotlinx.android.synthetic.main.fragment_note_toolbar.view.*
 import pub.devrel.easypermissions.AfterPermissionGranted
 import pub.devrel.easypermissions.EasyPermissions
 import java.io.IOException
-import java.util.*
+import java.util.Locale
 import javax.inject.Inject
 import kotlin.collections.ArrayList
 
@@ -69,7 +69,8 @@ class NoteFragment : BaseFragment(), NoteFragmentContract.MvpView, DatePickerDia
         private const val LOCATION_INTERVAL = 400L
         private const val LOCATION_PERMISSIONS_REQUEST_CODE = 1
         private const val STORAGE_PERMISSIONS_REQUEST_CODE = 2
-        private const val SPEECH_TO_TEXT_REQUEST_CODE = 3
+        private const val PLAY_SERVICES_REQUEST_CODE = 3
+        private const val SPEECH_TO_TEXT_REQUEST_CODE = 4
         private const val BUNDLE_IMAGE_PAGER_POSITION = "imagePagerPosition"
         private const val BUNDLE_NOTE_TEXT_BUFFER = "noteTextBuffer"
         private const val TIME_PICKER_TAG = "timePicker"
@@ -271,11 +272,13 @@ class NoteFragment : BaseFragment(), NoteFragmentContract.MvpView, DatePickerDia
     }
 
     override fun recordSpeech() {
-        val intent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH)
-        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM)
-        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.getDefault())
-        intent.putExtra(RecognizerIntent.EXTRA_PROMPT, getString(R.string.speech_to_text_title))
-        startActivityForResult(intent, SPEECH_TO_TEXT_REQUEST_CODE)
+        if (requireActivity().isGoogleServicesAvailable(PLAY_SERVICES_REQUEST_CODE)) {
+            val intent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH)
+            intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM)
+            intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.getDefault())
+            intent.putExtra(RecognizerIntent.EXTRA_PROMPT, getString(R.string.speech_to_text_title))
+            startActivityForResult(intent, SPEECH_TO_TEXT_REQUEST_CODE)
+        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -284,6 +287,10 @@ class NoteFragment : BaseFragment(), NoteFragmentContract.MvpView, DatePickerDia
             if (resultCode == Activity.RESULT_OK && data != null) {
                 val result = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS)?.first()
                 result?.let { appendToCurrentText(it) }
+            }
+        } else if (requestCode == PLAY_SERVICES_REQUEST_CODE) {
+            if (resultCode == Activity.RESULT_OK) {
+                recordSpeech()
             }
         }
     }
@@ -634,8 +641,8 @@ class NoteFragment : BaseFragment(), NoteFragmentContract.MvpView, DatePickerDia
         }
     }
 
-    override fun showDatePicker(calendar: Calendar) {
-        DatePickerDialog.newInstance(this, calendar).apply {
+    override fun showDatePicker(year: Int, monthOfYear: Int, dayOfMonth: Int) {
+        DatePickerDialog.newInstance(this, year, monthOfYear, dayOfMonth).apply {
             val themePrimaryColor = this@NoteFragment.requireContext().getThemePrimaryColor()
             accentColor = themePrimaryColor
             setOkColor(themePrimaryColor)

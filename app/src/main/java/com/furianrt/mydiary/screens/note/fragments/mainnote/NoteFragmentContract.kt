@@ -34,7 +34,7 @@ interface NoteFragmentContract {
         fun showNoteSettingsView(noteId: String)
         fun updateNoteAppearance(appearance: MyNoteAppearance)
         fun showNoteText(title: String, content: String)
-        fun showDatePicker(calendar: Calendar)
+        fun showDatePicker(year: Int, monthOfYear: Int, dayOfMonth: Int)
         fun showTimePicker(hourOfDay: Int, minute: Int, is24HourMode: Boolean)
         fun showDateAndTime(time: Long, is24TimeFormat: Boolean)
         fun shoNoteEditView()

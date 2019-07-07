@@ -12,14 +12,15 @@ android {
         applicationId "com.furianrt.mydiary"
         minSdkVersion 21
         targetSdkVersion 29
-        versionCode 24
+        versionCode 25
         versionName "1.2.2"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
         debug {
             versionNameSuffix "-debug"
-            minifyEnabled true
+            minifyEnabled false
+            debuggable true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             resValue("bool", "FIREBASE_ANALYTICS_DEACTIVATED", "true")
         }
@@ -37,7 +38,7 @@ android {
         it.buildConfigField 'String', 'SUPPORT_EMAIL_PASSWORD', supportEmailPassword
         it.buildConfigField 'String', 'MERCHANT_ID', merchantId
         it.buildConfigField 'String', 'LICENSE_KEY', licenseKey
-        it.buildConfigField 'String', 'ITEM_SYNC_SKU', itemSyncSku
+        it.buildConfigField 'String', 'ITEM_PREMIUM_SKU', itemPremiumSku
     }
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
@@ -103,7 +104,7 @@ dependencies {
     implementation "com.squareup.retrofit2:retrofit:$retrofit_version"
     implementation "com.squareup.retrofit2:adapter-rxjava2:$retrofit_version"
     implementation "com.squareup.retrofit2:converter-gson:$retrofit_version"
-    implementation 'com.squareup.okhttp3:logging-interceptor:3.14.2'
+    implementation 'com.squareup.okhttp3:logging-interceptor:4.0.0'
 
     //Image loading
     implementation "com.github.bumptech.glide:glide:$glide_version"
@@ -127,7 +128,7 @@ dependencies {
     //DateTime pickers
     implementation 'com.wdullaer:materialdatetimepicker:4.2.1'
 
-    //Calandar
+    //Calendar
     implementation 'com.github.kizitonwose:CalendarView:0.1.2'
 
     //Firebase
@@ -138,7 +139,7 @@ dependencies {
     implementation 'com.google.firebase:firebase-auth:18.0.0'
     implementation 'com.google.firebase:firebase-ads:18.0.0'
 
-    //Rx for FirebaseStorage and Firestore
+    //Rx for Firebase
     implementation 'com.github.FrangSierra:RxFirebase:1.5.6'
 
     //Crash tracking
@@ -153,6 +154,11 @@ dependencies {
 
     //In-App purchases
     implementation 'com.anjlab.android.iab.v3:library:1.0.44'
+
+
+    //Debuging instrument for network calls, database content, etc.
+    implementation 'com.facebook.stetho:stetho:1.5.1'
+    implementation 'com.facebook.stetho:stetho-okhttp3:1.5.1'
 
     //Tests
     testImplementation "junit:junit:$junit_version"

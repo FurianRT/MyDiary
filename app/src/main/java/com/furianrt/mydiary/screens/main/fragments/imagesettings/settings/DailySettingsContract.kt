@@ -4,9 +4,7 @@ import com.furianrt.mydiary.base.mvp.BaseMvpView
 import com.furianrt.mydiary.base.mvp.BaseMvpPresenter
 
 interface DailySettingsContract {
-    interface MvpView : BaseMvpView {
-    }
+    interface MvpView : BaseMvpView
 
-    abstract class Presenter : BaseMvpPresenter<MvpView>() {
-    }
+    abstract class Presenter : BaseMvpPresenter<MvpView>()
 }

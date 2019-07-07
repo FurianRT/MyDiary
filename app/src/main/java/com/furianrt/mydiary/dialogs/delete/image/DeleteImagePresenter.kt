@@ -2,8 +2,9 @@ package com.furianrt.mydiary.dialogs.delete.image
 
 import com.furianrt.mydiary.data.DataManager
 import io.reactivex.android.schedulers.AndroidSchedulers
+import javax.inject.Inject
 
-class DeleteImagePresenter(
+class DeleteImagePresenter @Inject constructor(
         private val dataManager: DataManager
 ) : DeleteImageContract.Presenter() {
 

@@ -3,8 +3,9 @@ package com.furianrt.mydiary.dialogs.categories.fragments.edit
 import com.furianrt.mydiary.data.DataManager
 import com.furianrt.mydiary.data.model.MyCategory
 import io.reactivex.android.schedulers.AndroidSchedulers
+import javax.inject.Inject
 
-class CategoryEditPresenter(
+class CategoryEditPresenter @Inject constructor(
         private val dataManager: DataManager
 ) : CategoryEditContract.Presenter() {
 

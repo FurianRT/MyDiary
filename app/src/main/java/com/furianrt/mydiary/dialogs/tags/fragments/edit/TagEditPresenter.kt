@@ -3,8 +3,9 @@ package com.furianrt.mydiary.dialogs.tags.fragments.edit
 import com.furianrt.mydiary.data.DataManager
 import com.furianrt.mydiary.data.model.MyTag
 import io.reactivex.android.schedulers.AndroidSchedulers
+import javax.inject.Inject
 
-class TagEditPresenter(
+class TagEditPresenter @Inject constructor(
         private val dataManager: DataManager
 ) : TagEditContract.Presenter() {
 

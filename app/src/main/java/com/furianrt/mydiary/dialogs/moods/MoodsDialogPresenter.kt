@@ -3,8 +3,9 @@ package com.furianrt.mydiary.dialogs.moods
 import com.furianrt.mydiary.data.DataManager
 import com.furianrt.mydiary.data.model.MyMood
 import io.reactivex.android.schedulers.AndroidSchedulers
+import javax.inject.Inject
 
-class MoodsDialogPresenter(
+class MoodsDialogPresenter @Inject constructor(
         private val dataManager: DataManager
 ) : MoodsDialogContract.Presenter() {
 

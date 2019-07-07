@@ -39,14 +39,14 @@ class NoteSettingsActivity : BaseActivity() {
 
     override fun onBillingInitialized() {
         super.onBillingInitialized()
-        if (!isItemPurshased(BuildConfig.ITEM_SYNC_SKU)/* && !isItemPurshased(ITEM_TEST_SKU)*/) {
+        if (!isItemPurshased(BuildConfig.ITEM_PREMIUM_SKU)/* && !isItemPurshased(ITEM_TEST_SKU)*/) {
             showAdView()
         }
     }
 
     override fun onProductPurchased(productId: String, details: TransactionDetails?) {
         super.onProductPurchased(productId, details)
-        if (productId == BuildConfig.ITEM_SYNC_SKU/* || productId == ITEM_TEST_SKU*/) {
+        if (productId == BuildConfig.ITEM_PREMIUM_SKU/* || productId == ITEM_TEST_SKU*/) {
             hideAdView()
         }
     }

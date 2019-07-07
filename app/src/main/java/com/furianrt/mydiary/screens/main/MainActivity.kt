@@ -117,6 +117,8 @@ class MainActivity : BaseActivity(), MainActivityContract.MvpView,
         val drawerWidth = min(getDisplayWidth() - dpToPx(56f), dpToPx(56f) * 5)
         container_main_drawer.layoutParams.width = drawerWidth
 
+        drawer.touchEventChildId = R.id.calendar_search
+
         mOnDrawerListener = object : ActionBarDrawerToggle(this, drawer, toolbar_main, R.string.open, R.string.close) {
             override fun onDrawerSlide(drawerView: View, slideOffset: Float) {
                 super.onDrawerSlide(drawerView, slideOffset)
@@ -163,12 +165,7 @@ class MainActivity : BaseActivity(), MainActivityContract.MvpView,
 
         fab_menu.setOnClickListener { mPresenter.onFabMenuClick() }
         fab_delete.setOnClickListener { mPresenter.onButtonDeleteClick() }
-        fab_folder.setOnClickListener {
-            if (BuildConfig.DEBUG) {
-                consumePurchase(ITEM_TEST_SKU)
-            }
-            mPresenter.onButtonFolderClick()
-        }
+        fab_folder.setOnClickListener { mPresenter.onButtonFolderClick() }
 
         image_toolbar_main.setOnClickListener { mPresenter.onMainImageClick() }
         button_main_image_settings.setOnClickListener {
@@ -217,14 +214,14 @@ class MainActivity : BaseActivity(), MainActivityContract.MvpView,
 
     override fun onBillingInitialized() {
         super.onBillingInitialized()
-        if (!getIsItemPurshased(BuildConfig.ITEM_SYNC_SKU)/* && !getIsItemPurshased(ITEM_TEST_SKU)*/) {
+        if (!getIsItemPurshased(BuildConfig.ITEM_PREMIUM_SKU)/* && !getIsItemPurshased(ITEM_TEST_SKU)*/) {
             showAdView()
         }
     }
 
     override fun onProductPurchased(productId: String, details: TransactionDetails?) {
         super.onProductPurchased(productId, details)
-        if (productId == BuildConfig.ITEM_SYNC_SKU/* || productId == ITEM_TEST_SKU*/) {
+        if (productId == BuildConfig.ITEM_PREMIUM_SKU/* || productId == ITEM_TEST_SKU*/) {
             closeBottomSheet()
             hideAdView()
         }
@@ -518,7 +515,7 @@ class MainActivity : BaseActivity(), MainActivityContract.MvpView,
     }
 
     override fun showProfile(profile: MyProfile) {
-        if (isItemPurshased(BuildConfig.ITEM_SYNC_SKU)/* || isItemPurshased(ITEM_TEST_SKU)*/) {
+        if (isItemPurshased(BuildConfig.ITEM_PREMIUM_SKU)/* || isItemPurshased(ITEM_TEST_SKU)*/) {
             mAdapter.syncEmail = profile.email
         } else {
             mAdapter.syncEmail = null

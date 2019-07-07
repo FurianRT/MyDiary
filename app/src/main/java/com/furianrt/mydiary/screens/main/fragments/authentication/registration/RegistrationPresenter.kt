@@ -3,8 +3,9 @@ package com.furianrt.mydiary.screens.main.fragments.authentication.registration
 import android.util.Patterns
 import com.furianrt.mydiary.data.DataManager
 import io.reactivex.android.schedulers.AndroidSchedulers
+import javax.inject.Inject
 
-class RegistrationPresenter(
+class RegistrationPresenter @Inject constructor(
         private val dataManager: DataManager
 ) : RegistrationContract.Presenter() {
 

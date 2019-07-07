@@ -12,11 +12,13 @@ import io.reactivex.Flowable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.functions.BiFunction
 import org.joda.time.DateTime
-import java.util.*
 import java.util.concurrent.TimeUnit
+import javax.inject.Inject
 import kotlin.collections.ArrayList
 
-class NoteFragmentPresenter(private val dataManager: DataManager) : NoteFragmentContract.Presenter() {
+class NoteFragmentPresenter @Inject constructor(
+        private val dataManager: DataManager
+) : NoteFragmentContract.Presenter() {
 
     companion object {
         private const val TAG = "NoteFragmentPresenter"
@@ -76,7 +78,7 @@ class NoteFragmentPresenter(private val dataManager: DataManager) : NoteFragment
                 BiFunction<List<MyTag>, MyNoteAppearance, TagsAndAppearance> { tags, appearance ->
                     return@BiFunction TagsAndAppearance(tags, appearance)
                 })
-                .debounce(400L, TimeUnit.MILLISECONDS)
+                .debounce(150L, TimeUnit.MILLISECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe {
                     if (it.tags.isEmpty()) {
@@ -289,23 +291,20 @@ class NoteFragmentPresenter(private val dataManager: DataManager) : NoteFragment
                 .firstOrError()
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { note ->
-                    val calendar = Calendar.getInstance()
-                    calendar.timeInMillis = note.time
-                    view?.showDatePicker(calendar)
+                    val date = DateTime(note.time)
+                    view?.showDatePicker(date.year, date.monthOfYear - 1, date.dayOfMonth)
                 })
     }
 
     override fun onDateSelected(year: Int, monthOfYear: Int, dayOfMonth: Int) {
         addDisposable(dataManager.getNote(mNoteId)
                 .firstOrError()
-                .flatMapCompletable {
-                    val date = Calendar.getInstance().apply {
-                        timeInMillis = it.time
-                        set(Calendar.YEAR, year)
-                        set(Calendar.MONTH, monthOfYear)
-                        set(Calendar.DAY_OF_MONTH, dayOfMonth)
-                    }
-                    dataManager.updateNote(it.apply { time = date.timeInMillis })
+                .flatMapCompletable { note ->
+                    val date = DateTime(note.time)
+                            .withYear(year)
+                            .withMonthOfYear(monthOfYear + 1)
+                            .withDayOfMonth(dayOfMonth)
+                    dataManager.updateNote(note.apply { time = date.millis })
                 }
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe())
@@ -316,25 +315,20 @@ class NoteFragmentPresenter(private val dataManager: DataManager) : NoteFragment
                 .firstOrError()
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { note ->
-                    val date = Calendar.getInstance().apply { timeInMillis = note.time }
-                    view?.showTimePicker(
-                            date.get(Calendar.HOUR_OF_DAY),
-                            date.get(Calendar.MINUTE),
-                            dataManager.is24TimeFormat()
-                    )
+                    val date = DateTime(note.time)
+                    view?.showTimePicker(date.hourOfDay, date.minuteOfHour, dataManager.is24TimeFormat())
                 })
     }
 
     override fun onTimeSelected(hourOfDay: Int, minute: Int) {
         addDisposable(dataManager.getNote(mNoteId)
                 .firstOrError()
-                .flatMapCompletable {
-                    val date = Calendar.getInstance().apply {
-                        timeInMillis = it.time
-                        set(Calendar.HOUR_OF_DAY, hourOfDay)
-                        set(Calendar.MINUTE, minute)
-                    }
-                    dataManager.updateNote(it.apply { time = date.timeInMillis })
+                .flatMapCompletable { note ->
+                    val date = DateTime(note.time)
+                            .withHourOfDay(hourOfDay)
+                            .withMinuteOfHour(minute)
+
+                    dataManager.updateNote(note.apply { time = date.millis })
                 }
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe())
@@ -411,10 +405,13 @@ class NoteFragmentPresenter(private val dataManager: DataManager) : NoteFragment
     }
 
     override fun onSpeechRecorded(curTitle: String, curContent: String, recordedText: String) {
-        val content = if (curContent.isBlank()) {
-            recordedText
-        } else {
-            "$curContent $recordedText"
+        val content = when {
+            curContent.isBlank() ->
+                recordedText.capitalize()
+            curContent.replace(Regex(" |\n"), "").last() == '.' ->
+                "$curContent ${recordedText.capitalize()}"
+            else ->
+                "$curContent $recordedText"
         }
         addDisposable(dataManager.updateNoteText(mNoteId, curTitle, content)
                 .subscribe { onNoteTextChange(curTitle, content) })

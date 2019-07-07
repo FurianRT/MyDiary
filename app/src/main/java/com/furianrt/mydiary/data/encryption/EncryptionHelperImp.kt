@@ -5,8 +5,9 @@ import android.util.Base64
 import com.furianrt.mydiary.BuildConfig
 import javax.crypto.Cipher
 import javax.crypto.spec.SecretKeySpec
+import javax.inject.Inject
 
-class EncryptionHelperImp : EncryptionHelper {
+class EncryptionHelperImp @Inject constructor() : EncryptionHelper {
 
     @SuppressLint("GetInstance")
     override fun encryptString(string: String): String {

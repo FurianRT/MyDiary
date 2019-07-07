@@ -7,8 +7,9 @@ import com.furianrt.mydiary.data.model.MyForecast
 import com.furianrt.mydiary.data.model.MyHeaderImage
 import io.reactivex.Single
 import org.joda.time.DateTime
+import javax.inject.Inject
 
-class ApiServiceHelperImp(
+class ApiServiceHelperImp @Inject constructor(
         private val weatherApi: WeatherApiService,
         private val imageApi: ImageApiService
 ) : ApiServiceHelper {

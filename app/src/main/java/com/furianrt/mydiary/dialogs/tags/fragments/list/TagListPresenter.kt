@@ -7,9 +7,10 @@ import io.reactivex.Flowable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.functions.BiFunction
 import java.util.*
+import javax.inject.Inject
 import kotlin.collections.ArrayList
 
-class TagListPresenter(
+class TagListPresenter @Inject constructor(
         private val dataManager: DataManager
 ) : TagListContract.Presenter() {
 
@@ -19,7 +20,7 @@ class TagListPresenter(
     override fun onViewResume(noteId: String) {
         addDisposable(Flowable.combineLatest(dataManager.getAllTags(), dataManager.getTagsForNote(noteId),
                 BiFunction<List<MyTag>, List<MyTag>, List<MyTag>> { allTags, selectedTags ->
-                    ArrayList<MyTag>(allTags).apply {
+                    ArrayList(allTags).apply {
                         forEach { tag -> tag.isChecked = selectedTags.find { it.id == tag.id } != null }
                     }
                 })

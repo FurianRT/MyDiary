@@ -43,11 +43,12 @@ class NoteActivity : BaseActivity(), NoteActivityContract.MvpView,
     @Inject
     lateinit var mPresenter: NoteActivityContract.Presenter
 
+    private lateinit var mNoteId: String
+    private lateinit var mPagerAdapter: NoteActivityPagerAdapter
+
     private var mPagerPosition = 0
     private var mMode = Companion.Mode.ADD
     private var mIsEditModeEnabled = false
-    private lateinit var mNoteId: String
-    private lateinit var mPagerAdapter: NoteActivityPagerAdapter
 
     private val mOnPageChangeListener = object : ViewPager.OnPageChangeListener {
         override fun onPageScrollStateChanged(state: Int) {}
@@ -62,7 +63,7 @@ class NoteActivity : BaseActivity(), NoteActivityContract.MvpView,
         override fun onToggleSoftKeyboard(isVisible: Boolean) {
             if (isVisible) {
                 view_ad?.visibility = View.GONE
-            } else if (!isItemPurshased(BuildConfig.ITEM_SYNC_SKU)/* && !isItemPurshased(ITEM_TEST_SKU)*/) {
+            } else if (!isItemPurshased(BuildConfig.ITEM_PREMIUM_SKU)/* && !isItemPurshased(ITEM_TEST_SKU)*/) {
                 view_ad?.postDelayed({
                     if (view_ad?.isLoading == false && !mIsEditModeEnabled) {
                         view_ad?.visibility = View.VISIBLE
@@ -114,14 +115,14 @@ class NoteActivity : BaseActivity(), NoteActivityContract.MvpView,
 
     override fun onBillingInitialized() {
         super.onBillingInitialized()
-        if (!isItemPurshased(BuildConfig.ITEM_SYNC_SKU)/* && !isItemPurshased(ITEM_TEST_SKU)*/) {
+        if (!isItemPurshased(BuildConfig.ITEM_PREMIUM_SKU)/* && !isItemPurshased(ITEM_TEST_SKU)*/) {
             showAdView()
         }
     }
 
     override fun onProductPurchased(productId: String, details: TransactionDetails?) {
         super.onProductPurchased(productId, details)
-        if (productId == BuildConfig.ITEM_SYNC_SKU/* || productId == ITEM_TEST_SKU*/) {
+        if (productId == BuildConfig.ITEM_PREMIUM_SKU/* || productId == ITEM_TEST_SKU*/) {
             hideAdView()
         }
     }

@@ -2,8 +2,9 @@ package com.furianrt.mydiary.screens.pin.fragments.sendemail
 
 import com.furianrt.mydiary.data.DataManager
 import io.reactivex.android.schedulers.AndroidSchedulers
+import javax.inject.Inject
 
-class SendEmailPresenter(
+class SendEmailPresenter @Inject constructor(
         private val dataManager: DataManager
 ) : SendEmailContract.Presenter() {
 

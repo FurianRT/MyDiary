@@ -63,6 +63,14 @@
     <string name="text">Текст</string>
     <string name="load">Загрузка</string>
     <string name="fingerprint">Отпечаток пальца</string>
+    <string name="monday">Пн</string>
+    <string name="tuesday">Вт</string>
+    <string name="wednesday">Ср</string>
+    <string name="thursday">Чт</string>
+    <string name="friday">Пт</string>
+    <string name="saturday">Сб</string>
+    <string name="sunday">Вс</string>
+    <string name="today">Сегодня</string>
     <plurals name="note_delete_confirmation">
         <item quantity="one">Удалить %d запись?</item>
         <item quantity="few">Удалить %d записи?</item>

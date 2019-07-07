@@ -12,9 +12,5 @@ interface BaseView {
     fun getPresenterComponent(context: Context): PresenterComponent =
             (context.applicationContext as MyApp)
                     .component
-                    .newPresenterComponent(
-                            PresenterContextModule(context),
-                            PresenterModule(),
-                            LocationModule()
-                    )
+                    .newPresenterComponent(PresenterContextModule(context), LocationModule())
 }

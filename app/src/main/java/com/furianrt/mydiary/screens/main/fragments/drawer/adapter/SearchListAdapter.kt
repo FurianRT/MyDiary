@@ -1,10 +1,13 @@
 package com.furianrt.mydiary.screens.main.fragments.drawer.adapter
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.CheckBox
 import android.widget.Checkable
+import android.widget.TextView
 import com.furianrt.mydiary.R
 import com.furianrt.mydiary.data.model.MyCategory
 import com.furianrt.mydiary.data.model.MyLocation
@@ -12,11 +15,19 @@ import com.furianrt.mydiary.data.model.MyMood
 import com.furianrt.mydiary.data.model.MyTag
 import com.furianrt.mydiary.screens.main.fragments.drawer.adapter.SearchListAdapter.SearchChildViewHolder
 import com.furianrt.mydiary.screens.main.fragments.drawer.adapter.SearchListAdapter.SearchGroupViewHolder
+import com.furianrt.mydiary.utils.*
+import com.furianrt.mydiary.views.CalendarDayView
+import com.kizitonwose.calendarview.model.CalendarDay
+import com.kizitonwose.calendarview.model.DayOwner
+import com.kizitonwose.calendarview.ui.DayBinder
+import com.kizitonwose.calendarview.ui.ViewContainer
 import com.thoughtbot.expandablecheckrecyclerview.listeners.OnChildCheckChangedListener
 import com.thoughtbot.expandablecheckrecyclerview.viewholders.CheckableChildViewHolder
 import com.thoughtbot.expandablerecyclerview.MultiTypeExpandableRecyclerViewAdapter
 import com.thoughtbot.expandablerecyclerview.models.ExpandableGroup
 import com.thoughtbot.expandablerecyclerview.viewholders.GroupViewHolder
+import kotlinx.android.synthetic.main.calendar_day.view.*
+import kotlinx.android.synthetic.main.nav_search_item_date.view.*
 import kotlinx.android.synthetic.main.nav_search_group.view.*
 import kotlinx.android.synthetic.main.nav_search_item_category.view.*
 import kotlinx.android.synthetic.main.nav_search_item_location.view.*
@@ -26,6 +37,13 @@ import kotlinx.android.synthetic.main.nav_search_item_no_location.view.*
 import kotlinx.android.synthetic.main.nav_search_item_no_mood.view.*
 import kotlinx.android.synthetic.main.nav_search_item_no_tags.view.*
 import kotlinx.android.synthetic.main.nav_search_item_tag.view.*
+import org.threeten.bp.LocalDate
+import org.threeten.bp.YearMonth
+import org.threeten.bp.format.DateTimeFormatter
+import org.threeten.bp.format.TextStyle
+import java.util.Locale
+import kotlin.collections.ArrayList
+import kotlin.collections.HashSet
 
 class SearchListAdapter(
         var listener: OnSearchListInteractionListener? = null
@@ -136,6 +154,8 @@ class SearchListAdapter(
     override fun onCreateChildViewHolder(parent: ViewGroup?, viewType: Int): SearchChildViewHolder {
         val inflater = LayoutInflater.from(parent?.context)
         return when (viewType) {
+            SearchItem.TYPE_DATE ->
+                SearchDateViewHolder(inflater.inflate(R.layout.nav_search_item_date, parent, false))
             SearchItem.TYPE_TAG ->
                 SearchTagsViewHolder(inflater.inflate(R.layout.nav_search_item_tag, parent, false))
             SearchItem.TYPE_CATEGORY ->
@@ -163,6 +183,8 @@ class SearchListAdapter(
     override fun onBindChildViewHolder(holder: SearchChildViewHolder?, flatPosition: Int, group: ExpandableGroup<*>?, childIndex: Int) {
         val item = (group as SearchGroup).groupItems[childIndex]
         when (item.type) {
+            SearchItem.TYPE_DATE ->
+                holder?.onBindViewHolder(flatPosition, false)
             SearchItem.TYPE_TAG ->
                 holder?.onBindViewHolder(flatPosition, mSelectedTagIds.contains(item.tag!!.id))
             SearchItem.TYPE_CATEGORY ->
@@ -183,21 +205,21 @@ class SearchListAdapter(
     override fun getChildViewType(position: Int, group: ExpandableGroup<*>?, childIndex: Int): Int =
             (group as SearchGroup).groupItems[childIndex].type
 
-    override fun isGroup(viewType: Int): Boolean =
-            viewType == SearchGroup.TYPE_TAG
-                    || viewType == SearchGroup.TYPE_CATEGORY
-                    || viewType == SearchGroup.TYPE_LOCATION
-                    || viewType == SearchGroup.TYPE_MOOD
+    override fun isGroup(viewType: Int): Boolean = viewType == SearchGroup.TYPE_TAG
+            || viewType == SearchGroup.TYPE_CATEGORY
+            || viewType == SearchGroup.TYPE_LOCATION
+            || viewType == SearchGroup.TYPE_MOOD
+            || viewType == SearchGroup.TYPE_DATE
 
-    override fun isChild(viewType: Int): Boolean =
-            viewType == SearchItem.TYPE_TAG
-                    || viewType == SearchItem.TYPE_CATEGORY
-                    || viewType == SearchItem.TYPE_LOCATION
-                    || viewType == SearchItem.TYPE_MOOD
-                    || viewType == SearchItem.TYPE_NO_TAGS
-                    || viewType == SearchItem.TYPE_NO_CATEGORY
-                    || viewType == SearchItem.TYPE_NO_MOOD
-                    || viewType == SearchItem.TYPE_NO_LOCATION
+    override fun isChild(viewType: Int): Boolean = viewType == SearchItem.TYPE_TAG
+            || viewType == SearchItem.TYPE_CATEGORY
+            || viewType == SearchItem.TYPE_LOCATION
+            || viewType == SearchItem.TYPE_MOOD
+            || viewType == SearchItem.TYPE_NO_TAGS
+            || viewType == SearchItem.TYPE_NO_CATEGORY
+            || viewType == SearchItem.TYPE_NO_MOOD
+            || viewType == SearchItem.TYPE_NO_LOCATION
+            || viewType == SearchItem.TYPE_DATE
 
     override fun onChildCheckChanged(view: View?, checked: Boolean, flatPos: Int) {
         val listPos = expandableList.getUnflattenedPosition(flatPos)
@@ -310,13 +332,17 @@ class SearchListAdapter(
 
         fun bind(group: SearchGroup) {
             mGroup = group
+
             if (mExpandedGroupTypes.contains(group.type)) {
                 itemView.image_group_arrow.rotation = 180f
             } else {
                 itemView.image_group_arrow.rotation = 0f
             }
+
             itemView.text_search_group_name.text = group.groupTitle
+
             when (group.type) {
+                SearchGroup.TYPE_DATE -> itemView.image_group.setImageResource(R.drawable.ic_date_range)
                 SearchGroup.TYPE_TAG -> itemView.image_group.setImageResource(R.drawable.ic_tag_big)
                 SearchGroup.TYPE_CATEGORY -> itemView.image_group.setImageResource(R.drawable.ic_folder_big)
                 SearchGroup.TYPE_MOOD -> itemView.image_group.setImageResource(R.drawable.ic_smile_bold)
@@ -343,6 +369,115 @@ class SearchListAdapter(
 
     abstract class SearchChildViewHolder(view: View) : CheckableChildViewHolder(view) {
         abstract fun bind(item: SearchItem)
+    }
+
+    class SearchDateViewHolder(view: View) : SearchChildViewHolder(view) {
+
+        private var mStartDate: LocalDate? = null
+        private var mEndDate: LocalDate? = null
+        private val mToday = LocalDate.now()
+
+        @SuppressLint("DefaultLocale")
+        override fun bind(item: SearchItem) {
+            // Set the First day of week depending on Locale
+            val daysOfWeek = daysOfWeekFromLocale()
+            for (i in 0 until itemView.layout_legend.childCount) {
+                val textView = itemView.layout_legend.getChildAt(i) as TextView
+                textView.text = daysOfWeek[i].getDisplayName(TextStyle.SHORT, Locale.getDefault())
+            }
+
+            val dateColors = item.dateColors!!
+
+
+            val minDate = YearMonth.from(dateColors.keys.first())
+            val maxDate = YearMonth.from(dateColors.keys.last())
+
+            itemView.calendar_search.setup(minDate, maxDate, daysOfWeek.first())
+
+            itemView.calendar_search.monthScrollListener = {
+                itemView.text_month.text = DateTimeFormatter.ofPattern("MMMM")
+                        .format(it.yearMonth)
+                        .capitalize()
+                itemView.text_year.text = it.yearMonth.year.toString()
+            }
+
+            itemView.calendar_search.scrollToMonth(YearMonth.now())
+
+            itemView.text_today.setOnClickListener {
+                if (mEndDate == null && mStartDate == mToday) {
+                    mStartDate = null
+                    (it as TextView).setBackgroundResource(R.drawable.background_corner_stroke)
+                    it.setTextColor(it.context.getThemePrimaryColor())
+                    itemView.calendar_search.notifyCalendarChanged()
+                } else {
+                    mStartDate = mToday
+                    mEndDate = null
+                    (it as TextView).setBackgroundResource(R.drawable.background_corner_solid)
+                    it.setTextColorResource(R.color.white)
+                    itemView.calendar_search.notifyCalendarChanged()
+                    itemView.calendar_search.smoothScrollToMonth(YearMonth.now())
+                }
+            }
+
+            itemView.calendar_search.dayBinder = object : DayBinder<DayViewContainer> {
+                override fun create(view: View) = DayViewContainer(view)
+                override fun bind(container: DayViewContainer, day: CalendarDay) {
+                    with(container) {
+                        this.day = day
+                        calendarDayView.text = day.date.dayOfMonth.toString()
+                        calendarDayView.background = null
+
+                        dateColors[day.date]?.let { colors ->
+                            calendarDayView.showCircle = true
+                            calendarDayView.portionsCount = colors.size
+                            colors.forEachIndexed { index, color ->
+                                calendarDayView.setPortionColorForIndex(index, color)
+                            }
+                        }
+
+                        calendarDayView.isCurrentDay = day.date == mToday
+                        calendarDayView.isCurrentMonth = day.owner == DayOwner.THIS_MONTH
+                        calendarDayView.isSelected = (mStartDate == day.date && mEndDate == null
+                                || (mStartDate != null && mEndDate != null && day.date >= mStartDate && day.date <= mEndDate))
+                    }
+                }
+            }
+        }
+
+        inner class DayViewContainer(view: View) : ViewContainer(view) {
+            lateinit var day: CalendarDay // Will be set when this container is bound.
+            val calendarDayView: CalendarDayView = view.text_calendar_day
+
+            init {
+                view.setOnClickListener {
+                    val date = day.date
+                    if (mStartDate != null) {
+                        if (date < mStartDate || mEndDate != null) {
+                            mStartDate = date
+                            mEndDate = null
+                        } else if (date != mStartDate) {
+                            mEndDate = date
+                        } else if (date == mStartDate) {
+                            mStartDate = null
+                        }
+                    } else {
+                        mStartDate = date
+                    }
+
+                    if (mStartDate == mToday && mEndDate == null) {
+                        itemView.text_today.setBackgroundResource(R.drawable.background_corner_solid)
+                        itemView.text_today.setTextColorResource(R.color.white)
+                    } else {
+                        itemView.text_today.setBackgroundResource(R.drawable.background_corner_stroke)
+                        itemView.text_today.setTextColor(it.context.getThemePrimaryColor())
+                    }
+                    itemView.calendar_search.notifyCalendarChanged()
+                }
+            }
+        }
+
+        //Для календаря Checkable не нужен, но передать что-то нужно
+        override fun getCheckable(): Checkable = CheckBox(itemView.context)
     }
 
     inner class SearchTagsViewHolder(view: View) : SearchChildViewHolder(view) {

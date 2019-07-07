@@ -1,5 +1,6 @@
 package com.furianrt.mydiary.screens.main
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import com.furianrt.mydiary.data.DataManager
 import com.furianrt.mydiary.data.model.*
@@ -13,11 +14,12 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import net.danlew.android.joda.DateUtils
 import org.joda.time.DateTime
 import java.util.*
+import javax.inject.Inject
 import kotlin.Comparator
 import kotlin.collections.ArrayList
 import kotlin.collections.HashSet
 
-class MainActivityPresenter(
+class MainActivityPresenter @Inject constructor(
         private val dataManager: DataManager
 ) : MainActivityContract.Presenter() {
 
@@ -435,11 +437,12 @@ class MainActivityPresenter(
         }
     }
 
+    @SuppressLint("DefaultLocale")
     private fun applySearchFilter(notes: List<MyNoteWithProp>): List<MyNoteWithProp> =
             notes.asSequence()
                     .filter {
-                        it.note.title.toLowerCase(Locale.getDefault()).contains(mSearchQuery)
-                                || it.note.content.toLowerCase(Locale.getDefault()).contains(mSearchQuery)
+                        it.note.title.toLowerCase().contains(mSearchQuery)
+                                || it.note.content.toLowerCase().contains(mSearchQuery)
                     }
                     .filter { note ->
                         if (mFilteredTagIds.isEmpty()) {

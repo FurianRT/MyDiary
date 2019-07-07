@@ -16,7 +16,7 @@
         android:layout_marginStart="16dp"
         android:tint="@color/white"
         tools:ignore="ContentDescription"
-        tools:src="@drawable/ic_folder_big" />
+        tools:src="@drawable/ic_date_range" />
 
     <TextView
         android:id="@+id/text_search_group_name"
@@ -28,7 +28,7 @@
         android:paddingBottom="8dp"
         android:textColor="@color/white"
         android:textSize="16sp"
-        tools:text="Categories" />
+        tools:text="@string/date" />
 
     <ImageView
         android:id="@+id/image_group_arrow"

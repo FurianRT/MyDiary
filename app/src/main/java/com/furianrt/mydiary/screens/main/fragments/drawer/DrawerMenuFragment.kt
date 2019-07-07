@@ -1,6 +1,7 @@
 package com.furianrt.mydiary.screens.main.fragments.drawer
 
 import android.animation.Animator
+import android.app.Activity
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
@@ -28,19 +29,22 @@ import com.furianrt.mydiary.screens.main.fragments.drawer.adapter.SearchListAdap
 import com.furianrt.mydiary.screens.main.fragments.premium.PremiumFragment
 import com.furianrt.mydiary.screens.main.fragments.profile.ProfileFragment
 import com.furianrt.mydiary.services.sync.SyncService
-import com.furianrt.mydiary.utils.dpToPx
-import com.furianrt.mydiary.utils.inTransaction
+import com.furianrt.mydiary.utils.*
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import kotlinx.android.synthetic.main.bottom_sheet_main.*
 import kotlinx.android.synthetic.main.fragment_drawer_menu.*
 import kotlinx.android.synthetic.main.fragment_drawer_menu.view.*
+import org.threeten.bp.LocalDate
+import java.util.TreeMap
 import javax.inject.Inject
+import kotlin.collections.HashSet
 
 class DrawerMenuFragment : BaseFragment(), DrawerMenuContract.MvpView,
         SearchListAdapter.OnSearchListInteractionListener {
 
     companion object {
         const val TAG = "DrawerMenuFragment"
+        private const val PLAY_SERVICES_REQUEST_CODE = 1
         private const val ANIMATION_PROGRESS_FADE_OUT_OFFSET = 2000L
         private const val ANIMATION_PROGRESS_DURATION = 500L
         private const val BOTTOM_SHEET_EXPAND_DELAY = 300L
@@ -94,6 +98,25 @@ class DrawerMenuFragment : BaseFragment(), DrawerMenuContract.MvpView,
         }
     }
 
+    private fun List<MyNoteWithProp>.toDateColors(): Map<LocalDate, Set<Int>> {
+        val result = TreeMap<LocalDate, HashSet<Int>>()
+        for (note in this) {
+            val localDate = note.note.time.toLocalDate()
+            var value = result[localDate]
+            if (value == null) {
+                value = HashSet()
+                result[localDate] = value
+            }
+            val category = note.category
+            if (category == null) {
+                value.add(getColor(R.color.grey_dark))
+            } else {
+                value.add(category.color)
+            }
+        }
+        return result
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         getPresenterComponent(requireContext()).inject(this)
         super.onCreate(savedInstanceState)
@@ -104,12 +127,16 @@ class DrawerMenuFragment : BaseFragment(), DrawerMenuContract.MvpView,
                               savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_drawer_menu, container, false)
 
-        view.image_drawer_header.setOnClickListener { mPresenter.onButtonProfileClick() }
+        view.image_drawer_header.setOnClickListener {
+            if (requireActivity().isGoogleServicesAvailable(PLAY_SERVICES_REQUEST_CODE)) {
+                mPresenter.onButtonProfileClick()
+            }
+        }
 
         view.button_sync.setOnClickListener {
             mListener?.let {
                 if (it.getIsBillingInitialized()) {
-                    if (it.getIsItemPurshased(BuildConfig.ITEM_SYNC_SKU)/* || it.getIsItemPurshased(ITEM_TEST_SKU)*/) {
+                    if (it.getIsItemPurshased(BuildConfig.ITEM_PREMIUM_SKU)/* || it.getIsItemPurshased(ITEM_TEST_SKU)*/) {
                         mPresenter.onButtonSyncClick()
                     } else {
                         mPresenter.onButtonPremiumClick()
@@ -132,6 +159,15 @@ class DrawerMenuFragment : BaseFragment(), DrawerMenuContract.MvpView,
         }
 
         return view
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == PLAY_SERVICES_REQUEST_CODE) {
+            if (resultCode == Activity.RESULT_OK) {
+                mPresenter.onButtonProfileClick()
+            }
+        }
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -189,6 +225,15 @@ class DrawerMenuFragment : BaseFragment(), DrawerMenuContract.MvpView,
     }
 
     override fun showSearchEntries(entries: SearchEntries) {
+        val dateGroup = SearchGroup(
+                SearchGroup.TYPE_DATE,
+                getString(R.string.date),
+                if (entries.notes.isEmpty()) {
+                    emptyList()
+                } else {
+                    listOf(SearchItem(type = SearchItem.TYPE_DATE, dateColors = entries.notes.toDateColors()))
+                }
+        )
         val tagGroup = SearchGroup(
                 SearchGroup.TYPE_TAG,
                 getString(R.string.tags),
@@ -217,7 +262,7 @@ class DrawerMenuFragment : BaseFragment(), DrawerMenuContract.MvpView,
                         .toMutableList()
                         .apply { add(SearchItem(type = SearchItem.TYPE_NO_LOCATION)) }
         )
-        val groupList = mutableListOf(tagGroup, categoryGroup, moodGroup, locationGroup)
+        val groupList = mutableListOf(dateGroup, tagGroup, categoryGroup, moodGroup, locationGroup)
                 .filter { it.groupItems.isNotEmpty() }
 
         mSearchListAdapter.submitGroups(groupList)

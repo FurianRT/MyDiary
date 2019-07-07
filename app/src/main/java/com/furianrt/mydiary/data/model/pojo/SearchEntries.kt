@@ -1,11 +1,9 @@
 package com.furianrt.mydiary.data.model.pojo
 
-import com.furianrt.mydiary.data.model.MyCategory
-import com.furianrt.mydiary.data.model.MyLocation
-import com.furianrt.mydiary.data.model.MyMood
-import com.furianrt.mydiary.data.model.MyTag
+import com.furianrt.mydiary.data.model.*
 
 class SearchEntries(
+        var notes: List<MyNoteWithProp>,
         var tags: List<MyTag>,
         var categories: List<MyCategory>,
         var locations: List<MyLocation>,

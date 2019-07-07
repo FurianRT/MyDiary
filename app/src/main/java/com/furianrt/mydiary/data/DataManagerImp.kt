@@ -11,10 +11,11 @@ import com.furianrt.mydiary.data.storage.StorageHelper
 import com.furianrt.mydiary.di.application.component.AppScope
 import com.google.gson.Gson
 import io.reactivex.*
+import javax.inject.Inject
 
 //Возможно, стоило что-то убрать в отдельные use case
 @AppScope
-class DataManagerImp(
+class DataManagerImp @Inject constructor(
         private val database: NoteDatabase,
         private val prefs: PreferencesHelper,
         private val storage: StorageHelper,

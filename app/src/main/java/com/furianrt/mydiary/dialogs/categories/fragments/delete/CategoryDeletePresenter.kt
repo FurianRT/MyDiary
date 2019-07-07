@@ -3,8 +3,9 @@ package com.furianrt.mydiary.dialogs.categories.fragments.delete
 import com.furianrt.mydiary.data.DataManager
 import com.furianrt.mydiary.data.model.MyCategory
 import io.reactivex.android.schedulers.AndroidSchedulers
+import javax.inject.Inject
 
-class CategoryDeletePresenter(
+class CategoryDeletePresenter @Inject constructor(
         private val dataManager: DataManager
 ) : CategoryDeleteContract.Presenter() {
 

@@ -11,10 +11,6 @@ class AppContextModule(private val app: Application) {
 
     @Provides
     @AppScope
-    fun provideApplication(): Application = app
-
-    @Provides
-    @AppScope
     @AppContext
     fun provideContext(): Context = app
 }

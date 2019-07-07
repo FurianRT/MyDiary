@@ -1,6 +1,5 @@
 package com.furianrt.mydiary.di.application.modules.data
 
-import android.app.Application
 import android.content.ContentValues
 import android.content.Context
 import android.database.sqlite.SQLiteDatabase
@@ -8,6 +7,7 @@ import android.graphics.BitmapFactory
 import android.graphics.Color
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
 import com.furianrt.mydiary.R
 import com.furianrt.mydiary.data.database.NoteDatabase
@@ -30,33 +30,60 @@ class DatabaseModule {
 
     @Provides
     @AppScope
-    fun provideRoomCallback(application: Application, storage: StorageHelper) = object : RoomDatabase.Callback() {
-        override fun onCreate(db: SupportSQLiteDatabase) {
-            super.onCreate(db)
-            createDefaultProperties(db, application)
-            createTutorialNote(db, application, storage)
-        }
-    }
+    fun provideRoomCallback(@AppContext context: Context, storage: StorageHelper) =
+            object : RoomDatabase.Callback() {
+                override fun onCreate(db: SupportSQLiteDatabase) {
+                    super.onCreate(db)
+                    createDefaultProperties(db, context)
+                    createTutorialNote(db, context, storage)
+                }
+            }
 
     @Provides
     @AppScope
     fun provideNoteDatabase(
             @AppContext context: Context,
             callback: RoomDatabase.Callback
-    ) = Room.databaseBuilder(context, NoteDatabase::class.java, DATABASE_NAME)
-            .addCallback(callback)
-            .build()
+    ): NoteDatabase {
+        val MIGRATION_1_2 = object : Migration(1, 2) {
+            override fun migrate(database: SupportSQLiteDatabase) {
+                database.query("DROP TABLE IF EXISTS NoteLocation")
+                database.query("DROP TABLE IF EXISTS Locations")
 
-    private fun createDefaultProperties(db: SupportSQLiteDatabase, app: Application) {
+                database.query("CREATE TABLE Locations (" +
+                        "id_location TEXT NOT NULL PRIMARY KEY, " +
+                        "name_location TEXT NOT NULL, " +
+                        "lat REAL NOT NULL, " +
+                        "lon REAL NOT NULL, " +
+                        "location_sync_with TEXT NOT NULL, " +
+                        "is_location_deleted INTEGER NOT NULL)")
+
+                database.query("CREATE TABLE NoteLocation (" +
+                        "id_note TEXT NOT NULL, " +
+                        "id_location TEXT NOT NULL, " +
+                        "notelocation_sync_with TEXT NOT NULL, " +
+                        "is_notelocation_deleted INTEGER NOT NULL, " +
+                        "PRIMARY KEY (id_note, id_location)")
+            }
+        }
+
+        return Room.databaseBuilder(context, NoteDatabase::class.java, DATABASE_NAME)
+                .addMigrations(MIGRATION_1_2)
+                .addCallback(callback)
+                .build()
+
+    }
+
+    private fun createDefaultProperties(db: SupportSQLiteDatabase, context: Context) {
         with(ContentValues()) {
-            val moodNames = app.resources.getStringArray(R.array.moods)
+            val moodNames = context.resources.getStringArray(R.array.moods)
             val moodIcons = arrayOf(
-                    app.resources.getResourceEntryName(R.drawable.ic_mood_angry),
-                    app.resources.getResourceEntryName(R.drawable.ic_mood_awful),
-                    app.resources.getResourceEntryName(R.drawable.ic_mood_bad),
-                    app.resources.getResourceEntryName(R.drawable.ic_mood_neutral),
-                    app.resources.getResourceEntryName(R.drawable.ic_mood_good),
-                    app.resources.getResourceEntryName(R.drawable.ic_mood_great)
+                    context.resources.getResourceEntryName(R.drawable.ic_mood_angry),
+                    context.resources.getResourceEntryName(R.drawable.ic_mood_awful),
+                    context.resources.getResourceEntryName(R.drawable.ic_mood_bad),
+                    context.resources.getResourceEntryName(R.drawable.ic_mood_neutral),
+                    context.resources.getResourceEntryName(R.drawable.ic_mood_good),
+                    context.resources.getResourceEntryName(R.drawable.ic_mood_great)
             )
             for (i in 0 until moodNames.size) {
                 put(MyMood.FIELD_NAME, moodNames[i])
@@ -64,7 +91,7 @@ class DatabaseModule {
                 db.insert(MyMood.TABLE_NAME, SQLiteDatabase.CONFLICT_IGNORE, this)
             }
             clear()
-            val tagNames = app.resources.getStringArray(R.array.tags)
+            val tagNames = context.resources.getStringArray(R.array.tags)
             for (i in 0 until tagNames.size) {
                 put(MyTag.FIELD_ID, "default_tag_$i")
                 put(MyTag.FIELD_NAME, tagNames[i])
@@ -73,8 +100,8 @@ class DatabaseModule {
                 db.insert(MyTag.TABLE_NAME, SQLiteDatabase.CONFLICT_IGNORE, this)
             }
             clear()
-            val categoryNames = app.resources.getStringArray(R.array.categories)
-            val categoryColors = app.resources.getStringArray(R.array.default_category_colors)
+            val categoryNames = context.resources.getStringArray(R.array.categories)
+            val categoryColors = context.resources.getStringArray(R.array.default_category_colors)
             for (i in 0 until categoryNames.size) {
                 put(MyCategory.FIELD_ID, "default_category_$i")
                 put(MyCategory.FIELD_NAME, categoryNames[i])
@@ -87,13 +114,13 @@ class DatabaseModule {
         }
     }
 
-    private fun createTutorialNote(db: SupportSQLiteDatabase, app: Application, storage: StorageHelper) {
+    private fun createTutorialNote(db: SupportSQLiteDatabase, context: Context, storage: StorageHelper) {
         val note = MyNote(
                 id = generateUniqueId(),
-                title = app.getString(R.string.tutorial_note_title),
-                content = app.getString(R.string.tutorial_note_content),
+                title = context.getString(R.string.tutorial_note_title),
+                content = context.getString(R.string.tutorial_note_content),
                 time = DateTime.now().millis,
-                moodId = app.resources.getStringArray(R.array.moods).size,
+                moodId = context.resources.getStringArray(R.array.moods).size,
                 categoryId = "default_category_1",
                 creationTime = DateTime.now().millis
         )
@@ -104,7 +131,7 @@ class DatabaseModule {
         val noteTag2 = NoteTag(noteId = note.id, tagId = "default_tag_1")
 
         val imageFile = storage.copyBitmapToStorage(
-                BitmapFactory.decodeResource(app.resources, R.drawable.tutorial_header_image),
+                BitmapFactory.decodeResource(context.resources, R.drawable.tutorial_header_image),
                 generateUniqueId()
         )
 
