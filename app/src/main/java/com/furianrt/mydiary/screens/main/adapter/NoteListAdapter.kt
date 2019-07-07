@@ -120,7 +120,7 @@ class NoteListAdapter(
                 if (categoryColor != null) {
                     text_day_of_week.setBackgroundColor(categoryColor)
                 } else {
-                    text_day_of_week.setBackgroundColor(Color.BLACK)
+                    text_day_of_week.setBackgroundColor(context.getThemePrimaryColor())
                 }
 
                 if (item.note.category != null) {

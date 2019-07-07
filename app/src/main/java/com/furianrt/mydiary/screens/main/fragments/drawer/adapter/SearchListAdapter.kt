@@ -17,6 +17,7 @@ import com.furianrt.mydiary.screens.main.fragments.drawer.adapter.SearchListAdap
 import com.furianrt.mydiary.screens.main.fragments.drawer.adapter.SearchListAdapter.SearchGroupViewHolder
 import com.furianrt.mydiary.utils.*
 import com.furianrt.mydiary.views.CalendarDayView
+import com.kizitonwose.calendarview.CalendarView
 import com.kizitonwose.calendarview.model.CalendarDay
 import com.kizitonwose.calendarview.model.DayOwner
 import com.kizitonwose.calendarview.ui.DayBinder
@@ -72,6 +73,8 @@ class SearchListAdapter(
     private var mStartDate: LocalDate? = null
     private var mEndDate: LocalDate? = null
     private var mCalendarScrollDate: YearMonth? = null
+
+    private var mCalendar: CalendarView? = null
 
     override fun onSaveInstanceState(savedInstanceState: Bundle?) {
         savedInstanceState?.let { state ->
@@ -136,15 +139,22 @@ class SearchListAdapter(
         mSelectedNoItemTypes.clear()
         mStartDate = null
         mEndDate = null
+        notifyItemsStateChanged()
+        listener?.onCheckCleared()
+    }
 
+    private fun notifyItemsStateChanged() {
         //only update the child views that are visible (i.e. their group is expanded)
         for (i in 0 until groups.size) {
-            val group = groups[i]
+            val group = groups[i] as SearchGroup
             if (isGroupExpanded(group)) {
-                notifyItemRangeChanged(expandableList.getFlattenedFirstChildIndex(i), group.itemCount)
+                if (group.type == SearchGroup.TYPE_DATE) {
+                    mCalendar?.notifyCalendarChanged()
+                } else {
+                    notifyItemRangeChanged(expandableList.getFlattenedFirstChildIndex(i), group.itemCount)
+                }
             }
         }
-        listener?.onCheckCleared()
     }
 
     @Suppress("UNCHECKED_CAST")
@@ -424,6 +434,8 @@ class SearchListAdapter(
                 maxDate = YearMonth.from(item.dateColors.keys.last())
             }
 
+            mCalendar = itemView.calendar_search
+
             itemView.calendar_search.setup(minDate, maxDate, daysOfWeek.first())
 
             itemView.calendar_search.monthScrollListener = {
@@ -448,12 +460,15 @@ class SearchListAdapter(
                 if (mEndDate == null && mStartDate == mToday) {
                     mStartDate = null
                     itemView.calendar_search.notifyCalendarChanged()
+                    isLastCheck()
                 } else {
                     mStartDate = mToday
                     mEndDate = null
                     itemView.calendar_search.notifyCalendarChanged()
                     itemView.calendar_search.smoothScrollToMonth(YearMonth.now())
+                    isFirstCheck()
                 }
+                listener?.onSearchDatesSelected(mStartDate?.toMills(), mEndDate?.toMills())
             }
 
             itemView.calendar_search.dayBinder = object : DayBinder<DayViewContainer> {

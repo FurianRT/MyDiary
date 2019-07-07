@@ -109,7 +109,7 @@ class DrawerMenuFragment : BaseFragment(), DrawerMenuContract.MvpView,
             }
             val category = note.category
             if (category == null) {
-                value.add(getColor(R.color.grey_dark))
+                value.add(requireContext().getThemePrimaryColor())
             } else {
                 value.add(category.color)
             }
