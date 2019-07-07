@@ -194,7 +194,7 @@ class DataManagerImp @Inject constructor(
             database.noteTagDao().deleteWithNoteId(noteId)
                     .andThen(database.noteLocationDao().getLocationsForNote(noteId))
                     .first(emptyList())
-                    .flatMapCompletable { locations -> database.locationDao().delete(locations.map { it.name }) }
+                    .flatMapCompletable { locations -> database.locationDao().delete(locations.map { it.id }) }
                     .andThen(database.noteLocationDao().deleteWithNoteId(noteId))
                     .andThen(database.appearanceDao().delete(noteId))
                     .andThen(database.imageDao().getImagesForNote(noteId))

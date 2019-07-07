@@ -68,7 +68,7 @@ class DrawerMenuPresenter @Inject constructor(
         addDisposable(Flowable.combineLatest(dataManager.getAllNotesWithProp(),
                 dataManager.getAllTags(),
                 dataManager.getAllCategories(),
-                dataManager.getAllDbLocations(),
+                dataManager.getAllDbLocations().map { locations -> locations.distinctBy { it.name } },
                 dataManager.getAllMoods().toFlowable(),
                 Function5<List<MyNoteWithProp>, List<MyTag>, List<MyCategory>, List<MyLocation>, List<MyMood>, SearchEntries>
                 { notes, tags, categories, locations, moods ->

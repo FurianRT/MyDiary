@@ -228,11 +228,7 @@ class DrawerMenuFragment : BaseFragment(), DrawerMenuContract.MvpView,
         val dateGroup = SearchGroup(
                 SearchGroup.TYPE_DATE,
                 getString(R.string.date),
-                if (entries.notes.isEmpty()) {
-                    emptyList()
-                } else {
-                    listOf(SearchItem(type = SearchItem.TYPE_DATE, dateColors = entries.notes.toDateColors()))
-                }
+                listOf(SearchItem(type = SearchItem.TYPE_DATE, dateColors = entries.notes.toDateColors()))
         )
         val tagGroup = SearchGroup(
                 SearchGroup.TYPE_TAG,
@@ -263,7 +259,6 @@ class DrawerMenuFragment : BaseFragment(), DrawerMenuContract.MvpView,
                         .apply { add(SearchItem(type = SearchItem.TYPE_NO_LOCATION)) }
         )
         val groupList = mutableListOf(dateGroup, tagGroup, categoryGroup, moodGroup, locationGroup)
-                .filter { it.groupItems.isNotEmpty() }
 
         mSearchListAdapter.submitGroups(groupList)
     }
@@ -306,6 +301,11 @@ class DrawerMenuFragment : BaseFragment(), DrawerMenuContract.MvpView,
     override fun onNoLocationChackStateChange(checked: Boolean) {
         analytics.sendEvent(MyAnalytics.EVENT_SEARCH_NO_LOCATION_CHANGED)
         mListener?.onNoLocationChackStateChange(checked)
+    }
+
+    override fun onSearchDatesSelected(startDate: Long?, endDate: Long?) {
+        analytics.sendEvent(MyAnalytics.EVENT_SEARCH_DATE_CHANGED)
+        mListener?.onSearchDatesSelected(startDate, endDate)
     }
 
     override fun showProfileSettings() {
@@ -409,5 +409,6 @@ class DrawerMenuFragment : BaseFragment(), DrawerMenuContract.MvpView,
         fun onNoCategoryChackStateChange(checked: Boolean)
         fun onNoMoodChackStateChange(checked: Boolean)
         fun onNoLocationChackStateChange(checked: Boolean)
+        fun onSearchDatesSelected(startDate: Long?, endDate: Long?)
     }
 }

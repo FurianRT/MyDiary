@@ -8,11 +8,11 @@ import kotlinx.android.parcel.Parcelize
 @Parcelize
 @Entity(
         tableName = NoteLocation.TABLE_NAME,
-        primaryKeys = [NoteLocation.FIELD_LOCATION_ID, NoteLocation.FIELD_NOTE_ID]
+        primaryKeys = [NoteLocation.FIELD_NOTE_ID, NoteLocation.FIELD_LOCATION_ID]
 )
 data class NoteLocation(
         @ColumnInfo(name = FIELD_NOTE_ID, index = true) var noteId: String = "",
-        @ColumnInfo(name = FIELD_LOCATION_ID, index = true) var locationName: String = "",
+        @ColumnInfo(name = FIELD_LOCATION_ID, index = true) var locationId: String = "",
         @ColumnInfo(name = FIELD_SYNC_WITH) var syncWith: MutableList<String> = mutableListOf(),
         @ColumnInfo(name = FIELD_IS_DELETED) var isDeleted: Boolean = false
 ) : Parcelable {

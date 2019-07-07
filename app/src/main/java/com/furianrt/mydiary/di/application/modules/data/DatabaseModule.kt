@@ -47,10 +47,10 @@ class DatabaseModule {
     ): NoteDatabase {
         val MIGRATION_1_2 = object : Migration(1, 2) {
             override fun migrate(database: SupportSQLiteDatabase) {
-                database.query("DROP TABLE IF EXISTS NoteLocation")
-                database.query("DROP TABLE IF EXISTS Locations")
+                database.execSQL("DROP TABLE NoteLocation")
+                database.execSQL("DROP TABLE Locations")
 
-                database.query("CREATE TABLE Locations (" +
+                database.execSQL("CREATE TABLE Locations (" +
                         "id_location TEXT NOT NULL PRIMARY KEY, " +
                         "name_location TEXT NOT NULL, " +
                         "lat REAL NOT NULL, " +
@@ -58,12 +58,15 @@ class DatabaseModule {
                         "location_sync_with TEXT NOT NULL, " +
                         "is_location_deleted INTEGER NOT NULL)")
 
-                database.query("CREATE TABLE NoteLocation (" +
+                database.execSQL("CREATE TABLE NoteLocation (" +
                         "id_note TEXT NOT NULL, " +
                         "id_location TEXT NOT NULL, " +
                         "notelocation_sync_with TEXT NOT NULL, " +
                         "is_notelocation_deleted INTEGER NOT NULL, " +
-                        "PRIMARY KEY (id_note, id_location)")
+                        "PRIMARY KEY (id_note, id_location))")
+
+                database.execSQL("CREATE INDEX index_NoteLocation_id_note ON NoteLocation (id_note)")
+                database.execSQL("CREATE INDEX index_NoteLocation_id_location ON NoteLocation (id_location)")
             }
         }
 

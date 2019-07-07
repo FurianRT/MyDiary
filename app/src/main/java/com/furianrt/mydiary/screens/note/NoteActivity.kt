@@ -43,7 +43,7 @@ class NoteActivity : BaseActivity(), NoteActivityContract.MvpView,
     @Inject
     lateinit var mPresenter: NoteActivityContract.Presenter
 
-    private lateinit var mNoteId: String
+    private lateinit var mNoteId: String //todo убрать в презентер!!!
     private lateinit var mPagerAdapter: NoteActivityPagerAdapter
 
     private var mPagerPosition = 0
@@ -131,9 +131,6 @@ class NoteActivity : BaseActivity(), NoteActivityContract.MvpView,
         view_ad?.adListener = object : AdListener() {
             override fun onAdLoaded() {
                 super.onAdLoaded()
-
-
-
                 if (!KeyboardUtils.isKeyboardVisible()) {
                     view_ad?.visibility = View.VISIBLE
                 }

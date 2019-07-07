@@ -58,6 +58,9 @@ class SearchListAdapter(
         private const val BUNDLE_SELECTED_MOOD_IDS = "selected_mood_ids"
         private const val BUNDLE_SELECTED_LOCATION_NAMES = "selected_location_names"
         private const val BUNDLE_SELECTED_ITEM_NON_TYPES = "selected_item_non_types"
+        private const val BUNDLE_START_DATE = "start_date"
+        private const val BUNDLE_END_DATE = "end_date"
+        private const val BUNDLE_CALENDAR_SCROLL_DATE = "calendar_scroll_date"
     }
 
     private val mExpandedGroupTypes = HashSet<Int>()
@@ -66,41 +69,55 @@ class SearchListAdapter(
     private val mSelectedMoodIds = HashSet<Int>()
     private val mSelectedLocationNames = HashSet<String>()
     private val mSelectedNoItemTypes = HashSet<Int>()
+    private var mStartDate: LocalDate? = null
+    private var mEndDate: LocalDate? = null
+    private var mCalendarScrollDate: YearMonth? = null
 
     override fun onSaveInstanceState(savedInstanceState: Bundle?) {
-        savedInstanceState?.let {
-            it.putIntegerArrayList(BUNDLE_EXPANDED_GROUP_TYPES, ArrayList(mExpandedGroupTypes))
-            it.putStringArrayList(BUNDLE_SELECTED_TAG_IDS, ArrayList(mSelectedTagIds))
-            it.putStringArrayList(BUNDLE_SELECTED_CATEGORY_IDS, ArrayList(mSelectedCategoryIds))
-            it.putIntegerArrayList(BUNDLE_SELECTED_MOOD_IDS, ArrayList(mSelectedMoodIds))
-            it.putStringArrayList(BUNDLE_SELECTED_LOCATION_NAMES, ArrayList(mSelectedLocationNames))
-            it.putIntegerArrayList(BUNDLE_SELECTED_ITEM_NON_TYPES, ArrayList(mSelectedNoItemTypes))
+        savedInstanceState?.let { state ->
+            state.putIntegerArrayList(BUNDLE_EXPANDED_GROUP_TYPES, ArrayList(mExpandedGroupTypes))
+            state.putStringArrayList(BUNDLE_SELECTED_TAG_IDS, ArrayList(mSelectedTagIds))
+            state.putStringArrayList(BUNDLE_SELECTED_CATEGORY_IDS, ArrayList(mSelectedCategoryIds))
+            state.putIntegerArrayList(BUNDLE_SELECTED_MOOD_IDS, ArrayList(mSelectedMoodIds))
+            state.putStringArrayList(BUNDLE_SELECTED_LOCATION_NAMES, ArrayList(mSelectedLocationNames))
+            state.putIntegerArrayList(BUNDLE_SELECTED_ITEM_NON_TYPES, ArrayList(mSelectedNoItemTypes))
+            mStartDate?.let { state.putSerializable(BUNDLE_START_DATE, it) }
+            mEndDate?.let { state.putSerializable(BUNDLE_END_DATE, it) }
+            mCalendarScrollDate?.let { state.putSerializable(BUNDLE_CALENDAR_SCROLL_DATE, it) }
+
         }
     }
 
     override fun onRestoreInstanceState(savedInstanceState: Bundle?) {
-        savedInstanceState?.let {
+        savedInstanceState?.let { state ->
             mExpandedGroupTypes.clear()
-            mExpandedGroupTypes.addAll(it.getIntegerArrayList(BUNDLE_EXPANDED_GROUP_TYPES)
+            mExpandedGroupTypes.addAll(state.getIntegerArrayList(BUNDLE_EXPANDED_GROUP_TYPES)
                     ?: emptyList())
 
             mSelectedTagIds.clear()
-            mSelectedTagIds.addAll(it.getStringArrayList(BUNDLE_SELECTED_TAG_IDS) ?: emptyList())
+            mSelectedTagIds.addAll(state.getStringArrayList(BUNDLE_SELECTED_TAG_IDS)
+                    ?: emptyList())
 
             mSelectedCategoryIds.clear()
-            mSelectedCategoryIds.addAll(it.getStringArrayList(BUNDLE_SELECTED_CATEGORY_IDS)
+            mSelectedCategoryIds.addAll(state.getStringArrayList(BUNDLE_SELECTED_CATEGORY_IDS)
                     ?: emptyList())
 
             mSelectedMoodIds.clear()
-            mSelectedMoodIds.addAll(it.getIntegerArrayList(BUNDLE_SELECTED_MOOD_IDS) ?: emptyList())
+            mSelectedMoodIds.addAll(state.getIntegerArrayList(BUNDLE_SELECTED_MOOD_IDS)
+                    ?: emptyList())
 
             mSelectedLocationNames.clear()
-            mSelectedLocationNames.addAll(it.getStringArrayList(BUNDLE_SELECTED_LOCATION_NAMES)
+            mSelectedLocationNames.addAll(state.getStringArrayList(BUNDLE_SELECTED_LOCATION_NAMES)
                     ?: emptyList())
 
             mSelectedNoItemTypes.clear()
-            mSelectedNoItemTypes.addAll(it.getIntegerArrayList(BUNDLE_SELECTED_ITEM_NON_TYPES)
+            mSelectedNoItemTypes.addAll(state.getIntegerArrayList(BUNDLE_SELECTED_ITEM_NON_TYPES)
                     ?: emptyList())
+
+            mStartDate = state.getSerializable(BUNDLE_START_DATE) as LocalDate?
+            mEndDate = state.getSerializable(BUNDLE_END_DATE) as LocalDate?
+
+            mCalendarScrollDate = state.getSerializable(BUNDLE_CALENDAR_SCROLL_DATE) as YearMonth?
         }
     }
 
@@ -117,6 +134,8 @@ class SearchListAdapter(
         mSelectedMoodIds.clear()
         mSelectedLocationNames.clear()
         mSelectedNoItemTypes.clear()
+        mStartDate = null
+        mEndDate = null
 
         //only update the child views that are visible (i.e. their group is expanded)
         for (i in 0 until groups.size) {
@@ -313,14 +332,23 @@ class SearchListAdapter(
                 && mSelectedCategoryIds.isEmpty()
                 && mSelectedMoodIds.isEmpty()
                 && mSelectedLocationNames.isEmpty()
-                && mSelectedNoItemTypes.isEmpty()) {
+                && mSelectedNoItemTypes.isEmpty()
+                && mStartDate == null
+                && mEndDate == null) {
             listener?.onCheckCleared()
         }
     }
 
     private fun isFirstCheck() {
+        val dates = if (mStartDate != null && mEndDate != null) {
+            2
+        } else if (mStartDate != null && mEndDate == null) {
+            1
+        } else {
+            0
+        }
         val checkCount = mSelectedTagIds.size + mSelectedCategoryIds.size + mSelectedMoodIds.size +
-                mSelectedLocationNames.size + mSelectedNoItemTypes.size
+                mSelectedLocationNames.size + mSelectedNoItemTypes.size + dates
         if (checkCount == 1) {
             listener?.onFirstCheck()
         }
@@ -371,10 +399,8 @@ class SearchListAdapter(
         abstract fun bind(item: SearchItem)
     }
 
-    class SearchDateViewHolder(view: View) : SearchChildViewHolder(view) {
+    inner class SearchDateViewHolder(view: View) : SearchChildViewHolder(view) {
 
-        private var mStartDate: LocalDate? = null
-        private var mEndDate: LocalDate? = null
         private val mToday = LocalDate.now()
 
         @SuppressLint("DefaultLocale")
@@ -386,34 +412,45 @@ class SearchListAdapter(
                 textView.text = daysOfWeek[i].getDisplayName(TextStyle.SHORT, Locale.getDefault())
             }
 
-            val dateColors = item.dateColors!!
+            val currentDate = YearMonth.now()
+            val minDate: YearMonth
+            val maxDate: YearMonth
 
-
-            val minDate = YearMonth.from(dateColors.keys.first())
-            val maxDate = YearMonth.from(dateColors.keys.last())
+            if (item.dateColors!!.isEmpty()) {
+                minDate = currentDate
+                maxDate = currentDate
+            } else {
+                minDate = YearMonth.from(item.dateColors.keys.first())
+                maxDate = YearMonth.from(item.dateColors.keys.last())
+            }
 
             itemView.calendar_search.setup(minDate, maxDate, daysOfWeek.first())
 
             itemView.calendar_search.monthScrollListener = {
+                mCalendarScrollDate = it.yearMonth
                 itemView.text_month.text = DateTimeFormatter.ofPattern("MMMM")
                         .format(it.yearMonth)
                         .capitalize()
                 itemView.text_year.text = it.yearMonth.year.toString()
             }
 
-            itemView.calendar_search.scrollToMonth(YearMonth.now())
+            val savedScrollDate = mCalendarScrollDate
+            when {
+                savedScrollDate != null ->
+                    itemView.calendar_search.scrollToMonth(savedScrollDate)
+                currentDate >= minDate && currentDate <= maxDate ->
+                    itemView.calendar_search.scrollToMonth(currentDate)
+                else ->
+                    itemView.calendar_search.scrollToMonth(minDate)
+            }
 
             itemView.text_today.setOnClickListener {
                 if (mEndDate == null && mStartDate == mToday) {
                     mStartDate = null
-                    (it as TextView).setBackgroundResource(R.drawable.background_corner_stroke)
-                    it.setTextColor(it.context.getThemePrimaryColor())
                     itemView.calendar_search.notifyCalendarChanged()
                 } else {
                     mStartDate = mToday
                     mEndDate = null
-                    (it as TextView).setBackgroundResource(R.drawable.background_corner_solid)
-                    it.setTextColorResource(R.color.white)
                     itemView.calendar_search.notifyCalendarChanged()
                     itemView.calendar_search.smoothScrollToMonth(YearMonth.now())
                 }
@@ -427,7 +464,7 @@ class SearchListAdapter(
                         calendarDayView.text = day.date.dayOfMonth.toString()
                         calendarDayView.background = null
 
-                        dateColors[day.date]?.let { colors ->
+                        item.dateColors[day.date]?.let { colors ->
                             calendarDayView.showCircle = true
                             calendarDayView.portionsCount = colors.size
                             colors.forEachIndexed { index, color ->
@@ -437,8 +474,8 @@ class SearchListAdapter(
 
                         calendarDayView.isCurrentDay = day.date == mToday
                         calendarDayView.isCurrentMonth = day.owner == DayOwner.THIS_MONTH
-                        calendarDayView.isSelected = (mStartDate == day.date && mEndDate == null
-                                || (mStartDate != null && mEndDate != null && day.date >= mStartDate && day.date <= mEndDate))
+                        calendarDayView.isSelected = mStartDate == day.date && mEndDate == null
+                                || (mStartDate != null && mEndDate != null && day.date >= mStartDate && day.date <= mEndDate)
                     }
                 }
             }
@@ -459,19 +496,15 @@ class SearchListAdapter(
                             mEndDate = date
                         } else if (date == mStartDate) {
                             mStartDate = null
+                            isLastCheck()
                         }
                     } else {
                         mStartDate = date
+                        isFirstCheck()
                     }
 
-                    if (mStartDate == mToday && mEndDate == null) {
-                        itemView.text_today.setBackgroundResource(R.drawable.background_corner_solid)
-                        itemView.text_today.setTextColorResource(R.color.white)
-                    } else {
-                        itemView.text_today.setBackgroundResource(R.drawable.background_corner_stroke)
-                        itemView.text_today.setTextColor(it.context.getThemePrimaryColor())
-                    }
                     itemView.calendar_search.notifyCalendarChanged()
+                    listener?.onSearchDatesSelected(mStartDate?.toMills(), mEndDate?.toMills())
                 }
             }
         }
@@ -573,6 +606,7 @@ class SearchListAdapter(
         fun onNoLocationChackStateChange(checked: Boolean)
         fun onMoodCheckStateChange(mood: MyMood, checked: Boolean)
         fun onNoMoodCheckStateChange(checked: Boolean)
+        fun onSearchDatesSelected(startDate: Long?, endDate: Long?)
         fun onCheckCleared()
         fun onFirstCheck()
     }

@@ -212,6 +212,10 @@ class MainActivity : BaseActivity(), MainActivityContract.MvpView,
         mPresenter.onNoLocationFilterChange(checked)
     }
 
+    override fun onSearchDatesSelected(startDate: Long?, endDate: Long?) {
+        mPresenter.onDateFilterChange(startDate, endDate)
+    }
+
     override fun onBillingInitialized() {
         super.onBillingInitialized()
         if (!getIsItemPurshased(BuildConfig.ITEM_PREMIUM_SKU)/* && !getIsItemPurshased(ITEM_TEST_SKU)*/) {

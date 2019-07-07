@@ -3,7 +3,6 @@ package com.furianrt.mydiary.utils
 import org.joda.time.DateTime
 import org.threeten.bp.DayOfWeek
 import org.threeten.bp.LocalDate
-import org.threeten.bp.YearMonth
 import org.threeten.bp.temporal.WeekFields
 import java.text.SimpleDateFormat
 import java.util.Locale
@@ -45,12 +44,10 @@ fun daysOfWeekFromLocale(): Array<DayOfWeek> {
     return daysOfWeek
 }
 
-fun Long.toYearMonth(): YearMonth {
-    val dateTime = DateTime(this)
-    return YearMonth.of(dateTime.year, dateTime.monthOfYear)
-}
-
 fun Long.toLocalDate(): LocalDate {
     val dateTime = DateTime(this)
     return LocalDate.of(dateTime.year, dateTime.monthOfYear, dateTime.dayOfMonth)
 }
+
+fun LocalDate.toMills(): Long =
+    org.joda.time.LocalDate(year, monthValue, dayOfMonth).toDate().time

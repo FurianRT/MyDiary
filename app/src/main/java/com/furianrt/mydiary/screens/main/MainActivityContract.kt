@@ -61,6 +61,7 @@ interface MainActivityContract {
         abstract fun onNoCategoryFilterChange(checked: Boolean)
         abstract fun onNoMoodFilterChange(checked: Boolean)
         abstract fun onNoLocationFilterChange(checked: Boolean)
+        abstract fun onDateFilterChange(startDate: Long?, endDate: Long?)
         abstract fun onButtonChangeFiltersClick()
         abstract fun onDailyImageLoadStateChange()
     }

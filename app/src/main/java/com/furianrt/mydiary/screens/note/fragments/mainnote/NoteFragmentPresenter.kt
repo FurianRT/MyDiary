@@ -204,11 +204,7 @@ class NoteFragmentPresenter @Inject constructor(
         if (addresses.isNotEmpty()) {
             val address = addresses[0].getAddressLine(0)
             if (address != null) {
-                addLocation(MyLocation(
-                        name = address,
-                        lat = latitude,
-                        lon = longitude
-                ))
+                addLocation(MyLocation(generateUniqueId(), address, latitude, longitude))
             }
         }
     }
@@ -240,7 +236,7 @@ class NoteFragmentPresenter @Inject constructor(
     private fun addLocation(location: MyLocation) {
         Log.e(TAG, "insertLocation")
         addDisposable(dataManager.insertLocation(location)
-                .andThen(dataManager.insertNoteLocation(NoteLocation(mNoteId, location.name)))
+                .andThen(dataManager.insertNoteLocation(NoteLocation(mNoteId, location.id)))
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { view?.showLocation(location) })
     }
@@ -408,7 +404,7 @@ class NoteFragmentPresenter @Inject constructor(
         val content = when {
             curContent.isBlank() ->
                 recordedText.capitalize()
-            curContent.replace(Regex(" |\n"), "").last() == '.' ->
+            curContent.replace(Regex("[ \n]"), "").last() == '.' ->
                 "$curContent ${recordedText.capitalize()}"
             else ->
                 "$curContent $recordedText"
