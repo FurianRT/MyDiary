@@ -11,7 +11,7 @@ import org.threeten.bp.LocalDate
 @Parcelize
 data class SearchItem(
         val type: Int,
-        val dateColors: Map<LocalDate, Set<Int>>? = null,
+        val dateColors: Map<LocalDate, List<Int>>? = null,
         val tag: MyTag? = null,
         val category: MyCategory? = null,
         val location: MyLocation? = null,

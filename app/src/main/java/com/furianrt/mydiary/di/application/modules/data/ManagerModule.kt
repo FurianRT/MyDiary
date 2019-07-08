@@ -7,9 +7,9 @@ import dagger.Binds
 import dagger.Module
 
 @Module
-abstract class ManagerModule {
+interface ManagerModule {
 
     @Binds
     @AppScope
-    abstract fun dataManager(imp: DataManagerImp): DataManager
+    fun dataManager(imp: DataManagerImp): DataManager
 }

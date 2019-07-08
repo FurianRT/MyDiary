@@ -55,7 +55,7 @@ import kotlinx.android.synthetic.main.fragment_note_toolbar.view.*
 import pub.devrel.easypermissions.AfterPermissionGranted
 import pub.devrel.easypermissions.EasyPermissions
 import java.io.IOException
-import java.util.Locale
+import java.util.*
 import javax.inject.Inject
 import kotlin.collections.ArrayList
 
@@ -647,6 +647,7 @@ class NoteFragment : BaseFragment(), NoteFragmentContract.MvpView, DatePickerDia
             accentColor = themePrimaryColor
             setOkColor(themePrimaryColor)
             setCancelColor(themePrimaryColor)
+            minDate = Calendar.getInstance().apply { set(1980, 0, 1) }
         }.show(requireActivity().supportFragmentManager, DATE_PICKER_TAG)
     }
 

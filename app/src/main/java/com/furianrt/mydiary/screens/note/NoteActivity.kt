@@ -31,7 +31,9 @@ class NoteActivity : BaseActivity(), NoteActivityContract.MvpView,
         enum class Mode { ADD, READ }
 
         fun newIntentModeAdd(context: Context) =
-                Intent(context, NoteActivity::class.java).apply { putExtra(EXTRA_MODE, Companion.Mode.ADD) }
+                Intent(context, NoteActivity::class.java).apply {
+                    putExtra(EXTRA_MODE, Companion.Mode.ADD)
+                }
 
         fun newIntentModeRead(context: Context, position: Int) =
                 Intent(context, NoteActivity::class.java).apply {

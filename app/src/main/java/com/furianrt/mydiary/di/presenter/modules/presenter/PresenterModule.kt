@@ -89,173 +89,173 @@ import dagger.Binds
 import dagger.Module
 
 @Module
-abstract class PresenterModule {
+interface PresenterModule {
 
     @Binds
     @PresenterScope
-    abstract fun mainActivityPresenter(presenter: MainActivityPresenter): MainActivityContract.Presenter
+    fun mainActivityPresenter(presenter: MainActivityPresenter): MainActivityContract.Presenter
 
     @Binds
     @PresenterScope
-    abstract fun noteActivityPresenter(presenter: NoteActivityPresenter): NoteActivityContract.Presenter
+    fun noteActivityPresenter(presenter: NoteActivityPresenter): NoteActivityContract.Presenter
 
     @Binds
     @PresenterScope
-    abstract fun noteContentFragmentPresenter(presenter: NoteContentFragmentPresenter): NoteContentFragmentContract.Presenter
+    fun noteContentFragmentPresenter(presenter: NoteContentFragmentPresenter): NoteContentFragmentContract.Presenter
 
     @Binds
     @PresenterScope
-    abstract fun noteEditFragmentPresenter(presenter: NoteEditFragmentPresenter): NoteEditFragmentContract.Presenter
+    fun noteEditFragmentPresenter(presenter: NoteEditFragmentPresenter): NoteEditFragmentContract.Presenter
 
     @Binds
     @PresenterScope
-    abstract fun noteFragmentPresenter(presenter: NoteFragmentPresenter): NoteFragmentContract.Presenter
+    fun noteFragmentPresenter(presenter: NoteFragmentPresenter): NoteFragmentContract.Presenter
 
     @Binds
     @PresenterScope
-    abstract fun tagsDialogPresenter(presenter: TagsDialogPresenter): TagsDialogContract.Presenter
+    fun tagsDialogPresenter(presenter: TagsDialogPresenter): TagsDialogContract.Presenter
 
     @Binds
     @PresenterScope
-    abstract fun moodsDialogPresenter(presenter: MoodsDialogPresenter): MoodsDialogContract.Presenter
+    fun moodsDialogPresenter(presenter: MoodsDialogPresenter): MoodsDialogContract.Presenter
 
     @Binds
     @PresenterScope
-    abstract fun categoriesDialogPresenter(presenter: CategoriesDialogPresenter): CategoriesDialogContract.Presenter
+    fun categoriesDialogPresenter(presenter: CategoriesDialogPresenter): CategoriesDialogContract.Presenter
 
     @Binds
     @PresenterScope
-    abstract fun galleryActivityPresenter(presenter: GalleryActivityPresenter): GalleryActivityContract.Presenter
+    fun galleryActivityPresenter(presenter: GalleryActivityPresenter): GalleryActivityContract.Presenter
 
     @Binds
     @PresenterScope
-    abstract fun galleryPagerPresenter(presenter: GalleryPagerPresenter): GalleryPagerContract.Presenter
+    fun galleryPagerPresenter(presenter: GalleryPagerPresenter): GalleryPagerContract.Presenter
 
     @Binds
     @PresenterScope
-    abstract fun galleryListPresenter(presenter: GalleryListPresenter): GalleryListContract.Presenter
+    fun galleryListPresenter(presenter: GalleryListPresenter): GalleryListContract.Presenter
 
     @Binds
     @PresenterScope
-    abstract fun categoryListPresenter(presenter: CategoryListPresenter): CategoryListContract.Presenter
+    fun categoryListPresenter(presenter: CategoryListPresenter): CategoryListContract.Presenter
 
     @Binds
     @PresenterScope
-    abstract fun categoryEditPresenter(presenter: CategoryEditPresenter): CategoryEditContract.Presenter
+    fun categoryEditPresenter(presenter: CategoryEditPresenter): CategoryEditContract.Presenter
 
     @Binds
     @PresenterScope
-    abstract fun globalSettingsPresenter(presenter: GlobalSettingsPresenter): GlobalSettingsContract.Presenter
+    fun globalSettingsPresenter(presenter: GlobalSettingsPresenter): GlobalSettingsContract.Presenter
 
     @Binds
     @PresenterScope
-    abstract fun noteSettingsPresenter(presenter: NoteSettingsPresenter): NoteSettingsContract.Presenter
+    fun noteSettingsPresenter(presenter: NoteSettingsPresenter): NoteSettingsContract.Presenter
 
     @Binds
     @PresenterScope
-    abstract fun premiumPresenter(presenter: PremiumPresenter): PremiumContract.Presenter
+    fun premiumPresenter(presenter: PremiumPresenter): PremiumContract.Presenter
 
     @Binds
     @PresenterScope
-    abstract fun profilePresenter(presenter: ProfilePresenter): ProfileContract.Presenter
+    fun profilePresenter(presenter: ProfilePresenter): ProfileContract.Presenter
 
     @Binds
     @PresenterScope
-    abstract fun registrationPresenter(presenter: RegistrationPresenter): RegistrationContract.Presenter
+    fun registrationPresenter(presenter: RegistrationPresenter): RegistrationContract.Presenter
 
     @Binds
     @PresenterScope
-    abstract fun loginPresenter(presenter: LoginPresenter): LoginContract.Presenter
+    fun loginPresenter(presenter: LoginPresenter): LoginContract.Presenter
 
     @Binds
     @PresenterScope
-    abstract fun authPresenter(presenter: AuthPresenter): AuthContract.Presenter
+    fun authPresenter(presenter: AuthPresenter): AuthContract.Presenter
 
     @Binds
     @PresenterScope
-    abstract fun imageSettingsPresenter(presenter: ImageSettingsPresenter): ImageSettingsContract.Presenter
+    fun imageSettingsPresenter(presenter: ImageSettingsPresenter): ImageSettingsContract.Presenter
 
     @Binds
     @PresenterScope
-    abstract fun syncPresenter(presenter: SyncPresenter): SyncContract.Presenter
+    fun syncPresenter(presenter: SyncPresenter): SyncContract.Presenter
 
     @Binds
     @PresenterScope
-    abstract fun passwordPresenter(presenter: PasswordPresenter): PasswordContract.Presenter
+    fun passwordPresenter(presenter: PasswordPresenter): PasswordContract.Presenter
 
     @Binds
     @PresenterScope
-    abstract fun menuProfilePresenter(presenter: MenuProfilePresenter): MenuProfileContract.Presenter
+    fun menuProfilePresenter(presenter: MenuProfilePresenter): MenuProfileContract.Presenter
 
     @Binds
     @PresenterScope
-    abstract fun signOutPresenter(presenter: SignOutPresenter): SignOutContract.Presenter
+    fun signOutPresenter(presenter: SignOutPresenter): SignOutContract.Presenter
 
     @Binds
     @PresenterScope
-    abstract fun aboutProfilePresenter(presenter: AboutProfilePresenter): AboutProfileContract.Presenter
+    fun aboutProfilePresenter(presenter: AboutProfilePresenter): AboutProfileContract.Presenter
 
     @Binds
     @PresenterScope
-    abstract fun pinPresenter(presenter: PinPresenter): PinContract.Presenter
+    fun pinPresenter(presenter: PinPresenter): PinContract.Presenter
 
     @Binds
     @PresenterScope
-    abstract fun backupEmailPresenter(presenter: BackupEmailPresenter): BackupEmailContract.Presenter
+    fun backupEmailPresenter(presenter: BackupEmailPresenter): BackupEmailContract.Presenter
 
     @Binds
     @PresenterScope
-    abstract fun forgotPassPresenter(presenter: ForgotPassPresenter): ForgotPassContract.Presenter
+    fun forgotPassPresenter(presenter: ForgotPassPresenter): ForgotPassContract.Presenter
 
     @Binds
     @PresenterScope
-    abstract fun categoryDeletePresenter(presenter: CategoryDeletePresenter): CategoryDeleteContract.Presenter
+    fun categoryDeletePresenter(presenter: CategoryDeletePresenter): CategoryDeleteContract.Presenter
 
     @Binds
     @PresenterScope
-    abstract fun tagListPresenter(presenter: TagListPresenter): TagListContract.Presenter
+    fun tagListPresenter(presenter: TagListPresenter): TagListContract.Presenter
 
     @Binds
     @PresenterScope
-    abstract fun tagDeletePresenter(presenter: TagDeletePresenter): TagDeleteContract.Presenter
+    fun tagDeletePresenter(presenter: TagDeletePresenter): TagDeleteContract.Presenter
 
     @Binds
     @PresenterScope
-    abstract fun tagAddPresenter(presenter: TagAddPresenter): TagAddContract.Presenter
+    fun tagAddPresenter(presenter: TagAddPresenter): TagAddContract.Presenter
 
     @Binds
     @PresenterScope
-    abstract fun tagEditPresenter(presenter: TagEditPresenter): TagEditContract.Presenter
+    fun tagEditPresenter(presenter: TagEditPresenter): TagEditContract.Presenter
 
     @Binds
     @PresenterScope
-    abstract fun deleteNotePresenter(presenter: DeleteNotePresenter): DeleteNoteContract.Presenter
+    fun deleteNotePresenter(presenter: DeleteNotePresenter): DeleteNoteContract.Presenter
 
     @Binds
     @PresenterScope
-    abstract fun categoryAddPresenter(presenter: CategoryAddPresenter): CategoryAddContract.Presenter
+    fun categoryAddPresenter(presenter: CategoryAddPresenter): CategoryAddContract.Presenter
 
     @Binds
     @PresenterScope
-    abstract fun deleteImagePresenter(presenter: DeleteImagePresenter): DeleteImageContract.Presenter
+    fun deleteImagePresenter(presenter: DeleteImagePresenter): DeleteImageContract.Presenter
 
     @Binds
     @PresenterScope
-    abstract fun sendEmailPresenter(presenter: SendEmailPresenter): SendEmailContract.Presenter
+    fun sendEmailPresenter(presenter: SendEmailPresenter): SendEmailContract.Presenter
 
     @Binds
     @PresenterScope
-    abstract fun privacyPresenter(presenter: PrivacyPresenter): PrivacyContract.Presenter
+    fun privacyPresenter(presenter: PrivacyPresenter): PrivacyContract.Presenter
 
     @Binds
     @PresenterScope
-    abstract fun drawerMenuPresenter(presenter: DrawerMenuPresenter): DrawerMenuContract.Presenter
+    fun drawerMenuPresenter(presenter: DrawerMenuPresenter): DrawerMenuContract.Presenter
 
     @Binds
     @PresenterScope
-    abstract fun rateDialogPresenter(presenter: RateDialogPresenter): RateDialogContract.Presenter
+    fun rateDialogPresenter(presenter: RateDialogPresenter): RateDialogContract.Presenter
 
     @Binds
     @PresenterScope
-    abstract fun dailySettingsPresenter(presenter: DailySettingsPresenter): DailySettingsContract.Presenter
+    fun dailySettingsPresenter(presenter: DailySettingsPresenter): DailySettingsContract.Presenter
 }

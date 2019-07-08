@@ -98,13 +98,13 @@ class DrawerMenuFragment : BaseFragment(), DrawerMenuContract.MvpView,
         }
     }
 
-    private fun List<MyNoteWithProp>.toDateColors(): Map<LocalDate, Set<Int>> {
-        val result = TreeMap<LocalDate, HashSet<Int>>()
+    private fun List<MyNoteWithProp>.toDateColors(): Map<LocalDate, List<Int>> {
+        val result = TreeMap<LocalDate, ArrayList<Int>>()
         for (note in this) {
             val localDate = note.note.time.toLocalDate()
             var value = result[localDate]
             if (value == null) {
-                value = HashSet()
+                value = ArrayList()
                 result[localDate] = value
             }
             val category = note.category

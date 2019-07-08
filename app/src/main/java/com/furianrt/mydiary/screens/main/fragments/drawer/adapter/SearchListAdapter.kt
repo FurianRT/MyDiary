@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import android.widget.CheckBox
 import android.widget.Checkable
 import android.widget.TextView
+import androidx.recyclerview.widget.GridLayoutManager
 import com.furianrt.mydiary.R
 import com.furianrt.mydiary.data.model.MyCategory
 import com.furianrt.mydiary.data.model.MyLocation
@@ -39,6 +40,8 @@ import kotlinx.android.synthetic.main.nav_search_item_no_mood.view.*
 import kotlinx.android.synthetic.main.nav_search_item_no_tags.view.*
 import kotlinx.android.synthetic.main.nav_search_item_tag.view.*
 import org.threeten.bp.LocalDate
+import org.threeten.bp.Month
+import org.threeten.bp.Year
 import org.threeten.bp.YearMonth
 import org.threeten.bp.format.DateTimeFormatter
 import org.threeten.bp.format.TextStyle
@@ -46,6 +49,7 @@ import java.util.Locale
 import kotlin.collections.ArrayList
 import kotlin.collections.HashSet
 
+//todo тут жесть, надо порефакторить
 class SearchListAdapter(
         var listener: OnSearchListInteractionListener? = null
 ) : MultiTypeExpandableRecyclerViewAdapter<SearchGroupViewHolder, SearchChildViewHolder>(mutableListOf()),
@@ -62,6 +66,9 @@ class SearchListAdapter(
         private const val BUNDLE_START_DATE = "start_date"
         private const val BUNDLE_END_DATE = "end_date"
         private const val BUNDLE_CALENDAR_SCROLL_DATE = "calendar_scroll_date"
+        private const val BUNDLE_IS_MONTH_SELECTION_ACTIVE = "is_month_selection_active"
+        private const val BUNDLE_IS_YEAR_SELECTION_ACTIVE = "is_year_selection_active"
+        private const val BUNDLE_IS_TODAY_SELECTION_ACTIVE = "is_today_selection_active"
     }
 
     private val mExpandedGroupTypes = HashSet<Int>()
@@ -73,8 +80,10 @@ class SearchListAdapter(
     private var mStartDate: LocalDate? = null
     private var mEndDate: LocalDate? = null
     private var mCalendarScrollDate: YearMonth? = null
-
     private var mCalendar: CalendarView? = null
+    private var mIsMonthSelectionActive = false
+    private var mIsYearSelectionActive = false
+    private var mIsTodaySelectionActive = false
 
     override fun onSaveInstanceState(savedInstanceState: Bundle?) {
         savedInstanceState?.let { state ->
@@ -84,6 +93,9 @@ class SearchListAdapter(
             state.putIntegerArrayList(BUNDLE_SELECTED_MOOD_IDS, ArrayList(mSelectedMoodIds))
             state.putStringArrayList(BUNDLE_SELECTED_LOCATION_NAMES, ArrayList(mSelectedLocationNames))
             state.putIntegerArrayList(BUNDLE_SELECTED_ITEM_NON_TYPES, ArrayList(mSelectedNoItemTypes))
+            state.putBoolean(BUNDLE_IS_MONTH_SELECTION_ACTIVE, mIsMonthSelectionActive)
+            state.putBoolean(BUNDLE_IS_YEAR_SELECTION_ACTIVE, mIsYearSelectionActive)
+            state.putBoolean(BUNDLE_IS_TODAY_SELECTION_ACTIVE, mIsTodaySelectionActive)
             mStartDate?.let { state.putSerializable(BUNDLE_START_DATE, it) }
             mEndDate?.let { state.putSerializable(BUNDLE_END_DATE, it) }
             mCalendarScrollDate?.let { state.putSerializable(BUNDLE_CALENDAR_SCROLL_DATE, it) }
@@ -121,6 +133,10 @@ class SearchListAdapter(
             mEndDate = state.getSerializable(BUNDLE_END_DATE) as LocalDate?
 
             mCalendarScrollDate = state.getSerializable(BUNDLE_CALENDAR_SCROLL_DATE) as YearMonth?
+
+            mIsMonthSelectionActive = state.getBoolean(BUNDLE_IS_MONTH_SELECTION_ACTIVE, false)
+            mIsYearSelectionActive = state.getBoolean(BUNDLE_IS_YEAR_SELECTION_ACTIVE, false)
+            mIsTodaySelectionActive = state.getBoolean(BUNDLE_IS_TODAY_SELECTION_ACTIVE, false)
         }
     }
 
@@ -137,6 +153,7 @@ class SearchListAdapter(
         mSelectedMoodIds.clear()
         mSelectedLocationNames.clear()
         mSelectedNoItemTypes.clear()
+        mIsTodaySelectionActive = false
         mStartDate = null
         mEndDate = null
         notifyItemsStateChanged()
@@ -423,52 +440,23 @@ class SearchListAdapter(
             }
 
             val currentDate = YearMonth.now()
-            val minDate: YearMonth
-            val maxDate: YearMonth
-
-            if (item.dateColors!!.isEmpty()) {
-                minDate = currentDate
-                maxDate = currentDate
-            } else {
-                minDate = YearMonth.from(item.dateColors.keys.first())
-                maxDate = YearMonth.from(item.dateColors.keys.last())
-            }
+            val minDate = YearMonth.of(1980, Month.JANUARY)
+            val maxDate = YearMonth.of(2100, Month.DECEMBER)
 
             mCalendar = itemView.calendar_search
 
             itemView.calendar_search.setup(minDate, maxDate, daysOfWeek.first())
 
-            itemView.calendar_search.monthScrollListener = {
-                mCalendarScrollDate = it.yearMonth
-                itemView.text_month.text = DateTimeFormatter.ofPattern("MMMM")
-                        .format(it.yearMonth)
-                        .capitalize()
-                itemView.text_year.text = it.yearMonth.year.toString()
+            itemView.calendar_search.monthScrollListener = { calendarMonth ->
+                mCalendarScrollDate = calendarMonth.yearMonth
+                updateCalendarHeader(calendarMonth.yearMonth)
             }
 
             val savedScrollDate = mCalendarScrollDate
-            when {
-                savedScrollDate != null ->
-                    itemView.calendar_search.scrollToMonth(savedScrollDate)
-                currentDate >= minDate && currentDate <= maxDate ->
-                    itemView.calendar_search.scrollToMonth(currentDate)
-                else ->
-                    itemView.calendar_search.scrollToMonth(minDate)
-            }
-
-            itemView.text_today.setOnClickListener {
-                if (mEndDate == null && mStartDate == mToday) {
-                    mStartDate = null
-                    itemView.calendar_search.notifyCalendarChanged()
-                    isLastCheck()
-                } else {
-                    mStartDate = mToday
-                    mEndDate = null
-                    itemView.calendar_search.notifyCalendarChanged()
-                    itemView.calendar_search.smoothScrollToMonth(YearMonth.now())
-                    isFirstCheck()
-                }
-                listener?.onSearchDatesSelected(mStartDate?.toMills(), mEndDate?.toMills())
+            if (savedScrollDate != null) {
+                scrollToMonth(savedScrollDate)
+            } else {
+                scrollToMonth(currentDate)
             }
 
             itemView.calendar_search.dayBinder = object : DayBinder<DayViewContainer> {
@@ -478,8 +466,9 @@ class SearchListAdapter(
                         this.day = day
                         calendarDayView.text = day.date.dayOfMonth.toString()
                         calendarDayView.background = null
+                        calendarDayView.showCircle = false
 
-                        item.dateColors[day.date]?.let { colors ->
+                        item.dateColors!![day.date]?.let { colors ->
                             calendarDayView.showCircle = true
                             calendarDayView.portionsCount = colors.size
                             colors.forEachIndexed { index, color ->
@@ -487,13 +476,135 @@ class SearchListAdapter(
                             }
                         }
 
+                        val select = mStartDate == day.date && mEndDate == null
+                                || (mStartDate != null && mEndDate != null && day.date >= mStartDate && day.date <= mEndDate)
+
                         calendarDayView.isCurrentDay = day.date == mToday
                         calendarDayView.isCurrentMonth = day.owner == DayOwner.THIS_MONTH
-                        calendarDayView.isSelected = mStartDate == day.date && mEndDate == null
-                                || (mStartDate != null && mEndDate != null && day.date >= mStartDate && day.date <= mEndDate)
+                        calendarDayView.isSelected = select
+
+                        if (calendarDayView.isCurrentDay) {
+                            selectToday(select && mEndDate == null)
+                        }
                     }
                 }
             }
+
+            itemView.layout_list_calendar.setOnTouchListener { _, _ -> true }
+
+            selectToday(mIsTodaySelectionActive)
+
+            if (mIsMonthSelectionActive) {
+                showMonthSelection()
+            } else if (mIsYearSelectionActive) {
+                showYearSelection(item)
+            }
+
+            itemView.text_today.setOnClickListener {
+                if (mEndDate == null && mStartDate == mToday) {
+                    mStartDate = null
+                    selectToday(false)
+                    itemView.calendar_search.notifyCalendarChanged()
+                    isLastCheck()
+                } else {
+                    mStartDate = mToday
+                    mEndDate = null
+                    selectToday(true)
+                    itemView.calendar_search.notifyCalendarChanged()
+                    scrollToMonth(YearMonth.now())
+                    isFirstCheck()
+                }
+                listener?.onSearchDatesSelected(mStartDate?.toMills(), mEndDate?.toMills())
+            }
+
+            itemView.text_month.setOnClickListener {
+                if (mIsMonthSelectionActive) {
+                    hideMonthSelection()
+                } else {
+                    hideYearSelection()
+                    showMonthSelection()
+                }
+            }
+
+            itemView.text_year.setOnClickListener {
+                if (mIsYearSelectionActive) {
+                    hideYearSelection()
+                } else {
+                    hideMonthSelection()
+                    showYearSelection(item)
+                }
+            }
+        }
+
+        private fun selectToday(select: Boolean) {
+            mIsTodaySelectionActive = select
+            if (select) {
+                itemView.text_today.setTextColorResource(R.color.white)
+                itemView.text_today.setBackgroundResource(R.drawable.background_corner_solid)
+            } else {
+                itemView.text_today.setTextColor(itemView.context.getThemePrimaryColor())
+                itemView.text_today.setBackgroundResource(R.drawable.background_corner_stroke)
+            }
+        }
+
+        private fun updateCalendarHeader(yearMonth: YearMonth) {
+            itemView.text_month.text = DateTimeFormatter.ofPattern("MMMM")
+                    .format(yearMonth)
+                    .capitalize()
+            itemView.text_year.text = yearMonth.year.toString()
+        }
+
+        private fun scrollToMonth(yearMonth: YearMonth) {
+            mCalendarScrollDate = yearMonth
+            itemView.calendar_search.scrollToMonth(yearMonth)
+            updateCalendarHeader(yearMonth)
+        }
+
+        private fun showMonthSelection() {
+            mIsMonthSelectionActive = true
+            itemView.text_month.setTextColorResource(R.color.white)
+            itemView.text_month.setBackgroundResource(R.drawable.background_corner_solid)
+            val adapter = CalendarMonthAdapter(object : CalendarMonthAdapter.OnMonthListInteractionListener {
+                override fun onMonthClick(month: Month) {
+                    mIsMonthSelectionActive = false
+                    hideMonthSelection()
+                    mCalendarScrollDate?.let { scrollToMonth(YearMonth.of(it.year, month.value)) }
+                }
+            })
+            itemView.layout_list_calendar.visibility = View.VISIBLE
+            itemView.list_calendar.layoutManager = GridLayoutManager(itemView.context, 4, GridLayoutManager.HORIZONTAL, false)
+            itemView.list_calendar.adapter = adapter
+            adapter.showList(Month.values().toList())
+        }
+
+        private fun hideMonthSelection() {
+            mIsMonthSelectionActive = false
+            itemView.layout_list_calendar.visibility = View.GONE
+            itemView.text_month.setTextColor(itemView.context.getThemePrimaryColor())
+            itemView.text_month.setBackgroundResource(R.drawable.background_corner_stroke)
+        }
+
+        private fun showYearSelection(item: SearchItem) {
+            mIsYearSelectionActive = true
+            itemView.text_year.setTextColorResource(R.color.white)
+            itemView.text_year.setBackgroundResource(R.drawable.background_corner_solid)
+            val adapter = CalendarYearAdapter(object : CalendarYearAdapter.OnYearListInteractionListener {
+                override fun onYearClick(year: Year) {
+                    hideYearSelection()
+                    mCalendarScrollDate?.let { scrollToMonth(YearMonth.of(year.value, it.monthValue)) }
+                }
+            })
+            itemView.layout_list_calendar.visibility = View.VISIBLE
+            itemView.list_calendar.layoutManager = GridLayoutManager(itemView.context, 4, GridLayoutManager.HORIZONTAL, false)
+            itemView.list_calendar.adapter = adapter
+            adapter.showList(item.dateColors!!.keys.map { Year.of(it.year) }.distinct())
+        }
+
+        private fun hideYearSelection() {
+            mIsYearSelectionActive = false
+            itemView.layout_list_calendar.visibility = View.GONE
+            itemView.text_year.setTextColor(itemView.context.getThemePrimaryColor())
+            itemView.text_year.setBackgroundResource(R.drawable.background_corner_stroke)
         }
 
         inner class DayViewContainer(view: View) : ViewContainer(view) {

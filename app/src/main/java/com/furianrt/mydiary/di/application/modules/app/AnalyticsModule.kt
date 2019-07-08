@@ -7,9 +7,9 @@ import dagger.Binds
 import dagger.Module
 
 @Module
-abstract class AnalyticsModule {
+interface AnalyticsModule {
 
     @Binds
     @AppScope
-    abstract fun analytics(imp: MyAnalyticsImp): MyAnalytics
+    fun analytics(imp: MyAnalyticsImp): MyAnalytics
 }

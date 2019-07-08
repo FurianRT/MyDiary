@@ -17,29 +17,29 @@ import dagger.Binds
 import dagger.Module
 
 @Module
-abstract class HelperModule {
+interface HelperModule {
 
     @Binds
     @AppScope
-    abstract fun cloudHelper(imp: CloudHelperImp): CloudHelper
+    fun cloudHelper(imp: CloudHelperImp): CloudHelper
 
     @Binds
     @AppScope
-    abstract fun authHelper(imp: AuthHelperImp): AuthHelper
+    fun authHelper(imp: AuthHelperImp): AuthHelper
 
     @Binds
     @AppScope
-    abstract fun storageHelper(imp: StorageHelperImp): StorageHelper
+    fun storageHelper(imp: StorageHelperImp): StorageHelper
 
     @Binds
     @AppScope
-    abstract fun preferencesHelper(imp: PreferencesHelperImp): PreferencesHelper
+    fun preferencesHelper(imp: PreferencesHelperImp): PreferencesHelper
 
     @Binds
     @AppScope
-    abstract fun apiServiceHelper(imp: ApiServiceHelperImp): ApiServiceHelper
+    fun apiServiceHelper(imp: ApiServiceHelperImp): ApiServiceHelper
 
     @Binds
     @AppScope
-    abstract fun encryptionHelper(imp: EncryptionHelperImp): EncryptionHelper
+    fun encryptionHelper(imp: EncryptionHelperImp): EncryptionHelper
 }

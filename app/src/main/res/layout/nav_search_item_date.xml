@@ -183,4 +183,29 @@
         app:layout_constraintTop_toBottomOf="@id/layout_legend"
         tools:layout_height="200dp" />
 
+    <FrameLayout
+        android:id="@+id/layout_list_calendar"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="@color/white"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@id/calendar_search"
+        app:layout_constraintEnd_toEndOf="@id/calendar_search"
+        app:layout_constraintStart_toStartOf="@id/calendar_search"
+        app:layout_constraintTop_toTopOf="@id/calendar_search"
+        tools:visibility="visible">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/list_calendar"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            tools:layoutManager="GridLayoutManager"
+            tools:orientation="horizontal"
+            tools:spanCount="4"
+            tools:itemCount="12"
+            tools:listitem="@layout/calendar_list_item" />
+
+    </FrameLayout>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

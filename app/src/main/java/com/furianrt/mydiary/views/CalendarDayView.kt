@@ -36,6 +36,7 @@ class CalendarDayView : TextView {
     private val mPortionPaint: Paint = Paint()
     private val mSliceVector = PointF()
     private var mIsSelected: Boolean = false
+    private val
 
     var showCircle = false
     var portionsCount = DEFAULT_PORTIONS_COUNT
@@ -240,5 +241,9 @@ class CalendarDayView : TextView {
             mPortionToUpdateMap.put(index, color)
             invalidate()
         }
+    }
+
+    fun setColors(colors: List<Int>) {
+
     }
 }
