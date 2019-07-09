@@ -1,52 +1,45 @@
 package com.furianrt.mydiary.di.application.modules.data
 
-import android.content.Context
 import com.furianrt.mydiary.data.api.ApiServiceHelper
 import com.furianrt.mydiary.data.api.ApiServiceHelperImp
-import com.furianrt.mydiary.data.api.forecast.WeatherApiService
-import com.furianrt.mydiary.data.api.images.ImageApiService
 import com.furianrt.mydiary.data.auth.AuthHelper
 import com.furianrt.mydiary.data.auth.AuthHelperImp
 import com.furianrt.mydiary.data.cloud.CloudHelper
 import com.furianrt.mydiary.data.cloud.CloudHelperImp
+import com.furianrt.mydiary.data.encryption.EncryptionHelper
+import com.furianrt.mydiary.data.encryption.EncryptionHelperImp
 import com.furianrt.mydiary.data.prefs.PreferencesHelper
 import com.furianrt.mydiary.data.prefs.PreferencesHelperImp
 import com.furianrt.mydiary.data.storage.StorageHelper
 import com.furianrt.mydiary.data.storage.StorageHelperImp
 import com.furianrt.mydiary.di.application.component.AppScope
-import com.furianrt.mydiary.di.application.modules.app.AppContext
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.storage.FirebaseStorage
+import dagger.Binds
 import dagger.Module
-import dagger.Provides
 
 @Module
-class HelperModule {
+interface HelperModule {
 
-    @Provides
+    @Binds
     @AppScope
-    fun provideCloudHelper(
-            firestore: FirebaseFirestore,
-            firebaseStorage: FirebaseStorage
-    ): CloudHelper = CloudHelperImp(firestore, firebaseStorage)
+    fun cloudHelper(imp: CloudHelperImp): CloudHelper
 
-    @Provides
+    @Binds
     @AppScope
-    fun provideAuthHelper(@AppContext context: Context, firebaseAuth: FirebaseAuth): AuthHelper =
-            AuthHelperImp(context, firebaseAuth)
+    fun authHelper(imp: AuthHelperImp): AuthHelper
 
-    @Provides
+    @Binds
     @AppScope
-    fun provideStorageHelper(@AppContext context: Context): StorageHelper = StorageHelperImp(context)
+    fun storageHelper(imp: StorageHelperImp): StorageHelper
 
-    @Provides
+    @Binds
     @AppScope
-    fun providePreferencesHelper(@AppContext context: Context): PreferencesHelper =
-            PreferencesHelperImp(context)
+    fun preferencesHelper(imp: PreferencesHelperImp): PreferencesHelper
 
-    @Provides
+    @Binds
     @AppScope
-    fun provideApiServiceHelper(weatherApi: WeatherApiService, imageApi: ImageApiService): ApiServiceHelper =
-            ApiServiceHelperImp(weatherApi, imageApi)
+    fun apiServiceHelper(imp: ApiServiceHelperImp): ApiServiceHelper
+
+    @Binds
+    @AppScope
+    fun encryptionHelper(imp: EncryptionHelperImp): EncryptionHelper
 }

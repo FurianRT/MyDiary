@@ -4,8 +4,9 @@ import com.furianrt.mydiary.data.DataManager
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
 import com.google.firebase.auth.FirebaseAuthInvalidUserException
 import io.reactivex.android.schedulers.AndroidSchedulers
+import javax.inject.Inject
 
-class LoginPresenter(
+class LoginPresenter @Inject constructor(
         private val dataManager: DataManager
 ) : LoginContract.Presenter() {
 

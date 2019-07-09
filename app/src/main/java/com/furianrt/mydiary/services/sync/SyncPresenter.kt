@@ -9,8 +9,9 @@ import io.reactivex.Observable
 import io.reactivex.Single
 import io.reactivex.functions.BiFunction
 import org.joda.time.DateTime
+import javax.inject.Inject
 
-class SyncPresenter(
+class SyncPresenter @Inject constructor(
         private val dataManager: DataManager
 ) : SyncContract.Presenter() {
 

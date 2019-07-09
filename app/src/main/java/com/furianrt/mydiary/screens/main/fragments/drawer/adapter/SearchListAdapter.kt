@@ -1,10 +1,14 @@
 package com.furianrt.mydiary.screens.main.fragments.drawer.adapter
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.CheckBox
 import android.widget.Checkable
+import android.widget.TextView
+import androidx.recyclerview.widget.GridLayoutManager
 import com.furianrt.mydiary.R
 import com.furianrt.mydiary.data.model.MyCategory
 import com.furianrt.mydiary.data.model.MyLocation
@@ -12,11 +16,20 @@ import com.furianrt.mydiary.data.model.MyMood
 import com.furianrt.mydiary.data.model.MyTag
 import com.furianrt.mydiary.screens.main.fragments.drawer.adapter.SearchListAdapter.SearchChildViewHolder
 import com.furianrt.mydiary.screens.main.fragments.drawer.adapter.SearchListAdapter.SearchGroupViewHolder
+import com.furianrt.mydiary.utils.*
+import com.furianrt.mydiary.views.CalendarDayView
+import com.kizitonwose.calendarview.CalendarView
+import com.kizitonwose.calendarview.model.CalendarDay
+import com.kizitonwose.calendarview.model.DayOwner
+import com.kizitonwose.calendarview.ui.DayBinder
+import com.kizitonwose.calendarview.ui.ViewContainer
 import com.thoughtbot.expandablecheckrecyclerview.listeners.OnChildCheckChangedListener
 import com.thoughtbot.expandablecheckrecyclerview.viewholders.CheckableChildViewHolder
 import com.thoughtbot.expandablerecyclerview.MultiTypeExpandableRecyclerViewAdapter
 import com.thoughtbot.expandablerecyclerview.models.ExpandableGroup
 import com.thoughtbot.expandablerecyclerview.viewholders.GroupViewHolder
+import kotlinx.android.synthetic.main.calendar_day.view.*
+import kotlinx.android.synthetic.main.nav_search_item_date.view.*
 import kotlinx.android.synthetic.main.nav_search_group.view.*
 import kotlinx.android.synthetic.main.nav_search_item_category.view.*
 import kotlinx.android.synthetic.main.nav_search_item_location.view.*
@@ -26,7 +39,17 @@ import kotlinx.android.synthetic.main.nav_search_item_no_location.view.*
 import kotlinx.android.synthetic.main.nav_search_item_no_mood.view.*
 import kotlinx.android.synthetic.main.nav_search_item_no_tags.view.*
 import kotlinx.android.synthetic.main.nav_search_item_tag.view.*
+import org.threeten.bp.LocalDate
+import org.threeten.bp.Month
+import org.threeten.bp.Year
+import org.threeten.bp.YearMonth
+import org.threeten.bp.format.DateTimeFormatter
+import org.threeten.bp.format.TextStyle
+import java.util.Locale
+import kotlin.collections.ArrayList
+import kotlin.collections.HashSet
 
+//todo тут жесть, надо порефакторить
 class SearchListAdapter(
         var listener: OnSearchListInteractionListener? = null
 ) : MultiTypeExpandableRecyclerViewAdapter<SearchGroupViewHolder, SearchChildViewHolder>(mutableListOf()),
@@ -40,6 +63,12 @@ class SearchListAdapter(
         private const val BUNDLE_SELECTED_MOOD_IDS = "selected_mood_ids"
         private const val BUNDLE_SELECTED_LOCATION_NAMES = "selected_location_names"
         private const val BUNDLE_SELECTED_ITEM_NON_TYPES = "selected_item_non_types"
+        private const val BUNDLE_START_DATE = "start_date"
+        private const val BUNDLE_END_DATE = "end_date"
+        private const val BUNDLE_CALENDAR_SCROLL_DATE = "calendar_scroll_date"
+        private const val BUNDLE_IS_MONTH_SELECTION_ACTIVE = "is_month_selection_active"
+        private const val BUNDLE_IS_YEAR_SELECTION_ACTIVE = "is_year_selection_active"
+        private const val BUNDLE_IS_TODAY_SELECTION_ACTIVE = "is_today_selection_active"
     }
 
     private val mExpandedGroupTypes = HashSet<Int>()
@@ -48,41 +77,66 @@ class SearchListAdapter(
     private val mSelectedMoodIds = HashSet<Int>()
     private val mSelectedLocationNames = HashSet<String>()
     private val mSelectedNoItemTypes = HashSet<Int>()
+    private var mStartDate: LocalDate? = null
+    private var mEndDate: LocalDate? = null
+    private var mCalendarScrollDate: YearMonth? = null
+    private var mCalendar: CalendarView? = null
+    private var mIsMonthSelectionActive = false
+    private var mIsYearSelectionActive = false
+    private var mIsTodaySelectionActive = false
 
     override fun onSaveInstanceState(savedInstanceState: Bundle?) {
-        savedInstanceState?.let {
-            it.putIntegerArrayList(BUNDLE_EXPANDED_GROUP_TYPES, ArrayList(mExpandedGroupTypes))
-            it.putStringArrayList(BUNDLE_SELECTED_TAG_IDS, ArrayList(mSelectedTagIds))
-            it.putStringArrayList(BUNDLE_SELECTED_CATEGORY_IDS, ArrayList(mSelectedCategoryIds))
-            it.putIntegerArrayList(BUNDLE_SELECTED_MOOD_IDS, ArrayList(mSelectedMoodIds))
-            it.putStringArrayList(BUNDLE_SELECTED_LOCATION_NAMES, ArrayList(mSelectedLocationNames))
-            it.putIntegerArrayList(BUNDLE_SELECTED_ITEM_NON_TYPES, ArrayList(mSelectedNoItemTypes))
+        savedInstanceState?.let { state ->
+            state.putIntegerArrayList(BUNDLE_EXPANDED_GROUP_TYPES, ArrayList(mExpandedGroupTypes))
+            state.putStringArrayList(BUNDLE_SELECTED_TAG_IDS, ArrayList(mSelectedTagIds))
+            state.putStringArrayList(BUNDLE_SELECTED_CATEGORY_IDS, ArrayList(mSelectedCategoryIds))
+            state.putIntegerArrayList(BUNDLE_SELECTED_MOOD_IDS, ArrayList(mSelectedMoodIds))
+            state.putStringArrayList(BUNDLE_SELECTED_LOCATION_NAMES, ArrayList(mSelectedLocationNames))
+            state.putIntegerArrayList(BUNDLE_SELECTED_ITEM_NON_TYPES, ArrayList(mSelectedNoItemTypes))
+            state.putBoolean(BUNDLE_IS_MONTH_SELECTION_ACTIVE, mIsMonthSelectionActive)
+            state.putBoolean(BUNDLE_IS_YEAR_SELECTION_ACTIVE, mIsYearSelectionActive)
+            state.putBoolean(BUNDLE_IS_TODAY_SELECTION_ACTIVE, mIsTodaySelectionActive)
+            mStartDate?.let { state.putSerializable(BUNDLE_START_DATE, it) }
+            mEndDate?.let { state.putSerializable(BUNDLE_END_DATE, it) }
+            mCalendarScrollDate?.let { state.putSerializable(BUNDLE_CALENDAR_SCROLL_DATE, it) }
+
         }
     }
 
     override fun onRestoreInstanceState(savedInstanceState: Bundle?) {
-        savedInstanceState?.let {
+        savedInstanceState?.let { state ->
             mExpandedGroupTypes.clear()
-            mExpandedGroupTypes.addAll(it.getIntegerArrayList(BUNDLE_EXPANDED_GROUP_TYPES)
+            mExpandedGroupTypes.addAll(state.getIntegerArrayList(BUNDLE_EXPANDED_GROUP_TYPES)
                     ?: emptyList())
 
             mSelectedTagIds.clear()
-            mSelectedTagIds.addAll(it.getStringArrayList(BUNDLE_SELECTED_TAG_IDS) ?: emptyList())
+            mSelectedTagIds.addAll(state.getStringArrayList(BUNDLE_SELECTED_TAG_IDS)
+                    ?: emptyList())
 
             mSelectedCategoryIds.clear()
-            mSelectedCategoryIds.addAll(it.getStringArrayList(BUNDLE_SELECTED_CATEGORY_IDS)
+            mSelectedCategoryIds.addAll(state.getStringArrayList(BUNDLE_SELECTED_CATEGORY_IDS)
                     ?: emptyList())
 
             mSelectedMoodIds.clear()
-            mSelectedMoodIds.addAll(it.getIntegerArrayList(BUNDLE_SELECTED_MOOD_IDS) ?: emptyList())
+            mSelectedMoodIds.addAll(state.getIntegerArrayList(BUNDLE_SELECTED_MOOD_IDS)
+                    ?: emptyList())
 
             mSelectedLocationNames.clear()
-            mSelectedLocationNames.addAll(it.getStringArrayList(BUNDLE_SELECTED_LOCATION_NAMES)
+            mSelectedLocationNames.addAll(state.getStringArrayList(BUNDLE_SELECTED_LOCATION_NAMES)
                     ?: emptyList())
 
             mSelectedNoItemTypes.clear()
-            mSelectedNoItemTypes.addAll(it.getIntegerArrayList(BUNDLE_SELECTED_ITEM_NON_TYPES)
+            mSelectedNoItemTypes.addAll(state.getIntegerArrayList(BUNDLE_SELECTED_ITEM_NON_TYPES)
                     ?: emptyList())
+
+            mStartDate = state.getSerializable(BUNDLE_START_DATE) as LocalDate?
+            mEndDate = state.getSerializable(BUNDLE_END_DATE) as LocalDate?
+
+            mCalendarScrollDate = state.getSerializable(BUNDLE_CALENDAR_SCROLL_DATE) as YearMonth?
+
+            mIsMonthSelectionActive = state.getBoolean(BUNDLE_IS_MONTH_SELECTION_ACTIVE, false)
+            mIsYearSelectionActive = state.getBoolean(BUNDLE_IS_YEAR_SELECTION_ACTIVE, false)
+            mIsTodaySelectionActive = state.getBoolean(BUNDLE_IS_TODAY_SELECTION_ACTIVE, false)
         }
     }
 
@@ -99,15 +153,25 @@ class SearchListAdapter(
         mSelectedMoodIds.clear()
         mSelectedLocationNames.clear()
         mSelectedNoItemTypes.clear()
+        mIsTodaySelectionActive = false
+        mStartDate = null
+        mEndDate = null
+        notifyItemsStateChanged()
+        listener?.onCheckCleared()
+    }
 
+    private fun notifyItemsStateChanged() {
         //only update the child views that are visible (i.e. their group is expanded)
         for (i in 0 until groups.size) {
-            val group = groups[i]
+            val group = groups[i] as SearchGroup
             if (isGroupExpanded(group)) {
-                notifyItemRangeChanged(expandableList.getFlattenedFirstChildIndex(i), group.itemCount)
+                if (group.type == SearchGroup.TYPE_DATE) {
+                    mCalendar?.notifyCalendarChanged()
+                } else {
+                    notifyItemRangeChanged(expandableList.getFlattenedFirstChildIndex(i), group.itemCount)
+                }
             }
         }
-        listener?.onCheckCleared()
     }
 
     @Suppress("UNCHECKED_CAST")
@@ -136,6 +200,8 @@ class SearchListAdapter(
     override fun onCreateChildViewHolder(parent: ViewGroup?, viewType: Int): SearchChildViewHolder {
         val inflater = LayoutInflater.from(parent?.context)
         return when (viewType) {
+            SearchItem.TYPE_DATE ->
+                SearchDateViewHolder(inflater.inflate(R.layout.nav_search_item_date, parent, false))
             SearchItem.TYPE_TAG ->
                 SearchTagsViewHolder(inflater.inflate(R.layout.nav_search_item_tag, parent, false))
             SearchItem.TYPE_CATEGORY ->
@@ -163,6 +229,8 @@ class SearchListAdapter(
     override fun onBindChildViewHolder(holder: SearchChildViewHolder?, flatPosition: Int, group: ExpandableGroup<*>?, childIndex: Int) {
         val item = (group as SearchGroup).groupItems[childIndex]
         when (item.type) {
+            SearchItem.TYPE_DATE ->
+                holder?.onBindViewHolder(flatPosition, false)
             SearchItem.TYPE_TAG ->
                 holder?.onBindViewHolder(flatPosition, mSelectedTagIds.contains(item.tag!!.id))
             SearchItem.TYPE_CATEGORY ->
@@ -183,21 +251,21 @@ class SearchListAdapter(
     override fun getChildViewType(position: Int, group: ExpandableGroup<*>?, childIndex: Int): Int =
             (group as SearchGroup).groupItems[childIndex].type
 
-    override fun isGroup(viewType: Int): Boolean =
-            viewType == SearchGroup.TYPE_TAG
-                    || viewType == SearchGroup.TYPE_CATEGORY
-                    || viewType == SearchGroup.TYPE_LOCATION
-                    || viewType == SearchGroup.TYPE_MOOD
+    override fun isGroup(viewType: Int): Boolean = viewType == SearchGroup.TYPE_TAG
+            || viewType == SearchGroup.TYPE_CATEGORY
+            || viewType == SearchGroup.TYPE_LOCATION
+            || viewType == SearchGroup.TYPE_MOOD
+            || viewType == SearchGroup.TYPE_DATE
 
-    override fun isChild(viewType: Int): Boolean =
-            viewType == SearchItem.TYPE_TAG
-                    || viewType == SearchItem.TYPE_CATEGORY
-                    || viewType == SearchItem.TYPE_LOCATION
-                    || viewType == SearchItem.TYPE_MOOD
-                    || viewType == SearchItem.TYPE_NO_TAGS
-                    || viewType == SearchItem.TYPE_NO_CATEGORY
-                    || viewType == SearchItem.TYPE_NO_MOOD
-                    || viewType == SearchItem.TYPE_NO_LOCATION
+    override fun isChild(viewType: Int): Boolean = viewType == SearchItem.TYPE_TAG
+            || viewType == SearchItem.TYPE_CATEGORY
+            || viewType == SearchItem.TYPE_LOCATION
+            || viewType == SearchItem.TYPE_MOOD
+            || viewType == SearchItem.TYPE_NO_TAGS
+            || viewType == SearchItem.TYPE_NO_CATEGORY
+            || viewType == SearchItem.TYPE_NO_MOOD
+            || viewType == SearchItem.TYPE_NO_LOCATION
+            || viewType == SearchItem.TYPE_DATE
 
     override fun onChildCheckChanged(view: View?, checked: Boolean, flatPos: Int) {
         val listPos = expandableList.getUnflattenedPosition(flatPos)
@@ -291,14 +359,23 @@ class SearchListAdapter(
                 && mSelectedCategoryIds.isEmpty()
                 && mSelectedMoodIds.isEmpty()
                 && mSelectedLocationNames.isEmpty()
-                && mSelectedNoItemTypes.isEmpty()) {
+                && mSelectedNoItemTypes.isEmpty()
+                && mStartDate == null
+                && mEndDate == null) {
             listener?.onCheckCleared()
         }
     }
 
     private fun isFirstCheck() {
+        val dates = if (mStartDate != null && mEndDate != null) {
+            2
+        } else if (mStartDate != null && mEndDate == null) {
+            1
+        } else {
+            0
+        }
         val checkCount = mSelectedTagIds.size + mSelectedCategoryIds.size + mSelectedMoodIds.size +
-                mSelectedLocationNames.size + mSelectedNoItemTypes.size
+                mSelectedLocationNames.size + mSelectedNoItemTypes.size + dates
         if (checkCount == 1) {
             listener?.onFirstCheck()
         }
@@ -310,13 +387,17 @@ class SearchListAdapter(
 
         fun bind(group: SearchGroup) {
             mGroup = group
+
             if (mExpandedGroupTypes.contains(group.type)) {
                 itemView.image_group_arrow.rotation = 180f
             } else {
                 itemView.image_group_arrow.rotation = 0f
             }
+
             itemView.text_search_group_name.text = group.groupTitle
+
             when (group.type) {
+                SearchGroup.TYPE_DATE -> itemView.image_group.setImageResource(R.drawable.ic_date_range)
                 SearchGroup.TYPE_TAG -> itemView.image_group.setImageResource(R.drawable.ic_tag_big)
                 SearchGroup.TYPE_CATEGORY -> itemView.image_group.setImageResource(R.drawable.ic_folder_big)
                 SearchGroup.TYPE_MOOD -> itemView.image_group.setImageResource(R.drawable.ic_smile_bold)
@@ -343,6 +424,218 @@ class SearchListAdapter(
 
     abstract class SearchChildViewHolder(view: View) : CheckableChildViewHolder(view) {
         abstract fun bind(item: SearchItem)
+    }
+
+    inner class SearchDateViewHolder(view: View) : SearchChildViewHolder(view) {
+
+        private val mToday = LocalDate.now()
+
+        @SuppressLint("DefaultLocale")
+        override fun bind(item: SearchItem) {
+            // Set the First day of week depending on Locale
+            val daysOfWeek = daysOfWeekFromLocale()
+            for (i in 0 until itemView.layout_legend.childCount) {
+                val textView = itemView.layout_legend.getChildAt(i) as TextView
+                textView.text = daysOfWeek[i].getDisplayName(TextStyle.SHORT, Locale.getDefault())
+            }
+
+            val currentDate = YearMonth.now()
+            val minDate = YearMonth.of(1980, Month.JANUARY)
+            val maxDate = YearMonth.of(2100, Month.DECEMBER)
+
+            mCalendar = itemView.calendar_search
+
+            itemView.calendar_search.setup(minDate, maxDate, daysOfWeek.first())
+
+            itemView.calendar_search.monthScrollListener = { calendarMonth ->
+                mCalendarScrollDate = calendarMonth.yearMonth
+                updateCalendarHeader(calendarMonth.yearMonth)
+            }
+
+            val savedScrollDate = mCalendarScrollDate
+            if (savedScrollDate != null) {
+                scrollToMonth(savedScrollDate)
+            } else {
+                scrollToMonth(currentDate)
+            }
+
+            itemView.calendar_search.dayBinder = object : DayBinder<DayViewContainer> {
+                override fun create(view: View) = DayViewContainer(view)
+                override fun bind(container: DayViewContainer, day: CalendarDay) {
+                    with(container) {
+                        this.day = day
+                        calendarDayView.text = day.date.dayOfMonth.toString()
+                        calendarDayView.background = null
+                        calendarDayView.showCircle = false
+
+                        item.dateColors!![day.date]?.let { colors ->
+                            calendarDayView.showCircle = true
+                            calendarDayView.setColors(colors)
+                        }
+
+                        val select = mStartDate == day.date && mEndDate == null
+                                || (mStartDate != null && mEndDate != null && day.date >= mStartDate && day.date <= mEndDate)
+
+                        calendarDayView.isCurrentDay = day.date == mToday
+                        calendarDayView.isCurrentMonth = day.owner == DayOwner.THIS_MONTH
+                        calendarDayView.isSelected = select
+
+                        if (calendarDayView.isCurrentDay) {
+                            selectToday(select && mEndDate == null)
+                        }
+                    }
+                }
+            }
+
+            itemView.layout_list_calendar.setOnTouchListener { _, _ -> true }
+
+            selectToday(mIsTodaySelectionActive)
+
+            if (mIsMonthSelectionActive) {
+                showMonthSelection()
+            } else if (mIsYearSelectionActive) {
+                showYearSelection(item)
+            }
+
+            itemView.text_today.setOnClickListener {
+                if (mEndDate == null && mStartDate == mToday) {
+                    mStartDate = null
+                    selectToday(false)
+                    itemView.calendar_search.notifyCalendarChanged()
+                    isLastCheck()
+                } else {
+                    mStartDate = mToday
+                    mEndDate = null
+                    selectToday(true)
+                    itemView.calendar_search.notifyCalendarChanged()
+                    scrollToMonth(YearMonth.now())
+                    isFirstCheck()
+                }
+                listener?.onSearchDatesSelected(mStartDate?.toMills(), mEndDate?.toMills())
+            }
+
+            itemView.text_month.setOnClickListener {
+                if (mIsMonthSelectionActive) {
+                    hideMonthSelection()
+                } else {
+                    hideYearSelection()
+                    showMonthSelection()
+                }
+            }
+
+            if (!item.dateColors.isNullOrEmpty()) {
+                itemView.text_year.setOnClickListener {
+                    if (mIsYearSelectionActive) {
+                        hideYearSelection()
+                    } else {
+                        hideMonthSelection()
+                        showYearSelection(item)
+                    }
+                }
+            }
+        }
+
+        private fun selectToday(select: Boolean) {
+            mIsTodaySelectionActive = select
+            if (select) {
+                itemView.text_today.setTextColorResource(R.color.white)
+                itemView.text_today.setBackgroundResource(R.drawable.background_corner_solid)
+            } else {
+                itemView.text_today.setTextColor(itemView.context.getThemePrimaryColor())
+                itemView.text_today.setBackgroundResource(R.drawable.background_corner_stroke)
+            }
+        }
+
+        private fun updateCalendarHeader(yearMonth: YearMonth) {
+            itemView.text_month.text = DateTimeFormatter.ofPattern("MMMM")
+                    .format(yearMonth)
+                    .capitalize()
+            itemView.text_year.text = yearMonth.year.toString()
+        }
+
+        private fun scrollToMonth(yearMonth: YearMonth) {
+            mCalendarScrollDate = yearMonth
+            itemView.calendar_search.scrollToMonth(yearMonth)
+            updateCalendarHeader(yearMonth)
+        }
+
+        private fun showMonthSelection() {
+            mIsMonthSelectionActive = true
+            itemView.text_month.setTextColorResource(R.color.white)
+            itemView.text_month.setBackgroundResource(R.drawable.background_corner_solid)
+            val adapter = CalendarMonthAdapter(object : CalendarMonthAdapter.OnMonthListInteractionListener {
+                override fun onMonthClick(month: Month) {
+                    mIsMonthSelectionActive = false
+                    hideMonthSelection()
+                    mCalendarScrollDate?.let { scrollToMonth(YearMonth.of(it.year, month.value)) }
+                }
+            })
+            itemView.layout_list_calendar.visibility = View.VISIBLE
+            itemView.list_calendar.layoutManager = GridLayoutManager(itemView.context, 4, GridLayoutManager.HORIZONTAL, false)
+            itemView.list_calendar.adapter = adapter
+            adapter.showList(Month.values().toList())
+        }
+
+        private fun hideMonthSelection() {
+            mIsMonthSelectionActive = false
+            itemView.layout_list_calendar.visibility = View.GONE
+            itemView.text_month.setTextColor(itemView.context.getThemePrimaryColor())
+            itemView.text_month.setBackgroundResource(R.drawable.background_corner_stroke)
+        }
+
+        private fun showYearSelection(item: SearchItem) {
+            mIsYearSelectionActive = true
+            itemView.text_year.setTextColorResource(R.color.white)
+            itemView.text_year.setBackgroundResource(R.drawable.background_corner_solid)
+            val adapter = CalendarYearAdapter(object : CalendarYearAdapter.OnYearListInteractionListener {
+                override fun onYearClick(year: Year) {
+                    hideYearSelection()
+                    mCalendarScrollDate?.let { scrollToMonth(YearMonth.of(year.value, it.monthValue)) }
+                }
+            })
+            itemView.layout_list_calendar.visibility = View.VISIBLE
+            itemView.list_calendar.layoutManager = GridLayoutManager(itemView.context, 4, GridLayoutManager.HORIZONTAL, false)
+            itemView.list_calendar.adapter = adapter
+            adapter.showList(item.dateColors!!.keys.map { Year.of(it.year) }.distinct())
+        }
+
+        private fun hideYearSelection() {
+            mIsYearSelectionActive = false
+            itemView.layout_list_calendar.visibility = View.GONE
+            itemView.text_year.setTextColor(itemView.context.getThemePrimaryColor())
+            itemView.text_year.setBackgroundResource(R.drawable.background_corner_stroke)
+        }
+
+        inner class DayViewContainer(view: View) : ViewContainer(view) {
+            lateinit var day: CalendarDay // Will be set when this container is bound.
+            val calendarDayView: CalendarDayView = view.text_calendar_day
+
+            init {
+                view.setOnClickListener {
+                    val date = day.date
+                    if (mStartDate != null) {
+                        if (date < mStartDate || mEndDate != null) {
+                            mStartDate = date
+                            mEndDate = null
+                        } else if (date != mStartDate) {
+                            mEndDate = date
+                        } else if (date == mStartDate) {
+                            mStartDate = null
+                            isLastCheck()
+                        }
+                    } else {
+                        mStartDate = date
+                        isFirstCheck()
+                    }
+
+                    itemView.calendar_search.notifyCalendarChanged()
+                    listener?.onSearchDatesSelected(mStartDate?.toMills(), mEndDate?.toMills())
+                }
+            }
+        }
+
+        //Для календаря Checkable не нужен, но передать что-то нужно
+        override fun getCheckable(): Checkable = CheckBox(itemView.context)
     }
 
     inner class SearchTagsViewHolder(view: View) : SearchChildViewHolder(view) {
@@ -438,6 +731,7 @@ class SearchListAdapter(
         fun onNoLocationChackStateChange(checked: Boolean)
         fun onMoodCheckStateChange(mood: MyMood, checked: Boolean)
         fun onNoMoodCheckStateChange(checked: Boolean)
+        fun onSearchDatesSelected(startDate: Long?, endDate: Long?)
         fun onCheckCleared()
         fun onFirstCheck()
     }

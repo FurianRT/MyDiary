@@ -9,7 +9,7 @@ import com.furianrt.mydiary.data.model.*
         entities = [MyNote::class, MyCategory::class, MyTag::class, MyLocation::class, MyMood::class,
             NoteTag::class, MyImage::class, MyHeaderImage::class, MyNoteAppearance::class,
             MyProfile::class, MyForecast::class, NoteLocation::class],
-        version = 1,
+        version = 2,
         exportSchema = false
 )
 @TypeConverters(RoomTypeConverter::class)

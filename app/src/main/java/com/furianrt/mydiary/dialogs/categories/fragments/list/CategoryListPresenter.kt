@@ -4,8 +4,9 @@ import com.furianrt.mydiary.data.DataManager
 import com.furianrt.mydiary.data.model.MyCategory
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
+import javax.inject.Inject
 
-class CategoryListPresenter(
+class CategoryListPresenter @Inject constructor(
         private val dataManager: DataManager
 ) : CategoryListContract.Presenter() {
 

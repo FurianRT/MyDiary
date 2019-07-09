@@ -4,8 +4,9 @@ import com.furianrt.mydiary.data.DataManager
 import com.furianrt.mydiary.data.model.MyCategory
 import com.furianrt.mydiary.utils.generateUniqueId
 import io.reactivex.android.schedulers.AndroidSchedulers
+import javax.inject.Inject
 
-class CategoryAddPresenter(
+class CategoryAddPresenter @Inject constructor(
         private val dataManager: DataManager
 ) : CategoryAddContract.Presenter() {
 

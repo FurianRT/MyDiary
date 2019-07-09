@@ -14,8 +14,9 @@ import io.reactivex.Maybe
 import io.reactivex.Observable
 import io.reactivex.Single
 import java.util.concurrent.TimeUnit
+import javax.inject.Inject
 
-class CloudHelperImp(
+class CloudHelperImp @Inject constructor(
         private val firestore: FirebaseFirestore,
         private val firebaseStorage: FirebaseStorage
 ) : CloudHelper {
@@ -74,11 +75,11 @@ class CloudHelperImp(
     override fun saveNoteLocations(noteLocations: List<NoteLocation>, userId: String): Completable =
             RxFirestore.runTransaction(firestore) { transaction ->
                 noteLocations.forEach { noteLocation ->
-                    Log.e(TAG, "saving noteLocation in cloud Id: " + noteLocation.noteId + noteLocation.locationName)
+                    Log.e(TAG, "saving noteLocation in cloud Id: " + noteLocation.noteId + noteLocation.locationId)
                     transaction.set(firestore.collection(COLLECTION_USERS)
                             .document(userId)
                             .collection(COLLECTION_NOTE_LOCATIONS)
-                            .document(noteLocation.noteId + noteLocation.locationName), noteLocation)
+                            .document(noteLocation.noteId + noteLocation.locationId), noteLocation)
                 }
             }.timeout(1, TimeUnit.MINUTES)
 
@@ -182,11 +183,11 @@ class CloudHelperImp(
     override fun deleteNoteLocations(noteLocations: List<NoteLocation>, userId: String): Completable =
             RxFirestore.runTransaction(firestore) { transaction ->
                 noteLocations.forEach { noteLocation ->
-                    Log.e(TAG, "deleting noteTag from cloud id: " + noteLocation.noteId + noteLocation.locationName)
+                    Log.e(TAG, "deleting noteTag from cloud id: " + noteLocation.noteId + noteLocation.locationId)
                     transaction.delete(firestore.collection(COLLECTION_USERS)
                             .document(userId)
                             .collection(COLLECTION_NOTE_LOCATIONS)
-                            .document(noteLocation.noteId + noteLocation.locationName))
+                            .document(noteLocation.noteId + noteLocation.locationId))
                 }
             }.timeout(1, TimeUnit.MINUTES).onErrorComplete()
 

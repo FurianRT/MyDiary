@@ -4,11 +4,15 @@ import android.content.Context
 import androidx.core.content.ContextCompat
 import androidx.preference.PreferenceManager
 import com.furianrt.mydiary.R
+import com.furianrt.mydiary.di.application.modules.app.AppContext
 import com.furianrt.mydiary.utils.getThemeAccentColor
 import com.furianrt.mydiary.utils.getThemePrimaryColor
 import org.joda.time.DateTime
+import javax.inject.Inject
 
-class PreferencesHelperImp(val context: Context) : PreferencesHelper {
+class PreferencesHelperImp @Inject constructor(
+        @AppContext private val context: Context
+) : PreferencesHelper {
 
     private val mPrefs = PreferenceManager.getDefaultSharedPreferences(context)
 

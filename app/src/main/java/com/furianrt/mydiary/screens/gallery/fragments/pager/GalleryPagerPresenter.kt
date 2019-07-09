@@ -4,8 +4,9 @@ import com.furianrt.mydiary.data.DataManager
 import com.furianrt.mydiary.data.model.MyImage
 import io.reactivex.android.schedulers.AndroidSchedulers
 import org.joda.time.DateTime
+import javax.inject.Inject
 
-class GalleryPagerPresenter(
+class GalleryPagerPresenter @Inject constructor(
         private val dataManager: DataManager
 ) : GalleryPagerContract.Presenter() {
 

@@ -4,6 +4,7 @@ import android.content.Context
 import com.furianrt.mydiary.BuildConfig
 import com.furianrt.mydiary.R
 import com.furianrt.mydiary.data.model.pojo.MyUser
+import com.furianrt.mydiary.di.application.modules.app.AppContext
 import com.google.firebase.auth.EmailAuthProvider
 import com.google.firebase.auth.FirebaseAuth
 import durdinapps.rxfirebase2.RxFirebaseAuth
@@ -12,12 +13,13 @@ import io.reactivex.Completable
 import io.reactivex.Observable
 import io.reactivex.Single
 import java.util.*
+import javax.inject.Inject
 import javax.mail.*
 import javax.mail.internet.InternetAddress
 import javax.mail.internet.MimeMessage
 
-class AuthHelperImp(
-        private val context: Context,
+class AuthHelperImp @Inject constructor(
+        @AppContext private val context: Context,
         private val firebaseAuth: FirebaseAuth
 ) : AuthHelper {
 

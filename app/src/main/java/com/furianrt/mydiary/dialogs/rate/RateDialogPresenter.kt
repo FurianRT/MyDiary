@@ -1,8 +1,9 @@
 package com.furianrt.mydiary.dialogs.rate
 
 import com.furianrt.mydiary.data.DataManager
+import javax.inject.Inject
 
-class RateDialogPresenter(
+class RateDialogPresenter @Inject constructor(
         private val dataManager: DataManager
 ) : RateDialogContract.Presenter() {
 

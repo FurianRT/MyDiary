@@ -1,8 +1,9 @@
 package com.furianrt.mydiary.screens.main.fragments.premium
 
 import com.furianrt.mydiary.data.DataManager
+import javax.inject.Inject
 
-class PremiumPresenter(
+class PremiumPresenter @Inject constructor(
         private val dataManager: DataManager
 ) : PremiumContract.Presenter() {
 

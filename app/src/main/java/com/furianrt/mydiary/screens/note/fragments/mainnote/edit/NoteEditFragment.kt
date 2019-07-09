@@ -203,15 +203,12 @@ class NoteEditFragment : BaseFragment(), NoteEditFragmentContract.MvpView {
         edit_note_title.removeTextChangedListener(mTextChangeListener)
         edit_note_content.removeTextChangedListener(mTextChangeListener)
         // Клава с SUGGESTIONS кэширует текст и делает странные вещи при undo/redo.
-        // Приходится отключать SUGGESTIONS при программном измениии текста
+        // Приходится отключать SUGGESTIONS при программном изменении текста
         val currentTitleInputType = edit_note_title.inputType
         val currentContentInputType = edit_note_content.inputType
 
-        val titleSelection = edit_note_title.selectionStart
-        val contentSelection = edit_note_content.selectionStart
-
-        edit_note_title.inputType = InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS and InputType.TYPE_TEXT_FLAG_CAP_SENTENCES
-        edit_note_content.inputType = InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS and InputType.TYPE_TEXT_FLAG_CAP_SENTENCES
+        edit_note_title.inputType = InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS
+        edit_note_content.inputType = InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS
 
         edit_note_title.setText(title)
         edit_note_content.setText(content)
@@ -221,17 +218,11 @@ class NoteEditFragment : BaseFragment(), NoteEditFragmentContract.MvpView {
         edit_note_title.addTextChangedListener(mTextChangeListener)
         edit_note_content.addTextChangedListener(mTextChangeListener)
 
-        edit_note_title.setSelection(if (titleSelection > title.length) {
-            title.length
-        } else {
-            titleSelection
-        })
-
-        edit_note_content.setSelection(if (contentSelection > content.length) {
-            content.length
-        } else {
-            contentSelection
-        })
+        if (edit_note_title.isFocused) {
+            edit_note_title.setSelection(title.length)
+        } else if (edit_note_content.isFocused) {
+            edit_note_content.setSelection(content.length)
+        }
     }
 
     fun getNoteTitleText(): String = edit_note_title?.text?.toString() ?: ""

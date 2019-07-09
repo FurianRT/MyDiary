@@ -2,8 +2,9 @@ package com.furianrt.mydiary.screens.main.fragments.profile.menu
 
 import com.furianrt.mydiary.data.DataManager
 import com.furianrt.mydiary.data.model.SyncProgressMessage
+import javax.inject.Inject
 
-class MenuProfilePresenter(
+class MenuProfilePresenter @Inject constructor(
         private val dataManager: DataManager
 ) : MenuProfileContract.Presenter() {
 

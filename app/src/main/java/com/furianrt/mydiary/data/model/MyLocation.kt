@@ -9,7 +9,8 @@ import kotlinx.android.parcel.Parcelize
 @Parcelize
 @Entity(tableName = MyLocation.TABLE_NAME)
 data class MyLocation(
-        @ColumnInfo(name = FIELD_NAME) @PrimaryKey(autoGenerate = false) var name: String = "",
+        @ColumnInfo(name = FIELD_ID) @PrimaryKey(autoGenerate = false) var id: String = "",
+        @ColumnInfo(name = FIELD_NAME)var name: String = "",
         @ColumnInfo(name = FIELD_LAT) var lat: Double = 0.0,
         @ColumnInfo(name = FIELD_LON) var lon: Double = 0.0,
         @ColumnInfo(name = FIELD_SYNC_WITH) var syncWith: MutableList<String> = mutableListOf(),
@@ -18,6 +19,7 @@ data class MyLocation(
 
     companion object {
         const val TABLE_NAME = "Locations"
+        const val FIELD_ID = "id_location"
         const val FIELD_NAME = "name_location"
         const val FIELD_LAT = "lat"
         const val FIELD_LON = "lon"

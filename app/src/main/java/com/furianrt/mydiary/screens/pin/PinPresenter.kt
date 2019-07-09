@@ -4,8 +4,9 @@ import android.os.Bundle
 import android.os.Handler
 import com.furianrt.mydiary.data.DataManager
 import io.reactivex.android.schedulers.AndroidSchedulers
+import javax.inject.Inject
 
-class PinPresenter(
+class PinPresenter @Inject constructor(
         private val dataManager: DataManager
 ) : PinContract.Presenter() {
 

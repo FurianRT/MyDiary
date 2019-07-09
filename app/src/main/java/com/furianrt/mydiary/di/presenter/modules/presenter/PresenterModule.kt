@@ -1,6 +1,5 @@
 package com.furianrt.mydiary.di.presenter.modules.presenter
 
-import com.furianrt.mydiary.data.DataManager
 import com.furianrt.mydiary.di.presenter.component.PresenterScope
 import com.furianrt.mydiary.dialogs.categories.CategoriesDialogContract
 import com.furianrt.mydiary.dialogs.categories.CategoriesDialogPresenter
@@ -86,219 +85,177 @@ import com.furianrt.mydiary.screens.settings.note.NoteSettingsContract
 import com.furianrt.mydiary.screens.settings.note.NoteSettingsPresenter
 import com.furianrt.mydiary.services.sync.SyncContract
 import com.furianrt.mydiary.services.sync.SyncPresenter
+import dagger.Binds
 import dagger.Module
-import dagger.Provides
 
 @Module
-class PresenterModule {
+interface PresenterModule {
 
-    @Provides
+    @Binds
     @PresenterScope
-    fun provideMainActivityPresenter(dataManager: DataManager): MainActivityContract.Presenter =
-            MainActivityPresenter(dataManager)
+    fun mainActivityPresenter(presenter: MainActivityPresenter): MainActivityContract.Presenter
 
-    @Provides
+    @Binds
     @PresenterScope
-    fun provideNoteActivityPresenter(dataManager: DataManager): NoteActivityContract.Presenter =
-            NoteActivityPresenter(dataManager)
+    fun noteActivityPresenter(presenter: NoteActivityPresenter): NoteActivityContract.Presenter
 
-    @Provides
+    @Binds
     @PresenterScope
-    fun provideNoteContentFragmentPresenter(dataManager: DataManager)
-            : NoteContentFragmentContract.Presenter = NoteContentFragmentPresenter(dataManager)
+    fun noteContentFragmentPresenter(presenter: NoteContentFragmentPresenter): NoteContentFragmentContract.Presenter
 
-    @Provides
+    @Binds
     @PresenterScope
-    fun provideNoteEditFragmentPresenter(dataManager: DataManager)
-            : NoteEditFragmentContract.Presenter = NoteEditFragmentPresenter(dataManager)
+    fun noteEditFragmentPresenter(presenter: NoteEditFragmentPresenter): NoteEditFragmentContract.Presenter
 
-    @Provides
+    @Binds
     @PresenterScope
-    fun provideNoteFragmentPresenter(dataManager: DataManager)
-            : NoteFragmentContract.Presenter = NoteFragmentPresenter(dataManager)
+    fun noteFragmentPresenter(presenter: NoteFragmentPresenter): NoteFragmentContract.Presenter
 
-    @Provides
+    @Binds
     @PresenterScope
-    fun provideTagsDialogPresenter(dataManager: DataManager)
-            : TagsDialogContract.Presenter = TagsDialogPresenter(dataManager)
+    fun tagsDialogPresenter(presenter: TagsDialogPresenter): TagsDialogContract.Presenter
 
-    @Provides
+    @Binds
     @PresenterScope
-    fun provideMoodsDialogPresenter(dataManager: DataManager)
-            : MoodsDialogContract.Presenter = MoodsDialogPresenter(dataManager)
+    fun moodsDialogPresenter(presenter: MoodsDialogPresenter): MoodsDialogContract.Presenter
 
-    @Provides
+    @Binds
     @PresenterScope
-    fun provideCategoriesDialogPresenter(dataManager: DataManager)
-            : CategoriesDialogContract.Presenter = CategoriesDialogPresenter(dataManager)
+    fun categoriesDialogPresenter(presenter: CategoriesDialogPresenter): CategoriesDialogContract.Presenter
 
-    @Provides
+    @Binds
     @PresenterScope
-    fun provideGalleryActivityPresenter(dataManager: DataManager): GalleryActivityContract.Presenter =
-            GalleryActivityPresenter(dataManager)
+    fun galleryActivityPresenter(presenter: GalleryActivityPresenter): GalleryActivityContract.Presenter
 
-    @Provides
+    @Binds
     @PresenterScope
-    fun provideGalleryPagerPresenter(dataManager: DataManager): GalleryPagerContract.Presenter =
-            GalleryPagerPresenter(dataManager)
+    fun galleryPagerPresenter(presenter: GalleryPagerPresenter): GalleryPagerContract.Presenter
 
-    @Provides
+    @Binds
     @PresenterScope
-    fun provideGalleryListPresenter(dataManager: DataManager): GalleryListContract.Presenter =
-            GalleryListPresenter(dataManager)
+    fun galleryListPresenter(presenter: GalleryListPresenter): GalleryListContract.Presenter
 
-    @Provides
+    @Binds
     @PresenterScope
-    fun provideCategoryListPresenter(dataManager: DataManager): CategoryListContract.Presenter =
-            CategoryListPresenter(dataManager)
+    fun categoryListPresenter(presenter: CategoryListPresenter): CategoryListContract.Presenter
 
-    @Provides
+    @Binds
     @PresenterScope
-    fun provideCategoryEditPresenter(dataManager: DataManager): CategoryEditContract.Presenter =
-            CategoryEditPresenter(dataManager)
+    fun categoryEditPresenter(presenter: CategoryEditPresenter): CategoryEditContract.Presenter
 
-    @Provides
+    @Binds
     @PresenterScope
-    fun provideGlobalSettingsPresenter(dataManager: DataManager): GlobalSettingsContract.Presenter =
-            GlobalSettingsPresenter(dataManager)
+    fun globalSettingsPresenter(presenter: GlobalSettingsPresenter): GlobalSettingsContract.Presenter
 
-    @Provides
+    @Binds
     @PresenterScope
-    fun provideNoteSettingsPresenter(dataManager: DataManager): NoteSettingsContract.Presenter =
-            NoteSettingsPresenter(dataManager)
+    fun noteSettingsPresenter(presenter: NoteSettingsPresenter): NoteSettingsContract.Presenter
 
-    @Provides
+    @Binds
     @PresenterScope
-    fun providePremiumPresenter(dataManager: DataManager): PremiumContract.Presenter =
-            PremiumPresenter(dataManager)
+    fun premiumPresenter(presenter: PremiumPresenter): PremiumContract.Presenter
 
-    @Provides
+    @Binds
     @PresenterScope
-    fun provideProfilePresenter(dataManager: DataManager): ProfileContract.Presenter =
-            ProfilePresenter(dataManager)
+    fun profilePresenter(presenter: ProfilePresenter): ProfileContract.Presenter
 
-    @Provides
+    @Binds
     @PresenterScope
-    fun provideRegistrationPresenter(dataManager: DataManager): RegistrationContract.Presenter =
-            RegistrationPresenter(dataManager)
+    fun registrationPresenter(presenter: RegistrationPresenter): RegistrationContract.Presenter
 
-    @Provides
+    @Binds
     @PresenterScope
-    fun provideLoginPresenter(dataManager: DataManager): LoginContract.Presenter =
-            LoginPresenter(dataManager)
+    fun loginPresenter(presenter: LoginPresenter): LoginContract.Presenter
 
-    @Provides
+    @Binds
     @PresenterScope
-    fun provideAuthPresenter(dataManager: DataManager): AuthContract.Presenter =
-            AuthPresenter(dataManager)
+    fun authPresenter(presenter: AuthPresenter): AuthContract.Presenter
 
-    @Provides
+    @Binds
     @PresenterScope
-    fun provideImageSettingsPresenter(dataManager: DataManager): ImageSettingsContract.Presenter =
-            ImageSettingsPresenter(dataManager)
+    fun imageSettingsPresenter(presenter: ImageSettingsPresenter): ImageSettingsContract.Presenter
 
-    @Provides
+    @Binds
     @PresenterScope
-    fun provideSyncPresenter(dataManager: DataManager): SyncContract.Presenter =
-            SyncPresenter(dataManager)
+    fun syncPresenter(presenter: SyncPresenter): SyncContract.Presenter
 
-    @Provides
+    @Binds
     @PresenterScope
-    fun providePasswordPresenter(dataManager: DataManager): PasswordContract.Presenter =
-            PasswordPresenter(dataManager)
+    fun passwordPresenter(presenter: PasswordPresenter): PasswordContract.Presenter
 
-    @Provides
+    @Binds
     @PresenterScope
-    fun provideMenuProfilePresenter(dataManager: DataManager): MenuProfileContract.Presenter =
-            MenuProfilePresenter(dataManager)
+    fun menuProfilePresenter(presenter: MenuProfilePresenter): MenuProfileContract.Presenter
 
-    @Provides
+    @Binds
     @PresenterScope
-    fun provideSignOutPresenter(dataManager: DataManager): SignOutContract.Presenter =
-            SignOutPresenter(dataManager)
+    fun signOutPresenter(presenter: SignOutPresenter): SignOutContract.Presenter
 
-    @Provides
+    @Binds
     @PresenterScope
-    fun provideAboutProfilePresenter(dataManager: DataManager): AboutProfileContract.Presenter =
-            AboutProfilePresenter(dataManager)
+    fun aboutProfilePresenter(presenter: AboutProfilePresenter): AboutProfileContract.Presenter
 
-    @Provides
+    @Binds
     @PresenterScope
-    fun providePinPresenter(dataManager: DataManager): PinContract.Presenter =
-            PinPresenter(dataManager)
+    fun pinPresenter(presenter: PinPresenter): PinContract.Presenter
 
-    @Provides
+    @Binds
     @PresenterScope
-    fun provideBackupEmailPresenter(dataManager: DataManager): BackupEmailContract.Presenter =
-            BackupEmailPresenter(dataManager)
+    fun backupEmailPresenter(presenter: BackupEmailPresenter): BackupEmailContract.Presenter
 
-    @Provides
+    @Binds
     @PresenterScope
-    fun provideForgotPassPresenter(dataManager: DataManager): ForgotPassContract.Presenter =
-            ForgotPassPresenter(dataManager)
+    fun forgotPassPresenter(presenter: ForgotPassPresenter): ForgotPassContract.Presenter
 
-    @Provides
+    @Binds
     @PresenterScope
-    fun provideCategoryDeletePresenter(dataManager: DataManager): CategoryDeleteContract.Presenter =
-            CategoryDeletePresenter(dataManager)
+    fun categoryDeletePresenter(presenter: CategoryDeletePresenter): CategoryDeleteContract.Presenter
 
-    @Provides
+    @Binds
     @PresenterScope
-    fun provideTagListPresenter(dataManager: DataManager): TagListContract.Presenter =
-            TagListPresenter(dataManager)
+    fun tagListPresenter(presenter: TagListPresenter): TagListContract.Presenter
 
-    @Provides
+    @Binds
     @PresenterScope
-    fun provideTagDeletePresenter(dataManager: DataManager): TagDeleteContract.Presenter =
-            TagDeletePresenter(dataManager)
+    fun tagDeletePresenter(presenter: TagDeletePresenter): TagDeleteContract.Presenter
 
-    @Provides
+    @Binds
     @PresenterScope
-    fun provideTagAddPresenter(dataManager: DataManager): TagAddContract.Presenter =
-            TagAddPresenter(dataManager)
+    fun tagAddPresenter(presenter: TagAddPresenter): TagAddContract.Presenter
 
-    @Provides
+    @Binds
     @PresenterScope
-    fun provideTagEditPresenter(dataManager: DataManager): TagEditContract.Presenter =
-            TagEditPresenter(dataManager)
+    fun tagEditPresenter(presenter: TagEditPresenter): TagEditContract.Presenter
 
-    @Provides
+    @Binds
     @PresenterScope
-    fun provideDeleteNotePresenter(dataManager: DataManager): DeleteNoteContract.Presenter =
-            DeleteNotePresenter(dataManager)
+    fun deleteNotePresenter(presenter: DeleteNotePresenter): DeleteNoteContract.Presenter
 
-    @Provides
+    @Binds
     @PresenterScope
-    fun provideCategoryAddPresenter(dataManager: DataManager): CategoryAddContract.Presenter =
-            CategoryAddPresenter(dataManager)
+    fun categoryAddPresenter(presenter: CategoryAddPresenter): CategoryAddContract.Presenter
 
-    @Provides
+    @Binds
     @PresenterScope
-    fun provideDeleteImagePresenter(dataManager: DataManager): DeleteImageContract.Presenter =
-            DeleteImagePresenter(dataManager)
+    fun deleteImagePresenter(presenter: DeleteImagePresenter): DeleteImageContract.Presenter
 
-    @Provides
+    @Binds
     @PresenterScope
-    fun provideSendEmailPresenter(dataManager: DataManager): SendEmailContract.Presenter =
-            SendEmailPresenter(dataManager)
+    fun sendEmailPresenter(presenter: SendEmailPresenter): SendEmailContract.Presenter
 
-    @Provides
+    @Binds
     @PresenterScope
-    fun providePrivacyPresenter(dataManager: DataManager): PrivacyContract.Presenter =
-            PrivacyPresenter(dataManager)
+    fun privacyPresenter(presenter: PrivacyPresenter): PrivacyContract.Presenter
 
-    @Provides
+    @Binds
     @PresenterScope
-    fun provideDrawerMenuPresenter(dataManager: DataManager): DrawerMenuContract.Presenter =
-            DrawerMenuPresenter(dataManager)
+    fun drawerMenuPresenter(presenter: DrawerMenuPresenter): DrawerMenuContract.Presenter
 
-    @Provides
+    @Binds
     @PresenterScope
-    fun provideRateDialogPresenter(dataManager: DataManager): RateDialogContract.Presenter =
-            RateDialogPresenter(dataManager)
+    fun rateDialogPresenter(presenter: RateDialogPresenter): RateDialogContract.Presenter
 
-    @Provides
+    @Binds
     @PresenterScope
-    fun provideDailySettingsPresenter(dataManager: DataManager): DailySettingsContract.Presenter =
-            DailySettingsPresenter(dataManager)
+    fun dailySettingsPresenter(presenter: DailySettingsPresenter): DailySettingsContract.Presenter
 }

@@ -3,15 +3,13 @@ package com.furianrt.mydiary.di.application.modules.app
 import com.furianrt.mydiary.analytics.MyAnalytics
 import com.furianrt.mydiary.analytics.MyAnalyticsImp
 import com.furianrt.mydiary.di.application.component.AppScope
-import com.google.firebase.analytics.FirebaseAnalytics
+import dagger.Binds
 import dagger.Module
-import dagger.Provides
 
 @Module
-class AnalyticsModule {
+interface AnalyticsModule {
 
-    @Provides
+    @Binds
     @AppScope
-    fun provideMyAnalytics(firebaseAnalytics: FirebaseAnalytics): MyAnalytics =
-            MyAnalyticsImp(firebaseAnalytics)
+    fun analytics(imp: MyAnalyticsImp): MyAnalytics
 }

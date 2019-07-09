@@ -1,5 +1,6 @@
 package com.furianrt.mydiary.screens.main
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import com.furianrt.mydiary.data.DataManager
 import com.furianrt.mydiary.data.model.*
@@ -12,12 +13,15 @@ import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import net.danlew.android.joda.DateUtils
 import org.joda.time.DateTime
-import java.util.*
+import org.joda.time.LocalDate
+import java.util.TreeMap
+import java.util.Locale
+import javax.inject.Inject
 import kotlin.Comparator
 import kotlin.collections.ArrayList
 import kotlin.collections.HashSet
 
-class MainActivityPresenter(
+class MainActivityPresenter @Inject constructor(
         private val dataManager: DataManager
 ) : MainActivityContract.Presenter() {
 
@@ -27,6 +31,8 @@ class MainActivityPresenter(
         private const val BUNDLE_FILTERED_CATEGORY_IDS = "filtered_category_ids"
         private const val BUNDLE_FILTERED_MOOD_IDS = "filtered_mood_ids"
         private const val BUNDLE_FILTERED_LOCATION_NAMES = "filtered_location_names"
+        private const val BUNDLE_FILTERED_START_DATE = "filtered_start_date"
+        private const val BUNDLE_FILTERED_END_DATE = "filtered_end_date"
         private const val BUNDLE_SEARCH_QUERY = "search_query"
         private const val NUMBER_OF_LAUNCHES_FOR_RATE = 4
     }
@@ -37,6 +43,8 @@ class MainActivityPresenter(
     private val mFilteredCategoryIds = HashSet<String>()
     private val mFilteredMoodIds = HashSet<Int>()
     private val mFilteredLocationNames = HashSet<String>()
+    private var mFilteredStartDate: LocalDate? = null
+    private var mFilteredEndDate: LocalDate? = null
     private var mSearchQuery = ""
 
     override fun onButtonDeleteClick() {
@@ -231,36 +239,42 @@ class MainActivityPresenter(
     }
 
     override fun onSaveInstanceState(bundle: Bundle?) {
-        bundle?.let {
-            it.putStringArrayList(BUNDLE_SELECTED_LIST_ITEMS, ArrayList(mSelectedNoteIds))
-            it.putStringArrayList(BUNDLE_FILTERED_TAG_IDS, ArrayList(mFilteredTagIds))
-            it.putStringArrayList(BUNDLE_FILTERED_CATEGORY_IDS, ArrayList(mFilteredCategoryIds))
-            it.putIntegerArrayList(BUNDLE_FILTERED_MOOD_IDS, ArrayList(mFilteredMoodIds))
-            it.putStringArrayList(BUNDLE_FILTERED_LOCATION_NAMES, ArrayList(mFilteredLocationNames))
-            it.putString(BUNDLE_SEARCH_QUERY, mSearchQuery)
+        bundle?.let { state ->
+            state.putStringArrayList(BUNDLE_SELECTED_LIST_ITEMS, ArrayList(mSelectedNoteIds))
+            state.putStringArrayList(BUNDLE_FILTERED_TAG_IDS, ArrayList(mFilteredTagIds))
+            state.putStringArrayList(BUNDLE_FILTERED_CATEGORY_IDS, ArrayList(mFilteredCategoryIds))
+            state.putIntegerArrayList(BUNDLE_FILTERED_MOOD_IDS, ArrayList(mFilteredMoodIds))
+            state.putStringArrayList(BUNDLE_FILTERED_LOCATION_NAMES, ArrayList(mFilteredLocationNames))
+            mFilteredStartDate?.let { state.putSerializable(BUNDLE_FILTERED_START_DATE, it) }
+            mFilteredEndDate?.let { state.putSerializable(BUNDLE_FILTERED_END_DATE, it) }
+            state.putString(BUNDLE_SEARCH_QUERY, mSearchQuery)
         }
     }
 
     override fun onRestoreInstanceState(bundle: Bundle?) {
-        bundle?.let {
-            mSelectedNoteIds = it.getStringArrayList(BUNDLE_SELECTED_LIST_ITEMS)?.toHashSet()
+        bundle?.let { state ->
+            mSelectedNoteIds = state.getStringArrayList(BUNDLE_SELECTED_LIST_ITEMS)?.toHashSet()
                     ?: HashSet()
 
             mFilteredTagIds.clear()
-            mFilteredTagIds.addAll(it.getStringArrayList(BUNDLE_FILTERED_TAG_IDS) ?: emptyList())
+            mFilteredTagIds.addAll(state.getStringArrayList(BUNDLE_FILTERED_TAG_IDS) ?: emptyList())
 
             mFilteredCategoryIds.clear()
-            mFilteredCategoryIds.addAll(it.getStringArrayList(BUNDLE_FILTERED_CATEGORY_IDS)
+            mFilteredCategoryIds.addAll(state.getStringArrayList(BUNDLE_FILTERED_CATEGORY_IDS)
                     ?: emptyList())
 
             mFilteredMoodIds.clear()
-            mFilteredMoodIds.addAll(it.getIntegerArrayList(BUNDLE_FILTERED_MOOD_IDS) ?: emptyList())
-
-            mFilteredLocationNames.clear()
-            mFilteredLocationNames.addAll(it.getStringArrayList(BUNDLE_FILTERED_LOCATION_NAMES)
+            mFilteredMoodIds.addAll(state.getIntegerArrayList(BUNDLE_FILTERED_MOOD_IDS)
                     ?: emptyList())
 
-            mSearchQuery = it.getString(BUNDLE_SEARCH_QUERY, "")
+            mFilteredLocationNames.clear()
+            mFilteredLocationNames.addAll(state.getStringArrayList(BUNDLE_FILTERED_LOCATION_NAMES)
+                    ?: emptyList())
+
+            mFilteredStartDate = state.getSerializable(BUNDLE_FILTERED_START_DATE) as LocalDate?
+            mFilteredEndDate = state.getSerializable(BUNDLE_FILTERED_END_DATE) as LocalDate?
+
+            mSearchQuery = state.getString(BUNDLE_SEARCH_QUERY, "")
         }
     }
 
@@ -410,11 +424,29 @@ class MainActivityPresenter(
         showNotes(mNoteList)
     }
 
+    override fun onDateFilterChange(startDate: Long?, endDate: Long?) {
+        if (startDate == null) {
+            mFilteredStartDate = null
+        } else {
+            mFilteredStartDate = LocalDate(startDate)
+        }
+
+        if (endDate == null) {
+            mFilteredEndDate = null
+        } else {
+            mFilteredEndDate = LocalDate(endDate)
+        }
+
+        showNotes(mNoteList)
+    }
+
     override fun onClearFilters() {
         mFilteredTagIds.clear()
         mFilteredCategoryIds.clear()
         mFilteredMoodIds.clear()
         mFilteredLocationNames.clear()
+        mFilteredStartDate = null
+        mFilteredEndDate = null
 
         showNotes(mNoteList)
     }
@@ -425,21 +457,27 @@ class MainActivityPresenter(
             view?.showNotes(formatNotes(toMap(notes)), mSelectedNoteIds)
         } else {
             view?.hideEmptyNoteList()
-            val filteredNotes = applySearchFilter(notes)
-            view?.showNotes(formatNotes(toMap(filteredNotes)), mSelectedNoteIds)
-            if (filteredNotes.isEmpty()) {
-                view?.showNoSearchResults()
-            } else {
-                view?.hideNoSearchResults()
-            }
+            addDisposable(dataManager.getAllDbLocations()
+                    .first(emptyList())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe { locations ->
+                        val filteredNotes = applySearchFilter(notes, locations)
+                        view?.showNotes(formatNotes(toMap(filteredNotes)), mSelectedNoteIds)
+                        if (filteredNotes.isEmpty()) {
+                            view?.showNoSearchResults()
+                        } else {
+                            view?.hideNoSearchResults()
+                        }
+                    })
         }
     }
 
-    private fun applySearchFilter(notes: List<MyNoteWithProp>): List<MyNoteWithProp> =
+    @SuppressLint("DefaultLocale")
+    private fun applySearchFilter(notes: List<MyNoteWithProp>, locations: List<MyLocation>): List<MyNoteWithProp> =
             notes.asSequence()
                     .filter {
-                        it.note.title.toLowerCase(Locale.getDefault()).contains(mSearchQuery)
-                                || it.note.content.toLowerCase(Locale.getDefault()).contains(mSearchQuery)
+                        it.note.title.toLowerCase().contains(mSearchQuery)
+                                || it.note.content.toLowerCase().contains(mSearchQuery)
                     }
                     .filter { note ->
                         if (mFilteredTagIds.isEmpty()) {
@@ -481,11 +519,23 @@ class MainActivityPresenter(
                         }
                         locationNames.filter { it != MyLocation.TABLE_NAME }
                                 .forEach { locationName ->
-                                    if (note.locations.find { it.locationName == locationName } == null) {
+                                    if (note.locations.find { location -> locations.find { it.id == location.locationId }?.name == locationName } == null) {
                                         return@filter false
                                     }
                                 }
                         return@filter true
+                    }
+                    .filter { note ->
+                        val startDate = mFilteredStartDate
+                        val endDate = mFilteredEndDate
+                        return@filter when {
+                            startDate == null && endDate == null -> true
+                            startDate != null && endDate == null -> LocalDate(note.note.time) == startDate
+                            else -> {
+                                val noteDate = LocalDate(note.note.time)
+                                noteDate >= startDate && noteDate <= endDate
+                            }
+                        }
                     }
                     .toList()
 

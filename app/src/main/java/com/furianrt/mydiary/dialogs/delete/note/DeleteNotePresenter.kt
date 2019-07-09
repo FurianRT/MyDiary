@@ -2,8 +2,9 @@ package com.furianrt.mydiary.dialogs.delete.note
 
 import com.furianrt.mydiary.data.DataManager
 import io.reactivex.Observable
+import javax.inject.Inject
 
-class DeleteNotePresenter(
+class DeleteNotePresenter @Inject constructor(
         private val dataManager: DataManager
 ) : DeleteNoteContract.Presenter() {
 

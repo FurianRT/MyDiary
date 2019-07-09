@@ -5,8 +5,9 @@ import com.furianrt.mydiary.data.model.MyTag
 import com.furianrt.mydiary.data.model.NoteTag
 import com.furianrt.mydiary.utils.generateUniqueId
 import io.reactivex.android.schedulers.AndroidSchedulers
+import javax.inject.Inject
 
-class TagAddPresenter(
+class TagAddPresenter @Inject constructor(
         private val dataManager: DataManager
 ) : TagAddContract.Presenter() {
 

@@ -19,7 +19,6 @@ abstract class BaseActivity : AppCompatActivity(), BaseView, BillingProcessor.IB
 
     companion object {
         const val TAG = "BaseActivity"
-        const val ITEM_TEST_SKU = "android.test.purchased"
     }
 
     @Inject
@@ -30,7 +29,7 @@ abstract class BaseActivity : AppCompatActivity(), BaseView, BillingProcessor.IB
 
     private lateinit var mBillingProcessor: BillingProcessor
 
-    open var needLockScreen = true
+    protected open var needLockScreen = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
         getPresenterComponent(this).inject(this)

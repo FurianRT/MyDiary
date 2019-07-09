@@ -6,8 +6,9 @@ import com.furianrt.mydiary.utils.generateUniqueId
 import io.reactivex.Flowable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import org.joda.time.DateTime
+import javax.inject.Inject
 
-class GalleryListPresenter(
+class GalleryListPresenter @Inject constructor(
         private val dataManager: DataManager
 ) : GalleryListContract.Presenter() {
 

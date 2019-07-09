@@ -1,52 +1,30 @@
 package com.furianrt.mydiary.data
 
-import android.annotation.SuppressLint
-import android.util.Base64
-import com.furianrt.mydiary.BuildConfig
 import com.furianrt.mydiary.data.api.ApiServiceHelper
 import com.furianrt.mydiary.data.auth.AuthHelper
 import com.furianrt.mydiary.data.cloud.CloudHelper
 import com.furianrt.mydiary.data.database.NoteDatabase
+import com.furianrt.mydiary.data.encryption.EncryptionHelper
 import com.furianrt.mydiary.data.model.*
 import com.furianrt.mydiary.data.prefs.PreferencesHelper
 import com.furianrt.mydiary.data.storage.StorageHelper
 import com.furianrt.mydiary.di.application.component.AppScope
 import com.google.gson.Gson
 import io.reactivex.*
-import javax.crypto.Cipher
-import javax.crypto.spec.SecretKeySpec
+import javax.inject.Inject
 
 //Возможно, стоило что-то убрать в отдельные use case
 @AppScope
-class DataManagerImp(
+class DataManagerImp @Inject constructor(
         private val database: NoteDatabase,
         private val prefs: PreferencesHelper,
         private val storage: StorageHelper,
         private val apiService: ApiServiceHelper,
         private val cloud: CloudHelper,
         private val auth: AuthHelper,
-        private val rxScheduler: Scheduler
+        private val rxScheduler: Scheduler,
+        private val encryption: EncryptionHelper
 ) : DataManager {
-
-    @SuppressLint("GetInstance")
-    private fun decryptString(string: String): String {
-        val keyBytes = BuildConfig.PREFS_PASSWORD.toByteArray()
-        val aesKey = SecretKeySpec(keyBytes, "AES")
-        val cipher = Cipher.getInstance("AES")
-        cipher.init(Cipher.DECRYPT_MODE, aesKey)
-        val decryptedByteValue = cipher.doFinal(Base64.decode(string.toByteArray(), Base64.DEFAULT))
-        return String(decryptedByteValue)
-    }
-
-    @SuppressLint("GetInstance")
-    private fun encryptString(string: String): String {
-        val keyBytes = BuildConfig.PREFS_PASSWORD.toByteArray()
-        val aesKey = SecretKeySpec(keyBytes, "AES")
-        val cipher = Cipher.getInstance("AES")
-        cipher.init(Cipher.ENCRYPT_MODE, aesKey)
-        val encrypted = cipher.doFinal(string.toByteArray())
-        return Base64.encodeToString(encrypted, Base64.DEFAULT)
-    }
 
     override fun insertNote(note: MyNote): Completable =
             database.noteDao().insert(note)
@@ -216,7 +194,7 @@ class DataManagerImp(
             database.noteTagDao().deleteWithNoteId(noteId)
                     .andThen(database.noteLocationDao().getLocationsForNote(noteId))
                     .first(emptyList())
-                    .flatMapCompletable { locations -> database.locationDao().delete(locations.map { it.name }) }
+                    .flatMapCompletable { locations -> database.locationDao().delete(locations.map { it.id }) }
                     .andThen(database.noteLocationDao().deleteWithNoteId(noteId))
                     .andThen(database.appearanceDao().delete(noteId))
                     .andThen(database.imageDao().getImagesForNote(noteId))
@@ -450,11 +428,11 @@ class DataManagerImp(
 
     override fun getPin(): Single<String> =
             Single.fromCallable { prefs.getPin() }
-                    .map { decryptString(it) }
+                    .map { encryption.decryptString(it) }
                     .subscribeOn(rxScheduler)
 
     override fun setPin(pin: String): Completable =
-            Completable.fromAction { prefs.setPin(encryptString(pin)) }
+            Completable.fromAction { prefs.setPin(encryption.encryptString(pin)) }
                     .subscribeOn(rxScheduler)
 
     override fun getBackupEmail(): String = prefs.getBackupEmail()
@@ -735,6 +713,6 @@ class DataManagerImp(
 
     override fun sendPinResetEmail(): Completable =
             Completable.fromAction {
-                auth.sendPinResetEmail(prefs.getBackupEmail(), decryptString(prefs.getPin()))
+                auth.sendPinResetEmail(prefs.getBackupEmail(), encryption.decryptString(prefs.getPin()))
             }.subscribeOn(rxScheduler)
 }

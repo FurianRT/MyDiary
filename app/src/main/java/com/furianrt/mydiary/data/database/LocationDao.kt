@@ -17,11 +17,8 @@ interface LocationDao {
     @Update
     fun update(locations: List<MyLocation>): Completable
 
-    @Query("UPDATE Locations SET is_location_deleted = 1, location_sync_with = '[]' WHERE name_location = :locationName")
-    fun delete(locationName: String): Completable
-
-    @Query("UPDATE Locations SET is_location_deleted = 1, location_sync_with = '[]' WHERE name_location IN (:locationNames)")
-    fun delete(locationNames: List<String>): Completable
+    @Query("UPDATE Locations SET is_location_deleted = 1, location_sync_with = '[]' WHERE id_location IN (:locationIds)")
+    fun delete(locationIds: List<String>): Completable
 
     @Query("SELECT * FROM Locations WHERE is_location_deleted = 0")
     fun getAllLocations(): Flowable<List<MyLocation>>

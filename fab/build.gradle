@@ -1,21 +1,40 @@
 apply plugin: 'com.android.library'
 
 android {
-    compileSdkVersion 28
+    compileSdkVersion 29
     defaultConfig {
         minSdkVersion 16
-        targetSdkVersion 28
+        targetSdkVersion 29
         versionCode 1
         versionName "1.0"
-
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
-
     }
     buildTypes {
-        release {
+        debug {
+            versionNameSuffix "-debug"
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            resValue("bool", "FIREBASE_ANALYTICS_DEACTIVATED", "true")
         }
+        release {
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            resValue("bool", "FIREBASE_ANALYTICS_DEACTIVATED", "false")
+        }
+    }
+    buildTypes.each {
+        it.buildConfigField 'String', 'WEATHER_API_KEY', weatherApikey
+        it.buildConfigField 'String', 'IMAGE_API_KEY', imageApikey
+        it.buildConfigField 'String', 'PREFS_PASSWORD', prefsPassword
+        it.buildConfigField 'String', 'SUPPORT_EMAIL', supportEmail
+        it.buildConfigField 'String', 'SUPPORT_EMAIL_PASSWORD', supportEmailPassword
+        it.buildConfigField 'String', 'MERCHANT_ID', merchantId
+        it.buildConfigField 'String', 'LICENSE_KEY', licenseKey
+        it.buildConfigField 'String', 'ITEM_PREMIUM_SKU', itemPremiumSku
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
     }
 }
 

@@ -44,7 +44,7 @@ class ForgotPassFragment : BaseFragment(), ForgotPassContract.MvpView {
     private val mChangeActivityFlag: Runnable = Runnable {
         activity?.window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN)
     }
-    private val mOnEditFocusChangeListener: (v: View, hasFocus: Boolean) -> Unit = { _, hasFocus ->
+    private val mOnEditFocusChangeListener = View.OnFocusChangeListener { _, hasFocus ->
         if (hasFocus) {
             (parentFragment as? AuthFragment?)?.pushContainerUp()
             mHandler.postDelayed(mChangeActivityFlag, CHANGE_ACTIVITY_FLAG_DELAY)
@@ -66,8 +66,8 @@ class ForgotPassFragment : BaseFragment(), ForgotPassContract.MvpView {
         view.button_send.setOnClickListener {
             mPresenter.onButtonSendClick(edit_email.text?.toString() ?: "")
         }
-        view.edit_email.setOnFocusChangeListener(mOnEditFocusChangeListener)
-        view.edit_email.setOnClickListener { mOnEditFocusChangeListener.invoke(it, true) }
+        view.edit_email.onFocusChangeListener = mOnEditFocusChangeListener
+        view.edit_email.setOnClickListener { mOnEditFocusChangeListener.onFocusChange(it, true) }
 
         return view
     }

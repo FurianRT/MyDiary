@@ -3,8 +3,9 @@ package com.furianrt.mydiary.screens.pin.fragments.backupemail
 import android.util.Patterns
 import com.furianrt.mydiary.data.DataManager
 import io.reactivex.android.schedulers.AndroidSchedulers
+import javax.inject.Inject
 
-class BackupEmailPresenter(
+class BackupEmailPresenter @Inject constructor(
         private val dataManager: DataManager
 ) : BackupEmailContract.Presenter() {
 
