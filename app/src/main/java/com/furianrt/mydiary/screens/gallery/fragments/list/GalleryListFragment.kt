@@ -116,6 +116,7 @@ class GalleryListFragment : BaseFragment(), GalleryListAdapter.OnListItemInterac
         }
         view.list_gallery.adapter = mAdapter
         view.list_gallery.itemAnimator = FadeInUpAnimator()
+        view.list_gallery.setHasFixedSize(true)
 
         view.fab_trash.drawable.mutate().setTint(Color.WHITE)
 

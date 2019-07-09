@@ -55,6 +55,7 @@ class MoodsDialog : BaseDialog(), MoodsDialogContract.MvpView,
             val manager = LinearLayoutManager(requireContext())
             layoutManager = manager
             adapter = mAdapter
+            setHasFixedSize(true)
             addItemDecoration(DividerItemDecoration(requireContext(), manager.orientation))
         }
 

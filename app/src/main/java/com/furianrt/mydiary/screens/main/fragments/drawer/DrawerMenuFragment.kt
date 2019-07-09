@@ -16,6 +16,7 @@ import android.view.animation.OvershootInterpolator
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.furianrt.mydiary.BuildConfig
 import com.furianrt.mydiary.R
 import com.furianrt.mydiary.analytics.MyAnalytics
@@ -152,6 +153,8 @@ class DrawerMenuFragment : BaseFragment(), DrawerMenuContract.MvpView,
 
         view.list_search.layoutManager = LinearLayoutManager(requireContext())
         view.list_search.adapter = mSearchListAdapter
+        view.list_search.setHasFixedSize(true)
+        view.list_search.setItemViewCacheSize(100)
 
         val animator = view.list_search.itemAnimator
         if (animator is DefaultItemAnimator) {

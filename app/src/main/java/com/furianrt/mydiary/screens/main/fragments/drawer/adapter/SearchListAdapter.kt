@@ -9,6 +9,8 @@ import android.widget.CheckBox
 import android.widget.Checkable
 import android.widget.TextView
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.furianrt.mydiary.R
 import com.furianrt.mydiary.data.model.MyCategory
 import com.furianrt.mydiary.data.model.MyLocation
@@ -84,6 +86,7 @@ class SearchListAdapter(
     private var mIsMonthSelectionActive = false
     private var mIsYearSelectionActive = false
     private var mIsTodaySelectionActive = false
+    private val mRecyclerPool = RecyclerView.RecycledViewPool()
 
     override fun onSaveInstanceState(savedInstanceState: Bundle?) {
         savedInstanceState?.let { state ->
@@ -200,8 +203,13 @@ class SearchListAdapter(
     override fun onCreateChildViewHolder(parent: ViewGroup?, viewType: Int): SearchChildViewHolder {
         val inflater = LayoutInflater.from(parent?.context)
         return when (viewType) {
-            SearchItem.TYPE_DATE ->
-                SearchDateViewHolder(inflater.inflate(R.layout.nav_search_item_date, parent, false))
+            SearchItem.TYPE_DATE -> {
+                val view = inflater.inflate(R.layout.nav_search_item_date, parent, false)
+                view.calendar_search.setRecycledViewPool(mRecyclerPool)
+                view.calendar_search.setHasFixedSize(true)
+                (view.calendar_search.layoutManager as LinearLayoutManager?)?.initialPrefetchItemCount = 1
+                SearchDateViewHolder(view)
+            }
             SearchItem.TYPE_TAG ->
                 SearchTagsViewHolder(inflater.inflate(R.layout.nav_search_item_tag, parent, false))
             SearchItem.TYPE_CATEGORY ->

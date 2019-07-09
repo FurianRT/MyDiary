@@ -177,6 +177,7 @@ class MainActivity : BaseActivity(), MainActivityContract.MvpView,
         list_main.layoutManager = LinearLayoutManager(this)
         list_main.addItemDecoration(HeaderItemDecoration(list_main, mAdapter))
         list_main.adapter = mAdapter
+        list_main.setHasFixedSize(true)
         list_main.itemAnimator = LandingAnimator()
     }
 
