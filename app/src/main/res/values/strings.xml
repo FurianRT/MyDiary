@@ -89,12 +89,12 @@
         <item quantity="other">Delete %d notes?</item>
     </plurals>
     <plurals name="image_delete_confirmation">
-        <item quantity="zero">Delete %d notes?</item>
-        <item quantity="one">Delete %d note?</item>
-        <item quantity="two">Delete %d notes?</item>
-        <item quantity="few">Delete %d notes?</item>
-        <item quantity="many">Delete %d notes?</item>
-        <item quantity="other">Delete %d notes?</item>
+        <item quantity="zero">Delete %d images?</item>
+        <item quantity="one">Delete %d image?</item>
+        <item quantity="two">Delete %d images?</item>
+        <item quantity="few">Delete %d images?</item>
+        <item quantity="many">Delete %d images?</item>
+        <item quantity="other">Delete %d images?</item>
     </plurals>
     <string name="tag_dream">Dream</string>
     <string name="tag_idea">Idea</string>

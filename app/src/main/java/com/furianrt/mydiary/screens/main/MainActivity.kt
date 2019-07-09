@@ -385,10 +385,12 @@ class MainActivity : BaseActivity(), MainActivityContract.MvpView,
             analytics.sendEvent(MyAnalytics.EVENT_SEARCH_WORD_OPENED)
             disableActionBarExpanding(true)
         }
+
         searchView?.setOnCloseListener {
             enableActionBarExpanding(false)
             return@setOnCloseListener false
         }
+
         searchView?.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
                 return false
