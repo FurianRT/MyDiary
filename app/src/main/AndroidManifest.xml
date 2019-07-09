@@ -40,6 +40,7 @@
         <!--TODO разлочить ориентацию, когда будут готовы лейауты-->
         <activity
             android:name=".screens.main.MainActivity"
+            android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustNothing">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -84,7 +85,7 @@
 
         <meta-data
             android:name="firebase_analytics_collection_deactivated"
-            android:value="@bool/FIREBASE_ANALYTICS_DEACTIVATED"/>
+            android:value="@bool/FIREBASE_ANALYTICS_DEACTIVATED" />
 
     </application>
 
