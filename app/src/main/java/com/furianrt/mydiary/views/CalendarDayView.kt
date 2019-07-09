@@ -4,7 +4,6 @@ import android.content.Context
 import android.graphics.Canvas
 import android.graphics.RectF
 import android.graphics.Color
-import android.util.SparseIntArray
 import android.graphics.Paint
 import android.util.AttributeSet
 import android.widget.TextView
@@ -22,24 +21,27 @@ class CalendarDayView : TextView {
         private const val DEFAULT_PORTION_WIDTH = 11f
         private const val DEFAULT_CURRENT_DAY_CIRCLE_WIDTH = 7f
         private const val DEFAULT_PORTION_SPACING = 5f
-        private const val DEFAULT_PORTIONS_COUNT = 1
-        private const val START_DEGREE = -90f
+        private const val START_DEGREE = 270f
         private const val DEFAULT_COLOR = Color.GRAY
     }
+
+    inner class Portion(
+            val color: Int,
+            val startAngle: Float,
+            val sweepAngle : Float
+    )
 
     private var mRadius: Float = 0f
     private var mPortionColor = DEFAULT_COLOR
     private var mPortionWidth = DEFAULT_PORTION_WIDTH
-    private val mPortionToUpdateMap = SparseIntArray()
     private val mBorderRect = RectF()
     private val mPaint: Paint = Paint()
     private val mPortionPaint: Paint = Paint()
     private val mSliceVector = PointF()
     private var mIsSelected: Boolean = false
-    private val
+    private val mPortions = mutableListOf<Portion>()
 
     var showCircle = false
-    var portionsCount = DEFAULT_PORTIONS_COUNT
     var isCurrentDay = false
     var isCurrentMonth = true
 
@@ -72,7 +74,7 @@ class CalendarDayView : TextView {
     override fun onDraw(canvas: Canvas?) {
         if (showCircle) {
             drawArcs(canvas)
-            if (portionsCount > 1) {
+            if (mPortions.size > 1) {
                 drawSeparationLines(canvas)
             }
         }
@@ -89,19 +91,16 @@ class CalendarDayView : TextView {
     private fun drawArcs(canvas: Canvas?) {
         val centerX = mBorderRect.centerX()
         val centerY = mBorderRect.centerY()
-        val degree = 360f / portionsCount.toFloat()
-        val percent = 100f / portionsCount.toFloat()
 
-        for (i in 0 until portionsCount) {
-            mPortionPaint.color = getPaintColorForIndex(i)
-            val startAngle = START_DEGREE + degree * i
+        mPortions.forEach {
+            mPortionPaint.color = it.color
             canvas?.drawArc(
                     centerX - mRadius,
                     centerY - mRadius,
                     centerX + mRadius,
                     centerY + mRadius,
-                    startAngle,
-                    getProgressAngle(percent),
+                    it.startAngle,
+                    it.sweepAngle,
                     false,
                     mPortionPaint
             )
@@ -114,14 +113,11 @@ class CalendarDayView : TextView {
         mPaint.style = Paint.Style.STROKE
 
         val circleRadius = mBorderRect.width() / 2f
-        val degree = 360f / portionsCount.toFloat()
 
-        for (i in 0 until portionsCount) {
-            val startAngle = START_DEGREE + degree * i
-
+        mPortions.forEach { portion ->
             mSliceVector.set(
-                    cos(Math.toRadians(startAngle.toDouble())).toFloat(),
-                    sin(Math.toRadians(startAngle.toDouble())).toFloat()
+                    cos(Math.toRadians(portion.startAngle.toDouble())).toFloat(),
+                    sin(Math.toRadians(portion.startAngle.toDouble())).toFloat()
             )
             normalizeVector(mSliceVector)
 
@@ -213,13 +209,6 @@ class CalendarDayView : TextView {
         point.set(point.x / abs, point.y / abs)
     }
 
-    private fun getPaintColorForIndex(i: Int): Int =
-            if (mPortionToUpdateMap.indexOfKey(i) >= 0) {
-                mPortionToUpdateMap.get(i)
-            } else {
-                mPortionColor
-            }
-
     private fun calculateBounds(): RectF {
         val availableWidth = width - paddingLeft - paddingRight
         val availableHeight = height - paddingTop - paddingBottom
@@ -232,18 +221,28 @@ class CalendarDayView : TextView {
         return RectF(left, top, left + sideLength, top + sideLength)
     }
 
-    private fun getProgressAngle(percent: Float): Float = percent / 100f * 360f
-
-    fun setPortionColorForIndex(index: Int, color: Int) {
-        if (index > portionsCount - 1) {
-            throw IndexOutOfBoundsException()
-        } else {
-            mPortionToUpdateMap.put(index, color)
-            invalidate()
-        }
-    }
-
     fun setColors(colors: List<Int>) {
-
+        val result = mutableListOf<Portion>()
+        val groups = colors.groupingBy { it }
+                .eachCount()
+                .toList()
+                .sortedByDescending { it.second }
+                .toMap()
+        for (i in 0 until groups.size) {
+            val start = if (i == 0) {
+                START_DEGREE
+            } else {
+                result[i - 1].startAngle + result[i - 1].sweepAngle
+            }
+            val portion = Portion(
+                    groups.keys.toList()[i],
+                    start,
+                    (groups.getValue(groups.keys.toList()[i]).toFloat() / colors.size.toFloat() * 360f)
+            )
+            result.add(portion)
+        }
+        mPortions.clear()
+        mPortions.addAll(result)
+        invalidate()
     }
 }

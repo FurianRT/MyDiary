@@ -470,10 +470,7 @@ class SearchListAdapter(
 
                         item.dateColors!![day.date]?.let { colors ->
                             calendarDayView.showCircle = true
-                            calendarDayView.portionsCount = colors.size
-                            colors.forEachIndexed { index, color ->
-                                calendarDayView.setPortionColorForIndex(index, color)
-                            }
+                            calendarDayView.setColors(colors)
                         }
 
                         val select = mStartDate == day.date && mEndDate == null
@@ -526,12 +523,14 @@ class SearchListAdapter(
                 }
             }
 
-            itemView.text_year.setOnClickListener {
-                if (mIsYearSelectionActive) {
-                    hideYearSelection()
-                } else {
-                    hideMonthSelection()
-                    showYearSelection(item)
+            if (!item.dateColors.isNullOrEmpty()) {
+                itemView.text_year.setOnClickListener {
+                    if (mIsYearSelectionActive) {
+                        hideYearSelection()
+                    } else {
+                        hideMonthSelection()
+                        showYearSelection(item)
+                    }
                 }
             }
         }

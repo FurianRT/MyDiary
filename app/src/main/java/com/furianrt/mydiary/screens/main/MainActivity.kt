@@ -431,11 +431,13 @@ class MainActivity : BaseActivity(), MainActivityContract.MvpView,
 
     override fun showEmptyNoteList() {
         empty_state.visibility = View.VISIBLE
+        list_main.visibility = View.INVISIBLE
         app_bar_layout.setExpanded(false, true)
     }
 
     override fun hideEmptyNoteList() {
         empty_state.visibility = View.GONE
+        list_main.visibility = View.VISIBLE
     }
 
     override fun showNoSearchResults() {
