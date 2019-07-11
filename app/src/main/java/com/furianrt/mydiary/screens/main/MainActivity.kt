@@ -77,7 +77,7 @@ class MainActivity : BaseActivity(), MainActivityContract.MvpView,
         private const val BUNDLE_SEARCH_QUERY = "query"
         private const val ACTIVITY_SETTING_REQUEST_CODE = 2
         private const val ITEM_LONG_CLICK_VIBRATION_DURATION = 30L
-        private const val BOTTOM_SHEET_EXPAND_DELAY = 300L
+        private const val BOTTOM_SHEET_EXPAND_DELAY = 500L
         private const val ANIMATION_IMAGE_SETTINGS_FADE_OUT_DURATION = 350L
         private const val ANIMATION_IMAGE_SETTINGS_FADE_OUT_OFFSET = 2000L
         private const val ANIMATION_NO_SEARCH_RESULT_DURATION = 200L

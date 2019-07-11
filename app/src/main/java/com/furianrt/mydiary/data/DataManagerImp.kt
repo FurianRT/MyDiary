@@ -22,8 +22,8 @@ class DataManagerImp @Inject constructor(
         private val apiService: ApiServiceHelper,
         private val cloud: CloudHelper,
         private val auth: AuthHelper,
-        private val rxScheduler: Scheduler,
-        private val encryption: EncryptionHelper
+        private val encryption: EncryptionHelper,
+        private val rxScheduler: Scheduler
 ) : DataManager {
 
     override fun insertNote(note: MyNote): Completable =

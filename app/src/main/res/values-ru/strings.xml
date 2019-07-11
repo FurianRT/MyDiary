@@ -221,7 +221,7 @@
     <string name="sync_forecasts">Загрузка прогноза</string>
     <string name="sync_error">Ошибка!</string>
     <string name="fragment_menu_profile_about">О профиле</string>
-    <string name="fragment_sign_out_exit">Выйти из профиля?</string>
+    <string name="fragment_sign_out_exit">Уверены что хотите выйти из профиля?</string>
     <string name="fragment_password_new_password">Новый пароль</string>
     <string name="fragment_password_old_password">Старый пароль</string>
     <string name="fragment_password_enter_old_password">Введите старый пароль</string>

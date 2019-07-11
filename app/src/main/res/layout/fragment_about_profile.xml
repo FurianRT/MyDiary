@@ -17,6 +17,18 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center">
 
+        <ImageView
+            android:id="@+id/imageView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:tint="?attr/colorPrimary"
+            android:src="@drawable/image_about"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:ignore="ContentDescription" />
+
         <TextView
             android:id="@+id/textView1"
             android:layout_width="wrap_content"
@@ -26,19 +38,19 @@
             android:text="@string/fragment_about_profile_sign_in_date"
             android:textColor="@color/black"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toBottomOf="@id/imageView" />
 
         <TextView
             android:id="@+id/text_registration_date"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
-            android:layout_marginTop="32dp"
             android:layout_marginEnd="24dp"
             android:textColor="@color/black"
+            app:layout_constraintBottom_toBottomOf="@+id/textView1"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/textView1"
-            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/textView1"
             tools:text="30.09.1992" />
 
         <TextView
@@ -59,14 +71,14 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="8dp"
             android:layout_marginEnd="24dp"
-            android:layout_marginBottom="32dp"
+            android:layout_marginBottom="8dp"
             android:textColor="@color/black"
-            app:layout_constraintBottom_toTopOf="@id/button_about_back"
+            app:layout_constraintBottom_toBottomOf="@+id/textView3"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/textView3"
-            app:layout_constraintTop_toBottomOf="@+id/textView1"
+            app:layout_constraintTop_toTopOf="@+id/textView3"
             tools:text="01.08.2014" />
 
         <com.google.android.material.button.MaterialButton
