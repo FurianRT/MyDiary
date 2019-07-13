@@ -9,10 +9,10 @@ import com.furianrt.mydiary.screens.main.adapter.NoteListItem
 interface MainActivityContract {
 
     interface MvpView : BaseMvpView {
-        fun showNotes(notes: List<NoteListItem>, selectedNoteIds: Set<String>)
-        fun showNotePager(position: Int, note: MyNoteWithProp)
+        fun showNotes(items: List<NoteListItem>, selectedNoteIds: Set<String>)
+        fun showNotePager(position: Int, noteId: String)
         fun showHeaderImage(image: MyHeaderImage)
-        fun showViewNewNote()
+        fun showViewNewNote(noteId: String)
         fun activateSelection()
         fun deactivateSelection()
         fun updateItemSelection(selectedNoteIds: Set<String>)
@@ -38,7 +38,7 @@ interface MainActivityContract {
     abstract class Presenter : BaseMvpPresenter<MvpView>() {
         abstract fun onMainListItemClick(note: MyNoteWithProp, position: Int)
         abstract fun onMainImageClick()
-        abstract fun onMainListItemLongClick(note: MyNoteWithProp, position: Int)
+        abstract fun onMainListItemLongClick(note: MyNoteWithProp)
         abstract fun onSaveInstanceState(bundle: Bundle?)
         abstract fun onRestoreInstanceState(bundle: Bundle?)
         abstract fun onFabMenuClick()

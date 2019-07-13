@@ -10,11 +10,8 @@ import com.facebook.stetho.Stetho
 import com.furianrt.mydiary.data.DataManager
 import com.furianrt.mydiary.di.application.component.AppComponent
 import com.furianrt.mydiary.di.application.component.DaggerAppComponent
-import com.furianrt.mydiary.di.application.modules.app.AnalyticsModule
 import com.furianrt.mydiary.di.application.modules.app.AppContextModule
 import com.furianrt.mydiary.di.application.modules.data.DatabaseModule
-import com.furianrt.mydiary.di.application.modules.data.HelperModule
-import com.furianrt.mydiary.di.application.modules.data.ManagerModule
 import com.furianrt.mydiary.di.application.modules.network.ApiModule
 import com.furianrt.mydiary.di.application.modules.network.FirebaseModule
 import com.furianrt.mydiary.di.application.modules.rx.RxModule
@@ -28,7 +25,7 @@ import com.yanzhenjie.album.AlbumFile
 import com.yanzhenjie.album.AlbumLoader
 import net.danlew.android.joda.JodaTimeAndroid
 import org.joda.time.DateTime
-import java.util.*
+import java.util.Locale
 import javax.inject.Inject
 
 class MyApp : Application(), Application.ActivityLifecycleCallbacks {
@@ -197,6 +194,9 @@ class MyApp : Application(), Application.ActivityLifecycleCallbacks {
 * добавить превью возможностей дневника
 * изменить дизайн даты в списке заметок
 * изменить дизайн окна профиля
+*   убирать настроение и локацию из поиска, если они отключены в настройках
+*   разбить DataManager на разные репазитории, добавить UseCase, сделать кэширование данных
+*   убрать определение локации в другой слой
 *
 * */
 

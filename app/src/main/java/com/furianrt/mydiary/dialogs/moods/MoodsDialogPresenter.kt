@@ -18,7 +18,6 @@ class MoodsDialogPresenter @Inject constructor(
 
     override fun onButtonNoMoodClick(noteId: String) {
         addDisposable(dataManager.getNote(noteId)
-                .firstOrError()
                 .flatMapCompletable { dataManager.updateNote(it.apply { moodId = 0 }) }
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { view?.closeView() })
@@ -26,7 +25,6 @@ class MoodsDialogPresenter @Inject constructor(
 
     override fun onMoodPicked(noteId: String, mood: MyMood) {
         addDisposable(dataManager.getNote(noteId)
-                .firstOrError()
                 .flatMapCompletable { dataManager.updateNote(it.apply { moodId = mood.id }) }
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { view?.closeView() })

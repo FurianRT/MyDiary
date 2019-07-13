@@ -10,37 +10,60 @@ class NoteActivityPresenter @Inject constructor(
         private val dataManager: DataManager
 ) : NoteActivityContract.Presenter() {
 
-    override fun loadNotes() {
-        addDisposable(dataManager.getAllNotesWithProp()
+    private lateinit var mNoteId: String
+    private var mIsNewNote: Boolean = true
+
+    override fun init(noteId: String, newNote: Boolean) {
+        mNoteId = noteId
+        mIsNewNote = newNote
+
+    }
+
+    override fun attachView(view: NoteActivityContract.MvpView) {
+        super.attachView(view)
+        if (!::mNoteId.isInitialized) {
+            throw IllegalStateException("Need to call init before attaching view")
+        }
+
+        if (mIsNewNote) {
+            loadNote(mNoteId)
+        } else {
+            loadNotes()
+        }
+    }
+
+    private fun loadNotes() {
+        addDisposable(dataManager.getAllNotes()
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { notes ->
                     if (notes.isEmpty()) {
                         view?.closeView()
                     } else {
-                        view?.showNotes(if (dataManager.isSortDesc()) {
-                            notes.sortedByDescending { it.note.time }
+                        val sortedNotes = if (dataManager.isSortDesc()) {
+                            notes.sortedByDescending { it.time }
                         } else {
-                            notes.sortedBy { it.note.time }
-                        })
+                            notes.sortedBy { it.time }
+                        }
+                        view?.showNotes(sortedNotes.map { it.id })
                     }
                 })
     }
 
-    override fun loadNote(noteId: String) {
+    private fun loadNote(noteId: String) {
         val newNote = MyNote(noteId)
         val noteAppearance = MyNoteAppearance(newNote.id)
         addDisposable(dataManager.findNote(noteId)
                 .switchIfEmpty(dataManager.insertNote(newNote)
                         .andThen(dataManager.insertAppearance(noteAppearance))
                         .toSingleDefault(newNote))
-                .flatMapPublisher { dataManager.getAllNotesWithProp() }
-                .map { notes -> notes.filter { it.note.id == noteId } }
+                .flatMapPublisher { dataManager.getNoteAsList(noteId) }
+                .map { note -> note.map { it.id } }
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { notes ->
-                    if (notes.isEmpty()) {
+                .subscribe { Id ->
+                    if (Id.isEmpty()) {
                         view?.closeView()
                     } else {
-                        view?.showNotes(notes)
+                        view?.showNotes(Id)
                     }
                 })
     }

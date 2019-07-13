@@ -5,7 +5,6 @@ import com.furianrt.mydiary.base.mvp.BaseMvpView
 import com.furianrt.mydiary.base.mvp.BaseMvpPresenter
 import com.furianrt.mydiary.data.model.*
 import com.furianrt.mydiary.data.model.pojo.TagsAndAppearance
-import com.furianrt.mydiary.screens.note.NoteActivity
 import com.google.android.gms.location.LocationResult
 import java.util.*
 
@@ -20,7 +19,7 @@ interface NoteFragmentContract {
         fun findAddress(latitude: Double, longitude: Double)
         fun showCategory(category: MyCategory)
         fun showMood(mood: MyMood)
-        fun showNoTagsMessage(appearance: MyNoteAppearance)
+        fun showNoTagsMessage(tagsAndAppearance: TagsAndAppearance)
         fun showNoCategoryMessage()
         fun showNoMoodMessage()
         fun showLocation(location: MyLocation)
@@ -47,6 +46,7 @@ interface NoteFragmentContract {
         fun sendUndoErrorEvent()
         fun sendRedoErrorEvent()
         fun shareNote(note: MyNoteWithProp)
+        fun isLocationAvailable(): Boolean
     }
 
     abstract class Presenter : BaseMvpPresenter<MvpView>() {
@@ -68,8 +68,7 @@ interface NoteFragmentContract {
         abstract fun onDateSelected(year: Int, monthOfYear: Int, dayOfMonth: Int)
         abstract fun onTimeSelected(hourOfDay: Int, minute: Int)
         abstract fun onButtonEditClick()
-        abstract fun onViewStart(locationAvailable: Boolean, networkAvailable: Boolean)
-        abstract fun init(note: MyNote, mode: NoteActivity.Companion.Mode)
+        abstract fun init(noteId: String, newNote: Boolean)
         abstract fun getNoteTextBuffer(): ArrayList<UndoRedoEntry>
         abstract fun setNoteTextBuffer(buffer: ArrayList<UndoRedoEntry>)
         abstract fun onNoteTextChange(title: String, content: String)

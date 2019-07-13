@@ -416,16 +416,16 @@ class MainActivity : BaseActivity(), MainActivityContract.MvpView,
         super.onSaveInstanceState(outState)
     }
 
-    override fun showViewNewNote() {
+    override fun showViewNewNote(noteId: String) {
         analytics.sendEvent(MyAnalytics.EVENT_NOTE_ADDED)
-        startActivity(NoteActivity.newIntentModeAdd(this))
+        startActivity(NoteActivity.newIntentModeAdd(this, noteId))
     }
 
-    override fun showNotes(notes: List<NoteListItem>, selectedNoteIds: Set<String>) {
+    override fun showNotes(items: List<NoteListItem>, selectedNoteIds: Set<String>) {
         Log.e(TAG, "showNotes")
         mAdapter.selectedNoteIds.clear()
         mAdapter.selectedNoteIds.addAll(selectedNoteIds)
-        mAdapter.submitList(notes.toMutableList())
+        mAdapter.submitList(items.toMutableList())
         mRecyclerViewState?.let {
             list_main.layoutManager?.onRestoreInstanceState(it)
             mRecyclerViewState = null
@@ -478,13 +478,13 @@ class MainActivity : BaseActivity(), MainActivityContract.MvpView,
         mPresenter.onMainListItemClick(note, position)
     }
 
-    override fun onMainListItemLongClick(note: MyNoteWithProp, position: Int) {
+    override fun onMainListItemLongClick(note: MyNoteWithProp) {
         val vibrator = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
         if (vibrator.hasVibrator()) {
             @Suppress("DEPRECATION")
             vibrator.vibrate(ITEM_LONG_CLICK_VIBRATION_DURATION)
         }
-        mPresenter.onMainListItemLongClick(note, position)
+        mPresenter.onMainListItemLongClick(note)
     }
 
     override fun activateSelection() {
@@ -501,9 +501,9 @@ class MainActivity : BaseActivity(), MainActivityContract.MvpView,
         mAdapter.notifyDataSetChanged()
     }
 
-    override fun showNotePager(position: Int, note: MyNoteWithProp) {
+    override fun showNotePager(position: Int, noteId: String) {
         analytics.sendEvent(MyAnalytics.EVENT_NOTE_OPENED)
-        startActivity(NoteActivity.newIntentModeRead(this, position))
+        startActivity(NoteActivity.newIntentModeRead(this, noteId, position))
     }
 
     override fun showSettingsView() {

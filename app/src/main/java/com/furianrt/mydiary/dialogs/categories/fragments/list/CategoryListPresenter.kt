@@ -30,10 +30,7 @@ class CategoryListPresenter @Inject constructor(
 
     override fun onCategoryClick(category: MyCategory, noteIds: List<String>) {
         addDisposable(Observable.fromIterable(noteIds)
-                .flatMapSingle {
-                    dataManager.getNote(it)
-                            .firstOrError()
-                }
+                .flatMapSingle { dataManager.getNote(it) }
                 .flatMapSingle {
                     dataManager.updateNote(it.apply { categoryId = category.id })
                             .toSingleDefault(true)
@@ -46,10 +43,7 @@ class CategoryListPresenter @Inject constructor(
 
     override fun onButtonNoCategoryClick(noteIds: List<String>) {
         addDisposable(Observable.fromIterable(noteIds)
-                .flatMapSingle {
-                    dataManager.getNote(it)
-                            .firstOrError()
-                }
+                .flatMapSingle { dataManager.getNote(it) }
                 .flatMapSingle {
                     dataManager.updateNote(it.apply { categoryId = "" })
                             .toSingleDefault(true)

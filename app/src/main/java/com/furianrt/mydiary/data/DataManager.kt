@@ -79,7 +79,8 @@ interface DataManager {
     fun getDeletedNoteLocations(): Flowable<List<NoteLocation>>
     fun getDeletedLocations(): Flowable<List<MyLocation>>
     fun getDeletedForecasts(): Flowable<List<MyForecast>>
-    fun getNote(noteId: String): Flowable<MyNote>
+    fun getNote(noteId: String): Single<MyNote>
+    fun getNoteAsList(noteId: String): Flowable<List<MyNote>>
     fun getAllTags(): Flowable<List<MyTag>>
     fun getDeletedTags(): Flowable<List<MyTag>>
     fun getLocationsForNote(noteId: String): Flowable<List<MyLocation>>
@@ -95,6 +96,7 @@ interface DataManager {
     fun getAllNoteAppearances(): Flowable<List<MyNoteAppearance>>
     fun getDeletedAppearances(): Flowable<List<MyNoteAppearance>>
     fun getImagesForNote(noteId: String): Flowable<List<MyImage>>
+    fun getImageCount(): Flowable<Int>
     fun getAllNotesWithProp(): Flowable<List<MyNoteWithProp>>
     fun getHeaderImages(): Flowable<List<MyHeaderImage>>
     fun getAllNoteTags(): Flowable<List<NoteTag>>

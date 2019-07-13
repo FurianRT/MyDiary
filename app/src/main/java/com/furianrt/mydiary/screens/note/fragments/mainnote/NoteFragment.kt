@@ -19,14 +19,12 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.content.ContextCompat.getColor
-import androidx.preference.PreferenceManager
 import androidx.viewpager2.widget.ViewPager2
 import com.furianrt.mydiary.R
 import com.furianrt.mydiary.analytics.MyAnalytics
 import com.furianrt.mydiary.base.BaseFragment
 import com.furianrt.mydiary.data.model.*
 import com.furianrt.mydiary.data.model.pojo.TagsAndAppearance
-import com.furianrt.mydiary.data.prefs.PreferencesHelper
 import com.furianrt.mydiary.dialogs.categories.CategoriesDialog
 import com.furianrt.mydiary.dialogs.delete.note.DeleteNoteDialog
 import com.furianrt.mydiary.dialogs.moods.MoodsDialog
@@ -34,7 +32,6 @@ import com.furianrt.mydiary.dialogs.tags.TagsDialog
 import com.furianrt.mydiary.general.AppBarLayoutBehavior
 import com.furianrt.mydiary.general.GlideApp
 import com.furianrt.mydiary.screens.gallery.GalleryActivity
-import com.furianrt.mydiary.screens.note.NoteActivity
 import com.furianrt.mydiary.screens.note.fragments.mainnote.content.NoteContentFragment
 import com.furianrt.mydiary.screens.note.fragments.mainnote.edit.NoteEditFragment
 import com.furianrt.mydiary.screens.settings.note.NoteSettingsActivity
@@ -55,7 +52,8 @@ import kotlinx.android.synthetic.main.fragment_note_toolbar.view.*
 import pub.devrel.easypermissions.AfterPermissionGranted
 import pub.devrel.easypermissions.EasyPermissions
 import java.io.IOException
-import java.util.*
+import java.util.Locale
+import java.util.Calendar
 import javax.inject.Inject
 import kotlin.collections.ArrayList
 
@@ -64,8 +62,8 @@ class NoteFragment : BaseFragment(), NoteFragmentContract.MvpView, DatePickerDia
 
     companion object {
         const val TAG = "NoteFragment"
-        private const val ARG_NOTE = "note"
-        private const val ARG_MODE = "mode"
+        private const val ARG_NOTE_ID = "note_id"
+        private const val ARG_IS_NEW_NOTE = "is_new_note"
         private const val LOCATION_INTERVAL = 400L
         private const val LOCATION_PERMISSIONS_REQUEST_CODE = 1
         private const val STORAGE_PERMISSIONS_REQUEST_CODE = 2
@@ -77,11 +75,11 @@ class NoteFragment : BaseFragment(), NoteFragmentContract.MvpView, DatePickerDia
         private const val DATE_PICKER_TAG = "datePicker"
 
         @JvmStatic
-        fun newInstance(note: MyNote, mode: NoteActivity.Companion.Mode) =
+        fun newInstance(noteId: String, isNewNote: Boolean) =
                 NoteFragment().apply {
                     arguments = Bundle().apply {
-                        putParcelable(ARG_NOTE, note)
-                        putSerializable(ARG_MODE, mode)
+                        putString(ARG_NOTE_ID, noteId)
+                        putBoolean(ARG_IS_NEW_NOTE, isNewNote)
                     }
                 }
     }
@@ -93,8 +91,7 @@ class NoteFragment : BaseFragment(), NoteFragmentContract.MvpView, DatePickerDia
     lateinit var mPresenter: NoteFragmentContract.Presenter
 
     private val mImagePagerAdapter = NoteImagePagerAdapter(listener = this)
-    private lateinit var mMode: NoteActivity.Companion.Mode
-
+    private var mIsNewNote = true
     private var mImagePagerPosition = 0
     private val mOnPageChangeCallback = object : ViewPager2.OnPageChangeCallback() {
         override fun onPageSelected(position: Int) {
@@ -119,22 +116,23 @@ class NoteFragment : BaseFragment(), NoteFragmentContract.MvpView, DatePickerDia
     override fun onCreate(savedInstanceState: Bundle?) {
         getPresenterComponent(requireContext()).inject(this)
         super.onCreate(savedInstanceState)
-        val note = arguments?.getParcelable<MyNote>(ARG_NOTE) ?: throw IllegalArgumentException()
-        mMode = arguments?.getSerializable(ARG_MODE) as NoteActivity.Companion.Mode
+        setHasOptionsMenu(true)
+
+        val noteId = arguments?.getString(ARG_NOTE_ID)!!
+        mIsNewNote = arguments?.getBoolean(ARG_IS_NEW_NOTE)!!
+
+        mPresenter.init(noteId, mIsNewNote)
+
         savedInstanceState?.let {
             mImagePagerPosition = it.getInt(BUNDLE_IMAGE_PAGER_POSITION, 0)
             mPresenter.setNoteTextBuffer(it.getParcelableArrayList(BUNDLE_NOTE_TEXT_BUFFER)
                     ?: ArrayList())
         }
-        mPresenter.init(note, mMode)  //todo Режет глаз. Придумать как убрать
-        setHasOptionsMenu(true)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_note, container, false)
-
-        someTemporaryFunction(view)
 
         view.pager_note_image.adapter = mImagePagerAdapter
         view.pager_note_image.isSaveEnabled = false
@@ -168,25 +166,11 @@ class NoteFragment : BaseFragment(), NoteFragmentContract.MvpView, DatePickerDia
 
         if (childFragmentManager.findFragmentByTag(NoteContentFragment.TAG) == null) {
             childFragmentManager.inTransaction {
-                add(R.id.container_note_edit, NoteContentFragment.newInstance(mMode), NoteContentFragment.TAG)
+                add(R.id.container_note_edit, NoteContentFragment.newInstance(mIsNewNote), NoteContentFragment.TAG)
             }
         }
 
         return view
-    }
-
-    private fun someTemporaryFunction(view: View) {   //todo убрать костыль
-        val isMoodEnabled = PreferenceManager.getDefaultSharedPreferences(context)
-                .getBoolean(PreferencesHelper.MOOD_AVAILABILITY, true)
-        if (!isMoodEnabled) {
-            view.layout_mood.visibility = View.GONE
-        }
-
-        val isMapEnabled = PreferenceManager.getDefaultSharedPreferences(context)
-                .getBoolean(PreferencesHelper.MAP_AVAILABILITY, true)
-        if (!isMapEnabled) {
-            view.text_location.visibility = View.GONE
-        }
     }
 
     override fun onStart() {
@@ -194,7 +178,6 @@ class NoteFragment : BaseFragment(), NoteFragmentContract.MvpView, DatePickerDia
         requireActivity().window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE)
         pager_note_image.registerOnPageChangeCallback(mOnPageChangeCallback)
         mPresenter.attachView(this)
-        mPresenter.onViewStart(requireContext().isLocationEnabled(), requireContext().isNetworkAvailable())
     }
 
     override fun onStop() {
@@ -202,6 +185,9 @@ class NoteFragment : BaseFragment(), NoteFragmentContract.MvpView, DatePickerDia
         pager_note_image.unregisterOnPageChangeCallback(mOnPageChangeCallback)
         mPresenter.detachView()
     }
+
+    override fun isLocationAvailable() =
+            requireContext().isNetworkAvailable() && requireContext().isLocationEnabled()
 
     override fun showNoteText(title: String, content: String) {
         (childFragmentManager.findFragmentByTag(NoteContentFragment.TAG) as? NoteContentFragment?)
@@ -376,7 +362,7 @@ class NoteFragment : BaseFragment(), NoteFragmentContract.MvpView, DatePickerDia
         }
     }
 
-    override fun showNoTagsMessage(appearance: MyNoteAppearance) {
+    override fun showNoTagsMessage(tagsAndAppearance: TagsAndAppearance) {
         layout_tags.removeViews(1, layout_tags.flexItemCount - 1)
 
         val image = layout_tags.getChildAt(0) as ImageView
@@ -457,6 +443,7 @@ class NoteFragment : BaseFragment(), NoteFragmentContract.MvpView, DatePickerDia
     }
 
     override fun showMood(mood: MyMood) {
+        layout_mood.visibility = View.VISIBLE
         text_mood.alpha = 1f
         text_mood.text = mood.name
         val smile = resources.getIdentifier(mood.iconName, "drawable", requireContext().packageName)
@@ -466,6 +453,7 @@ class NoteFragment : BaseFragment(), NoteFragmentContract.MvpView, DatePickerDia
     }
 
     override fun showNoMoodMessage() {
+        layout_mood.visibility = View.VISIBLE
         text_mood.text = getString(R.string.choose_mood)
         text_mood.alpha = 0.5f
         image_mood.alpha = 0.5f

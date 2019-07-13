@@ -7,8 +7,8 @@ import com.furianrt.mydiary.data.model.*
 import com.furianrt.mydiary.screens.main.adapter.NoteListContent
 import com.furianrt.mydiary.screens.main.adapter.NoteListHeader
 import com.furianrt.mydiary.screens.main.adapter.NoteListItem
+import com.furianrt.mydiary.utils.generateUniqueId
 import io.reactivex.Completable
-import io.reactivex.Observable
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import net.danlew.android.joda.DateUtils
@@ -202,7 +202,7 @@ class MainActivityPresenter @Inject constructor(
 
     override fun onFabMenuClick() {
         if (mSelectedNoteIds.isEmpty()) {
-            view?.showViewNewNote()
+            view?.showViewNewNote(generateUniqueId())
         } else {
             mSelectedNoteIds.clear()
             view?.deactivateSelection()
@@ -225,13 +225,13 @@ class MainActivityPresenter @Inject constructor(
 
     override fun onMainListItemClick(note: MyNoteWithProp, position: Int) {
         if (mSelectedNoteIds.isEmpty()) {
-            openNotePagerView(note)
+            view?.showNotePager(position, note.note.id)
         } else {
             selectListItem(note.note.id)
         }
     }
 
-    override fun onMainListItemLongClick(note: MyNoteWithProp, position: Int) {
+    override fun onMainListItemLongClick(note: MyNoteWithProp) {
         if (mSelectedNoteIds.isEmpty()) {
             view?.activateSelection()
         }
@@ -288,21 +288,6 @@ class MainActivityPresenter @Inject constructor(
             else -> mSelectedNoteIds.add(noteId)
         }
         view?.updateItemSelection(mSelectedNoteIds)
-    }
-
-    private fun openNotePagerView(note: MyNoteWithProp) {
-        addDisposable(dataManager.getAllNotesWithProp()
-                .firstOrError()
-                .flatMapObservable { Observable.fromIterable(it) }
-                .toSortedList { o1, o2 ->
-                    return@toSortedList if (dataManager.isSortDesc()) {
-                        o2.note.time.compareTo(o1.note.time)
-                    } else {
-                        o1.note.time.compareTo(o2.note.time)
-                    }
-                }
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { notes -> view?.showNotePager(notes.indexOf(note), note) })
     }
 
     override fun onButtonSettingsClick() {
@@ -457,23 +442,18 @@ class MainActivityPresenter @Inject constructor(
             view?.showNotes(formatNotes(toMap(notes)), mSelectedNoteIds)
         } else {
             view?.hideEmptyNoteList()
-            addDisposable(dataManager.getAllDbLocations()
-                    .first(emptyList())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe { locations ->
-                        val filteredNotes = applySearchFilter(notes, locations)
-                        view?.showNotes(formatNotes(toMap(filteredNotes)), mSelectedNoteIds)
-                        if (filteredNotes.isEmpty()) {
-                            view?.showNoSearchResults()
-                        } else {
-                            view?.hideNoSearchResults()
-                        }
-                    })
+            val filteredNotes = applySearchFilter(notes)
+            view?.showNotes(formatNotes(toMap(filteredNotes)), mSelectedNoteIds)
+            if (filteredNotes.isEmpty()) {
+                view?.showNoSearchResults()
+            } else {
+                view?.hideNoSearchResults()
+            }
         }
     }
 
     @SuppressLint("DefaultLocale")
-    private fun applySearchFilter(notes: List<MyNoteWithProp>, locations: List<MyLocation>): List<MyNoteWithProp> =
+    private fun applySearchFilter(notes: List<MyNoteWithProp>): List<MyNoteWithProp> =
             notes.asSequence()
                     .filter {
                         it.note.title.toLowerCase().contains(mSearchQuery)
@@ -492,7 +472,7 @@ class MainActivityPresenter @Inject constructor(
                         }
                         tagIds.filter { it != MyTag.TABLE_NAME }
                                 .forEach { tagId ->
-                                    if (note.tags.find { it.tagId == tagId } == null) {
+                                    if (note.tags.find { it.id == tagId } == null) {
                                         return@filter false
                                     }
                                 }
@@ -519,7 +499,7 @@ class MainActivityPresenter @Inject constructor(
                         }
                         locationNames.filter { it != MyLocation.TABLE_NAME }
                                 .forEach { locationName ->
-                                    if (note.locations.find { location -> locations.find { it.id == location.locationId }?.name == locationName } == null) {
+                                    if (note.locations.find { it.name == locationName } == null) {
                                         return@filter false
                                     }
                                 }

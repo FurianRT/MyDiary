@@ -20,6 +20,7 @@ class DrawerMenuPresenter @Inject constructor(
     override fun attachView(view: DrawerMenuContract.MvpView) {
         super.attachView(view)
         loadNotes()
+        loadImageCount()
         loadProfile()
         loadSearchEntries()
         updateSyncProgress()
@@ -49,19 +50,21 @@ class DrawerMenuPresenter @Inject constructor(
     }
 
     private fun loadNotes() {
-        addDisposable(dataManager.getAllNotesWithProp()
+        addDisposable(dataManager.getAllNotes()
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { notes ->
-                    view?.showNotesCountToday(notes
-                            .filter { DateUtils.isToday(DateTime(it.note.creationTime)) }
-                            .size)
-                    view?.showImageCount(notes.sumBy {
-                        it.images
-                                .filter { image -> !image.isDeleted }
-                                .size
-                    })
+                    val todayCount = notes
+                            .filter { DateUtils.isToday(DateTime(it.creationTime)) }
+                            .size
+                    view?.showNotesCountToday(todayCount)
                     view?.showNotesTotal(notes.size)
                 })
+    }
+
+    private fun loadImageCount() {
+        addDisposable(dataManager.getImageCount()
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe { view?.showNotesTotal(it) })
     }
 
     private fun loadSearchEntries() {

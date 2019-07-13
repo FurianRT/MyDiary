@@ -21,7 +21,7 @@ import javax.inject.Inject
 class NoteContentFragment : BaseFragment(), NoteContentFragmentContract.MvpView {
 
     private var mAppearance: MyNoteAppearance? = null
-    private lateinit var mMode: NoteActivity.Companion.Mode
+    private var mIsNewNote = true
 
     @Inject
     lateinit var mPresenter: NoteContentFragmentContract.Presenter
@@ -29,10 +29,7 @@ class NoteContentFragment : BaseFragment(), NoteContentFragmentContract.MvpView 
     override fun onCreate(savedInstanceState: Bundle?) {
         getPresenterComponent(requireContext()).inject(this)
         super.onCreate(savedInstanceState)
-        arguments?.let {
-            mMode = (it.getSerializable(ARG_MODE) as? NoteActivity.Companion.Mode?)
-                    ?: throw IllegalArgumentException()
-        }
+        mIsNewNote = arguments?.getBoolean(ARG_IS_NEW_NOTE)!!
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -59,7 +56,7 @@ class NoteContentFragment : BaseFragment(), NoteContentFragmentContract.MvpView 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        if (mMode == NoteActivity.Companion.Mode.ADD && savedInstanceState == null) {
+        if (mIsNewNote && savedInstanceState == null) {
             (parentFragment as? NoteFragment)?.disableActionBarExpanding(false)
             showNoteEditView(NoteEditFragment.ClickedView.TITLE, view.text_note_title.text.length)
         }
@@ -159,13 +156,13 @@ class NoteContentFragment : BaseFragment(), NoteContentFragmentContract.MvpView 
 
     companion object {
         const val TAG = "NoteContentFragment"
-        private const val ARG_MODE = "mode"
+        private const val ARG_IS_NEW_NOTE = "is_new_note"
 
         @JvmStatic
-        fun newInstance(mode: NoteActivity.Companion.Mode) =
+        fun newInstance(isNewNote: Boolean) =
                 NoteContentFragment().apply {
                     arguments = Bundle().apply {
-                        putSerializable(ARG_MODE, mode)
+                        putBoolean(ARG_IS_NEW_NOTE, isNewNote)
                     }
                 }
     }

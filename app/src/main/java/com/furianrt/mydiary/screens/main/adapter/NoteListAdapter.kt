@@ -1,13 +1,12 @@
 package com.furianrt.mydiary.screens.main.adapter
 
-import android.graphics.Color
 import android.graphics.PorterDuff
 import android.net.Uri
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
-import androidx.recyclerview.widget.ListAdapter
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.signature.ObjectKey
 import com.furianrt.mydiary.R
@@ -22,22 +21,33 @@ import java.util.*
 class NoteListAdapter(
         var selectedNoteIds: HashSet<String> = HashSet(),
         val is24TimeFormat: Boolean
-) : ListAdapter<NoteListItem, NoteListAdapter.MyViewHolder>(NoteListDiffCallback()),
+) : RecyclerView.Adapter<NoteListAdapter.MyViewHolder>(),
         HeaderItemDecoration.StickyHeaderInterface {
 
     companion object {
         private const val PREVIEW_IMAGE_SIZE = 200
     }
 
+    private val mItems = mutableListOf<NoteListItem>()
+
     var listener: OnMainListItemInteractionListener? = null
     var syncEmail: String? = null
+
+    fun submitList(items: List<NoteListItem>) {
+        val diffResult = DiffUtil.calculateDiff(NoteListDiffCallback(mItems, items))
+        mItems.clear()
+        mItems.addAll(items)
+        diffResult.dispatchUpdatesTo(this)
+    }
+
+    override fun getItemCount() = mItems.size
 
     override fun bindHeaderData(header: View, headerPosition: Int) {
         if (headerPosition == RecyclerView.NO_POSITION) {
             header.layoutParams.height = 0
         }
 
-        val time = (getItem(headerPosition) as NoteListHeader).time
+        val time = (mItems[headerPosition] as NoteListHeader).time
         header.text_date.text = header.context.getString(
                 R.string.note_list_date_format,
                 getMonth(time),
@@ -55,9 +65,7 @@ class NoteListAdapter(
         }
     }
 
-    override fun isHeader(itemPosition: Int): Boolean {
-        return getItem(itemPosition) is NoteListHeader
-    }
+    override fun isHeader(itemPosition: Int) = mItems[itemPosition] is NoteListHeader
 
     override fun getHeaderPositionForItem(itemPosition: Int): Int =
             (itemPosition downTo 0)
@@ -67,10 +75,10 @@ class NoteListAdapter(
     override fun getHeaderLayout(headerPosition: Int): Int = R.layout.activity_main_list_header
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
-        holder.bind(getItem(position))
+        holder.bind(mItems[position])
     }
 
-    override fun getItemViewType(position: Int): Int = getItem(position).getType()
+    override fun getItemViewType(position: Int) = mItems[position].getType()
 
     abstract class MyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         abstract fun bind(item: NoteListItem)
@@ -93,10 +101,14 @@ class NoteListAdapter(
             if (item is NoteListContent) {
                 with(itemView) {
                     setOnClickListener {
-                        listener?.onMainListItemClick(item.note, layoutPosition)
+                        val position = mItems
+                                .filterIsInstance<NoteListContent>()
+                                .map { it.note.note.id }
+                                .indexOf(item.note.note.id)
+                        listener?.onMainListItemClick(item.note, position)
                     }
                     setOnLongClickListener {
-                        listener?.onMainListItemLongClick(item.note, layoutPosition)
+                        listener?.onMainListItemLongClick(item.note)
                         return@setOnLongClickListener true
                     }
                     text_day_of_week.text = getDayOfWeek(item.note.note.time)
@@ -139,9 +151,7 @@ class NoteListAdapter(
                 if (email == null) {
                     image_sync.visibility = View.INVISIBLE
                 } else {
-                    if (item.note.note.isSync(syncEmail!!)
-                            && item.note.images.find { !it.isSync(email) } == null
-                            && item.note.tags.find { !it.isSync(email) } == null) {
+                    if (item.note.isSync(email)) {
                         image_sync.setImageResource(R.drawable.ic_cloud_done)
                         image_sync.setColorFilter(itemView.context.getThemeAccentColor(), PorterDuff.Mode.SRC_IN)
                     } else {
@@ -195,6 +205,6 @@ class NoteListAdapter(
 
     interface OnMainListItemInteractionListener {
         fun onMainListItemClick(note: MyNoteWithProp, position: Int)
-        fun onMainListItemLongClick(note: MyNoteWithProp, position: Int)
+        fun onMainListItemLongClick(note: MyNoteWithProp)
     }
 }

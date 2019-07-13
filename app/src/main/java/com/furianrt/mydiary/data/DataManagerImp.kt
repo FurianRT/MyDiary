@@ -11,6 +11,7 @@ import com.furianrt.mydiary.data.storage.StorageHelper
 import com.furianrt.mydiary.di.application.component.AppScope
 import com.google.gson.Gson
 import io.reactivex.*
+import io.reactivex.functions.Function6
 import javax.inject.Inject
 
 //Возможно, стоило что-то убрать в отдельные use case
@@ -310,9 +311,14 @@ class DataManagerImp @Inject constructor(
     override fun getLocationsForNote(noteId: String): Flowable<List<MyLocation>> =
             database.noteLocationDao().getLocationsForNote(noteId)
 
-    override fun getNote(noteId: String): Flowable<MyNote> =
+    override fun getNote(noteId: String): Single<MyNote> =
             database.noteDao()
                     .getNote(noteId)
+                    .subscribeOn(rxScheduler)
+
+    override fun getNoteAsList(noteId: String): Flowable<List<MyNote>> =
+            database.noteDao()
+                    .getNoteAsList(noteId)
                     .subscribeOn(rxScheduler)
 
     override fun getMood(moodId: Int): Single<MyMood> =
@@ -412,13 +418,42 @@ class DataManagerImp @Inject constructor(
                     .map { file -> MyImage(file.name, file.toURI().toString(), image.noteId, image.addedTime) }
                     .subscribeOn(rxScheduler)
 
+    //Следит почти за всеми таблицами. Использовать только когда дейстительно необходимо!
     override fun getAllNotesWithProp(): Flowable<List<MyNoteWithProp>> =
-            database.noteDao()
-                    .getAllNotesWithProp()
-                    .subscribeOn(rxScheduler)
+            Flowable.combineLatest(
+                    database.noteDao().getAllNotesWithProp(),
+                    database.noteTagDao().getAllNoteTags(),
+                    database.tagDao().getAllTags(),
+                    database.imageDao().getAllImages(),
+                    database.noteLocationDao().getAllNoteLocations(),
+                    database.locationDao().getAllLocations(),
+                    Function6<List<MyNoteWithProp>, List<NoteTag>, List<MyTag>, List<MyImage>,
+                            List<NoteLocation>, List<MyLocation>, List<MyNoteWithProp>>
+                    { notes, noteTags, tags, images, noteLocatios, locations ->
+                        notes.map { note ->
+                            val noteTagsForNote = noteTags.filter { it.noteId == note.note.id }
+                            note.tags = tags.filter { tag ->
+                                noteTagsForNote.find { it.tagId == tag.id } != null
+                            }
+
+                            note.images = images.filter { it.noteId == note.note.id }
+
+                            val noteLocatiosForNote = noteLocatios.filter { it.noteId == note.note.id }
+                            note.locations = locations.filter { location ->
+                                noteLocatiosForNote.find { it.locationId == location.id } != null
+                            }
+
+                            return@map note
+                        }
+                    }
+            )
 
     override fun getImagesForNote(noteId: String): Flowable<List<MyImage>> =
             database.imageDao().getImagesForNote(noteId)
+                    .subscribeOn(rxScheduler)
+
+    override fun getImageCount(): Flowable<Int> =
+            database.imageDao().getCount()
                     .subscribeOn(rxScheduler)
 
     override fun getHeaderImages(): Flowable<List<MyHeaderImage>> =

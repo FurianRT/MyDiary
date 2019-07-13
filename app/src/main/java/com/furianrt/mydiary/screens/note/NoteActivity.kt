@@ -11,10 +11,8 @@ import com.anjlab.android.iab.v3.TransactionDetails
 import com.furianrt.mydiary.BuildConfig
 import com.furianrt.mydiary.R
 import com.furianrt.mydiary.base.BaseActivity
-import com.furianrt.mydiary.data.model.MyNoteWithProp
 import com.furianrt.mydiary.screens.note.fragments.mainnote.edit.NoteEditFragment
 import com.furianrt.mydiary.utils.KeyboardUtils
-import com.furianrt.mydiary.utils.generateUniqueId
 import com.google.android.gms.ads.AdListener
 import com.google.android.gms.ads.AdRequest
 import kotlinx.android.synthetic.main.activity_note.*
@@ -24,32 +22,31 @@ class NoteActivity : BaseActivity(), NoteActivityContract.MvpView,
         NoteEditFragment.OnNoteFragmentInteractionListener {
 
     companion object {
-        private const val BUNDLE_NOTE_ID = "noteId"
-        private const val EXTRA_MODE = "mode"
-        private const val EXTRA_CLICKED_NOTE_POSITION = "notePosition"
+        private const val EXTRA_POSITION = "position"
+        private const val EXTRA_NOTE_ID = "note_id"
+        private const val EXTRA_IS_NEW_NOTE = "is_new_note"
 
-        enum class Mode { ADD, READ }
-
-        fun newIntentModeAdd(context: Context) =
+        fun newIntentModeAdd(context: Context, noteId: String) =
                 Intent(context, NoteActivity::class.java).apply {
-                    putExtra(EXTRA_MODE, Companion.Mode.ADD)
+                    putExtra(EXTRA_NOTE_ID, noteId)
+                    putExtra(EXTRA_IS_NEW_NOTE, true)
                 }
 
-        fun newIntentModeRead(context: Context, position: Int) =
+        fun newIntentModeRead(context: Context, noteId: String, position: Int) =
                 Intent(context, NoteActivity::class.java).apply {
-                    putExtra(EXTRA_MODE, Companion.Mode.READ)
-                    putExtra(EXTRA_CLICKED_NOTE_POSITION, position)
+                    putExtra(EXTRA_NOTE_ID, noteId)
+                    putExtra(EXTRA_POSITION, position)
+                    putExtra(EXTRA_IS_NEW_NOTE, false)
                 }
     }
 
     @Inject
     lateinit var mPresenter: NoteActivityContract.Presenter
 
-    private lateinit var mNoteId: String //todo убрать в презентер!!!
     private lateinit var mPagerAdapter: NoteActivityPagerAdapter
 
     private var mPagerPosition = 0
-    private var mMode = Companion.Mode.ADD
+    private var mIsNewNote = true
     private var mIsEditModeEnabled = false
 
     private val mOnPageChangeListener = object : ViewPager.OnPageChangeListener {
@@ -86,21 +83,17 @@ class NoteActivity : BaseActivity(), NoteActivityContract.MvpView,
         supportActionBar?.setDisplayShowHomeEnabled(true)
         supportActionBar?.setDisplayShowTitleEnabled(false)
 
-        mPagerPosition = savedInstanceState?.getInt(EXTRA_CLICKED_NOTE_POSITION, 0)
-                ?: intent.getIntExtra(EXTRA_CLICKED_NOTE_POSITION, 0)
+        mPresenter.init(
+                intent.getStringExtra(EXTRA_NOTE_ID)!!,
+                intent.getBooleanExtra(EXTRA_IS_NEW_NOTE, true)
+        )
 
-        if (savedInstanceState != null) {
-            mPagerPosition = savedInstanceState.getInt(EXTRA_CLICKED_NOTE_POSITION, 0)
-            mNoteId = savedInstanceState.getString(BUNDLE_NOTE_ID)
-                    ?: throw IllegalArgumentException()
-        } else {
-            mPagerPosition = intent.getIntExtra(EXTRA_CLICKED_NOTE_POSITION, 0)
-            mNoteId = generateUniqueId()
-        }
+        mPagerPosition = savedInstanceState?.getInt(EXTRA_POSITION, 0)
+                ?: intent.getIntExtra(EXTRA_POSITION, 0)
 
-        mMode = intent.getSerializableExtra(EXTRA_MODE) as Mode
+        mIsNewNote = intent.getBooleanExtra(EXTRA_IS_NEW_NOTE, true)
 
-        mPagerAdapter = NoteActivityPagerAdapter(supportFragmentManager, mMode)
+        mPagerAdapter = NoteActivityPagerAdapter(supportFragmentManager, mIsNewNote)
         pager_note.adapter = mPagerAdapter
     }
 
@@ -111,8 +104,7 @@ class NoteActivity : BaseActivity(), NoteActivityContract.MvpView,
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        outState.putInt(EXTRA_CLICKED_NOTE_POSITION, pager_note.currentItem)
-        outState.putString(BUNDLE_NOTE_ID, mNoteId)
+        outState.putInt(EXTRA_POSITION, pager_note.currentItem)
     }
 
     override fun onBillingInitialized() {
@@ -146,11 +138,11 @@ class NoteActivity : BaseActivity(), NoteActivityContract.MvpView,
         view_ad?.visibility = View.GONE
     }
 
-    override fun showNotes(notes: List<MyNoteWithProp>) {
-        if (mPagerPosition >= notes.size) {
-            mPagerPosition = notes.size - 1
+    override fun showNotes(noteIds: List<String>) {
+        if (mPagerPosition >= noteIds.size) {
+            mPagerPosition = noteIds.size - 1
         }
-        mPagerAdapter.list = notes
+        mPagerAdapter.noteIds = noteIds
         mPagerAdapter.notifyDataSetChanged()
         pager_note.setCurrentItem(mPagerPosition, false)
         showImageCounter(mPagerPosition + 1, mPagerAdapter.count)
@@ -191,11 +183,6 @@ class NoteActivity : BaseActivity(), NoteActivityContract.MvpView,
         mPresenter.attachView(this)
         pager_note.addOnPageChangeListener(mOnPageChangeListener)
         KeyboardUtils.addKeyboardToggleListener(this, mKeyboardListener)
-        if (mMode == Companion.Mode.READ) {
-            mPresenter.loadNotes()
-        } else {
-            mPresenter.loadNote(mNoteId)
-        }
     }
 
     override fun onStop() {
