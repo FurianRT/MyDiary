@@ -367,15 +367,13 @@ class NoteFragment : BaseFragment(), NoteFragmentContract.MvpView, DatePickerDia
 
         val image = layout_tags.getChildAt(0) as ImageView
         image.setColorFilter(
-                appearance.surfaceTextColor ?: getColor(requireContext(), R.color.black),
+                tagsAndAppearance.appearance.surfaceTextColor ?: getColor(requireContext(), R.color.black),
                 PorterDuff.Mode.SRC_IN
         )
         image.alpha = 0.4f
 
         val textNoTags = TextView(requireContext())
-        textNoTags.setTextColor(
-                appearance.textColor ?: Color.BLACK
-        )
+        textNoTags.setTextColor(tagsAndAppearance.appearance.textColor ?: Color.BLACK)
         textNoTags.setText(R.string.choose_tags)
         textNoTags.alpha = 0.4f
 
