@@ -2,6 +2,7 @@ package com.furianrt.mydiary.services.sync
 
 import com.furianrt.mydiary.data.model.SyncProgressMessage
 import com.furianrt.mydiary.domain.get.GetProfileUseCase
+import com.furianrt.mydiary.domain.save.SetLastSyncMessageUseCase
 import com.furianrt.mydiary.domain.sync.*
 import com.furianrt.mydiary.domain.update.UpdateProfileUseCase
 import io.reactivex.Single

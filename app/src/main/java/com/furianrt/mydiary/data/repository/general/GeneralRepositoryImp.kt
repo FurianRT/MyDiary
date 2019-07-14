@@ -40,9 +40,13 @@ class GeneralRepositoryImp @Inject constructor(
         })
     }
 
-    override fun isNeedRateOffer(): Boolean = prefs.isNeedRateOffer()
-
-    override fun setNeedRateOffer(need: Boolean) {
-        prefs.setNeedRateOffer(need)
+    override fun enableRateOffer(enable: Boolean) {
+        prefs.setNeedRateOffer(enable)
     }
+
+    override fun isRateOfferEnabled(): Boolean = prefs.isRateOfferEnabled()
+
+    override fun getPrimaryColor(): Int = prefs.getPrimaryColor()
+
+    override fun getAccentColor(): Int = prefs.getAccentColor()
 }

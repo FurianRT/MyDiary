@@ -1,17 +1,12 @@
 package com.furianrt.mydiary.screens.main.fragments.authentication.registration
 
-import android.util.Patterns
-import com.furianrt.mydiary.data.DataManager
+import com.furianrt.mydiary.domain.check.CheckCredentialsUseCase
 import io.reactivex.android.schedulers.AndroidSchedulers
 import javax.inject.Inject
 
 class RegistrationPresenter @Inject constructor(
-        private val dataManager: DataManager
+        private val checkCredentials: CheckCredentialsUseCase
 ) : RegistrationContract.Presenter() {
-
-    companion object {
-        private const val PASSWORD_MIN_LENGTH = 6
-    }
 
     private var mPrevEmail = ""
 
@@ -20,97 +15,71 @@ class RegistrationPresenter @Inject constructor(
     }
 
     override fun onButtonSignUpClick(email: String, password: String, passwordRepeat: String) {
-        view?.let { v ->
-            if (!v.isNetworkAvailable()) {
-                v.showErrorNetworkConnection()
-                return
-            }
-            if (validateEmail(email) && validatePassword(password, passwordRepeat)) {
-                v.clearEmailMessages()
-                v.showLoading()
-                addDisposable(dataManager.isProfileExists(email)
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe({ exists ->
-                            if (exists) {
-                                v.showErrorEmailExists()
-                            } else {
-                                v.hideLoading()
-                                v.showPrivacyView(email, password)
-                            }
-
-                        }, {
-                            v.hideLoading()
-                            it.printStackTrace()
-                            v.showErrorNetworkConnection()
-                        }))
-            }
+        if (view?.isNetworkAvailable() != true) {
+            view?.showErrorNetworkConnection()
+            return
         }
+        view?.clearEmailMessages()
+        view?.showLoading()
+        addDisposable(checkCredentials.invoke(email, password, passwordRepeat)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe({
+                    view?.hideLoading()
+                    view?.showPrivacyView(email, password)
+                }, { error ->
+                    view?.hideLoading()
+                    when (error) {
+                        is CheckCredentialsUseCase.EmailFormatException ->
+                            view?.showErrorEmailFormat()
+                        is CheckCredentialsUseCase.EmptyEmailException ->
+                            view?.showErrorEmptyEmail()
+                        is CheckCredentialsUseCase.EmailExistException ->
+                            view?.showErrorEmailExists()
+                        is CheckCredentialsUseCase.ShortPasswordException ->
+                            view?.showErrorShortPassword()
+                        is CheckCredentialsUseCase.EmptyPasswordException ->
+                            view?.showErrorEmptyPassword()
+                        is CheckCredentialsUseCase.EmptyPasswordRepeatException ->
+                            view?.showErrorEmptyPasswordRepeat()
+                        is CheckCredentialsUseCase.PasswordNotMatchException ->
+                            view?.showErrorPassword()
+                        else -> {
+                            error.printStackTrace()
+                            view?.showErrorNetworkConnection()
+                        }
+                    }
+                }))
     }
 
     override fun onEmailFocusChange(email: String, hasFocus: Boolean) {
-        view?.let { v ->
-            if (!hasFocus && mPrevEmail != email) {
-                mPrevEmail = email
-                if (!v.isNetworkAvailable()) {
-                    v.showErrorNetworkConnection()
-                } else if (validateEmail(email)) {
-                    v.showLoadingEmail()
-                    addDisposable(dataManager.isProfileExists(email)
-                            .observeOn(AndroidSchedulers.mainThread())
-                            .subscribe({ exists ->
-                                v.hideLoadingEmail()
-                                if (exists) {
-                                    v.showErrorEmailExists()
-                                } else {
-                                    v.showMessageCorrectEmail()
-                                }
-                            }, {
-                                it.printStackTrace()
-                                v.hideLoadingEmail()
-                                v.showErrorNetworkConnection()
-                            }))
-                }
+        if (!hasFocus && mPrevEmail != email) {
+            mPrevEmail = email
+            if (view?.isNetworkAvailable() != true) {
+                view?.showErrorNetworkConnection()
+                return
             }
-        }
-    }
+            view?.showLoadingEmail()
+            addDisposable(checkCredentials.invoke(email)
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe({
+                        view?.hideLoadingEmail()
+                        view?.showMessageCorrectEmail()
+                    }, { error ->
+                        view?.hideLoadingEmail()
+                        when (error) {
+                            is CheckCredentialsUseCase.EmailFormatException ->
+                                view?.showErrorEmailFormat()
+                            is CheckCredentialsUseCase.EmptyEmailException ->
+                                view?.showErrorEmptyEmail()
+                            is CheckCredentialsUseCase.EmailExistException ->
+                                view?.showErrorEmailExists()
+                            else -> {
+                                error.printStackTrace()
+                                view?.showErrorNetworkConnection()
+                            }
+                        }
 
-    private fun validateEmail(email: String): Boolean {
-        return when {
-            email.isEmpty() -> {
-                view?.showErrorEmptyEmail()
-                return false
-            }
-            !Patterns.EMAIL_ADDRESS.matcher(email).matches() -> {
-                view?.showErrorEmailFormat()
-                return false
-            }
-            email.substring(email.lastIndexOf(".") + 1, email.length).length < 2 -> {
-                view?.showErrorEmailFormat()
-                return false
-            }
-            else -> true
-        }
-    }
-
-    private fun validatePassword(password: String, passwordRepeat: String): Boolean {
-        return when {
-            password.isEmpty() -> {
-                view?.showErrorEmptyPassword()
-                return false
-            }
-            passwordRepeat.isEmpty() -> {
-                view?.showErrorEmptyPasswordRepeat()
-                return false
-            }
-            password.length < PASSWORD_MIN_LENGTH -> {
-                view?.showErrorShortPassword()
-                return false
-            }
-            password != passwordRepeat -> {
-                view?.showErrorPassword()
-                return false
-            }
-            else -> true
+                    }))
         }
     }
 }

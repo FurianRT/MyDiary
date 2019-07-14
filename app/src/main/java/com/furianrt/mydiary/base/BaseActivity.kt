@@ -11,7 +11,10 @@ import com.anjlab.android.iab.v3.TransactionDetails
 import com.furianrt.mydiary.BuildConfig
 import com.furianrt.mydiary.R
 import com.furianrt.mydiary.analytics.MyAnalytics
-import com.furianrt.mydiary.data.DataManager
+import com.furianrt.mydiary.domain.check.IsAuthorizedUseCase
+import com.furianrt.mydiary.domain.check.IsPinEnabledUseCase
+import com.furianrt.mydiary.domain.get.GetAppAccentColorUseCase
+import com.furianrt.mydiary.domain.get.GetAppPrimaryColorUseCase
 import com.furianrt.mydiary.screens.pin.PinActivity
 import javax.inject.Inject
 
@@ -22,10 +25,19 @@ abstract class BaseActivity : AppCompatActivity(), BaseView, BillingProcessor.IB
     }
 
     @Inject
-    lateinit var mDataManager: DataManager
+    lateinit var analytics: MyAnalytics
 
     @Inject
-    lateinit var analytics: MyAnalytics
+    lateinit var isPinEnabled: IsPinEnabledUseCase
+
+    @Inject
+    lateinit var isAuthorized: IsAuthorizedUseCase
+
+    @Inject
+    lateinit var getAppPrimaryColor: GetAppPrimaryColorUseCase
+
+    @Inject
+    lateinit var getAppAccentColor: GetAppAccentColorUseCase
 
     private lateinit var mBillingProcessor: BillingProcessor
 
@@ -85,7 +97,7 @@ abstract class BaseActivity : AppCompatActivity(), BaseView, BillingProcessor.IB
     }
 
     private fun openPinScreen() {
-        if (mDataManager.isPinEnabled() && !mDataManager.isAuthorized()) {
+        if (isPinEnabled.invoke() && !isAuthorized.invoke()) {
             startActivity(PinActivity.newIntentModeLock(this))
         }
     }
@@ -98,7 +110,7 @@ abstract class BaseActivity : AppCompatActivity(), BaseView, BillingProcessor.IB
     // Похоже, что динамическое создание стиля в андроиде не предусмотрено,
     // поэтому приходится хардкодить этот бред
     private fun applyStyleToTheme() {
-        when (mDataManager.getPrimaryColor()) {
+        when (getAppPrimaryColor.invoke()) {
             ContextCompat.getColor(this, R.color.r1) ->
                 theme.applyStyle(R.style.OverlayPrimaryColorR1, true)
             ContextCompat.getColor(this, R.color.r4) ->
@@ -149,7 +161,7 @@ abstract class BaseActivity : AppCompatActivity(), BaseView, BillingProcessor.IB
                 theme.applyStyle(R.style.OverlayPrimaryColorBlack, true)
         }
 
-        when (mDataManager.getAccentColor()) {
+        when (getAppAccentColor.invoke()) {
             ContextCompat.getColor(this, R.color.r1) ->
                 theme.applyStyle(R.style.OverlayAccentColorR1, true)
             ContextCompat.getColor(this, R.color.r4) ->

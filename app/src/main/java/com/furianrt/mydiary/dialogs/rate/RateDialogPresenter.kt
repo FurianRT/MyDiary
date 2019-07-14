@@ -1,7 +1,7 @@
 package com.furianrt.mydiary.dialogs.rate
 
 import com.furianrt.mydiary.BuildConfig
-import com.furianrt.mydiary.domain.SetNeedRateOfferUseCase
+import com.furianrt.mydiary.domain.save.SetNeedRateOfferUseCase
 import javax.inject.Inject
 
 class RateDialogPresenter @Inject constructor(

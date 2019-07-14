@@ -128,7 +128,7 @@ class PreferencesHelperImp @Inject constructor(
         mPrefs.edit().putInt(PreferencesHelper.NUMBER_OF_LAUNCHES, count).apply()
     }
 
-    override fun isNeedRateOffer(): Boolean = mPrefs.getBoolean(PreferencesHelper.RATE_OFFER, true)
+    override fun isRateOfferEnabled(): Boolean = mPrefs.getBoolean(PreferencesHelper.RATE_OFFER, true)
 
     override fun setNeedRateOffer(need: Boolean) {
         mPrefs.edit().putBoolean(PreferencesHelper.RATE_OFFER, need).apply()

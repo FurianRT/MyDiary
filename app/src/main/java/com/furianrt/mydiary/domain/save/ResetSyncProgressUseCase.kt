@@ -1,4 +1,4 @@
-package com.furianrt.mydiary.domain.sync
+package com.furianrt.mydiary.domain.save
 
 import com.furianrt.mydiary.data.repository.general.GeneralRepository
 import org.joda.time.DateTime

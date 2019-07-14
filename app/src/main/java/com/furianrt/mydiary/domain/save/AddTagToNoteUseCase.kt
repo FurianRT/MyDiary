@@ -1,4 +1,4 @@
-package com.furianrt.mydiary.domain
+package com.furianrt.mydiary.domain.save
 
 import com.furianrt.mydiary.data.model.NoteTag
 import com.furianrt.mydiary.data.repository.tag.TagRepository

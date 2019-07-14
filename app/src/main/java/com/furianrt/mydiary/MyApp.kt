@@ -14,11 +14,11 @@ import com.furianrt.mydiary.di.application.modules.data.DatabaseModule
 import com.furianrt.mydiary.di.application.modules.network.ApiModule
 import com.furianrt.mydiary.di.application.modules.network.FirebaseModule
 import com.furianrt.mydiary.di.application.modules.rx.RxModule
-import com.furianrt.mydiary.domain.AuthorizeUseCase
+import com.furianrt.mydiary.domain.auth.AuthorizeUseCase
 import com.furianrt.mydiary.domain.IncrementLaunchCountUseCase
-import com.furianrt.mydiary.domain.IsPinEnabledUseCase
+import com.furianrt.mydiary.domain.check.IsPinEnabledUseCase
 import com.furianrt.mydiary.domain.get.GetPinRequestDelayUseCase
-import com.furianrt.mydiary.domain.sync.ResetSyncProgressUseCase
+import com.furianrt.mydiary.domain.save.ResetSyncProgressUseCase
 import com.furianrt.mydiary.general.GlideApp
 import com.furianrt.mydiary.screens.pin.PinActivity
 import com.google.android.gms.ads.MobileAds

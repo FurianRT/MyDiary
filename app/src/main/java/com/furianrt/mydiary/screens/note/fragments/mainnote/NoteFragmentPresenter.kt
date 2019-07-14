@@ -3,19 +3,40 @@ package com.furianrt.mydiary.screens.note.fragments.mainnote
 import android.location.Address
 import android.util.Log
 import com.furianrt.mydiary.data.model.*
-import com.furianrt.mydiary.data.model.pojo.TagsAndAppearance
+import com.furianrt.mydiary.domain.check.IsForecastEnabledUseCase
+import com.furianrt.mydiary.domain.check.IsLocationEnabledUseCase
+import com.furianrt.mydiary.domain.check.IsMoodEnabledUseCase
+import com.furianrt.mydiary.domain.get.*
+import com.furianrt.mydiary.domain.save.AddForecastUseCase
+import com.furianrt.mydiary.domain.save.SaveImagesUseCase
+import com.furianrt.mydiary.domain.save.SaveLocationUseCase
+import com.furianrt.mydiary.domain.update.UpdateNoteUseCase
 import com.furianrt.mydiary.utils.generateUniqueId
 import com.google.android.gms.location.LocationResult
-import com.google.common.base.Optional
-import io.reactivex.Flowable
 import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.functions.BiFunction
 import org.joda.time.DateTime
 import javax.inject.Inject
 import kotlin.collections.ArrayList
 
 class NoteFragmentPresenter @Inject constructor(
-        private val dataManager1: DataManager
+        private val getImages: GetImagesUseCase,
+        private val getTagsWithAppearance: GetTagsWithAppearanceUseCase,
+        private val getNotes: GetNotesUseCase,
+        private val getTimeFormat: GetTimeFormatUseCase,
+        private val getAppearance: GetAppearanceUseCase,
+        private val getWeatherUnits: GetWeatherUnitsUseCase,
+        private val saveImages: SaveImagesUseCase,
+        private val updateNote: UpdateNoteUseCase,
+        private val getCategories: GetCategoriesUseCase,
+        private val saveLocation: SaveLocationUseCase,
+        private val isMoodEnabled: IsMoodEnabledUseCase,
+        private val getMoods: GetMoodsUseCase,
+        private val getFullNotes: GetFullNotesUseCase,
+        private val getLocations: GetLocationsUseCase,
+        private val getForecasts: GetForecastsUseCase,
+        private val addForecast: AddForecastUseCase,
+        private val isLocationEnabled: IsLocationEnabledUseCase,
+        private val isForecastEnabled: IsForecastEnabledUseCase
 ) : NoteFragmentContract.Presenter() {
 
     companion object {
@@ -38,7 +59,6 @@ class NoteFragmentPresenter @Inject constructor(
         if (!::mNoteId.isInitialized) {
             throw IllegalStateException("Need to call init before attaching view")
         }
-
         loadNote()
         loadNoteAppearance()
         loadTags()
@@ -60,24 +80,19 @@ class NoteFragmentPresenter @Inject constructor(
     }
 
     private fun loadImages() {
-        addDisposable(dataManager.getImagesForNote(mNoteId)
+        addDisposable(getImages.invoke(mNoteId)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { images ->
                     if (images.isEmpty()) {
                         view?.showNoImages()
                     } else {
-                        view?.showImages(images.sortedWith(compareBy(MyImage::order, MyImage::addedTime)))
+                        view?.showImages(images)
                     }
                 })
     }
 
     private fun loadTags() {
-        val tagsFlowable = dataManager.getTagsForNote(mNoteId)
-        val appearanceFlowable = dataManager.getNoteAppearance(mNoteId)
-        addDisposable(Flowable.combineLatest(tagsFlowable, appearanceFlowable,
-                BiFunction<List<MyTag>, MyNoteAppearance, TagsAndAppearance> { tags, appearance ->
-                    return@BiFunction TagsAndAppearance(tags, appearance)
-                })
+        addDisposable(getTagsWithAppearance.invoke(mNoteId)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { tagsAndAppearance ->
                     if (tagsAndAppearance.tags.isEmpty()) {
@@ -89,55 +104,48 @@ class NoteFragmentPresenter @Inject constructor(
     }
 
     private fun loadNote() {
-        addDisposable(dataManager.getNote(mNoteId)
+        addDisposable(getNotes.invoke(mNoteId)
+                .map { note ->
+                    if (note.isPresent) {
+                        note.get()
+                    } else {
+                        throw IllegalStateException()
+                    }
+                }
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { note ->
                     if (mNoteTextBuffer.isEmpty()) {
                         mNoteTextBuffer.add(UndoRedoEntry(note.title, note.content, true))
                     }
                     view?.showNoteText(note.title, note.content)
-                    view?.showDateAndTime(note.time, dataManager.is24TimeFormat())
+                    view?.showDateAndTime(
+                            note.time,
+                            getTimeFormat.invoke() == GetTimeFormatUseCase.TIME_FORMAT_24
+                    )
                     showNoteMood(note.moodId)
                 })
     }
 
     private fun loadNoteAppearance() {
-        addDisposable(dataManager.getNoteAppearance(mNoteId)
+        addDisposable(getAppearance.invoke(mNoteId)
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { appearance ->
-                    appearance.textSize = appearance.textSize ?: dataManager.getTextSize()
-                    appearance.textColor = appearance.textColor ?: dataManager.getTextColor()
-                    appearance.surfaceTextColor =
-                            appearance.surfaceTextColor ?: dataManager.getSurfaceTextColor()
-                    appearance.background =
-                            appearance.background ?: dataManager.getNoteBackgroundColor()
-                    appearance.textBackground =
-                            appearance.textBackground ?: dataManager.getNoteTextBackgroundColor()
-                    view?.updateNoteAppearance(appearance)
-                })
+                .subscribe { view?.updateNoteAppearance(it) })
     }
 
     private fun showForecast() {
-        if (dataManager.isWeatherEnabled()) {
-            addDisposable(dataManager.getAllDbForecasts()
-                    .map { forecasts -> forecasts.filter { it.noteId == mNoteId } }
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe { forecasts ->
-                        if (forecasts.isNotEmpty()) {
-                            view?.showForecast(getWeatherTemp(forecasts.first()), forecasts.first().icon)
-                        }
-                    })
-        }
+        addDisposable(getForecasts.invoke(mNoteId)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe { view?.showForecast(getWeatherTemp(it), it.icon) })
     }
 
     private fun showLocation(location: MyLocation) {
-        if (dataManager.isLocationEnabled()) {
+        if (isLocationEnabled.invoke()) {
             view?.showLocation(location)
         }
     }
 
     private fun loadLocation() {
-        addDisposable(dataManager.getLocationsForNote(mNoteId)
+        addDisposable(getLocations.invoke(mNoteId)
                 .first(emptyList())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { locations ->
@@ -151,11 +159,11 @@ class NoteFragmentPresenter @Inject constructor(
     }
 
     private fun showNoteMood(moodId: Int) {
-        if (dataManager.isMoodEnabled()) {
+        if (isMoodEnabled.invoke()) {
             if (moodId == 0) {
                 view?.showNoMoodMessage()
             } else {
-                addDisposable(dataManager.getMood(moodId)
+                addDisposable(getMoods.invoke(moodId)
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe { mood -> view?.showMood(mood) })
             }
@@ -163,11 +171,7 @@ class NoteFragmentPresenter @Inject constructor(
     }
 
     private fun loadNoteCategory() {
-        addDisposable(Flowable.combineLatest(dataManager.getNoteAsList(mNoteId),
-                dataManager.getAllCategories(),
-                BiFunction<List<MyNote>, List<MyCategory>, Optional<MyCategory>> { note, categories ->
-                    Optional.fromNullable(categories.find { it.id == note.first().categoryId })
-                })
+        addDisposable(getCategories.invoke(mNoteId)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { category ->
                     if (category.isPresent) {
@@ -179,7 +183,7 @@ class NoteFragmentPresenter @Inject constructor(
     }
 
     private fun findLocation() {
-        if (dataManager.isLocationEnabled()) {
+        if (isLocationEnabled.invoke()) {
             view?.requestLocationPermissions()
         }
     }
@@ -189,10 +193,10 @@ class NoteFragmentPresenter @Inject constructor(
     }
 
     override fun onLocationReceived(result: LocationResult) {
-        if (dataManager.isWeatherEnabled()) {
-            addForecast(result.lastLocation.latitude, result.lastLocation.longitude)
+        if (isForecastEnabled.invoke()) {
+            addForecastToNote(result.lastLocation.latitude, result.lastLocation.longitude)
         }
-        if (dataManager.isLocationEnabled()) {
+        if (isLocationEnabled.invoke()) {
             view?.findAddress(result.lastLocation.latitude, result.lastLocation.longitude)
         }
     }
@@ -206,34 +210,26 @@ class NoteFragmentPresenter @Inject constructor(
         }
     }
 
-    private fun addForecast(latitude: Double, longitude: Double) {
-        var forecast: MyForecast? = null
-        addDisposable(dataManager.loadForecast(latitude, longitude)
-                .flatMapCompletable {
-                    forecast = it.apply { noteId = mNoteId }
-                    dataManager.insertForecast(it)
-                }
+    private fun addForecastToNote(latitude: Double, longitude: Double) {
+        addDisposable(addForecast.invoke(mNoteId, latitude, longitude)
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({
-                    forecast?.let { view?.showForecast(getWeatherTemp(it), it.icon) }
-                }, {
-                    it.printStackTrace()
+                .subscribe({ forecast ->
+                    view?.showForecast(getWeatherTemp(forecast), forecast.icon)
+                }, { error ->
+                    error.printStackTrace()
                 }))
     }
 
     private fun getWeatherTemp(forecast: MyForecast): String =
-            when {
-                dataManager.getWeatherUnits() == DataManager.WEATHER_UNITS_CELSIUS ->
-                    "${forecast.temp.toInt()} °C"
-                dataManager.getWeatherUnits() == DataManager.WEATHER_UNITS_FAHRENHEIT ->
-                    "${(forecast.temp * 1.8 + 32).toInt()} °F"
+            when (getWeatherUnits.invoke()) {
+                GetWeatherUnitsUseCase.UNITS_CELSIUS -> "${forecast.temp.toInt()} °C"
+                GetWeatherUnitsUseCase.UNITS_FAHRENHEIT -> "${(forecast.temp * 1.8 + 32).toInt()} °F"
                 else -> throw IllegalStateException()
             }
 
     private fun addLocation(location: MyLocation) {
         Log.e(TAG, "insertLocation")
-        addDisposable(dataManager.insertLocation(location)
-                .andThen(dataManager.insertNoteLocation(NoteLocation(mNoteId, location.id)))
+        addDisposable(saveLocation.invoke(mNoteId, location)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { showLocation(location) })
     }
@@ -247,17 +243,7 @@ class NoteFragmentPresenter @Inject constructor(
     }
 
     override fun onNoteImagesPicked(imageUrls: List<String>) {
-        addDisposable(Flowable.fromIterable(imageUrls)
-                .map { url ->
-                    val name = mNoteId + "_" + generateUniqueId()
-                    return@map MyImage(name, url, mNoteId, DateTime.now().millis)
-                }
-                .flatMapSingle { image -> dataManager.saveImageToStorage(image) }
-                .flatMapSingle { savedImage ->
-                    dataManager.insertImage(savedImage).toSingleDefault(true)
-                }
-                .collectInto(mutableListOf<Boolean>()) { l, i -> l.add(i) }
-                .ignoreElement()
+        addDisposable(saveImages.invoke(mNoteId, imageUrls)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { view?.hideLoading() })
     }
@@ -275,12 +261,14 @@ class NoteFragmentPresenter @Inject constructor(
     }
 
     override fun updateNoteText(noteTitle: String, noteContent: String) {
-        addDisposable(dataManager.updateNoteText(mNoteId, noteTitle, noteContent)
+        addDisposable(updateNote.invoke(mNoteId, noteTitle, noteContent)
                 .subscribe())
     }
 
     override fun onDateFieldClick() {
-        addDisposable(dataManager.getNote(mNoteId)
+        addDisposable(getNotes.invoke(mNoteId)
+                .map { it.get() }
+                .firstOrError()
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { note ->
                     val date = DateTime(note.time)
@@ -289,34 +277,50 @@ class NoteFragmentPresenter @Inject constructor(
     }
 
     override fun onDateSelected(year: Int, monthOfYear: Int, dayOfMonth: Int) {
-        addDisposable(dataManager.getNote(mNoteId)
+        addDisposable(getNotes.invoke(mNoteId)
+                .map { it.get() }
+                .firstOrError()
                 .flatMapCompletable { note ->
                     val date = DateTime(note.time)
                             .withYear(year)
                             .withMonthOfYear(monthOfYear + 1)
                             .withDayOfMonth(dayOfMonth)
-                    dataManager.updateNote(note.apply { time = date.millis })
+                    updateNote.invoke(note.apply { time = date.millis })
                 }
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe())
     }
 
     override fun onTimeFieldClick() {
-        addDisposable(dataManager.getNote(mNoteId)
+        addDisposable(getNotes.invoke(mNoteId)
+                .map { it.get() }
+                .firstOrError()
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { note ->
                     val date = DateTime(note.time)
-                    view?.showTimePicker(date.hourOfDay, date.minuteOfHour, dataManager.is24TimeFormat())
+                    view?.showTimePicker(
+                            date.hourOfDay,
+                            date.minuteOfHour,
+                            getTimeFormat.invoke() == GetTimeFormatUseCase.TIME_FORMAT_24
+                    )
                 })
     }
 
     override fun onTimeSelected(hourOfDay: Int, minute: Int) {
-        addDisposable(dataManager.getNote(mNoteId)
+        addDisposable(getNotes.invoke(mNoteId)
+                .map { note ->
+                    if (note.isPresent) {
+                        note.get()
+                    } else {
+                        throw IllegalStateException()
+                    }
+                }
+                .firstOrError()
                 .flatMapCompletable { note ->
                     val date = DateTime(note.time)
                             .withHourOfDay(hourOfDay)
                             .withMinuteOfHour(minute)
-                    dataManager.updateNote(note.apply { time = date.millis })
+                    updateNote.invoke(note.apply { time = date.millis })
                 }
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe())
@@ -401,14 +405,13 @@ class NoteFragmentPresenter @Inject constructor(
             else ->
                 "$curContent $recordedText"
         }
-        addDisposable(dataManager.updateNoteText(mNoteId, curTitle, content)
+        addDisposable(updateNote.invoke(mNoteId, curTitle, content)
                 .subscribe { onNoteTextChange(curTitle, content) })
     }
 
     override fun onButtonShareClick() {
-        addDisposable(dataManager.getAllNotesWithProp()
+        addDisposable(getFullNotes.invoke(mNoteId)
                 .firstOrError()
-                .map { notes -> notes.first { it.note.id == mNoteId } }
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { note -> view?.shareNote(note) })
     }

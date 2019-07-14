@@ -2,6 +2,7 @@ package com.furianrt.mydiary.domain.get
 
 import com.furianrt.mydiary.data.model.MyNote
 import com.furianrt.mydiary.data.repository.note.NoteRepository
+import com.google.common.base.Optional
 import io.reactivex.Flowable
 import javax.inject.Inject
 
@@ -17,5 +18,15 @@ class GetNotesUseCase @Inject constructor(
                         } else {
                             notes.sortedBy { it.time }
                         }
+                    }
+
+    fun invoke(noteId: String): Flowable<Optional<MyNote>> =
+            noteRepository.getNoteAsList(noteId)
+                    .map { note ->
+                        Optional.fromNullable(if (note.isEmpty()) {
+                            null
+                        } else {
+                            note.first()
+                        })
                     }
 }

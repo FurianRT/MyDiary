@@ -1,6 +1,6 @@
 package com.furianrt.mydiary.screens.settings.global
 
-import com.furianrt.mydiary.domain.RemovePinEmailUseCase
+import com.furianrt.mydiary.domain.delete.RemovePinEmailUseCase
 import com.furianrt.mydiary.domain.get.GetPinEmailUseCase
 import javax.inject.Inject
 

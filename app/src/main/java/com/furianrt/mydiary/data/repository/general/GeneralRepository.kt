@@ -10,6 +10,8 @@ interface GeneralRepository {
     fun setNumberOfLaunches(count: Int)
     fun setLastSyncMessage(message: SyncProgressMessage?)
     fun getLastSyncMessage(): SyncProgressMessage?
-    fun setNeedRateOffer(need: Boolean)
-    fun isNeedRateOffer(): Boolean
+    fun enableRateOffer(enable: Boolean)
+    fun isRateOfferEnabled(): Boolean
+    fun getPrimaryColor(): Int
+    fun getAccentColor(): Int
 }

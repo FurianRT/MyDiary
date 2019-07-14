@@ -125,4 +125,6 @@ class ImageRepositoryImp @Inject constructor(
                     .subscribeOn(rxScheduler)
 
     override fun isDailyImageEnabled(): Boolean = prefs.isDailyImageEnabled()
+
+    override fun getDailyImageCategory(): String = prefs.getDailyImageCategory()
 }

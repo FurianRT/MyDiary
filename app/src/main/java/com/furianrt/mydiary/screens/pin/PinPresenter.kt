@@ -2,18 +2,18 @@ package com.furianrt.mydiary.screens.pin
 
 import android.os.Bundle
 import android.os.Handler
-import com.furianrt.mydiary.domain.AuthorizeUseCase
-import com.furianrt.mydiary.domain.check.CheckFingerprintAvailabilityUseCase
+import com.furianrt.mydiary.domain.auth.AuthorizeUseCase
+import com.furianrt.mydiary.domain.check.IsFingerprintAvailableUseCase
 import com.furianrt.mydiary.domain.check.CheckPinUseCase
-import com.furianrt.mydiary.domain.CreatePinUseCase
+import com.furianrt.mydiary.domain.save.SavePinUseCase
 import io.reactivex.android.schedulers.AndroidSchedulers
 import javax.inject.Inject
 
 class PinPresenter @Inject constructor(
-        private val createPin: CreatePinUseCase,
+        private val savePin: SavePinUseCase,
         private val authorize: AuthorizeUseCase,
         private val checkPin: CheckPinUseCase,
-        private val checkFingerprintAvailability: CheckFingerprintAvailabilityUseCase
+        private val isFingerprintAvailable: IsFingerprintAvailableUseCase
 ) : PinContract.Presenter() {
 
     companion object {
@@ -56,7 +56,7 @@ class PinPresenter @Inject constructor(
     override fun onViewStartedModeLock() {
         view?.showPin(mPin)
         view?.showMessageEnterPin()
-        if (view?.isFingerprintSupported() == true && checkFingerprintAvailability.invoke()) {  //todo убрать проверку фингерпринта из вьюхи в UseCase
+        if (view?.isFingerprintSupported() == true && isFingerprintAvailable.invoke()) {  //todo убрать проверку фингерпринта из вьюхи в UseCase
             view?.showFingerprintButton()
             view?.showFingerprintScanner()
         } else {
@@ -145,7 +145,7 @@ class PinPresenter @Inject constructor(
     }
 
     override fun onEmailEntered(email: String) {
-        addDisposable(createPin.invoke(email, mPin)
+        addDisposable(savePin.invoke(email, mPin)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe {
                     authorize.invoke(true)

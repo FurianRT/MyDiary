@@ -1,11 +1,11 @@
 package com.furianrt.mydiary.screens.main.fragments.authentication.privacy
 
-import com.furianrt.mydiary.data.DataManager
+import com.furianrt.mydiary.domain.auth.SignUpUseCase
 import io.reactivex.android.schedulers.AndroidSchedulers
 import javax.inject.Inject
 
 class PrivacyPresenter @Inject constructor(
-        private val dataManager: DataManager
+        private val signUp: SignUpUseCase
 ) : PrivacyContract.Presenter() {
 
     companion object {
@@ -14,7 +14,7 @@ class PrivacyPresenter @Inject constructor(
 
     override fun onButtonAcceptClick(email: String, password: String) {
         view?.showLoading()
-        addDisposable(dataManager.signUp(email, password)
+        addDisposable(signUp.invoke(email, password)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({
                     view?.hideLoading()

@@ -1,18 +1,14 @@
 package com.furianrt.mydiary.screens.main.fragments.profile.password
 
-import com.furianrt.mydiary.data.DataManager
-import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
-import com.google.firebase.auth.FirebaseAuthInvalidUserException
+import com.furianrt.mydiary.domain.auth.ChangePasswordUseCase
+import com.furianrt.mydiary.domain.auth.SignOutUseCase
 import io.reactivex.android.schedulers.AndroidSchedulers
 import javax.inject.Inject
 
 class PasswordPresenter @Inject constructor(
-        private val dataManager: DataManager
+        private val changePassword: ChangePasswordUseCase,
+        private val signOut: SignOutUseCase
 ) : PasswordContract.Presenter() {
-
-    companion object {
-        private const val PASSWORD_MIN_LENGTH = 6
-    }
 
     override fun onButtonCancelClick() {
         view?.returnToMenuView()
@@ -20,44 +16,50 @@ class PasswordPresenter @Inject constructor(
 
     override fun onButtonSaveClick(oldPassword: String, newPassword: String, repeatPassword: String) {
         view?.clearErrorMessage()
-        when {
-            view?.isNetworkAvailable() != true -> view?.showErrorNetworkConnection()
-            oldPassword.isEmpty() -> view?.showErrorEmptyOldPassword()
-            newPassword.isEmpty() -> view?.showErrorEmptyNewPassword()
-            repeatPassword.isEmpty() -> view?.showErrorEmptyRepeatPassword()
-            newPassword.length < PASSWORD_MIN_LENGTH -> view?.showErrorShortNewPassword()
-            newPassword != repeatPassword -> view?.showErrorWrongPasswordRepeat()
-            else -> validateOldPassword(oldPassword, newPassword)
+
+        if (view?.isNetworkAvailable() != true) {
+            view?.showErrorNetworkConnection()
+        } else {
+            changePassword(oldPassword, newPassword, repeatPassword)
         }
     }
 
-
-    private fun validateOldPassword(oldPassword: String, newPassword: String) {
+    private fun changePassword(oldPassword: String, newPassword: String, repeatPassword: String) {
         view?.showLoading()
-        addDisposable(dataManager.updatePassword(oldPassword, newPassword)
+        addDisposable(changePassword.invoke(oldPassword, newPassword, repeatPassword)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({
                     view?.hideLoading()
                     view?.showSuccessPasswordChange()
-                }, {
-                    when (it) {
-                        is FirebaseAuthInvalidCredentialsException -> {
-                            view?.hideLoading()
+                }, { error ->
+                    when (error) {
+                        is ChangePasswordUseCase.EmptyNewPasswordRepeatException ->
+                            view?.showErrorEmptyNewPassword()
+                        is ChangePasswordUseCase.EmptyOldPasswordException ->
+                            view?.showErrorEmptyOldPassword()
+                        is ChangePasswordUseCase.EmptyRepeatPasswordRepeatException ->
+                            view?.showErrorEmptyRepeatPassword()
+                        is ChangePasswordUseCase.ShortNewPasswordException ->
+                            view?.showErrorShortNewPassword()
+                        is ChangePasswordUseCase.WrongPasswordRepeatException ->
+                            view?.showErrorWrongPasswordRepeat()
+                        is ChangePasswordUseCase.WrongOldPasswordException ->
                             view?.showErrorWrongOldPassword()
-                        }
-                        is FirebaseAuthInvalidUserException ->
-                            addDisposable(dataManager.signOut()
-                                    .observeOn(AndroidSchedulers.mainThread())
-                                    .subscribe {
-                                        view?.hideLoading()
-                                        view?.close()
-                                    })
+                        is ChangePasswordUseCase.InvalidUserExceptionException ->
+                            signOut()
                         else -> {
-                            it.printStackTrace()
-                            view?.hideLoading()
+                            error.printStackTrace()
                             view?.showErrorNetworkConnection()
                         }
                     }
                 }))
+    }
+
+    private fun signOut() {
+        addDisposable(signOut.invoke()
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe {
+                    view?.close()
+                })
     }
 }

@@ -1,13 +1,11 @@
 package com.furianrt.mydiary.screens.main.fragments.authentication.forgot
 
-import android.util.Patterns
-import com.furianrt.mydiary.data.DataManager
-import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
+import com.furianrt.mydiary.domain.send.SendPassResetEmailUseCase
 import io.reactivex.android.schedulers.AndroidSchedulers
 import javax.inject.Inject
 
 class ForgotPassPresenter @Inject constructor(
-        private val dataManager: DataManager
+        private val sendPassResetEmail: SendPassResetEmailUseCase
 ) : ForgotPassContract.Presenter() {
 
     override fun onButtonCancelClick() {
@@ -15,36 +13,24 @@ class ForgotPassPresenter @Inject constructor(
     }
 
     override fun onButtonSendClick(email: String) {
-        if (validateEmail(email)) {
-            view?.showLoading()
-            addDisposable(dataManager.sendPasswordResetEmail(email)
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe({
-                        view?.hideLoading()
-                        view?.showEmailSent()
-                    }, {
-                        view?.hideLoading()
-                        if (it is FirebaseAuthInvalidCredentialsException) {
+        view?.showLoading()
+        addDisposable(sendPassResetEmail.invoke(email)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe({
+                    view?.hideLoading()
+                    view?.showEmailSent()
+                }, { error ->
+                    view?.hideLoading()
+                    when (error) {
+                        is SendPassResetEmailUseCase.EmptyEmailException ->
+                            view?.showErrorEmptyEmail()
+                        is SendPassResetEmailUseCase.EmailFormatException ->
                             view?.showErrorEmailFormat()
-                        } else {
-                            it.printStackTrace()
+                        else -> {
+                            error.printStackTrace()
                             view?.showErrorNetworkConnection()
                         }
-                    }))
-        }
-    }
-
-    private fun validateEmail(email: String): Boolean {
-        return when {
-            email.isEmpty() -> {
-                view?.showErrorEmptyEmail()
-                return false
-            }
-            !Patterns.EMAIL_ADDRESS.matcher(email).matches() -> {
-                view?.showErrorEmailFormat()
-                return false
-            }
-            else -> true
-        }
+                    }
+                }))
     }
 }

@@ -1,4 +1,4 @@
-package com.furianrt.mydiary.domain
+package com.furianrt.mydiary.domain.delete
 
 import com.furianrt.mydiary.data.repository.tag.TagRepository
 import io.reactivex.Completable

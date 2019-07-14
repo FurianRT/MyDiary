@@ -1,9 +1,10 @@
 package com.furianrt.mydiary.screens.main.fragments.drawer
 
-import com.furianrt.mydiary.data.DataManager
 import com.furianrt.mydiary.data.model.*
 import com.furianrt.mydiary.data.model.pojo.SearchEntries
-import io.reactivex.Completable
+import com.furianrt.mydiary.domain.check.CheckLogOutUseCase
+import com.furianrt.mydiary.domain.check.IsSignedInUseCase
+import com.furianrt.mydiary.domain.get.*
 import io.reactivex.Flowable
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -14,7 +15,18 @@ import org.joda.time.DateTime
 import javax.inject.Inject
 
 class DrawerMenuPresenter @Inject constructor(
-        private val dataManager: DataManager
+       private val getNotes: GetNotesUseCase,
+       private val getImageCount: GetImageCountUseCase,
+       private val getProfile: GetProfileUseCase,
+       private val getFullNotes: GetFullNotesUseCase,
+       private val getTags: GetTagsUseCase,
+       private val getMoods: GetMoodsUseCase,
+       private val getCategories: GetCategoriesUseCase,
+       private val isSignedIn: IsSignedInUseCase,
+       private val getLastSyncMessage: GetLastSyncMessageUseCase,
+       private val getAuthState: GetAuthStateUseCase,
+       private val checkLogOut: CheckLogOutUseCase,
+       private val getLocations: GetLocationsUseCase
 ) : DrawerMenuContract.Presenter() {
 
     override fun attachView(view: DrawerMenuContract.MvpView) {
@@ -27,7 +39,7 @@ class DrawerMenuPresenter @Inject constructor(
     }
 
     override fun onButtonSyncClick() {
-        if (!dataManager.isSignedIn()) {
+        if (!isSignedIn.invoke()) {
             view?.showLoginView()
         } else {
             view?.startSyncService()
@@ -35,7 +47,7 @@ class DrawerMenuPresenter @Inject constructor(
     }
 
     private fun updateSyncProgress() {
-        addDisposable(Single.fromCallable { dataManager.getLastSyncMessage() }
+        addDisposable(Single.fromCallable { getLastSyncMessage.invoke() }
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({ message ->
@@ -50,7 +62,7 @@ class DrawerMenuPresenter @Inject constructor(
     }
 
     private fun loadNotes() {
-        addDisposable(dataManager.getAllNotes()
+        addDisposable(getNotes.invoke()
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { notes ->
                     val todayCount = notes
@@ -62,17 +74,17 @@ class DrawerMenuPresenter @Inject constructor(
     }
 
     private fun loadImageCount() {
-        addDisposable(dataManager.getImageCount()
+        addDisposable(getImageCount.invoke()
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { view?.showNotesTotal(it) })
     }
 
     private fun loadSearchEntries() {
-        addDisposable(Flowable.combineLatest(dataManager.getAllNotesWithProp(),
-                dataManager.getAllTags(),
-                dataManager.getAllCategories(),
-                dataManager.getAllDbLocations().map { locations -> locations.distinctBy { it.name } },
-                dataManager.getAllMoods().toFlowable(),
+        addDisposable(Flowable.combineLatest(getFullNotes.invoke(),
+                getTags.invoke(),
+                getCategories.invoke(),
+                getLocations.invoke().map { locations -> locations.distinctBy { it.name } },
+                getMoods.invoke().toFlowable(),
                 Function5<List<MyNoteWithProp>, List<MyTag>, List<MyCategory>, List<MyLocation>, List<MyMood>, SearchEntries>
                 { notes, tags, categories, locations, moods ->
                     SearchEntries(notes, tags, categories, locations, moods)
@@ -82,43 +94,31 @@ class DrawerMenuPresenter @Inject constructor(
     }
 
     private fun loadProfile() {
-        addDisposable(dataManager.getDbProfile()
+        addDisposable(getProfile.invoke()
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { view?.showProfile(it) })
 
-        addDisposable(dataManager.observeAuthState()
-                .filter { it == DataManager.SIGN_STATE_SIGN_OUT }
+        addDisposable(getAuthState.invoke()
+                .filter { it == GetAuthStateUseCase.STATE_SIGN_OUT }
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { view?.showAnonymousProfile() })
     }
-
-    private fun checkLogOut(): Completable =
-            dataManager.getDbProfileCount()
-                    .flatMapCompletable { count ->
-                        if (dataManager.isSignedIn() && count == 0) {
-                            dataManager.signOut()
-                        } else if (count > 1) {
-                            dataManager.signOut().andThen(dataManager.clearDbProfile())
-                        } else {
-                            Completable.complete()
-                        }
-                    }
 
     override fun onButtonPremiumClick() {
         view?.showPremiumView()
     }
 
     override fun onButtonProfileClick() {
-        addDisposable(checkLogOut()
+        addDisposable(checkLogOut.invoke()
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({
-                    if (dataManager.isSignedIn()) {
+                    if (isSignedIn.invoke()) {
                         view?.showProfileSettings()
                     } else {
                         view?.showLoginView()
                     }
-                }, {
-                    it.printStackTrace()
+                }, { error ->
+                    error.printStackTrace()
                 }))
     }
 

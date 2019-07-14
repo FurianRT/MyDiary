@@ -10,4 +10,6 @@ class GetMoodsUseCase @Inject constructor(
 ) {
 
     fun invoke(): Single<List<MyMood>> = moodRepository.getAllMoods()
+
+    fun invoke(moodId: Int): Single<MyMood> = moodRepository.getMood(moodId)
 }

@@ -2,16 +2,19 @@ package com.furianrt.mydiary.screens.main
 
 import android.annotation.SuppressLint
 import android.os.Bundle
-import com.furianrt.mydiary.data.DataManager
 import com.furianrt.mydiary.data.model.*
+import com.furianrt.mydiary.domain.FilterNotesUseCase
+import com.furianrt.mydiary.domain.SwapNoteSortTypeUseCase
+import com.furianrt.mydiary.domain.check.CheckLogOutUseCase
+import com.furianrt.mydiary.domain.check.IsDailyImageEnabledUseCase
+import com.furianrt.mydiary.domain.check.IsNeedRateOfferUseCase
+import com.furianrt.mydiary.domain.delete.DeleteProfileUseCase
+import com.furianrt.mydiary.domain.get.*
 import com.furianrt.mydiary.screens.main.adapter.NoteListContent
 import com.furianrt.mydiary.screens.main.adapter.NoteListHeader
 import com.furianrt.mydiary.screens.main.adapter.NoteListItem
 import com.furianrt.mydiary.utils.generateUniqueId
-import io.reactivex.Completable
-import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
-import net.danlew.android.joda.DateUtils
 import org.joda.time.DateTime
 import org.joda.time.LocalDate
 import java.util.TreeMap
@@ -22,7 +25,18 @@ import kotlin.collections.ArrayList
 import kotlin.collections.HashSet
 
 class MainActivityPresenter @Inject constructor(
-        private val dataManager: DataManager
+        private val getFullNotes: GetFullNotesUseCase,
+        private val getNotesSortType: GetNotesSortTypeUseCase,
+        private val swapNoteSortType: SwapNoteSortTypeUseCase,
+        private val getProfile: GetProfileUseCase,
+        private val getTimeFormat: GetTimeFormatUseCase,
+        private val isNeedRateOffer: IsNeedRateOfferUseCase,
+        private val isDailyImageEnabled: IsDailyImageEnabledUseCase,
+        private val getDailyImage: GetDailyImageUseCase,
+        private val getAuthState: GetAuthStateUseCase,
+        private val deleteProfile: DeleteProfileUseCase,
+        private val checkLogOut: CheckLogOutUseCase,
+        private val filterNotes: FilterNotesUseCase
 ) : MainActivityContract.Presenter() {
 
     companion object {
@@ -34,7 +48,6 @@ class MainActivityPresenter @Inject constructor(
         private const val BUNDLE_FILTERED_START_DATE = "filtered_start_date"
         private const val BUNDLE_FILTERED_END_DATE = "filtered_end_date"
         private const val BUNDLE_SEARCH_QUERY = "search_query"
-        private const val NUMBER_OF_LAUNCHES_FOR_RATE = 4
     }
 
     private lateinit var mNoteList: List<MyNoteWithProp>
@@ -67,7 +80,7 @@ class MainActivityPresenter @Inject constructor(
     }
 
     override fun onMenuAllNotesClick() {
-        addDisposable(dataManager.getAllNotesWithProp()
+        addDisposable(getFullNotes.invoke()
                 .first(ArrayList())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { notes ->
@@ -85,7 +98,7 @@ class MainActivityPresenter @Inject constructor(
         loadNotes()
         loadProfile()
         loadHeaderImage()
-        addDisposable(checkLogOut().subscribe())
+        addDisposable(checkLogOut.invoke().subscribe())
         if (mSelectedNoteIds.isNotEmpty()) {
             view.activateSelection()
         }
@@ -93,49 +106,21 @@ class MainActivityPresenter @Inject constructor(
     }
 
     private fun showRateProposal() {
-        if (dataManager.getNumberOfLaunches() == NUMBER_OF_LAUNCHES_FOR_RATE) {
+        if (isNeedRateOffer.invoke()) {
             view?.showRateProposal()
         }
     }
 
     private fun loadHeaderImage() {
-        if (!dataManager.isDailyImageEnabled()) {
+        if (!isDailyImageEnabled.invoke()) {
             view?.showEmptyHeaderImage(false)
             return
         }
 
-        addDisposable(dataManager.getHeaderImages()
-                .first(emptyList())
-                .flatMap { dbImages ->
-                    return@flatMap when {
-                        dbImages.isNotEmpty() && DateUtils.isToday(DateTime(dbImages.first().addedTime)) ->
-                            Single.just(dbImages.first())
-                        dbImages.isNotEmpty() && view?.networkAvailable() == false ->
-                            Single.just(dbImages.first())
-                        dbImages.isEmpty() && view?.networkAvailable() == true ->
-                            dataManager.loadHeaderImages()
-                                    .map { it.first() }
-                                    .flatMapCompletable { dataManager.insertHeaderImage(it) }
-                                    .andThen(dataManager.getHeaderImages().firstOrError())
-                                    .map { it.first() }
-                        dbImages.isNotEmpty() && view?.networkAvailable() == true ->
-                            dataManager.loadHeaderImages()
-                                    .onErrorReturn { dbImages }
-                                    .map { list ->
-                                        list.find { apiImage ->
-                                            dbImages.find { it.id == apiImage.id } == null
-                                        } ?: dbImages.first()
-                                    }
-                                    .flatMapCompletable { dataManager.insertHeaderImage(it) }
-                                    .andThen(dataManager.getHeaderImages().firstOrError())
-                                    .map { it.first() }
-                        else ->
-                            throw Exception()
-                    }
-                }
+        addDisposable(getDailyImage.invoke(view?.networkAvailable() == true)
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({
-                    view?.showHeaderImage(it)
+                .subscribe({ image ->
+                    view?.showHeaderImage(image)
                 }, { error ->
                     error.printStackTrace()
                     view?.showEmptyHeaderImage(true)
@@ -143,25 +128,25 @@ class MainActivityPresenter @Inject constructor(
     }
 
     private fun loadNotes() {
-        if (dataManager.isSortDesc()) {
-            view?.setSortAsc()
-        } else {
-            view?.setSortDesc()
+        when (getNotesSortType.invoke()) {
+            GetNotesSortTypeUseCase.SORT_TYPE_ASC -> view?.setSortAsc()
+            GetNotesSortTypeUseCase.SORT_TYPE_DESC -> view?.setSortDesc()
+            else -> throw IllegalStateException()
         }
-        addDisposable(dataManager.getAllNotesWithProp()
+        addDisposable(getFullNotes.invoke()
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe {
-                    mNoteList = it
+                .subscribe { notes ->
+                    mNoteList = notes
                     showNotes(mNoteList)
                 })
     }
 
     private fun toMap(notes: List<MyNoteWithProp>): Map<Long, ArrayList<MyNoteWithProp>> {
         val map = TreeMap<Long, ArrayList<MyNoteWithProp>>(Comparator<Long> { p0, p1 ->
-            return@Comparator if (dataManager.isSortDesc()) {
-                p1.compareTo(p0)
-            } else {
-                p0.compareTo(p1)
+            when (getNotesSortType.invoke()) {
+                GetNotesSortTypeUseCase.SORT_TYPE_ASC -> p0.compareTo(p1)
+                GetNotesSortTypeUseCase.SORT_TYPE_DESC -> p1.compareTo(p0)
+                else -> throw IllegalStateException()
             }
         })
         for (note in notes) {
@@ -184,10 +169,12 @@ class MainActivityPresenter @Inject constructor(
         for (date in notes.keys) {
             val header = NoteListHeader(date)
             list.add(header)
-            val values = if (dataManager.isSortDesc()) {
-                notes.getValue(date).sortedByDescending { it.note.time }
-            } else {
-                notes.getValue(date).sortedBy { it.note.time }
+            val values = when (getNotesSortType.invoke()) {
+                GetNotesSortTypeUseCase.SORT_TYPE_ASC ->
+                    notes.getValue(date).sortedByDescending { it.note.time }
+                GetNotesSortTypeUseCase.SORT_TYPE_DESC ->
+                    notes.getValue(date).sortedByDescending { it.note.time }
+                else -> throw IllegalStateException()
             }
             for (note in values) {
                 list.add(NoteListContent(note))
@@ -211,8 +198,8 @@ class MainActivityPresenter @Inject constructor(
     }
 
     override fun onButtonSortClick() {
-        dataManager.setSortDesc(!dataManager.isSortDesc())
-        loadNotes()
+        swapNoteSortType.invoke()
+        showNotes(mNoteList)
     }
 
     override fun onMainImageClick() {
@@ -294,31 +281,19 @@ class MainActivityPresenter @Inject constructor(
         view?.showSettingsView()
     }
 
-    override fun is24TimeFormat(): Boolean = dataManager.is24TimeFormat()
-
-
-    private fun checkLogOut(): Completable =
-            dataManager.getDbProfileCount()
-                    .flatMapCompletable { count ->
-                        if (dataManager.isSignedIn() && count == 0) {
-                            dataManager.signOut()
-                        } else if (count > 1) {
-                            dataManager.signOut().andThen(dataManager.clearDbProfile())
-                        } else {
-                            Completable.complete()
-                        }
-                    }
+    override fun is24TimeFormat(): Boolean =
+            getTimeFormat.invoke() == GetTimeFormatUseCase.TIME_FORMAT_24
 
     private fun loadProfile() {
-        addDisposable(dataManager.getDbProfile()
+        addDisposable(getProfile.invoke()
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { profile -> view?.showProfile(profile) })
 
-        addDisposable(dataManager.observeAuthState()
-                .filter { it == DataManager.SIGN_STATE_SIGN_OUT }
+        addDisposable(getAuthState.invoke()
+                .filter { it == GetAuthStateUseCase.STATE_SIGN_OUT }
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe {
-                    addDisposable(dataManager.clearDbProfile()
+                    addDisposable(deleteProfile.invoke()
                             .observeOn(AndroidSchedulers.mainThread())
                             .subscribe { view?.showAnonymousProfile() })
                 })
@@ -454,70 +429,8 @@ class MainActivityPresenter @Inject constructor(
 
     @SuppressLint("DefaultLocale")
     private fun applySearchFilter(notes: List<MyNoteWithProp>): List<MyNoteWithProp> =
-            notes.asSequence()
-                    .filter {
-                        it.note.title.toLowerCase().contains(mSearchQuery)
-                                || it.note.content.toLowerCase().contains(mSearchQuery)
-                    }
-                    .filter { note ->
-                        if (mFilteredTagIds.isEmpty()) {
-                            return@filter true
-                        }
-                        if (note.tags.isEmpty()) {
-                            return@filter mFilteredTagIds.contains(MyTag.TABLE_NAME)
-                        }
-                        val tagIds = mFilteredTagIds.filter { it != MyTag.TABLE_NAME }
-                        if (tagIds.isEmpty()) {
-                            return@filter false
-                        }
-                        tagIds.filter { it != MyTag.TABLE_NAME }
-                                .forEach { tagId ->
-                                    if (note.tags.find { it.id == tagId } == null) {
-                                        return@filter false
-                                    }
-                                }
-                        return@filter true
-                    }
-                    .filter { note ->
-                        mFilteredCategoryIds.isEmpty()
-                                || mFilteredCategoryIds.find { it == note.category?.id ?: MyCategory.TABLE_NAME } != null
-                    }
-                    .filter { note ->
-                        mFilteredMoodIds.isEmpty()
-                                || mFilteredMoodIds.find { it == note.mood?.id ?: -1 } != null
-                    }
-                    .filter { note ->
-                        if (mFilteredLocationNames.isEmpty()) {
-                            return@filter true
-                        }
-                        if (note.locations.isEmpty()) {
-                            return@filter mFilteredLocationNames.contains(MyLocation.TABLE_NAME)
-                        }
-                        val locationNames = mFilteredLocationNames.filter { it != MyLocation.TABLE_NAME }
-                        if (locationNames.isEmpty()) {
-                            return@filter false
-                        }
-                        locationNames.filter { it != MyLocation.TABLE_NAME }
-                                .forEach { locationName ->
-                                    if (note.locations.find { it.name == locationName } == null) {
-                                        return@filter false
-                                    }
-                                }
-                        return@filter true
-                    }
-                    .filter { note ->
-                        val startDate = mFilteredStartDate
-                        val endDate = mFilteredEndDate
-                        return@filter when {
-                            startDate == null && endDate == null -> true
-                            startDate != null && endDate == null -> LocalDate(note.note.time) == startDate
-                            else -> {
-                                val noteDate = LocalDate(note.note.time)
-                                noteDate >= startDate && noteDate <= endDate
-                            }
-                        }
-                    }
-                    .toList()
+            filterNotes.invoke(notes, mFilteredTagIds, mFilteredCategoryIds, mFilteredMoodIds,
+                    mFilteredLocationNames, mFilteredStartDate, mFilteredEndDate, mSearchQuery)
 
     override fun onButtonChangeFiltersClick() {
         view?.showChangeFilters()

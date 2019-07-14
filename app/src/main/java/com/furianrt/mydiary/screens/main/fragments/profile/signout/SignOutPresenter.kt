@@ -1,15 +1,15 @@
 package com.furianrt.mydiary.screens.main.fragments.profile.signout
 
-import com.furianrt.mydiary.data.DataManager
+import com.furianrt.mydiary.domain.auth.SignOutUseCase
 import io.reactivex.android.schedulers.AndroidSchedulers
 import javax.inject.Inject
 
 class SignOutPresenter @Inject constructor(
-        private val dataManager: DataManager
+        private val signOut: SignOutUseCase
 ) : SignOutContract.Presenter() {
 
     override fun onButtonSignOutClick() {
-        addDisposable(dataManager.signOut()
+        addDisposable(signOut.invoke()
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { view?.close() })
     }

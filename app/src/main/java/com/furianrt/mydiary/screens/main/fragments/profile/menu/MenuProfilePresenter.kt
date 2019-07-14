@@ -1,16 +1,16 @@
 package com.furianrt.mydiary.screens.main.fragments.profile.menu
 
-import com.furianrt.mydiary.data.DataManager
 import com.furianrt.mydiary.data.model.SyncProgressMessage
+import com.furianrt.mydiary.domain.get.GetLastSyncMessageUseCase
 import javax.inject.Inject
 
 class MenuProfilePresenter @Inject constructor(
-        private val dataManager: DataManager
+        private val getLastSyncMessage: GetLastSyncMessageUseCase
 ) : MenuProfileContract.Presenter() {
 
     override fun attachView(view: MenuProfileContract.MvpView) {
         super.attachView(view)
-        val message = dataManager.getLastSyncMessage()
+        val message = getLastSyncMessage.invoke()
         view.disableSignOut(message != null && message.taskIndex != SyncProgressMessage.SYNC_FINISHED)
     }
 

@@ -1,13 +1,13 @@
 package com.furianrt.mydiary.screens.note
 
-import com.furianrt.mydiary.data.model.MyNote
-import com.furianrt.mydiary.data.model.MyNoteAppearance
+import com.furianrt.mydiary.domain.save.SaveNoteIfNotExistUseCase
 import com.furianrt.mydiary.domain.get.GetNotesUseCase
 import io.reactivex.android.schedulers.AndroidSchedulers
 import javax.inject.Inject
 
 class NoteActivityPresenter @Inject constructor(
-        private val getNotes: GetNotesUseCase
+        private val getNotes: GetNotesUseCase,
+        private val saveNoteIfNotExist: SaveNoteIfNotExistUseCase
 ) : NoteActivityContract.Presenter() {
 
     private lateinit var mNoteId: String
@@ -45,21 +45,16 @@ class NoteActivityPresenter @Inject constructor(
     }
 
     private fun loadNote(noteId: String) {
-        val newNote = MyNote(noteId)
-        val noteAppearance = MyNoteAppearance(newNote.id)
-        addDisposable(dataManager.findNote(noteId)
-                .switchIfEmpty(dataManager.insertNote(newNote)
-                        .andThen(dataManager.insertAppearance(noteAppearance))
-                        .toSingleDefault(newNote))
-                .flatMapPublisher { dataManager.getNoteAsList(noteId) }
-                .map { note -> note.map { it.id } }
+        addDisposable(saveNoteIfNotExist.invoke(noteId)
+                .andThen(getNotes.invoke(noteId))
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { Id ->
-                    if (Id.isEmpty()) {
-                        view?.closeView()
+                .subscribe { note ->
+                    if (note.isPresent) {
+                        view?.showNotes(listOf(note.get().id))
                     } else {
-                        view?.showNotes(Id)
+                        view?.closeView()
                     }
-                })
+                }
+        )
     }
 }

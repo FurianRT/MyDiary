@@ -1,4 +1,4 @@
-package com.furianrt.mydiary.domain
+package com.furianrt.mydiary.domain.send
 
 import com.furianrt.mydiary.data.repository.pin.PinRepository
 import io.reactivex.Completable

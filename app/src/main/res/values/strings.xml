@@ -265,7 +265,7 @@
     <string name="fragment_backup_email_enter_email">Enter email</string>
     <string name="empty_state_note_list_empty">It\'s empty here!</string>
     <string name="empty_state_note_list_hint">Make your first note!</string>
-    <string name="tutorial_note_title">Exapmle note</string>
+    <string name="tutorial_note_title">Example note</string>
     <string name="tutorial_note_content">Hi! 😉 Thank you for choosing Serenity! 📑</string>
     <string name="fragment_category_edit_error_empty_name">Enter category name</string>
     <string name="fragment_category_delete_message">Delete category \"%s\"?</string>

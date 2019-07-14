@@ -35,7 +35,7 @@ interface PreferencesHelper {
     fun getNumberOfLaunches(): Int
     fun setNumberOfLaunches(count: Int)
     fun setNeedRateOffer(need: Boolean)
-    fun isNeedRateOffer(): Boolean
+    fun isRateOfferEnabled(): Boolean
 
     companion object {
         const val COLOR_PRIMARY = "color_primary"

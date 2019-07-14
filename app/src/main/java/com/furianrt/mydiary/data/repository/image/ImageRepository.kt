@@ -30,4 +30,5 @@ interface ImageRepository {
     fun saveImagesFilesInCloud(images: List<MyImage>): Completable
     fun loadImageFiles(images: List<MyImage>): Completable
     fun isDailyImageEnabled(): Boolean
+    fun getDailyImageCategory(): String
 }

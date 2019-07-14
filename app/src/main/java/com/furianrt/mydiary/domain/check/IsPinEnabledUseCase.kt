@@ -1,4 +1,4 @@
-package com.furianrt.mydiary.domain
+package com.furianrt.mydiary.domain.check
 
 import com.furianrt.mydiary.data.repository.pin.PinRepository
 import javax.inject.Inject
