@@ -1,0 +1,30 @@
+package com.furianrt.mydiary.data.repository.location
+
+import com.furianrt.mydiary.data.model.MyLocation
+import com.furianrt.mydiary.data.model.NoteLocation
+import io.reactivex.Completable
+import io.reactivex.Flowable
+import io.reactivex.Single
+
+interface LocationRepository {
+    fun insertNoteLocation(noteLocation: NoteLocation): Completable
+    fun insertNoteLocation(noteLocation: List<NoteLocation>): Completable
+    fun insertLocation(locations: List<MyLocation>): Completable
+    fun updateNoteLocationsSync(noteLocations: List<NoteLocation>): Completable
+    fun updateLocationsSync(locations: List<MyLocation>): Completable
+    fun deleteNoteLocationsFromCloud(noteLocations: List<NoteLocation>): Completable
+    fun deleteLocationsFromCloud(locations: List<MyLocation>): Completable
+    fun cleanupLocations(): Completable
+    fun cleanupNoteLocations(): Completable
+    fun getDeletedNoteLocations(): Flowable<List<NoteLocation>>
+    fun getDeletedLocations(): Flowable<List<MyLocation>>
+    fun getLocationsForNote(noteId: String): Flowable<List<MyLocation>>
+    fun getAllNoteLocations(): Flowable<List<NoteLocation>>
+    fun getAllNoteLocationsFromCloud(): Single<List<NoteLocation>>
+    fun getAllLocationsFromCloud(): Single<List<MyLocation>>
+    fun getAllDbLocations(): Flowable<List<MyLocation>>
+    fun insertLocation(location: MyLocation): Completable
+    fun saveNoteLocationsInCloud(noteLocations: List<NoteLocation>): Completable
+    fun saveLocationsInCloud(locations: List<MyLocation>): Completable
+    fun isLocationEnabled(): Boolean
+}

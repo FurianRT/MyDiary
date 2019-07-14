@@ -1,38 +1,32 @@
 package com.furianrt.mydiary.dialogs.tags.fragments.add
 
-import com.furianrt.mydiary.data.DataManager
-import com.furianrt.mydiary.data.model.MyTag
-import com.furianrt.mydiary.data.model.NoteTag
-import com.furianrt.mydiary.utils.generateUniqueId
+import com.furianrt.mydiary.domain.AddTagToNoteUseCase
+import com.furianrt.mydiary.domain.save.SaveTagUseCase
 import io.reactivex.android.schedulers.AndroidSchedulers
 import javax.inject.Inject
 
 class TagAddPresenter @Inject constructor(
-        private val dataManager: DataManager
+        private val saveTag: SaveTagUseCase,
+        private val addTagToNote: AddTagToNoteUseCase
 ) : TagAddContract.Presenter() {
 
-    private class InvalidTagNameException : Throwable()
+    private lateinit var mNoteId: String
 
-    override fun onButtonAddClick(noteId: String, name: String) {
+    override fun init(noteId: String) {
+        mNoteId = noteId
+    }
+
+    override fun onButtonAddClick(name: String) {
         if (name.isBlank()) {
             view?.showErrorEmptyTagName()
         } else {
-            val tag = MyTag(generateUniqueId(), name)
-            addDisposable(dataManager.getAllTags()
-                    .first(emptyList())
-                    .flatMapCompletable { tags ->
-                        if (tags.find { it.name == tag.name } != null) {
-                            throw InvalidTagNameException()
-                        } else {
-                            dataManager.insertTag(tag)
-                        }
-                    }
-                    .andThen(dataManager.insertNoteTag(NoteTag(noteId, tag.id)))
+            addDisposable(saveTag.invoke(name)
+                    .flatMapCompletable { addTagToNote.invoke(mNoteId, it) }
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe({
                         view?.closeView()
                     }, {
-                        if (it is InvalidTagNameException) {
+                        if (it is SaveTagUseCase.InvalidTagNameException) {
                             view?.showErrorExistingTagName()
                         } else {
                             it.printStackTrace()

@@ -1,13 +1,13 @@
 package com.furianrt.mydiary.screens.note
 
-import com.furianrt.mydiary.data.DataManager
 import com.furianrt.mydiary.data.model.MyNote
 import com.furianrt.mydiary.data.model.MyNoteAppearance
+import com.furianrt.mydiary.domain.get.GetNotesUseCase
 import io.reactivex.android.schedulers.AndroidSchedulers
 import javax.inject.Inject
 
 class NoteActivityPresenter @Inject constructor(
-        private val dataManager: DataManager
+        private val getNotes: GetNotesUseCase
 ) : NoteActivityContract.Presenter() {
 
     private lateinit var mNoteId: String
@@ -33,18 +33,13 @@ class NoteActivityPresenter @Inject constructor(
     }
 
     private fun loadNotes() {
-        addDisposable(dataManager.getAllNotes()
+        addDisposable(getNotes.invoke()
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { notes ->
                     if (notes.isEmpty()) {
                         view?.closeView()
                     } else {
-                        val sortedNotes = if (dataManager.isSortDesc()) {
-                            notes.sortedByDescending { it.time }
-                        } else {
-                            notes.sortedBy { it.time }
-                        }
-                        view?.showNotes(sortedNotes.map { it.id })
+                        view?.showNotes(notes.map { it.id })
                     }
                 })
     }

@@ -1,15 +1,15 @@
 package com.furianrt.mydiary.dialogs.delete.image
 
-import com.furianrt.mydiary.data.DataManager
+import com.furianrt.mydiary.domain.delete.DeleteImagesUseCase
 import io.reactivex.android.schedulers.AndroidSchedulers
 import javax.inject.Inject
 
 class DeleteImagePresenter @Inject constructor(
-        private val dataManager: DataManager
+        private val deleteImages: DeleteImagesUseCase
 ) : DeleteImageContract.Presenter() {
 
     override fun onButtonDeleteClick(imageNames: List<String>) {
-        addDisposable(dataManager.deleteImage(imageNames)
+        addDisposable(deleteImages.invoke(imageNames)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { view?.closeView() })
     }

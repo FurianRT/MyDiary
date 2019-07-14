@@ -7,7 +7,6 @@ interface BackupEmailContract {
 
     interface MvpView : BaseMvpView {
         fun showEmailIsCorrect(email: String)
-        fun showErrorEmptyEmail()
         fun showErrorEmailFormat()
         fun showEmail(email: String)
     }

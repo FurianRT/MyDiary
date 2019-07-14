@@ -12,7 +12,8 @@ interface TagAddContract {
     }
 
     abstract class Presenter : BaseMvpPresenter<MvpView>() {
-        abstract fun onButtonAddClick(noteId: String, name: String)
+        abstract fun init(noteId: String)
+        abstract fun onButtonAddClick(name: String)
         abstract fun onButtonCloseClick()
     }
 }

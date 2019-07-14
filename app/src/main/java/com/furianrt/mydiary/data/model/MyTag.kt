@@ -3,7 +3,6 @@ package com.furianrt.mydiary.data.model
 import android.os.Parcelable
 import androidx.room.ColumnInfo
 import androidx.room.Entity
-import androidx.room.Ignore
 import androidx.room.PrimaryKey
 import kotlinx.android.parcel.Parcelize
 
@@ -12,7 +11,6 @@ import kotlinx.android.parcel.Parcelize
 data class MyTag(
         @ColumnInfo(name = FIELD_ID) @PrimaryKey(autoGenerate = false) var id: String = "",
         @ColumnInfo(name = FIELD_NAME) var name: String = "",
-        @Ignore var isChecked: Boolean = false,
         @ColumnInfo(name = FIELD_SYNC_WITH) var syncWith: MutableList<String> = mutableListOf(),
         @ColumnInfo(name = FIELD_IS_DELETED) var isDeleted: Boolean = false
 ) : Parcelable {

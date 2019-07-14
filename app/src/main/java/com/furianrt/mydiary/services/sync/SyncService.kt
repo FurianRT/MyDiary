@@ -37,8 +37,8 @@ class SyncService : Service(), BaseView, SyncContract.MvpView {
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         val pendingIntent =
-                PendingIntent.getActivity(this, 0, newLauncherIntent(this), 0)
-        val notification = NotificationCompat.Builder(this, MyApp.NOTIFICATION_SYNC_CHANNEL_ID)
+                PendingIntent.getActivity(applicationContext, 0, newLauncherIntent(applicationContext), 0)
+        val notification = NotificationCompat.Builder(applicationContext, MyApp.NOTIFICATION_SYNC_CHANNEL_ID)
                 .setContentTitle(getString(R.string.notification_sync_title))
                 .setContentText(getString(R.string.notification_sync_content))
                 .setContentIntent(pendingIntent)

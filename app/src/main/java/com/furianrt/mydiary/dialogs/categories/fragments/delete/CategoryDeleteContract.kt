@@ -8,10 +8,12 @@ interface CategoryDeleteContract {
 
     interface MvpView : BaseMvpView {
         fun closeView()
+        fun showDeleteMessage(name: String)
     }
 
     abstract class Presenter : BaseMvpPresenter<MvpView>() {
-        abstract fun onButtonDeleteClick(category: MyCategory)
+        abstract fun init(category: MyCategory)
+        abstract fun onButtonDeleteClick()
         abstract fun onButtonCancelClick()
     }
 }

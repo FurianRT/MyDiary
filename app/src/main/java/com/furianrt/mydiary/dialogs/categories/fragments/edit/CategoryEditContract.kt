@@ -13,7 +13,8 @@ interface CategoryEditContract {
     }
 
     abstract class Presenter : BaseMvpPresenter<MvpView>() {
-        abstract fun onButtonDoneClick(category: MyCategory, categoryName: String, categoryColor: Int)
+        abstract fun init(category: MyCategory)
+        abstract fun onButtonDoneClick(categoryName: String, categoryColor: Int)
         abstract fun onButtonCancelClick()
     }
 }

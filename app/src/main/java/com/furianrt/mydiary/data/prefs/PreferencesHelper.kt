@@ -34,6 +34,8 @@ interface PreferencesHelper {
     fun isDailyImageEnabled(): Boolean
     fun getNumberOfLaunches(): Int
     fun setNumberOfLaunches(count: Int)
+    fun setNeedRateOffer(need: Boolean)
+    fun isNeedRateOffer(): Boolean
 
     companion object {
         const val COLOR_PRIMARY = "color_primary"
@@ -63,5 +65,6 @@ interface PreferencesHelper {
         const val LOAD_DAILY_IMAGE= "load_daily_image"
         const val DAILY_IMAGE_CATEGORY= "daily_image_category"
         const val NUMBER_OF_LAUNCHES = "number_of_launches"
+        const val RATE_OFFER = "rate_offer"
     }
 }

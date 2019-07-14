@@ -1,22 +1,20 @@
 package com.furianrt.mydiary.dialogs.categories.fragments.add
 
-import com.furianrt.mydiary.data.DataManager
-import com.furianrt.mydiary.data.model.MyCategory
-import com.furianrt.mydiary.utils.generateUniqueId
+import com.furianrt.mydiary.domain.save.SaveCategoryUseCase
 import io.reactivex.android.schedulers.AndroidSchedulers
 import javax.inject.Inject
 
 class CategoryAddPresenter @Inject constructor(
-        private val dataManager: DataManager
+        private val saveCategory: SaveCategoryUseCase
 ) : CategoryAddContract.Presenter() {
 
     override fun onButtonDoneClick(categoryName: String, categoryColor: Int) {
         if (categoryName.isBlank()) {
             view?.showErrorEmptyName()
         } else {
-            val category = MyCategory(generateUniqueId(), categoryName, categoryColor)
-            addDisposable(dataManager.insertCategory(category)
+            addDisposable(saveCategory.invoke(categoryName, categoryColor)
                     .observeOn(AndroidSchedulers.mainThread())
+                    .ignoreElement()
                     .subscribe { view?.close() })
         }
     }

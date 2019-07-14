@@ -1,43 +1,52 @@
 package com.furianrt.mydiary.dialogs.tags.fragments.list
 
-import com.furianrt.mydiary.data.DataManager
 import com.furianrt.mydiary.data.model.MyTag
-import com.furianrt.mydiary.data.model.NoteTag
+import com.furianrt.mydiary.domain.AddTagToNoteUseCase
+import com.furianrt.mydiary.domain.get.GetTagsUseCase
+import com.furianrt.mydiary.domain.RemoveTagFromNoteUseCase
 import io.reactivex.Flowable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.functions.BiFunction
-import java.util.*
+import java.util.Locale
 import javax.inject.Inject
-import kotlin.collections.ArrayList
 
 class TagListPresenter @Inject constructor(
-        private val dataManager: DataManager
+        private val getTags: GetTagsUseCase,
+        private val addTagToNote: AddTagToNoteUseCase,
+        private val removeTagFromNote: RemoveTagFromNoteUseCase
 ) : TagListContract.Presenter() {
 
-    private var mTags = emptyList<MyTag>()
+    private lateinit var mNoteId: String
+    private var mItems = emptyList<TagListAdapter.ViewItem>()
     private var mQuery = ""
 
-    override fun onViewResume(noteId: String) {
-        addDisposable(Flowable.combineLatest(dataManager.getAllTags(), dataManager.getTagsForNote(noteId),
-                BiFunction<List<MyTag>, List<MyTag>, List<MyTag>> { allTags, selectedTags ->
-                    ArrayList(allTags).apply {
-                        forEach { tag -> tag.isChecked = selectedTags.find { it.id == tag.id } != null }
-                    }
+    override fun init(noteId: String) {
+        mNoteId = noteId
+    }
+
+    override fun attachView(view: TagListContract.MvpView) {
+        super.attachView(view)
+        addDisposable(Flowable.combineLatest(getTags.invoke(), getTags.invoke(mNoteId),
+                BiFunction<List<MyTag>, List<MyTag>, List<TagListAdapter.ViewItem>> { allTags, selectedTags ->
+                    val items = allTags.map { TagListAdapter.ViewItem(it) }
+                    items.forEach { item -> item.isChecked = selectedTags.find { it.id == item.tag.id } != null }
+                    return@BiFunction items
                 })
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { tags ->
-                    mTags = tags
-                    val matchingTags = mTags.filter { it.name.toLowerCase(Locale.getDefault())
-                            .contains(mQuery.toLowerCase(Locale.getDefault())) }
-                    view?.showTags(matchingTags)
+                .subscribe { items ->
+                    mItems = items
+                    val matchingTags = mItems.filter { item ->
+                        item.tag.name.toLowerCase().contains(mQuery.toLowerCase())
+                    }
+                    view.showItems(matchingTags)
                 })
     }
 
-    override fun onItemCheckChange(noteId: String, tag: MyTag, checked: Boolean) {
-        if (checked) {
-            addDisposable(dataManager.insertNoteTag(NoteTag(noteId, tag.id)).subscribe())
+    override fun onItemCheckChange(item: TagListAdapter.ViewItem) {
+        if (item.isChecked) {
+            addDisposable(addTagToNote.invoke(mNoteId, item.tag.id).subscribe())
         } else {
-            addDisposable(dataManager.deleteNoteTag(noteId, tag.id).subscribe())
+            addDisposable(removeTagFromNote.invoke(mNoteId, item.tag.id).subscribe())
         }
     }
 
@@ -46,21 +55,23 @@ class TagListPresenter @Inject constructor(
     }
 
     override fun onButtonAddClick() {
-        view?.showAddTagView()
+        view?.showAddTagView(mNoteId)
     }
 
-    override fun onButtonEditTagClick(tag: MyTag) {
-        view?.showEditTagView(tag)
+    override fun onButtonEditTagClick(item: TagListAdapter.ViewItem) {
+        view?.showEditTagView(item.tag)
     }
 
-    override fun onButtonDeleteTagClick(tag: MyTag) {
-        view?.showDeleteTagView(tag)
+    override fun onButtonDeleteTagClick(item: TagListAdapter.ViewItem) {
+        view?.showDeleteTagView(item.tag)
     }
 
     override fun onSearchQueryChange(newText: String?) {
         mQuery = newText ?: ""
-        val matchingTags = mTags.filter { it.name.toLowerCase(Locale.getDefault())
-                .contains(mQuery.toLowerCase(Locale.getDefault())) }
-        view?.showTags(matchingTags)
+        val matchingTags = mItems.filter {
+            it.tag.name.toLowerCase(Locale.getDefault())
+                    .contains(mQuery.toLowerCase(Locale.getDefault()))
+        }
+        view?.showItems(matchingTags)
     }
 }

@@ -73,11 +73,9 @@ class GalleryListFragment : BaseFragment(), GalleryListAdapter.OnListItemInterac
     override fun onCreate(savedInstanceState: Bundle?) {
         getPresenterComponent(requireContext()).inject(this)
         super.onCreate(savedInstanceState)
-
         setHasOptionsMenu(true)
 
-        val noteId = arguments?.getString(ARG_NOTE_ID) ?: throw IllegalStateException()
-        mPresenter.setNoteId(noteId)
+        mPresenter.init(arguments?.getString(ARG_NOTE_ID)!!)
 
         savedInstanceState?.let {
             mRecyclerViewState = it.getParcelable(BUNDLE_RECYCLER_VIEW_STATE)
@@ -132,7 +130,6 @@ class GalleryListFragment : BaseFragment(), GalleryListAdapter.OnListItemInterac
     override fun onStart() {
         super.onStart()
         mPresenter.attachView(this)
-        mPresenter.onViewStart()
         (activity?.supportFragmentManager?.findFragmentByTag(DeleteImageDialog.TAG) as? DeleteImageDialog?)
                 ?.setOnDeleteConfirmListener(this)
     }

@@ -7,7 +7,6 @@ import android.app.NotificationManager
 import android.os.*
 import android.widget.ImageView
 import com.facebook.stetho.Stetho
-import com.furianrt.mydiary.data.DataManager
 import com.furianrt.mydiary.di.application.component.AppComponent
 import com.furianrt.mydiary.di.application.component.DaggerAppComponent
 import com.furianrt.mydiary.di.application.modules.app.AppContextModule
@@ -15,6 +14,11 @@ import com.furianrt.mydiary.di.application.modules.data.DatabaseModule
 import com.furianrt.mydiary.di.application.modules.network.ApiModule
 import com.furianrt.mydiary.di.application.modules.network.FirebaseModule
 import com.furianrt.mydiary.di.application.modules.rx.RxModule
+import com.furianrt.mydiary.domain.AuthorizeUseCase
+import com.furianrt.mydiary.domain.IncrementLaunchCountUseCase
+import com.furianrt.mydiary.domain.IsPinEnabledUseCase
+import com.furianrt.mydiary.domain.get.GetPinRequestDelayUseCase
+import com.furianrt.mydiary.domain.sync.ResetSyncProgressUseCase
 import com.furianrt.mydiary.general.GlideApp
 import com.furianrt.mydiary.screens.pin.PinActivity
 import com.google.android.gms.ads.MobileAds
@@ -24,7 +28,6 @@ import com.yanzhenjie.album.AlbumConfig
 import com.yanzhenjie.album.AlbumFile
 import com.yanzhenjie.album.AlbumLoader
 import net.danlew.android.joda.JodaTimeAndroid
-import org.joda.time.DateTime
 import java.util.Locale
 import javax.inject.Inject
 
@@ -35,7 +38,6 @@ class MyApp : Application(), Application.ActivityLifecycleCallbacks {
         const val NOTIFICATION_SYNC_CHANNEL_NAME = "Synchronization"
         const val NOTIFICATION_FIREBASE_CHANNEL_ID = "firebase_channel"
         const val NOTIFICATION_FIREBASE_CHANNEL_NAME = "Info"
-        private const val SYNC_PROGRESS_RESET_TIME = 1000 * 60
     }
 
     val component: AppComponent by lazy {
@@ -49,7 +51,19 @@ class MyApp : Application(), Application.ActivityLifecycleCallbacks {
     }
 
     @Inject
-    lateinit var mDataManager: DataManager
+    lateinit var authorize: AuthorizeUseCase
+
+    @Inject
+    lateinit var isPinEnabled: IsPinEnabledUseCase
+
+    @Inject
+    lateinit var getPinRequestDelay: GetPinRequestDelayUseCase
+
+    @Inject
+    lateinit var incrementLaunchCount: IncrementLaunchCountUseCase
+
+    @Inject
+    lateinit var resetSyncProgress: ResetSyncProgressUseCase
 
     private val mHandler = Handler(Looper.getMainLooper())
     private val mLogoutRunnable = Runnable { setAuthorized(false) }
@@ -57,14 +71,14 @@ class MyApp : Application(), Application.ActivityLifecycleCallbacks {
     override fun onCreate() {
         component.inject(this)
         super.onCreate()
+        incrementLaunchCount.invoke()
+        resetSyncProgress.invoke()
         setAuthorized(false)
         registerActivityLifecycleCallbacks(this)
         createNotificationSyncChannel()
         createNotificationFirebaseChannel()
         JodaTimeAndroid.init(this)
         initializeImageAlbum()
-        resetSyncProgress()
-        incrementLaunchCounter()
         MobileAds.initialize(this, getString(R.string.banner_ad_app_id))
         StrictMode.setVmPolicy(StrictMode.VmPolicy.Builder().build())
         AndroidThreeTen.init(this)
@@ -89,13 +103,13 @@ class MyApp : Application(), Application.ActivityLifecycleCallbacks {
     }
 
     override fun onActivityStopped(activity: Activity?) {
-        if (mDataManager.isPinEnabled() && activity !is PinActivity) {
-            mHandler.postDelayed(mLogoutRunnable, mDataManager.getPasswordRequestDelay())
+        if (isPinEnabled.invoke() && activity !is PinActivity) {
+            mHandler.postDelayed(mLogoutRunnable, getPinRequestDelay.invoke())
         }
     }
 
     private fun setAuthorized(authorized: Boolean) {
-        mDataManager.setAuthorized(authorized)
+        authorize.invoke(authorized)
     }
 
     private fun createNotificationSyncChannel() {
@@ -140,19 +154,6 @@ class MyApp : Application(), Application.ActivityLifecycleCallbacks {
                 })
                 .setLocale(Locale.getDefault())
                 .build())
-    }
-
-    private fun resetSyncProgress() {
-        val currentTime = DateTime.now().millis
-        val launchTimeDiff = currentTime - mDataManager.getLastAppLaunchTime()
-        if (launchTimeDiff >= SYNC_PROGRESS_RESET_TIME) {
-            mDataManager.setLastSyncMessage(null)
-        }
-        mDataManager.setLastAppLaunchTime(currentTime)
-    }
-
-    private fun incrementLaunchCounter() {
-        mDataManager.setNumberOfLaunches(mDataManager.getNumberOfLaunches() + 1)
     }
 }
 

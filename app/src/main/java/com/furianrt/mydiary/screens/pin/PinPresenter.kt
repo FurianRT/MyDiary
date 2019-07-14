@@ -2,12 +2,18 @@ package com.furianrt.mydiary.screens.pin
 
 import android.os.Bundle
 import android.os.Handler
-import com.furianrt.mydiary.data.DataManager
+import com.furianrt.mydiary.domain.AuthorizeUseCase
+import com.furianrt.mydiary.domain.check.CheckFingerprintAvailabilityUseCase
+import com.furianrt.mydiary.domain.check.CheckPinUseCase
+import com.furianrt.mydiary.domain.CreatePinUseCase
 import io.reactivex.android.schedulers.AndroidSchedulers
 import javax.inject.Inject
 
 class PinPresenter @Inject constructor(
-        private val dataManager: DataManager
+        private val createPin: CreatePinUseCase,
+        private val authorize: AuthorizeUseCase,
+        private val checkPin: CheckPinUseCase,
+        private val checkFingerprintAvailability: CheckFingerprintAvailabilityUseCase
 ) : PinContract.Presenter() {
 
     companion object {
@@ -50,7 +56,7 @@ class PinPresenter @Inject constructor(
     override fun onViewStartedModeLock() {
         view?.showPin(mPin)
         view?.showMessageEnterPin()
-        if (view?.isFingerprintSupported() == true && dataManager.isFingerprintEnabled()) {
+        if (view?.isFingerprintSupported() == true && checkFingerprintAvailability.invoke()) {  //todo убрать проверку фингерпринта из вьюхи в UseCase
             view?.showFingerprintButton()
             view?.showFingerprintScanner()
         } else {
@@ -89,11 +95,11 @@ class PinPresenter @Inject constructor(
     }
 
     private fun checkPinLockMode() {
-        addDisposable(dataManager.getPin()
+        addDisposable(checkPin.invoke(mPin)
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { savedPin ->
-                    if (mPin == savedPin) {
-                        dataManager.setAuthorized(true)
+                .subscribe { validPin ->
+                    if (validPin) {
+                        authorize.invoke(true)
                         view?.showMessagePinCorrect()
                     } else {
                         mPin = ""
@@ -125,10 +131,10 @@ class PinPresenter @Inject constructor(
     }
 
     private fun checkPinRemoveMode() {
-        addDisposable(dataManager.getPin()
+        addDisposable(checkPin.invoke(mPin)
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { savedPin ->
-                    if (mPin == savedPin) {
+                .subscribe { validPin ->
+                    if (validPin) {
                         view?.showMessagePinCorrect()
                     } else {
                         mPin = ""
@@ -139,11 +145,10 @@ class PinPresenter @Inject constructor(
     }
 
     override fun onEmailEntered(email: String) {
-        dataManager.setBackupEmail(email)
-        addDisposable(dataManager.setPin(mPin)
+        addDisposable(createPin.invoke(email, mPin)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe {
-                    dataManager.setAuthorized(true)
+                    authorize.invoke(true)
                     view?.showMessagePinCreated()
                 })
     }
@@ -168,7 +173,7 @@ class PinPresenter @Inject constructor(
     }
 
     override fun onFingerprintAccepted() {
-        dataManager.setAuthorized(true)
+        authorize.invoke(true)
         view?.showMessagePinCorrect()
     }
 

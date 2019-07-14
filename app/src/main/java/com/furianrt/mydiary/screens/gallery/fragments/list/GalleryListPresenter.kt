@@ -1,19 +1,29 @@
 package com.furianrt.mydiary.screens.gallery.fragments.list
 
-import com.furianrt.mydiary.data.DataManager
 import com.furianrt.mydiary.data.model.MyImage
-import com.furianrt.mydiary.utils.generateUniqueId
-import io.reactivex.Flowable
+import com.furianrt.mydiary.domain.save.SaveImagesUseCase
+import com.furianrt.mydiary.domain.get.GetImagesUseCase
+import com.furianrt.mydiary.domain.update.UpdateImageUseCase
 import io.reactivex.android.schedulers.AndroidSchedulers
-import org.joda.time.DateTime
 import javax.inject.Inject
 
 class GalleryListPresenter @Inject constructor(
-        private val dataManager: DataManager
+        private val getImages: GetImagesUseCase,
+        private val updateImage: UpdateImageUseCase,
+        private val saveImages: SaveImagesUseCase
 ) : GalleryListContract.Presenter() {
 
     private lateinit var mNoteId: String
     private var mSelectedImageNames = HashSet<String>()
+
+    override fun init(noteId: String) {
+        mNoteId = noteId
+    }
+
+    override fun attachView(view: GalleryListContract.MvpView) {
+        super.attachView(view)
+        loadImages(mNoteId)
+    }
 
     override fun onListItemClick(image: MyImage, position: Int, selectionActive: Boolean) {
         if (selectionActive) {
@@ -34,16 +44,8 @@ class GalleryListPresenter @Inject constructor(
         view?.showSelectedImageCount(mSelectedImageNames.size)
     }
 
-    override fun setNoteId(noteId: String) {
-        mNoteId = noteId
-    }
-
-    override fun onViewStart() {
-        loadImages(mNoteId)
-    }
-
     private fun loadImages(noteId: String) {
-        addDisposable(dataManager.getImagesForNote(noteId)
+        addDisposable(getImages.invoke(noteId)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { images ->
                     view?.showSelectedImageCount(mSelectedImageNames.size)
@@ -52,15 +54,13 @@ class GalleryListPresenter @Inject constructor(
                         view?.showEmptyList()
                     } else {
                         var i = 0
-                        view?.showImages(images
-                                .sortedWith(compareBy(MyImage::order, MyImage::addedTime))
-                                .apply { forEach { it.order = i++ } }, mSelectedImageNames)
+                        view?.showImages(images.apply { forEach { it.order = i++ } }, mSelectedImageNames)
                     }
                 })
     }
 
     override fun onImagesOrderChange(images: List<MyImage>) {
-        addDisposable(dataManager.updateImage(images)
+        addDisposable(updateImage.invoke(images)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe())
     }
@@ -84,7 +84,7 @@ class GalleryListPresenter @Inject constructor(
     }
 
     override fun onButtonCabSelectAllClick() {
-        addDisposable(dataManager.getImagesForNote(mNoteId)
+        addDisposable(getImages.invoke(mNoteId)
                 .first(emptyList())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { images ->
@@ -119,17 +119,7 @@ class GalleryListPresenter @Inject constructor(
     }
 
     override fun onNoteImagesPicked(imageUrls: List<String>) {
-        addDisposable(Flowable.fromIterable(imageUrls)
-                .map { url ->
-                    val name = mNoteId + "_" + generateUniqueId()
-                    return@map MyImage(name, url, mNoteId, DateTime.now().millis)
-                }
-                .flatMapSingle { image -> dataManager.saveImageToStorage(image) }
-                .flatMapSingle { savedImage ->
-                    dataManager.insertImage(savedImage).toSingleDefault(true)
-                }
-                .collectInto(mutableListOf<Boolean>()) { l, i -> l.add(i) }
-                .ignoreElement()
+        addDisposable(saveImages.invoke(mNoteId, imageUrls)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { view?.hideLoading() })
     }

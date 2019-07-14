@@ -33,14 +33,12 @@ class TagsDialog : BaseDialog(), TagsDialogContract.MvpView {
     @Inject
     lateinit var mPresenter: TagsDialogContract.Presenter
 
-    private lateinit var mNoteId: String
     private var mView: View? = null
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         getPresenterComponent(requireContext()).inject(this)
         super.onCreate(savedInstanceState)
-        mNoteId = arguments?.getString(ARG_NOTE_ID) ?: throw IllegalArgumentException()
+        mPresenter.init(arguments?.getString(ARG_NOTE_ID)!!)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -78,7 +76,6 @@ class TagsDialog : BaseDialog(), TagsDialogContract.MvpView {
         dialog?.window?.clearFlags(WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE
                 or WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM)
         mPresenter.attachView(this)
-        mPresenter.onViewCreated(mNoteId)
     }
 
     override fun onStop() {

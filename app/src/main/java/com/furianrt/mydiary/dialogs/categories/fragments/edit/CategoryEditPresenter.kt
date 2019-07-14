@@ -1,21 +1,32 @@
 package com.furianrt.mydiary.dialogs.categories.fragments.edit
 
-import com.furianrt.mydiary.data.DataManager
 import com.furianrt.mydiary.data.model.MyCategory
+import com.furianrt.mydiary.domain.update.UpdateCategoryUseCase
 import io.reactivex.android.schedulers.AndroidSchedulers
 import javax.inject.Inject
 
 class CategoryEditPresenter @Inject constructor(
-        private val dataManager: DataManager
+        private val updateCategory: UpdateCategoryUseCase
 ) : CategoryEditContract.Presenter() {
 
-    override fun onButtonDoneClick(category: MyCategory, categoryName: String, categoryColor: Int) {
+    private lateinit var mCategory: MyCategory
+
+    override fun init(category: MyCategory) {
+        mCategory = category
+    }
+
+    override fun attachView(view: CategoryEditContract.MvpView) {
+        super.attachView(view)
+        view.showCategory(mCategory)
+    }
+
+    override fun onButtonDoneClick(categoryName: String, categoryColor: Int) {
         if (categoryName.isEmpty()) {
             view?.showErrorEmptyName()
         } else {
-            category.name = categoryName
-            category.color = categoryColor
-            addDisposable(dataManager.updateCategory(category)
+            mCategory.name = categoryName
+            mCategory.color = categoryColor
+            addDisposable(updateCategory.invoke(mCategory)
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe { view?.close() })
         }

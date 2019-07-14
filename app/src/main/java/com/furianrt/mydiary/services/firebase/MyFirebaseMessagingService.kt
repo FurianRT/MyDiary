@@ -28,8 +28,8 @@ class MyFirebaseMessagingService : FirebaseMessagingService(), BaseView {
     private fun showNotification(notification: RemoteMessage.Notification) {
         val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         val pendingIntent =
-                PendingIntent.getActivity(this, 0, newLauncherIntent(this), 0)
-        val notificationBuilder = NotificationCompat.Builder(this, MyApp.NOTIFICATION_FIREBASE_CHANNEL_ID)
+                PendingIntent.getActivity(applicationContext, 0, newLauncherIntent(applicationContext), 0)
+        val notificationBuilder = NotificationCompat.Builder(applicationContext, MyApp.NOTIFICATION_FIREBASE_CHANNEL_ID)
         notificationBuilder.setAutoCancel(true)
                 .setWhen(System.currentTimeMillis())
                 .setSmallIcon(R.drawable.ic_notification_logo)

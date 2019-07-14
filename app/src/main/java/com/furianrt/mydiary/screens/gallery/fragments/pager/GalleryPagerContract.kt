@@ -14,8 +14,8 @@ interface GalleryPagerContract {
     }
 
     abstract class Presenter : BaseMvpPresenter<MvpView>() {
-        abstract fun onViewResume(noteId: String)
-        abstract fun onButtonListModeClick(noteId: String)
+        abstract fun init(noteId: String)
+        abstract fun onButtonListModeClick()
         abstract fun onButtonDeleteClick(image: MyImage)
         abstract fun onButtonEditClick(image: MyImage)
         abstract fun onImageEdited()

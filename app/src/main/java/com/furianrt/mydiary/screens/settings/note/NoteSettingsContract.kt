@@ -11,7 +11,7 @@ interface NoteSettingsContract {
     }
 
     abstract class Presenter : BaseMvpPresenter<MvpView>() {
-        abstract fun onViewCreate(noteId: String?)
+        abstract fun init(noteId: String)
         abstract fun onTextSizeChange(size: Int)
         abstract fun onTextColorChange(color: Int)
         abstract fun onBackgroundColorChange(color: Int)

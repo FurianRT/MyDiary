@@ -21,19 +21,20 @@ class CategoryEditFragment : BaseFragment(), CategoryEditContract.MvpView {
     @Inject
     lateinit var mPresenter: CategoryEditContract.Presenter
 
-    private lateinit var mCategory: MyCategory
-
     override fun onCreate(savedInstanceState: Bundle?) {
         getPresenterComponent(requireContext()).inject(this)
         super.onCreate(savedInstanceState)
-        mCategory = arguments?.getParcelable(ARG_CATEGORY) ?: throw IllegalArgumentException()
+        val category = arguments?.getParcelable(ARG_CATEGORY) as MyCategory?
+        savedInstanceState?.let { state ->
+            category!!.name = state.getString(BUNDLE_CATEGORY_NAME, category.name)
+            category.color = state.getInt(BUNDLE_CATEGORY_COLOR, category.color)
+        }
+        mPresenter.init(arguments?.getParcelable(ARG_CATEGORY)!!)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_category_edit, container, false)
-
-        view.edit_category.setText(mCategory.name)
 
         view.color_picker_category.addSVBar(view.svbar_category)
         view.color_picker_category.showOldCenterColor = false
@@ -44,24 +45,15 @@ class CategoryEditFragment : BaseFragment(), CategoryEditContract.MvpView {
             analytics.sendEvent(MyAnalytics.EVENT_NOTE_CATEGORY_EDITED)
             val color = color_picker_category.color
             val name = edit_category.text?.toString() ?: ""
-            mPresenter.onButtonDoneClick(mCategory, name, color)
+            mPresenter.onButtonDoneClick(name, color)
         }
 
         return view
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        if (savedInstanceState != null) {
-            color_picker_category.color =
-                    savedInstanceState.getInt(BUNDLE_CATEGORY_COLOR, MyCategory.DEFAULT_COLOR)
-        } else {
-            color_picker_category.color = mCategory.color
-        }
-    }
-
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
+        outState.putString(BUNDLE_CATEGORY_NAME, edit_category.text?.toString() ?: "")
         outState.putInt(BUNDLE_CATEGORY_COLOR, color_picker_category.color)
     }
 
@@ -97,6 +89,7 @@ class CategoryEditFragment : BaseFragment(), CategoryEditContract.MvpView {
 
         const val TAG = "CategoryEditFragment"
         private const val ARG_CATEGORY = "category"
+        private const val BUNDLE_CATEGORY_NAME = "category_name"
         private const val BUNDLE_CATEGORY_COLOR = "category_color"
 
         @JvmStatic

@@ -1,13 +1,14 @@
 package com.furianrt.mydiary.dialogs.categories.fragments.list
 
-import com.furianrt.mydiary.data.DataManager
 import com.furianrt.mydiary.data.model.MyCategory
-import io.reactivex.Observable
+import com.furianrt.mydiary.domain.get.GetCategoriesUseCase
+import com.furianrt.mydiary.domain.update.UpdateNoteUseCase
 import io.reactivex.android.schedulers.AndroidSchedulers
 import javax.inject.Inject
 
 class CategoryListPresenter @Inject constructor(
-        private val dataManager: DataManager
+        private val updateNote: UpdateNoteUseCase,
+        private val getCategories: GetCategoriesUseCase
 ) : CategoryListContract.Presenter() {
 
     override fun onButtonAddCategoryClick() {
@@ -23,33 +24,19 @@ class CategoryListPresenter @Inject constructor(
     }
 
     override fun onViewStart() {
-        addDisposable(dataManager.getAllCategories()
+        addDisposable(getCategories.invoke()
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { categories -> view?.showCategories(categories) })
     }
 
     override fun onCategoryClick(category: MyCategory, noteIds: List<String>) {
-        addDisposable(Observable.fromIterable(noteIds)
-                .flatMapSingle { dataManager.getNote(it) }
-                .flatMapSingle {
-                    dataManager.updateNote(it.apply { categoryId = category.id })
-                            .toSingleDefault(true)
-                }
-                .collectInto(mutableListOf<Boolean>()) { l, i -> l.add(i) }
-                .ignoreElement()
+        addDisposable(updateNote.invoke(noteIds, category.id)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { view?.close() })
     }
 
     override fun onButtonNoCategoryClick(noteIds: List<String>) {
-        addDisposable(Observable.fromIterable(noteIds)
-                .flatMapSingle { dataManager.getNote(it) }
-                .flatMapSingle {
-                    dataManager.updateNote(it.apply { categoryId = "" })
-                            .toSingleDefault(true)
-                }
-                .collectInto(mutableListOf<Boolean>()) { l, i -> l.add(i) }
-                .ignoreElement()
+        addDisposable(updateNote.invoke(noteIds, "")
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { view?.close() })
     }

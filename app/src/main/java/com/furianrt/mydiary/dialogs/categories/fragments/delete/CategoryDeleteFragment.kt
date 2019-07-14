@@ -8,6 +8,7 @@ import com.furianrt.mydiary.R
 import com.furianrt.mydiary.analytics.MyAnalytics
 import com.furianrt.mydiary.base.BaseFragment
 import com.furianrt.mydiary.data.model.MyCategory
+import kotlinx.android.synthetic.main.fragment_category_delete.*
 import kotlinx.android.synthetic.main.fragment_category_delete.view.*
 import javax.inject.Inject
 
@@ -16,28 +17,29 @@ class CategoryDeleteFragment : BaseFragment(), CategoryDeleteContract.MvpView {
     @Inject
     lateinit var mPresenter: CategoryDeleteContract.Presenter
 
-    private lateinit var mCategory: MyCategory
-
     override fun onCreate(savedInstanceState: Bundle?) {
         getPresenterComponent(requireContext()).inject(this)
         super.onCreate(savedInstanceState)
-        mCategory = arguments?.getParcelable(ARG_CATEGORY) ?: throw IllegalArgumentException()
+        mPresenter.init(arguments?.getParcelable(ARG_CATEGORY)!!)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_category_delete, container, false)
 
-        view.text_category_delete_message.text =
-                getString(R.string.fragment_category_delete_message, mCategory.name)
+
 
         view.button_delete_category.setOnClickListener {
             analytics.sendEvent(MyAnalytics.EVENT_NOTE_CATEGORY_DELETED)
-            mPresenter.onButtonDeleteClick(mCategory)
+            mPresenter.onButtonDeleteClick()
         }
         view.button_delete_category_cancel.setOnClickListener { mPresenter.onButtonCancelClick() }
 
         return view
+    }
+
+    override fun showDeleteMessage(name: String) {
+        text_category_delete_message.text = getString(R.string.fragment_category_delete_message, name)
     }
 
     override fun closeView() {

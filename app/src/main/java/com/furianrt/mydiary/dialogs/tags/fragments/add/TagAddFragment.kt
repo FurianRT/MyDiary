@@ -19,12 +19,10 @@ class TagAddFragment : BaseFragment(), TagAddContract.MvpView {
     @Inject
     lateinit var mPresenter: TagAddContract.Presenter
 
-    private lateinit var mNoteId: String
-
     override fun onCreate(savedInstanceState: Bundle?) {
         getPresenterComponent(requireContext()).inject(this)
         super.onCreate(savedInstanceState)
-        mNoteId = arguments?.getString(ARG_NOTE_ID) ?: throw IllegalArgumentException()
+        mPresenter.init(arguments?.getString(ARG_NOTE_ID)!!)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -32,7 +30,7 @@ class TagAddFragment : BaseFragment(), TagAddContract.MvpView {
         val view = inflater.inflate(R.layout.fragment_tag_add, container, false)
 
         view.button_tag_add.setOnClickListener {
-            mPresenter.onButtonAddClick(mNoteId, edit_add_tag.text?.toString() ?: "")
+            mPresenter.onButtonAddClick(edit_add_tag.text?.toString() ?: "")
         }
         view.button_tag_add_close.setOnClickListener { mPresenter.onButtonCloseClick() }
 

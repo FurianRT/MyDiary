@@ -79,12 +79,6 @@ class BackupEmailFragment : BaseFragment(), BackupEmailContract.MvpView {
         Toast.makeText(requireContext(), getString(R.string.fragment_backup_email_invalid_email), Toast.LENGTH_SHORT).show()
     }
 
-    override fun showErrorEmptyEmail() {
-        image_email_error.visibility = View.VISIBLE
-        edit_backup_email.animateShake()
-        Toast.makeText(requireContext(), getString(R.string.fragment_backup_email_enter_email), Toast.LENGTH_SHORT).show()
-    }
-
     override fun onStart() {
         super.onStart()
         KeyboardUtils.addKeyboardToggleListener(requireActivity(), mOnKeyboardToggleListener)

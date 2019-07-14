@@ -10,6 +10,6 @@ interface TagsDialogContract {
     }
 
     abstract class Presenter : BaseMvpPresenter<MvpView>() {
-        abstract fun onViewCreated(noteId: String)
+        abstract fun init(noteId: String)
     }
 }

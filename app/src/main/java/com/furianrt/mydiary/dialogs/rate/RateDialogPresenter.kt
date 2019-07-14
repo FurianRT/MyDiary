@@ -1,29 +1,30 @@
 package com.furianrt.mydiary.dialogs.rate
 
-import com.furianrt.mydiary.data.DataManager
+import com.furianrt.mydiary.BuildConfig
+import com.furianrt.mydiary.domain.SetNeedRateOfferUseCase
 import javax.inject.Inject
 
 class RateDialogPresenter @Inject constructor(
-        private val dataManager: DataManager
+        private val setNeedRateOffer: SetNeedRateOfferUseCase
 ) : RateDialogContract.Presenter() {
 
     override fun onButtonRateClick(rating: Int) {
         if (rating > 3) {
             view?.openAppPage()
         } else {
-            view?.sendEmailToSupport()
+            view?.sendEmailToSupport(BuildConfig.SUPPORT_EMAIL)
         }
-        dataManager.setNumberOfLaunches(10)
+        setNeedRateOffer.invoke(false)
         view?.close()
     }
 
     override fun onButtonLaterClick() {
-        dataManager.setNumberOfLaunches(0)
+        setNeedRateOffer.invoke(true)
         view?.close()
     }
 
     override fun onButtonNeverClick() {
-        dataManager.setNumberOfLaunches(10)
+        setNeedRateOffer.invoke(false)
         view?.close()
     }
 }

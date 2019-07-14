@@ -52,8 +52,8 @@ class RateDialog : BaseDialog(), RateDialogContract.MvpView {
         startActivity(intent)
     }
 
-    override fun sendEmailToSupport() {
-        val intent = Intent(Intent.ACTION_SENDTO, Uri.parse("mailto:${BuildConfig.SUPPORT_EMAIL}"))
+    override fun sendEmailToSupport(supportEmail: String) {
+        val intent = Intent(Intent.ACTION_SENDTO, Uri.parse("mailto:$supportEmail"))
         intent.putExtra(Intent.EXTRA_SUBJECT, getString(R.string.low_rate_email_subject))
         intent.putExtra(Intent.EXTRA_TEXT, getString(R.string.low_rate_email_text))
         startActivity(Intent.createChooser(intent, getString(R.string.low_rate_email_title)))

@@ -1,17 +1,18 @@
 package com.furianrt.mydiary.screens.pin.fragments.backupemail
 
-import android.util.Patterns
-import com.furianrt.mydiary.data.DataManager
+import com.furianrt.mydiary.domain.check.CheckEmailUseCase
+import com.furianrt.mydiary.domain.get.GetProfileUseCase
 import io.reactivex.android.schedulers.AndroidSchedulers
 import javax.inject.Inject
 
 class BackupEmailPresenter @Inject constructor(
-        private val dataManager: DataManager
+        private val checkEmail: CheckEmailUseCase,
+        private val getProfile: GetProfileUseCase
 ) : BackupEmailContract.Presenter() {
 
     override fun onViewCreated(email: String, firstLaunch: Boolean) {
         if (email.isEmpty() && firstLaunch) {
-            addDisposable(dataManager.getDbProfile()
+            addDisposable(getProfile.invoke()
                     .firstElement()
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe { view?.showEmail(it.email) })
@@ -19,23 +20,10 @@ class BackupEmailPresenter @Inject constructor(
     }
 
     override fun onButtonDoneClick(email: String) {
-        if (validateEmail(email)) {
-            dataManager.setBackupEmail(email)
+        if (checkEmail.invoke(email)) {
             view?.showEmailIsCorrect(email)
-        }
-    }
-
-    private fun validateEmail(email: String): Boolean {
-        return when {
-            email.isEmpty() -> {
-                view?.showErrorEmptyEmail()
-                return false
-            }
-            !Patterns.EMAIL_ADDRESS.matcher(email).matches() -> {
-                view?.showErrorEmailFormat()
-                return false
-            }
-            else -> true
+        } else {
+            view?.showErrorEmailFormat()
         }
     }
 }

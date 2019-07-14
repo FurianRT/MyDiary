@@ -1,20 +1,20 @@
 package com.furianrt.mydiary.screens.settings.global
 
-import com.furianrt.mydiary.data.DataManager
+import com.furianrt.mydiary.domain.RemovePinEmailUseCase
+import com.furianrt.mydiary.domain.get.GetPinEmailUseCase
 import javax.inject.Inject
 
 class GlobalSettingsPresenter @Inject constructor(
-        private val dataManager: DataManager
+        private val getPinEmail: GetPinEmailUseCase,
+        private val removePinEmail: RemovePinEmailUseCase
 ) : GlobalSettingsContract.Presenter() {
 
     override fun onViewCreate() {
-        if (dataManager.isPinEnabled()) {
-            view?.showBackupEmail(dataManager.getBackupEmail())
-        }
+        getPinEmail.invoke()?.let { view?.showBackupEmail(it) }
     }
 
     override fun onPrefSecurityKeyClick() {
-        if (dataManager.isPinEnabled()) {
+        if (getPinEmail.invoke() != null) {
             view?.showCreatePasswordView()
         } else {
             view?.showRemovePasswordView()
@@ -22,10 +22,10 @@ class GlobalSettingsPresenter @Inject constructor(
     }
 
     override fun onPasswordCreated() {
-        view?.showBackupEmail(dataManager.getBackupEmail())
+        view?.showBackupEmail(getPinEmail.invoke()!!)
     }
 
     override fun onPasswordRemoved() {
-        dataManager.setBackupEmail("")
+        removePinEmail.invoke()
     }
 }

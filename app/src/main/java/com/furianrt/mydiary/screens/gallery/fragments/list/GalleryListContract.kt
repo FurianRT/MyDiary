@@ -26,8 +26,7 @@ interface GalleryListContract {
 
     abstract class Presenter : BaseMvpPresenter<MvpView>() {
         abstract fun onListItemClick(image: MyImage, position: Int, selectionActive: Boolean)
-        abstract fun setNoteId(noteId: String)
-        abstract fun onViewStart()
+        abstract fun init(noteId: String)
         abstract fun onImagesOrderChange(images: List<MyImage>)
         abstract fun onButtonMultiSelectionClick()
         abstract fun onButtonCabDeleteClick()

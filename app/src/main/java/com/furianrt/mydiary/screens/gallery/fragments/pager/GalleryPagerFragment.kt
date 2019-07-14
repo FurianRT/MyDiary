@@ -47,7 +47,6 @@ class GalleryPagerFragment : BaseFragment(), GalleryPagerContract.MvpView {
 
     private val mPagerAdapter = GalleryPagerAdapter()
     private var mPagerPosition = 0
-    private lateinit var mNoteId: String
 
     private val mOnPageChangeCallback = object : ViewPager2.OnPageChangeCallback() {
         override fun onPageSelected(position: Int) {
@@ -59,10 +58,11 @@ class GalleryPagerFragment : BaseFragment(), GalleryPagerContract.MvpView {
     override fun onCreate(savedInstanceState: Bundle?) {
         getPresenterComponent(requireContext()).inject(this)
         super.onCreate(savedInstanceState)
-        mNoteId = arguments?.getString(ARG_NOTE_ID) ?: throw IllegalStateException()
+        setHasOptionsMenu(true)
+        mPresenter.init(arguments?.getString(ARG_NOTE_ID)!!)
+
         mPagerPosition = savedInstanceState?.getInt(ARG_POSITION)
                 ?: (arguments?.getInt(ARG_POSITION) ?: 0)
-        setHasOptionsMenu(true)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -84,7 +84,6 @@ class GalleryPagerFragment : BaseFragment(), GalleryPagerContract.MvpView {
         super.onStart()
         pager_gallery.registerOnPageChangeCallback(mOnPageChangeCallback)
         mPresenter.attachView(this)
-        mPresenter.onViewResume(mNoteId)
     }
 
     override fun onStop() {
@@ -111,7 +110,7 @@ class GalleryPagerFragment : BaseFragment(), GalleryPagerContract.MvpView {
         return when (item.itemId) {
             R.id.menu_list_mode -> {
                 analytics.sendEvent(MyAnalytics.EVENT_NOTE_IMAGE_LIST_OPENED)
-                mPresenter.onButtonListModeClick(mNoteId)
+                mPresenter.onButtonListModeClick()
                 true
             }
             R.id.menu_delete -> {

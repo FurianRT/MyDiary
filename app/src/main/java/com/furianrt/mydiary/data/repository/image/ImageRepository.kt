@@ -1,0 +1,33 @@
+package com.furianrt.mydiary.data.repository.image
+
+import com.furianrt.mydiary.data.model.MyHeaderImage
+import com.furianrt.mydiary.data.model.MyImage
+import io.reactivex.Completable
+import io.reactivex.Flowable
+import io.reactivex.Single
+
+interface ImageRepository {
+    fun insertImage(image: MyImage): Completable
+    fun insertImages(images: List<MyImage>): Completable
+    fun insertHeaderImage(headerImage: MyHeaderImage): Completable
+    fun updateImage(image: MyImage): Completable
+    fun updateImage(images: List<MyImage>): Completable
+    fun updateImageSync(images: List<MyImage>): Completable
+    fun deleteImage(imageName: String): Completable
+    fun deleteImage(imageNames: List<String>): Completable
+    fun deleteImageFromStorage(fileName: String): Single<Boolean>
+    fun deleteImagesFromCloud(images: List<MyImage>): Completable
+    fun cleanupImages(): Completable
+    fun getAllImages(): Flowable<List<MyImage>>
+    fun getDeletedImages(): Flowable<List<MyImage>>
+    fun getImagesForNote(noteId: String): Flowable<List<MyImage>>
+    fun getImageCount(): Flowable<Int>
+    fun getHeaderImages(): Flowable<List<MyHeaderImage>>
+    fun getAllImagesFromCloud(): Single<List<MyImage>>
+    fun loadHeaderImages(category: String, page: Int = 1, perPage: Int = 20): Single<List<MyHeaderImage>>
+    fun saveImageToStorage(image: MyImage): Single<MyImage>
+    fun saveImagesInCloud(images: List<MyImage>): Completable
+    fun saveImagesFilesInCloud(images: List<MyImage>): Completable
+    fun loadImageFiles(images: List<MyImage>): Completable
+    fun isDailyImageEnabled(): Boolean
+}

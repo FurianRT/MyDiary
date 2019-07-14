@@ -8,10 +8,12 @@ interface TagDeleteContract {
 
     interface MvpView : BaseMvpView {
         fun closeView()
+        fun showTagName(name: String)
     }
 
     abstract class Presenter : BaseMvpPresenter<MvpView>() {
-        abstract fun onButtonDeleteClick(tag: MyTag)
+        abstract fun init(tag: MyTag)
+        abstract fun onButtonDeleteClick()
         abstract fun onButtonCancelClick()
     }
 }

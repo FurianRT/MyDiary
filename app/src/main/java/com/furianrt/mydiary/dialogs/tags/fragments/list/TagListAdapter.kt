@@ -1,7 +1,6 @@
 package com.furianrt.mydiary.dialogs.tags.fragments.list
 
 import android.view.LayoutInflater
-import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.widget.PopupMenu
@@ -15,12 +14,17 @@ class TagListAdapter(
         val listener: OnTagListItemInteractionListener
 ) : RecyclerView.Adapter<TagListAdapter.TagsViewHolder>() {
 
-    private val mTags = mutableListOf<MyTag>()
+    data class ViewItem(
+            val tag: MyTag,
+            var isChecked: Boolean = false
+    )
 
-    fun showList(tags: MutableList<MyTag>) {
-        val diffResult = DiffUtil.calculateDiff(TagListDiffCallback(mTags, tags))
-        mTags.clear()
-        mTags.addAll(tags)
+    private val mItems = mutableListOf<ViewItem>()
+
+    fun showList(items: List<ViewItem>) {
+        val diffResult = DiffUtil.calculateDiff(TagListDiffCallback(mItems, items))
+        mItems.clear()
+        mItems.addAll(items)
         diffResult.dispatchUpdatesTo(this)
     }
 
@@ -29,38 +33,51 @@ class TagListAdapter(
                     .inflate(R.layout.tags_list_item, parent, false))
 
     override fun onBindViewHolder(holder: TagsViewHolder, position: Int) {
-        holder.bind(mTags[position])
+        holder.bind(mItems[position])
     }
 
-    override fun getItemCount(): Int = mTags.size
+    override fun getItemCount(): Int = mItems.size
 
-    inner class TagsViewHolder(view: View) : RecyclerView.ViewHolder(view), PopupMenu.OnMenuItemClickListener {
+    inner class TagsViewHolder(view: View) : RecyclerView.ViewHolder(view) {
 
-        private lateinit var mTag: MyTag
-
-        fun bind(tag: MyTag) {
-            mTag = tag
+        fun bind(item: ViewItem) {
             with(itemView) {
-                text_tag_name.text = tag.name
+                text_tag_name.text = item.tag.name
 
                 setOnClickListener {
                     image_select_tag.visibility = if (image_select_tag.visibility == View.INVISIBLE) {
-                        listener.onItemCheckChange(tag, true)
+                        item.isChecked = true
+                        listener.onItemCheckChange(item)
                         View.VISIBLE
                     } else {
-                        listener.onItemCheckChange(tag, false)
+                        item.isChecked = false
+                        listener.onItemCheckChange(item)
                         View.INVISIBLE
                     }
                 }
 
+                val menuListener = PopupMenu.OnMenuItemClickListener { menuItem ->
+                    when (menuItem.itemId) {
+                        R.id.menu_tag_delete -> {
+                            listener.onItemDeleteClick(item)
+                            true
+                        }
+                        R.id.menu_tag_edit -> {
+                            listener.onItemEditClick(item)
+                            true
+                        }
+                        else -> false
+                    }
+                }
+
                 setOnLongClickListener {
-                    showPopupMenu(it, this@TagsViewHolder)
+                    showPopupMenu(it, menuListener)
                     return@setOnLongClickListener true
                 }
 
-                button_tag_more.setOnClickListener { showPopupMenu(it, this@TagsViewHolder) }
+                button_tag_more.setOnClickListener { showPopupMenu(it, menuListener) }
 
-                image_select_tag.visibility = if (tag.isChecked) {
+                image_select_tag.visibility = if (item.isChecked) {
                     View.VISIBLE
                 } else {
                     View.INVISIBLE
@@ -74,35 +91,21 @@ class TagListAdapter(
             popup.inflate(R.menu.tags_list_item_menu)
             popup.show()
         }
-
-        override fun onMenuItemClick(item: MenuItem): Boolean {
-            return when (item.itemId) {
-                R.id.menu_tag_delete -> {
-                    listener.onItemDeleteClick(mTag)
-                    true
-                }
-                R.id.menu_tag_edit -> {
-                    listener.onItemEditClick(mTag)
-                    true
-                }
-                else -> false
-            }
-        }
     }
 
     interface OnTagListItemInteractionListener {
-        fun onItemCheckChange(tag: MyTag, checked: Boolean)
-        fun onItemEditClick(tag: MyTag)
-        fun onItemDeleteClick(tag: MyTag)
+        fun onItemCheckChange(item: ViewItem)
+        fun onItemEditClick(item: ViewItem)
+        fun onItemDeleteClick(item: ViewItem)
     }
 
     class TagListDiffCallback(
-            private val oldList: List<MyTag>,
-            private val newList: List<MyTag>
+            private val oldList: List<ViewItem>,
+            private val newList: List<ViewItem>
     ) : DiffUtil.Callback() {
 
         override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean =
-                oldList[oldItemPosition].id == newList[newItemPosition].id
+                oldList[oldItemPosition].tag.id == newList[newItemPosition].tag.id
 
         override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean =
                 oldList[oldItemPosition] == newList[newItemPosition]

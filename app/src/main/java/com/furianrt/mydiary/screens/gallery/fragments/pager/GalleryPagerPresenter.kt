@@ -1,35 +1,43 @@
 package com.furianrt.mydiary.screens.gallery.fragments.pager
 
-import com.furianrt.mydiary.data.DataManager
 import com.furianrt.mydiary.data.model.MyImage
+import com.furianrt.mydiary.domain.get.GetImagesUseCase
+import com.furianrt.mydiary.domain.update.UpdateImageUseCase
 import io.reactivex.android.schedulers.AndroidSchedulers
 import org.joda.time.DateTime
 import javax.inject.Inject
 
 class GalleryPagerPresenter @Inject constructor(
-        private val dataManager: DataManager
+        private val getImages: GetImagesUseCase,
+        private val updateImage: UpdateImageUseCase
 ) : GalleryPagerContract.Presenter() {
 
     private var mEditedImage: MyImage? = null
+    private lateinit var mNoteId: String
 
-    override fun onViewResume(noteId: String) {
-        loadImages(noteId)
+    override fun init(noteId: String) {
+        mNoteId = noteId
+    }
+
+    override fun attachView(view: GalleryPagerContract.MvpView) {
+        super.attachView(view)
+        loadImages(mNoteId)
     }
 
     private fun loadImages(noteId: String) {
-        addDisposable(dataManager.getImagesForNote(noteId)
+        addDisposable(getImages.invoke(noteId)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { images ->
                     if (images.isEmpty()) {
                         view?.showListImagesView(noteId)
                     } else {
-                        view?.showImages(images.sortedWith(compareBy(MyImage::order, MyImage::addedTime)))
+                        view?.showImages(images)
                     }
                 })
     }
 
-    override fun onButtonListModeClick(noteId: String) {
-        view?.showListImagesView(noteId)
+    override fun onButtonListModeClick() {
+        view?.showListImagesView(mNoteId)
     }
 
     override fun onButtonDeleteClick(image: MyImage) {
@@ -46,7 +54,7 @@ class GalleryPagerPresenter @Inject constructor(
             val image = it.copy()
             image.fileSyncWith.clear()
             image.editedTime = DateTime.now().millis
-            addDisposable(dataManager.updateImage(image)
+            addDisposable(updateImage.invoke(image)
                     .subscribe())
         }
     }

@@ -10,10 +10,12 @@ interface TagEditContract {
         fun closeView()
         fun showErrorEmptyTagName()
         fun showErrorExistingTagName()
+        fun showTagName(name: String)
     }
 
     abstract class Presenter : BaseMvpPresenter<MvpView>() {
-        abstract fun onButtonConfirmClick(tag: MyTag, newName: String)
+        abstract fun init(tag: MyTag)
+        abstract fun onButtonConfirmClick(newTagName: String)
         abstract fun onButtonCloseClick()
     }
 }

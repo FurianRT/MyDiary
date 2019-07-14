@@ -1,38 +1,39 @@
 package com.furianrt.mydiary.dialogs.tags.fragments.edit
 
-import com.furianrt.mydiary.data.DataManager
 import com.furianrt.mydiary.data.model.MyTag
+import com.furianrt.mydiary.domain.update.UpdateTagUseCase
 import io.reactivex.android.schedulers.AndroidSchedulers
 import javax.inject.Inject
 
 class TagEditPresenter @Inject constructor(
-        private val dataManager: DataManager
+        private val updateTag: UpdateTagUseCase
 ) : TagEditContract.Presenter() {
 
-    private class InvalidTagNameException : Throwable()
+    private lateinit var mTag: MyTag
+
+    override fun init(tag: MyTag) {
+        mTag = tag
+    }
+
+    override fun attachView(view: TagEditContract.MvpView) {
+        super.attachView(view)
+        view.showTagName(mTag.name)
+    }
 
     override fun onButtonCloseClick() {
         view?.closeView()
     }
 
-    override fun onButtonConfirmClick(tag: MyTag, newName: String) {
-        if (newName.isBlank()) {
+    override fun onButtonConfirmClick(newTagName: String) {
+        if (newTagName.isBlank()) {
             view?.showErrorEmptyTagName()
         } else {
-            addDisposable(dataManager.getAllTags()
-                    .first(emptyList())
-                    .flatMapCompletable { tags ->
-                        if (tags.find { it.name == newName } != null) {
-                            throw InvalidTagNameException()
-                        } else {
-                            dataManager.insertTag(tag.apply { name = newName })
-                        }
-                    }
+            addDisposable(updateTag.invoke(mTag.apply { name = newTagName })
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe({
                         view?.closeView()
                     }, {
-                        if (it is InvalidTagNameException) {
+                        if (it is UpdateTagUseCase.InvalidTagNameException) {
                             view?.showErrorExistingTagName()
                         } else {
                             it.printStackTrace()

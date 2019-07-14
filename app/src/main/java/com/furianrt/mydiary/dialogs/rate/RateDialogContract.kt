@@ -5,7 +5,7 @@ import com.furianrt.mydiary.base.mvp.BaseMvpPresenter
 
 interface RateDialogContract {
     interface MvpView : BaseMvpView {
-        fun sendEmailToSupport()
+        fun sendEmailToSupport(supportEmail: String)
         fun openAppPage()
         fun close()
     }

@@ -21,27 +21,36 @@ class TagEditFragment : BaseFragment(), TagEditContract.MvpView {
     @Inject
     lateinit var mPresenter: TagEditContract.Presenter
 
-    private lateinit var mTag: MyTag
-
     override fun onCreate(savedInstanceState: Bundle?) {
         getPresenterComponent(requireContext()).inject(this)
         super.onCreate(savedInstanceState)
-        mTag = arguments?.getParcelable(ARG_TAG) ?: throw IllegalArgumentException()
+        val tag = arguments?.getParcelable(ARG_TAG) as MyTag?
+        savedInstanceState?.let { state ->
+            tag!!.name = state.getString(BUNDLE_TAG_NAME, tag.name)
+        }
+        mPresenter.init(tag!!)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_tag_edit, container, false)
 
-        view.edit_edit_tag.setText(mTag.name)
-
         view.button_tag_edit_confirm.setOnClickListener {
             analytics.sendEvent(MyAnalytics.EVENT_NOTE_TAG_EDITED)
-            mPresenter.onButtonConfirmClick(mTag, edit_edit_tag.text?.toString() ?: "")
+            mPresenter.onButtonConfirmClick(edit_edit_tag.text?.toString() ?: "")
         }
         view.button_tag_edit_close.setOnClickListener { mPresenter.onButtonCloseClick() }
 
         return view
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putString(BUNDLE_TAG_NAME, edit_edit_tag.text?.toString() ?: "")
+    }
+
+    override fun showTagName(name: String) {
+        edit_edit_tag.setText(name)
     }
 
     override fun showErrorEmptyTagName() {
@@ -75,6 +84,7 @@ class TagEditFragment : BaseFragment(), TagEditContract.MvpView {
     companion object {
         const val TAG = "TagEditFragment"
         private const val ARG_TAG = "tag"
+        private const val BUNDLE_TAG_NAME = "tag_name"
 
         @JvmStatic
         fun newInstance(tag: MyTag) =

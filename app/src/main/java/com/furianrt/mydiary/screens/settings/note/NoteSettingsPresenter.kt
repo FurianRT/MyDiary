@@ -1,13 +1,15 @@
 package com.furianrt.mydiary.screens.settings.note
 
 import android.util.Log
-import com.furianrt.mydiary.data.DataManager
 import com.furianrt.mydiary.data.model.MyNoteAppearance
+import com.furianrt.mydiary.domain.get.GetAppearanceUseCase
+import com.furianrt.mydiary.domain.update.UpdateAppearanceUseCase
 import io.reactivex.android.schedulers.AndroidSchedulers
 import javax.inject.Inject
 
 class NoteSettingsPresenter @Inject constructor(
-        private val dataManager: DataManager
+        private val updateAppearance: UpdateAppearanceUseCase,
+        private val getAppearance: GetAppearanceUseCase
 ) : NoteSettingsContract.Presenter() {
 
     companion object {
@@ -15,23 +17,21 @@ class NoteSettingsPresenter @Inject constructor(
     }
 
     private lateinit var mAppearance: MyNoteAppearance
+    private lateinit var mNoteId: String
 
-    override fun onViewCreate(noteId: String?) {
-        addDisposable(dataManager.getNoteAppearance(noteId ?: throw IllegalArgumentException())
+    override fun init(noteId: String) {
+        mNoteId = noteId
+    }
+
+    override fun attachView(view: NoteSettingsContract.MvpView) {
+        super.attachView(view)
+        addDisposable(getAppearance.invoke(mNoteId)
                 .firstElement()
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { appearance ->
                     mAppearance = appearance
-                    mAppearance.textSize = mAppearance.textSize ?: dataManager.getTextSize()
-                    mAppearance.textColor = mAppearance.textColor ?: dataManager.getTextColor()
-                    mAppearance.surfaceTextColor =
-                            mAppearance.surfaceTextColor ?: dataManager.getSurfaceTextColor()
-                    mAppearance.background =
-                            mAppearance.background ?: dataManager.getNoteBackgroundColor()
-                    mAppearance.textBackground =
-                            mAppearance.textBackground ?: dataManager.getNoteTextBackgroundColor()
                     Log.e(TAG, "getNoteAppearance")
-                    view?.updateSettings(mAppearance)
+                    view.updateSettings(mAppearance)
                 })
     }
 
@@ -61,7 +61,7 @@ class NoteSettingsPresenter @Inject constructor(
     }
 
     private fun updateAppearence(appearance: MyNoteAppearance) {
-        addDisposable(dataManager.updateAppearance(appearance)
+        addDisposable(updateAppearance.invoke(appearance)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe())
     }

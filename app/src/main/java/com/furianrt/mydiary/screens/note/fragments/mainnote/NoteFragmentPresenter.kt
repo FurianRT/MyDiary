@@ -2,7 +2,6 @@ package com.furianrt.mydiary.screens.note.fragments.mainnote
 
 import android.location.Address
 import android.util.Log
-import com.furianrt.mydiary.data.DataManager
 import com.furianrt.mydiary.data.model.*
 import com.furianrt.mydiary.data.model.pojo.TagsAndAppearance
 import com.furianrt.mydiary.utils.generateUniqueId
@@ -16,7 +15,7 @@ import javax.inject.Inject
 import kotlin.collections.ArrayList
 
 class NoteFragmentPresenter @Inject constructor(
-        private val dataManager: DataManager
+        private val dataManager1: DataManager
 ) : NoteFragmentContract.Presenter() {
 
     companion object {

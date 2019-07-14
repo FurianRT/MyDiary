@@ -17,27 +17,28 @@ class TagDeleteFragment : BaseFragment(), TagDeleteContract.MvpView {
     @Inject
     lateinit var mPresenter: TagDeleteContract.Presenter
 
-    private lateinit var mTag: MyTag
-
     override fun onCreate(savedInstanceState: Bundle?) {
         getPresenterComponent(requireContext()).inject(this)
         super.onCreate(savedInstanceState)
-        mTag = arguments?.getParcelable(ARG_TAG) ?: throw IllegalArgumentException()
+        mPresenter.init(arguments?.getParcelable(ARG_TAG)!!)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_tag_delete, container, false)
 
-        view.text_tag_delete_message.text = getString(R.string.fragment_tag_delete_message, mTag.name)
         view.button_delete_tag.setOnClickListener {
             analytics.sendEvent(MyAnalytics.EVENT_NOTE_TAG_DELETED)
             button_delete_tag.isEnabled = false
-            mPresenter.onButtonDeleteClick(mTag)
+            mPresenter.onButtonDeleteClick()
         }
         view.button_delete_tag_cancel.setOnClickListener { mPresenter.onButtonCancelClick() }
 
         return view
+    }
+
+    override fun showTagName(name: String) {
+        text_tag_delete_message.text = getString(R.string.fragment_tag_delete_message, name)
     }
 
     override fun closeView() {
