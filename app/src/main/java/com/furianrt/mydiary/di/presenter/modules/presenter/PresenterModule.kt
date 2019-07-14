@@ -83,8 +83,8 @@ import com.furianrt.mydiary.screens.settings.global.GlobalSettingsContract
 import com.furianrt.mydiary.screens.settings.global.GlobalSettingsPresenter
 import com.furianrt.mydiary.screens.settings.note.NoteSettingsContract
 import com.furianrt.mydiary.screens.settings.note.NoteSettingsPresenter
-import com.furianrt.mydiary.services.sync.SyncContract
-import com.furianrt.mydiary.services.sync.SyncPresenter
+import com.furianrt.mydiary.view.services.sync.SyncContract
+import com.furianrt.mydiary.view.services.sync.SyncPresenter
 import dagger.Binds
 import dagger.Module
 

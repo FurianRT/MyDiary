@@ -25,11 +25,11 @@
         tools:ignore="AllowBackup,GoogleAppIndexingWarning">
 
         <service
-            android:name=".services.sync.SyncService"
+            android:name=".view.services.sync.SyncService"
             android:exported="false" />
 
         <service
-            android:name=".services.firebase.MyFirebaseMessagingService"
+            android:name=".view.services.firebase.MyFirebaseMessagingService"
             tools:ignore="ExportedService">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />

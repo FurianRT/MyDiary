@@ -1,8 +1,8 @@
 package com.furianrt.mydiary.di.presenter.component
 
-import com.furianrt.mydiary.base.BaseActivity
-import com.furianrt.mydiary.base.BaseDialog
-import com.furianrt.mydiary.base.BaseFragment
+import com.furianrt.mydiary.view.base.BaseActivity
+import com.furianrt.mydiary.view.base.BaseDialog
+import com.furianrt.mydiary.view.base.BaseFragment
 import com.furianrt.mydiary.di.presenter.modules.location.LocationModule
 import com.furianrt.mydiary.di.presenter.modules.presenter.PresenterContextModule
 import com.furianrt.mydiary.di.presenter.modules.presenter.PresenterModule
@@ -47,7 +47,7 @@ import com.furianrt.mydiary.screens.pin.fragments.backupemail.BackupEmailFragmen
 import com.furianrt.mydiary.screens.pin.fragments.sendemail.SendEmailFragment
 import com.furianrt.mydiary.screens.settings.global.GlobalSettingsFragment
 import com.furianrt.mydiary.screens.settings.note.NoteSettingsFragment
-import com.furianrt.mydiary.services.sync.SyncService
+import com.furianrt.mydiary.view.services.sync.SyncService
 import dagger.Subcomponent
 
 @PresenterScope

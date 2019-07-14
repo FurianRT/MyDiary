@@ -1,0 +1,27 @@
+package com.furianrt.mydiary.usecase.get
+
+import com.furianrt.mydiary.data.model.MyNoteAppearance
+import com.furianrt.mydiary.data.repository.appearance.AppearanceRepository
+import io.reactivex.Flowable
+import javax.inject.Inject
+
+class GetAppearanceUseCase @Inject constructor(
+        private val appearanceRepository: AppearanceRepository
+) {
+
+    fun invoke(noteId: String): Flowable<MyNoteAppearance> =
+            appearanceRepository.getNoteAppearance(noteId)
+                    .map { appearance ->
+                        appearance.textSize =
+                                appearance.textSize ?: appearanceRepository.getTextSize()
+                        appearance.textColor =
+                                appearance.textColor ?: appearanceRepository.getTextColor()
+                        appearance.surfaceTextColor =
+                                appearance.surfaceTextColor ?: appearanceRepository.getSurfaceTextColor()
+                        appearance.background =
+                                appearance.background ?: appearanceRepository.getNoteBackgroundColor()
+                        appearance.textBackground =
+                                appearance.textBackground ?: appearanceRepository.getNoteTextBackgroundColor()
+                        return@map appearance
+                    }
+}
