@@ -8,4 +8,4 @@
     app:behavior_peekHeight="0dp"
     app:cardCornerRadius="15dp"
     app:cardElevation="6dp"
-    app:layout_behavior="com.furianrt.mydiary.general.LockableBottomSheetBehavior" />
+    app:layout_behavior="com.furianrt.mydiary.view.general.LockableBottomSheetBehavior" />

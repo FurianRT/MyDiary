@@ -7,7 +7,6 @@ import android.net.Uri
 import android.os.Bundle
 import android.widget.RatingBar
 import androidx.appcompat.app.AlertDialog
-import com.furianrt.mydiary.BuildConfig
 import com.furianrt.mydiary.R
 import com.furianrt.mydiary.view.base.BaseDialog
 import kotlinx.android.synthetic.main.dialog_rate.view.*

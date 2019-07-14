@@ -4,7 +4,7 @@ import android.os.Bundle
 import com.furianrt.mydiary.view.base.mvp.BaseMvpView
 import com.furianrt.mydiary.view.base.mvp.BaseMvpPresenter
 import com.furianrt.mydiary.data.model.*
-import com.furianrt.mydiary.screens.main.adapter.NoteListItem
+import com.furianrt.mydiary.view.screens.main.adapter.NoteListItem
 
 interface MainActivityContract {
 

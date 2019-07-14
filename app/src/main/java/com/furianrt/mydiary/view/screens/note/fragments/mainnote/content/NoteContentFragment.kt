@@ -10,9 +10,9 @@ import android.widget.TextView
 import com.furianrt.mydiary.R
 import com.furianrt.mydiary.view.base.BaseFragment
 import com.furianrt.mydiary.data.model.MyNoteAppearance
-import com.furianrt.mydiary.screens.note.NoteActivity
-import com.furianrt.mydiary.screens.note.fragments.mainnote.NoteFragment
-import com.furianrt.mydiary.screens.note.fragments.mainnote.edit.NoteEditFragment
+import com.furianrt.mydiary.view.screens.note.NoteActivity
+import com.furianrt.mydiary.view.screens.note.fragments.mainnote.NoteFragment
+import com.furianrt.mydiary.view.screens.note.fragments.mainnote.edit.NoteEditFragment
 import com.furianrt.mydiary.utils.inTransaction
 import kotlinx.android.synthetic.main.fragment_note_content.*
 import kotlinx.android.synthetic.main.fragment_note_content.view.*

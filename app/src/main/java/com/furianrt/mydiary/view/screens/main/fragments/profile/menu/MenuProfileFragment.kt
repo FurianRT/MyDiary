@@ -13,9 +13,9 @@ import com.furianrt.mydiary.R
 import com.furianrt.mydiary.analytics.MyAnalytics
 import com.furianrt.mydiary.view.base.BaseFragment
 import com.furianrt.mydiary.data.model.SyncProgressMessage
-import com.furianrt.mydiary.screens.main.fragments.profile.about.AboutProfileFragment
-import com.furianrt.mydiary.screens.main.fragments.profile.password.PasswordFragment
-import com.furianrt.mydiary.screens.main.fragments.profile.signout.SignOutFragment
+import com.furianrt.mydiary.view.screens.main.fragments.profile.about.AboutProfileFragment
+import com.furianrt.mydiary.view.screens.main.fragments.profile.password.PasswordFragment
+import com.furianrt.mydiary.view.screens.main.fragments.profile.signout.SignOutFragment
 import com.furianrt.mydiary.view.services.sync.SyncService
 import com.furianrt.mydiary.utils.inTransaction
 import kotlinx.android.synthetic.main.fragment_menu_profile.*

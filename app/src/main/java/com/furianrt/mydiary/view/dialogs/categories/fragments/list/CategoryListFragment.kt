@@ -11,10 +11,10 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.furianrt.mydiary.R
 import com.furianrt.mydiary.view.base.BaseFragment
 import com.furianrt.mydiary.data.model.MyCategory
-import com.furianrt.mydiary.dialogs.categories.CategoriesDialog
-import com.furianrt.mydiary.dialogs.categories.fragments.add.CategoryAddFragment
-import com.furianrt.mydiary.dialogs.categories.fragments.delete.CategoryDeleteFragment
-import com.furianrt.mydiary.dialogs.categories.fragments.edit.CategoryEditFragment
+import com.furianrt.mydiary.view.dialogs.categories.CategoriesDialog
+import com.furianrt.mydiary.view.dialogs.categories.fragments.add.CategoryAddFragment
+import com.furianrt.mydiary.view.dialogs.categories.fragments.delete.CategoryDeleteFragment
+import com.furianrt.mydiary.view.dialogs.categories.fragments.edit.CategoryEditFragment
 import com.furianrt.mydiary.utils.inTransaction
 import kotlinx.android.synthetic.main.fragment_category_list.view.*
 import javax.inject.Inject

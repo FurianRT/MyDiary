@@ -16,19 +16,18 @@ import android.view.animation.OvershootInterpolator
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.furianrt.mydiary.BuildConfig
 import com.furianrt.mydiary.R
 import com.furianrt.mydiary.analytics.MyAnalytics
 import com.furianrt.mydiary.view.base.BaseFragment
 import com.furianrt.mydiary.data.model.*
 import com.furianrt.mydiary.data.model.pojo.SearchEntries
-import com.furianrt.mydiary.screens.main.fragments.authentication.AuthFragment
-import com.furianrt.mydiary.screens.main.fragments.drawer.adapter.SearchGroup
-import com.furianrt.mydiary.screens.main.fragments.drawer.adapter.SearchItem
-import com.furianrt.mydiary.screens.main.fragments.drawer.adapter.SearchListAdapter
-import com.furianrt.mydiary.screens.main.fragments.premium.PremiumFragment
-import com.furianrt.mydiary.screens.main.fragments.profile.ProfileFragment
+import com.furianrt.mydiary.view.screens.main.fragments.authentication.AuthFragment
+import com.furianrt.mydiary.view.screens.main.fragments.drawer.adapter.SearchGroup
+import com.furianrt.mydiary.view.screens.main.fragments.drawer.adapter.SearchItem
+import com.furianrt.mydiary.view.screens.main.fragments.drawer.adapter.SearchListAdapter
+import com.furianrt.mydiary.view.screens.main.fragments.premium.PremiumFragment
+import com.furianrt.mydiary.view.screens.main.fragments.profile.ProfileFragment
 import com.furianrt.mydiary.view.services.sync.SyncService
 import com.furianrt.mydiary.utils.*
 import com.google.android.material.bottomsheet.BottomSheetBehavior
@@ -38,7 +37,6 @@ import kotlinx.android.synthetic.main.fragment_drawer_menu.view.*
 import org.threeten.bp.LocalDate
 import java.util.TreeMap
 import javax.inject.Inject
-import kotlin.collections.HashSet
 
 class DrawerMenuFragment : BaseFragment(), DrawerMenuContract.MvpView,
         SearchListAdapter.OnSearchListInteractionListener {

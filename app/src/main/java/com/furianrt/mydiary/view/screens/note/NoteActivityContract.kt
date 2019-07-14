@@ -2,8 +2,6 @@ package com.furianrt.mydiary.view.screens.note
 
 import com.furianrt.mydiary.view.base.mvp.BaseMvpView
 import com.furianrt.mydiary.view.base.mvp.BaseMvpPresenter
-import com.furianrt.mydiary.data.model.MyNote
-import com.furianrt.mydiary.data.model.MyNoteWithProp
 
 interface NoteActivityContract {
 

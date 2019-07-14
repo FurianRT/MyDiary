@@ -1,8 +1,8 @@
 package com.furianrt.mydiary.view.screens.gallery.fragments.list
 
 import androidx.recyclerview.widget.DiffUtil
-import com.furianrt.mydiary.screens.gallery.fragments.list.GalleryListAdapter.ViewItem.Companion.TYPE_FOOTER
-import com.furianrt.mydiary.screens.gallery.fragments.list.GalleryListAdapter.ViewItem.Companion.TYPE_IMAGE
+import com.furianrt.mydiary.view.screens.gallery.fragments.list.GalleryListAdapter.ViewItem.Companion.TYPE_FOOTER
+import com.furianrt.mydiary.view.screens.gallery.fragments.list.GalleryListAdapter.ViewItem.Companion.TYPE_IMAGE
 
 class GalleryListDiffCallback(
         private val oldList: List<GalleryListAdapter.ViewItem>,

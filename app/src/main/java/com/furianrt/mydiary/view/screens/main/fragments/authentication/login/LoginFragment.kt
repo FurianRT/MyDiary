@@ -10,9 +10,9 @@ import android.widget.Toast
 import com.furianrt.mydiary.R
 import com.furianrt.mydiary.analytics.MyAnalytics
 import com.furianrt.mydiary.view.base.BaseFragment
-import com.furianrt.mydiary.screens.main.fragments.authentication.AuthFragment
-import com.furianrt.mydiary.screens.main.fragments.authentication.done.DoneAuthFragment
-import com.furianrt.mydiary.screens.main.fragments.authentication.forgot.ForgotPassFragment
+import com.furianrt.mydiary.view.screens.main.fragments.authentication.AuthFragment
+import com.furianrt.mydiary.view.screens.main.fragments.authentication.done.DoneAuthFragment
+import com.furianrt.mydiary.view.screens.main.fragments.authentication.forgot.ForgotPassFragment
 import com.furianrt.mydiary.utils.animateShake
 import com.furianrt.mydiary.utils.hideKeyboard
 import com.furianrt.mydiary.utils.inTransaction

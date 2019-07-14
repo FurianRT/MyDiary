@@ -145,7 +145,7 @@ class PinPresenter @Inject constructor(
     }
 
     override fun onEmailEntered(email: String) {
-        addDisposable(savePin.invoke(email, mPin)
+        addDisposable(savePin.invoke(mPin, email)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe {
                     authorize.invoke(true)

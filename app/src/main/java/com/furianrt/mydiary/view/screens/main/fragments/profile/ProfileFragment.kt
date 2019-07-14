@@ -11,8 +11,8 @@ import android.view.animation.OvershootInterpolator
 import com.furianrt.mydiary.R
 import com.furianrt.mydiary.view.base.BaseFragment
 import com.furianrt.mydiary.data.model.MyProfile
-import com.furianrt.mydiary.screens.main.MainActivity
-import com.furianrt.mydiary.screens.main.fragments.profile.menu.MenuProfileFragment
+import com.furianrt.mydiary.view.screens.main.MainActivity
+import com.furianrt.mydiary.view.screens.main.fragments.profile.menu.MenuProfileFragment
 import com.furianrt.mydiary.utils.KeyboardUtils
 import com.furianrt.mydiary.utils.inTransaction
 import kotlinx.android.synthetic.main.fragment_profile.*

@@ -13,7 +13,7 @@ import com.furianrt.mydiary.R
 import com.furianrt.mydiary.analytics.MyAnalytics
 import com.furianrt.mydiary.view.base.BaseView
 import com.furianrt.mydiary.data.prefs.PreferencesHelper
-import com.furianrt.mydiary.screens.pin.PinActivity
+import com.furianrt.mydiary.view.screens.pin.PinActivity
 import com.furianrt.mydiary.utils.isFingerprintAvailable
 import javax.inject.Inject
 

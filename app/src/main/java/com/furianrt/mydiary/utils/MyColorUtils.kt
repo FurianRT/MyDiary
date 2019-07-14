@@ -5,7 +5,6 @@ import android.util.TypedValue
 import android.widget.TextView
 import androidx.annotation.ColorRes
 import androidx.core.content.ContextCompat
-import androidx.fragment.app.Fragment
 import com.furianrt.mydiary.R
 
 fun Context.getThemeAccentColor(): Int {
@@ -25,8 +24,6 @@ fun Context.getThemePrimaryDarkColor(): Int {
     theme.resolveAttribute(R.attr.colorPrimaryDark, value, true)
     return value.data
 }
-
-fun Fragment.getColor(@ColorRes id: Int) = ContextCompat.getColor(requireContext(), id)
 
 fun TextView.setTextColorResource(@ColorRes id: Int) {
     setTextColor(ContextCompat.getColor(this.context, id))

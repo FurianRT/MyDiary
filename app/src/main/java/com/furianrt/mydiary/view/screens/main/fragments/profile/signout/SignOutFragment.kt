@@ -7,7 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.furianrt.mydiary.R
 import com.furianrt.mydiary.view.base.BaseFragment
-import com.furianrt.mydiary.screens.main.MainActivity
+import com.furianrt.mydiary.view.screens.main.MainActivity
 import kotlinx.android.synthetic.main.fragment_sign_out.view.*
 import javax.inject.Inject
 

@@ -6,16 +6,16 @@ import android.graphics.RectF
 import android.graphics.Color
 import android.graphics.Paint
 import android.util.AttributeSet
-import android.widget.TextView
 import kotlin.math.min
 import android.graphics.PointF
+import androidx.appcompat.widget.AppCompatTextView
 import com.furianrt.mydiary.R
 import com.furianrt.mydiary.utils.getThemeAccentColor
 import com.furianrt.mydiary.utils.setTextColorResource
 import kotlin.math.cos
 import kotlin.math.sin
 
-class CalendarDayView : TextView {
+class CalendarDayView : AppCompatTextView {
 
     companion object {
         private const val DEFAULT_PORTION_WIDTH = 11f

@@ -10,10 +10,10 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.furianrt.mydiary.R
 import com.furianrt.mydiary.view.base.BaseFragment
 import com.furianrt.mydiary.data.model.MyTag
-import com.furianrt.mydiary.dialogs.tags.TagsDialog
-import com.furianrt.mydiary.dialogs.tags.fragments.add.TagAddFragment
-import com.furianrt.mydiary.dialogs.tags.fragments.delete.TagDeleteFragment
-import com.furianrt.mydiary.dialogs.tags.fragments.edit.TagEditFragment
+import com.furianrt.mydiary.view.dialogs.tags.TagsDialog
+import com.furianrt.mydiary.view.dialogs.tags.fragments.add.TagAddFragment
+import com.furianrt.mydiary.view.dialogs.tags.fragments.delete.TagDeleteFragment
+import com.furianrt.mydiary.view.dialogs.tags.fragments.edit.TagEditFragment
 import com.furianrt.mydiary.utils.inTransaction
 import kotlinx.android.synthetic.main.fragment_tag_list.view.*
 import javax.inject.Inject

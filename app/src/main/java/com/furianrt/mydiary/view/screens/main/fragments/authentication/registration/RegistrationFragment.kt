@@ -10,8 +10,8 @@ import android.view.WindowManager
 import androidx.core.content.ContextCompat
 import com.furianrt.mydiary.R
 import com.furianrt.mydiary.view.base.BaseFragment
-import com.furianrt.mydiary.screens.main.fragments.authentication.AuthFragment
-import com.furianrt.mydiary.screens.main.fragments.authentication.privacy.PrivacyFragment
+import com.furianrt.mydiary.view.screens.main.fragments.authentication.AuthFragment
+import com.furianrt.mydiary.view.screens.main.fragments.authentication.privacy.PrivacyFragment
 import com.furianrt.mydiary.utils.*
 import kotlinx.android.synthetic.main.fragment_registration.*
 import kotlinx.android.synthetic.main.fragment_registration.view.*

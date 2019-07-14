@@ -12,7 +12,7 @@ import com.furianrt.mydiary.MyApp
 import com.furianrt.mydiary.R
 import com.furianrt.mydiary.view.base.BaseView
 import com.furianrt.mydiary.data.model.SyncProgressMessage
-import com.furianrt.mydiary.screens.main.MainActivity
+import com.furianrt.mydiary.view.screens.main.MainActivity
 import javax.inject.Inject
 
 class SyncService : Service(), BaseView, SyncContract.MvpView {
@@ -59,7 +59,6 @@ class SyncService : Service(), BaseView, SyncContract.MvpView {
     override fun sendProgressUpdate(progressMessage: SyncProgressMessage) {
         progressMessage.message = if (progressMessage.hasError) {
             when (progressMessage.taskIndex) {
-                SyncProgressMessage.PROFILE_CHECK -> getString(R.string.sync_error_profile)
                 SyncProgressMessage.SYNC_NOTES -> getString(R.string.sync_error_notes)
                 SyncProgressMessage.SYNC_APPEARANCE -> getString(R.string.sync_error_appearance)
                 SyncProgressMessage.SYNC_CATEGORIES -> getString(R.string.sync_error_categories)
@@ -74,7 +73,6 @@ class SyncService : Service(), BaseView, SyncContract.MvpView {
             }
         } else {
             when (progressMessage.taskIndex) {
-                SyncProgressMessage.PROFILE_CHECK -> getString(R.string.sync_profile_check)
                 SyncProgressMessage.SYNC_NOTES -> getString(R.string.sync_notes)
                 SyncProgressMessage.SYNC_APPEARANCE -> getString(R.string.sync_appearance)
                 SyncProgressMessage.SYNC_CATEGORIES -> getString(R.string.sync_categories)

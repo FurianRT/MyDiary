@@ -15,7 +15,7 @@ import com.furianrt.mydiary.usecase.check.IsAuthorizedUseCase
 import com.furianrt.mydiary.usecase.check.IsPinEnabledUseCase
 import com.furianrt.mydiary.usecase.get.GetAppAccentColorUseCase
 import com.furianrt.mydiary.usecase.get.GetAppPrimaryColorUseCase
-import com.furianrt.mydiary.screens.pin.PinActivity
+import com.furianrt.mydiary.view.screens.pin.PinActivity
 import javax.inject.Inject
 
 abstract class BaseActivity : AppCompatActivity(), BaseView, BillingProcessor.IBillingHandler {

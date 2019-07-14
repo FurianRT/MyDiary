@@ -1,4 +1,4 @@
-package com.furianrt.mydiary.view.screens.note
+package com.furianrt.mydiary.view.views
 
 import android.annotation.SuppressLint
 import android.content.Context
@@ -6,7 +6,7 @@ import android.util.AttributeSet
 import android.view.MotionEvent
 import androidx.viewpager.widget.ViewPager
 
-class NoteActivityViewPager : ViewPager {
+class LockableViewPager : ViewPager {
 
     var swipeEnabled = true
 

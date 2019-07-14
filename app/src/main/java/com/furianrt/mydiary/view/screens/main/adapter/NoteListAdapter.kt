@@ -11,7 +11,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.signature.ObjectKey
 import com.furianrt.mydiary.R
 import com.furianrt.mydiary.data.model.MyNoteWithProp
-import com.furianrt.mydiary.general.GlideApp
+import com.furianrt.mydiary.view.general.GlideApp
 import com.furianrt.mydiary.view.general.HeaderItemDecoration
 import com.furianrt.mydiary.utils.*
 import kotlinx.android.synthetic.main.activity_main_list_content.view.*

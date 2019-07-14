@@ -4,7 +4,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
-import com.furianrt.mydiary.screens.gallery.fragments.list.GalleryListAdapter
+import com.furianrt.mydiary.view.screens.gallery.fragments.list.GalleryListAdapter
 
 class ItemTouchHelperCallback(private val adapter: GalleryListAdapter) : ItemTouchHelper.Callback() {
 

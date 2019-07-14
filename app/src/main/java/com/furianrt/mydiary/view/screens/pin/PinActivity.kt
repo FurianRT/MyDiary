@@ -12,10 +12,10 @@ import com.furianrt.mydiary.R
 import com.furianrt.mydiary.analytics.MyAnalytics
 import com.furianrt.mydiary.view.base.BaseActivity
 import com.furianrt.mydiary.view.general.LockableBottomSheetBehavior
-import com.furianrt.mydiary.screens.pin.PinActivity.Mode.*
-import com.furianrt.mydiary.screens.pin.fragments.backupemail.BackupEmailFragment
-import com.furianrt.mydiary.screens.pin.fragments.done.DoneEmailFragment
-import com.furianrt.mydiary.screens.pin.fragments.sendemail.SendEmailFragment
+import com.furianrt.mydiary.view.screens.pin.PinActivity.Mode.*
+import com.furianrt.mydiary.view.screens.pin.fragments.backupemail.BackupEmailFragment
+import com.furianrt.mydiary.view.screens.pin.fragments.done.DoneEmailFragment
+import com.furianrt.mydiary.view.screens.pin.fragments.sendemail.SendEmailFragment
 import com.furianrt.mydiary.utils.animateShake
 import com.furianrt.mydiary.utils.inTransaction
 import com.furianrt.mydiary.utils.isFingerprintAvailable

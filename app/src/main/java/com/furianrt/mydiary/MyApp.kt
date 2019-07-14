@@ -19,8 +19,8 @@ import com.furianrt.mydiary.usecase.IncrementLaunchCountUseCase
 import com.furianrt.mydiary.usecase.check.IsPinEnabledUseCase
 import com.furianrt.mydiary.usecase.get.GetPinRequestDelayUseCase
 import com.furianrt.mydiary.usecase.save.ResetSyncProgressUseCase
-import com.furianrt.mydiary.general.GlideApp
-import com.furianrt.mydiary.screens.pin.PinActivity
+import com.furianrt.mydiary.view.general.GlideApp
+import com.furianrt.mydiary.view.screens.pin.PinActivity
 import com.google.android.gms.ads.MobileAds
 import com.jakewharton.threetenabp.AndroidThreeTen
 import com.yanzhenjie.album.Album
@@ -196,7 +196,7 @@ class MyApp : Application(), Application.ActivityLifecycleCallbacks {
 * изменить дизайн даты в списке заметок
 * изменить дизайн окна профиля
 *   убирать настроение и локацию из поиска, если они отключены в настройках
-*   разбить DataManager на разные репазитории, добавить UseCase, сделать кэширование данных
+*   сделать кэширование данных
 *   убрать определение локации в другой слой
 *
 * */

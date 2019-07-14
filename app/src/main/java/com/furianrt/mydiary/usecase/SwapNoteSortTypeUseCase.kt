@@ -7,6 +7,6 @@ class SwapNoteSortTypeUseCase @Inject constructor(
         private val noteRepository: NoteRepository
 ) {
     fun invoke() {
-
+        noteRepository.setSortDesc(!noteRepository.isSortDesc())
     }
 }

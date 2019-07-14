@@ -9,8 +9,8 @@ import android.view.WindowManager
 import com.furianrt.mydiary.R
 import com.furianrt.mydiary.analytics.MyAnalytics
 import com.furianrt.mydiary.view.base.BaseFragment
-import com.furianrt.mydiary.screens.main.fragments.profile.ProfileFragment
-import com.furianrt.mydiary.screens.main.fragments.profile.password.success.PasswordSuccessFragment
+import com.furianrt.mydiary.view.screens.main.fragments.profile.ProfileFragment
+import com.furianrt.mydiary.view.screens.main.fragments.profile.password.success.PasswordSuccessFragment
 import com.furianrt.mydiary.utils.animateShake
 import com.furianrt.mydiary.utils.hideKeyboard
 import com.furianrt.mydiary.utils.inTransaction

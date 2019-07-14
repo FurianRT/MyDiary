@@ -9,7 +9,7 @@ import androidx.core.app.NotificationCompat
 import com.furianrt.mydiary.MyApp
 import com.furianrt.mydiary.R
 import com.furianrt.mydiary.view.base.BaseView
-import com.furianrt.mydiary.screens.main.MainActivity
+import com.furianrt.mydiary.view.screens.main.MainActivity
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 

@@ -11,8 +11,8 @@ import com.furianrt.mydiary.R
 import com.furianrt.mydiary.analytics.MyAnalytics
 import com.furianrt.mydiary.view.base.BaseFragment
 import com.furianrt.mydiary.data.model.MyImage
-import com.furianrt.mydiary.dialogs.delete.image.DeleteImageDialog
-import com.furianrt.mydiary.screens.gallery.fragments.list.GalleryListFragment
+import com.furianrt.mydiary.view.dialogs.delete.image.DeleteImageDialog
+import com.furianrt.mydiary.view.screens.gallery.fragments.list.GalleryListFragment
 import com.furianrt.mydiary.utils.getThemeAccentColor
 import com.furianrt.mydiary.utils.getThemePrimaryColor
 import com.furianrt.mydiary.utils.getThemePrimaryDarkColor

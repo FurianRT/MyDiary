@@ -7,10 +7,10 @@ import android.view.*
 import androidx.appcompat.app.AlertDialog
 import com.furianrt.mydiary.R
 import com.furianrt.mydiary.view.base.BaseDialog
-import com.furianrt.mydiary.dialogs.tags.fragments.add.TagAddFragment
-import com.furianrt.mydiary.dialogs.tags.fragments.delete.TagDeleteFragment
-import com.furianrt.mydiary.dialogs.tags.fragments.edit.TagEditFragment
-import com.furianrt.mydiary.dialogs.tags.fragments.list.TagListFragment
+import com.furianrt.mydiary.view.dialogs.tags.fragments.add.TagAddFragment
+import com.furianrt.mydiary.view.dialogs.tags.fragments.delete.TagDeleteFragment
+import com.furianrt.mydiary.view.dialogs.tags.fragments.edit.TagEditFragment
+import com.furianrt.mydiary.view.dialogs.tags.fragments.list.TagListFragment
 import com.furianrt.mydiary.utils.inTransaction
 import javax.inject.Inject
 

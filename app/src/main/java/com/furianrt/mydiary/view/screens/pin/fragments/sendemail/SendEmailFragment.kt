@@ -7,7 +7,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import com.furianrt.mydiary.R
 import com.furianrt.mydiary.view.base.BaseFragment
-import com.furianrt.mydiary.screens.pin.fragments.done.DoneEmailFragment
+import com.furianrt.mydiary.view.screens.pin.fragments.done.DoneEmailFragment
 import com.furianrt.mydiary.utils.animateShake
 import com.furianrt.mydiary.utils.inTransaction
 import com.google.android.material.bottomsheet.BottomSheetBehavior

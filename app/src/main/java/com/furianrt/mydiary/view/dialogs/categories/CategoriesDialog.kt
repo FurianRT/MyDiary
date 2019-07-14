@@ -7,9 +7,9 @@ import android.view.*
 import androidx.appcompat.app.AlertDialog
 import com.furianrt.mydiary.R
 import com.furianrt.mydiary.view.base.BaseDialog
-import com.furianrt.mydiary.dialogs.categories.fragments.delete.CategoryDeleteFragment
-import com.furianrt.mydiary.dialogs.categories.fragments.edit.CategoryEditFragment
-import com.furianrt.mydiary.dialogs.categories.fragments.list.CategoryListFragment
+import com.furianrt.mydiary.view.dialogs.categories.fragments.delete.CategoryDeleteFragment
+import com.furianrt.mydiary.view.dialogs.categories.fragments.edit.CategoryEditFragment
+import com.furianrt.mydiary.view.dialogs.categories.fragments.list.CategoryListFragment
 import com.furianrt.mydiary.utils.inTransaction
 import javax.inject.Inject
 

@@ -8,8 +8,8 @@ import com.anjlab.android.iab.v3.TransactionDetails
 import com.furianrt.mydiary.BuildConfig
 import com.furianrt.mydiary.R
 import com.furianrt.mydiary.view.base.BaseActivity
-import com.furianrt.mydiary.screens.gallery.fragments.list.GalleryListFragment
-import com.furianrt.mydiary.screens.gallery.fragments.pager.GalleryPagerFragment
+import com.furianrt.mydiary.view.screens.gallery.fragments.list.GalleryListFragment
+import com.furianrt.mydiary.view.screens.gallery.fragments.pager.GalleryPagerFragment
 import com.furianrt.mydiary.utils.inTransaction
 import com.google.android.gms.ads.AdListener
 import com.google.android.gms.ads.AdRequest

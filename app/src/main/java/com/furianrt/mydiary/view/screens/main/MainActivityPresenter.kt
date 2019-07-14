@@ -10,9 +10,9 @@ import com.furianrt.mydiary.usecase.check.IsDailyImageEnabledUseCase
 import com.furianrt.mydiary.usecase.check.IsNeedRateOfferUseCase
 import com.furianrt.mydiary.usecase.delete.DeleteProfileUseCase
 import com.furianrt.mydiary.usecase.get.*
-import com.furianrt.mydiary.screens.main.adapter.NoteListContent
-import com.furianrt.mydiary.screens.main.adapter.NoteListHeader
-import com.furianrt.mydiary.screens.main.adapter.NoteListItem
+import com.furianrt.mydiary.view.screens.main.adapter.NoteListContent
+import com.furianrt.mydiary.view.screens.main.adapter.NoteListHeader
+import com.furianrt.mydiary.view.screens.main.adapter.NoteListItem
 import com.furianrt.mydiary.utils.generateUniqueId
 import io.reactivex.android.schedulers.AndroidSchedulers
 import org.joda.time.DateTime

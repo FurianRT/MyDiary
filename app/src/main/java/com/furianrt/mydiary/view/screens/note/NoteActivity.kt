@@ -11,7 +11,7 @@ import com.anjlab.android.iab.v3.TransactionDetails
 import com.furianrt.mydiary.BuildConfig
 import com.furianrt.mydiary.R
 import com.furianrt.mydiary.view.base.BaseActivity
-import com.furianrt.mydiary.screens.note.fragments.mainnote.edit.NoteEditFragment
+import com.furianrt.mydiary.view.screens.note.fragments.mainnote.edit.NoteEditFragment
 import com.furianrt.mydiary.utils.KeyboardUtils
 import com.google.android.gms.ads.AdListener
 import com.google.android.gms.ads.AdRequest

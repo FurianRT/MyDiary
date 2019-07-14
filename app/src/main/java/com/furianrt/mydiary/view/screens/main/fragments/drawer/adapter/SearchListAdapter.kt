@@ -16,8 +16,8 @@ import com.furianrt.mydiary.data.model.MyCategory
 import com.furianrt.mydiary.data.model.MyLocation
 import com.furianrt.mydiary.data.model.MyMood
 import com.furianrt.mydiary.data.model.MyTag
-import com.furianrt.mydiary.screens.main.fragments.drawer.adapter.SearchListAdapter.SearchChildViewHolder
-import com.furianrt.mydiary.screens.main.fragments.drawer.adapter.SearchListAdapter.SearchGroupViewHolder
+import com.furianrt.mydiary.view.screens.main.fragments.drawer.adapter.SearchListAdapter.SearchChildViewHolder
+import com.furianrt.mydiary.view.screens.main.fragments.drawer.adapter.SearchListAdapter.SearchGroupViewHolder
 import com.furianrt.mydiary.utils.*
 import com.furianrt.mydiary.view.views.CalendarDayView
 import com.kizitonwose.calendarview.CalendarView

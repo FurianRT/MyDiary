@@ -10,7 +10,7 @@ import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.bumptech.glide.signature.ObjectKey
 import com.furianrt.mydiary.R
 import com.furianrt.mydiary.data.model.MyImage
-import com.furianrt.mydiary.general.GlideApp
+import com.furianrt.mydiary.view.general.GlideApp
 import kotlinx.android.synthetic.main.gallery_pager_item.view.*
 
 class GalleryPagerAdapter(
