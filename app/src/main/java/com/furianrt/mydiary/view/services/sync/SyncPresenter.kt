@@ -76,7 +76,7 @@ class SyncPresenter @Inject constructor(
                 }, { error ->
                     error.printStackTrace()
                     val progressMessage = when (error) {
-                        is SyncNotesUseCase.SyncNotessException ->
+                        is SyncNotesUseCase.SyncNotesException ->
                             SyncProgressMessage(taskIndex = SyncProgressMessage.SYNC_NOTES, hasError = true)
                         is SyncAppearanceUseCase.SyncAppearanceException ->
                             SyncProgressMessage(taskIndex = SyncProgressMessage.SYNC_APPEARANCE, hasError = true)

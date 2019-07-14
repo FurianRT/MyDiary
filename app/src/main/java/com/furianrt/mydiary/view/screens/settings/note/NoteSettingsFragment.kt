@@ -34,11 +34,11 @@ class NoteSettingsFragment : PreferenceFragmentCompat(), BaseView, NoteSettingsC
                 mPresenter.onSurfaceTextColorChange(value as Int)
             }
             preference.key == BACKGROUND_COLOR -> {
-                mAnalytics.sendEvent(MyAnalytics.EVENT_NOTE_BACKGROUD_CHANGED)
+                mAnalytics.sendEvent(MyAnalytics.EVENT_NOTE_BACKGROUND_CHANGED)
                 mPresenter.onBackgroundColorChange(value as Int)
             }
             preference.key == TEXT_BACKGROUND_COLOR -> {
-                mAnalytics.sendEvent(MyAnalytics.EVENT_NOTE_TEXT_BACKGROUD_CHANGED)
+                mAnalytics.sendEvent(MyAnalytics.EVENT_NOTE_TEXT_BACKGROUND_CHANGED)
                 mPresenter.onBackgroundTextColorChange(value as Int)
             }
         }

@@ -34,7 +34,7 @@ class PremiumFragment : BaseFragment(), PremiumContract.MvpView {
 
         view.button_premium_close.setOnClickListener { mPresenter.onButtonCloseClick() }
         view.button_get_premium.setOnClickListener {
-            mListener?.onButtonPurshaseClick(BuildConfig.ITEM_PREMIUM_SKU)
+            mListener?.onButtonPurchaseClick(BuildConfig.ITEM_PREMIUM_SKU)
         }
 
         return view
@@ -69,6 +69,6 @@ class PremiumFragment : BaseFragment(), PremiumContract.MvpView {
     }
 
     interface OnPremiumFragmentInteractionListener {
-        fun onButtonPurshaseClick(productId: String)
+        fun onButtonPurchaseClick(productId: String)
     }
 }

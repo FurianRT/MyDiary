@@ -96,7 +96,7 @@ class NoteRepositoryImp @Inject constructor(
                     database.locationDao().getAllLocations(),
                     Function6<List<MyNoteWithProp>, List<NoteTag>, List<MyTag>, List<MyImage>,
                             List<NoteLocation>, List<MyLocation>, List<MyNoteWithProp>>
-                    { notes, noteTags, tags, images, noteLocatios, locations ->
+                    { notes, noteTags, tags, images, noteLocations, locations ->
                         notes.map { note ->
                             val noteTagsForNote = noteTags.filter { it.noteId == note.note.id }
                             note.tags = tags.filter { tag ->
@@ -105,9 +105,9 @@ class NoteRepositoryImp @Inject constructor(
 
                             note.images = images.filter { it.noteId == note.note.id }
 
-                            val noteLocatiosForNote = noteLocatios.filter { it.noteId == note.note.id }
+                            val noteLocationsForNote = noteLocations.filter { it.noteId == note.note.id }
                             note.locations = locations.filter { location ->
-                                noteLocatiosForNote.find { it.locationId == location.id } != null
+                                noteLocationsForNote.find { it.locationId == location.id } != null
                             }
 
                             return@map note

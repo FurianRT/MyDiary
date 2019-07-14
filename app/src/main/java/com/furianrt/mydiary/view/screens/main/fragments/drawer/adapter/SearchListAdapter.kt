@@ -58,7 +58,7 @@ class SearchListAdapter(
         OnChildCheckChangedListener {
 
     companion object {
-        private const val ANIM_ARROW_RATATION_DURATION = 350L
+        private const val ANIM_ARROW_ROTATION_DURATION = 350L
         private const val BUNDLE_EXPANDED_GROUP_TYPES = "expanded_group_types"
         private const val BUNDLE_SELECTED_TAG_IDS = "selected_tag_ids"
         private const val BUNDLE_SELECTED_CATEGORY_IDS = "selected_category_ids"
@@ -357,7 +357,7 @@ class SearchListAdapter(
                     mSelectedNoItemTypes.remove(item.type)
                     isLastCheck()
                 }
-                listener?.onNoLocationChackStateChange(checked)
+                listener?.onNoLocationCheckStateChange(checked)
             }
         }
     }
@@ -417,7 +417,7 @@ class SearchListAdapter(
             mExpandedGroupTypes.add(mGroup.type)
             itemView.image_group_arrow.animate()
                     .rotation(180f)
-                    .setDuration(ANIM_ARROW_RATATION_DURATION)
+                    .setDuration(ANIM_ARROW_ROTATION_DURATION)
                     .start()
         }
 
@@ -425,7 +425,7 @@ class SearchListAdapter(
             mExpandedGroupTypes.remove(mGroup.type)
             itemView.image_group_arrow.animate()
                     .rotation(0f)
-                    .setDuration(ANIM_ARROW_RATATION_DURATION)
+                    .setDuration(ANIM_ARROW_ROTATION_DURATION)
                     .start()
         }
     }
@@ -736,7 +736,7 @@ class SearchListAdapter(
         fun onCategoryCheckStateChange(category: MyCategory, checked: Boolean)
         fun onNoCategoryCheckStateChange(checked: Boolean)
         fun onLocationCheckStateChange(location: MyLocation, checked: Boolean)
-        fun onNoLocationChackStateChange(checked: Boolean)
+        fun onNoLocationCheckStateChange(checked: Boolean)
         fun onMoodCheckStateChange(mood: MyMood, checked: Boolean)
         fun onNoMoodCheckStateChange(checked: Boolean)
         fun onSearchDatesSelected(startDate: Long?, endDate: Long?)

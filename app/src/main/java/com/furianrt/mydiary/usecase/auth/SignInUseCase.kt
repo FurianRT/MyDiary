@@ -14,17 +14,16 @@ class SignInUseCase @Inject constructor(
     class EmptyPasswordException : Throwable()
     class InvalidCredentialsException : Throwable()
 
-    fun invoke(email: String, password: String): Completable {
-        validateCredentials(email, password)
-        return profileRepository.signIn(email, password)
-                .onErrorResumeNext { error ->
-                    if (error is FirebaseAuthInvalidUserException || error is FirebaseAuthInvalidCredentialsException) {
-                        Completable.error(InvalidCredentialsException())
-                    } else {
-                        Completable.error(error)
+    fun invoke(email: String, password: String): Completable =
+            Completable.fromAction { validateCredentials(email, password) }
+                    .andThen(profileRepository.signIn(email, password))
+                    .onErrorResumeNext { error ->
+                        if (error is FirebaseAuthInvalidUserException || error is FirebaseAuthInvalidCredentialsException) {
+                            Completable.error(InvalidCredentialsException())
+                        } else {
+                            Completable.error(error)
+                        }
                     }
-                }
-    }
 
     private fun validateCredentials(email: String, password: String) {
         when {

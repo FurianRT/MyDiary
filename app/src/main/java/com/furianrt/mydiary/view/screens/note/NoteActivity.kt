@@ -62,7 +62,7 @@ class NoteActivity : BaseActivity(), NoteActivityContract.MvpView,
         override fun onToggleSoftKeyboard(isVisible: Boolean) {
             if (isVisible) {
                 view_ad?.visibility = View.GONE
-            } else if (!isItemPurshased(BuildConfig.ITEM_PREMIUM_SKU)/* && !isItemPurshased(ITEM_TEST_SKU)*/) {
+            } else if (!isItemPurchased(BuildConfig.ITEM_PREMIUM_SKU)/* && !isItemPurchased(ITEM_TEST_SKU)*/) {
                 view_ad?.postDelayed({
                     if (view_ad?.isLoading == false && !mIsEditModeEnabled) {
                         view_ad?.visibility = View.VISIBLE
@@ -109,7 +109,7 @@ class NoteActivity : BaseActivity(), NoteActivityContract.MvpView,
 
     override fun onBillingInitialized() {
         super.onBillingInitialized()
-        if (!isItemPurshased(BuildConfig.ITEM_PREMIUM_SKU)/* && !isItemPurshased(ITEM_TEST_SKU)*/) {
+        if (!isItemPurchased(BuildConfig.ITEM_PREMIUM_SKU)/* && !isItemPurchased(ITEM_TEST_SKU)*/) {
             showAdView()
         }
     }

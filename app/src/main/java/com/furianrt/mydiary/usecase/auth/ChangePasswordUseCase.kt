@@ -22,17 +22,16 @@ class ChangePasswordUseCase @Inject constructor(
         private const val PASSWORD_MIN_LENGTH = 6
     }
 
-    fun invoke(oldPassword: String, newPassword: String, repeatPassword: String): Completable {
-        validateCredentials(oldPassword, newPassword, repeatPassword)
-        return profileRepository.updatePassword(oldPassword, newPassword)
-                .onErrorResumeNext { error ->
-                    when (error) {
-                        is FirebaseAuthInvalidCredentialsException -> throw WrongOldPasswordException()
-                        is FirebaseAuthInvalidUserException -> throw InvalidUserExceptionException()
-                        else -> Completable.error(error)
+    fun invoke(oldPassword: String, newPassword: String, repeatPassword: String): Completable =
+            Completable.fromAction { validateCredentials(oldPassword, newPassword, repeatPassword) }
+                    .andThen(profileRepository.updatePassword(oldPassword, newPassword))
+                    .onErrorResumeNext { error ->
+                        when (error) {
+                            is FirebaseAuthInvalidCredentialsException -> throw WrongOldPasswordException()
+                            is FirebaseAuthInvalidUserException -> throw InvalidUserExceptionException()
+                            else -> Completable.error(error)
+                        }
                     }
-                }
-    }
 
     private fun validateCredentials(oldPassword: String, newPassword: String, repeatPassword: String) {
         when {

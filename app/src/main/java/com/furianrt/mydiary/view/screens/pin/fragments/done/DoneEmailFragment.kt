@@ -12,13 +12,13 @@ class DoneEmailFragment : BaseFragment() {
 
     companion object {
         const val TAG = "DoneEmailFragment"
-        private const val ARG_MESSSAGE = "message"
+        private const val ARG_MESSAGE = "message"
 
         @JvmStatic
         fun newInstance(message: String) =
                 DoneEmailFragment().apply {
                     arguments = Bundle().apply {
-                        putString(ARG_MESSSAGE, message)
+                        putString(ARG_MESSAGE, message)
                     }
                 }
     }
@@ -27,7 +27,7 @@ class DoneEmailFragment : BaseFragment() {
                               savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_done_email, container, false)
 
-        view.text_success_message.text = arguments?.getString(ARG_MESSSAGE) ?: ""
+        view.text_success_message.text = arguments?.getString(ARG_MESSAGE) ?: ""
 
         return view
     }

@@ -8,7 +8,7 @@ class SyncNotesUseCase @Inject constructor(
         private val noteRepository: NoteRepository
 ) {
 
-    class SyncNotessException : Throwable()
+    class SyncNotesException : Throwable()
 
     fun invoke(email: String): Completable =
             noteRepository.getAllNotes()
@@ -25,5 +25,5 @@ class SyncNotesUseCase @Inject constructor(
                     .flatMapCompletable { noteRepository.deleteNotesFromCloud(it) }
                     .andThen(noteRepository.getAllNotesFromCloud())
                     .flatMapCompletable { noteRepository.insertNote(it) }
-                    .onErrorResumeNext { Completable.error(SyncNotessException()) }
+                    .onErrorResumeNext { Completable.error(SyncNotesException()) }
 }

@@ -13,17 +13,16 @@ class SendPassResetEmailUseCase @Inject constructor(
     class EmailFormatException : Throwable()
     class EmptyEmailException : Throwable()
 
-    fun invoke(email: String): Completable {
-        validateEmail(email)
-        return profileRepository.sendPasswordResetEmail(email)
-                .onErrorResumeNext { error ->
-                    if (error is FirebaseAuthInvalidCredentialsException) {
-                        Completable.error(EmailFormatException())
-                    } else {
-                        Completable.error(error)
+    fun invoke(email: String): Completable =
+            Completable.fromAction { validateEmail(email) }
+                    .andThen(profileRepository.sendPasswordResetEmail(email))
+                    .onErrorResumeNext { error ->
+                        if (error is FirebaseAuthInvalidCredentialsException) {
+                            Completable.error(EmailFormatException())
+                        } else {
+                            Completable.error(error)
+                        }
                     }
-                }
-    }
 
     private fun validateEmail(email: String) {
         when {

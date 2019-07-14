@@ -71,13 +71,11 @@ class MyApp : Application(), Application.ActivityLifecycleCallbacks {
     override fun onCreate() {
         component.inject(this)
         super.onCreate()
-        incrementLaunchCount.invoke()
-        resetSyncProgress.invoke()
+        JodaTimeAndroid.init(this)
         setAuthorized(false)
         registerActivityLifecycleCallbacks(this)
         createNotificationSyncChannel()
         createNotificationFirebaseChannel()
-        JodaTimeAndroid.init(this)
         initializeImageAlbum()
         MobileAds.initialize(this, getString(R.string.banner_ad_app_id))
         StrictMode.setVmPolicy(StrictMode.VmPolicy.Builder().build())
@@ -85,6 +83,8 @@ class MyApp : Application(), Application.ActivityLifecycleCallbacks {
         if (BuildConfig.DEBUG) {
             Stetho.initializeWithDefaults(this)
         }
+        incrementLaunchCount.invoke()
+        resetSyncProgress.invoke()
     }
 
     override fun onActivityDestroyed(activity: Activity?) {}
@@ -177,7 +177,6 @@ class MyApp : Application(), Application.ActivityLifecycleCallbacks {
 * добавить статистику по записям
 * разбить экран настроек на категории
 * добавить ссылку на гугл таблицы
-*   добавить поиск по дате
 * добавить счетчики к категориям, тегам и т.д
 *   добавить поддержку ссылок внутри текста
 * (?)добавить градиент на экран с паролем
@@ -190,7 +189,6 @@ class MyApp : Application(), Application.ActivityLifecycleCallbacks {
 * добавить импорт текста с сайтов (как в EverNote)
 * вынести модуль в git submodule
 * добавить таймер к паролю
-* добавить картинки с диалогам
 * добавить достижения с анимацией
 * добавить превью возможностей дневника
 * изменить дизайн даты в списке заметок
@@ -198,6 +196,9 @@ class MyApp : Application(), Application.ActivityLifecycleCallbacks {
 *   убирать настроение и локацию из поиска, если они отключены в настройках
 *   сделать кэширование данных
 *   убрать определение локации в другой слой
+*   исправить сортировку
+*   проверить синхронизацию
+*   перенести все лишнее из дата слоя
 *
 * */
 

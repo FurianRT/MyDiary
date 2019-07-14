@@ -23,7 +23,7 @@ class GlobalSettingsActivity : BaseActivity() {
 
     override fun onBillingInitialized() {
         super.onBillingInitialized()
-        if (!isItemPurshased(BuildConfig.ITEM_PREMIUM_SKU)/* && !isItemPurshased(ITEM_TEST_SKU)*/) {
+        if (!isItemPurchased(BuildConfig.ITEM_PREMIUM_SKU)/* && !isItemPurchased(ITEM_TEST_SKU)*/) {
             showAdView()
         }
     }

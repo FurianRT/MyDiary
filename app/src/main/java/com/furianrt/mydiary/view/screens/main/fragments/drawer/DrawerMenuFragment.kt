@@ -135,7 +135,7 @@ class DrawerMenuFragment : BaseFragment(), DrawerMenuContract.MvpView,
         view.button_sync.setOnClickListener {
             mListener?.let {
                 if (it.getIsBillingInitialized()) {
-                    if (it.getIsItemPurshased(BuildConfig.ITEM_PREMIUM_SKU)/* || it.getIsItemPurshased(ITEM_TEST_SKU)*/) {
+                    if (it.getIsItemPurchased(BuildConfig.ITEM_PREMIUM_SKU)/* || it.getIsItemPurchased(ITEM_TEST_SKU)*/) {
                         mPresenter.onButtonSyncClick()
                     } else {
                         mPresenter.onButtonPremiumClick()
@@ -266,42 +266,42 @@ class DrawerMenuFragment : BaseFragment(), DrawerMenuContract.MvpView,
 
     override fun onTagCheckStateChange(tag: MyTag, checked: Boolean) {
         analytics.sendEvent(MyAnalytics.EVENT_SEARCH_TAG_CHANGED)
-        mListener?.onTagChackStateChange(tag, checked)
+        mListener?.onTagCheckStateChange(tag, checked)
     }
 
     override fun onCategoryCheckStateChange(category: MyCategory, checked: Boolean) {
         analytics.sendEvent(MyAnalytics.EVENT_SEARCH_CATEGORY_CHANGED)
-        mListener?.onCategoryChackStateChange(category, checked)
+        mListener?.onCategoryCheckStateChange(category, checked)
     }
 
     override fun onLocationCheckStateChange(location: MyLocation, checked: Boolean) {
         analytics.sendEvent(MyAnalytics.EVENT_SEARCH_LOCATION_CHANGED)
-        mListener?.onLocationChackStateChange(location, checked)
+        mListener?.onLocationCheckStateChange(location, checked)
     }
 
     override fun onMoodCheckStateChange(mood: MyMood, checked: Boolean) {
         analytics.sendEvent(MyAnalytics.EVENT_SEARCH_MOOD_CHANGED)
-        mListener?.onMoodChackStateChange(mood, checked)
+        mListener?.onMoodCheckStateChange(mood, checked)
     }
 
     override fun onNoTagsCheckStateChange(checked: Boolean) {
         analytics.sendEvent(MyAnalytics.EVENT_SEARCH_NO_TAGS_CHANGED)
-        mListener?.onNoTagsChackStateChange(checked)
+        mListener?.onNoTagsCheckStateChange(checked)
     }
 
     override fun onNoCategoryCheckStateChange(checked: Boolean) {
         analytics.sendEvent(MyAnalytics.EVENT_SEARCH_NO_CATEGORY_CHANGED)
-        mListener?.onNoCategoryChackStateChange(checked)
+        mListener?.onNoCategoryCheckStateChange(checked)
     }
 
     override fun onNoMoodCheckStateChange(checked: Boolean) {
         analytics.sendEvent(MyAnalytics.EVENT_SEARCH_NO_MOOD_CHANGED)
-        mListener?.onNoMoodChackStateChange(checked)
+        mListener?.onNoMoodCheckStateChange(checked)
     }
 
-    override fun onNoLocationChackStateChange(checked: Boolean) {
+    override fun onNoLocationCheckStateChange(checked: Boolean) {
         analytics.sendEvent(MyAnalytics.EVENT_SEARCH_NO_LOCATION_CHANGED)
-        mListener?.onNoLocationChackStateChange(checked)
+        mListener?.onNoLocationCheckStateChange(checked)
     }
 
     override fun onSearchDatesSelected(startDate: Long?, endDate: Long?) {
@@ -400,16 +400,16 @@ class DrawerMenuFragment : BaseFragment(), DrawerMenuContract.MvpView,
 
     interface OnDrawerMenuInteractionListener {
         fun getIsBillingInitialized(): Boolean
-        fun getIsItemPurshased(productId: String): Boolean
-        fun onTagChackStateChange(tag: MyTag, checked: Boolean)
-        fun onCategoryChackStateChange(category: MyCategory, checked: Boolean)
-        fun onLocationChackStateChange(location: MyLocation, checked: Boolean)
-        fun onMoodChackStateChange(mood: MyMood, checked: Boolean)
+        fun getIsItemPurchased(productId: String): Boolean
+        fun onTagCheckStateChange(tag: MyTag, checked: Boolean)
+        fun onCategoryCheckStateChange(category: MyCategory, checked: Boolean)
+        fun onLocationCheckStateChange(location: MyLocation, checked: Boolean)
+        fun onMoodCheckStateChange(mood: MyMood, checked: Boolean)
         fun onClearFilters()
-        fun onNoTagsChackStateChange(checked: Boolean)
-        fun onNoCategoryChackStateChange(checked: Boolean)
-        fun onNoMoodChackStateChange(checked: Boolean)
-        fun onNoLocationChackStateChange(checked: Boolean)
+        fun onNoTagsCheckStateChange(checked: Boolean)
+        fun onNoCategoryCheckStateChange(checked: Boolean)
+        fun onNoMoodCheckStateChange(checked: Boolean)
+        fun onNoLocationCheckStateChange(checked: Boolean)
         fun onSearchDatesSelected(startDate: Long?, endDate: Long?)
     }
 }

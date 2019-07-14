@@ -239,7 +239,7 @@ class NoteFragment : BaseFragment(), NoteFragmentContract.MvpView, DatePickerDia
                 true
             }
             R.id.menu_redo -> {
-                analytics.sendEvent(MyAnalytics.EVENT_NORE_REDO)
+                analytics.sendEvent(MyAnalytics.EVENT_NOTE_REDO)
                 mPresenter.onButtonRedoClick()
                 true
             }

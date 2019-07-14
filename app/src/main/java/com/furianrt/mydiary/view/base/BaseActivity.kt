@@ -64,11 +64,11 @@ abstract class BaseActivity : AppCompatActivity(), BaseView, BillingProcessor.IB
         }
     }
 
-    protected fun purshaseItem(productId: String) = mBillingProcessor.purchase(this, productId)
+    protected fun purchaseItem(productId: String) = mBillingProcessor.purchase(this, productId)
 
     protected fun consumePurchase(productId: String) = mBillingProcessor.consumePurchase(productId)
 
-    protected fun isItemPurshased(productId: String) = mBillingProcessor.isPurchased(productId)
+    protected fun isItemPurchased(productId: String) = mBillingProcessor.isPurchased(productId)
 
     protected fun isBillingInitialized() = mBillingProcessor.isInitialized
 
@@ -81,7 +81,7 @@ abstract class BaseActivity : AppCompatActivity(), BaseView, BillingProcessor.IB
     }
 
     override fun onProductPurchased(productId: String, details: TransactionDetails?) {
-        analytics.sendEvent(MyAnalytics.EVENT_PREMIUM_PURSHASED)
+        analytics.sendEvent(MyAnalytics.EVENT_PREMIUM_PURCHASED)
         Log.e(TAG, "onProductPurchased")
     }
 

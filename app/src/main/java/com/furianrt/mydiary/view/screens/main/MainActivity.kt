@@ -90,7 +90,7 @@ class MainActivity : BaseActivity(), MainActivityContract.MvpView,
     private lateinit var mAdapter: NoteListAdapter
     private lateinit var mBottomSheet: BottomSheetBehavior<FrameLayout>
     private lateinit var mOnDrawerListener: ActionBarDrawerToggle
-    private var mSearchQury = ""
+    private var mSearchQuery = ""
     private var mRecyclerViewState: Parcelable? = null
     private var mBackPressCount = 0
     private var mNeedToOpenActionBar = true
@@ -158,7 +158,7 @@ class MainActivity : BaseActivity(), MainActivityContract.MvpView,
             mRecyclerViewState = it.getParcelable(BUNDLE_RECYCLER_VIEW_STATE)
             layout_main_root.translationX = it.getFloat(BUNDLE_ROOT_LAYOUT_OFFSET, 0f)
             mBottomSheet.state = it.getInt(BUNDLE_BOTTOM_SHEET_STATE, BottomSheetBehavior.STATE_COLLAPSED)
-            mSearchQury = it.getString(BUNDLE_SEARCH_QUERY, "")
+            mSearchQuery = it.getString(BUNDLE_SEARCH_QUERY, "")
         }
 
         button_change_filters.setOnClickListener { mPresenter.onButtonChangeFiltersClick() }
@@ -181,35 +181,35 @@ class MainActivity : BaseActivity(), MainActivityContract.MvpView,
         list_main.itemAnimator = LandingAnimator()
     }
 
-    override fun onTagChackStateChange(tag: MyTag, checked: Boolean) {
+    override fun onTagCheckStateChange(tag: MyTag, checked: Boolean) {
         mPresenter.onTagFilterChange(tag, checked)
     }
 
-    override fun onCategoryChackStateChange(category: MyCategory, checked: Boolean) {
+    override fun onCategoryCheckStateChange(category: MyCategory, checked: Boolean) {
         mPresenter.onCategoryFilterChange(category, checked)
     }
 
-    override fun onLocationChackStateChange(location: MyLocation, checked: Boolean) {
+    override fun onLocationCheckStateChange(location: MyLocation, checked: Boolean) {
         mPresenter.onLocationFilterChange(location, checked)
     }
 
-    override fun onMoodChackStateChange(mood: MyMood, checked: Boolean) {
+    override fun onMoodCheckStateChange(mood: MyMood, checked: Boolean) {
         mPresenter.onMoodFilterChange(mood, checked)
     }
 
-    override fun onNoTagsChackStateChange(checked: Boolean) {
+    override fun onNoTagsCheckStateChange(checked: Boolean) {
         mPresenter.onNoTagsFilterChange(checked)
     }
 
-    override fun onNoCategoryChackStateChange(checked: Boolean) {
+    override fun onNoCategoryCheckStateChange(checked: Boolean) {
         mPresenter.onNoCategoryFilterChange(checked)
     }
 
-    override fun onNoMoodChackStateChange(checked: Boolean) {
+    override fun onNoMoodCheckStateChange(checked: Boolean) {
         mPresenter.onNoMoodFilterChange(checked)
     }
 
-    override fun onNoLocationChackStateChange(checked: Boolean) {
+    override fun onNoLocationCheckStateChange(checked: Boolean) {
         mPresenter.onNoLocationFilterChange(checked)
     }
 
@@ -219,7 +219,7 @@ class MainActivity : BaseActivity(), MainActivityContract.MvpView,
 
     override fun onBillingInitialized() {
         super.onBillingInitialized()
-        if (!getIsItemPurshased(BuildConfig.ITEM_PREMIUM_SKU)/* && !getIsItemPurshased(ITEM_TEST_SKU)*/) {
+        if (!getIsItemPurchased(BuildConfig.ITEM_PREMIUM_SKU)/* && !getIsItemPurchased(ITEM_TEST_SKU)*/) {
             showAdView()
         }
     }
@@ -234,7 +234,7 @@ class MainActivity : BaseActivity(), MainActivityContract.MvpView,
 
     override fun getIsBillingInitialized(): Boolean = isBillingInitialized()
 
-    override fun getIsItemPurshased(productId: String): Boolean = isItemPurshased(productId)
+    override fun getIsItemPurchased(productId: String): Boolean = isItemPurchased(productId)
 
     private fun showAdView() {
         view_ad?.adListener = object : AdListener() {
@@ -376,10 +376,10 @@ class MainActivity : BaseActivity(), MainActivityContract.MvpView,
 
         val searchView = menu?.findItem(R.id.menu_search)?.actionView as SearchView?
 
-        if (mSearchQury.isNotEmpty()) {
+        if (mSearchQuery.isNotEmpty()) {
             disableActionBarExpanding()
             searchView?.isIconified = false
-            searchView?.setQuery(mSearchQury, false)
+            searchView?.setQuery(mSearchQuery, false)
         }
 
         searchView?.setOnSearchClickListener {
@@ -398,8 +398,8 @@ class MainActivity : BaseActivity(), MainActivityContract.MvpView,
             }
 
             override fun onQueryTextChange(newText: String?): Boolean {
-                mSearchQury = newText ?: ""
-                mPresenter.onSearchQueryChange(mSearchQury)
+                mSearchQuery = newText ?: ""
+                mPresenter.onSearchQueryChange(mSearchQuery)
                 return true
             }
         })
@@ -411,7 +411,7 @@ class MainActivity : BaseActivity(), MainActivityContract.MvpView,
         outState.putParcelable(BUNDLE_RECYCLER_VIEW_STATE, list_main.layoutManager?.onSaveInstanceState())
         outState.putFloat(BUNDLE_ROOT_LAYOUT_OFFSET, layout_main_root.translationX)
         outState.putInt(BUNDLE_BOTTOM_SHEET_STATE, mBottomSheet.state)
-        outState.putString(BUNDLE_SEARCH_QUERY, mSearchQury)
+        outState.putString(BUNDLE_SEARCH_QUERY, mSearchQuery)
         mPresenter.onSaveInstanceState(outState)
         super.onSaveInstanceState(outState)
     }
@@ -524,7 +524,7 @@ class MainActivity : BaseActivity(), MainActivityContract.MvpView,
     }
 
     override fun showProfile(profile: MyProfile) {
-        if (isItemPurshased(BuildConfig.ITEM_PREMIUM_SKU)/* || isItemPurshased(ITEM_TEST_SKU)*/) {
+        if (isItemPurchased(BuildConfig.ITEM_PREMIUM_SKU)/* || isItemPurchased(ITEM_TEST_SKU)*/) {
             mAdapter.syncEmail = profile.email
         } else {
             mAdapter.syncEmail = null
@@ -574,8 +574,8 @@ class MainActivity : BaseActivity(), MainActivityContract.MvpView,
         mPresenter.onClearFilters()
     }
 
-    override fun onButtonPurshaseClick(productId: String) {
-        purshaseItem(productId)
+    override fun onButtonPurchaseClick(productId: String) {
+        purchaseItem(productId)
     }
 
     override fun showChangeFilters() {

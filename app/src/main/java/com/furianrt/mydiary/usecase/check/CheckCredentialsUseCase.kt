@@ -21,18 +21,18 @@ class CheckCredentialsUseCase @Inject constructor(
         private const val PASSWORD_MIN_LENGTH = 6
     }
 
-    fun invoke(email: String, password: String, passwordRepeat: String): Completable {
-        validateEmail(email)
-        validatePassword(password, passwordRepeat)
-        return profileRepository.isProfileExists(email)
-                .flatMapCompletable { exist ->
-                    if (exist) {
-                        throw EmailExistException()
-                    } else {
-                        Completable.complete()
+    fun invoke(email: String, password: String, passwordRepeat: String): Completable =
+            Completable.fromAction {
+                validateEmail(email)
+                validatePassword(password, passwordRepeat)
+            }.andThen(profileRepository.isProfileExists(email))
+                    .flatMapCompletable { exist ->
+                        if (exist) {
+                            throw EmailExistException()
+                        } else {
+                            Completable.complete()
+                        }
                     }
-                }
-    }
 
     fun invoke(email: String): Completable {
         validateEmail(email)

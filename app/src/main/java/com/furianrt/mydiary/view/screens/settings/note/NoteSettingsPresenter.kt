@@ -37,30 +37,30 @@ class NoteSettingsPresenter @Inject constructor(
 
     override fun onTextSizeChange(size: Int) {
         mAppearance.textSize = size
-        updateAppearence(mAppearance)
+        updateAppearance(mAppearance)
     }
 
     override fun onTextColorChange(color: Int) {
         mAppearance.textColor = color
-        updateAppearence(mAppearance)
+        updateAppearance(mAppearance)
     }
 
     override fun onSurfaceTextColorChange(color: Int) {
         mAppearance.surfaceTextColor = color
-        updateAppearence(mAppearance)
+        updateAppearance(mAppearance)
     }
 
     override fun onBackgroundColorChange(color: Int) {
         mAppearance.background = color
-        updateAppearence(mAppearance)
+        updateAppearance(mAppearance)
     }
 
     override fun onBackgroundTextColorChange(color: Int) {
         mAppearance.textBackground = color
-        updateAppearence(mAppearance)
+        updateAppearance(mAppearance)
     }
 
-    private fun updateAppearence(appearance: MyNoteAppearance) {
+    private fun updateAppearance(appearance: MyNoteAppearance) {
         addDisposable(updateAppearance.invoke(appearance)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe())
