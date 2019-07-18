@@ -1,9 +1,9 @@
 package com.furianrt.mydiary.view.screens.gallery.fragments.list
 
 import com.furianrt.mydiary.data.model.MyImage
-import com.furianrt.mydiary.usecase.save.SaveImagesUseCase
-import com.furianrt.mydiary.usecase.get.GetImagesUseCase
-import com.furianrt.mydiary.usecase.update.UpdateImageUseCase
+import com.furianrt.mydiary.domain.save.SaveImagesUseCase
+import com.furianrt.mydiary.domain.get.GetImagesUseCase
+import com.furianrt.mydiary.domain.update.UpdateImageUseCase
 import io.reactivex.android.schedulers.AndroidSchedulers
 import javax.inject.Inject
 

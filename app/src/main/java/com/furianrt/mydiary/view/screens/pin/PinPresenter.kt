@@ -2,10 +2,10 @@ package com.furianrt.mydiary.view.screens.pin
 
 import android.os.Bundle
 import android.os.Handler
-import com.furianrt.mydiary.usecase.auth.AuthorizeUseCase
-import com.furianrt.mydiary.usecase.check.IsFingerprintAvailableUseCase
-import com.furianrt.mydiary.usecase.check.CheckPinUseCase
-import com.furianrt.mydiary.usecase.save.SavePinUseCase
+import com.furianrt.mydiary.domain.auth.AuthorizeUseCase
+import com.furianrt.mydiary.domain.check.IsFingerprintAvailableUseCase
+import com.furianrt.mydiary.domain.check.CheckPinUseCase
+import com.furianrt.mydiary.domain.save.SavePinUseCase
 import io.reactivex.android.schedulers.AndroidSchedulers
 import javax.inject.Inject
 

@@ -1,7 +1,7 @@
 package com.furianrt.mydiary.view.screens.settings.global
 
-import com.furianrt.mydiary.usecase.delete.RemovePinEmailUseCase
-import com.furianrt.mydiary.usecase.get.GetPinEmailUseCase
+import com.furianrt.mydiary.domain.delete.RemovePinEmailUseCase
+import com.furianrt.mydiary.domain.get.GetPinEmailUseCase
 import javax.inject.Inject
 
 class GlobalSettingsPresenter @Inject constructor(

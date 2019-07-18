@@ -1,7 +1,7 @@
 package com.furianrt.mydiary.view.screens.pin.fragments.backupemail
 
-import com.furianrt.mydiary.usecase.check.CheckEmailUseCase
-import com.furianrt.mydiary.usecase.get.GetProfileUseCase
+import com.furianrt.mydiary.domain.check.CheckEmailUseCase
+import com.furianrt.mydiary.domain.get.GetProfileUseCase
 import io.reactivex.android.schedulers.AndroidSchedulers
 import javax.inject.Inject
 

@@ -1,9 +1,9 @@
 package com.furianrt.mydiary.view.dialogs.tags.fragments.list
 
 import com.furianrt.mydiary.data.model.MyTag
-import com.furianrt.mydiary.usecase.save.AddTagToNoteUseCase
-import com.furianrt.mydiary.usecase.get.GetTagsUseCase
-import com.furianrt.mydiary.usecase.delete.RemoveTagFromNoteUseCase
+import com.furianrt.mydiary.domain.save.AddTagToNoteUseCase
+import com.furianrt.mydiary.domain.get.GetTagsUseCase
+import com.furianrt.mydiary.domain.delete.RemoveTagFromNoteUseCase
 import io.reactivex.Flowable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.functions.BiFunction

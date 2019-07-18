@@ -2,9 +2,9 @@ package com.furianrt.mydiary.view.screens.main.fragments.drawer
 
 import com.furianrt.mydiary.data.model.*
 import com.furianrt.mydiary.data.model.pojo.SearchEntries
-import com.furianrt.mydiary.usecase.check.CheckLogOutUseCase
-import com.furianrt.mydiary.usecase.check.IsSignedInUseCase
-import com.furianrt.mydiary.usecase.get.*
+import com.furianrt.mydiary.domain.check.CheckLogOutUseCase
+import com.furianrt.mydiary.domain.check.IsSignedInUseCase
+import com.furianrt.mydiary.domain.get.*
 import io.reactivex.Flowable
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers

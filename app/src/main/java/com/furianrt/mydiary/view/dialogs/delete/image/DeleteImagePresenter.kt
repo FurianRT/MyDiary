@@ -1,6 +1,6 @@
 package com.furianrt.mydiary.view.dialogs.delete.image
 
-import com.furianrt.mydiary.usecase.delete.DeleteImagesUseCase
+import com.furianrt.mydiary.domain.delete.DeleteImagesUseCase
 import io.reactivex.android.schedulers.AndroidSchedulers
 import javax.inject.Inject
 

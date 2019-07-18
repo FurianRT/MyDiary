@@ -1,7 +1,7 @@
 package com.furianrt.mydiary.view.screens.main.fragments.profile.password
 
-import com.furianrt.mydiary.usecase.auth.ChangePasswordUseCase
-import com.furianrt.mydiary.usecase.auth.SignOutUseCase
+import com.furianrt.mydiary.domain.auth.ChangePasswordUseCase
+import com.furianrt.mydiary.domain.auth.SignOutUseCase
 import io.reactivex.android.schedulers.AndroidSchedulers
 import javax.inject.Inject
 

@@ -1,6 +1,6 @@
 package com.furianrt.mydiary.view.dialogs.delete.note
 
-import com.furianrt.mydiary.usecase.delete.DeleteNotesUseCase
+import com.furianrt.mydiary.domain.delete.DeleteNotesUseCase
 import javax.inject.Inject
 
 class DeleteNotePresenter @Inject constructor(

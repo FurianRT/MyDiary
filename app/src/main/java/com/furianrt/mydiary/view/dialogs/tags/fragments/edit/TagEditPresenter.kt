@@ -1,7 +1,7 @@
 package com.furianrt.mydiary.view.dialogs.tags.fragments.edit
 
 import com.furianrt.mydiary.data.model.MyTag
-import com.furianrt.mydiary.usecase.update.UpdateTagUseCase
+import com.furianrt.mydiary.domain.update.UpdateTagUseCase
 import io.reactivex.android.schedulers.AndroidSchedulers
 import javax.inject.Inject
 

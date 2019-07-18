@@ -1,6 +1,6 @@
 package com.furianrt.mydiary.view.screens.pin.fragments.sendemail
 
-import com.furianrt.mydiary.usecase.send.SendPinResetEmailUseCase
+import com.furianrt.mydiary.domain.send.SendPinResetEmailUseCase
 import io.reactivex.android.schedulers.AndroidSchedulers
 import javax.inject.Inject
 

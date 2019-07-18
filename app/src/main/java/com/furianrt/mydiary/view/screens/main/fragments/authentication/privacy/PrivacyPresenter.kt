@@ -1,6 +1,6 @@
 package com.furianrt.mydiary.view.screens.main.fragments.authentication.privacy
 
-import com.furianrt.mydiary.usecase.auth.SignUpUseCase
+import com.furianrt.mydiary.domain.auth.SignUpUseCase
 import io.reactivex.android.schedulers.AndroidSchedulers
 import javax.inject.Inject
 

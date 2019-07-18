@@ -1,6 +1,6 @@
 package com.furianrt.mydiary.view.dialogs.categories.fragments.add
 
-import com.furianrt.mydiary.usecase.save.SaveCategoryUseCase
+import com.furianrt.mydiary.domain.save.SaveCategoryUseCase
 import io.reactivex.android.schedulers.AndroidSchedulers
 import javax.inject.Inject
 

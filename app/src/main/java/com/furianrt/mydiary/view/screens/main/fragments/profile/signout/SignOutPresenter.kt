@@ -1,6 +1,6 @@
 package com.furianrt.mydiary.view.screens.main.fragments.profile.signout
 
-import com.furianrt.mydiary.usecase.auth.SignOutUseCase
+import com.furianrt.mydiary.domain.auth.SignOutUseCase
 import io.reactivex.android.schedulers.AndroidSchedulers
 import javax.inject.Inject
 

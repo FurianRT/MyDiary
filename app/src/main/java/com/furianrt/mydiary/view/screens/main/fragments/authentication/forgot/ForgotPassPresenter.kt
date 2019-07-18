@@ -1,6 +1,6 @@
 package com.furianrt.mydiary.view.screens.main.fragments.authentication.forgot
 
-import com.furianrt.mydiary.usecase.send.SendPassResetEmailUseCase
+import com.furianrt.mydiary.domain.send.SendPassResetEmailUseCase
 import io.reactivex.android.schedulers.AndroidSchedulers
 import javax.inject.Inject
 

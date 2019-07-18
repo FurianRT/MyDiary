@@ -1,10 +1,10 @@
 package com.furianrt.mydiary.view.services.sync
 
 import com.furianrt.mydiary.data.model.SyncProgressMessage
-import com.furianrt.mydiary.usecase.get.GetProfileUseCase
-import com.furianrt.mydiary.usecase.save.SetLastSyncMessageUseCase
-import com.furianrt.mydiary.usecase.sync.*
-import com.furianrt.mydiary.usecase.update.UpdateProfileUseCase
+import com.furianrt.mydiary.domain.get.GetProfileUseCase
+import com.furianrt.mydiary.domain.save.SetLastSyncMessageUseCase
+import com.furianrt.mydiary.domain.sync.*
+import com.furianrt.mydiary.domain.update.UpdateProfileUseCase
 import io.reactivex.Single
 import org.joda.time.DateTime
 import javax.inject.Inject

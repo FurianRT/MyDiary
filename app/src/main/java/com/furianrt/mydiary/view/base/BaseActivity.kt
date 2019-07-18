@@ -11,10 +11,10 @@ import com.anjlab.android.iab.v3.TransactionDetails
 import com.furianrt.mydiary.BuildConfig
 import com.furianrt.mydiary.R
 import com.furianrt.mydiary.analytics.MyAnalytics
-import com.furianrt.mydiary.usecase.check.IsAuthorizedUseCase
-import com.furianrt.mydiary.usecase.check.IsPinEnabledUseCase
-import com.furianrt.mydiary.usecase.get.GetAppAccentColorUseCase
-import com.furianrt.mydiary.usecase.get.GetAppPrimaryColorUseCase
+import com.furianrt.mydiary.domain.check.IsAuthorizedUseCase
+import com.furianrt.mydiary.domain.check.IsPinEnabledUseCase
+import com.furianrt.mydiary.domain.get.GetAppAccentColorUseCase
+import com.furianrt.mydiary.domain.get.GetAppPrimaryColorUseCase
 import com.furianrt.mydiary.view.screens.pin.PinActivity
 import javax.inject.Inject
 

@@ -1,7 +1,7 @@
 package com.furianrt.mydiary.view.screens.note
 
-import com.furianrt.mydiary.usecase.save.SaveNoteIfNotExistUseCase
-import com.furianrt.mydiary.usecase.get.GetNotesUseCase
+import com.furianrt.mydiary.domain.save.SaveNoteIfNotExistUseCase
+import com.furianrt.mydiary.domain.get.GetNotesUseCase
 import io.reactivex.android.schedulers.AndroidSchedulers
 import javax.inject.Inject
 

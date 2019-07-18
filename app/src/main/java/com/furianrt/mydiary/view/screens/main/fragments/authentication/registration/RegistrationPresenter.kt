@@ -1,6 +1,6 @@
 package com.furianrt.mydiary.view.screens.main.fragments.authentication.registration
 
-import com.furianrt.mydiary.usecase.check.CheckCredentialsUseCase
+import com.furianrt.mydiary.domain.check.CheckCredentialsUseCase
 import io.reactivex.android.schedulers.AndroidSchedulers
 import javax.inject.Inject
 

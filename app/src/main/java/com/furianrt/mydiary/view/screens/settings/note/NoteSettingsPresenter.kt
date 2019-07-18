@@ -2,8 +2,8 @@ package com.furianrt.mydiary.view.screens.settings.note
 
 import android.util.Log
 import com.furianrt.mydiary.data.model.MyNoteAppearance
-import com.furianrt.mydiary.usecase.get.GetAppearanceUseCase
-import com.furianrt.mydiary.usecase.update.UpdateAppearanceUseCase
+import com.furianrt.mydiary.domain.get.GetAppearanceUseCase
+import com.furianrt.mydiary.domain.update.UpdateAppearanceUseCase
 import io.reactivex.android.schedulers.AndroidSchedulers
 import javax.inject.Inject
 

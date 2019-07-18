@@ -1,7 +1,7 @@
 package com.furianrt.mydiary.view.screens.main.fragments.profile.menu
 
 import com.furianrt.mydiary.data.model.SyncProgressMessage
-import com.furianrt.mydiary.usecase.get.GetLastSyncMessageUseCase
+import com.furianrt.mydiary.domain.get.GetLastSyncMessageUseCase
 import javax.inject.Inject
 
 class MenuProfilePresenter @Inject constructor(
