@@ -7,6 +7,7 @@ interface MyAnalytics {
     fun sendEvent(event: String, bundle: Bundle? = null)
 
     companion object {
+        //Events
         const val EVENT_HEADER_IMAGE_SETTINGS = "header_image_settings"
         const val EVENT_MAIN_SETTINGS = "main_settings"
         const val EVENT_NOTE_SETTINGS = "note_settings"
@@ -54,8 +55,6 @@ interface MyAnalytics {
         const val EVENT_ACCENT_COLOR_CHANGED = "accent_color_changed"
         const val EVENT_PIN_CREATED = "pin_created"
         const val EVENT_PIN_REMOVED = "pin_removed"
-        const val EVENT_UNDO_ERROR = "undo_error"
-        const val EVENT_REDO_ERROR = "redo_error"
         const val EVENT_SEARCH_WORD_OPENED = "search_word_opened"
         const val EVENT_SEARCH_TAG_CHANGED = "search_tag_changed"
         const val EVENT_SEARCH_CATEGORY_CHANGED = "search_category_changed"
@@ -67,12 +66,19 @@ interface MyAnalytics {
         const val EVENT_SEARCH_NO_LOCATION_CHANGED = "search_location_changed"
         const val EVENT_SEARCH_DATE_CHANGED = "search_date_changed"
         const val EVENT_SHARE_NOTE = "share_note"
-        const val EVENT_DAILY_IMAGE_LOAD_ERROR = "daily_image_load_error"
         const val EVENT_DAILY_IMAGE_OPEN = "daily_image_open"
         const val EVENT_DAILY_IMAGE_TURN_OFF = "daily_image_turn_off"
         const val EVENT_DAILY_IMAGE_TURN_ON = "daily_image_turn_on"
         const val EVENT_DAILY_IMAGE_CATEGORY_CHANGED = "daily_image_category_changed"
 
+        //Error events
+        const val EVENT_UNDO_ERROR = "undo_error"
+        const val EVENT_REDO_ERROR = "redo_error"
+        const val EVENT_DAILY_IMAGE_LOAD_ERROR = "daily_image_load_error"
+        const val EVENT_IMAGE_SAVE_ERROR = "image_save_error"
+        const val EVENT_FORECAST_LOAD_ERROR = "forecast_load_error"
+
+        //Event parameters
         const val BUNDLE_TASK_INDEX = "task_index"
         const val BUNDLE_CATEGORY = "category"
     }

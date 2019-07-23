@@ -1,0 +1,25 @@
+package com.furianrt.mydiary.di.application.modules.location
+
+import android.content.Context
+import android.location.Geocoder
+import com.furianrt.mydiary.di.application.component.AppScope
+import com.furianrt.mydiary.di.application.modules.app.AppContext
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationServices
+import dagger.Module
+import dagger.Provides
+import java.util.Locale
+
+@Module
+class LocationModule {
+
+    @Provides
+    @AppScope
+    fun provideFusedLocation(@AppContext context: Context): FusedLocationProviderClient =
+            LocationServices.getFusedLocationProviderClient(context)
+
+    @Provides
+    @AppScope
+    fun provideGeocoder(@AppContext context: Context): Geocoder =
+            Geocoder(context, Locale.getDefault())
+}

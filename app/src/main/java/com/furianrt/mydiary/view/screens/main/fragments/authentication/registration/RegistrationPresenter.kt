@@ -15,10 +15,6 @@ class RegistrationPresenter @Inject constructor(
     }
 
     override fun onButtonSignUpClick(email: String, password: String, passwordRepeat: String) {
-        if (view?.isNetworkAvailable() != true) {
-            view?.showErrorNetworkConnection()
-            return
-        }
         view?.clearEmailMessages()
         view?.showLoading()
         addDisposable(checkCredentials.invoke(email, password, passwordRepeat)
@@ -54,10 +50,6 @@ class RegistrationPresenter @Inject constructor(
     override fun onEmailFocusChange(email: String, hasFocus: Boolean) {
         if (!hasFocus && mPrevEmail != email) {
             mPrevEmail = email
-            if (view?.isNetworkAvailable() != true) {
-                view?.showErrorNetworkConnection()
-                return
-            }
             view?.showLoadingEmail()
             addDisposable(checkCredentials.invoke(email)
                     .observeOn(AndroidSchedulers.mainThread())

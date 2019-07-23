@@ -20,6 +20,10 @@ class GetCategoriesUseCase @Inject constructor(
             Flowable.combineLatest(noteRepository.getNoteAsList(noteId),
                     categoryRepository.getAllCategories(),
                     BiFunction<List<MyNote>, List<MyCategory>, Optional<MyCategory>> { note, categories ->
-                        Optional.fromNullable(categories.find { it.id == note.first().categoryId })
+                        if (categories.isEmpty() || note.isEmpty()) {
+                            Optional.absent()
+                        } else {
+                            Optional.fromNullable(categories.find { it.id == note.first().categoryId })
+                        }
                     })
 }

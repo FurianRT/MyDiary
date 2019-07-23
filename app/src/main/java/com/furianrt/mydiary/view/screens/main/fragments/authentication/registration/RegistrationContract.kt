@@ -7,7 +7,6 @@ interface RegistrationContract {
 
     interface MvpView : BaseMvpView {
         fun close()
-        fun isNetworkAvailable(): Boolean
         fun showErrorNetworkConnection()
         fun showErrorPassword()
         fun showErrorEmailFormat()

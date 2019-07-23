@@ -64,6 +64,10 @@ class SendEmailFragment : BaseFragment(), SendEmailContract.MvpView {
         Toast.makeText(requireContext(), getString(R.string.fragment_send_email_error), Toast.LENGTH_SHORT).show()
     }
 
+    override fun showErrorNetworkConnection() {
+        Toast.makeText(requireContext(), getString(R.string.network_error), Toast.LENGTH_SHORT).show()
+    }
+
     override fun showLoading() {
         layout_loading.visibility = View.VISIBLE
     }

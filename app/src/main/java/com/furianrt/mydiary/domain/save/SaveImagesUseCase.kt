@@ -22,6 +22,7 @@ class SaveImagesUseCase @Inject constructor(
                     .flatMapSingle { savedImage ->
                         imageRepository.insertImage(savedImage).toSingleDefault(true)
                     }
+                    .onErrorReturn { false }
                     .collectInto(mutableListOf<Boolean>()) { l, i -> l.add(i) }
                     .ignoreElement()
 }

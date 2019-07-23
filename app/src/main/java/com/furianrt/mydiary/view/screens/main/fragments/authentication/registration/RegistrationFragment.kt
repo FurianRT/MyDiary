@@ -68,8 +68,6 @@ class RegistrationFragment : BaseFragment(), RegistrationContract.MvpView {
         return view
     }
 
-    override fun isNetworkAvailable() = context?.isNetworkAvailable() ?: false
-
     override fun showErrorNetworkConnection() {
         text_error.text = getString(R.string.network_error)
     }

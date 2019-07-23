@@ -81,17 +81,12 @@ class DrawerMenuFragment : BaseFragment(), DrawerMenuContract.MvpView,
                     val bundle = Bundle()
                     bundle.putInt(MyAnalytics.BUNDLE_TASK_INDEX, it.taskIndex)
                     analytics.sendEvent(MyAnalytics.EVENT_SYNC_FAILED, bundle)
-
                     button_sync.text = it.message
                     view_sync.layoutParams.width = button_sync.width
                     view_sync.requestLayout()
                     animateProgressAlpha()
                 } else {
                     showSyncProgress(it)
-                    if (it.taskIndex == SyncProgressMessage.SYNC_FINISHED) {
-                        analytics.sendEvent(MyAnalytics.EVENT_SYNC_COMPLETED)
-                        animateProgressAlpha()
-                    }
                 }
             }
         }
@@ -184,6 +179,10 @@ class DrawerMenuFragment : BaseFragment(), DrawerMenuContract.MvpView,
         view_sync.layoutParams.width = (button_sync.width.toFloat() * message.progress.toFloat() / 100f).toInt()
         button_sync.text = getString(R.string.sync_progress_format, message.progress, message.message)
         view_sync.requestLayout()
+        if (message.taskIndex == SyncProgressMessage.SYNC_FINISHED) {
+            analytics.sendEvent(MyAnalytics.EVENT_SYNC_COMPLETED)
+            animateProgressAlpha()
+        }
     }
 
     //Не убирать проверку на null

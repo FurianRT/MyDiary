@@ -1,6 +1,7 @@
 package com.furianrt.mydiary.domain.get
 
 import com.furianrt.mydiary.data.model.MyHeaderImage
+import com.furianrt.mydiary.data.repository.device.DeviceRepository
 import com.furianrt.mydiary.data.repository.image.ImageRepository
 import io.reactivex.Single
 import net.danlew.android.joda.DateUtils
@@ -8,11 +9,13 @@ import org.joda.time.DateTime
 import javax.inject.Inject
 
 class GetDailyImageUseCase @Inject constructor(
-        private val imageRepository: ImageRepository
+        private val imageRepository: ImageRepository,
+        private val deviceRepository: DeviceRepository
 ) {
 
-    fun invoke(networkAvailable: Boolean): Single<MyHeaderImage> {
+    fun invoke(): Single<MyHeaderImage> {
         val category = imageRepository.getDailyImageCategory()
+        val networkAvailable = deviceRepository.isNetworkAvailable()
         return imageRepository.getHeaderImages()
                 .first(emptyList())
                 .flatMap { dbImages ->

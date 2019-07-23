@@ -6,23 +6,20 @@ import com.furianrt.mydiary.di.application.modules.app.AppContextModule
 import com.furianrt.mydiary.di.application.modules.data.DatabaseModule
 import com.furianrt.mydiary.di.application.modules.data.HelperModule
 import com.furianrt.mydiary.di.application.modules.data.RepositoryModule
+import com.furianrt.mydiary.di.application.modules.location.LocationModule
 import com.furianrt.mydiary.di.application.modules.network.ApiModule
 import com.furianrt.mydiary.di.application.modules.network.FirebaseModule
 import com.furianrt.mydiary.di.application.modules.rx.RxModule
 import com.furianrt.mydiary.di.presenter.component.PresenterComponent
-import com.furianrt.mydiary.di.presenter.modules.location.LocationModule
 import com.furianrt.mydiary.di.presenter.modules.presenter.PresenterContextModule
 import dagger.Component
 
 @AppScope
-@Component(modules = [AppContextModule::class, ApiModule::class, HelperModule::class, RepositoryModule::class,
-    FirebaseModule::class, DatabaseModule::class, RxModule::class, AnalyticsModule::class])
+@Component(modules = [AppContextModule::class, ApiModule::class, HelperModule::class,
+    RepositoryModule::class, FirebaseModule::class, DatabaseModule::class, RxModule::class,
+    AnalyticsModule::class, LocationModule::class])
+
 interface AppComponent {
-
-    fun newPresenterComponent(
-            presenterContextModule: PresenterContextModule,
-            locationModule: LocationModule
-    ): PresenterComponent
-
+    fun newPresenterComponent(presenterContextModule: PresenterContextModule): PresenterComponent
     fun inject(application: MyApp)
 }

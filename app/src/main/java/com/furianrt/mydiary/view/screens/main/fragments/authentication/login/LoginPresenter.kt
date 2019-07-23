@@ -13,11 +13,7 @@ class LoginPresenter @Inject constructor(
     }
 
     override fun onButtonSignInClick(email: String, password: String) {
-        if (view?.isNetworkAvailable() != true) {
-            view?.showErrorNetworkConnection()
-        } else {
-            signIn(email, password)
-        }
+        signIn(email, password)
     }
 
     private fun signIn(email: String, password: String) {

@@ -249,6 +249,7 @@
     <string name="gallery_list_empty_state_message_part_2">Try adding some, its easy!</string>
     <string name="fragment_gallery_list_selected">Selected: %d</string>
     <string name="fragment_gallery_list_image_count">Total: %d</string>
+    <string name="fragment_gallery_list_image_save_error">Could not save the picture</string>
     <string name="fragment_gallery_pager_edit_photo">Edit image</string>
     <string name="activity_pin_forgot">Forgot?</string>
     <string name="activity_pin_wrong_pin">Wrong PIN</string>

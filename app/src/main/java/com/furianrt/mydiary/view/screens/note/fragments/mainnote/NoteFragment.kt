@@ -6,17 +6,12 @@ import android.app.Activity
 import android.content.Intent
 import android.graphics.Color
 import android.graphics.PorterDuff
-import android.location.Geocoder
 import android.net.Uri
 import android.os.Bundle
-import android.os.Looper
 import android.speech.RecognizerIntent
 import android.util.Log
 import android.view.*
-import android.widget.FrameLayout
-import android.widget.ImageView
-import android.widget.LinearLayout
-import android.widget.TextView
+import android.widget.*
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.content.ContextCompat.getColor
 import androidx.viewpager2.widget.ViewPager2
@@ -36,10 +31,6 @@ import com.furianrt.mydiary.view.screens.note.fragments.mainnote.content.NoteCon
 import com.furianrt.mydiary.view.screens.note.fragments.mainnote.edit.NoteEditFragment
 import com.furianrt.mydiary.view.screens.settings.note.NoteSettingsActivity
 import com.furianrt.mydiary.utils.*
-import com.google.android.gms.location.FusedLocationProviderClient
-import com.google.android.gms.location.LocationCallback
-import com.google.android.gms.location.LocationRequest
-import com.google.android.gms.location.LocationResult
 import com.google.android.material.card.MaterialCardView
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog
 import com.wdullaer.materialdatetimepicker.time.TimePickerDialog
@@ -51,7 +42,6 @@ import kotlinx.android.synthetic.main.fragment_note_toolbar.*
 import kotlinx.android.synthetic.main.fragment_note_toolbar.view.*
 import pub.devrel.easypermissions.AfterPermissionGranted
 import pub.devrel.easypermissions.EasyPermissions
-import java.io.IOException
 import java.util.Locale
 import java.util.Calendar
 import javax.inject.Inject
@@ -64,7 +54,6 @@ class NoteFragment : BaseFragment(), NoteFragmentContract.MvpView, DatePickerDia
         const val TAG = "NoteFragment"
         private const val ARG_NOTE_ID = "note_id"
         private const val ARG_IS_NEW_NOTE = "is_new_note"
-        private const val LOCATION_INTERVAL = 400L
         private const val LOCATION_PERMISSIONS_REQUEST_CODE = 1
         private const val STORAGE_PERMISSIONS_REQUEST_CODE = 2
         private const val PLAY_SERVICES_REQUEST_CODE = 3
@@ -73,6 +62,7 @@ class NoteFragment : BaseFragment(), NoteFragmentContract.MvpView, DatePickerDia
         private const val BUNDLE_NOTE_TEXT_BUFFER = "noteTextBuffer"
         private const val TIME_PICKER_TAG = "timePicker"
         private const val DATE_PICKER_TAG = "datePicker"
+        private const val MAX_IMAGE_COUNT_TO_SHARE = 10
 
         @JvmStatic
         fun newInstance(noteId: String, isNewNote: Boolean) =
@@ -83,9 +73,6 @@ class NoteFragment : BaseFragment(), NoteFragmentContract.MvpView, DatePickerDia
                     }
                 }
     }
-
-    @Inject
-    lateinit var mFusedLocationClient: FusedLocationProviderClient
 
     @Inject
     lateinit var mPresenter: NoteFragmentContract.Presenter
@@ -101,15 +88,6 @@ class NoteFragment : BaseFragment(), NoteFragmentContract.MvpView, DatePickerDia
                     position + 1,
                     mImagePagerAdapter.itemCount
             )
-        }
-    }
-    private val mLocationCallback = object : LocationCallback() {
-        override fun onLocationResult(result: LocationResult?) {
-            super.onLocationResult(result)
-            if (result != null) {
-                mFusedLocationClient.removeLocationUpdates(this)
-                mPresenter.onLocationReceived(result)
-            }
         }
     }
 
@@ -185,9 +163,6 @@ class NoteFragment : BaseFragment(), NoteFragmentContract.MvpView, DatePickerDia
         pager_note_image.unregisterOnPageChangeCallback(mOnPageChangeCallback)
         mPresenter.detachView()
     }
-
-    override fun isLocationAvailable() =
-            requireContext().isNetworkAvailable() && requireContext().isLocationEnabled()
 
     override fun showNoteText(title: String, content: String) {
         (childFragmentManager.findFragmentByTag(NoteContentFragment.TAG) as? NoteContentFragment?)
@@ -468,6 +443,7 @@ class NoteFragment : BaseFragment(), NoteFragmentContract.MvpView, DatePickerDia
         text_location.text = location.name
     }
 
+    @AfterPermissionGranted(LOCATION_PERMISSIONS_REQUEST_CODE)
     override fun requestLocationPermissions() {
         val fineLocation = Manifest.permission.ACCESS_FINE_LOCATION
         val coarseLocation = Manifest.permission.ACCESS_COARSE_LOCATION
@@ -521,32 +497,14 @@ class NoteFragment : BaseFragment(), NoteFragmentContract.MvpView, DatePickerDia
         text_temp.text = temp
     }
 
+    override fun showErrorForecast() {
+        analytics.sendEvent(MyAnalytics.EVENT_FORECAST_LOAD_ERROR)
+    }
+
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>,
                                             grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults, this)
-    }
-
-    @AfterPermissionGranted(LOCATION_PERMISSIONS_REQUEST_CODE)
-    override fun requestLocation() {
-        val locationRequest = LocationRequest.create()
-        locationRequest.apply {
-            interval = LOCATION_INTERVAL
-            priority = LocationRequest.PRIORITY_HIGH_ACCURACY
-        }
-
-        mFusedLocationClient
-                .requestLocationUpdates(locationRequest, mLocationCallback, Looper.myLooper())
-    }
-
-    override fun findAddress(latitude: Double, longitude: Double) {
-        try {
-            val geoCoder = Geocoder(requireContext(), Locale.getDefault())
-            val addresses = geoCoder.getFromLocation(latitude, longitude, 1)
-            mPresenter.onAddressFound(addresses, latitude, longitude)
-        } catch (e: IOException) {
-            e.printStackTrace()
-        }
     }
 
     override fun requestStoragePermissions() {
@@ -620,6 +578,11 @@ class NoteFragment : BaseFragment(), NoteFragmentContract.MvpView, DatePickerDia
         disableActionBarExpanding(false)
     }
 
+    override fun showErrorSaveImage() {
+        analytics.sendEvent(MyAnalytics.EVENT_IMAGE_SAVE_ERROR)
+        Toast.makeText(requireContext(), R.string.fragment_gallery_list_image_save_error, Toast.LENGTH_SHORT).show()
+    }
+
     fun onNoteTextChange(title: String, content: String) {
         mPresenter.onNoteTextChange(title, content)
         childFragmentManager.findFragmentByTag(NoteContentFragment.TAG)?.let {
@@ -682,12 +645,16 @@ class NoteFragment : BaseFragment(), NoteFragmentContract.MvpView, DatePickerDia
     }
 
     override fun shareNote(note: MyNoteWithProp) {
-        val uris = note.images.map { Uri.parse(it.uri) }
+        val size = minOf(MAX_IMAGE_COUNT_TO_SHARE, note.images.size)
+        val uris = ArrayList<Uri>()
+        for (i in 0 until size) {
+            uris.add(Uri.parse(note.images[i].uri))
+        }
         val intent: Intent
         when {
             uris.size > 1 -> {
                 intent = Intent(Intent.ACTION_SEND_MULTIPLE)
-                intent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, ArrayList(uris))
+                intent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, uris)
                 intent.type = "image/*"
             }
             uris.size == 1 -> {

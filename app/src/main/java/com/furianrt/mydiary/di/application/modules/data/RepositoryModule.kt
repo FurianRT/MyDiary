@@ -4,6 +4,8 @@ import com.furianrt.mydiary.data.repository.appearance.AppearanceRepository
 import com.furianrt.mydiary.data.repository.appearance.AppearanceRepositoryImp
 import com.furianrt.mydiary.data.repository.category.CategoryRepository
 import com.furianrt.mydiary.data.repository.category.CategoryRepositoryImp
+import com.furianrt.mydiary.data.repository.device.DeviceRepository
+import com.furianrt.mydiary.data.repository.device.DeviceRepositoryImp
 import com.furianrt.mydiary.data.repository.forecast.ForecastRepository
 import com.furianrt.mydiary.data.repository.forecast.ForecastRepositoryImp
 import com.furianrt.mydiary.data.repository.general.GeneralRepository
@@ -72,4 +74,8 @@ interface RepositoryModule {
     @Binds
     @AppScope
     fun generalRepository(imp: GeneralRepositoryImp): GeneralRepository
+
+    @Binds
+    @AppScope
+    fun deviceRepository(imp: DeviceRepositoryImp): DeviceRepository
 }

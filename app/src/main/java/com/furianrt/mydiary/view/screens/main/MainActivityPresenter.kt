@@ -117,7 +117,7 @@ class MainActivityPresenter @Inject constructor(
             return
         }
 
-        addDisposable(getDailyImage.invoke(view?.networkAvailable() == true)
+        addDisposable(getDailyImage.invoke()
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({ image ->
                     view?.showHeaderImage(image)
@@ -171,7 +171,7 @@ class MainActivityPresenter @Inject constructor(
             list.add(header)
             val values = when (getNotesSortType.invoke()) {
                 GetNotesSortTypeUseCase.SORT_TYPE_ASC ->
-                    notes.getValue(date).sortedByDescending { it.note.time }
+                    notes.getValue(date).sortedBy { it.note.time }
                 GetNotesSortTypeUseCase.SORT_TYPE_DESC ->
                     notes.getValue(date).sortedByDescending { it.note.time }
                 else -> throw IllegalStateException()
@@ -199,6 +199,11 @@ class MainActivityPresenter @Inject constructor(
 
     override fun onButtonSortClick() {
         swapNoteSortType.invoke()
+        when (getNotesSortType.invoke()) {
+            GetNotesSortTypeUseCase.SORT_TYPE_ASC -> view?.setSortAsc()
+            GetNotesSortTypeUseCase.SORT_TYPE_DESC -> view?.setSortDesc()
+            else -> throw IllegalStateException()
+        }
         showNotes(mNoteList)
     }
 

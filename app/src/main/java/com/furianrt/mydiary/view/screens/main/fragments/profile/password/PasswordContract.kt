@@ -9,7 +9,6 @@ interface PasswordContract {
         fun returnToMenuView()
         fun showLoading()
         fun hideLoading()
-        fun isNetworkAvailable(): Boolean
         fun showErrorEmptyOldPassword()
         fun showErrorEmptyNewPassword()
         fun showErrorEmptyRepeatPassword()

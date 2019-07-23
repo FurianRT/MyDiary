@@ -16,12 +16,8 @@ class PasswordPresenter @Inject constructor(
 
     override fun onButtonSaveClick(oldPassword: String, newPassword: String, repeatPassword: String) {
         view?.clearErrorMessage()
+        changePassword(oldPassword, newPassword, repeatPassword)
 
-        if (view?.isNetworkAvailable() != true) {
-            view?.showErrorNetworkConnection()
-        } else {
-            changePassword(oldPassword, newPassword, repeatPassword)
-        }
     }
 
     private fun changePassword(oldPassword: String, newPassword: String, repeatPassword: String) {
@@ -32,6 +28,7 @@ class PasswordPresenter @Inject constructor(
                     view?.hideLoading()
                     view?.showSuccessPasswordChange()
                 }, { error ->
+                    view?.hideLoading()
                     when (error) {
                         is ChangePasswordUseCase.EmptyNewPasswordRepeatException ->
                             view?.showErrorEmptyNewPassword()

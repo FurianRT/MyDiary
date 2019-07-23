@@ -6,7 +6,6 @@ import com.furianrt.mydiary.view.base.mvp.BaseMvpPresenter
 interface LoginContract {
 
     interface MvpView : BaseMvpView {
-        fun isNetworkAvailable(): Boolean
         fun showErrorEmptyEmail()
         fun showErrorNetworkConnection()
         fun showErrorEmptyPassword()

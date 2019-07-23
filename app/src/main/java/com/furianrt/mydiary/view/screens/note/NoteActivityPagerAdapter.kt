@@ -20,7 +20,7 @@ class NoteActivityPagerAdapter(
 
     override fun getItem(position: Int) = NoteFragment.newInstance(noteIds[position], isNewNote)
 
-    override fun getCount(): Int = noteIds.count()
+    override fun getCount(): Int = noteIds.size
 
     override fun getItemPosition(`object`: Any): Int =
             if (mIsSizeChanged) {

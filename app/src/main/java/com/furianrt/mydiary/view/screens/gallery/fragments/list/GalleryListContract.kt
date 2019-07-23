@@ -22,6 +22,7 @@ interface GalleryListContract {
         fun hideLoading()
         fun showSelectedImageCount(count: Int)
         fun showDeleteConfirmationDialog(imageNames: List<String>)
+        fun showErrorSaveImage()
     }
 
     abstract class Presenter : BaseMvpPresenter<MvpView>() {

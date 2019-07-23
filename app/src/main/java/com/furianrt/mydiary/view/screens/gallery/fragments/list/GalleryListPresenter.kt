@@ -121,7 +121,12 @@ class GalleryListPresenter @Inject constructor(
     override fun onNoteImagesPicked(imageUrls: List<String>) {
         addDisposable(saveImages.invoke(mNoteId, imageUrls)
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { view?.hideLoading() })
+                .subscribe({
+                    view?.hideLoading()
+                }, { error ->
+                    error.printStackTrace()
+                    view?.showErrorSaveImage()
+                }))
     }
 
     override fun onImageTrashed(image: MyImage) {

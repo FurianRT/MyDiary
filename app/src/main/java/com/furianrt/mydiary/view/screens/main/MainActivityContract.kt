@@ -18,7 +18,6 @@ interface MainActivityContract {
         fun updateItemSelection(selectedNoteIds: Set<String>)
         fun showEmptyHeaderImage(hasError: Boolean)
         fun showSettingsView()
-        fun networkAvailable(): Boolean
         fun setSortDesc()
         fun setSortAsc()
         fun showViewImageSettings()

@@ -1,8 +1,8 @@
 package com.furianrt.mydiary.view.screens.note.fragments.mainnote
 
-import android.location.Address
 import android.util.Log
 import com.furianrt.mydiary.data.model.*
+import com.furianrt.mydiary.domain.FindLocationUseCase
 import com.furianrt.mydiary.domain.check.IsForecastEnabledUseCase
 import com.furianrt.mydiary.domain.check.IsLocationEnabledUseCase
 import com.furianrt.mydiary.domain.check.IsMoodEnabledUseCase
@@ -11,8 +11,6 @@ import com.furianrt.mydiary.domain.save.AddForecastUseCase
 import com.furianrt.mydiary.domain.save.SaveImagesUseCase
 import com.furianrt.mydiary.domain.save.SaveLocationUseCase
 import com.furianrt.mydiary.domain.update.UpdateNoteUseCase
-import com.furianrt.mydiary.utils.generateUniqueId
-import com.google.android.gms.location.LocationResult
 import io.reactivex.android.schedulers.AndroidSchedulers
 import org.joda.time.DateTime
 import javax.inject.Inject
@@ -36,7 +34,8 @@ class NoteFragmentPresenter @Inject constructor(
         private val getForecasts: GetForecastsUseCase,
         private val addForecast: AddForecastUseCase,
         private val isLocationEnabled: IsLocationEnabledUseCase,
-        private val isForecastEnabled: IsForecastEnabledUseCase
+        private val isForecastEnabled: IsForecastEnabledUseCase,
+        private val findLocation: FindLocationUseCase
 ) : NoteFragmentContract.Presenter() {
 
     companion object {
@@ -105,31 +104,30 @@ class NoteFragmentPresenter @Inject constructor(
 
     private fun loadNote() {
         addDisposable(getNotes.invoke(mNoteId)
-                .map { note ->
-                    if (note.isPresent) {
-                        note.get()
-                    } else {
-                        throw IllegalStateException()
-                    }
-                }
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { note ->
-                    if (mNoteTextBuffer.isEmpty()) {
-                        mNoteTextBuffer.add(UndoRedoEntry(note.title, note.content, true))
+                    if (note.isPresent) {
+                        if (mNoteTextBuffer.isEmpty()) {
+                            mNoteTextBuffer.add(UndoRedoEntry(note.get().title, note.get().content, true))
+                        }
+                        view?.showNoteText(note.get().title, note.get().content)
+                        view?.showDateAndTime(
+                                note.get().time,
+                                getTimeFormat.invoke() == GetTimeFormatUseCase.TIME_FORMAT_24
+                        )
+                        showNoteMood(note.get().moodId)
                     }
-                    view?.showNoteText(note.title, note.content)
-                    view?.showDateAndTime(
-                            note.time,
-                            getTimeFormat.invoke() == GetTimeFormatUseCase.TIME_FORMAT_24
-                    )
-                    showNoteMood(note.moodId)
                 })
     }
 
     private fun loadNoteAppearance() {
         addDisposable(getAppearance.invoke(mNoteId)
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { view?.updateNoteAppearance(it) })
+                .subscribe({ appearance ->
+                    view?.updateNoteAppearance(appearance)
+                }, { error ->
+                    error.printStackTrace()
+                }))
     }
 
     private fun showForecast() {
@@ -152,10 +150,23 @@ class NoteFragmentPresenter @Inject constructor(
                     if (locations.isNotEmpty()) {
                         showLocation(locations.first())
                         showForecast()
-                    } else if (mIsNewNote && view?.isLocationAvailable() == true) {
-                        findLocation()
+                    } else if (mIsNewNote && isLocationEnabled.invoke()) {
+                        view?.requestLocationPermissions()
                     }
                 })
+    }
+
+    override fun onLocationPermissionsGranted() {
+        addDisposable(findLocation.invoke()
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe({ location ->
+                    addLocation(location)
+                    if (isForecastEnabled.invoke()) {
+                        addForecastToNote(location.lat, location.lon)
+                    }
+                }, { error ->
+                    error.printStackTrace()
+                }))
     }
 
     private fun showNoteMood(moodId: Int) {
@@ -182,34 +193,6 @@ class NoteFragmentPresenter @Inject constructor(
                 })
     }
 
-    private fun findLocation() {
-        if (isLocationEnabled.invoke()) {
-            view?.requestLocationPermissions()
-        }
-    }
-
-    override fun onLocationPermissionsGranted() {
-        view?.requestLocation()
-    }
-
-    override fun onLocationReceived(result: LocationResult) {
-        if (isForecastEnabled.invoke()) {
-            addForecastToNote(result.lastLocation.latitude, result.lastLocation.longitude)
-        }
-        if (isLocationEnabled.invoke()) {
-            view?.findAddress(result.lastLocation.latitude, result.lastLocation.longitude)
-        }
-    }
-
-    override fun onAddressFound(addresses: List<Address>, latitude: Double, longitude: Double) {
-        if (addresses.isNotEmpty()) {
-            val address = addresses[0].getAddressLine(0)
-            if (address != null) {
-                addLocation(MyLocation(generateUniqueId(), address, latitude, longitude))
-            }
-        }
-    }
-
     private fun addForecastToNote(latitude: Double, longitude: Double) {
         addDisposable(addForecast.invoke(mNoteId, latitude, longitude)
                 .observeOn(AndroidSchedulers.mainThread())
@@ -217,6 +200,7 @@ class NoteFragmentPresenter @Inject constructor(
                     view?.showForecast(getWeatherTemp(forecast), forecast.icon)
                 }, { error ->
                     error.printStackTrace()
+                    view?.showErrorForecast()
                 }))
     }
 
@@ -245,7 +229,12 @@ class NoteFragmentPresenter @Inject constructor(
     override fun onNoteImagesPicked(imageUrls: List<String>) {
         addDisposable(saveImages.invoke(mNoteId, imageUrls)
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { view?.hideLoading() })
+                .subscribe({
+                    view?.hideLoading()
+                }, { error ->
+                    error.printStackTrace()
+                    view?.showErrorSaveImage()
+                }))
     }
 
     override fun onButtonDeleteClick() {

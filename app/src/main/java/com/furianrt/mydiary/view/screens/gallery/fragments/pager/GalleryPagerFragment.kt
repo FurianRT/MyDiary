@@ -106,24 +106,22 @@ class GalleryPagerFragment : BaseFragment(), GalleryPagerContract.MvpView {
         inflater.inflate(R.menu.fragment_gallery_pager_menu, menu)
     }
 
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return when (item.itemId) {
-            R.id.menu_list_mode -> {
-                analytics.sendEvent(MyAnalytics.EVENT_NOTE_IMAGE_LIST_OPENED)
-                mPresenter.onButtonListModeClick()
-                true
-            }
-            R.id.menu_delete -> {
-                analytics.sendEvent(MyAnalytics.EVENT_NOTE_IMAGE_PAGER_IMAGE_DELETE)
-                mPresenter.onButtonDeleteClick(mPagerAdapter.getItem(mPagerPosition))
-                true
-            }
-            R.id.menu_edit -> {
-                mPresenter.onButtonEditClick(mPagerAdapter.getItem(mPagerPosition))
-                true
-            }
-            else -> super.onOptionsItemSelected(item)
+    override fun onOptionsItemSelected(item: MenuItem): Boolean = when (item.itemId) {
+        R.id.menu_list_mode -> {
+            analytics.sendEvent(MyAnalytics.EVENT_NOTE_IMAGE_LIST_OPENED)
+            mPresenter.onButtonListModeClick()
+            true
         }
+        R.id.menu_delete -> {
+            analytics.sendEvent(MyAnalytics.EVENT_NOTE_IMAGE_PAGER_IMAGE_DELETE)
+            mPresenter.onButtonDeleteClick(mPagerAdapter.getItem(mPagerPosition))
+            true
+        }
+        R.id.menu_edit -> {
+            mPresenter.onButtonEditClick(mPagerAdapter.getItem(mPagerPosition))
+            true
+        }
+        else -> super.onOptionsItemSelected(item)
     }
 
     override fun showDeleteConfirmationDialog(image: MyImage) {

@@ -7,7 +7,7 @@ import com.furianrt.mydiary.data.model.MyProfile
 interface AboutProfileContract {
 
     interface MvpView : BaseMvpView {
-        fun showProfileInfo(profile: MyProfile)
+        fun showProfileInfo(profile: MyProfile, is24TimeFormat: Boolean)
         fun returnToMenuView()
 
     }

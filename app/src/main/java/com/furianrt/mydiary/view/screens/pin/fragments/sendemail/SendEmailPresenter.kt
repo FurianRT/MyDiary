@@ -16,9 +16,13 @@ class SendEmailPresenter @Inject constructor(
                     view?.hideLoading()
                     view?.showDoneView()
                 }, { error ->
-                    error.printStackTrace()
                     view?.hideLoading()
-                    view?.showErrorMessageSend()
+                    if (error is SendPinResetEmailUseCase.NetworkNotAvailableException) {
+                        view?.showErrorNetworkConnection()
+                    } else {
+                        error.printStackTrace()
+                        view?.showErrorMessageSend()
+                    }
                 }))
     }
 

@@ -24,6 +24,7 @@ class SyncPresenter @Inject constructor(
 ) : SyncContract.Presenter() {
 
     companion object {
+        private const val PROGRESS_STARTED = 0
         private const val PROGRESS_NOTES = 15
         private const val PROGRESS_APPEARANCE = 20
         private const val PROGRESS_CATEGORIES = 30
@@ -31,11 +32,12 @@ class SyncPresenter @Inject constructor(
         private const val PROGRESS_LOCATION = 60
         private const val PROGRESS_FORECAST = 70
         private const val PROGRESS_IMAGES = 80
-        private const val PROGRESS_CLEANUP = 95
+        private const val PROGRESS_CLEANUP = 100
         private const val PROGRESS_FINISHED = 100
     }
 
     override fun onStartCommand() {
+        sendSyncMessage(SyncProgressMessage.SYNC_STARTED, PROGRESS_STARTED)
         addDisposable(getProfile.invoke()
                 .map { it.email }
                 .firstOrError()
@@ -54,7 +56,7 @@ class SyncPresenter @Inject constructor(
                 .doOnComplete {
                     addDisposable(updateProfile.invoke(DateTime.now().millis)
                             .subscribe {
-                                SyncProgressMessage(SyncProgressMessage.SYNC_FINISHED, PROGRESS_FINISHED)
+                                sendSyncMessage(SyncProgressMessage.SYNC_FINISHED, PROGRESS_FINISHED)
                                 view?.close()
                             })
                 }
@@ -70,9 +72,7 @@ class SyncPresenter @Inject constructor(
                         SyncProgressMessage.CLEANUP -> PROGRESS_CLEANUP
                         else -> throw IllegalStateException()
                     }
-                    val progressMessage = SyncProgressMessage(taskIndex, progress)
-                    view?.sendProgressUpdate(progressMessage)
-                    setLastSyncMessage.invoke(progressMessage)
+                    sendSyncMessage(taskIndex, progress)
                 }, { error ->
                     error.printStackTrace()
                     val progressMessage = when (error) {
@@ -101,6 +101,12 @@ class SyncPresenter @Inject constructor(
                     view?.sendProgressUpdate(progressMessage)
                     view?.close()
                 }))
+    }
+
+    private fun sendSyncMessage(taskIndex: Int, progress: Int) {
+        val progressMessage = SyncProgressMessage(taskIndex, progress)
+        view?.sendProgressUpdate(progressMessage)
+        setLastSyncMessage.invoke(progressMessage)
     }
 
     override fun detachView() {

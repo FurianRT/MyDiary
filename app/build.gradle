@@ -14,7 +14,6 @@ android {
         targetSdkVersion 29
         versionCode 27
         versionName "1.3.1"
-        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
         javaCompileOptions {
             annotationProcessorOptions {
@@ -22,19 +21,22 @@ android {
             }
         }
     }
+
     buildTypes {
         debug {
             versionNameSuffix "-debug"
-            minifyEnabled true
+            minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
             resValue("bool", "FIREBASE_ANALYTICS_DEACTIVATED", "true")
         }
+
         release {
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
             resValue("bool", "FIREBASE_ANALYTICS_DEACTIVATED", "false")
         }
     }
+
     buildTypes.each {
         it.buildConfigField 'String', 'WEATHER_API_KEY', weatherApikey
         it.buildConfigField 'String', 'IMAGE_API_KEY', imageApikey
@@ -45,6 +47,7 @@ android {
         it.buildConfigField 'String', 'LICENSE_KEY', licenseKey
         it.buildConfigField 'String', 'ITEM_PREMIUM_SKU', itemPremiumSku
     }
+
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
@@ -125,7 +128,7 @@ dependencies {
     implementation 'com.jaredrummler:colorpicker:1.1.0'
 
     //DateTime
-    implementation 'net.danlew:android.joda:2.10.1.2'
+    implementation 'net.danlew:android.joda:2.10.2'
 
     //DateTime pickers
     implementation 'com.wdullaer:materialdatetimepicker:4.2.1'
@@ -155,14 +158,9 @@ dependencies {
     implementation 'com.sun.mail:android-activation:1.6.3'
 
     //In-App purchases
-    implementation 'com.anjlab.android.iab.v3:library:1.0.44'
+    implementation 'com.anjlab.android.iab.v3:library:1.0.45'
 
     //Debugging instrument for network calls, database content, etc.
     implementation 'com.facebook.stetho:stetho:1.5.1'
     implementation 'com.facebook.stetho:stetho-okhttp3:1.5.1'
-
-    //Tests
-    testImplementation "junit:junit:$junit_version"
-    androidTestImplementation 'androidx.test:runner:1.2.0'
-    androidTestImplementation "androidx.test.espresso:espresso-core:$espresso_version"
 }

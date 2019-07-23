@@ -9,6 +9,7 @@ import android.os.Parcelable
 import android.view.*
 import android.view.animation.AccelerateInterpolator
 import android.view.animation.DecelerateInterpolator
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.view.ActionMode
 import androidx.recyclerview.widget.GridLayoutManager
@@ -183,19 +184,17 @@ class GalleryListFragment : BaseFragment(), GalleryListAdapter.OnListItemInterac
         inflater.inflate(R.menu.fragment_gallery_list_menu, menu)
     }
 
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return when (item.itemId) {
-            R.id.menu_multi_select -> {
-                mPresenter.onButtonMultiSelectionClick()
-                true
-            }
-            R.id.menu_add_image -> {
-                analytics.sendEvent(MyAnalytics.EVENT_NOTE_IMAGE_LIST_IMAGE_ADD)
-                mPresenter.onButtonAddImageClick()
-                true
-            }
-            else -> super.onOptionsItemSelected(item)
+    override fun onOptionsItemSelected(item: MenuItem): Boolean = when (item.itemId) {
+        R.id.menu_multi_select -> {
+            mPresenter.onButtonMultiSelectionClick()
+            true
         }
+        R.id.menu_add_image -> {
+            analytics.sendEvent(MyAnalytics.EVENT_NOTE_IMAGE_LIST_IMAGE_ADD)
+            mPresenter.onButtonAddImageClick()
+            true
+        }
+        else -> super.onOptionsItemSelected(item)
     }
 
     override fun onCreateActionMode(mode: ActionMode?, menu: Menu?): Boolean {
@@ -203,24 +202,20 @@ class GalleryListFragment : BaseFragment(), GalleryListAdapter.OnListItemInterac
         return true
     }
 
-    override fun onPrepareActionMode(mode: ActionMode?, menu: Menu?): Boolean {
-        return false
-    }
+    override fun onPrepareActionMode(mode: ActionMode?, menu: Menu?): Boolean = false
 
-    override fun onActionItemClicked(mode: ActionMode?, item: MenuItem?): Boolean {
-        return when (item?.itemId) {
-            R.id.menu_delete -> {
-                analytics.sendEvent(MyAnalytics.EVENT_NOTE_IMAGE_LIST_IMAGE_DELETE)
-                mPresenter.onButtonCabDeleteClick()
-                true
-            }
-
-            R.id.menu_select_all -> {
-                mPresenter.onButtonCabSelectAllClick()
-                true
-            }
-            else -> false
+    override fun onActionItemClicked(mode: ActionMode?, item: MenuItem?): Boolean = when (item?.itemId) {
+        R.id.menu_delete -> {
+            analytics.sendEvent(MyAnalytics.EVENT_NOTE_IMAGE_LIST_IMAGE_DELETE)
+            mPresenter.onButtonCabDeleteClick()
+            true
         }
+
+        R.id.menu_select_all -> {
+            mPresenter.onButtonCabSelectAllClick()
+            true
+        }
+        else -> false
     }
 
     override fun onDestroyActionMode(mode: ActionMode?) {
@@ -401,6 +396,11 @@ class GalleryListFragment : BaseFragment(), GalleryListAdapter.OnListItemInterac
                         }
                     })
         }
+    }
+
+    override fun showErrorSaveImage() {
+        analytics.sendEvent(MyAnalytics.EVENT_IMAGE_SAVE_ERROR)
+        Toast.makeText(requireContext(), R.string.fragment_gallery_list_image_save_error, Toast.LENGTH_SHORT).show()
     }
 
     private fun restoreTrash(animate: Boolean) {

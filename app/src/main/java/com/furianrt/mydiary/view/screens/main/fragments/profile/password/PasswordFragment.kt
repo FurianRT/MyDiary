@@ -14,7 +14,6 @@ import com.furianrt.mydiary.view.screens.main.fragments.profile.password.success
 import com.furianrt.mydiary.utils.animateShake
 import com.furianrt.mydiary.utils.hideKeyboard
 import com.furianrt.mydiary.utils.inTransaction
-import com.furianrt.mydiary.utils.isNetworkAvailable
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import kotlinx.android.synthetic.main.bottom_sheet_main.*
 import kotlinx.android.synthetic.main.fragment_password.*
@@ -69,8 +68,6 @@ class PasswordFragment : BaseFragment(), PasswordContract.MvpView {
 
         return view
     }
-
-    override fun isNetworkAvailable() = requireContext().isNetworkAvailable()
 
     override fun showLoading() {
         view_alpha.visibility = View.VISIBLE

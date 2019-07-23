@@ -51,6 +51,7 @@ class ForecastRepositoryImp @Inject constructor(
                                 ForecastRepository.BASE_WEATHER_IMAGE_URL + it.weather[0].icon + ".png"
                         )
                     }
+                    .subscribeOn(rxScheduler)
 
     override fun getAllDbForecasts(): Single<List<MyForecast>> =
             database.forecastDao().getAllForecasts()

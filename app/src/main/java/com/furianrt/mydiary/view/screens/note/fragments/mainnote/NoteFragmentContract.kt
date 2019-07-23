@@ -1,11 +1,9 @@
 package com.furianrt.mydiary.view.screens.note.fragments.mainnote
 
-import android.location.Address
 import com.furianrt.mydiary.view.base.mvp.BaseMvpView
 import com.furianrt.mydiary.view.base.mvp.BaseMvpPresenter
 import com.furianrt.mydiary.data.model.*
 import com.furianrt.mydiary.data.model.pojo.TagsAndAppearance
-import com.google.android.gms.location.LocationResult
 import java.util.*
 
 interface NoteFragmentContract {
@@ -15,8 +13,6 @@ interface NoteFragmentContract {
         fun showTagsDialog(noteId: String)
         fun showTags(tagsAndAppearance: TagsAndAppearance)
         fun requestLocationPermissions()
-        fun requestLocation()
-        fun findAddress(latitude: Double, longitude: Double)
         fun showCategory(category: MyCategory)
         fun showMood(mood: MyMood)
         fun showNoTagsMessage(tagsAndAppearance: TagsAndAppearance)
@@ -46,14 +42,13 @@ interface NoteFragmentContract {
         fun sendUndoErrorEvent()
         fun sendRedoErrorEvent()
         fun shareNote(note: MyNoteWithProp)
-        fun isLocationAvailable(): Boolean
+        fun showErrorSaveImage()
+        fun showErrorForecast()
     }
 
     abstract class Presenter : BaseMvpPresenter<MvpView>() {
         abstract fun onTagsFieldClick()
-        abstract fun onLocationReceived(result: LocationResult)
         abstract fun onLocationPermissionsGranted()
-        abstract fun onAddressFound(addresses: List<Address>, latitude: Double, longitude: Double)
         abstract fun onButtonAddImageClick()
         abstract fun onStoragePermissionsGranted()
         abstract fun onNoteImagesPicked(imageUrls: List<String>)

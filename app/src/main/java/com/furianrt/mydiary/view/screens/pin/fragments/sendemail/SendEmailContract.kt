@@ -11,6 +11,7 @@ interface SendEmailContract {
         fun hideLoading()
         fun showDoneView()
         fun showErrorMessageSend()
+        fun showErrorNetworkConnection()
     }
 
     abstract class Presenter : BaseMvpPresenter<MvpView>() {

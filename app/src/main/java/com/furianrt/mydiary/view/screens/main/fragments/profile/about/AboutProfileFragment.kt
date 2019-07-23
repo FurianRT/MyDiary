@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import com.furianrt.mydiary.R
 import com.furianrt.mydiary.view.base.BaseFragment
 import com.furianrt.mydiary.data.model.MyProfile
+import com.furianrt.mydiary.utils.getTime
 import kotlinx.android.synthetic.main.fragment_about_profile.*
 import kotlinx.android.synthetic.main.fragment_about_profile.view.*
 import org.joda.time.DateTime
@@ -36,15 +37,16 @@ class AboutProfileFragment : BaseFragment(), AboutProfileContract.MvpView {
         return view
     }
 
-    override fun showProfileInfo(profile: MyProfile) {
+    override fun showProfileInfo(profile: MyProfile, is24TimeFormat: Boolean) {
         text_registration_date.text =
                 DateTime(profile.creationTime).toString("dd.MM.yyyy", Locale.getDefault())
         val lastSyncTime = profile.lastSyncTime
         if (lastSyncTime == null) {
             text_last_sync_date?.text = getString(R.string.fragment_about_profile_sync_non)
         } else {
-            text_last_sync_date.text =
-                    DateTime(lastSyncTime).toString("dd.MM.yyyy hh:mm", Locale.getDefault())
+            val syncTimeStrig = DateTime(lastSyncTime).toString("dd.MM.yyyy", Locale.getDefault()) +
+                    " " + getTime(lastSyncTime, is24TimeFormat)
+            text_last_sync_date.text = syncTimeStrig
         }
     }
 

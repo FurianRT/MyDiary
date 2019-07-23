@@ -58,35 +58,43 @@ class SyncService : Service(), BaseView, SyncContract.MvpView {
 
     override fun sendProgressUpdate(progressMessage: SyncProgressMessage) {
         progressMessage.message = if (progressMessage.hasError) {
-            when (progressMessage.taskIndex) {
-                SyncProgressMessage.SYNC_NOTES -> getString(R.string.sync_error_notes)
-                SyncProgressMessage.SYNC_APPEARANCE -> getString(R.string.sync_error_appearance)
-                SyncProgressMessage.SYNC_CATEGORIES -> getString(R.string.sync_error_categories)
-                SyncProgressMessage.SYNC_TAGS -> getString(R.string.sync_error_tags)
-                SyncProgressMessage.SYNC_NOTE_TAGS -> getString(R.string.sync_error_note_tags)
-                SyncProgressMessage.SYNC_LOCATION -> getString(R.string.sync_error_locations)
-                SyncProgressMessage.SYNC_NOTE_LOCATIONS -> getString(R.string.sync_error_note_locations)
-                SyncProgressMessage.SYNC_FORECAST -> getString(R.string.sync_error_forecasts)
-                SyncProgressMessage.SYNC_IMAGES -> getString(R.string.sync_error_images)
-                SyncProgressMessage.CLEANUP -> getString(R.string.sync_error_cleanup)
-                else -> getString(R.string.sync_error)
-            }
+            getSyncErrorTextMessage(progressMessage.taskIndex)
         } else {
-            when (progressMessage.taskIndex) {
-                SyncProgressMessage.SYNC_NOTES -> getString(R.string.sync_notes)
-                SyncProgressMessage.SYNC_APPEARANCE -> getString(R.string.sync_appearance)
-                SyncProgressMessage.SYNC_CATEGORIES -> getString(R.string.sync_categories)
-                SyncProgressMessage.SYNC_TAGS -> getString(R.string.sync_tags)
-                SyncProgressMessage.SYNC_NOTE_TAGS -> getString(R.string.sync_note_tags)
-                SyncProgressMessage.SYNC_LOCATION -> getString(R.string.sync_locations)
-                SyncProgressMessage.SYNC_NOTE_LOCATIONS -> getString(R.string.sync_note_locations)
-                SyncProgressMessage.SYNC_FORECAST -> getString(R.string.sync_forecasts)
-                SyncProgressMessage.SYNC_IMAGES -> getString(R.string.sync_images)
-                SyncProgressMessage.CLEANUP -> getString(R.string.sync_cleanup)
-                SyncProgressMessage.SYNC_FINISHED -> getString(R.string.sync_done)
-                else -> ""
-            }
+            getSyncTextMessage(progressMessage.taskIndex)
         }
+        sendBroadcast(progressMessage)
+    }
+
+    private fun getSyncErrorTextMessage(taskIndex: Int) = when (taskIndex) {
+        SyncProgressMessage.SYNC_NOTES -> getString(R.string.sync_error_notes)
+        SyncProgressMessage.SYNC_APPEARANCE -> getString(R.string.sync_error_appearance)
+        SyncProgressMessage.SYNC_CATEGORIES -> getString(R.string.sync_error_categories)
+        SyncProgressMessage.SYNC_TAGS -> getString(R.string.sync_error_tags)
+        SyncProgressMessage.SYNC_NOTE_TAGS -> getString(R.string.sync_error_note_tags)
+        SyncProgressMessage.SYNC_LOCATION -> getString(R.string.sync_error_locations)
+        SyncProgressMessage.SYNC_NOTE_LOCATIONS -> getString(R.string.sync_error_note_locations)
+        SyncProgressMessage.SYNC_FORECAST -> getString(R.string.sync_error_forecasts)
+        SyncProgressMessage.SYNC_IMAGES -> getString(R.string.sync_error_images)
+        SyncProgressMessage.CLEANUP -> getString(R.string.sync_error_cleanup)
+        else -> getString(R.string.sync_error)
+    }
+
+    private fun getSyncTextMessage(taskIndex: Int) = when (taskIndex + 1) {
+        SyncProgressMessage.SYNC_NOTES -> getString(R.string.sync_notes)
+        SyncProgressMessage.SYNC_APPEARANCE -> getString(R.string.sync_appearance)
+        SyncProgressMessage.SYNC_CATEGORIES -> getString(R.string.sync_categories)
+        SyncProgressMessage.SYNC_TAGS -> getString(R.string.sync_tags)
+        SyncProgressMessage.SYNC_NOTE_TAGS -> getString(R.string.sync_tags)
+        SyncProgressMessage.SYNC_LOCATION -> getString(R.string.sync_locations)
+        SyncProgressMessage.SYNC_NOTE_LOCATIONS -> getString(R.string.sync_locations)
+        SyncProgressMessage.SYNC_FORECAST -> getString(R.string.sync_forecasts)
+        SyncProgressMessage.SYNC_IMAGES -> getString(R.string.sync_images)
+        SyncProgressMessage.CLEANUP -> getString(R.string.sync_cleanup)
+
+        else -> getString(R.string.sync_done)
+    }
+
+    private fun sendBroadcast(progressMessage: SyncProgressMessage) {
         LocalBroadcastManager.getInstance(applicationContext)
                 .sendBroadcast(Intent().apply {
                     putExtra(EXTRA_PROGRESS_MESSAGE, progressMessage)

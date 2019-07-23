@@ -16,7 +16,6 @@ import com.furianrt.mydiary.view.screens.main.fragments.authentication.forgot.Fo
 import com.furianrt.mydiary.utils.animateShake
 import com.furianrt.mydiary.utils.hideKeyboard
 import com.furianrt.mydiary.utils.inTransaction
-import com.furianrt.mydiary.utils.isNetworkAvailable
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import kotlinx.android.synthetic.main.bottom_sheet_main.*
 import kotlinx.android.synthetic.main.fragment_login.*
@@ -73,8 +72,6 @@ class LoginFragment : BaseFragment(), LoginContract.MvpView {
 
         return view
     }
-
-    override fun isNetworkAvailable() = context?.isNetworkAvailable() ?: false
 
     override fun showErrorNetworkConnection() {
         image_logo.setImageResource(R.drawable.image_disconnected)

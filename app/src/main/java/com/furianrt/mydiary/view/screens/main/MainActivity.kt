@@ -49,7 +49,6 @@ import com.furianrt.mydiary.view.screens.settings.global.GlobalSettingsActivity
 import com.furianrt.mydiary.utils.dpToPx
 import com.furianrt.mydiary.utils.getDisplayWidth
 import com.furianrt.mydiary.utils.inTransaction
-import com.furianrt.mydiary.utils.isNetworkAvailable
 import com.google.android.gms.ads.AdListener
 import com.google.android.gms.ads.AdRequest
 import com.google.android.material.appbar.AppBarLayout
@@ -122,7 +121,7 @@ class MainActivity : BaseActivity(), MainActivityContract.MvpView,
         mOnDrawerListener = object : ActionBarDrawerToggle(this, drawer, toolbar_main, R.string.open, R.string.close) {
             override fun onDrawerSlide(drawerView: View, slideOffset: Float) {
                 super.onDrawerSlide(drawerView, slideOffset)
-                layout_main_root.translationX = slideOffset * drawerView.width
+                layout_main_root.translationX = slideOffset * drawerView.width * 0.3f
             }
         }
 
@@ -363,11 +362,11 @@ class MainActivity : BaseActivity(), MainActivityContract.MvpView,
     }
 
     override fun setSortDesc() {
-        mMenu?.findItem(R.id.menu_sort)?.setTitle(R.string.sort_new_first)
+        mMenu?.findItem(R.id.menu_sort)?.setTitle(R.string.sort_old_first)
     }
 
     override fun setSortAsc() {
-        mMenu?.findItem(R.id.menu_sort)?.setTitle(R.string.sort_old_first)
+        mMenu?.findItem(R.id.menu_sort)?.setTitle(R.string.sort_new_first)
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -557,8 +556,6 @@ class MainActivity : BaseActivity(), MainActivityContract.MvpView,
             else -> super.onBackPressed()
         }
     }
-
-    override fun networkAvailable() = isNetworkAvailable()
 
     override fun showCategoriesView(noteIds: List<String>) {
         CategoriesDialog.newInstance(noteIds).apply {
