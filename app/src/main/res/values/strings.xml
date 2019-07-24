@@ -72,13 +72,6 @@
     <string name="text">Text</string>
     <string name="load">Load</string>
     <string name="fingerprint">Fingerprint</string>
-    <string name="monday">M</string>
-    <string name="tuesday">Tu</string>
-    <string name="wednesday">W</string>
-    <string name="thursday">Th</string>
-    <string name="friday">F</string>
-    <string name="saturday">Sa</string>
-    <string name="sunday">Su</string>
     <string name="today">Today</string>
     <string name="keep">Keep</string>
     <plurals name="note_delete_confirmation">
@@ -210,14 +203,12 @@
     <string name="notification_sync_title">Sync in progress…</string>
     <string name="notification_sync_content">Please do not disconnect from the network.</string>
     <string name="sync_done">Done!</string>
-    <string name="sync_profile_check">Profile check</string>
     <string name="sync_notes">Loading notes</string>
     <string name="sync_appearance">Loading settings</string>
     <string name="sync_categories">Loading categories</string>
     <string name="sync_tags">Loading tags</string>
     <string name="sync_images">Loading images</string>
     <string name="sync_cleanup">Cleanup</string>
-    <string name="sync_error_profile">Profile check error</string>
     <string name="sync_error_notes">Error loading notes</string>
     <string name="sync_error_appearance">Error loading settings</string>
     <string name="sync_error_categories">Error loading categories</string>
@@ -228,8 +219,6 @@
     <string name="sync_error_forecasts">Error loading forecasts</string>
     <string name="sync_error_images">Error loading images</string>
     <string name="sync_error_cleanup">Cleanup error</string>
-    <string name="sync_note_tags">Loading links</string>
-    <string name="sync_note_locations">Loading links</string>
     <string name="sync_locations">Loading locations</string>
     <string name="sync_forecasts">Loading forecasts</string>
     <string name="sync_error">Error!</string>
@@ -263,7 +252,6 @@
     <string name="activity_pin_create_pin">Create a PIN</string>
     <string name="activity_pin_enter_current_pin">Enter current PIN</string>
     <string name="fragment_backup_email_invalid_email">Invalid email</string>
-    <string name="fragment_backup_email_enter_email">Enter email</string>
     <string name="empty_state_note_list_empty">It\'s empty here!</string>
     <string name="empty_state_note_list_hint">Make your first note!</string>
     <string name="tutorial_note_title">Example note</string>

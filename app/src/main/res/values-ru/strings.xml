@@ -63,13 +63,6 @@
     <string name="text">Текст</string>
     <string name="load">Загрузка</string>
     <string name="fingerprint">Отпечаток пальца</string>
-    <string name="monday">Пн</string>
-    <string name="tuesday">Вт</string>
-    <string name="wednesday">Ср</string>
-    <string name="thursday">Чт</string>
-    <string name="friday">Пт</string>
-    <string name="saturday">Сб</string>
-    <string name="sunday">Вс</string>
     <string name="today">Сегодня</string>
     <string name="keep">Оставить</string>
     <plurals name="note_delete_confirmation">
@@ -197,14 +190,12 @@
     <string name="notification_sync_title">Идет синхронизация…</string>
     <string name="notification_sync_content">Пожалуйста, не отключайтесь от сети</string>
     <string name="sync_done">Готово!</string>
-    <string name="sync_profile_check">Проверка профиля</string>
     <string name="sync_notes">Загрузка записей</string>
     <string name="sync_appearance">Загрузка настроек</string>
     <string name="sync_categories">Загрузка категорий</string>
     <string name="sync_tags">Загрузка тегов</string>
     <string name="sync_images">Загрузка картинок</string>
     <string name="sync_cleanup">Завершение</string>
-    <string name="sync_error_profile">Ошибка проверки профиля</string>
     <string name="sync_error_notes">Ошибка загрузки записей</string>
     <string name="sync_error_appearance">Ошибка загрузки настроек</string>
     <string name="sync_error_categories">Ошибка загрузки папок</string>
@@ -215,8 +206,6 @@
     <string name="sync_error_forecasts">Ошибка загрузки погоды</string>
     <string name="sync_error_images">Ошибка загрузки картинок</string>
     <string name="sync_error_cleanup">Ошибка очистки</string>
-    <string name="sync_note_tags">Загрузка связей</string>
-    <string name="sync_note_locations">Загрузка связей</string>
     <string name="sync_locations">Загрузка мест</string>
     <string name="sync_forecasts">Загрузка прогноза</string>
     <string name="sync_error">Ошибка!</string>
@@ -250,7 +239,6 @@
     <string name="activity_pin_create_pin">Придумайте пароль</string>
     <string name="activity_pin_enter_current_pin">Введите текущий пароль</string>
     <string name="fragment_backup_email_invalid_email">Некорректный email</string>
-    <string name="fragment_backup_email_enter_email">Введите email</string>
     <string name="empty_state_note_list_empty">Тут пусто!</string>
     <string name="empty_state_note_list_hint">Сделай свою первую запись!</string>
     <string name="tutorial_note_title">Туториал</string>

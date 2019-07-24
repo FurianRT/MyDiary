@@ -44,9 +44,9 @@ class AboutProfileFragment : BaseFragment(), AboutProfileContract.MvpView {
         if (lastSyncTime == null) {
             text_last_sync_date?.text = getString(R.string.fragment_about_profile_sync_non)
         } else {
-            val syncTimeStrig = DateTime(lastSyncTime).toString("dd.MM.yyyy", Locale.getDefault()) +
+            val syncTimeString = DateTime(lastSyncTime).toString("dd.MM.yyyy", Locale.getDefault()) +
                     " " + getTime(lastSyncTime, is24TimeFormat)
-            text_last_sync_date.text = syncTimeStrig
+            text_last_sync_date.text = syncTimeString
         }
     }
 
