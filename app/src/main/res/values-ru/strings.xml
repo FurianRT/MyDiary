@@ -65,6 +65,7 @@
     <string name="fingerprint">Отпечаток пальца</string>
     <string name="today">Сегодня</string>
     <string name="keep">Оставить</string>
+    <string name="support">Поддержка</string>
     <plurals name="note_delete_confirmation">
         <item quantity="one">Удалить %d запись?</item>
         <item quantity="few">Удалить %d записи?</item>
@@ -283,4 +284,8 @@
     <string name="low_rate_email_text">Что вам не понравилось в приложении? Мы исправимся, честно.</string>
     <string name="low_rate_email_subject">Serenity отзыв</string>
     <string name="activity_pin_fingerprint_title">Пропускаем только хороших людей</string>
+    <string name="problem_report_settings_title">Сообщить о проблеме</string>
+    <string name="problem_report_settings_summary">Столкнулись с проблемой, или знаете как сделать Serenity еще лучше? Пишите!</string>
+    <string name="rate_app_settings_title">Оцените Serenity</string>
+    <string name="rate_app_settings_summary">Ваша оценка очень-очень поможет нам!</string>
 </resources>

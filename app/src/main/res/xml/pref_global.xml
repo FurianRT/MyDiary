@@ -27,8 +27,8 @@
 
         <SwitchPreference
             android:defaultValue="true"
-            android:key="fingerprint_status"
             android:dependency="security_key"
+            android:key="fingerprint_status"
             android:summaryOff="@string/fingerprint_settings_off"
             android:summaryOn="@string/fingerprint_settings_on"
             android:title="@string/fingerprint"
@@ -142,11 +142,11 @@
 
         <SwitchPreference
             android:defaultValue="true"
+            android:dependency="map_activation"
             android:key="weather_activation"
             android:summaryOff="@string/weather_activation_settings_off"
             android:summaryOn="@string/weather_activation_settings_on"
             android:title="@string/weather_activation_settings_title"
-            android:dependency="map_activation"
             app:iconSpaceReserved="false" />
 
         <ListPreference
@@ -178,6 +178,25 @@
             android:positiveButtonText="@null"
             android:summary="%s"
             android:title="Формат времени"
+            app:iconSpaceReserved="false" />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:key="support"
+        android:title="@string/support"
+        app:iconSpaceReserved="false">
+
+        <Preference
+            android:key="problem_report"
+            android:summary="@string/problem_report_settings_summary"
+            android:title="@string/problem_report_settings_title"
+            app:iconSpaceReserved="false" />
+
+        <Preference
+            android:key="rate_app"
+            android:summary="@string/rate_app_settings_summary"
+            android:title="@string/rate_app_settings_title"
             app:iconSpaceReserved="false" />
 
     </PreferenceCategory>

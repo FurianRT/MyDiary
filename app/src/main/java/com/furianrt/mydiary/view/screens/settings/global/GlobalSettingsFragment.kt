@@ -3,6 +3,7 @@ package com.furianrt.mydiary.view.screens.settings.global
 import android.app.Activity
 import android.content.Intent
 import android.content.SharedPreferences
+import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
 import androidx.preference.Preference
@@ -47,6 +48,18 @@ class GlobalSettingsFragment : PreferenceFragmentCompat(), BaseView, GlobalSetti
         findPreference<SwitchPreference>(PreferencesHelper.SECURITY_KEY)?.onPreferenceClickListener =
                 Preference.OnPreferenceClickListener {
                     mPresenter.onPrefSecurityKeyClick()
+                    return@OnPreferenceClickListener true
+                }
+
+        findPreference<Preference>(PreferencesHelper.RATE_APP_PREF_BUTTON)?.onPreferenceClickListener =
+                Preference.OnPreferenceClickListener {
+                    mPresenter.onPrefRateAppClick()
+                    return@OnPreferenceClickListener true
+                }
+
+        findPreference<Preference>(PreferencesHelper.REPORT_PROBLEM_PREF_BUTTON)?.onPreferenceClickListener =
+                Preference.OnPreferenceClickListener {
+                    mPresenter.onPrefReportProblemClick()
                     return@OnPreferenceClickListener true
                 }
     }
@@ -105,6 +118,20 @@ class GlobalSettingsFragment : PreferenceFragmentCompat(), BaseView, GlobalSetti
     override fun showRemovePasswordView() {
         findPreference<SwitchPreference>(PreferencesHelper.SECURITY_KEY)?.isChecked = true
         startActivityForResult(PinActivity.newIntentModeRemove(requireActivity()), REQUEST_CODE_REMOVE_PIN)
+    }
+
+    override fun openAppPage() {
+        val playMarketPage = "market://details?id=${requireContext().packageName}"
+        val intent = Intent(Intent.ACTION_VIEW)
+        intent.data = Uri.parse(playMarketPage)
+        startActivity(intent)
+    }
+
+    override fun sendEmailToSupport(supportEmail: String) {
+        val intent = Intent(Intent.ACTION_SENDTO, Uri.parse("mailto:$supportEmail"))
+        intent.putExtra(Intent.EXTRA_SUBJECT, getString(R.string.low_rate_email_subject))
+        intent.putExtra(Intent.EXTRA_TEXT, getString(R.string.low_rate_email_text))
+        startActivity(Intent.createChooser(intent, getString(R.string.low_rate_email_title)))
     }
 
     override fun onStart() {

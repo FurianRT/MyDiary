@@ -74,6 +74,7 @@
     <string name="fingerprint">Fingerprint</string>
     <string name="today">Today</string>
     <string name="keep">Keep</string>
+    <string name="support">Support</string>
     <plurals name="note_delete_confirmation">
         <item quantity="zero">Delete %d notes?</item>
         <item quantity="one">Delete %d note?</item>
@@ -296,4 +297,8 @@
     <string name="low_rate_email_text">What you did not like in our app?</string>
     <string name="low_rate_email_subject">Serenity review</string>
     <string name="activity_pin_fingerprint_title">Only awesome people allowed</string>
+    <string name="problem_report_settings_title">Report a problem</string>
+    <string name="problem_report_settings_summary">If you have a problem or suggestions for the app, please let as know</string>
+    <string name="rate_app_settings_title">Rate Serenity</string>
+    <string name="rate_app_settings_summary">Let as know what you think about Serenity</string>
 </resources>

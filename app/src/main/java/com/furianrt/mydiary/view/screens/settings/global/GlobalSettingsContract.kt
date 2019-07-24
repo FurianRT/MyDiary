@@ -9,6 +9,8 @@ interface GlobalSettingsContract {
         fun showCreatePasswordView()
         fun showRemovePasswordView()
         fun showBackupEmail(email: String)
+        fun openAppPage()
+        fun sendEmailToSupport(supportEmail: String)
     }
 
     abstract class Presenter : BaseMvpPresenter<MvpView>() {
@@ -16,5 +18,7 @@ interface GlobalSettingsContract {
         abstract fun onPasswordCreated()
         abstract fun onPasswordRemoved()
         abstract fun onViewCreate()
+        abstract fun onPrefRateAppClick()
+        abstract fun onPrefReportProblemClick()
     }
 }
