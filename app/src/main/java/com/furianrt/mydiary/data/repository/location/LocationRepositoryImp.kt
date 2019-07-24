@@ -2,7 +2,8 @@ package com.furianrt.mydiary.data.repository.location
 
 import com.furianrt.mydiary.data.auth.AuthHelper
 import com.furianrt.mydiary.data.cloud.CloudHelper
-import com.furianrt.mydiary.data.database.NoteDatabase
+import com.furianrt.mydiary.data.database.LocationDao
+import com.furianrt.mydiary.data.database.NoteLocationDao
 import com.furianrt.mydiary.data.model.MyLocation
 import com.furianrt.mydiary.data.model.NoteLocation
 import com.furianrt.mydiary.data.prefs.PreferencesHelper
@@ -13,7 +14,8 @@ import io.reactivex.Single
 import javax.inject.Inject
 
 class LocationRepositoryImp @Inject constructor(
-        private val database: NoteDatabase,
+        private val locationDao: LocationDao,
+        private val noteLocationDao: NoteLocationDao,
         private val prefs: PreferencesHelper,
         private val cloud: CloudHelper,
         private val auth: AuthHelper,
@@ -21,57 +23,60 @@ class LocationRepositoryImp @Inject constructor(
 ) : LocationRepository {
 
     override fun insertNoteLocation(noteLocation: NoteLocation): Completable =
-            database.noteLocationDao().insert(noteLocation)
+            noteLocationDao.insert(noteLocation)
                     .subscribeOn(rxScheduler)
 
     override fun insertNoteLocation(noteLocation: List<NoteLocation>): Completable =
-            database.noteLocationDao().insert(noteLocation)
+            noteLocationDao.insert(noteLocation)
                     .subscribeOn(rxScheduler)
 
     override fun insertLocation(location: MyLocation): Completable =
-            database.locationDao().insert(location)
+            locationDao.insert(location)
                     .subscribeOn(rxScheduler)
 
     override fun insertLocation(locations: List<MyLocation>): Completable =
-            database.locationDao().insert(locations)
+            locationDao.insert(locations)
                     .subscribeOn(rxScheduler)
 
     override fun updateNoteLocationsSync(noteLocations: List<NoteLocation>): Completable =
-            database.noteLocationDao().update(noteLocations)
+            noteLocationDao.update(noteLocations)
                     .subscribeOn(rxScheduler)
 
     override fun updateLocationsSync(locations: List<MyLocation>): Completable =
-            database.locationDao().update(locations)
+            locationDao.update(locations)
+                    .subscribeOn(rxScheduler)
+
+    override fun deleteLocations(locationIds: List<String>): Completable =
+            noteLocationDao.deleteWithLocationId(locationIds)
+                    .andThen(locationDao.delete(locationIds))
                     .subscribeOn(rxScheduler)
 
     override fun cleanupLocations(): Completable =
-            database.locationDao().cleanup()
+            locationDao.cleanup()
                     .subscribeOn(rxScheduler)
 
     override fun cleanupNoteLocations(): Completable =
-            database.noteLocationDao().cleanup()
+            noteLocationDao.cleanup()
                     .subscribeOn(rxScheduler)
 
     override fun getDeletedNoteLocations(): Flowable<List<NoteLocation>> =
-            database.noteLocationDao()
-                    .getDeletedNoteLocations()
+            noteLocationDao.getDeletedNoteLocations()
                     .subscribeOn(rxScheduler)
 
     override fun getDeletedLocations(): Flowable<List<MyLocation>> =
-            database.locationDao()
-                    .getDeletedLocations()
+            locationDao.getDeletedLocations()
                     .subscribeOn(rxScheduler)
 
     override fun getLocationsForNote(noteId: String): Flowable<List<MyLocation>> =
-            database.noteLocationDao().getLocationsForNote(noteId)
+            noteLocationDao.getLocationsForNote(noteId)
+                    .subscribeOn(rxScheduler)
 
     override fun getAllDbLocations(): Flowable<List<MyLocation>> =
-            database.locationDao().getAllLocations()
+            locationDao.getAllLocations()
                     .subscribeOn(rxScheduler)
 
     override fun getAllNoteLocations(): Flowable<List<NoteLocation>> =
-            database.noteLocationDao()
-                    .getAllNoteLocations()
+            noteLocationDao.getAllNoteLocations()
                     .subscribeOn(rxScheduler)
 
     override fun saveNoteLocationsInCloud(noteLocations: List<NoteLocation>): Completable =

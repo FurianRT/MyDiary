@@ -2,7 +2,7 @@ package com.furianrt.mydiary.data.repository.appearance
 
 import com.furianrt.mydiary.data.auth.AuthHelper
 import com.furianrt.mydiary.data.cloud.CloudHelper
-import com.furianrt.mydiary.data.database.NoteDatabase
+import com.furianrt.mydiary.data.database.AppearanceDao
 import com.furianrt.mydiary.data.model.MyNoteAppearance
 import com.furianrt.mydiary.data.prefs.PreferencesHelper
 import io.reactivex.Completable
@@ -12,7 +12,7 @@ import io.reactivex.Single
 import javax.inject.Inject
 
 class AppearanceRepositoryImp @Inject constructor(
-        private val database: NoteDatabase,
+        private val appearanceDao: AppearanceDao,
         private val prefs: PreferencesHelper,
         private val cloud: CloudHelper,
         private val auth: AuthHelper,
@@ -20,41 +20,39 @@ class AppearanceRepositoryImp @Inject constructor(
 ) : AppearanceRepository {
 
     override fun insertAppearance(appearance: MyNoteAppearance): Completable =
-            database.appearanceDao().insert(appearance)
+            appearanceDao.insert(appearance)
                     .subscribeOn(rxScheduler)
 
     override fun insertAppearance(appearances: List<MyNoteAppearance>): Completable =
-            database.appearanceDao().insert(appearances)
+            appearanceDao.insert(appearances)
                     .subscribeOn(rxScheduler)
 
     override fun updateAppearance(appearance: MyNoteAppearance): Completable =
-            database.appearanceDao().update(appearance.apply { syncWith.clear() })
-                    .andThen(database.noteDao().getNote(appearance.appearanceId))
-                    .map { it.apply { it.syncWith.clear() } }
-                    .flatMapCompletable { database.noteDao().update(it) }
+            appearanceDao.update(appearance)
                     .subscribeOn(rxScheduler)
 
     override fun updateAppearancesSync(appearances: List<MyNoteAppearance>): Completable =
-            database.appearanceDao().update(appearances)
+            appearanceDao.update(appearances)
+                    .subscribeOn(rxScheduler)
+
+    override fun deleteAppearance(noteId: String): Completable =
+            appearanceDao.delete(noteId)
                     .subscribeOn(rxScheduler)
 
     override fun cleanupAppearances(): Completable =
-            database.appearanceDao().cleanup()
+            appearanceDao.cleanup()
                     .subscribeOn(rxScheduler)
 
     override fun getNoteAppearance(noteId: String): Flowable<MyNoteAppearance> =
-            database.appearanceDao()
-                    .getNoteAppearance(noteId)
+            appearanceDao.getNoteAppearance(noteId)
                     .subscribeOn(rxScheduler)
 
     override fun getDeletedAppearances(): Flowable<List<MyNoteAppearance>> =
-            database.appearanceDao()
-                    .getDeletedAppearances()
+            appearanceDao.getDeletedAppearances()
                     .subscribeOn(rxScheduler)
 
     override fun getAllNoteAppearances(): Flowable<List<MyNoteAppearance>> =
-            database.appearanceDao()
-                    .getAllNoteAppearances()
+            appearanceDao.getAllNoteAppearances()
                     .subscribeOn(rxScheduler)
 
     override fun saveAppearancesInCloud(appearances: List<MyNoteAppearance>): Completable =

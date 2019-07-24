@@ -75,18 +75,12 @@ class DrawerMenuFragment : BaseFragment(), DrawerMenuContract.MvpView,
 
     private val mBroadcastReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
-            SyncService.getProgressMessage(intent)?.let {
+            SyncService.getProgressMessage(intent)?.let { message ->
                 view_sync.alpha = 0.35f
-                if (it.hasError) {
-                    val bundle = Bundle()
-                    bundle.putInt(MyAnalytics.BUNDLE_TASK_INDEX, it.taskIndex)
-                    analytics.sendEvent(MyAnalytics.EVENT_SYNC_FAILED, bundle)
-                    button_sync.text = it.message
-                    view_sync.layoutParams.width = button_sync.width
-                    view_sync.requestLayout()
-                    animateProgressAlpha()
+                if (message.hasError) {
+                    showErrorSync(message)
                 } else {
-                    showSyncProgress(it)
+                    showSyncProgress(message)
                 }
             }
         }
@@ -194,6 +188,16 @@ class DrawerMenuFragment : BaseFragment(), DrawerMenuContract.MvpView,
         view_sync?.requestLayout()
     }
 
+    private fun showErrorSync(progressMessage: SyncProgressMessage) {
+        val bundle = Bundle()
+        bundle.putInt(MyAnalytics.BUNDLE_TASK_INDEX, progressMessage.taskIndex)
+        analytics.sendEvent(MyAnalytics.EVENT_SYNC_FAILED, bundle)
+        button_sync.text = progressMessage.message
+        view_sync.layoutParams.width = button_sync.width
+        view_sync.requestLayout()
+        animateProgressAlpha()
+    }
+
     private fun animateProgressAlpha() {
         view_sync.animate()
                 .alpha(0f)
@@ -225,42 +229,51 @@ class DrawerMenuFragment : BaseFragment(), DrawerMenuContract.MvpView,
     }
 
     override fun showSearchEntries(entries: SearchEntries) {
-        val dateGroup = SearchGroup(
+        val groups = mutableListOf<SearchGroup>()
+
+        groups.add(SearchGroup(
                 SearchGroup.TYPE_DATE,
                 getString(R.string.date),
                 listOf(SearchItem(type = SearchItem.TYPE_DATE, dateColors = entries.notes.toDateColors()))
-        )
-        val tagGroup = SearchGroup(
+        ))
+
+        groups.add(SearchGroup(
                 SearchGroup.TYPE_TAG,
                 getString(R.string.tags),
                 entries.tags.map { SearchItem(type = SearchItem.TYPE_TAG, tag = it) }
                         .toMutableList()
                         .apply { add(SearchItem(type = SearchItem.TYPE_NO_TAGS)) }
-        )
-        val categoryGroup = SearchGroup(
+        ))
+
+        groups.add(SearchGroup(
                 SearchGroup.TYPE_CATEGORY,
                 getString(R.string.categories),
                 entries.categories.map { SearchItem(type = SearchItem.TYPE_CATEGORY, category = it) }
                         .toMutableList()
                         .apply { add(SearchItem(type = SearchItem.TYPE_NO_CATEGORY)) }
-        )
-        val moodGroup = SearchGroup(
-                SearchGroup.TYPE_MOOD,
-                getString(R.string.moods),
-                entries.moods.map { SearchItem(type = SearchItem.TYPE_MOOD, mood = it) }
-                        .toMutableList()
-                        .apply { add(SearchItem(type = SearchItem.TYPE_NO_MOOD)) }
-        )
-        val locationGroup = SearchGroup(
-                SearchGroup.TYPE_LOCATION,
-                getString(R.string.locations),
-                entries.locations.map { SearchItem(type = SearchItem.TYPE_LOCATION, location = it) }
-                        .toMutableList()
-                        .apply { add(SearchItem(type = SearchItem.TYPE_NO_LOCATION)) }
-        )
-        val groupList = mutableListOf(dateGroup, tagGroup, categoryGroup, moodGroup, locationGroup)
+        ))
 
-        mSearchListAdapter.submitGroups(groupList)
+        entries.moods?.let { moods ->
+            groups.add(SearchGroup(
+                    SearchGroup.TYPE_MOOD,
+                    getString(R.string.moods),
+                    moods.map { SearchItem(type = SearchItem.TYPE_MOOD, mood = it) }
+                            .toMutableList()
+                            .apply { add(SearchItem(type = SearchItem.TYPE_NO_MOOD)) }
+            ))
+        }
+
+        entries.locations?.let { locations ->
+            groups.add(SearchGroup(
+                    SearchGroup.TYPE_LOCATION,
+                    getString(R.string.locations),
+                    locations.map { SearchItem(type = SearchItem.TYPE_LOCATION, location = it) }
+                            .toMutableList()
+                            .apply { add(SearchItem(type = SearchItem.TYPE_NO_LOCATION)) }
+            ))
+        }
+
+        mSearchListAdapter.submitGroups(groups)
     }
 
     override fun onTagCheckStateChange(tag: MyTag, checked: Boolean) {

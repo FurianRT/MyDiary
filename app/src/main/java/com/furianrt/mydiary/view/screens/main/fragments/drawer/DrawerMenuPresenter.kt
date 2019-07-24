@@ -1,14 +1,11 @@
 package com.furianrt.mydiary.view.screens.main.fragments.drawer
 
 import com.furianrt.mydiary.data.model.*
-import com.furianrt.mydiary.data.model.pojo.SearchEntries
 import com.furianrt.mydiary.domain.check.CheckLogOutUseCase
 import com.furianrt.mydiary.domain.check.IsSignedInUseCase
 import com.furianrt.mydiary.domain.get.*
-import io.reactivex.Flowable
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.functions.Function5
 import io.reactivex.schedulers.Schedulers
 import net.danlew.android.joda.DateUtils
 import org.joda.time.DateTime
@@ -18,15 +15,11 @@ class DrawerMenuPresenter @Inject constructor(
        private val getNotes: GetNotesUseCase,
        private val getImageCount: GetImageCountUseCase,
        private val getProfile: GetProfileUseCase,
-       private val getFullNotes: GetFullNotesUseCase,
-       private val getTags: GetTagsUseCase,
-       private val getMoods: GetMoodsUseCase,
-       private val getCategories: GetCategoriesUseCase,
        private val isSignedIn: IsSignedInUseCase,
        private val getLastSyncMessage: GetLastSyncMessageUseCase,
        private val getAuthState: GetAuthStateUseCase,
        private val checkLogOut: CheckLogOutUseCase,
-       private val getLocations: GetLocationsUseCase
+       private val getSearchEntries: GetSearchEntriesUseCase
 ) : DrawerMenuContract.Presenter() {
 
     override fun attachView(view: DrawerMenuContract.MvpView) {
@@ -80,15 +73,7 @@ class DrawerMenuPresenter @Inject constructor(
     }
 
     private fun loadSearchEntries() {
-        addDisposable(Flowable.combineLatest(getFullNotes.invoke(),
-                getTags.invoke(),
-                getCategories.invoke(),
-                getLocations.invoke().map { locations -> locations.distinctBy { it.name } },
-                getMoods.invoke().toFlowable(),
-                Function5<List<MyNoteWithProp>, List<MyTag>, List<MyCategory>, List<MyLocation>, List<MyMood>, SearchEntries>
-                { notes, tags, categories, locations, moods ->
-                    SearchEntries(notes, tags, categories, locations, moods)
-                })
+        addDisposable(getSearchEntries.invoke()
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { view?.showSearchEntries(it) })
     }

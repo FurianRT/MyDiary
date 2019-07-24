@@ -64,16 +64,6 @@ abstract class BaseActivity : AppCompatActivity(), BaseView, BillingProcessor.IB
         }
     }
 
-    override fun onBackPressed() {
-        super.onBackPressed()
-        overridePendingTransition(R.anim.screen_left_in, R.anim.screen_right_out)
-    }
-
-    override fun finish() {
-        super.finish()
-        overridePendingTransition(R.anim.screen_left_in, R.anim.screen_right_out)
-    }
-
     override fun startActivity(intent: Intent?) {
         super.startActivity(intent)
         overridePendingTransition(R.anim.screen_right_in, R.anim.screen_left_out)

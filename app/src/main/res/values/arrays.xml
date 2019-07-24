@@ -76,7 +76,7 @@
     </string-array>
 
     <string-array name="pref_key_frequency_values">
-        <item>1000</item>
+        <item>2000</item>
         <item>15000</item>
         <item>30000</item>
         <item>60000</item>

@@ -2,7 +2,7 @@ package com.furianrt.mydiary.data.repository.profile
 
 import com.furianrt.mydiary.data.auth.AuthHelper
 import com.furianrt.mydiary.data.cloud.CloudHelper
-import com.furianrt.mydiary.data.database.NoteDatabase
+import com.furianrt.mydiary.data.database.ProfileDao
 import com.furianrt.mydiary.data.model.MyProfile
 import io.reactivex.Completable
 import io.reactivex.Observable
@@ -11,27 +11,26 @@ import io.reactivex.Single
 import javax.inject.Inject
 
 class ProfileRepositoryImp @Inject constructor(
-        private val database: NoteDatabase,
+        private val profileDao: ProfileDao,
         private val cloud: CloudHelper,
         private val auth: AuthHelper,
         private val rxScheduler: Scheduler
 ) : ProfileRepository {
 
     override fun insertProfile(profile: MyProfile): Completable =
-            database.profileDao().insert(profile)
+            profileDao.insert(profile)
                     .subscribeOn(rxScheduler)
 
     override fun updateDbProfile(profile: MyProfile): Completable =
-            database.profileDao().update(profile)
+            profileDao.update(profile)
                     .subscribeOn(rxScheduler)
 
     override fun clearDbProfile(): Completable =
-            database.profileDao().clearProfile()
+            profileDao.clearProfile()
                     .subscribeOn(rxScheduler)
 
     override fun getDbProfile(): Observable<MyProfile> =
-            database.profileDao()
-                    .getProfile()
+            profileDao.getProfile()
                     .subscribeOn(rxScheduler)
 
     override fun isProfileExists(email: String): Single<Boolean> =
@@ -39,13 +38,12 @@ class ProfileRepositoryImp @Inject constructor(
                     .subscribeOn(rxScheduler)
 
     override fun getDbProfileCount(): Single<Int> =
-            database.profileDao()
-                    .getProfileCount()
+            profileDao.getProfileCount()
                     .subscribeOn(rxScheduler)
 
     override fun updateProfile(profile: MyProfile): Completable =
             cloud.saveProfile(profile)
-                    .andThen(database.profileDao().update(profile).subscribeOn(rxScheduler))
+                    .andThen(profileDao.update(profile).subscribeOn(rxScheduler))
                     .subscribeOn(rxScheduler)
 
     override fun observeAuthState(): Observable<Int> =
@@ -68,7 +66,7 @@ class ProfileRepositoryImp @Inject constructor(
                         Completable.concat(listOf(
                                 cloud.saveProfile(profile).doOnError { auth.signOut() }
                                         .subscribeOn(rxScheduler),
-                                database.profileDao().insert(profile).doOnError { auth.signOut() }
+                                profileDao.insert(profile).doOnError { auth.signOut() }
                                         .subscribeOn(rxScheduler)
                         ))
                     }
@@ -84,7 +82,7 @@ class ProfileRepositoryImp @Inject constructor(
                                 .doOnError { auth.signOut() }
                     }
                     .flatMapCompletable { profile ->
-                        database.profileDao().insert(profile)
+                        profileDao.insert(profile)
                                 .doOnError { auth.signOut() }
                                 .subscribeOn(rxScheduler)
                     }
@@ -92,7 +90,7 @@ class ProfileRepositoryImp @Inject constructor(
 
     override fun signOut(): Completable =
             auth.signOut()
-                    .andThen(database.profileDao().clearProfile())
+                    .andThen(profileDao.clearProfile())
                     .subscribeOn(rxScheduler)
 
     override fun updatePassword(oldPassword: String, newPassword: String): Completable =

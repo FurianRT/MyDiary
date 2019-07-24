@@ -16,6 +16,7 @@ interface ForecastRepository {
     fun insertForecast(forecasts: List<MyForecast>): Completable
     fun insertForecast(forecast: MyForecast): Completable
     fun updateForecastsSync(forecasts: List<MyForecast>): Completable
+    fun deleteForecast(noteId: String): Completable
     fun deleteForecastsFromCloud(forecasts: List<MyForecast>): Completable
     fun cleanupForecasts(): Completable
     fun getDeletedForecasts(): Flowable<List<MyForecast>>

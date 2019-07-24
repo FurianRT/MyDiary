@@ -402,6 +402,10 @@ class NoteFragmentPresenter @Inject constructor(
         addDisposable(getFullNotes.invoke(mNoteId)
                 .firstOrError()
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { note -> view?.shareNote(note) })
+                .subscribe { note ->
+                    if (note.isPresent) {
+                        view?.shareNote(note.get())
+                    }
+                })
     }
 }

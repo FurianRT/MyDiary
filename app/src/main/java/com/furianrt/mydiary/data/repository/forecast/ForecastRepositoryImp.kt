@@ -3,7 +3,7 @@ package com.furianrt.mydiary.data.repository.forecast
 import com.furianrt.mydiary.data.api.forecast.WeatherApiService
 import com.furianrt.mydiary.data.auth.AuthHelper
 import com.furianrt.mydiary.data.cloud.CloudHelper
-import com.furianrt.mydiary.data.database.NoteDatabase
+import com.furianrt.mydiary.data.database.ForecastDao
 import com.furianrt.mydiary.data.model.MyForecast
 import com.furianrt.mydiary.data.prefs.PreferencesHelper
 import io.reactivex.Completable
@@ -13,7 +13,7 @@ import io.reactivex.Single
 import javax.inject.Inject
 
 class ForecastRepositoryImp @Inject constructor(
-        private val database: NoteDatabase,
+        private val forecastDao: ForecastDao,
         private val prefs: PreferencesHelper,
         private val weatherApi: WeatherApiService,
         private val cloud: CloudHelper,
@@ -22,24 +22,27 @@ class ForecastRepositoryImp @Inject constructor(
 ) : ForecastRepository {
 
     override fun insertForecast(forecasts: List<MyForecast>): Completable =
-            database.forecastDao().insert(forecasts)
+            forecastDao.insert(forecasts)
                     .subscribeOn(rxScheduler)
 
     override fun insertForecast(forecast: MyForecast): Completable =
-            database.forecastDao().insert(forecast)
+            forecastDao.insert(forecast)
                     .subscribeOn(rxScheduler)
 
     override fun updateForecastsSync(forecasts: List<MyForecast>): Completable =
-            database.forecastDao().update(forecasts)
+            forecastDao.update(forecasts)
+                    .subscribeOn(rxScheduler)
+
+    override fun deleteForecast(noteId: String): Completable =
+            forecastDao.delete(noteId)
                     .subscribeOn(rxScheduler)
 
     override fun cleanupForecasts(): Completable =
-            database.forecastDao().cleanup()
+            forecastDao.cleanup()
                     .subscribeOn(rxScheduler)
 
     override fun getDeletedForecasts(): Flowable<List<MyForecast>> =
-            database.forecastDao()
-                    .getDeletedForecasts()
+            forecastDao.getDeletedForecasts()
                     .subscribeOn(rxScheduler)
 
     override fun loadForecast(noteId: String, lat: Double, lon: Double): Single<MyForecast> =
@@ -54,7 +57,7 @@ class ForecastRepositoryImp @Inject constructor(
                     .subscribeOn(rxScheduler)
 
     override fun getAllDbForecasts(): Single<List<MyForecast>> =
-            database.forecastDao().getAllForecasts()
+            forecastDao.getAllForecasts()
                     .subscribeOn(rxScheduler)
 
     override fun saveForecastsInCloud(forecasts: List<MyForecast>): Completable =

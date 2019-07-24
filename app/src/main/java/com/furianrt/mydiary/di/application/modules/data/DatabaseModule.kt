@@ -10,7 +10,7 @@ import androidx.room.RoomDatabase
 import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
 import com.furianrt.mydiary.R
-import com.furianrt.mydiary.data.database.NoteDatabase
+import com.furianrt.mydiary.data.database.*
 import com.furianrt.mydiary.data.model.*
 import com.furianrt.mydiary.data.storage.StorageHelper
 import com.furianrt.mydiary.di.application.component.AppScope
@@ -76,6 +76,54 @@ class DatabaseModule {
                 .build()
 
     }
+
+    @Provides
+    @AppScope
+    fun provideMoodDao(database: NoteDatabase): MoodDao = database.moodDao()
+
+    @Provides
+    @AppScope
+    fun provideAppearanceDao(database: NoteDatabase): AppearanceDao = database.appearanceDao()
+
+    @Provides
+    @AppScope
+    fun provideCategoryDao(database: NoteDatabase): CategoryDao = database.categoryDao()
+
+    @Provides
+    @AppScope
+    fun provideForecastDao(database: NoteDatabase): ForecastDao = database.forecastDao()
+
+    @Provides
+    @AppScope
+    fun provideHeaderImageDao(database: NoteDatabase): HeaderImageDao = database.headerImageDao()
+
+    @Provides
+    @AppScope
+    fun provideImageDao(database: NoteDatabase): ImageDao = database.imageDao()
+
+    @Provides
+    @AppScope
+    fun provideLocationDao(database: NoteDatabase): LocationDao = database.locationDao()
+
+    @Provides
+    @AppScope
+    fun provideNoteDao(database: NoteDatabase): NoteDao = database.noteDao()
+
+    @Provides
+    @AppScope
+    fun provideNoteLocationDao(database: NoteDatabase): NoteLocationDao = database.noteLocationDao()
+
+    @Provides
+    @AppScope
+    fun provideNoteTagDao(database: NoteDatabase): NoteTagDao = database.noteTagDao()
+
+    @Provides
+    @AppScope
+    fun provideProfileDao(database: NoteDatabase): ProfileDao = database.profileDao()
+
+    @Provides
+    @AppScope
+    fun provideTagDao(database: NoteDatabase): TagDao = database.tagDao()
 
     private fun createDefaultProperties(db: SupportSQLiteDatabase, context: Context) {
         with(ContentValues()) {

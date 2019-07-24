@@ -1,6 +1,6 @@
 package com.furianrt.mydiary.data.auth
 
-import com.furianrt.mydiary.data.model.pojo.MyUser
+import com.furianrt.mydiary.data.auth.model.MyUser
 import io.reactivex.Completable
 import io.reactivex.Observable
 import io.reactivex.Single

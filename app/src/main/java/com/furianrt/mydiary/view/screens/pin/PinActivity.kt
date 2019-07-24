@@ -239,11 +239,6 @@ class PinActivity : BaseActivity(), PinContract.MvpView, BackupEmailFragment.OnB
         }
     }
 
-    override fun finish() {
-        super.finish()
-        overridePendingTransition(R.anim.activity_stay_slide_bottom, R.anim.slide_bottom_down)
-    }
-
     override fun onStart() {
         super.onStart()
         mPresenter.attachView(this)

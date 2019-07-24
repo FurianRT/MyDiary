@@ -20,6 +20,7 @@ import com.furianrt.mydiary.domain.check.IsPinEnabledUseCase
 import com.furianrt.mydiary.domain.get.GetPinRequestDelayUseCase
 import com.furianrt.mydiary.domain.save.ResetSyncProgressUseCase
 import com.furianrt.mydiary.view.general.GlideApp
+import com.furianrt.mydiary.view.screens.main.MainActivity
 import com.furianrt.mydiary.view.screens.pin.PinActivity
 import com.google.android.gms.ads.MobileAds
 import com.jakewharton.threetenabp.AndroidThreeTen
@@ -100,6 +101,15 @@ class MyApp : Application(), Application.ActivityLifecycleCallbacks {
 
     override fun onActivityPaused(activity: Activity?) {
         setAuthorized(true)
+        activity?.run {
+            if (isFinishing) {
+                if (this is PinActivity) {
+                    overridePendingTransition(R.anim.activity_stay_slide_bottom, R.anim.slide_bottom_down)
+                } else if (this !is MainActivity) {
+                    overridePendingTransition(R.anim.screen_left_in, R.anim.screen_right_out)
+                }
+            }
+        }
     }
 
     override fun onActivityStopped(activity: Activity?) {
@@ -193,10 +203,8 @@ class MyApp : Application(), Application.ActivityLifecycleCallbacks {
 * добавить превью возможностей дневника
 * изменить дизайн даты в списке заметок
 * изменить дизайн окна профиля
-*   убирать настроение и локацию из поиска, если они отключены в настройках
-*   сделать кэширование данных
-*   перенести все лишнее из дата слоя
 *   липкие заголовки тупят при поиске
+*   сделать пейджер на экране премиума
 *
 * */
 

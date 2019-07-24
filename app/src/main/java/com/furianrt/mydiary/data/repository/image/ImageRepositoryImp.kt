@@ -3,7 +3,8 @@ package com.furianrt.mydiary.data.repository.image
 import com.furianrt.mydiary.data.api.images.ImageApiService
 import com.furianrt.mydiary.data.auth.AuthHelper
 import com.furianrt.mydiary.data.cloud.CloudHelper
-import com.furianrt.mydiary.data.database.NoteDatabase
+import com.furianrt.mydiary.data.database.HeaderImageDao
+import com.furianrt.mydiary.data.database.ImageDao
 import com.furianrt.mydiary.data.model.MyHeaderImage
 import com.furianrt.mydiary.data.model.MyImage
 import com.furianrt.mydiary.data.prefs.PreferencesHelper
@@ -13,7 +14,8 @@ import org.joda.time.DateTime
 import javax.inject.Inject
 
 class ImageRepositoryImp @Inject constructor(
-        private val database: NoteDatabase,
+        private val imageDao: ImageDao,
+        private val headerImageDao: HeaderImageDao,
         private val prefs: PreferencesHelper,
         private val storage: StorageHelper,
         private val imageApi: ImageApiService,
@@ -23,36 +25,36 @@ class ImageRepositoryImp @Inject constructor(
 ) : ImageRepository {
 
     override fun insertImage(image: MyImage): Completable =
-            database.imageDao().insert(image)
+            imageDao.insert(image)
                     .subscribeOn(rxScheduler)
 
     override fun insertImages(images: List<MyImage>): Completable =
-            database.imageDao().insert(images)
+            imageDao.insert(images)
                     .subscribeOn(rxScheduler)
 
     override fun insertHeaderImage(headerImage: MyHeaderImage): Completable =
-            database.headerImageDao().insert(headerImage)
+            headerImageDao.insert(headerImage)
                     .subscribeOn(rxScheduler)
 
     override fun updateImage(image: MyImage): Completable =
-            database.imageDao().update(image.apply { syncWith.clear() })
+            imageDao.update(image.apply { syncWith.clear() })
                     .subscribeOn(rxScheduler)
 
     override fun updateImage(images: List<MyImage>): Completable =
-            database.imageDao().update(images.map { it.apply { syncWith.clear() } })
+            imageDao.update(images.map { it.apply { syncWith.clear() } })
                     .subscribeOn(rxScheduler)
 
     override fun updateImageSync(images: List<MyImage>): Completable =
-            database.imageDao().update(images)
+            imageDao.update(images)
                     .subscribeOn(rxScheduler)
 
     override fun deleteImage(imageName: String): Completable =
-            database.imageDao().delete(imageName)
+            imageDao.delete(imageName)
                     .andThen(Completable.fromCallable { storage.deleteFile(imageName) })
                     .subscribeOn(rxScheduler)
 
     override fun deleteImage(imageNames: List<String>): Completable =
-            database.imageDao().delete(imageNames)
+            imageDao.delete(imageNames)
                     .andThen(Observable.fromIterable(imageNames))
                     .flatMapSingle { Single.fromCallable { storage.deleteFile(it) } }
                     .collectInto(mutableListOf<Boolean>()) { l, i -> l.add(i) }
@@ -64,17 +66,15 @@ class ImageRepositoryImp @Inject constructor(
                     .subscribeOn(rxScheduler)
 
     override fun cleanupImages(): Completable =
-            database.imageDao().cleanup()
+            imageDao.cleanup()
                     .subscribeOn(rxScheduler)
 
     override fun getAllImages(): Flowable<List<MyImage>> =
-            database.imageDao()
-                    .getAllImages()
+            imageDao.getAllImages()
                     .subscribeOn(rxScheduler)
 
     override fun getDeletedImages(): Flowable<List<MyImage>> =
-            database.imageDao()
-                    .getDeletedImages()
+            imageDao.getDeletedImages()
                     .subscribeOn(rxScheduler)
 
     override fun saveImageToStorage(image: MyImage): Single<MyImage> =
@@ -83,15 +83,15 @@ class ImageRepositoryImp @Inject constructor(
                     .subscribeOn(rxScheduler)
 
     override fun getImagesForNote(noteId: String): Flowable<List<MyImage>> =
-            database.imageDao().getImagesForNote(noteId)
+            imageDao.getImagesForNote(noteId)
                     .subscribeOn(rxScheduler)
 
     override fun getImageCount(): Flowable<Int> =
-            database.imageDao().getCount()
+            imageDao.getCount()
                     .subscribeOn(rxScheduler)
 
     override fun getHeaderImages(): Flowable<List<MyHeaderImage>> =
-            database.headerImageDao().getHeaderImages()
+            headerImageDao.getHeaderImages()
                     .map { it.sortedByDescending { image -> image.addedTime } }
                     .subscribeOn(rxScheduler)
 

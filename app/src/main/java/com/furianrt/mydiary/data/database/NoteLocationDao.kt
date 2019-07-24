@@ -18,6 +18,9 @@ interface NoteLocationDao {
     @Update
     fun update(noteLocations: List<NoteLocation>): Completable
 
+    @Query("UPDATE NoteLocation SET is_notelocation_deleted = 1, notelocation_sync_with = '[]' WHERE id_location IN (:locationIds)")
+    fun deleteWithLocationId(locationIds: List<String>): Completable
+
     @Query("UPDATE NoteLocation SET is_notelocation_deleted = 1, notelocation_sync_with = '[]' WHERE id_note = :noteId")
     fun deleteWithNoteId(noteId: String): Completable
 

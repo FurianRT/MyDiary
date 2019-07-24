@@ -12,6 +12,7 @@ interface LocationRepository {
     fun insertLocation(locations: List<MyLocation>): Completable
     fun updateNoteLocationsSync(noteLocations: List<NoteLocation>): Completable
     fun updateLocationsSync(locations: List<MyLocation>): Completable
+    fun deleteLocations(locationIds: List<String>): Completable
     fun deleteNoteLocationsFromCloud(noteLocations: List<NoteLocation>): Completable
     fun deleteLocationsFromCloud(locations: List<MyLocation>): Completable
     fun cleanupLocations(): Completable

@@ -3,7 +3,7 @@ package com.furianrt.mydiary.data.auth
 import android.content.Context
 import com.furianrt.mydiary.BuildConfig
 import com.furianrt.mydiary.R
-import com.furianrt.mydiary.data.model.pojo.MyUser
+import com.furianrt.mydiary.data.auth.model.MyUser
 import com.furianrt.mydiary.di.application.modules.app.AppContext
 import com.google.firebase.auth.EmailAuthProvider
 import com.google.firebase.auth.FirebaseAuth
@@ -32,7 +32,10 @@ class AuthHelperImp @Inject constructor(
             RxFirebaseAuth.createUserWithEmailAndPassword(firebaseAuth, email, password)
                     .toSingle()
                     .map { it.user }
-                    .map { MyUser(it.uid, it.email ?: "", it.photoUrl?.toString()) }
+                    .map {
+                        MyUser(it.uid, it.email
+                                ?: "", it.photoUrl?.toString())
+                    }
 
     override fun signIn(email: String, password: String): Single<String> =
             RxFirebaseAuth.signInWithEmailAndPassword(firebaseAuth, email, password)

@@ -6,6 +6,6 @@ class SearchEntries(
         var notes: List<MyNoteWithProp>,
         var tags: List<MyTag>,
         var categories: List<MyCategory>,
-        var locations: List<MyLocation>,
-        var moods: List<MyMood>
+        var locations: List<MyLocation>?,
+        var moods: List<MyMood>?
 )
