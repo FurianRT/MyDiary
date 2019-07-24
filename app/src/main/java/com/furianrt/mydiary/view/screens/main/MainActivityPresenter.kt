@@ -271,13 +271,13 @@ class MainActivityPresenter @Inject constructor(
     }
 
     private fun selectListItem(noteId: String) {
-        when {
-            mSelectedNoteIds.contains(noteId) && mSelectedNoteIds.size == 1 -> {
-                mSelectedNoteIds.remove(noteId)
+        if (mSelectedNoteIds.contains(noteId)) {
+            if ( mSelectedNoteIds.size == 1) {
                 view?.deactivateSelection()
             }
-            mSelectedNoteIds.contains(noteId) -> mSelectedNoteIds.remove(noteId)
-            else -> mSelectedNoteIds.add(noteId)
+            mSelectedNoteIds.remove(noteId)
+        } else {
+            mSelectedNoteIds.add(noteId)
         }
         view?.updateItemSelection(mSelectedNoteIds)
     }

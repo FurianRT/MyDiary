@@ -14,7 +14,7 @@
             app:iconSpaceReserved="false" />
 
         <ListPreference
-            android:defaultValue="1000"
+            android:defaultValue="2000"
             android:dependency="security_key"
             android:entries="@array/pref_key_frequency_titles"
             android:entryValues="@array/pref_key_frequency_values"

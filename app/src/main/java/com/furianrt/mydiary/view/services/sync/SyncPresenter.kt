@@ -25,13 +25,13 @@ class SyncPresenter @Inject constructor(
 
     companion object {
         private const val PROGRESS_STARTED = 0
-        private const val PROGRESS_NOTES = 15
-        private const val PROGRESS_APPEARANCE = 20
-        private const val PROGRESS_CATEGORIES = 30
-        private const val PROGRESS_TAGS = 40
-        private const val PROGRESS_LOCATION = 60
-        private const val PROGRESS_FORECAST = 70
-        private const val PROGRESS_IMAGES = 80
+        private const val PROGRESS_CATEGORIES = 10
+        private const val PROGRESS_TAGS = 20
+        private const val PROGRESS_LOCATION = 30
+        private const val PROGRESS_FORECAST = 40
+        private const val PROGRESS_IMAGES = 65
+        private const val PROGRESS_APPEARANCE = 75
+        private const val PROGRESS_NOTES = 90
         private const val PROGRESS_CLEANUP = 100
         private const val PROGRESS_FINISHED = 100
     }
@@ -43,13 +43,13 @@ class SyncPresenter @Inject constructor(
                 .firstOrError()
                 .flatMapPublisher { email ->
                     Single.concat(listOf(
-                            syncNotes.invoke(email).toSingleDefault(SyncProgressMessage.SYNC_NOTES),
-                            syncAppearance.invoke(email).toSingleDefault(SyncProgressMessage.SYNC_APPEARANCE),
                             syncCategories.invoke(email).toSingleDefault(SyncProgressMessage.SYNC_CATEGORIES),
                             syncTags.invoke(email).toSingleDefault(SyncProgressMessage.SYNC_TAGS),
                             syncLocations.invoke(email).toSingleDefault(SyncProgressMessage.SYNC_LOCATION),
                             syncForecast.invoke(email).toSingleDefault(SyncProgressMessage.SYNC_FORECAST),
                             syncImages.invoke(email).toSingleDefault(SyncProgressMessage.SYNC_IMAGES),
+                            syncAppearance.invoke(email).toSingleDefault(SyncProgressMessage.SYNC_APPEARANCE),
+                            syncNotes.invoke(email).toSingleDefault(SyncProgressMessage.SYNC_NOTES),
                             syncCleanup.invoke().toSingleDefault(SyncProgressMessage.CLEANUP)
                     ))
                 }

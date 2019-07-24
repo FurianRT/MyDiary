@@ -18,8 +18,8 @@ interface ForecastDao {
     @Update
     fun update(forecasts: List<MyForecast>): Completable
 
-    @Query("UPDATE Forecasts SET is_forecast_deleted = 1, forecast_sync_with = '[]' WHERE note_id = :note_id")
-    fun delete(note_id: String): Completable
+    @Query("UPDATE Forecasts SET is_forecast_deleted = 1, forecast_sync_with = '[]' WHERE note_id = :noteId")
+    fun delete(noteId: String): Completable
 
     @Query("SELECT * FROM Forecasts WHERE is_forecast_deleted = 0")
     fun getAllForecasts(): Single<List<MyForecast>>

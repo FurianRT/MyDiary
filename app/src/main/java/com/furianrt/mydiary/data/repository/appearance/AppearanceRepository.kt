@@ -10,6 +10,7 @@ interface AppearanceRepository {
     fun insertAppearance(appearances: List<MyNoteAppearance>): Completable
     fun updateAppearance(appearance: MyNoteAppearance): Completable
     fun updateAppearancesSync(appearances: List<MyNoteAppearance>): Completable
+    fun deleteAppearance(noteId: String): Completable
     fun deleteAppearancesFromCloud(appearances: List<MyNoteAppearance>): Completable
     fun cleanupAppearances(): Completable
     fun getNoteAppearance(noteId: String): Flowable<MyNoteAppearance>

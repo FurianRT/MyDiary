@@ -16,6 +16,7 @@ interface TagRepository {
     fun updateNoteTagsSync(noteTags: List<NoteTag>): Completable
     fun deleteTag(tag: MyTag): Completable
     fun deleteTagsFromCloud(tags: List<MyTag>): Completable
+    fun deleteNoteTags(noteId: String): Completable
     fun deleteNoteTag(noteId: String, tagId: String): Completable
     fun deleteNoteTagsFromCloud(noteTags: List<NoteTag>): Completable
     fun cleanupTags(): Completable
