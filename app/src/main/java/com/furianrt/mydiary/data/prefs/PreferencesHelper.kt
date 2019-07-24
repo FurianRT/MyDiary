@@ -66,5 +66,7 @@ interface PreferencesHelper {
         const val DAILY_IMAGE_CATEGORY= "daily_image_category"
         const val NUMBER_OF_LAUNCHES = "number_of_launches"
         const val RATE_OFFER = "rate_offer"
+        const val RATE_APP_PREF_BUTTON = "rate_app"
+        const val REPORT_PROBLEM_PREF_BUTTON = "problem_report"
     }
 }

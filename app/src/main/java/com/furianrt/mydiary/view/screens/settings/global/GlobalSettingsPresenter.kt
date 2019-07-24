@@ -1,5 +1,6 @@
 package com.furianrt.mydiary.view.screens.settings.global
 
+import com.furianrt.mydiary.BuildConfig
 import com.furianrt.mydiary.domain.delete.RemovePinEmailUseCase
 import com.furianrt.mydiary.domain.get.GetPinEmailUseCase
 import javax.inject.Inject
@@ -27,5 +28,13 @@ class GlobalSettingsPresenter @Inject constructor(
 
     override fun onPasswordRemoved() {
         removePinEmail.invoke()
+    }
+
+    override fun onPrefRateAppClick() {
+        view?.openAppPage()
+    }
+
+    override fun onPrefReportProblemClick() {
+        view?.sendEmailToSupport(BuildConfig.SUPPORT_EMAIL)
     }
 }
