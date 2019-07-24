@@ -29,7 +29,7 @@ interface ImageDao {
     @Query("UPDATE Images SET is_image_deleted = 1, image_sync_with = '[]' WHERE name IN (:imageIds)")
     fun delete(imageIds: List<String>): Completable
 
-    @Query("SELECT * FROM Images WHERE is_image_deleted = 0")
+    @Query("SELECT * FROM Images WHERE is_image_deleted = 0 ORDER BY image_order, time_added")
     fun getAllImages(): Flowable<List<MyImage>>
 
     @Query("SELECT * FROM Images WHERE is_image_deleted = 1")
@@ -39,6 +39,9 @@ interface ImageDao {
             "WHERE id_note_image = :noteId AND is_image_deleted = 0 " +
             "ORDER BY image_order ASC, time_added DESC")
     fun getImagesForNote(noteId: String): Flowable<List<MyImage>>
+
+    @Query("SELECT COUNT(*) FROM Images WHERE is_image_deleted = 0")
+    fun getCount(): Flowable<Int>
 
     @Query("DELETE FROM Images WHERE is_image_deleted = 1")
     fun cleanup(): Completable

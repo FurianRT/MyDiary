@@ -6,6 +6,7 @@ import com.furianrt.mydiary.data.model.MyNoteWithProp
 import io.reactivex.Completable
 import io.reactivex.Flowable
 import io.reactivex.Maybe
+import io.reactivex.Single
 
 @Dao
 interface NoteDao {
@@ -41,7 +42,10 @@ interface NoteDao {
     fun findNote(noteId: String): Maybe<MyNote>
 
     @Query("SELECT * FROM Notes WHERE id_note =:noteId AND is_note_deleted = 0")
-    fun getNote(noteId: String): Flowable<MyNote>
+    fun getNote(noteId: String): Single<MyNote>
+
+    @Query("SELECT * FROM Notes WHERE id_note =:noteId AND is_note_deleted = 0")
+    fun getNoteAsList(noteId: String): Flowable<List<MyNote>>
 
     @Transaction
     @Query("SELECT * FROM Notes " +

@@ -25,11 +25,11 @@
         tools:ignore="AllowBackup,GoogleAppIndexingWarning">
 
         <service
-            android:name=".services.sync.SyncService"
+            android:name=".view.services.sync.SyncService"
             android:exported="false" />
 
         <service
-            android:name=".services.firebase.MyFirebaseMessagingService"
+            android:name=".view.services.firebase.MyFirebaseMessagingService"
             tools:ignore="ExportedService">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
@@ -39,7 +39,7 @@
 
         <!--TODO разлочить ориентацию, когда будут готовы лейауты-->
         <activity
-            android:name=".screens.main.MainActivity"
+            android:name=".view.screens.main.MainActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustNothing">
             <intent-filter>
@@ -49,25 +49,25 @@
         </activity>
 
         <activity
-            android:name=".screens.note.NoteActivity"
-            android:parentActivityName=".screens.main.MainActivity" />
+            android:name=".view.screens.note.NoteActivity"
+            android:parentActivityName=".view.screens.main.MainActivity" />
         <activity
-            android:name=".screens.gallery.GalleryActivity"
-            android:parentActivityName=".screens.note.NoteActivity" />
+            android:name=".view.screens.gallery.GalleryActivity"
+            android:parentActivityName=".view.screens.note.NoteActivity" />
         <activity
-            android:name=".screens.settings.global.GlobalSettingsActivity"
-            android:parentActivityName=".screens.main.MainActivity" />
+            android:name=".view.screens.settings.global.GlobalSettingsActivity"
+            android:parentActivityName=".view.screens.main.MainActivity" />
         <activity
-            android:name=".screens.settings.note.NoteSettingsActivity"
-            android:parentActivityName=".screens.note.NoteActivity" />
+            android:name=".view.screens.settings.note.NoteSettingsActivity"
+            android:parentActivityName=".view.screens.note.NoteActivity" />
         <activity
-            android:name=".screens.pin.PinActivity"
+            android:name=".view.screens.pin.PinActivity"
             android:launchMode="singleTop" />
 
         <!--Этого требует библиотека для редактирования картинок-->
         <activity
             android:name="com.yalantis.ucrop.UCropActivity"
-            android:parentActivityName=".screens.gallery.GalleryActivity"
+            android:parentActivityName=".view.screens.gallery.GalleryActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme" />
 

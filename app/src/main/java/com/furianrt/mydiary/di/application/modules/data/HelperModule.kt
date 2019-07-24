@@ -1,7 +1,5 @@
 package com.furianrt.mydiary.di.application.modules.data
 
-import com.furianrt.mydiary.data.api.ApiServiceHelper
-import com.furianrt.mydiary.data.api.ApiServiceHelperImp
 import com.furianrt.mydiary.data.auth.AuthHelper
 import com.furianrt.mydiary.data.auth.AuthHelperImp
 import com.furianrt.mydiary.data.cloud.CloudHelper
@@ -34,10 +32,6 @@ interface HelperModule {
     @Binds
     @AppScope
     fun preferencesHelper(imp: PreferencesHelperImp): PreferencesHelper
-
-    @Binds
-    @AppScope
-    fun apiServiceHelper(imp: ApiServiceHelperImp): ApiServiceHelper
 
     @Binds
     @AppScope

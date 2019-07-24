@@ -122,9 +122,15 @@ class PreferencesHelperImp @Inject constructor(
     override fun isDailyImageEnabled(): Boolean =
             mPrefs.getBoolean(PreferencesHelper.LOAD_DAILY_IMAGE, true)
 
-    override fun getNumberOfLaunches(): Int = mPrefs.getInt(PreferencesHelper.NUMBER_OF_LAUNCHES, 0)
+    override fun getNumberOfLaunches(): Int = mPrefs.getInt(PreferencesHelper.NUMBER_OF_LAUNCHES, 1)
 
     override fun setNumberOfLaunches(count: Int) {
         mPrefs.edit().putInt(PreferencesHelper.NUMBER_OF_LAUNCHES, count).apply()
+    }
+
+    override fun isRateOfferEnabled(): Boolean = mPrefs.getBoolean(PreferencesHelper.RATE_OFFER, true)
+
+    override fun setNeedRateOffer(need: Boolean) {
+        mPrefs.edit().putBoolean(PreferencesHelper.RATE_OFFER, need).apply()
     }
 }

@@ -133,7 +133,9 @@
                             android:background="?android:selectableItemBackground"
                             android:orientation="horizontal"
                             android:padding="8dp"
-                            tools:ignore="UseCompoundDrawables">
+                            android:visibility="gone"
+                            tools:ignore="UseCompoundDrawables"
+                            tools:visibility="visible">
 
                             <ImageView
                                 android:id="@+id/image_mood"

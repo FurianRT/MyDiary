@@ -12,23 +12,31 @@ android {
         applicationId "com.furianrt.mydiary"
         minSdkVersion 21
         targetSdkVersion 29
-        versionCode 28
-        versionName "1.3.2"
-        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        versionCode 29
+        versionName "1.4"
+
+        javaCompileOptions {
+            annotationProcessorOptions {
+                arguments = ["room.incremental":"true"]
+            }
+        }
     }
+
     buildTypes {
         debug {
             versionNameSuffix "-debug"
             minifyEnabled true
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
             resValue("bool", "FIREBASE_ANALYTICS_DEACTIVATED", "true")
         }
+
         release {
             minifyEnabled true
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
             resValue("bool", "FIREBASE_ANALYTICS_DEACTIVATED", "false")
         }
     }
+
     buildTypes.each {
         it.buildConfigField 'String', 'WEATHER_API_KEY', weatherApikey
         it.buildConfigField 'String', 'IMAGE_API_KEY', imageApikey
@@ -39,6 +47,7 @@ android {
         it.buildConfigField 'String', 'LICENSE_KEY', licenseKey
         it.buildConfigField 'String', 'ITEM_PREMIUM_SKU', itemPremiumSku
     }
+
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
@@ -62,7 +71,7 @@ dependencies {
     implementation "androidx.appcompat:appcompat:$support_version"
     implementation "androidx.recyclerview:recyclerview:1.1.0-beta01"
     implementation "androidx.preference:preference:1.1.0-rc01"
-    implementation "com.google.android.material:material:1.1.0-alpha07"
+    implementation "com.google.android.material:material:1.1.0-alpha08"
     implementation 'androidx.constraintlayout:constraintlayout:2.0.0-beta1' //в beta2 баг констрейнтов (видно в PinActivity)
 
     //Layout for tags
@@ -119,7 +128,7 @@ dependencies {
     implementation 'com.jaredrummler:colorpicker:1.1.0'
 
     //DateTime
-    implementation 'net.danlew:android.joda:2.10.1.2'
+    implementation 'net.danlew:android.joda:2.10.2'
 
     //DateTime pickers
     implementation 'com.wdullaer:materialdatetimepicker:4.2.1'
@@ -128,12 +137,12 @@ dependencies {
     implementation 'com.github.kizitonwose:CalendarView:0.1.2'
 
     //Firebase
-    implementation 'com.google.firebase:firebase-core:17.0.0'
-    implementation 'com.google.firebase:firebase-storage:18.0.0'
+    implementation 'com.google.firebase:firebase-core:17.0.1'
+    implementation 'com.google.firebase:firebase-storage:18.1.0'
     implementation 'com.google.firebase:firebase-firestore:20.1.0'
     implementation 'com.google.firebase:firebase-messaging:19.0.1'
-    implementation 'com.google.firebase:firebase-auth:18.0.0'
-    implementation 'com.google.firebase:firebase-ads:18.0.0'
+    implementation 'com.google.firebase:firebase-auth:18.1.0'
+    implementation 'com.google.firebase:firebase-ads:18.1.0'
 
     //Rx for Firebase
     implementation 'com.github.FrangSierra:RxFirebase:1.5.6'
@@ -149,14 +158,9 @@ dependencies {
     implementation 'com.sun.mail:android-activation:1.6.3'
 
     //In-App purchases
-    implementation 'com.anjlab.android.iab.v3:library:1.0.44'
+    implementation 'com.anjlab.android.iab.v3:library:1.0.45'
 
-    //Debuging instrument for network calls, database content, etc.
+    //Debugging instrument for network calls, database content, etc.
     implementation 'com.facebook.stetho:stetho:1.5.1'
     implementation 'com.facebook.stetho:stetho-okhttp3:1.5.1'
-
-    //Tests
-    testImplementation "junit:junit:$junit_version"
-    androidTestImplementation 'androidx.test:runner:1.2.0'
-    androidTestImplementation "androidx.test.espresso:espresso-core:$espresso_version"
 }

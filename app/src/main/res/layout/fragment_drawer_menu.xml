@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white"
-    tools:context=".screens.main.fragments.drawer.DrawerMenuFragment">
+    tools:context=".view.screens.main.fragments.drawer.DrawerMenuFragment">
 
     <ImageView
         android:id="@+id/image_drawer_header"
@@ -143,10 +143,10 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:background="?attr/colorAccent"
-        android:drawableStart="@drawable/ic_star"
+        android:drawableStart="@drawable/ic_backup"
         android:gravity="center"
-        android:paddingStart="16dp"
-        android:paddingEnd="16dp"
+        android:paddingStart="18dp"
+        android:paddingEnd="18dp"
         android:textAllCaps="false"
         android:textColor="@color/white"
         android:textSize="16sp"

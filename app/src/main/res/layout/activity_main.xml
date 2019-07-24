@@ -5,9 +5,9 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/grey_light"
-    tools:context=".screens.main.MainActivity">
+    tools:context=".view.screens.main.MainActivity">
 
-    <com.furianrt.mydiary.views.MyDrawerLayout
+    <com.furianrt.mydiary.view.views.MyDrawerLayout
         android:id="@+id/drawer"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -95,7 +95,7 @@
             android:layout_height="match_parent"
             android:layout_gravity="start" />
 
-    </com.furianrt.mydiary.views.MyDrawerLayout>
+    </com.furianrt.mydiary.view.views.MyDrawerLayout>
 
     <include layout="@layout/bottom_sheet_main" />
 

@@ -7,19 +7,20 @@ import android.app.NotificationManager
 import android.os.*
 import android.widget.ImageView
 import com.facebook.stetho.Stetho
-import com.furianrt.mydiary.data.DataManager
 import com.furianrt.mydiary.di.application.component.AppComponent
 import com.furianrt.mydiary.di.application.component.DaggerAppComponent
-import com.furianrt.mydiary.di.application.modules.app.AnalyticsModule
 import com.furianrt.mydiary.di.application.modules.app.AppContextModule
 import com.furianrt.mydiary.di.application.modules.data.DatabaseModule
-import com.furianrt.mydiary.di.application.modules.data.HelperModule
-import com.furianrt.mydiary.di.application.modules.data.ManagerModule
 import com.furianrt.mydiary.di.application.modules.network.ApiModule
 import com.furianrt.mydiary.di.application.modules.network.FirebaseModule
 import com.furianrt.mydiary.di.application.modules.rx.RxModule
-import com.furianrt.mydiary.general.GlideApp
-import com.furianrt.mydiary.screens.pin.PinActivity
+import com.furianrt.mydiary.domain.auth.AuthorizeUseCase
+import com.furianrt.mydiary.domain.IncrementLaunchCountUseCase
+import com.furianrt.mydiary.domain.check.IsPinEnabledUseCase
+import com.furianrt.mydiary.domain.get.GetPinRequestDelayUseCase
+import com.furianrt.mydiary.domain.save.ResetSyncProgressUseCase
+import com.furianrt.mydiary.view.general.GlideApp
+import com.furianrt.mydiary.view.screens.pin.PinActivity
 import com.google.android.gms.ads.MobileAds
 import com.jakewharton.threetenabp.AndroidThreeTen
 import com.yanzhenjie.album.Album
@@ -27,8 +28,7 @@ import com.yanzhenjie.album.AlbumConfig
 import com.yanzhenjie.album.AlbumFile
 import com.yanzhenjie.album.AlbumLoader
 import net.danlew.android.joda.JodaTimeAndroid
-import org.joda.time.DateTime
-import java.util.*
+import java.util.Locale
 import javax.inject.Inject
 
 class MyApp : Application(), Application.ActivityLifecycleCallbacks {
@@ -38,7 +38,6 @@ class MyApp : Application(), Application.ActivityLifecycleCallbacks {
         const val NOTIFICATION_SYNC_CHANNEL_NAME = "Synchronization"
         const val NOTIFICATION_FIREBASE_CHANNEL_ID = "firebase_channel"
         const val NOTIFICATION_FIREBASE_CHANNEL_NAME = "Info"
-        private const val SYNC_PROGRESS_RESET_TIME = 1000 * 60
     }
 
     val component: AppComponent by lazy {
@@ -52,7 +51,19 @@ class MyApp : Application(), Application.ActivityLifecycleCallbacks {
     }
 
     @Inject
-    lateinit var mDataManager: DataManager
+    lateinit var authorize: AuthorizeUseCase
+
+    @Inject
+    lateinit var isPinEnabled: IsPinEnabledUseCase
+
+    @Inject
+    lateinit var getPinRequestDelay: GetPinRequestDelayUseCase
+
+    @Inject
+    lateinit var incrementLaunchCount: IncrementLaunchCountUseCase
+
+    @Inject
+    lateinit var resetSyncProgress: ResetSyncProgressUseCase
 
     private val mHandler = Handler(Looper.getMainLooper())
     private val mLogoutRunnable = Runnable { setAuthorized(false) }
@@ -60,20 +71,20 @@ class MyApp : Application(), Application.ActivityLifecycleCallbacks {
     override fun onCreate() {
         component.inject(this)
         super.onCreate()
+        JodaTimeAndroid.init(this)
         setAuthorized(false)
         registerActivityLifecycleCallbacks(this)
         createNotificationSyncChannel()
         createNotificationFirebaseChannel()
-        JodaTimeAndroid.init(this)
         initializeImageAlbum()
-        resetSyncProgress()
-        incrementLaunchCounter()
         MobileAds.initialize(this, getString(R.string.banner_ad_app_id))
         StrictMode.setVmPolicy(StrictMode.VmPolicy.Builder().build())
         AndroidThreeTen.init(this)
         if (BuildConfig.DEBUG) {
             Stetho.initializeWithDefaults(this)
         }
+        incrementLaunchCount.invoke()
+        resetSyncProgress.invoke()
     }
 
     override fun onActivityDestroyed(activity: Activity?) {}
@@ -92,13 +103,13 @@ class MyApp : Application(), Application.ActivityLifecycleCallbacks {
     }
 
     override fun onActivityStopped(activity: Activity?) {
-        if (mDataManager.isPinEnabled() && activity !is PinActivity) {
-            mHandler.postDelayed(mLogoutRunnable, mDataManager.getPasswordRequestDelay())
+        if (isPinEnabled.invoke() && activity !is PinActivity) {
+            mHandler.postDelayed(mLogoutRunnable, getPinRequestDelay.invoke())
         }
     }
 
     private fun setAuthorized(authorized: Boolean) {
-        mDataManager.setAuthorized(authorized)
+        authorize.invoke(authorized)
     }
 
     private fun createNotificationSyncChannel() {
@@ -144,19 +155,6 @@ class MyApp : Application(), Application.ActivityLifecycleCallbacks {
                 .setLocale(Locale.getDefault())
                 .build())
     }
-
-    private fun resetSyncProgress() {
-        val currentTime = DateTime.now().millis
-        val launchTimeDiff = currentTime - mDataManager.getLastAppLaunchTime()
-        if (launchTimeDiff >= SYNC_PROGRESS_RESET_TIME) {
-            mDataManager.setLastSyncMessage(null)
-        }
-        mDataManager.setLastAppLaunchTime(currentTime)
-    }
-
-    private fun incrementLaunchCounter() {
-        mDataManager.setNumberOfLaunches(mDataManager.getNumberOfLaunches() + 1)
-    }
 }
 
 /*TODO
@@ -179,7 +177,6 @@ class MyApp : Application(), Application.ActivityLifecycleCallbacks {
 * добавить статистику по записям
 * разбить экран настроек на категории
 * добавить ссылку на гугл таблицы
-*   добавить поиск по дате
 * добавить счетчики к категориям, тегам и т.д
 *   добавить поддержку ссылок внутри текста
 * (?)добавить градиент на экран с паролем
@@ -192,11 +189,14 @@ class MyApp : Application(), Application.ActivityLifecycleCallbacks {
 * добавить импорт текста с сайтов (как в EverNote)
 * вынести модуль в git submodule
 * добавить таймер к паролю
-* добавить картинки с диалогам
 * добавить достижения с анимацией
 * добавить превью возможностей дневника
 * изменить дизайн даты в списке заметок
 * изменить дизайн окна профиля
+*   убирать настроение и локацию из поиска, если они отключены в настройках
+*   сделать кэширование данных
+*   перенести все лишнее из дата слоя
+*   липкие заголовки тупят при поиске
 *
 * */
 

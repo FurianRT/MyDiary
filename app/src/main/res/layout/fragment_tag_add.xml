@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    tools:context=".dialogs.tags.fragments.add.TagAddFragment">
+    tools:context=".view.dialogs.tags.fragments.add.TagAddFragment">
 
     <FrameLayout
         android:id="@+id/frameLayout2"

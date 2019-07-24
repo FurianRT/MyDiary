@@ -20,7 +20,7 @@
         <item>@string/category_love</item>
         <item>@string/category_plan</item>
         <item>@string/category_friends</item>
-        <item>@string/category_entertainmment</item>
+        <item>@string/category_entertainment</item>
         <item>@string/category_business</item>
     </string-array>
 

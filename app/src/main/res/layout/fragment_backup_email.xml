@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:layout_marginTop="4dp"
     android:background="@color/white"
-    tools:context=".screens.pin.fragments.backupemail.BackupEmailFragment">
+    tools:context=".view.screens.pin.fragments.backupemail.BackupEmailFragment">
 
     <TextView
         android:id="@+id/textView"

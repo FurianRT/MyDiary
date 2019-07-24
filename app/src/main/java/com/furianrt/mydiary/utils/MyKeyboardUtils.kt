@@ -81,22 +81,5 @@ class KeyboardUtils(
                 sListenerMap.remove(listener)
             }
         }
-
-        fun removeAllKeyboardToggleListeners() {
-            for (l in sListenerMap.keys) {
-                sListenerMap[l]?.removeListener()
-            }
-            sListenerMap.clear()
-        }
-
-        fun toggleKeyboardVisibility(context: Context) {
-            val inputMethodManager = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-            inputMethodManager.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0)
-        }
-
-        fun forceCloseKeyboard(activeView: View) {
-            val inputMethodManager = activeView.context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-            inputMethodManager.hideSoftInputFromWindow(activeView.windowToken, 0)
-        }
     }
 }

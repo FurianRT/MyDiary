@@ -71,6 +71,7 @@
     <string name="saturday">Сб</string>
     <string name="sunday">Вс</string>
     <string name="today">Сегодня</string>
+    <string name="keep">Оставить</string>
     <plurals name="note_delete_confirmation">
         <item quantity="one">Удалить %d запись?</item>
         <item quantity="few">Удалить %d записи?</item>
@@ -95,7 +96,7 @@
     <string name="category_love">Любовь</string>
     <string name="category_plan">План</string>
     <string name="category_friends">Друзья</string>
-    <string name="category_entertainmment">Развлечение</string>
+    <string name="category_entertainment">Развлечение</string>
     <string name="category_business">Бизнес</string>
     <string name="font_small">Маленький</string>
     <string name="font_normal">Обычный</string>
@@ -220,7 +221,7 @@
     <string name="sync_forecasts">Загрузка прогноза</string>
     <string name="sync_error">Ошибка!</string>
     <string name="fragment_menu_profile_about">О профиле</string>
-    <string name="fragment_sign_out_exit">Выйти из профиля?</string>
+    <string name="fragment_sign_out_exit">Уверены что хотите выйти из профиля?</string>
     <string name="fragment_password_new_password">Новый пароль</string>
     <string name="fragment_password_old_password">Старый пароль</string>
     <string name="fragment_password_enter_old_password">Введите старый пароль</string>
@@ -235,6 +236,7 @@
     <string name="gallery_list_empty_state_message_part_2">Ничего страшного! Добавьте новые, это просто!</string>
     <string name="fragment_gallery_list_selected">Выбрано: %d</string>
     <string name="fragment_gallery_list_image_count">Всего: %d</string>
+    <string name="fragment_gallery_list_image_save_error">Не получилось сохранить картинку</string>
     <string name="fragment_gallery_pager_edit_photo">Ред. фото</string>
     <string name="activity_pin_forgot">Забыли пароль?</string>
     <string name="activity_pin_wrong_pin">Неверный пароль</string>

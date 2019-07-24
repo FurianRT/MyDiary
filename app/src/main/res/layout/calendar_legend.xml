@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/layout_legend"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -16,9 +17,9 @@
         android:gravity="center"
         android:paddingTop="2dp"
         android:paddingBottom="2dp"
-        android:text="Su"
         android:textColor="@color/white"
-        android:textSize="14sp" />
+        android:textSize="14sp"
+        tools:text="Su" />
 
     <TextView
         android:layout_width="0dp"
@@ -29,9 +30,9 @@
         android:gravity="center"
         android:paddingTop="2dp"
         android:paddingBottom="2dp"
-        android:text="M"
         android:textColor="@color/white"
-        android:textSize="14sp" />
+        android:textSize="14sp"
+        tools:text="M" />
 
     <TextView
         android:layout_width="0dp"
@@ -42,9 +43,9 @@
         android:gravity="center"
         android:paddingTop="2dp"
         android:paddingBottom="2dp"
-        android:text="Tu"
         android:textColor="@color/white"
-        android:textSize="14sp" />
+        android:textSize="14sp"
+        tools:text="Tu" />
 
     <TextView
         android:layout_width="0dp"
@@ -55,9 +56,9 @@
         android:gravity="center"
         android:paddingTop="2dp"
         android:paddingBottom="2dp"
-        android:text="W"
         android:textColor="@color/white"
-        android:textSize="14sp" />
+        android:textSize="14sp"
+        tools:text="W" />
 
     <TextView
         android:layout_width="0dp"
@@ -68,9 +69,9 @@
         android:gravity="center"
         android:paddingTop="2dp"
         android:paddingBottom="2dp"
-        android:text="Th"
         android:textColor="@color/white"
-        android:textSize="14sp" />
+        android:textSize="14sp"
+        tools:text="Th" />
 
     <TextView
         android:layout_width="0dp"
@@ -81,9 +82,9 @@
         android:gravity="center"
         android:paddingTop="2dp"
         android:paddingBottom="2dp"
-        android:text="F"
         android:textColor="@color/white"
-        android:textSize="14sp" />
+        android:textSize="14sp"
+        tools:text="F" />
 
     <TextView
         android:layout_width="0dp"
@@ -93,8 +94,8 @@
         android:gravity="center"
         android:paddingTop="2dp"
         android:paddingBottom="2dp"
-        android:text="Sa"
         android:textColor="@color/white"
-        android:textSize="14sp" />
+        android:textSize="14sp"
+        tools:text="Sa" />
 
 </LinearLayout>
