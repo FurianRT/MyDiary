@@ -46,6 +46,9 @@ android {
         it.buildConfigField 'String', 'MERCHANT_ID', merchantId
         it.buildConfigField 'String', 'LICENSE_KEY', licenseKey
         it.buildConfigField 'String', 'ITEM_PREMIUM_SKU', itemPremiumSku
+        it.resValue("string", "GEO_API_KEY", geoApiKey)
+        it.resValue("string", "BANNER_AD_APP_ID", bannerAdAppId)
+        it.resValue("string", "BANNER_AD_UNIT_ID", bannerAdUnitId)
     }
 
     compileOptions {

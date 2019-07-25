@@ -34,7 +34,7 @@
         android:layout_height="wrap_content"
         android:visibility="gone"
         app:adSize="SMART_BANNER"
-        app:adUnitId="@string/banner_ad_unit_id"
+        app:adUnitId="@string/BANNER_AD_UNIT_ID"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

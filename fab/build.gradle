@@ -22,14 +22,7 @@ android {
         }
     }
     buildTypes.each {
-        it.buildConfigField 'String', 'WEATHER_API_KEY', weatherApikey
-        it.buildConfigField 'String', 'IMAGE_API_KEY', imageApikey
-        it.buildConfigField 'String', 'PREFS_PASSWORD', prefsPassword
-        it.buildConfigField 'String', 'SUPPORT_EMAIL', supportEmail
-        it.buildConfigField 'String', 'SUPPORT_EMAIL_PASSWORD', supportEmailPassword
-        it.buildConfigField 'String', 'MERCHANT_ID', merchantId
-        it.buildConfigField 'String', 'LICENSE_KEY', licenseKey
-        it.buildConfigField 'String', 'ITEM_PREMIUM_SKU', itemPremiumSku
+
     }
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8

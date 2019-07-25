@@ -78,7 +78,7 @@ class MyApp : Application(), Application.ActivityLifecycleCallbacks {
         createNotificationSyncChannel()
         createNotificationFirebaseChannel()
         initializeImageAlbum()
-        MobileAds.initialize(this, getString(R.string.banner_ad_app_id))
+        MobileAds.initialize(this, getString(R.string.BANNER_AD_APP_ID))
         StrictMode.setVmPolicy(StrictMode.VmPolicy.Builder().build())
         AndroidThreeTen.init(this)
         if (BuildConfig.DEBUG) {
@@ -177,7 +177,6 @@ class MyApp : Application(), Application.ActivityLifecycleCallbacks {
 * добавить лайауты для горизонтальной ориентации
 * поддержать планшеты
 * добавить ссылки на используемые библиотеки
-* добавить анимацию открытия экранов
 * добавить отправку картинок или текста из других приложений
 * добавить вывод в pdf
 * сделать ежедневный локальный бэкап
@@ -192,7 +191,6 @@ class MyApp : Application(), Application.ActivityLifecycleCallbacks {
 * (?)добавить градиент на экран с паролем
 * добавить иконци в настройках
 *   сделать определение локации опциональным
-*   добавить предложение оценить приложение (в настройках)
 *   сделать кнопку сброса настроек
 *   сделать дефолтную дейли-картинку
 * добавить сканирование текста
