@@ -1,3 +1,13 @@
+/*******************************************************************************
+ *  @author FurianRT
+ *  Copyright 2019
+ *
+ *  All rights reserved.
+ *  Distribution of the software in any form is only allowed with
+ *  explicit, prior permission from the owner.
+ *
+ ******************************************************************************/
+
 package com.furianrt.mydiary.view.screens.note.fragments.mainnote.content
 
 import android.os.Bundle
@@ -58,7 +68,7 @@ class NoteContentFragment : BaseFragment(), NoteContentFragmentContract.MvpView 
         super.onViewCreated(view, savedInstanceState)
         if (mIsNewNote && savedInstanceState == null) {
             (parentFragment as? NoteFragment)?.disableActionBarExpanding(false)
-            showNoteEditView(NoteEditFragment.ClickedView.TITLE, view.text_note_title.text.length)
+            showNoteEditView(NoteEditFragment.VIEW_TITLE, view.text_note_title.text.length)
         }
     }
 
@@ -99,20 +109,20 @@ class NoteContentFragment : BaseFragment(), NoteContentFragmentContract.MvpView 
 
     override fun showNoteEditViewForTitle(touchPosition: Int) {
         (parentFragment as? NoteFragment)?.disableActionBarExpanding(true)
-        showNoteEditView(NoteEditFragment.ClickedView.TITLE, touchPosition)
+        showNoteEditView(NoteEditFragment.VIEW_TITLE, touchPosition)
     }
 
     override fun showNoteEditViewForContent(touchPosition: Int) {
         (parentFragment as? NoteFragment)?.disableActionBarExpanding(true)
-        showNoteEditView(NoteEditFragment.ClickedView.CONTENT, touchPosition)
+        showNoteEditView(NoteEditFragment.VIEW_CONTENT, touchPosition)
     }
 
     override fun showNoteEditViewForTitleEnd() {
         (parentFragment as? NoteFragment)?.disableActionBarExpanding(true)
-        showNoteEditView(NoteEditFragment.ClickedView.TITLE, text_note_title.text.length)
+        showNoteEditView(NoteEditFragment.VIEW_TITLE, text_note_title.text.length)
     }
 
-    private fun showNoteEditView(clickedView: NoteEditFragment.ClickedView, touchPosition: Int) {
+    private fun showNoteEditView(clickedView: Int, touchPosition: Int) {
         (activity as NoteActivity).savePagerPosition()
         if (fragmentManager?.findFragmentByTag(NoteEditFragment.TAG) == null) {
             activity?.supportFragmentManager?.inTransaction {

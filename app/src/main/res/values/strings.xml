@@ -231,7 +231,7 @@
     <string name="fragment_gallery_drag_hint">You can move or delete pictures by long click!</string>
     <string name="gallery_list_empty_state_add_images">Add images</string>
     <string name="gallery_list_empty_state_message_part_1">No pictures yet?</string>
-    <string name="gallery_list_empty_state_message_part_2">Try adding some, its easy!</string>
+    <string name="gallery_list_empty_state_message_part_2">Try adding some, it\'s easy!</string>
     <string name="fragment_gallery_list_selected">Selected: %d</string>
     <string name="fragment_gallery_list_image_count">Total: %d</string>
     <string name="fragment_gallery_list_image_save_error">Could not save the picture</string>

@@ -1,3 +1,13 @@
+/*******************************************************************************
+ *  @author FurianRT
+ *  Copyright 2019
+ *
+ *  All rights reserved.
+ *  Distribution of the software in any form is only allowed with
+ *  explicit, prior permission from the owner.
+ *
+ ******************************************************************************/
+
 package com.furianrt.mydiary.data.model
 
 import androidx.room.Embedded
@@ -18,8 +28,8 @@ data class MyNoteWithProp(
 
     fun isSync(email: String): Boolean =
             note.isSync(email)
-                    && images.find { !it.isSync(email) } == null
-                    && tags.find { !it.isSync(email) } == null
-                    && locations.find { !it.isSync(email) } == null
+                    && images.all { it.isSync(email) }
+                    && tags.all { it.isSync(email) }
+                    && locations.all { it.isSync(email) }
 
 }

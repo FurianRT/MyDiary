@@ -1,3 +1,13 @@
+/*******************************************************************************
+ *  @author FurianRT
+ *  Copyright 2019
+ *
+ *  All rights reserved.
+ *  Distribution of the software in any form is only allowed with
+ *  explicit, prior permission from the owner.
+ *
+ ******************************************************************************/
+
 package com.furianrt.mydiary
 
 import android.app.Activity
@@ -193,7 +203,6 @@ class MyApp : Application(), Application.ActivityLifecycleCallbacks {
 *   сделать определение локации опциональным
 *   сделать кнопку сброса настроек
 *   сделать дефолтную дейли-картинку
-* добавить сканирование текста
 * добавить импорт текста с сайтов (как в EverNote)
 * вынести модуль в git submodule
 * добавить таймер к паролю

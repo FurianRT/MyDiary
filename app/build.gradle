@@ -25,7 +25,7 @@ android {
     buildTypes {
         debug {
             versionNameSuffix "-debug"
-            minifyEnabled true
+            minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
             resValue("bool", "FIREBASE_ANALYTICS_DEACTIVATED", "true")
         }
@@ -141,11 +141,11 @@ dependencies {
 
     //Firebase
     implementation 'com.google.firebase:firebase-core:17.0.1'
-    implementation 'com.google.firebase:firebase-storage:18.1.0'
-    implementation 'com.google.firebase:firebase-firestore:20.1.0'
+    implementation 'com.google.firebase:firebase-storage:18.1.1'
+    implementation 'com.google.firebase:firebase-firestore:20.2.0'
     implementation 'com.google.firebase:firebase-messaging:19.0.1'
     implementation 'com.google.firebase:firebase-auth:18.1.0'
-    implementation 'com.google.firebase:firebase-ads:18.1.0'
+    implementation 'com.google.firebase:firebase-ads:18.1.1'
 
     //Rx for Firebase
     implementation 'com.github.FrangSierra:RxFirebase:1.5.6'
@@ -161,7 +161,7 @@ dependencies {
     implementation 'com.sun.mail:android-activation:1.6.3'
 
     //In-App purchases
-    implementation 'com.anjlab.android.iab.v3:library:1.0.45'
+    implementation 'com.anjlab.android.iab.v3:library:1.1.0'
 
     //Debugging instrument for network calls, database content, etc.
     implementation 'com.facebook.stetho:stetho:1.5.1'

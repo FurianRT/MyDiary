@@ -1,3 +1,13 @@
+/*******************************************************************************
+ *  @author FurianRT
+ *  Copyright 2019
+ *
+ *  All rights reserved.
+ *  Distribution of the software in any form is only allowed with
+ *  explicit, prior permission from the owner.
+ *
+ ******************************************************************************/
+
 package com.furianrt.mydiary.view.screens.note.fragments.mainnote.edit
 
 import android.content.Context
@@ -22,7 +32,7 @@ import javax.inject.Inject
 
 class NoteEditFragment : BaseFragment(), NoteEditFragmentContract.MvpView {
 
-    private var mClickedView: ClickedView? = null
+    private var mClickedView: Int? = null
     private var mClickPosition = 0
     private var mNoteTitle = ""
     private var mNoteContent = ""
@@ -51,7 +61,7 @@ class NoteEditFragment : BaseFragment(), NoteEditFragmentContract.MvpView {
         arguments?.let {
             mNoteTitle = it.getString(ARG_NOTE_TITLE, "")
             mNoteContent = it.getString(ARG_NOTE_CONTENT, "")
-            mClickedView = it.getSerializable(ARG_CLICKED_VIEW) as? ClickedView?
+            mClickedView = it.getInt(ARG_CLICKED_VIEW)
             mClickPosition = it.getInt(ARG_POSITION)
             mAppearance = it.getParcelable(ARG_APPEARANCE) as? MyNoteAppearance?
         }
@@ -78,13 +88,13 @@ class NoteEditFragment : BaseFragment(), NoteEditFragmentContract.MvpView {
         super.onViewCreated(view, savedInstanceState)
         mAppearance?.let { setAppearance(it) }
         when (mClickedView) {
-            ClickedView.TITLE -> {
+            VIEW_TITLE -> {
                 edit_note_title.requestFocus()
                 edit_note_title.setSelection(mClickPosition)
                 edit_note_title.showKeyboard()
 
             }
-            ClickedView.CONTENT -> {
+            VIEW_CONTENT -> {
                 edit_note_content.requestFocus()
                 edit_note_content.setSelection(mClickPosition)
                 edit_note_content.showKeyboard()
@@ -244,6 +254,7 @@ class NoteEditFragment : BaseFragment(), NoteEditFragmentContract.MvpView {
         fun onNoteFragmentEditModeDisabled()
     }
 
+
     enum class ClickedView { TITLE, CONTENT }
 
     companion object {
@@ -254,13 +265,15 @@ class NoteEditFragment : BaseFragment(), NoteEditFragmentContract.MvpView {
         private const val ARG_NOTE_TITLE = "noteTitle"
         private const val ARG_NOTE_CONTENT = "noteContent"
         private const val ARG_APPEARANCE = "noteAppearance"
+        const val VIEW_TITLE = 0
+        const val VIEW_CONTENT = 1
 
         @JvmStatic
-        fun newInstance(noteTitle: String, noteContent: String, clickedView: ClickedView?,
+        fun newInstance(noteTitle: String, noteContent: String, clickedView: Int,
                         clickPosition: Int, appearance: MyNoteAppearance?) =
                 NoteEditFragment().apply {
                     arguments = Bundle().apply {
-                        putSerializable(ARG_CLICKED_VIEW, clickedView)
+                        putInt(ARG_CLICKED_VIEW, clickedView)
                         putInt(ARG_POSITION, clickPosition)
                         putString(ARG_NOTE_TITLE, noteTitle)
                         putString(ARG_NOTE_CONTENT, noteContent)
