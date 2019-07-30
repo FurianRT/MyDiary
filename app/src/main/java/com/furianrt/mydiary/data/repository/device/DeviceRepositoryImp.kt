@@ -1,3 +1,13 @@
+/*******************************************************************************
+ *  @author FurianRT
+ *  Copyright 2019
+ *
+ *  All rights reserved.
+ *  Distribution of the software in any form is only allowed with
+ *  explicit, prior permission from the owner.
+ *
+ ******************************************************************************/
+
 package com.furianrt.mydiary.data.repository.device
 
 import android.content.Context
@@ -13,6 +23,7 @@ import com.furianrt.mydiary.di.application.modules.app.AppContext
 import com.google.android.gms.location.*
 import javax.inject.Inject
 import android.os.Build
+import androidx.core.hardware.fingerprint.FingerprintManagerCompat
 import com.furianrt.mydiary.data.repository.device.DeviceRepository.*
 import com.furianrt.mydiary.utils.generateUniqueId
 import java.io.IOException
@@ -62,6 +73,14 @@ class DeviceRepositoryImp @Inject constructor(
 
         fusedLocationClient.requestLocationUpdates(locationRequest, mLocationCallback, Looper.myLooper())
     }
+
+    @Suppress("DEPRECATION")
+    override fun isFingerprintEnabled(): Boolean =
+            FingerprintManagerCompat.from(context).hasEnrolledFingerprints()
+
+    @Suppress("DEPRECATION")
+    override fun isFingerprintHardwareSupported(): Boolean =
+            FingerprintManagerCompat.from(context).isHardwareDetected
 
     @Suppress("DEPRECATION")
     override fun isNetworkAvailable(): Boolean {

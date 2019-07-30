@@ -1,3 +1,13 @@
+/*******************************************************************************
+ *  @author FurianRT
+ *  Copyright 2019
+ *
+ *  All rights reserved.
+ *  Distribution of the software in any form is only allowed with
+ *  explicit, prior permission from the owner.
+ *
+ ******************************************************************************/
+
 package com.furianrt.mydiary.view.screens.pin
 
 import android.os.Bundle
@@ -20,7 +30,6 @@ interface PinContract {
         fun showEnterEmailView()
         fun close()
         fun showFingerprintScanner()
-        fun isFingerprintSupported(): Boolean
         fun hideFingerprintButton()
         fun showFingerprintButton()
     }

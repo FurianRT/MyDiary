@@ -1,3 +1,13 @@
+/*******************************************************************************
+ *  @author FurianRT
+ *  Copyright 2019
+ *
+ *  All rights reserved.
+ *  Distribution of the software in any form is only allowed with
+ *  explicit, prior permission from the owner.
+ *
+ ******************************************************************************/
+
 package com.furianrt.mydiary.view.screens.pin
 
 import android.os.Bundle
@@ -56,7 +66,7 @@ class PinPresenter @Inject constructor(
     override fun onViewStartedModeLock() {
         view?.showPin(mPin)
         view?.showMessageEnterPin()
-        if (view?.isFingerprintSupported() == true && isFingerprintAvailable.invoke()) {  //todo убрать проверку фингерпринта из вьюхи в UseCase
+        if (isFingerprintAvailable.invoke()) {
             view?.showFingerprintButton()
             view?.showFingerprintScanner()
         } else {

@@ -1,3 +1,13 @@
+/*******************************************************************************
+ *  @author FurianRT
+ *  Copyright 2019
+ *
+ *  All rights reserved.
+ *  Distribution of the software in any form is only allowed with
+ *  explicit, prior permission from the owner.
+ *
+ ******************************************************************************/
+
 package com.furianrt.mydiary.view.screens.settings.global
 
 import android.app.Activity
@@ -6,6 +16,7 @@ import android.content.SharedPreferences
 import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
+import androidx.appcompat.app.AlertDialog
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.PreferenceManager
@@ -15,7 +26,6 @@ import com.furianrt.mydiary.analytics.MyAnalytics
 import com.furianrt.mydiary.view.base.BaseView
 import com.furianrt.mydiary.data.prefs.PreferencesHelper
 import com.furianrt.mydiary.view.screens.pin.PinActivity
-import com.furianrt.mydiary.utils.isFingerprintAvailable
 import javax.inject.Inject
 
 class GlobalSettingsFragment : PreferenceFragmentCompat(), BaseView, GlobalSettingsContract.MvpView,
@@ -31,7 +41,7 @@ class GlobalSettingsFragment : PreferenceFragmentCompat(), BaseView, GlobalSetti
     lateinit var mPresenter: GlobalSettingsContract.Presenter
 
     @Inject
-    lateinit var mAnalytics : MyAnalytics
+    lateinit var mAnalytics: MyAnalytics
 
     private val mHandler = Handler()
     private val mRecreateRunnable = Runnable { activity?.recreate() }
@@ -39,11 +49,8 @@ class GlobalSettingsFragment : PreferenceFragmentCompat(), BaseView, GlobalSetti
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         setPreferencesFromResource(R.xml.pref_global, rootKey)
         PreferenceManager.setDefaultValues(activity, R.xml.pref_global, false)
-        mPresenter.attachView(this)
-        mPresenter.onViewCreate()
 
-        findPreference<SwitchPreference>(PreferencesHelper.FINGERPRINT_STATUS)?.isVisible =
-                requireContext().isFingerprintAvailable()
+        mPresenter.attachView(this)
 
         findPreference<SwitchPreference>(PreferencesHelper.SECURITY_KEY)?.onPreferenceClickListener =
                 Preference.OnPreferenceClickListener {
@@ -60,6 +67,12 @@ class GlobalSettingsFragment : PreferenceFragmentCompat(), BaseView, GlobalSetti
         findPreference<Preference>(PreferencesHelper.REPORT_PROBLEM_PREF_BUTTON)?.onPreferenceClickListener =
                 Preference.OnPreferenceClickListener {
                     mPresenter.onPrefReportProblemClick()
+                    return@OnPreferenceClickListener true
+                }
+
+        findPreference<Preference>(PreferencesHelper.RESET_NOTES_APPEARANCE_SETTINGS)?.onPreferenceClickListener =
+                Preference.OnPreferenceClickListener {
+                    showResetNotesAppearanceDialog()
                     return@OnPreferenceClickListener true
                 }
     }
@@ -105,6 +118,27 @@ class GlobalSettingsFragment : PreferenceFragmentCompat(), BaseView, GlobalSetti
         }
     }
 
+    private fun showResetNotesAppearanceDialog() {
+        AlertDialog.Builder(requireContext())
+                .setMessage(getString(R.string.fragment_global_settings_reset_appearance_confirmation))
+                .setPositiveButton(R.string.reset) { dialogInterface, _ ->
+                    mPresenter.onPrefResetNotesColorClick()
+                    dialogInterface.dismiss()
+                }
+                .setNegativeButton(R.string.cancel) { dialogInterface, _ ->
+                    dialogInterface.dismiss()
+                }
+                .show()
+    }
+
+    override fun showFingerprintOptions() {
+        findPreference<SwitchPreference>(PreferencesHelper.FINGERPRINT_STATUS)?.isVisible = true
+    }
+
+    override fun hideFingerprintOptions() {
+        findPreference<SwitchPreference>(PreferencesHelper.FINGERPRINT_STATUS)?.isVisible = false
+    }
+
     override fun showBackupEmail(email: String) {
         val keyPref = findPreference<SwitchPreference>(PreferencesHelper.SECURITY_KEY)
         keyPref?.summaryOn = getString(R.string.global_settings_pin_on_summary, email)
@@ -132,6 +166,10 @@ class GlobalSettingsFragment : PreferenceFragmentCompat(), BaseView, GlobalSetti
         intent.putExtra(Intent.EXTRA_SUBJECT, getString(R.string.low_rate_email_subject))
         intent.putExtra(Intent.EXTRA_TEXT, getString(R.string.low_rate_email_text))
         startActivity(Intent.createChooser(intent, getString(R.string.low_rate_email_title)))
+    }
+
+    override fun onNotesAppearanceReset() {
+        mHandler.postDelayed(mRecreateRunnable, RECREATE_DELAY)
     }
 
     override fun onStart() {

@@ -12,8 +12,8 @@ android {
         applicationId "com.furianrt.mydiary"
         minSdkVersion 21
         targetSdkVersion 29
-        versionCode 31
-        versionName "1.4.2"
+        versionCode 32
+        versionName "1.4.3"
 
         javaCompileOptions {
             annotationProcessorOptions {
@@ -25,7 +25,7 @@ android {
     buildTypes {
         debug {
             versionNameSuffix "-debug"
-            minifyEnabled true
+            minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
             resValue("bool", "FIREBASE_ANALYTICS_DEACTIVATED", "true")
         }
@@ -46,6 +46,9 @@ android {
         it.buildConfigField 'String', 'MERCHANT_ID', merchantId
         it.buildConfigField 'String', 'LICENSE_KEY', licenseKey
         it.buildConfigField 'String', 'ITEM_PREMIUM_SKU', itemPremiumSku
+        it.resValue("string", "GEO_API_KEY", geoApiKey)
+        it.resValue("string", "BANNER_AD_APP_ID", bannerAdAppId)
+        it.resValue("string", "BANNER_AD_UNIT_ID", bannerAdUnitId)
     }
 
     compileOptions {
@@ -138,11 +141,11 @@ dependencies {
 
     //Firebase
     implementation 'com.google.firebase:firebase-core:17.0.1'
-    implementation 'com.google.firebase:firebase-storage:18.1.0'
-    implementation 'com.google.firebase:firebase-firestore:20.1.0'
+    implementation 'com.google.firebase:firebase-storage:18.1.1'
+    implementation 'com.google.firebase:firebase-firestore:20.2.0'
     implementation 'com.google.firebase:firebase-messaging:19.0.1'
     implementation 'com.google.firebase:firebase-auth:18.1.0'
-    implementation 'com.google.firebase:firebase-ads:18.1.0'
+    implementation 'com.google.firebase:firebase-ads:18.1.1'
 
     //Rx for Firebase
     implementation 'com.github.FrangSierra:RxFirebase:1.5.6'
@@ -158,7 +161,7 @@ dependencies {
     implementation 'com.sun.mail:android-activation:1.6.3'
 
     //In-App purchases
-    implementation 'com.anjlab.android.iab.v3:library:1.0.45'
+    implementation 'com.anjlab.android.iab.v3:library:1.1.0'
 
     //Debugging instrument for network calls, database content, etc.
     implementation 'com.facebook.stetho:stetho:1.5.1'

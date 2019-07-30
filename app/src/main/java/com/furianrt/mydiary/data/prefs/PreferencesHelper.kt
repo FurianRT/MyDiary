@@ -1,3 +1,13 @@
+/*******************************************************************************
+ *  @author FurianRT
+ *  Copyright 2019
+ *
+ *  All rights reserved.
+ *  Distribution of the software in any form is only allowed with
+ *  explicit, prior permission from the owner.
+ *
+ ******************************************************************************/
+
 package com.furianrt.mydiary.data.prefs
 
 interface PreferencesHelper {
@@ -8,10 +18,15 @@ interface PreferencesHelper {
     fun isMapEnabled(): Boolean
     fun isMoodEnabled(): Boolean
     fun getTextColor(): Int
+    fun setTextColor(color: Int)
     fun getSurfaceTextColor(): Int
+    fun setSurfaceTextColor(color: Int)
     fun getTextSize(): Int
+    fun setTextSize(size: Int)
     fun getNoteBackgroundColor(): Int
+    fun setNoteBackgroundColor(color: Int)
     fun getNoteTextBackgroundColor(): Int
+    fun setNoteTextBackgroundColor(color: Int)
     fun is24TimeFormat(): Boolean
     fun isSortDesc(): Boolean
     fun setSortDesc(desc: Boolean)
@@ -57,7 +72,7 @@ interface PreferencesHelper {
         const val FINGERPRINT_STATUS = "fingerprint_status"
         const val IS_NOTE_SORT_DESC = "is_note_sort_desc"
         const val DIARY_PIN = "diary_pin"
-        const val DEFAULT_TEXT_SIZE = "16"
+        const val DEFAULT_TEXT_SIZE = 16
         const val DEFAULT_PIN_DELAY = "2000"
         const val DAILY_IMAGE_CATEGORY_DEFAULT = "backgrounds"
         const val LAST_PROGRESS_MESSAGE = "last_progress_message"
@@ -68,5 +83,6 @@ interface PreferencesHelper {
         const val RATE_OFFER = "rate_offer"
         const val RATE_APP_PREF_BUTTON = "rate_app"
         const val REPORT_PROBLEM_PREF_BUTTON = "problem_report"
+        const val RESET_NOTES_APPEARANCE_SETTINGS = "reset_notes_appearance"
     }
 }

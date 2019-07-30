@@ -72,20 +72,20 @@
             android:theme="@style/AppTheme" />
 
         <meta-data
-            android:name="com.google.android.geo.API_KEY"
-            android:value="@string/geo_api_key" />
-
-        <meta-data
             android:name="com.google.firebase.messaging.default_notification_icon"
             android:resource="@drawable/ic_notification_logo" />
 
         <meta-data
-            android:name="com.google.android.gms.ads.APPLICATION_ID"
-            android:value="@string/banner_ad_app_id" />
-
-        <meta-data
             android:name="firebase_analytics_collection_deactivated"
             android:value="@bool/FIREBASE_ANALYTICS_DEACTIVATED" />
+
+        <meta-data
+            android:name="com.google.android.gms.ads.APPLICATION_ID"
+            android:value="@string/BANNER_AD_APP_ID" />
+
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="@string/GEO_API_KEY" />
 
     </application>
 

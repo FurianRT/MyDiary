@@ -1,3 +1,13 @@
+/*******************************************************************************
+ *  @author FurianRT
+ *  Copyright 2019
+ *
+ *  All rights reserved.
+ *  Distribution of the software in any form is only allowed with
+ *  explicit, prior permission from the owner.
+ *
+ ******************************************************************************/
+
 package com.furianrt.mydiary.data.repository.appearance
 
 import com.furianrt.mydiary.data.auth.AuthHelper
@@ -73,11 +83,31 @@ class AppearanceRepositoryImp @Inject constructor(
 
     override fun getTextColor(): Int = prefs.getTextColor()
 
+    override fun setTextColor(color: Int) {
+        prefs.setTextColor(color)
+    }
+
     override fun getSurfaceTextColor(): Int = prefs.getSurfaceTextColor()
+
+    override fun setSurfaceTextColor(color: Int) {
+        prefs.setSurfaceTextColor(color)
+    }
 
     override fun getTextSize(): Int = prefs.getTextSize()
 
+    override fun setTextSize(size: Int) {
+        prefs.setTextSize(size)
+    }
+
     override fun getNoteBackgroundColor(): Int = prefs.getNoteBackgroundColor()
 
+    override fun setNoteBackgroundColor(color: Int) {
+        prefs.setNoteBackgroundColor(color)
+    }
+
     override fun getNoteTextBackgroundColor(): Int = prefs.getNoteTextBackgroundColor()
+
+    override fun setNoteTextBackgroundColor(color: Int) {
+        prefs.setNoteTextBackgroundColor(color)
+    }
 }

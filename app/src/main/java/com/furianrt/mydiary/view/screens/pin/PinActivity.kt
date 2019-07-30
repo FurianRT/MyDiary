@@ -1,3 +1,13 @@
+/*******************************************************************************
+ *  @author FurianRT
+ *  Copyright 2019
+ *
+ *  All rights reserved.
+ *  Distribution of the software in any form is only allowed with
+ *  explicit, prior permission from the owner.
+ *
+ ******************************************************************************/
+
 package com.furianrt.mydiary.view.screens.pin
 
 import android.app.Activity
@@ -18,7 +28,6 @@ import com.furianrt.mydiary.view.screens.pin.fragments.done.DoneEmailFragment
 import com.furianrt.mydiary.view.screens.pin.fragments.sendemail.SendEmailFragment
 import com.furianrt.mydiary.utils.animateShake
 import com.furianrt.mydiary.utils.inTransaction
-import com.furianrt.mydiary.utils.isFingerprintAvailable
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.card.MaterialCardView
 import kotlinx.android.synthetic.main.activity_pin.*
@@ -212,8 +221,6 @@ class PinActivity : BaseActivity(), PinContract.MvpView, BackupEmailFragment.OnB
                 .setNegativeButtonText(getString(R.string.activity_pin_use_pin))
                 .build())
     }
-
-    override fun isFingerprintSupported(): Boolean = isFingerprintAvailable()
 
     override fun hideFingerprintButton() {
         button_fingerprint.visibility = View.INVISIBLE

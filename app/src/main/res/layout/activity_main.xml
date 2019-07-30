@@ -83,7 +83,7 @@
                 android:layout_weight="0"
                 android:visibility="gone"
                 app:adSize="SMART_BANNER"
-                app:adUnitId="@string/banner_ad_unit_id"
+                app:adUnitId="@string/BANNER_AD_UNIT_ID"
                 tools:visibility="visible" />
 
         </LinearLayout>

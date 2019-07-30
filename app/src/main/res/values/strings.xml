@@ -1,11 +1,6 @@
 <resources>
     <string name="app_name" translatable="false">Serenity</string>
 
-    <string name="banner_ad_app_id" translatable="false">ca-app-pub-9518936645258348~9000751532</string>
-    <string name="banner_ad_unit_id" translatable="false">ca-app-pub-9518936645258348/9547546445</string>
-
-    <string name="geo_api_key" translatable="false">AIzaSyBqIaX5gl6vGr0C5xZA29CKXoYyJPW2pxI</string>
-
     <string name="note_list_date_format" translatable="false">%1$s, %2$s</string>
     <string name="counter_format" translatable="false">%1$d/%2$d</string>
     <string name="sync_progress_format" translatable="false">%1$d%% %2$s</string>
@@ -75,6 +70,7 @@
     <string name="today">Today</string>
     <string name="keep">Keep</string>
     <string name="support">Support</string>
+    <string name="reset">Reset</string>
     <plurals name="note_delete_confirmation">
         <item quantity="zero">Delete %d notes?</item>
         <item quantity="one">Delete %d note?</item>
@@ -236,7 +232,7 @@
     <string name="fragment_gallery_drag_hint">You can move or delete pictures by long click!</string>
     <string name="gallery_list_empty_state_add_images">Add images</string>
     <string name="gallery_list_empty_state_message_part_1">No pictures yet?</string>
-    <string name="gallery_list_empty_state_message_part_2">Try adding some, its easy!</string>
+    <string name="gallery_list_empty_state_message_part_2">Try adding some, it\'s easy!</string>
     <string name="fragment_gallery_list_selected">Selected: %d</string>
     <string name="fragment_gallery_list_image_count">Total: %d</string>
     <string name="fragment_gallery_list_image_save_error">Could not save the picture</string>
@@ -301,4 +297,9 @@
     <string name="problem_report_settings_summary">If you have a problem or suggestions for the app, please let as know</string>
     <string name="rate_app_settings_title">Rate Serenity</string>
     <string name="rate_app_settings_summary">Let as know what you think about Serenity</string>
+    <string name="fragment_global_settings_reset_appearance_confirmation">Reset default appearance?</string>
+    <string name="fragment_global_settings_reset_appearance_title">Reset appearance settings</string>
+    <string name="fragment_note_settings_reset_settings_title">Reset settings</string>
+    <string name="fragment_note_settings_danger_zone">Danger zone</string>
+    <string name="fragment_note_settings_reset_settings_confirm">Reset settings?</string>
 </resources>
