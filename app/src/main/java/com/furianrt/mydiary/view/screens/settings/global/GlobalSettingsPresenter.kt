@@ -11,17 +11,28 @@
 package com.furianrt.mydiary.view.screens.settings.global
 
 import com.furianrt.mydiary.BuildConfig
+import com.furianrt.mydiary.domain.ResetNotesAppearanceSettingsUseCase
+import com.furianrt.mydiary.domain.check.IsFingerprintSupportedUseCase
 import com.furianrt.mydiary.domain.delete.RemovePinEmailUseCase
 import com.furianrt.mydiary.domain.get.GetPinEmailUseCase
+import io.reactivex.android.schedulers.AndroidSchedulers
 import javax.inject.Inject
 
 class GlobalSettingsPresenter @Inject constructor(
         private val getPinEmail: GetPinEmailUseCase,
-        private val removePinEmail: RemovePinEmailUseCase
+        private val removePinEmail: RemovePinEmailUseCase,
+        private val isFingerprintSupported: IsFingerprintSupportedUseCase,
+        private val resetNotesAppearanceSettings: ResetNotesAppearanceSettingsUseCase
 ) : GlobalSettingsContract.Presenter() {
 
-    override fun onViewCreate() {
-        getPinEmail.invoke()?.let { view?.showBackupEmail(it) }
+    override fun attachView(view: GlobalSettingsContract.MvpView) {
+        super.attachView(view)
+        getPinEmail.invoke()?.let { view.showBackupEmail(it) }
+        if (isFingerprintSupported.invoke()) {
+            view.showFingerprintOptions()
+        } else {
+            view.hideFingerprintOptions()
+        }
     }
 
     override fun onPrefSecurityKeyClick() {
@@ -46,5 +57,11 @@ class GlobalSettingsPresenter @Inject constructor(
 
     override fun onPrefReportProblemClick() {
         view?.sendEmailToSupport(BuildConfig.SUPPORT_EMAIL)
+    }
+
+    override fun onPrefResetNotesColorClick() {
+        addDisposable(resetNotesAppearanceSettings.invoke()
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe { view?.onNotesAppearanceReset() })
     }
 }

@@ -70,6 +70,7 @@
     <string name="today">Today</string>
     <string name="keep">Keep</string>
     <string name="support">Support</string>
+    <string name="reset">Reset</string>
     <plurals name="note_delete_confirmation">
         <item quantity="zero">Delete %d notes?</item>
         <item quantity="one">Delete %d note?</item>
@@ -296,4 +297,9 @@
     <string name="problem_report_settings_summary">If you have a problem or suggestions for the app, please let as know</string>
     <string name="rate_app_settings_title">Rate Serenity</string>
     <string name="rate_app_settings_summary">Let as know what you think about Serenity</string>
+    <string name="fragment_global_settings_reset_appearance_confirmation">Reset default appearance?</string>
+    <string name="fragment_global_settings_reset_appearance_title">Reset appearance settings</string>
+    <string name="fragment_note_settings_reset_settings_title">Reset settings</string>
+    <string name="fragment_note_settings_danger_zone">Danger zone</string>
+    <string name="fragment_note_settings_reset_settings_confirm">Reset settings?</string>
 </resources>

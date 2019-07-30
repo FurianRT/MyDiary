@@ -11,6 +11,7 @@
 package com.furianrt.mydiary.view.screens.settings.note
 
 import android.os.Bundle
+import androidx.appcompat.app.AlertDialog
 import androidx.preference.ListPreference
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
@@ -72,31 +73,50 @@ class NoteSettingsFragment : PreferenceFragmentCompat(), BaseView, NoteSettingsC
             it.isPersistent = false
             it.onPreferenceChangeListener = mPreferenceListener
         }
-
         findPreference<ColorPreferenceCompat>(SURFACE_TEXT_COLOR)?.let {
             it.isPersistent = false
             it.onPreferenceChangeListener = mPreferenceListener
         }
-
         findPreference<ColorPreferenceCompat>(BACKGROUND_COLOR)?.let {
             it.isPersistent = false
             it.onPreferenceChangeListener = mPreferenceListener
         }
-
         findPreference<ColorPreferenceCompat>(TEXT_BACKGROUND_COLOR)?.let {
             it.isPersistent = false
             it.onPreferenceChangeListener = mPreferenceListener
         }
+        findPreference<Preference>(RESET_NOTE_SETTINGS)?.onPreferenceClickListener =
+                Preference.OnPreferenceClickListener {
+                    showResetSettingsDialog()
+                    return@OnPreferenceClickListener true
+                }
+    }
+
+    private fun showResetSettingsDialog() {
+        AlertDialog.Builder(requireContext())
+                .setMessage(getString(R.string.fragment_note_settings_reset_settings_confirm))
+                .setPositiveButton(R.string.reset) { dialogInterface, _ ->
+                    mPresenter.onPrefResetSettingsClick()
+                    dialogInterface.dismiss()
+                }
+                .setNegativeButton(R.string.cancel) { dialogInterface, _ ->
+                    dialogInterface.dismiss()
+                }
+                .show()
     }
 
     override fun updateSettings(appearance: MyNoteAppearance) {
         findPreference<ListPreference>(TEXT_SIZE)?.apply {
-            setValueIndex(this.findIndexOfValue(appearance.textSize.toString()))
+            setValueIndex(findIndexOfValue(appearance.textSize.toString()))
         }
         findPreference<ColorPreferenceCompat>(NOTE_TEXT_COLOR)?.saveValue(appearance.textColor!!)
         findPreference<ColorPreferenceCompat>(SURFACE_TEXT_COLOR)?.saveValue(appearance.surfaceTextColor!!)
         findPreference<ColorPreferenceCompat>(BACKGROUND_COLOR)?.saveValue(appearance.background!!)
         findPreference<ColorPreferenceCompat>(TEXT_BACKGROUND_COLOR)?.saveValue(appearance.textBackground!!)
+    }
+
+    override fun onAppearanceReset() {
+        requireActivity().recreate()
     }
 
     override fun onDestroy() {
@@ -113,6 +133,7 @@ class NoteSettingsFragment : PreferenceFragmentCompat(), BaseView, NoteSettingsC
         private const val NOTE_TEXT_COLOR = "note_text_color"
         private const val SURFACE_TEXT_COLOR = "surface_text_color"
         private const val TEXT_BACKGROUND_COLOR = "note_text_background"
+        private const val RESET_NOTE_SETTINGS = "reset_note_settings"
         private const val BACKGROUND_COLOR = "note_background"
 
         @JvmStatic

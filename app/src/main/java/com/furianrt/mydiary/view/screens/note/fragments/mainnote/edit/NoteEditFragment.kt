@@ -254,9 +254,6 @@ class NoteEditFragment : BaseFragment(), NoteEditFragmentContract.MvpView {
         fun onNoteFragmentEditModeDisabled()
     }
 
-
-    enum class ClickedView { TITLE, CONTENT }
-
     companion object {
 
         const val TAG = "NoteEditFragment"

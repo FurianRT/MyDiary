@@ -12,12 +12,9 @@ package com.furianrt.mydiary.utils
 
 import android.animation.ObjectAnimator
 import android.animation.PropertyValuesHolder
-import android.content.res.Resources
+import android.graphics.drawable.ColorDrawable
 import android.view.View
 import android.view.animation.OvershootInterpolator
-import kotlin.math.roundToInt
-
-fun dpToPx(dp: Float): Int = (dp * Resources.getSystem().displayMetrics.density).roundToInt()
 
 fun View.animateScale(from: Float, to: Float, duration: Long) {
     ObjectAnimator.ofPropertyValuesHolder(
@@ -31,15 +28,20 @@ fun View.animateScale(from: Float, to: Float, duration: Long) {
 }
 
 fun View.animateShake(duration: Long = 400L) {
-    ObjectAnimator
-            .ofFloat(this, "translationX", 0f, 52f, -26f, 52f, 0f)
+    ObjectAnimator.ofFloat(this, "translationX", 0f, 52f, -26f, 52f, 0f)
             .setDuration(duration)
             .start()
 }
 
 fun View.animateAlpha(from: Float, to: Float, duration: Long) {
-    ObjectAnimator
-            .ofPropertyValuesHolder(this, PropertyValuesHolder.ofFloat(View.ALPHA, from, to))
+    ObjectAnimator.ofPropertyValuesHolder(this, PropertyValuesHolder.ofFloat(View.ALPHA, from, to))
             .apply { this.duration = duration }
+            .start()
+}
+
+fun View.animateBackgroundColor(colorTo: Int, duration: Long = 250L) {
+    val colorFrom = (this.background as ColorDrawable).color
+    ObjectAnimator.ofArgb(this, "backgroundColor", colorFrom, colorTo)
+            .setDuration(duration)
             .start()
 }

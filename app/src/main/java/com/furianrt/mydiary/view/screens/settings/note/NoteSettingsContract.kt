@@ -18,6 +18,7 @@ interface NoteSettingsContract {
 
     interface MvpView : BaseMvpView {
         fun updateSettings(appearance: MyNoteAppearance)
+        fun onAppearanceReset()
     }
 
     abstract class Presenter : BaseMvpPresenter<MvpView>() {
@@ -27,5 +28,6 @@ interface NoteSettingsContract {
         abstract fun onBackgroundColorChange(color: Int)
         abstract fun onBackgroundTextColorChange(color: Int)
         abstract fun onSurfaceTextColorChange(color: Int)
+        abstract fun onPrefResetSettingsClick()
     }
 }

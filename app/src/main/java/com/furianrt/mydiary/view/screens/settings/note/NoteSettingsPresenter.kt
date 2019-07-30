@@ -12,6 +12,7 @@ package com.furianrt.mydiary.view.screens.settings.note
 
 import android.util.Log
 import com.furianrt.mydiary.data.model.MyNoteAppearance
+import com.furianrt.mydiary.domain.ResetNoteSettingsUseCase
 import com.furianrt.mydiary.domain.get.GetAppearanceUseCase
 import com.furianrt.mydiary.domain.update.UpdateAppearanceUseCase
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -19,7 +20,8 @@ import javax.inject.Inject
 
 class NoteSettingsPresenter @Inject constructor(
         private val updateAppearance: UpdateAppearanceUseCase,
-        private val getAppearance: GetAppearanceUseCase
+        private val getAppearance: GetAppearanceUseCase,
+        private val resetNoteSettings: ResetNoteSettingsUseCase
 ) : NoteSettingsContract.Presenter() {
 
     companion object {
@@ -68,6 +70,12 @@ class NoteSettingsPresenter @Inject constructor(
     override fun onBackgroundTextColorChange(color: Int) {
         mAppearance.textBackground = color
         updateAppearance(mAppearance)
+    }
+
+    override fun onPrefResetSettingsClick() {
+        addDisposable(resetNoteSettings.invoke(mAppearance.appearanceId)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe { view?.onAppearanceReset() })
     }
 
     private fun updateAppearance(appearance: MyNoteAppearance) {

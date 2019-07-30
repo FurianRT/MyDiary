@@ -48,20 +48,40 @@ class PreferencesHelperImp @Inject constructor(
             mPrefs.getInt(PreferencesHelper.TEXT_COLOR,
                     ContextCompat.getColor(context, R.color.black))
 
+    override fun setTextColor(color: Int) {
+        mPrefs.edit().putInt(PreferencesHelper.TEXT_COLOR, color).apply()
+    }
+
     override fun getSurfaceTextColor(): Int =
             mPrefs.getInt(PreferencesHelper.SURFACE_TEXT_COLOR,
                     ContextCompat.getColor(context, R.color.black))
 
+    override fun setSurfaceTextColor(color: Int) {
+        mPrefs.edit().putInt(PreferencesHelper.SURFACE_TEXT_COLOR, color).apply()
+    }
+
     override fun getTextSize(): Int =
-            mPrefs.getString(PreferencesHelper.TEXT_SIZE, PreferencesHelper.DEFAULT_TEXT_SIZE)!!.toInt()
+            mPrefs.getString(PreferencesHelper.TEXT_SIZE, PreferencesHelper.DEFAULT_TEXT_SIZE.toString())!!.toInt()
+
+    override fun setTextSize(size: Int) {
+        mPrefs.edit().putString(PreferencesHelper.TEXT_SIZE, size.toString()).apply()
+    }
 
     override fun getNoteBackgroundColor(): Int =
             mPrefs.getInt(PreferencesHelper.NOTE_BACKGROUND_COLOR,
                     ContextCompat.getColor(context, R.color.grey_light))
 
+    override fun setNoteBackgroundColor(color: Int) {
+        mPrefs.edit().putInt(PreferencesHelper.NOTE_BACKGROUND_COLOR, color).apply()
+    }
+
     override fun getNoteTextBackgroundColor(): Int =
             mPrefs.getInt(PreferencesHelper.NOTE_TEXT_BACKGROUND_COLOR,
                     ContextCompat.getColor(context, R.color.white))
+
+    override fun setNoteTextBackgroundColor(color: Int) {
+        mPrefs.edit().putInt(PreferencesHelper.NOTE_TEXT_BACKGROUND_COLOR, color).apply()
+    }
 
     override fun is24TimeFormat(): Boolean =
             mPrefs.getString(PreferencesHelper.TIME_FORMAT, "true")!!.toBoolean()

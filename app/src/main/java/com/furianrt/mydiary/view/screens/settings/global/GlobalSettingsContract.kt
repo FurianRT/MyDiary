@@ -21,14 +21,17 @@ interface GlobalSettingsContract {
         fun showBackupEmail(email: String)
         fun openAppPage()
         fun sendEmailToSupport(supportEmail: String)
+        fun showFingerprintOptions()
+        fun hideFingerprintOptions()
+        fun onNotesAppearanceReset()
     }
 
     abstract class Presenter : BaseMvpPresenter<MvpView>() {
         abstract fun onPrefSecurityKeyClick()
         abstract fun onPasswordCreated()
         abstract fun onPasswordRemoved()
-        abstract fun onViewCreate()
         abstract fun onPrefRateAppClick()
         abstract fun onPrefReportProblemClick()
+        abstract fun onPrefResetNotesColorClick()
     }
 }

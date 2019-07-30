@@ -13,6 +13,8 @@ package com.furianrt.mydiary.data.repository.device
 import com.furianrt.mydiary.data.model.MyLocation
 
 interface DeviceRepository {
+    fun isFingerprintHardwareSupported(): Boolean
+    fun isFingerprintEnabled(): Boolean
     fun isNetworkAvailable(): Boolean
     fun isLocationAvailable(): Boolean
     fun findLocation(listener: OnLocationFoundListener)

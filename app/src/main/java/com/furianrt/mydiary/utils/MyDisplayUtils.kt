@@ -11,7 +11,9 @@
 package com.furianrt.mydiary.utils
 
 import android.app.Activity
+import android.content.res.Resources
 import android.graphics.Point
+import kotlin.math.roundToInt
 
 fun Activity.getDisplayWidth(): Int {
     val display = windowManager.defaultDisplay
@@ -23,3 +25,5 @@ fun Activity.getDisplayWidth(): Int {
     }
     return size.x
 }
+
+fun dpToPx(dp: Float): Int = (dp * Resources.getSystem().displayMetrics.density).roundToInt()

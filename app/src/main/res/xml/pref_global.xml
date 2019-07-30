@@ -116,13 +116,17 @@
 
         <com.jaredrummler.android.colorpicker.ColorPreferenceCompat
             android:key="all_notes_surface_text_color"
-            android:persistent="false"
             android:summary="@string/all_notes_surface_font_color_summary"
             android:title="@string/all_notes_surface_font_color_title"
             app:cpv_allowPresets="false"
             app:cpv_dialogType="custom"
             app:cpv_previewSize="large"
             app:cpv_showAlphaSlider="true"
+            app:iconSpaceReserved="false" />
+
+        <Preference
+            android:key="reset_notes_appearance"
+            android:title="@string/fragment_global_settings_reset_appearance_title"
             app:iconSpaceReserved="false" />
 
     </PreferenceCategory>

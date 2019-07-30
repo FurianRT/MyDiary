@@ -126,7 +126,7 @@ class NoteContentFragment : BaseFragment(), NoteContentFragmentContract.MvpView 
         (activity as NoteActivity).savePagerPosition()
         if (fragmentManager?.findFragmentByTag(NoteEditFragment.TAG) == null) {
             activity?.supportFragmentManager?.inTransaction {
-                this.setPrimaryNavigationFragment(parentFragment)
+                setPrimaryNavigationFragment(parentFragment)
             }
             fragmentManager?.let { manager ->
                 val editFragment = NoteEditFragment.newInstance(

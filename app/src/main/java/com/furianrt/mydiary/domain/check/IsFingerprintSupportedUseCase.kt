@@ -11,16 +11,12 @@
 package com.furianrt.mydiary.domain.check
 
 import com.furianrt.mydiary.data.repository.device.DeviceRepository
-import com.furianrt.mydiary.data.repository.pin.PinRepository
 import javax.inject.Inject
 
-class IsFingerprintAvailableUseCase @Inject constructor(
-        private val pinRepository: PinRepository,
-        private var deviceRepository: DeviceRepository
+class IsFingerprintSupportedUseCase @Inject constructor(
+        private val deviceRepository: DeviceRepository
 ) {
 
     fun invoke(): Boolean =
-            deviceRepository.isFingerprintHardwareSupported()
-                    && deviceRepository.isFingerprintEnabled()
-                    && pinRepository.isFingerprintEnabled()
+            deviceRepository.isFingerprintHardwareSupported() && deviceRepository.isFingerprintEnabled()
 }

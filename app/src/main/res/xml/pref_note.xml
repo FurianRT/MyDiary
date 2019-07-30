@@ -69,4 +69,15 @@
 
     </PreferenceCategory>
 
+    <PreferenceCategory
+        android:title="@string/fragment_note_settings_danger_zone"
+        app:iconSpaceReserved="false">
+
+        <Preference
+            android:key="reset_note_settings"
+            android:title="@string/fragment_note_settings_reset_settings_title"
+            app:iconSpaceReserved="false" />
+
+    </PreferenceCategory>
+
 </PreferenceScreen>

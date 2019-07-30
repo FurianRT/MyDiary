@@ -30,7 +30,6 @@ interface PinContract {
         fun showEnterEmailView()
         fun close()
         fun showFingerprintScanner()
-        fun isFingerprintSupported(): Boolean
         fun hideFingerprintButton()
         fun showFingerprintButton()
     }

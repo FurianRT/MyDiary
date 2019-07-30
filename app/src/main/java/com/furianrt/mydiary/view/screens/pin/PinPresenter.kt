@@ -66,7 +66,7 @@ class PinPresenter @Inject constructor(
     override fun onViewStartedModeLock() {
         view?.showPin(mPin)
         view?.showMessageEnterPin()
-        if (view?.isFingerprintSupported() == true && isFingerprintAvailable.invoke()) {  //todo убрать проверку фингерпринта из вьюхи в UseCase
+        if (isFingerprintAvailable.invoke()) {
             view?.showFingerprintButton()
             view?.showFingerprintScanner()
         } else {

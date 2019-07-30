@@ -234,6 +234,7 @@ class NoteFragment : BaseFragment(), NoteFragmentContract.MvpView, DatePickerDia
                 true
             }
             R.id.menu_share -> {
+                removeEditFragment()
                 analytics.sendEvent(MyAnalytics.EVENT_SHARE_NOTE)
                 mPresenter.onButtonShareClick()
                 true
@@ -325,23 +326,21 @@ class NoteFragment : BaseFragment(), NoteFragmentContract.MvpView, DatePickerDia
     }
 
     override fun updateNoteAppearance(appearance: MyNoteAppearance) {
-        appearance.background?.let { layout_root_note.setBackgroundColor(it) }
+        appearance.background?.let { layout_root_note.animateBackgroundColor(it) }
         appearance.textBackground?.let { card_note_edit.setCardBackgroundColor(it) }
-        appearance.textColor?.let {
-            text_mood.setTextColor(it)
-            text_category.setTextColor(it)
+        appearance.textColor?.let { color ->
+            text_mood.setTextColor(color)
+            text_category.setTextColor(color)
         }
-        appearance.surfaceTextColor?.let {
-            text_location.setTextColor(it)
-            text_date.setTextColor(it)
-            text_time.setTextColor(it)
-            text_temp.setTextColor(it)
-            text_location.setTextColor(it)
+        appearance.surfaceTextColor?.let { color ->
+            text_location.setTextColor(color)
+            text_date.setTextColor(color)
+            text_time.setTextColor(color)
+            text_temp.setTextColor(color)
+            text_location.setTextColor(color)
+            image_location.setColorFilter(color, PorterDuff.Mode.SRC_IN)
         }
-        image_location.setColorFilter(
-                appearance.surfaceTextColor ?: Color.BLACK,
-                PorterDuff.Mode.SRC_IN
-        )
+
         childFragmentManager.findFragmentByTag(NoteContentFragment.TAG)?.let {
             (it as NoteContentFragment).setAppearance(appearance)
         }
