@@ -125,9 +125,7 @@ class NoteSettingsFragment : PreferenceFragmentCompat(), BaseView, NoteSettingsC
     }
 
     companion object {
-
         const val TAG = "NoteSettingsFragment"
-
         private const val ARG_NOTE_ID = "noteId"
         private const val TEXT_SIZE = "font_size_note"
         private const val NOTE_TEXT_COLOR = "note_text_color"

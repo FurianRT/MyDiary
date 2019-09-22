@@ -11,6 +11,8 @@
 package com.furianrt.mydiary.view.screens.note.fragments.mainnote.content
 
 import android.os.Bundle
+import android.text.Editable
+import android.text.Spannable
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.MotionEvent
@@ -24,6 +26,7 @@ import com.furianrt.mydiary.view.screens.note.NoteActivity
 import com.furianrt.mydiary.view.screens.note.fragments.mainnote.NoteFragment
 import com.furianrt.mydiary.view.screens.note.fragments.mainnote.edit.NoteEditFragment
 import com.furianrt.mydiary.utils.inTransaction
+import com.furianrt.mydiary.utils.toHtmlString
 import kotlinx.android.synthetic.main.fragment_note_content.*
 import kotlinx.android.synthetic.main.fragment_note_content.view.*
 import javax.inject.Inject
@@ -35,6 +38,9 @@ class NoteContentFragment : BaseFragment(), NoteContentFragmentContract.MvpView 
 
     @Inject
     lateinit var mPresenter: NoteContentFragmentContract.Presenter
+
+    private var mTitle: Spannable? = null
+    private var mContent: Spannable? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         getPresenterComponent(requireContext()).inject(this)
@@ -68,19 +74,21 @@ class NoteContentFragment : BaseFragment(), NoteContentFragmentContract.MvpView 
         super.onViewCreated(view, savedInstanceState)
         if (mIsNewNote && savedInstanceState == null) {
             (parentFragment as? NoteFragment)?.disableActionBarExpanding(false)
-            showNoteEditView(NoteEditFragment.VIEW_TITLE, view.text_note_title.text.length)
+            showNoteEditView(NoteEditFragment.VIEW_TITLE, mTitle?.length ?: 0)
         }
     }
 
-    fun showNoteText(title: String, content: String) {
+    fun showNoteText(title: Spannable, content: Spannable) {
         Log.e(TAG, "showNoteText")
+        mTitle = title
+        mContent = content
         if (title.isEmpty()) {
             text_note_title.visibility = View.GONE
         } else {
             text_note_title.visibility = View.VISIBLE
-            text_note_title.text = title
+            text_note_title.setText(title, TextView.BufferType.SPANNABLE)
         }
-        text_note_content.text = content
+        text_note_content.setText(content, TextView.BufferType.SPANNABLE)
     }
 
     fun setAppearance(appearance: MyNoteAppearance) {
@@ -119,7 +127,7 @@ class NoteContentFragment : BaseFragment(), NoteContentFragmentContract.MvpView 
 
     override fun showNoteEditViewForTitleEnd() {
         (parentFragment as? NoteFragment)?.disableActionBarExpanding(true)
-        showNoteEditView(NoteEditFragment.VIEW_TITLE, text_note_title.text.length)
+        showNoteEditView(NoteEditFragment.VIEW_TITLE, mTitle?.length ?: 0)
     }
 
     private fun showNoteEditView(clickedView: Int, touchPosition: Int) {
@@ -130,8 +138,8 @@ class NoteContentFragment : BaseFragment(), NoteContentFragmentContract.MvpView 
             }
             fragmentManager?.let { manager ->
                 val editFragment = NoteEditFragment.newInstance(
-                        text_note_title.text.toString(),
-                        text_note_content.text.toString(),
+                        mTitle?.toHtmlString() ?: "",
+                        mContent?.toHtmlString() ?: "",
                         clickedView,
                         touchPosition,
                         mAppearance
@@ -144,9 +152,9 @@ class NoteContentFragment : BaseFragment(), NoteContentFragmentContract.MvpView 
         }
     }
 
-    fun getNoteTitleText(): String = text_note_title?.text?.toString() ?: ""
+    fun getNoteTitleText(): Spannable = mTitle ?: Editable.Factory().newEditable("")
 
-    fun getNoteContentText(): String = text_note_content?.text?.toString() ?: ""
+    fun getNoteContentText(): Spannable = mContent ?: Editable.Factory().newEditable("")
 
     fun removeEditFragment() {
         fragmentManager?.findFragmentByTag(NoteEditFragment.TAG)?.let {
@@ -155,9 +163,11 @@ class NoteContentFragment : BaseFragment(), NoteContentFragmentContract.MvpView 
         }
     }
 
-    fun updateNoteText(title: String, content: String) {
-        text_note_title.text = title
-        text_note_content.text = content
+    fun updateNoteText(title: Spannable, content: Spannable) {
+        mTitle = title
+        mContent = content
+        text_note_title.setText(title, TextView.BufferType.SPANNABLE)
+        text_note_content.setText(content, TextView.BufferType.SPANNABLE)
     }
 
     fun setVisibility(visibility: Int) {

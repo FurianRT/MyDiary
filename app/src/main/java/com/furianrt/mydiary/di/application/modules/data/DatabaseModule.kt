@@ -32,12 +32,11 @@ import dagger.Provides
 import org.joda.time.DateTime
 
 @Module
-class DatabaseModule {
+object DatabaseModule {
 
-    companion object {
-        private const val DATABASE_NAME = "Notes.db"
-    }
+    private const val DATABASE_NAME = "Notes.db"
 
+    @JvmStatic
     @Provides
     @AppScope
     fun provideRoomCallback(@AppContext context: Context, storage: StorageHelper) =
@@ -49,6 +48,7 @@ class DatabaseModule {
                 }
             }
 
+    @JvmStatic
     @Provides
     @AppScope
     fun provideNoteDatabase(
@@ -87,50 +87,62 @@ class DatabaseModule {
 
     }
 
+    @JvmStatic
     @Provides
     @AppScope
     fun provideMoodDao(database: NoteDatabase): MoodDao = database.moodDao()
 
+    @JvmStatic
     @Provides
     @AppScope
     fun provideAppearanceDao(database: NoteDatabase): AppearanceDao = database.appearanceDao()
 
+    @JvmStatic
     @Provides
     @AppScope
     fun provideCategoryDao(database: NoteDatabase): CategoryDao = database.categoryDao()
 
+    @JvmStatic
     @Provides
     @AppScope
     fun provideForecastDao(database: NoteDatabase): ForecastDao = database.forecastDao()
 
+    @JvmStatic
     @Provides
     @AppScope
     fun provideHeaderImageDao(database: NoteDatabase): HeaderImageDao = database.headerImageDao()
 
+    @JvmStatic
     @Provides
     @AppScope
     fun provideImageDao(database: NoteDatabase): ImageDao = database.imageDao()
 
+    @JvmStatic
     @Provides
     @AppScope
     fun provideLocationDao(database: NoteDatabase): LocationDao = database.locationDao()
 
+    @JvmStatic
     @Provides
     @AppScope
     fun provideNoteDao(database: NoteDatabase): NoteDao = database.noteDao()
 
+    @JvmStatic
     @Provides
     @AppScope
     fun provideNoteLocationDao(database: NoteDatabase): NoteLocationDao = database.noteLocationDao()
 
+    @JvmStatic
     @Provides
     @AppScope
     fun provideNoteTagDao(database: NoteDatabase): NoteTagDao = database.noteTagDao()
 
+    @JvmStatic
     @Provides
     @AppScope
     fun provideProfileDao(database: NoteDatabase): ProfileDao = database.profileDao()
 
+    @JvmStatic
     @Provides
     @AppScope
     fun provideTagDao(database: NoteDatabase): TagDao = database.tagDao()
@@ -146,14 +158,14 @@ class DatabaseModule {
                     context.resources.getResourceEntryName(R.drawable.ic_mood_good),
                     context.resources.getResourceEntryName(R.drawable.ic_mood_great)
             )
-            for (i in 0 until moodNames.size) {
+            for (i in moodNames.indices) {
                 put(MyMood.FIELD_NAME, moodNames[i])
                 put(MyMood.FIELD_ICON, moodIcons[i])
                 db.insert(MyMood.TABLE_NAME, SQLiteDatabase.CONFLICT_IGNORE, this)
             }
             clear()
             val tagNames = context.resources.getStringArray(R.array.tags)
-            for (i in 0 until tagNames.size) {
+            for (i in tagNames.indices) {
                 put(MyTag.FIELD_ID, "default_tag_$i")
                 put(MyTag.FIELD_NAME, tagNames[i])
                 put(MyTag.FIELD_SYNC_WITH, Gson().toJson(listOf(MyTag.DEFAULT_SYNC_EMAIL)))
@@ -163,7 +175,7 @@ class DatabaseModule {
             clear()
             val categoryNames = context.resources.getStringArray(R.array.categories)
             val categoryColors = context.resources.getStringArray(R.array.default_category_colors)
-            for (i in 0 until categoryNames.size) {
+            for (i in categoryNames.indices) {
                 put(MyCategory.FIELD_ID, "default_category_$i")
                 put(MyCategory.FIELD_NAME, categoryNames[i])
                 put(MyCategory.FIELD_COLOR, Color.parseColor(categoryColors[i]))

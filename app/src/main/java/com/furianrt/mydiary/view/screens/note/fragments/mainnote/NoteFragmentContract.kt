@@ -54,6 +54,8 @@ interface NoteFragmentContract {
         fun shareNote(note: MyNoteWithProp)
         fun showErrorSaveImage()
         fun showErrorForecast()
+        fun showRichTextOptions()
+        fun hideRichTextOptions()
     }
 
     abstract class Presenter : BaseMvpPresenter<MvpView>() {
@@ -67,7 +69,6 @@ interface NoteFragmentContract {
         abstract fun onMoodFieldClick()
         abstract fun onCategoryFieldClick()
         abstract fun onButtonAppearanceClick()
-        abstract fun updateNoteText(noteTitle: String, noteContent: String)
         abstract fun onDateFieldClick()
         abstract fun onTimeFieldClick()
         abstract fun onDateSelected(year: Int, monthOfYear: Int, dayOfMonth: Int)
@@ -80,6 +81,7 @@ interface NoteFragmentContract {
         abstract fun onButtonUndoClick()
         abstract fun onButtonRedoClick()
         abstract fun onEditModeEnabled()
+        abstract fun onEditModeDisabled(noteTitle: String, noteContent: String)
         abstract fun onButtonMicClick()
         abstract fun onSpeechRecorded(curTitle: String, curContent: String, recordedText: String)
         abstract fun onButtonShareClick()

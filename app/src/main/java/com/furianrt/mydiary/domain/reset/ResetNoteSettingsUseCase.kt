@@ -8,7 +8,7 @@
  *
  ******************************************************************************/
 
-package com.furianrt.mydiary.domain
+package com.furianrt.mydiary.domain.reset
 
 import com.furianrt.mydiary.data.model.MyNoteAppearance
 import com.furianrt.mydiary.domain.update.UpdateAppearanceUseCase

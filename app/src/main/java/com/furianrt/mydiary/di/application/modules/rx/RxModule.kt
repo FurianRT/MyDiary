@@ -17,8 +17,9 @@ import io.reactivex.Scheduler
 import io.reactivex.schedulers.Schedulers
 
 @Module
-class RxModule {
+object RxModule {
 
+    @JvmStatic
     @Provides
     @AppScope
     fun provideRxScheduler(): Scheduler = Schedulers.io()

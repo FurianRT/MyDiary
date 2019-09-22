@@ -35,7 +35,8 @@ import kotlinx.android.synthetic.main.bottom_sheet_pin.*
 import java.util.concurrent.Executors
 import javax.inject.Inject
 
-class PinActivity : BaseActivity(), PinContract.MvpView, BackupEmailFragment.OnBackupEmailFragmentListener {
+class PinActivity : BaseActivity(R.layout.activity_pin), PinContract.MvpView,
+        BackupEmailFragment.OnBackupEmailFragmentListener {
 
     companion object {
         private const val BOTTOM_SHEET_EXPAND_DELAY = 200L
@@ -73,12 +74,25 @@ class PinActivity : BaseActivity(), PinContract.MvpView, BackupEmailFragment.OnB
                 }
             })
 
+    private val mBottomSheetCallback = object : BottomSheetBehavior.BottomSheetCallback() {
+        override fun onSlide(bottomSheet: View, slideOffset: Float) {}
+        override fun onStateChanged(bottomSheet: View, newState: Int) {
+            if (newState == BottomSheetBehavior.STATE_COLLAPSED) {
+                supportFragmentManager.findFragmentByTag(SendEmailFragment.TAG)?.let {
+                    supportFragmentManager.inTransaction { remove(it) }
+                }
+                supportFragmentManager.findFragmentByTag(DoneEmailFragment.TAG)?.let {
+                    supportFragmentManager.inTransaction { remove(it) }
+                }
+            }
+        }
+    }
+
     override var needLockScreen = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         getPresenterComponent(this).inject(this)
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_pin)
 
         mMode = intent.getSerializableExtra(EXTRA_MODE) as Mode
 
@@ -90,20 +104,6 @@ class PinActivity : BaseActivity(), PinContract.MvpView, BackupEmailFragment.OnB
         } else {
             mBottomSheet.locked = false
         }
-
-        mBottomSheet.setBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
-            override fun onSlide(bottomSheet: View, slideOffset: Float) {}
-            override fun onStateChanged(bottomSheet: View, newState: Int) {
-                if (newState == BottomSheetBehavior.STATE_COLLAPSED) {
-                    supportFragmentManager.findFragmentByTag(SendEmailFragment.TAG)?.let {
-                        supportFragmentManager.inTransaction { remove(it) }
-                    }
-                    supportFragmentManager.findFragmentByTag(DoneEmailFragment.TAG)?.let {
-                        supportFragmentManager.inTransaction { remove(it) }
-                    }
-                }
-            }
-        })
 
         savedInstanceState?.let {
             mBottomSheet.state = it.getInt(BUNDLE_BOTTOM_SHEET_STATE, BottomSheetBehavior.STATE_COLLAPSED)
@@ -127,9 +127,7 @@ class PinActivity : BaseActivity(), PinContract.MvpView, BackupEmailFragment.OnB
     }
 
     private fun valueEntered(value: Int) {
-        if (value !in 0..9) {
-            throw IllegalArgumentException()
-        }
+        require(value in 0..9)
         when (mMode) {
             MODE_CREATE -> mPresenter.onValueEnteredModeCreate(value)
             MODE_REMOVE -> mPresenter.onValueEnteredModeRemove(value)
@@ -248,6 +246,7 @@ class PinActivity : BaseActivity(), PinContract.MvpView, BackupEmailFragment.OnB
 
     override fun onStart() {
         super.onStart()
+        mBottomSheet.bottomSheetCallback = mBottomSheetCallback
         mPresenter.attachView(this)
         when (mMode) {
             MODE_CREATE -> mPresenter.onViewStartedModeCreate()
@@ -258,7 +257,8 @@ class PinActivity : BaseActivity(), PinContract.MvpView, BackupEmailFragment.OnB
 
     override fun onStop() {
         super.onStop()
-        mHandler.removeCallbacks(mBottomSheetOpenRunnable)
         mPresenter.detachView()
+        mHandler.removeCallbacks(mBottomSheetOpenRunnable)
+        mBottomSheet.bottomSheetCallback = null
     }
 }

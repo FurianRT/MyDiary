@@ -24,56 +24,54 @@ import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
 
 @Module
-class ApiModule {
+object ApiModule {
 
-    companion object {
-        private const val WEATHER_API_BASE_URL = "https://api.openweathermap.org/data/2.5/"
-        private const val IMAGE_API_BASE_URL = "https://pixabay.com/api/"
-    }
+    private const val WEATHER_API_BASE_URL = "https://api.openweathermap.org/data/2.5/"
+    private const val IMAGE_API_BASE_URL = "https://pixabay.com/api/"
 
+    @JvmStatic
     @Provides
     @ForecastApi
     @AppScope
     fun provideForecastParamInterceptor(): Interceptor = Interceptor { chain ->
-        val url = chain.request()
-                .url()
+        chain.proceed(chain.request()
                 .newBuilder()
-                .addQueryParameter("appid", BuildConfig.WEATHER_API_KEY)
-                .addQueryParameter("units", "metric")
-                .build()
-        val request = chain.request()
-                .newBuilder()
-                .url(url)
-                .build()
-        chain.proceed(request)
+                .url(chain.request()
+                        .url()
+                        .newBuilder()
+                        .addQueryParameter("appid", BuildConfig.WEATHER_API_KEY)
+                        .addQueryParameter("units", "metric")
+                        .build())
+                .build())
     }
 
+    @JvmStatic
     @Provides
     @ImageApi
     @AppScope
     fun provideImageParamInterceptor(): Interceptor = Interceptor { chain ->
-        val url = chain.request()
-                .url()
+        chain.proceed(chain.request()
                 .newBuilder()
-                .addQueryParameter("key", BuildConfig.IMAGE_API_KEY)
-                .addQueryParameter("image_type", "photo")
-                .addQueryParameter("orientation", "horizontal")
-                .addQueryParameter("min_width", "1280")
-                .addQueryParameter("min_height", "720")
-                .addQueryParameter("order", "latest")
-                .addQueryParameter("safesearch", "true")
-                .build()
-        val request = chain.request()
-                .newBuilder()
-                .url(url)
-                .build()
-        chain.proceed(request)
+                .url(chain.request()
+                        .url()
+                        .newBuilder()
+                        .addQueryParameter("key", BuildConfig.IMAGE_API_KEY)
+                        .addQueryParameter("image_type", "photo")
+                        .addQueryParameter("orientation", "horizontal")
+                        .addQueryParameter("min_width", "1280")
+                        .addQueryParameter("min_height", "720")
+                        .addQueryParameter("order", "latest")
+                        .addQueryParameter("safesearch", "true")
+                        .build())
+                .build())
     }
 
+    @JvmStatic
     @Provides
     @AppScope
     fun provideStethoInterceptor(): StethoInterceptor = StethoInterceptor()
 
+    @JvmStatic
     @Provides
     @ForecastApi
     @AppScope
@@ -91,6 +89,7 @@ class ApiModule {
                 .build()
     }
 
+    @JvmStatic
     @Provides
     @ImageApi
     @AppScope
@@ -108,6 +107,7 @@ class ApiModule {
                 .build()
     }
 
+    @JvmStatic
     @Provides
     @ForecastApi
     @AppScope
@@ -118,6 +118,7 @@ class ApiModule {
             .addConverterFactory(GsonConverterFactory.create())
             .build()
 
+    @JvmStatic
     @Provides
     @ImageApi
     @AppScope
@@ -128,11 +129,13 @@ class ApiModule {
             .addConverterFactory(GsonConverterFactory.create())
             .build()
 
+    @JvmStatic
     @Provides
     @AppScope
     fun provideWeatherApiService(@ForecastApi retrofit: Retrofit): WeatherApiService =
             retrofit.create(WeatherApiService::class.java)
 
+    @JvmStatic
     @Provides
     @AppScope
     fun provideImageApiService(@ImageApi retrofit: Retrofit): ImageApiService =

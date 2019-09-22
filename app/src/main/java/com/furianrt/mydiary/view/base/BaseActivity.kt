@@ -14,6 +14,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.os.PersistableBundle
 import android.util.Log
+import androidx.annotation.LayoutRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import com.anjlab.android.iab.v3.BillingProcessor
@@ -28,7 +29,9 @@ import com.furianrt.mydiary.domain.get.GetAppPrimaryColorUseCase
 import com.furianrt.mydiary.view.screens.pin.PinActivity
 import javax.inject.Inject
 
-abstract class BaseActivity : AppCompatActivity(), BaseView, BillingProcessor.IBillingHandler {
+abstract class BaseActivity(
+        @LayoutRes contentLayoutId: Int
+) : AppCompatActivity(contentLayoutId), BaseView, BillingProcessor.IBillingHandler {
 
     companion object {
         const val TAG = "BaseActivity"

@@ -11,7 +11,7 @@
 package com.furianrt.mydiary.view.screens.settings.global
 
 import com.furianrt.mydiary.BuildConfig
-import com.furianrt.mydiary.domain.ResetNotesAppearanceSettingsUseCase
+import com.furianrt.mydiary.domain.reset.ResetNotesAppearanceSettingsUseCase
 import com.furianrt.mydiary.domain.check.IsFingerprintSupportedUseCase
 import com.furianrt.mydiary.domain.delete.RemovePinEmailUseCase
 import com.furianrt.mydiary.domain.get.GetPinEmailUseCase

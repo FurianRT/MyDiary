@@ -24,6 +24,8 @@
         app:layout_constraintTop_toTopOf="parent"
         tools:ignore="Autofill" />
 
+    <!--textMultiLine|textCapSentences-->
+
     <com.furianrt.mydiary.view.views.LinedEditText
         android:id="@+id/edit_note_content"
         android:layout_width="0dp"
@@ -33,7 +35,7 @@
         android:gravity="top|start"
         android:hint="@string/content"
         android:imeOptions="flagNoExtractUi"
-        android:inputType="textMultiLine|textCapSentences"
+        android:inputType="textNoSuggestions|textMultiLine"
         android:minHeight="130dp"
         android:lineSpacingExtra="1dp"
         android:padding="8dp"

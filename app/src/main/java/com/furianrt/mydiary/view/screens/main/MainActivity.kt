@@ -71,7 +71,7 @@ import kotlinx.android.synthetic.main.empty_search_note_list.*
 import javax.inject.Inject
 import kotlin.math.min
 
-class MainActivity : BaseActivity(), MainActivityContract.MvpView,
+class MainActivity : BaseActivity(R.layout.activity_main), MainActivityContract.MvpView,
         NoteListAdapter.OnMainListItemInteractionListener,
         DailySettingsFragment.OnImageSettingsInteractionListener,
         DeleteNoteDialog.OnDeleteNoteConfirmListener, CategoriesDialog.OnCategorySelectedListener,
@@ -109,10 +109,30 @@ class MainActivity : BaseActivity(), MainActivityContract.MvpView,
         mBottomSheet.state = BottomSheetBehavior.STATE_EXPANDED
     }
 
+    private val mBottomSheetCallback = object : BottomSheetBehavior.BottomSheetCallback() {
+        override fun onSlide(bottomSheet: View, slideOffset: Float) {}
+        override fun onStateChanged(bottomSheet: View, newState: Int) {
+            if (newState == BottomSheetBehavior.STATE_COLLAPSED) {
+                supportFragmentManager.findFragmentByTag(ImageSettingsFragment.TAG)?.let {
+                    supportFragmentManager.inTransaction { remove(it) }
+                }
+                supportFragmentManager.findFragmentByTag(PremiumFragment.TAG)?.let {
+                    supportFragmentManager.inTransaction { remove(it) }
+                }
+                supportFragmentManager.findFragmentByTag(ProfileFragment.TAG)?.let {
+                    supportFragmentManager.inTransaction { remove(it) }
+                }
+                supportFragmentManager.findFragmentByTag(AuthFragment.TAG)?.let {
+                    (it as AuthFragment).clearFocus()
+                    supportFragmentManager.inTransaction { remove(it) }
+                }
+            }
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         getPresenterComponent(this).inject(this)
-        setContentView(R.layout.activity_main)
 
         mPresenter.onRestoreInstanceState(savedInstanceState)
 
@@ -142,26 +162,6 @@ class MainActivity : BaseActivity(), MainActivityContract.MvpView,
         }
 
         mBottomSheet = BottomSheetBehavior.from(main_sheet_container)
-        mBottomSheet.setBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
-            override fun onSlide(bottomSheet: View, slideOffset: Float) {}
-            override fun onStateChanged(bottomSheet: View, newState: Int) {
-                if (newState == BottomSheetBehavior.STATE_COLLAPSED) {
-                    supportFragmentManager.findFragmentByTag(ImageSettingsFragment.TAG)?.let {
-                        supportFragmentManager.inTransaction { remove(it) }
-                    }
-                    supportFragmentManager.findFragmentByTag(PremiumFragment.TAG)?.let {
-                        supportFragmentManager.inTransaction { remove(it) }
-                    }
-                    supportFragmentManager.findFragmentByTag(ProfileFragment.TAG)?.let {
-                        supportFragmentManager.inTransaction { remove(it) }
-                    }
-                    supportFragmentManager.findFragmentByTag(AuthFragment.TAG)?.let {
-                        (it as AuthFragment).clearFocus()
-                        supportFragmentManager.inTransaction { remove(it) }
-                    }
-                }
-            }
-        })
 
         savedInstanceState?.let {
             mRecyclerViewState = it.getParcelable(BUNDLE_RECYCLER_VIEW_STATE)
@@ -601,7 +601,7 @@ class MainActivity : BaseActivity(), MainActivityContract.MvpView,
 
     override fun onStart() {
         super.onStart()
-        mPresenter.attachView(this)
+        mBottomSheet.bottomSheetCallback = mBottomSheetCallback
         mAdapter.listener = this
         drawer.addDrawerListener(mOnDrawerListener)
         (supportFragmentManager.findFragmentByTag(DeleteNoteDialog.TAG) as? DeleteNoteDialog)
@@ -609,15 +609,17 @@ class MainActivity : BaseActivity(), MainActivityContract.MvpView,
         supportFragmentManager.findFragmentByTag(CategoriesDialog.TAG)?.let {
             (it as CategoriesDialog).setOnCategorySelectedListener(this)
         }
+        mPresenter.attachView(this)
     }
 
     override fun onStop() {
         super.onStop()
+        mPresenter.detachView()
+        mBottomSheet.bottomSheetCallback = null
         mNeedToOpenActionBar = false
         mBackPressCount = 0
         mAdapter.listener = null
         drawer.removeDrawerListener(mOnDrawerListener)
         mHandler.removeCallbacks(mBottomSheetOpenRunnable)
-        mPresenter.detachView()
     }
 }

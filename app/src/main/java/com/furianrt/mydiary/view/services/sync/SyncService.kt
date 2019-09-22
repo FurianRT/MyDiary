@@ -15,7 +15,6 @@ import android.app.Service
 import android.content.Context
 import android.content.Intent
 import android.os.IBinder
-import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.furianrt.mydiary.MyApp
@@ -28,7 +27,6 @@ import javax.inject.Inject
 class SyncService : Service(), BaseView, SyncContract.MvpView {
 
     companion object {
-        const val TAG = "SyncService"
         private const val FOREGROUND_ID = 1
         private const val EXTRA_PROGRESS_MESSAGE = "progress_message"
 
@@ -113,7 +111,6 @@ class SyncService : Service(), BaseView, SyncContract.MvpView {
     }
 
     override fun close() {
-        Log.e(TAG, "service closed")
         stopForeground(true)
         stopSelf()
     }

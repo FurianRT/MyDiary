@@ -1,252 +1,268 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/layout_root_note"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/grey_light">
+    android:background="@color/grey_light"
+    android:orientation="vertical">
 
-    <include layout="@layout/fragment_note_toolbar" />
-
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/fab_add_image"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="24dp"
-        android:src="@drawable/ic_add_image"
-        app:fabSize="mini"
-        app:layout_anchor="@id/app_bar_layout"
-        app:layout_anchorGravity="bottom|end" />
-
-    <com.google.android.material.card.MaterialCardView
-        android:id="@+id/layout_category_color"
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
-        android:layout_height="5dp"
-        android:visibility="invisible"
-        app:cardCornerRadius="0dp"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior"
-        tools:cardBackgroundColor="@color/blue" />
+        android:layout_height="0dp"
+        android:layout_weight="1">
 
-    <androidx.core.widget.NestedScrollView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:scrollbars="vertical"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+        <include layout="@layout/fragment_note_toolbar" />
 
-        <androidx.constraintlayout.widget.ConstraintLayout
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/fab_add_image"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="24dp"
+            android:src="@drawable/ic_add_image"
+            app:fabSize="mini"
+            app:layout_anchor="@id/app_bar_layout"
+            app:layout_anchorGravity="bottom|end" />
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/layout_category_color"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:paddingBottom="16dp">
+            android:layout_height="5dp"
+            android:visibility="invisible"
+            app:cardCornerRadius="0dp"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior"
+            tools:cardBackgroundColor="@color/blue" />
 
-            <TextView
-                android:id="@+id/text_date"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="12dp"
-                android:alpha="0.7"
-                android:background="?android:selectableItemBackground"
-                android:padding="4dp"
-                android:textColor="@color/black"
-                android:textSize="15sp"
-                android:textStyle="italic"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                tools:text="Пят, 13, Окт, 2018" />
+        <androidx.core.widget.NestedScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:scrollbars="vertical"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-            <TextView
-                android:id="@+id/text_time"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="12dp"
-                android:layout_marginEnd="4dp"
-                android:alpha="0.7"
-                android:background="?android:selectableItemBackground"
-                android:padding="4dp"
-                android:textColor="@color/black"
-                android:textSize="15sp"
-                android:textStyle="italic"
-                app:layout_constraintStart_toEndOf="@id/text_date"
-                app:layout_constraintTop_toTopOf="parent"
-                tools:text="20:15" />
-
-            <ImageView
-                android:id="@+id/image_weather"
-                android:layout_width="40dp"
-                android:layout_height="35dp"
-                android:layout_marginStart="4dp"
-                app:layout_constraintBottom_toTopOf="@id/card_note_edit"
-                app:layout_constraintStart_toEndOf="@+id/text_time"
-                app:layout_constraintTop_toTopOf="parent"
-                tools:ignore="ContentDescription"
-                tools:src="@color/grey" />
-
-            <TextView
-                android:id="@+id/text_temp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:alpha="0.7"
-                android:textColor="@color/black"
-                android:textSize="15sp"
-                android:textStyle="italic"
-                app:layout_constraintBottom_toTopOf="@id/card_note_edit"
-                app:layout_constraintStart_toEndOf="@+id/image_weather"
-                app:layout_constraintTop_toTopOf="parent"
-                tools:text="24°C" />
-
-            <com.google.android.material.card.MaterialCardView
-                android:id="@+id/card_note_edit"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="12dp"
-                android:layout_marginEnd="16dp"
-                android:minHeight="130dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/text_date">
-
-                <!--CompoundDrawables не используется из-за применения colorFilter к самому Drawable, а не к View.
-                    И при переходе к следующей заметке, к ней применяется цвет старой-->
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="vertical">
-
-                    <FrameLayout
-                        android:id="@+id/container_note_edit"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:minHeight="130dp" />
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="bottom"
-                        android:orientation="horizontal">
-
-                        <LinearLayout
-                            android:id="@+id/layout_mood"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:background="?android:selectableItemBackground"
-                            android:orientation="horizontal"
-                            android:padding="8dp"
-                            android:visibility="gone"
-                            tools:ignore="UseCompoundDrawables"
-                            tools:visibility="visible">
-
-                            <ImageView
-                                android:id="@+id/image_mood"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginEnd="4dp"
-                                android:src="@drawable/ic_smile"
-                                tools:ignore="ContentDescription" />
-
-                            <TextView
-                                android:id="@+id/text_mood"
-                                android:layout_width="wrap_content"
-                                android:layout_height="match_parent"
-                                android:gravity="center"
-                                android:maxLines="1"
-                                android:text="@string/choose_mood"
-                                android:textColor="@color/black" />
-
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:id="@+id/layout_category"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:background="?android:selectableItemBackground"
-                            android:orientation="horizontal"
-                            android:padding="8dp"
-                            tools:ignore="UseCompoundDrawables">
-
-                            <ImageView
-                                android:id="@+id/image_folder"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginEnd="4dp"
-                                android:src="@drawable/ic_folder_big"
-                                tools:ignore="ContentDescription" />
-
-                            <TextView
-                                android:id="@+id/text_category"
-                                android:layout_width="wrap_content"
-                                android:layout_height="match_parent"
-                                android:ellipsize="end"
-                                android:gravity="center"
-                                android:maxLines="1"
-                                android:text="@string/choose_category"
-                                android:textColor="@color/black" />
-
-                        </LinearLayout>
-                    </LinearLayout>
-                </LinearLayout>
-            </com.google.android.material.card.MaterialCardView>
-
-            <com.google.android.flexbox.FlexboxLayout
-                android:id="@+id/layout_tags"
+            <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="8dp"
-                android:layout_marginEnd="16dp"
-                android:background="?android:selectableItemBackground"
-                android:paddingTop="8dp"
-                android:paddingBottom="8dp"
-                app:alignItems="center"
-                app:flexWrap="wrap"
-                app:justifyContent="flex_start"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/card_note_edit">
-
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:src="@drawable/sharp"
-                    tools:ignore="ContentDescription" />
-
-            </com.google.android.flexbox.FlexboxLayout>
-
-            <LinearLayout
-                android:id="@+id/layout_location"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="8dp"
-                android:layout_marginEnd="16dp"
-                android:alpha="0.7"
-                android:orientation="horizontal"
-                android:visibility="gone"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/layout_tags"
-                tools:ignore="UseCompoundDrawables"
-                tools:visibility="visible">
-
-                <ImageView
-                    android:id="@+id/image_location"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="4dp"
-                    android:src="@drawable/ic_place_big"
-                    android:tint="@color/black"
-                    tools:ignore="ContentDescription" />
+                android:layout_height="match_parent"
+                android:paddingBottom="16dp">
 
                 <TextView
-                    android:id="@+id/text_location"
+                    android:id="@+id/text_date"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="12dp"
+                    android:alpha="0.7"
+                    android:background="?android:selectableItemBackground"
+                    android:padding="4dp"
+                    android:textColor="@color/black"
+                    android:textSize="15sp"
+                    android:textStyle="italic"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:text="Пят, 13, Окт, 2018" />
 
-            </LinearLayout>
+                <TextView
+                    android:id="@+id/text_time"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="12dp"
+                    android:layout_marginEnd="4dp"
+                    android:alpha="0.7"
+                    android:background="?android:selectableItemBackground"
+                    android:padding="4dp"
+                    android:textColor="@color/black"
+                    android:textSize="15sp"
+                    android:textStyle="italic"
+                    app:layout_constraintStart_toEndOf="@id/text_date"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:text="20:15" />
 
+                <ImageView
+                    android:id="@+id/image_weather"
+                    android:layout_width="40dp"
+                    android:layout_height="35dp"
+                    android:layout_marginStart="4dp"
+                    app:layout_constraintBottom_toTopOf="@id/card_note_edit"
+                    app:layout_constraintStart_toEndOf="@+id/text_time"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:ignore="ContentDescription"
+                    tools:src="@color/grey" />
 
-        </androidx.constraintlayout.widget.ConstraintLayout>
-    </androidx.core.widget.NestedScrollView>
-</androidx.coordinatorlayout.widget.CoordinatorLayout>
+                <TextView
+                    android:id="@+id/text_temp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:alpha="0.7"
+                    android:textColor="@color/black"
+                    android:textSize="15sp"
+                    android:textStyle="italic"
+                    app:layout_constraintBottom_toTopOf="@id/card_note_edit"
+                    app:layout_constraintStart_toEndOf="@+id/image_weather"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:text="24°C" />
+
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/card_note_edit"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="12dp"
+                    android:layout_marginEnd="16dp"
+                    android:minHeight="130dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/text_date">
+
+                    <!--CompoundDrawables не используется из-за применения colorFilter к самому Drawable, а не к View.
+                        И при переходе к следующей заметке, к ней применяется цвет старой-->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical">
+
+                        <FrameLayout
+                            android:id="@+id/container_note_edit"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:minHeight="130dp" />
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="bottom"
+                            android:orientation="horizontal">
+
+                            <LinearLayout
+                                android:id="@+id/layout_mood"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:background="?android:selectableItemBackground"
+                                android:orientation="horizontal"
+                                android:padding="8dp"
+                                android:visibility="gone"
+                                tools:ignore="UseCompoundDrawables"
+                                tools:visibility="visible">
+
+                                <ImageView
+                                    android:id="@+id/image_mood"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginEnd="4dp"
+                                    android:src="@drawable/ic_smile"
+                                    tools:ignore="ContentDescription" />
+
+                                <TextView
+                                    android:id="@+id/text_mood"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="match_parent"
+                                    android:gravity="center"
+                                    android:maxLines="1"
+                                    android:text="@string/choose_mood"
+                                    android:textColor="@color/black" />
+
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:id="@+id/layout_category"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:background="?android:selectableItemBackground"
+                                android:orientation="horizontal"
+                                android:padding="8dp"
+                                tools:ignore="UseCompoundDrawables">
+
+                                <ImageView
+                                    android:id="@+id/image_folder"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginEnd="4dp"
+                                    android:src="@drawable/ic_folder_big"
+                                    tools:ignore="ContentDescription" />
+
+                                <TextView
+                                    android:id="@+id/text_category"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="match_parent"
+                                    android:ellipsize="end"
+                                    android:gravity="center"
+                                    android:maxLines="1"
+                                    android:text="@string/choose_category"
+                                    android:textColor="@color/black" />
+
+                            </LinearLayout>
+                        </LinearLayout>
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+
+                <com.google.android.flexbox.FlexboxLayout
+                    android:id="@+id/layout_tags"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginEnd="16dp"
+                    android:background="?android:selectableItemBackground"
+                    android:paddingTop="8dp"
+                    android:paddingBottom="8dp"
+                    app:alignItems="center"
+                    app:flexWrap="wrap"
+                    app:justifyContent="flex_start"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/card_note_edit">
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/sharp"
+                        tools:ignore="ContentDescription" />
+
+                </com.google.android.flexbox.FlexboxLayout>
+
+                <LinearLayout
+                    android:id="@+id/layout_location"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginEnd="16dp"
+                    android:alpha="0.7"
+                    android:orientation="horizontal"
+                    android:visibility="gone"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/layout_tags"
+                    tools:ignore="UseCompoundDrawables"
+                    tools:visibility="visible">
+
+                    <ImageView
+                        android:id="@+id/image_location"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="4dp"
+                        android:src="@drawable/ic_place_big"
+                        android:tint="@color/black"
+                        tools:ignore="ContentDescription" />
+
+                    <TextView
+                        android:id="@+id/text_location"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/black"
+                        tools:text="Location text sample" />
+
+                </LinearLayout>
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </androidx.core.widget.NestedScrollView>
+
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
+    <include
+        android:id="@+id/layout_rich_text"
+        android:visibility="invisible"
+        tools:visibility="visible"
+        layout="@layout/rich_text_menu" />
+
+</LinearLayout>

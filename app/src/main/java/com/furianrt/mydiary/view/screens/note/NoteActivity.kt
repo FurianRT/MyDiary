@@ -21,15 +21,15 @@ import com.anjlab.android.iab.v3.TransactionDetails
 import com.furianrt.mydiary.BuildConfig
 import com.furianrt.mydiary.R
 import com.furianrt.mydiary.view.base.BaseActivity
-import com.furianrt.mydiary.view.screens.note.fragments.mainnote.edit.NoteEditFragment
 import com.furianrt.mydiary.utils.KeyboardUtils
+import com.furianrt.mydiary.view.screens.note.fragments.mainnote.NoteFragment
 import com.google.android.gms.ads.AdListener
 import com.google.android.gms.ads.AdRequest
 import kotlinx.android.synthetic.main.activity_note.*
 import javax.inject.Inject
 
-class NoteActivity : BaseActivity(), NoteActivityContract.MvpView,
-        NoteEditFragment.OnNoteFragmentInteractionListener {
+class NoteActivity : BaseActivity(R.layout.activity_note), NoteActivityContract.MvpView,
+        NoteFragment.OnNoteFragmentInteractionListener {
 
     companion object {
         private const val EXTRA_POSITION = "position"
@@ -83,9 +83,8 @@ class NoteActivity : BaseActivity(), NoteActivityContract.MvpView,
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
         getPresenterComponent(this).inject(this)
-        setContentView(R.layout.activity_note)
+        super.onCreate(savedInstanceState)
         window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN)
 
         setSupportActionBar(toolbar_note_activity)

@@ -65,9 +65,7 @@ class NoteFragmentPresenter @Inject constructor(
 
     override fun attachView(view: NoteFragmentContract.MvpView) {
         super.attachView(view)
-        if (!::mNoteId.isInitialized) {
-            throw IllegalStateException("Need to call init before attaching view")
-        }
+        check(::mNoteId.isInitialized) { "Need to call init before attaching view" }
         loadNote()
         loadNoteAppearance()
         loadTags()
@@ -259,11 +257,6 @@ class NoteFragmentPresenter @Inject constructor(
         view?.showNoteSettingsView(mNoteId)
     }
 
-    override fun updateNoteText(noteTitle: String, noteContent: String) {
-        addDisposable(updateNote.invoke(mNoteId, noteTitle, noteContent)
-                .subscribe())
-    }
-
     override fun onDateFieldClick() {
         addDisposable(getNotes.invoke(mNoteId)
                 .map { it.get() }
@@ -389,6 +382,13 @@ class NoteFragmentPresenter @Inject constructor(
         val selectedIndex = mNoteTextBuffer.indexOfFirst { it.current }
         view?.enableUndoButton(selectedIndex > 0)
         view?.enableRedoButton(selectedIndex < mNoteTextBuffer.size - 1)
+        view?.showRichTextOptions()
+    }
+
+    override fun onEditModeDisabled(noteTitle: String, noteContent: String) {
+        view?.hideRichTextOptions()
+        addDisposable(updateNote.invoke(mNoteId, noteTitle, noteContent)
+                .subscribe())
     }
 
     override fun onButtonMicClick() {
@@ -406,6 +406,8 @@ class NoteFragmentPresenter @Inject constructor(
         }
         addDisposable(updateNote.invoke(mNoteId, curTitle, content)
                 .subscribe { onNoteTextChange(curTitle, content) })
+
+        //todo исправить аппетд с html
     }
 
     override fun onButtonShareClick() {

@@ -20,10 +20,6 @@ import com.facebook.stetho.Stetho
 import com.furianrt.mydiary.di.application.component.AppComponent
 import com.furianrt.mydiary.di.application.component.DaggerAppComponent
 import com.furianrt.mydiary.di.application.modules.app.AppContextModule
-import com.furianrt.mydiary.di.application.modules.data.DatabaseModule
-import com.furianrt.mydiary.di.application.modules.network.ApiModule
-import com.furianrt.mydiary.di.application.modules.network.FirebaseModule
-import com.furianrt.mydiary.di.application.modules.rx.RxModule
 import com.furianrt.mydiary.domain.auth.AuthorizeUseCase
 import com.furianrt.mydiary.domain.IncrementLaunchCountUseCase
 import com.furianrt.mydiary.domain.check.IsPinEnabledUseCase
@@ -54,10 +50,6 @@ class MyApp : Application(), Application.ActivityLifecycleCallbacks {
     val component: AppComponent by lazy {
         DaggerAppComponent.builder()
                 .appContextModule(AppContextModule(this))
-                .apiModule(ApiModule())
-                .firebaseModule(FirebaseModule())
-                .databaseModule(DatabaseModule())
-                .rxModule(RxModule())
                 .build()
     }
 
@@ -135,7 +127,7 @@ class MyApp : Application(), Application.ActivityLifecycleCallbacks {
     private fun createNotificationSyncChannel() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             getSystemService(NotificationManager::class.java)
-                    .createNotificationChannel(NotificationChannel(
+                    ?.createNotificationChannel(NotificationChannel(
                             NOTIFICATION_SYNC_CHANNEL_ID,
                             NOTIFICATION_SYNC_CHANNEL_NAME,
                             NotificationManager.IMPORTANCE_LOW
@@ -148,7 +140,7 @@ class MyApp : Application(), Application.ActivityLifecycleCallbacks {
     private fun createNotificationFirebaseChannel() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             getSystemService(NotificationManager::class.java)
-                    .createNotificationChannel(NotificationChannel(
+                    ?.createNotificationChannel(NotificationChannel(
                             NOTIFICATION_FIREBASE_CHANNEL_ID,
                             NOTIFICATION_FIREBASE_CHANNEL_NAME,
                             NotificationManager.IMPORTANCE_DEFAULT
@@ -198,7 +190,6 @@ class MyApp : Application(), Application.ActivityLifecycleCallbacks {
 * добавить ссылку на гугл таблицы
 * добавить счетчики к категориям, тегам и т.д
 *   добавить поддержку ссылок внутри текста
-* (?)добавить градиент на экран с паролем
 * добавить иконци в настройках
 *   сделать определение локации опциональным
 *   сделать дефолтную дейли-картинку
@@ -208,9 +199,11 @@ class MyApp : Application(), Application.ActivityLifecycleCallbacks {
 * добавить достижения с анимацией
 * добавить превью возможностей дневника
 * изменить дизайн даты в списке заметок
-* изменить дизайн окна профиля
-*   липкие заголовки тупят при поиске
+*   липкие заголовки тупят при поиске и удалении заметок
 * сделать пейджер на экране премиума
+*   добавить рич текст
+*   аналитика рич текста
+*   перенести аналитику в репозиторий
 *
 * */
 

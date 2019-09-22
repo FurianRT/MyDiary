@@ -20,12 +20,10 @@ import com.google.android.gms.ads.AdListener
 import com.google.android.gms.ads.AdRequest
 import kotlinx.android.synthetic.main.activity_global_settings.*
 
-class GlobalSettingsActivity : BaseActivity() {
+class GlobalSettingsActivity : BaseActivity(R.layout.activity_global_settings) {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_global_settings)
-
         setSupportActionBar(toolbar_settings_global)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setDisplayShowHomeEnabled(true)

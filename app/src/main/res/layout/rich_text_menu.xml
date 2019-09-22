@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    app:cardBackgroundColor="@color/grey_light"
+    app:cardCornerRadius="0dp"
+    app:cardElevation="4dp">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:paddingTop="8dp"
+        android:paddingBottom="8dp">
+
+        <ImageButton
+            android:id="@+id/button_undo"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:background="?selectableItemBackground"
+            android:paddingTop="4dp"
+            android:paddingBottom="4dp"
+            android:src="@drawable/ic_undo"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/button_text_bold"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:ignore="ContentDescription" />
+
+        <ImageButton
+            android:id="@+id/button_text_bold"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:background="@color/transparent"
+            android:src="@drawable/ic_format_bold"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/button_text_italic"
+            app:layout_constraintStart_toEndOf="@+id/button_undo"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:ignore="ContentDescription" />
+
+        <ImageButton
+            android:id="@+id/button_text_italic"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:background="@color/transparent"
+            android:src="@drawable/ic_format_italic"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/button_text_strikethrough"
+            app:layout_constraintStart_toEndOf="@+id/button_text_bold"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:ignore="ContentDescription" />
+
+        <ImageButton
+            android:id="@+id/button_text_strikethrough"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:background="@color/transparent"
+            android:src="@drawable/ic_strikethrough"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/button_text_large"
+            app:layout_constraintStart_toEndOf="@+id/button_text_italic"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:background="@drawable/background_corner_grey_stroke"
+            tools:ignore="ContentDescription"
+            tools:tint="?colorAccent" />
+
+        <ImageButton
+            android:id="@+id/button_text_large"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:background="@color/transparent"
+            android:src="@drawable/ic_text_fields"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/button_text_color"
+            app:layout_constraintStart_toEndOf="@+id/button_text_strikethrough"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:background="@drawable/background_corner_grey_stroke"
+            tools:ignore="ContentDescription"
+            tools:tint="?colorAccent" />
+
+        <ImageButton
+            android:id="@+id/button_text_color"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:background="@color/transparent"
+            android:src="@drawable/ic_format_color_text"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/button_text_fill_color"
+            app:layout_constraintStart_toEndOf="@+id/button_text_large"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:ignore="ContentDescription" />
+
+        <com.furianrt.mydiary.view.views.CustomSpinner
+            android:id="@+id/spinner_text_color"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginStart="4dp"
+            android:alpha="0.0"
+            android:background="@color/transparent"
+            android:dropDownWidth="34dp"
+            android:popupBackground="@color/grey_light"
+            app:layout_constraintBottom_toBottomOf="@id/button_text_color"
+            app:layout_constraintEnd_toEndOf="@id/button_text_color"
+            app:layout_constraintStart_toStartOf="@id/button_text_color"
+            app:layout_constraintTop_toTopOf="@id/button_text_color" />
+
+        <ImageButton
+            android:id="@+id/button_text_fill_color"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:background="@color/transparent"
+            android:src="@drawable/ic_format_color_fill"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/button_redo"
+            app:layout_constraintStart_toEndOf="@+id/button_text_color"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:ignore="ContentDescription" />
+
+        <com.furianrt.mydiary.view.views.CustomSpinner
+            android:id="@+id/spinner_text_fill_color"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginStart="4dp"
+            android:alpha="0.0"
+            android:background="@color/transparent"
+            android:dropDownWidth="34dp"
+            android:popupBackground="@color/grey_light"
+            app:layout_constraintBottom_toBottomOf="@id/button_text_fill_color"
+            app:layout_constraintEnd_toEndOf="@id/button_text_fill_color"
+            app:layout_constraintStart_toStartOf="@id/button_text_fill_color"
+            app:layout_constraintTop_toTopOf="@id/button_text_fill_color" />
+
+        <ImageButton
+            android:id="@+id/button_redo"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:background="?selectableItemBackground"
+            android:paddingTop="4dp"
+            android:paddingBottom="4dp"
+            android:src="@drawable/ic_redo"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/button_text_fill_color"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:ignore="ContentDescription" />
+
+        <androidx.constraintlayout.helper.widget.Flow
+            android:id="@+id/flow"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:constraint_referenced_ids="button_undo,button_text_bold,button_text_italic,button_text_strikethrough,button_text_large,button_text_color,button_text_fill_color,button_redo"
+            app:flow_horizontalGap="4dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</com.google.android.material.card.MaterialCardView>
