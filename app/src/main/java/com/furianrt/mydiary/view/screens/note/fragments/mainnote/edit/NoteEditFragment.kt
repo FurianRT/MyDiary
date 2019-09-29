@@ -24,7 +24,6 @@ import com.furianrt.mydiary.analytics.MyAnalytics
 import com.furianrt.mydiary.view.base.BaseFragment
 import com.furianrt.mydiary.data.model.MyNoteAppearance
 import com.furianrt.mydiary.view.screens.note.fragments.mainnote.NoteFragment
-import com.furianrt.mydiary.utils.hideKeyboard
 import com.furianrt.mydiary.utils.showKeyboard
 import kotlinx.android.synthetic.main.fragment_note_edit.*
 import kotlinx.android.synthetic.main.fragment_note_edit.view.*
@@ -131,10 +130,13 @@ class NoteEditFragment : BaseFragment(), NoteEditFragmentContract.MvpView {
         fragmentManager?.popBackStack()
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        activity?.currentFocus?.hideKeyboard()
-        activity?.currentFocus?.clearFocus()
+    override fun onResume() {
+        super.onResume()
+        if (edit_note_content.hasFocus()) {
+            (parentFragment as? NoteFragment?)?.showRichTextOptions()
+        } else {
+            (parentFragment as? NoteFragment?)?.hideRichTextOptions()
+        }
     }
 
     override fun onStart() {
@@ -205,7 +207,7 @@ class NoteEditFragment : BaseFragment(), NoteEditFragmentContract.MvpView {
             } else {
                 edit_note_title.setSelection(selectionStart, selectionEnd)
             }
-        } else {
+        } else if (edit_note_content.hasFocus()) {
             val textLength = edit_note_content.text?.length ?: 0
             if (textLength < selectionEnd) {
                 edit_note_content.setSelection(textLength)
