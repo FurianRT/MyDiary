@@ -130,7 +130,7 @@ class NoteListAdapter(
                     setSyncIcon(item)
                     setPreviewImage(item)
                     setTitle(item)
-                    text_note_content.setText(item.note.note.content.applyTextSpans(item.note.textSpans), TextView.BufferType.SPANNABLE)
+                    text_note_content.setText(item.note.note.content.applyTextSpans(item.note.textSpans), TextView.BufferType.EDITABLE)
                     selectItem(item.note.note.id)
                 }
             }

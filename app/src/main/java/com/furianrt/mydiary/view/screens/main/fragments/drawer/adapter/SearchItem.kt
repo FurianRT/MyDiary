@@ -26,6 +26,7 @@ data class SearchItem(
         val category: MyCategory? = null,
         val location: MyLocation? = null,
         val mood: MyMood? = null,
+        val count: Int = 0,
         val isChecked: Boolean = false
 ): Parcelable {
     companion object {

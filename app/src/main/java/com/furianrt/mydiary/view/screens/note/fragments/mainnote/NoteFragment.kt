@@ -22,8 +22,8 @@ import android.graphics.Typeface
 import android.net.Uri
 import android.os.Bundle
 import android.speech.RecognizerIntent
+import android.text.Editable
 import android.text.ParcelableSpan
-import android.text.Spannable
 import android.text.style.*
 import android.util.Log
 import android.view.*
@@ -649,7 +649,7 @@ class NoteFragment : BaseFragment(), NoteFragmentContract.MvpView, DatePickerDia
         Toast.makeText(requireContext(), R.string.fragment_gallery_list_image_save_error, Toast.LENGTH_SHORT).show()
     }
 
-    fun onNoteTextChange(title: String, content: Spannable) {
+    fun onNoteTextChange(title: String, content: Editable) {
         mPresenter.onNoteTextChange(title, content.toString(), content.getTextSpans())
         childFragmentManager.findFragmentByTag(NoteContentFragment.TAG)?.let {
             (it as NoteContentFragment).updateNoteText(title, content)
@@ -709,7 +709,7 @@ class NoteFragment : BaseFragment(), NoteFragmentContract.MvpView, DatePickerDia
         mPresenter.onEditModeEnabled()
     }
 
-    fun onNoteFragmentEditModeDisabled(noteTitle: String, noteContent: Spannable) {
+    fun onNoteFragmentEditModeDisabled(noteTitle: String, noteContent: Editable) {
         enableActionBarExpanding(expanded = false, animate = false)
         val noteContentFragment =
                 childFragmentManager.findFragmentByTag(NoteContentFragment.TAG) as? NoteContentFragment
