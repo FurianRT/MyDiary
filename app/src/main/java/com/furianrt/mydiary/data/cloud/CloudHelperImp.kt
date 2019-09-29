@@ -43,6 +43,7 @@ class CloudHelperImp @Inject constructor(
         private const val COLLECTION_LOCATIONS = "locations"
         private const val COLLECTION_FORECASTS = "forecasts"
         private const val COLLECTION_IMAGES = "images"
+        private const val COLLECTION_SPANS = "spans"
     }
 
     override fun saveProfile(profile: MyProfile): Completable =
@@ -158,6 +159,16 @@ class CloudHelperImp @Inject constructor(
                     .collectInto(mutableListOf<UploadTask.TaskSnapshot>()) { l, i -> l.add(i) }
                     .ignoreElement()
 
+    override fun saveTextSpans(textSpans: List<MyTextSpan>, userId: String): Completable =
+            RxFirestore.runTransaction(firestore) { transaction ->
+                textSpans.forEach { textSpan ->
+                    transaction.set(firestore.collection(COLLECTION_USERS)
+                            .document(userId)
+                            .collection(COLLECTION_SPANS)
+                            .document(textSpan.id), textSpan)
+                }
+            }.timeout(1, TimeUnit.MINUTES)
+
     override fun deleteNotes(notes: List<MyNote>, userId: String): Completable =
             RxFirestore.runTransaction(firestore) { transaction ->
                 notes.forEach { note ->
@@ -270,6 +281,16 @@ class CloudHelperImp @Inject constructor(
                     .collectInto(mutableListOf<Boolean>()) { l, i -> l.add(i) }
                     .ignoreElement()
 
+    override fun deleteTextSpans(textSpans: List<MyTextSpan>, userId: String): Completable =
+            RxFirestore.runTransaction(firestore) { transaction ->
+                textSpans.forEach { textSpan ->
+                    transaction.delete(firestore.collection(COLLECTION_USERS)
+                            .document(userId)
+                            .collection(COLLECTION_SPANS)
+                            .document(textSpan.id))
+                }
+            }.timeout(1, TimeUnit.MINUTES).onErrorComplete()
+
     override fun getProfile(userId: String): Maybe<MyProfile> =
             RxFirestore.getDocument(firestore.collection(COLLECTION_USERS)
                     .document(userId), MyProfile::class.java)
@@ -352,4 +373,11 @@ class CloudHelperImp @Inject constructor(
                     }
                     .collectInto(mutableListOf<FileDownloadTask.TaskSnapshot>()) { l, i -> l.add(i) }
                     .ignoreElement()
+
+    override fun getAllTextSpans(userId: String): Single<List<MyTextSpan>> =
+            RxFirestore.getCollection(firestore.collection(COLLECTION_USERS)
+                    .document(userId)
+                    .collection(COLLECTION_SPANS), MyTextSpan::class.java)
+                    .timeout(1, TimeUnit.MINUTES)
+                    .toSingle(emptyList())
 }

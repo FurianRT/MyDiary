@@ -81,7 +81,7 @@ dependencies {
     implementation 'com.google.android:flexbox:1.1.0'
 
     //Fingerprint
-    implementation 'androidx.biometric:biometric:1.0.0-beta01'
+    implementation 'androidx.biometric:biometric:1.0.0-beta02'
 
     //RecyclerView animators
     implementation 'jp.wasabeef:recyclerview-animators:3.0.0'
@@ -131,7 +131,7 @@ dependencies {
     implementation 'com.jaredrummler:colorpicker:1.1.0'
 
     //DateTime
-    implementation 'net.danlew:android.joda:2.10.2'
+    implementation 'net.danlew:android.joda:2.10.3'
 
     //DateTime pickers
     implementation 'com.wdullaer:materialdatetimepicker:4.2.3'
@@ -141,8 +141,8 @@ dependencies {
 
     //Firebase
     implementation 'com.google.firebase:firebase-core:17.2.0'
-    implementation 'com.google.firebase:firebase-storage:19.0.0'
-    implementation 'com.google.firebase:firebase-firestore:21.0.0'
+    implementation 'com.google.firebase:firebase-storage:19.0.1'
+    implementation 'com.google.firebase:firebase-firestore:21.1.1'
     implementation 'com.google.firebase:firebase-messaging:20.0.0'
     implementation 'com.google.firebase:firebase-auth:19.0.0'
     implementation 'com.google.firebase:firebase-ads:18.2.0'

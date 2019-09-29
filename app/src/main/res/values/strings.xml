@@ -300,4 +300,5 @@
     <string name="fragment_note_settings_reset_settings_title">Reset settings</string>
     <string name="fragment_note_settings_danger_zone">Danger zone</string>
     <string name="fragment_note_settings_reset_settings_confirm">Reset settings?</string>
+    <string name="fragment_note_google_serviсies_error">Google services not installed</string>
 </resources>

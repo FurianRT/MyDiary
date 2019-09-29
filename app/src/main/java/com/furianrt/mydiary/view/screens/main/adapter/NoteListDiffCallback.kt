@@ -37,7 +37,8 @@ class NoteListDiffCallback(
         if (oldItem is NoteListContent && newItem is NoteListContent)
             return oldItem.note == newItem.note &&
                     oldItem.note.images == newItem.note.images &&
-                    oldItem.note.tags == newItem.note.tags
+                    oldItem.note.tags == newItem.note.tags &&
+                    oldItem.note.textSpans == newItem.note.textSpans
         if (oldItem is NoteListHeader && newItem is NoteListHeader)
             return oldItem.time == newItem.time
         return false

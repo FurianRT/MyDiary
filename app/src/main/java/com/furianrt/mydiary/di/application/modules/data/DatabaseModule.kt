@@ -80,11 +80,26 @@ object DatabaseModule {
             }
         }
 
+        val MIGRATION_2_3 = object : Migration(2, 3) {
+            override fun migrate(database: SupportSQLiteDatabase) {
+                database.execSQL("CREATE TABLE TextSpans (" +
+                        "id_span TEXT NOT NULL, " +
+                        "id_note TEXT NOT NULL, " +
+                        "type INTEGER NOT NULL, " +
+                        "start_index INTEGER NOT NULL, " +
+                        "end_index INTEGER NOT NULL, " +
+                        "color INTEGER, " +
+                        "size REAL, " +
+                        "span_sync_with TEXT NOT NULL, " +
+                        "is_span_deleted INTEGER NOT NULL, " +
+                        "PRIMARY KEY (id_span, id_note))")
+            }
+        }
+
         return Room.databaseBuilder(context, NoteDatabase::class.java, DATABASE_NAME)
-                .addMigrations(MIGRATION_1_2)
+                .addMigrations(MIGRATION_1_2, MIGRATION_2_3)
                 .addCallback(callback)
                 .build()
-
     }
 
     @JvmStatic
@@ -146,6 +161,11 @@ object DatabaseModule {
     @Provides
     @AppScope
     fun provideTagDao(database: NoteDatabase): TagDao = database.tagDao()
+
+    @JvmStatic
+    @Provides
+    @AppScope
+    fun provideSpanDao(database: NoteDatabase): SpanDao = database.spanDao()
 
     private fun createDefaultProperties(db: SupportSQLiteDatabase, context: Context) {
         with(ContentValues()) {

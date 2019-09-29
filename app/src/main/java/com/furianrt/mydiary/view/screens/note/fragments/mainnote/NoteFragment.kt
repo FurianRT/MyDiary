@@ -13,6 +13,7 @@ package com.furianrt.mydiary.view.screens.note.fragments.mainnote
 import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
 import android.graphics.Color
@@ -21,7 +22,6 @@ import android.graphics.Typeface
 import android.net.Uri
 import android.os.Bundle
 import android.speech.RecognizerIntent
-import android.text.Editable
 import android.text.ParcelableSpan
 import android.text.Spannable
 import android.text.style.*
@@ -242,11 +242,11 @@ class NoteFragment : BaseFragment(), NoteFragmentContract.MvpView, DatePickerDia
         mPresenter.detachView()
     }
 
-    override fun showNoteText(title: String, content: String) {
+    override fun showNoteText(title: String, content: String, textSpans: List<MyTextSpan>) {
         (childFragmentManager.findFragmentByTag(NoteContentFragment.TAG) as? NoteContentFragment?)
-                ?.showNoteText(title.htmlToSpannableString(), content.htmlToSpannableString())
+                ?.showNoteText(title, content.applyTextSpans(textSpans))
         (childFragmentManager.findFragmentByTag(NoteEditFragment.TAG) as? NoteEditFragment?)
-                ?.showNoteText(title.htmlToSpannableString(), content.htmlToSpannableString())
+                ?.showNoteText(title, content.applyTextSpans(textSpans))
     }
 
     @SuppressLint("SetTextI18n")
@@ -306,7 +306,11 @@ class NoteFragment : BaseFragment(), NoteFragmentContract.MvpView, DatePickerDia
             intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM)
             intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.getDefault())
             intent.putExtra(RecognizerIntent.EXTRA_PROMPT, getString(R.string.speech_to_text_title))
-            startActivityForResult(intent, SPEECH_TO_TEXT_REQUEST_CODE)
+            try {
+                startActivityForResult(intent, SPEECH_TO_TEXT_REQUEST_CODE)
+            } catch (e: ActivityNotFoundException) {
+                Toast.makeText(requireContext(), getString(R.string.fragment_note_google_serviсies_error), Toast.LENGTH_SHORT).show()
+            }
         }
     }
 
@@ -328,15 +332,17 @@ class NoteFragment : BaseFragment(), NoteFragmentContract.MvpView, DatePickerDia
         val editFragment = childFragmentManager.findFragmentByTag(NoteEditFragment.TAG) as? NoteEditFragment?
         if (editFragment != null) {
             mPresenter.onSpeechRecorded(
-                    editFragment.getNoteTitleText().toHtmlString(),
-                    editFragment.getNoteContentText().toHtmlString(),
+                    editFragment.getNoteTitleText(),
+                    editFragment.getNoteContentText().toString(),
+                    editFragment.getNoteContentText().getTextSpans(),
                     text
             )
         } else {
             childFragmentManager.findFragmentByTag(NoteContentFragment.TAG)?.let {
                 mPresenter.onSpeechRecorded(
-                        (it as NoteContentFragment).getNoteTitleText().toHtmlString(),
-                        it.getNoteContentText().toHtmlString(),
+                        (it as NoteContentFragment).getNoteTitleText(),
+                        it.getNoteContentText().toString(),
+                        it.getNoteContentText().getTextSpans(),
                         text
                 )
             }
@@ -610,11 +616,11 @@ class NoteFragment : BaseFragment(), NoteFragmentContract.MvpView, DatePickerDia
     }
 
     override fun showLoading() {
-        layout_loading.visibility = View.VISIBLE
+        layout_loading?.visibility = View.VISIBLE
     }
 
     override fun hideLoading() {
-        layout_loading.visibility = View.GONE
+        layout_loading?.visibility = View.GONE
     }
 
     override fun showImages(images: List<MyImage>) {
@@ -643,8 +649,8 @@ class NoteFragment : BaseFragment(), NoteFragmentContract.MvpView, DatePickerDia
         Toast.makeText(requireContext(), R.string.fragment_gallery_list_image_save_error, Toast.LENGTH_SHORT).show()
     }
 
-    fun onNoteTextChange(title: Editable, content: Editable) {
-        mPresenter.onNoteTextChange(title.toHtmlString(), content.toHtmlString())
+    fun onNoteTextChange(title: String, content: Spannable) {
+        mPresenter.onNoteTextChange(title, content.toString(), content.getTextSpans())
         childFragmentManager.findFragmentByTag(NoteContentFragment.TAG)?.let {
             (it as NoteContentFragment).updateNoteText(title, content)
         }
@@ -703,13 +709,13 @@ class NoteFragment : BaseFragment(), NoteFragmentContract.MvpView, DatePickerDia
         mPresenter.onEditModeEnabled()
     }
 
-    fun onNoteFragmentEditModeDisabled(noteTitle: Spannable, noteContent: Spannable) {
+    fun onNoteFragmentEditModeDisabled(noteTitle: String, noteContent: Spannable) {
         enableActionBarExpanding(expanded = false, animate = false)
         val noteContentFragment =
                 childFragmentManager.findFragmentByTag(NoteContentFragment.TAG) as? NoteContentFragment
         noteContentFragment?.showNoteText(noteTitle, noteContent)
         mListener?.onNoteFragmentEditModeDisabled()
-        mPresenter.onEditModeDisabled(noteTitle.toHtmlString(), noteContent.toHtmlString())
+        mPresenter.onEditModeDisabled(noteTitle, noteContent.toString(), noteContent.getTextSpans())
     }
 
     override fun showRichTextOptions() {
@@ -717,7 +723,7 @@ class NoteFragment : BaseFragment(), NoteFragmentContract.MvpView, DatePickerDia
     }
 
     override fun hideRichTextOptions() {
-        layout_rich_text.visibility = View.INVISIBLE
+        layout_rich_text.visibility = View.GONE
     }
 
     override fun onAttach(context: Context) {

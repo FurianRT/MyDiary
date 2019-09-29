@@ -169,7 +169,7 @@ class MainActivityPresenter @Inject constructor(
                 value = ArrayList()
                 map[dateTime.millis] = value
             }
-            value.add(note)
+            value.add(note.copy())
         }
         return map
     }

@@ -434,7 +434,7 @@ class MainActivity : BaseActivity(R.layout.activity_main), MainActivityContract.
         Log.e(TAG, "showNotes")
         mAdapter.selectedNoteIds.clear()
         mAdapter.selectedNoteIds.addAll(selectedNoteIds)
-        mAdapter.submitList(items.toMutableList())
+        mAdapter.submitList(items)
         mRecyclerViewState?.let {
             list_main.layoutManager?.onRestoreInstanceState(it)
             mRecyclerViewState = null

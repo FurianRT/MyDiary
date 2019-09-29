@@ -21,6 +21,7 @@ data class SyncProgressMessage(
         var message: String? = null,
         val hasError: Boolean = false
 ) : Parcelable {
+
     companion object {
         const val SYNC_STARTED = 0
         const val SYNC_CATEGORIES = 1
@@ -31,9 +32,10 @@ data class SyncProgressMessage(
         const val SYNC_FORECAST = 6
         const val SYNC_IMAGES = 7
         const val SYNC_APPEARANCE = 8
-        const val SYNC_NOTES = 9
-        const val CLEANUP = 10
-        const val SYNC_FINISHED = 11
+        const val SYNC_SPANS = 9
+        const val SYNC_NOTES = 10
+        const val CLEANUP = 11
+        const val SYNC_FINISHED = 12
         const val UNKNOWN = -1
     }
 }

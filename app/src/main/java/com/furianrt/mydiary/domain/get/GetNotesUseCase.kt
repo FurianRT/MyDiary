@@ -32,11 +32,5 @@ class GetNotesUseCase @Inject constructor(
 
     fun invoke(noteId: String): Flowable<Optional<MyNote>> =
             noteRepository.getNoteAsList(noteId)
-                    .map { note ->
-                        Optional.fromNullable(if (note.isEmpty()) {
-                            null
-                        } else {
-                            note.first()
-                        })
-                    }
+                    .map { note -> Optional.fromNullable(note.find { it.id == noteId }) }
 }

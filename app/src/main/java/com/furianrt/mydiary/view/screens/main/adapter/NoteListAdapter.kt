@@ -130,7 +130,7 @@ class NoteListAdapter(
                     setSyncIcon(item)
                     setPreviewImage(item)
                     setTitle(item)
-                    text_note_content.setText(item.note.note.content.htmlToSpannableString(), TextView.BufferType.SPANNABLE)
+                    text_note_content.setText(item.note.note.content.applyTextSpans(item.note.textSpans), TextView.BufferType.SPANNABLE)
                     selectItem(item.note.note.id)
                 }
             }
@@ -198,7 +198,7 @@ class NoteListAdapter(
                 if (title.isEmpty()) {
                     text_note_title.visibility = View.GONE
                 } else {
-                    text_note_title.setText(title.htmlToSpannableString(), TextView.BufferType.SPANNABLE)
+                    text_note_title.text = title
                     text_note_title.visibility = View.VISIBLE
                 }
             }

@@ -24,10 +24,15 @@ import com.google.android.gms.location.*
 import javax.inject.Inject
 import android.os.Build
 import androidx.core.hardware.fingerprint.FingerprintManagerCompat
+import com.anjlab.android.iab.v3.BillingProcessor
+import com.anjlab.android.iab.v3.TransactionDetails
+import com.furianrt.mydiary.BuildConfig
 import com.furianrt.mydiary.data.repository.device.DeviceRepository.*
 import com.furianrt.mydiary.utils.generateUniqueId
 import java.io.IOException
 
+//todo переписать листенеры на субскрайберы
+//todo перенести сюда всю работу с биллингом
 class DeviceRepositoryImp @Inject constructor(
         @AppContext private val context: Context,
         private val fusedLocationClient: FusedLocationProviderClient,
@@ -37,6 +42,8 @@ class DeviceRepositoryImp @Inject constructor(
     companion object {
         private const val LOCATION_INTERVAL = 1000L
     }
+
+    private val mBillingProcessor = BillingProcessor(context, BuildConfig.LICENSE_KEY, BuildConfig.MERCHANT_ID, this)
 
     private val mLocationListeners = mutableSetOf<OnLocationFoundListener>()
     private val mLocationCallback = object : LocationCallback() {
@@ -119,5 +126,23 @@ class DeviceRepositoryImp @Inject constructor(
         if (mLocationListeners.isEmpty()) {
             fusedLocationClient.removeLocationUpdates(mLocationCallback)
         }
+    }
+
+    override fun isItemPurchased(productId: String): Boolean = mBillingProcessor.isPurchased(productId)
+
+    override fun onBillingInitialized() {
+
+    }
+
+    override fun onPurchaseHistoryRestored() {
+
+    }
+
+    override fun onProductPurchased(productId: String, details: TransactionDetails?) {
+
+    }
+
+    override fun onBillingError(errorCode: Int, error: Throwable?) {
+
     }
 }

@@ -80,6 +80,12 @@ interface MyAnalytics {
         const val EVENT_DAILY_IMAGE_TURN_OFF = "daily_image_turn_off"
         const val EVENT_DAILY_IMAGE_TURN_ON = "daily_image_turn_on"
         const val EVENT_DAILY_IMAGE_CATEGORY_CHANGED = "daily_image_category_changed"
+        const val EVENT_RICH_TEXT_BOLD_APPLIED = "rich_text_bold_applied"
+        const val EVENT_RICH_TEXT_ITALIC_APPLIED = "rich_text_italic_applied"
+        const val EVENT_RICH_TEXT_STRIKETHROUGH_APPLIED = "rich_text_strikethrough_applied"
+        const val EVENT_RICH_TEXT_BIG_TEXT_APPLIED = "rich_text_big_text_applied"
+        const val EVENT_RICH_TEXT_COLOR_APPLIED = "rich_text_color_applied"
+        const val EVENT_RICH_TEXT_FILL_COLOR_APPLIED = "rich_text_fill_color_applied"
 
         //Error events
         const val EVENT_UNDO_ERROR = "undo_error"

@@ -83,6 +83,7 @@ class SyncService : Service(), BaseView, SyncContract.MvpView {
         SyncProgressMessage.SYNC_NOTE_LOCATIONS -> getString(R.string.sync_error_note_locations)
         SyncProgressMessage.SYNC_FORECAST -> getString(R.string.sync_error_forecasts)
         SyncProgressMessage.SYNC_IMAGES -> getString(R.string.sync_error_images)
+        SyncProgressMessage.SYNC_SPANS -> getString(R.string.sync_error_notes)
         SyncProgressMessage.CLEANUP -> getString(R.string.sync_error_cleanup)
         else -> getString(R.string.sync_error)
     }
@@ -97,8 +98,8 @@ class SyncService : Service(), BaseView, SyncContract.MvpView {
         SyncProgressMessage.SYNC_NOTE_LOCATIONS -> getString(R.string.sync_locations)
         SyncProgressMessage.SYNC_FORECAST -> getString(R.string.sync_forecasts)
         SyncProgressMessage.SYNC_IMAGES -> getString(R.string.sync_images)
+        SyncProgressMessage.SYNC_SPANS -> getString(R.string.sync_notes)
         SyncProgressMessage.CLEANUP -> getString(R.string.sync_cleanup)
-
         else -> getString(R.string.sync_done)
     }
 

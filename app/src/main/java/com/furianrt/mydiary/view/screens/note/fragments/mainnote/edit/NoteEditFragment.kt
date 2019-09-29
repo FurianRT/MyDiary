@@ -20,12 +20,11 @@ import android.view.*
 import android.widget.TextView
 import androidx.core.graphics.ColorUtils
 import com.furianrt.mydiary.R
+import com.furianrt.mydiary.analytics.MyAnalytics
 import com.furianrt.mydiary.view.base.BaseFragment
 import com.furianrt.mydiary.data.model.MyNoteAppearance
 import com.furianrt.mydiary.view.screens.note.fragments.mainnote.NoteFragment
-import com.furianrt.mydiary.view.screens.note.fragments.mainnote.content.NoteContentFragment
 import com.furianrt.mydiary.utils.hideKeyboard
-import com.furianrt.mydiary.utils.htmlToSpannableString
 import com.furianrt.mydiary.utils.showKeyboard
 import kotlinx.android.synthetic.main.fragment_note_edit.*
 import kotlinx.android.synthetic.main.fragment_note_edit.view.*
@@ -36,15 +35,15 @@ class NoteEditFragment : BaseFragment(), NoteEditFragmentContract.MvpView {
     private var mClickedView: Int? = null
     private var mClickPosition = 0
     private var mNoteTitle = ""
-    private var mNoteContent = ""
+    private var mNoteContent = Spannable.Factory().newSpannable("")
     private var mAppearance: MyNoteAppearance? = null
     private val mTextChangeListener = object : TextWatcher {
         override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
         override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
         override fun afterTextChanged(s: Editable?) {
             (parentFragment as NoteFragment).onNoteTextChange(
-                    edit_note_title.text ?: Editable.Factory().newEditable(""),
-                    edit_note_content.text ?: Editable.Factory().newEditable("")
+                    edit_note_title.text?.toString() ?: "",
+                    edit_note_content.text ?: Spannable.Factory().newSpannable("")
             )
         }
     }
@@ -58,7 +57,7 @@ class NoteEditFragment : BaseFragment(), NoteEditFragmentContract.MvpView {
         setHasOptionsMenu(true)
         arguments?.let {
             mNoteTitle = it.getString(ARG_NOTE_TITLE, "")
-            mNoteContent = it.getString(ARG_NOTE_CONTENT, "")
+            mNoteContent = it.getCharSequence(ARG_NOTE_CONTENT, "") as Spannable
             mClickedView = it.getInt(ARG_CLICKED_VIEW)
             mClickPosition = it.getInt(ARG_POSITION)
             mAppearance = it.getParcelable(ARG_APPEARANCE) as? MyNoteAppearance?
@@ -72,14 +71,20 @@ class NoteEditFragment : BaseFragment(), NoteEditFragmentContract.MvpView {
                               savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_note_edit, container, false)
 
-        fragmentManager?.findFragmentByTag(NoteContentFragment.TAG)?.let {
-            (it as NoteContentFragment).setVisibility(View.INVISIBLE)  //todo исправить
+        if (savedInstanceState == null) {
+            view.edit_note_title.setText(mNoteTitle)
+            view.edit_note_content.setText(mNoteContent, TextView.BufferType.SPANNABLE)
         }
 
-        view.edit_note_title.setText(mNoteTitle.htmlToSpannableString(), TextView.BufferType.SPANNABLE)
-        view.edit_note_content.setText(mNoteContent.htmlToSpannableString(), TextView.BufferType.SPANNABLE)
         view.edit_note_content.enableLines = true
         view.edit_note_content.selectionListener = { selStart, selEnd -> onSpansChange(selStart, selEnd) }
+        view.edit_note_content.onFocusChangeListener = View.OnFocusChangeListener { _, hasFocus ->
+            if (hasFocus) {
+                (parentFragment as? NoteFragment?)?.showRichTextOptions()
+            } else {
+                (parentFragment as? NoteFragment?)?.hideRichTextOptions()
+            }
+        }
 
         return view
     }
@@ -87,17 +92,20 @@ class NoteEditFragment : BaseFragment(), NoteEditFragmentContract.MvpView {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         mAppearance?.let { setAppearance(it) }
-        when (mClickedView) {
-            VIEW_TITLE -> {
-                edit_note_title.requestFocus()
-                edit_note_title.setSelection(mClickPosition)
-                edit_note_title.showKeyboard()
 
-            }
-            VIEW_CONTENT -> {
-                edit_note_content.requestFocus()
-                edit_note_content.setSelection(mClickPosition)
-                edit_note_content.showKeyboard()
+        if (savedInstanceState == null) {
+            when (mClickedView) {
+                VIEW_TITLE -> {
+                    edit_note_title.requestFocus()
+                    edit_note_title.setSelection(mClickPosition)
+                    edit_note_title.showKeyboard()
+
+                }
+                VIEW_CONTENT -> {
+                    edit_note_content.requestFocus()
+                    edit_note_content.setSelection(mClickPosition)
+                    edit_note_content.showKeyboard()
+                }
             }
         }
     }
@@ -127,9 +135,6 @@ class NoteEditFragment : BaseFragment(), NoteEditFragmentContract.MvpView {
         super.onDestroy()
         activity?.currentFocus?.hideKeyboard()
         activity?.currentFocus?.clearFocus()
-        fragmentManager?.findFragmentByTag(NoteContentFragment.TAG)?.let {
-            (it as NoteContentFragment).setVisibility(View.VISIBLE)
-        }
     }
 
     override fun onStart() {
@@ -145,7 +150,7 @@ class NoteEditFragment : BaseFragment(), NoteEditFragmentContract.MvpView {
         edit_note_title.removeTextChangedListener(mTextChangeListener)
         edit_note_content.removeTextChangedListener(mTextChangeListener)
         (parentFragment as? NoteFragment?)?.onNoteFragmentEditModeDisabled(
-                edit_note_title.text ?: Editable.Factory().newEditable(""),
+                edit_note_title.text?.toString() ?: "",
                 edit_note_content.text ?: Editable.Factory().newEditable("")
         )
         mPresenter.detachView()
@@ -165,7 +170,7 @@ class NoteEditFragment : BaseFragment(), NoteEditFragmentContract.MvpView {
         }
     }
 
-    fun showNoteText(title: Spannable, content: Spannable) {
+    fun showNoteText(title: String, content: Spannable) {
         Log.e(TAG, "showNoteText")
         // Отключаем листенер что бы в undo/redo не прилетал измененный им же текст
         edit_note_title.removeTextChangedListener(mTextChangeListener)
@@ -174,29 +179,49 @@ class NoteEditFragment : BaseFragment(), NoteEditFragmentContract.MvpView {
         // Приходится отключать SUGGESTIONS при программном изменении текста
         val currentTitleInputType = edit_note_title.inputType
         val currentContentInputType = edit_note_content.inputType
+        val selectionStart: Int
+        val selectionEnd: Int
+        if (edit_note_title.hasFocus()) {
+            selectionStart = edit_note_title.selectionStart
+            selectionEnd = edit_note_title.selectionEnd
+        } else {
+            selectionStart = edit_note_content.selectionStart
+            selectionEnd = edit_note_content.selectionEnd
+        }
 
         edit_note_title.inputType = InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS
         edit_note_content.inputType = InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS
 
-        edit_note_title.setText(title, TextView.BufferType.SPANNABLE)
+        edit_note_title.setText(title)
         edit_note_content.setText(content, TextView.BufferType.SPANNABLE)
 
         edit_note_title.inputType = currentTitleInputType
         edit_note_content.inputType = currentContentInputType
+
+        if (edit_note_title.hasFocus()) {
+            val textLength = edit_note_title.text?.length ?: 0
+            if (textLength < selectionEnd) {
+                edit_note_title.setSelection(textLength)
+            } else {
+                edit_note_title.setSelection(selectionStart, selectionEnd)
+            }
+        } else {
+            val textLength = edit_note_content.text?.length ?: 0
+            if (textLength < selectionEnd) {
+                edit_note_content.setSelection(textLength)
+            } else {
+                edit_note_content.setSelection(selectionStart, selectionEnd)
+            }
+        }
+
         edit_note_title.addTextChangedListener(mTextChangeListener)
         edit_note_content.addTextChangedListener(mTextChangeListener)
-
-        if (edit_note_title.isFocused) {
-            edit_note_title.setSelection(title.length)
-        } else if (edit_note_content.isFocused) {
-            edit_note_content.setSelection(content.length)
-        }
     }
 
-    fun getNoteTitleText(): Spannable = edit_note_title.text ?: Editable.Factory().newEditable("")
+    fun getNoteTitleText(): String = edit_note_title.text?.toString() ?: ""
 
     fun getNoteContentText(): Spannable = edit_note_content.text
-            ?: Editable.Factory().newEditable("")
+            ?: Spannable.Factory().newSpannable("")
 
     override fun applyBoldText(wordStart: Int, wordEnd: Int) {
         val text = edit_note_content.text ?: return
@@ -214,9 +239,11 @@ class NoteEditFragment : BaseFragment(), NoteEditFragmentContract.MvpView {
         }
 
         (parentFragment as NoteFragment).onNoteTextChange(
-                edit_note_title.text ?: Editable.Factory().newEditable(""),
+                edit_note_title.text?.toString() ?: "",
                 text
         )
+
+        onSpansChange(edit_note_content.selectionStart, edit_note_content.selectionEnd)
     }
 
     override fun applyItalicText(wordStart: Int, wordEnd: Int) {
@@ -234,9 +261,11 @@ class NoteEditFragment : BaseFragment(), NoteEditFragmentContract.MvpView {
         }
 
         (parentFragment as NoteFragment).onNoteTextChange(
-                edit_note_title.text ?: Editable.Factory().newEditable(""),
+                edit_note_title.text?.toString() ?: "",
                 text
         )
+
+        onSpansChange(edit_note_content.selectionStart, edit_note_content.selectionEnd)
     }
 
     override fun applyStrikethroughText(wordStart: Int, wordEnd: Int) {
@@ -254,9 +283,11 @@ class NoteEditFragment : BaseFragment(), NoteEditFragmentContract.MvpView {
         }
 
         (parentFragment as NoteFragment).onNoteTextChange(
-                edit_note_title.text ?: Editable.Factory().newEditable(""),
+                edit_note_title.text?.toString() ?: "",
                 text
         )
+
+        onSpansChange(edit_note_content.selectionStart, edit_note_content.selectionEnd)
     }
 
     override fun applyLargeText(wordStart: Int, wordEnd: Int) {
@@ -274,9 +305,11 @@ class NoteEditFragment : BaseFragment(), NoteEditFragmentContract.MvpView {
         }
 
         (parentFragment as NoteFragment).onNoteTextChange(
-                edit_note_title.text ?: Editable.Factory().newEditable(""),
+                edit_note_title.text?.toString() ?: "",
                 text
         )
+
+        onSpansChange(edit_note_content.selectionStart, edit_note_content.selectionEnd)
     }
 
     override fun applyTextColor(wordStart: Int, wordEnd: Int, color: String?) {
@@ -294,9 +327,11 @@ class NoteEditFragment : BaseFragment(), NoteEditFragmentContract.MvpView {
         }
 
         (parentFragment as NoteFragment).onNoteTextChange(
-                edit_note_title.text ?: Editable.Factory().newEditable(""),
+                edit_note_title.text?.toString() ?: "",
                 text
         )
+
+        onSpansChange(edit_note_content.selectionStart, edit_note_content.selectionEnd)
     }
 
     override fun applyTextFillColor(wordStart: Int, wordEnd: Int, color: String?) {
@@ -314,23 +349,28 @@ class NoteEditFragment : BaseFragment(), NoteEditFragmentContract.MvpView {
         }
 
         (parentFragment as NoteFragment).onNoteTextChange(
-                edit_note_title.text ?: Editable.Factory().newEditable(""),
+                edit_note_title.text?.toString() ?: "",
                 text
         )
+
+        onSpansChange(edit_note_content.selectionStart, edit_note_content.selectionEnd)
     }
 
     private fun addBoldTextSpan(wordStart: Int, wordEnd: Int, text: Editable) {
+        analytics.sendEvent(MyAnalytics.EVENT_RICH_TEXT_BOLD_APPLIED)
         var indexStart = wordStart
         var indexEnd = wordEnd
 
         val prevSpanPosition = text.getSpans(indexStart, indexEnd, StyleSpan::class.java)
+                .filter { it.style == Typeface.BOLD }
                 .map { text.getSpanEnd(it) }
-                .filter { it < wordStart }
+                .filter { it < edit_note_content.selectionStart }
                 .max()
 
         val nextSpanPosition = text.getSpans(indexStart, indexEnd, StyleSpan::class.java)
+                .filter { it.style == Typeface.BOLD }
                 .map { text.getSpanStart(it) }
-                .filter { it > wordEnd }
+                .filter { it > edit_note_content.selectionEnd }
                 .min()
 
         if (prevSpanPosition != null && prevSpanPosition != indexStart) {
@@ -347,27 +387,6 @@ class NoteEditFragment : BaseFragment(), NoteEditFragmentContract.MvpView {
                 indexEnd,
                 Spannable.SPAN_INCLUSIVE_INCLUSIVE
         )
-    }
-
-    private fun addSpan(wordStart: Int, wordEnd: Int, text: Editable, span: ParcelableSpan) {
-        var indexStart = wordStart
-        var indexEnd = wordEnd
-
-        if (span is StyleSpan) {
-
-        } else if (span is ForegroundColorSpan) {
-
-        }
-
-        val prevSpanPosition = text.getSpans(indexStart, indexEnd, StyleSpan::class.java)
-                .map { text.getSpanEnd(it) }
-                .filter { it < wordStart }
-                .max()
-
-        val nextSpanPosition = text.getSpans(indexStart, indexEnd, StyleSpan::class.java)
-                .map { text.getSpanStart(it) }
-                .filter { it > wordEnd }
-                .min()
     }
 
     private fun removeBoldTextSpan(wordStart: Int, wordEnd: Int, boldSpans: List<StyleSpan>, text: Editable) {
@@ -394,18 +413,21 @@ class NoteEditFragment : BaseFragment(), NoteEditFragmentContract.MvpView {
         }
     }
 
-    private fun addItalicTextSpan(selectionStart: Int, selectionEnd: Int, text: Editable) {
-        var indexStart = selectionStart
-        var indexEnd = selectionEnd
+    private fun addItalicTextSpan(wordStart: Int, wordEnd: Int, text: Editable) {
+        analytics.sendEvent(MyAnalytics.EVENT_RICH_TEXT_ITALIC_APPLIED)
+        var indexStart = wordStart
+        var indexEnd = wordEnd
 
         val prevSpanPosition = text.getSpans(indexStart, indexEnd, StyleSpan::class.java)
+                .filter { it.style == Typeface.ITALIC }
                 .map { text.getSpanEnd(it) }
-                .filter { it < selectionStart }
+                .filter { it < edit_note_content.selectionStart }
                 .max()
 
         val nextSpanPosition = text.getSpans(indexStart, indexEnd, StyleSpan::class.java)
+                .filter { it.style == Typeface.ITALIC }
                 .map { text.getSpanStart(it) }
-                .filter { it > selectionEnd }
+                .filter { it > edit_note_content.selectionEnd }
                 .min()
 
         if (prevSpanPosition != null && prevSpanPosition != indexStart) {
@@ -424,7 +446,7 @@ class NoteEditFragment : BaseFragment(), NoteEditFragmentContract.MvpView {
         )
     }
 
-    private fun removeItalicTextSpan(selectionStart: Int, selectionEnd: Int, italicSpans: List<StyleSpan>, text: Editable) {
+    private fun removeItalicTextSpan(wordStart: Int, wordEnd: Int, italicSpans: List<StyleSpan>, text: Editable) {
         if (text.isEmpty()) {
             italicSpans.forEach { text.removeSpan(it) }
             return
@@ -435,31 +457,32 @@ class NoteEditFragment : BaseFragment(), NoteEditFragmentContract.MvpView {
             val spanEnd = text.getSpanEnd(span)
 
             when {
-                spanStart < selectionStart && spanEnd > selectionEnd -> {
-                    text.setSpan(StyleSpan(Typeface.ITALIC), spanStart, selectionStart, Spannable.SPAN_INCLUSIVE_EXCLUSIVE)
-                    text.setSpan(StyleSpan(Typeface.ITALIC), selectionEnd, spanEnd, Spannable.SPAN_EXCLUSIVE_INCLUSIVE)
+                spanStart < wordStart && spanEnd > wordEnd -> {
+                    text.setSpan(StyleSpan(Typeface.ITALIC), spanStart, wordStart, Spannable.SPAN_INCLUSIVE_EXCLUSIVE)
+                    text.setSpan(StyleSpan(Typeface.ITALIC), wordEnd, spanEnd, Spannable.SPAN_EXCLUSIVE_INCLUSIVE)
                 }
-                spanStart < selectionStart && spanEnd <= selectionEnd ->
-                    text.setSpan(StyleSpan(Typeface.ITALIC), spanStart, selectionStart, Spannable.SPAN_INCLUSIVE_EXCLUSIVE)
-                spanStart >= selectionStart && spanEnd > selectionEnd ->
-                    text.setSpan(StyleSpan(Typeface.ITALIC), selectionEnd, spanEnd, Spannable.SPAN_EXCLUSIVE_INCLUSIVE)
+                spanStart < wordStart && spanEnd <= wordEnd ->
+                    text.setSpan(StyleSpan(Typeface.ITALIC), spanStart, wordStart, Spannable.SPAN_INCLUSIVE_EXCLUSIVE)
+                spanStart >= wordStart && spanEnd > wordEnd ->
+                    text.setSpan(StyleSpan(Typeface.ITALIC), wordEnd, spanEnd, Spannable.SPAN_EXCLUSIVE_INCLUSIVE)
             }
             text.removeSpan(span)
         }
     }
 
     private fun addStrikethroughTextSpan(wordStart: Int, wordEnd: Int, text: Editable) {
+        analytics.sendEvent(MyAnalytics.EVENT_RICH_TEXT_STRIKETHROUGH_APPLIED)
         var indexStart = wordStart
         var indexEnd = wordEnd
 
-        val prevSpanPosition = text.getSpans(indexStart, indexEnd, StyleSpan::class.java)
+        val prevSpanPosition = text.getSpans(indexStart, indexEnd, StrikethroughSpan::class.java)
                 .map { text.getSpanEnd(it) }
-                .filter { it < wordStart }
+                .filter { it < edit_note_content.selectionStart }
                 .max()
 
-        val nextSpanPosition = text.getSpans(indexStart, indexEnd, StyleSpan::class.java)
+        val nextSpanPosition = text.getSpans(indexStart, indexEnd, StrikethroughSpan::class.java)
                 .map { text.getSpanStart(it) }
-                .filter { it > wordEnd }
+                .filter { it > edit_note_content.selectionEnd }
                 .min()
 
         if (prevSpanPosition != null && prevSpanPosition != indexStart) {
@@ -503,17 +526,18 @@ class NoteEditFragment : BaseFragment(), NoteEditFragmentContract.MvpView {
     }
 
     private fun addLargeTextSpan(wordStart: Int, wordEnd: Int, text: Editable) {
+        analytics.sendEvent(MyAnalytics.EVENT_RICH_TEXT_BIG_TEXT_APPLIED)
         var indexStart = wordStart
         var indexEnd = wordEnd
 
-        val prevSpanPosition = text.getSpans(indexStart, indexEnd, StyleSpan::class.java)
+        val prevSpanPosition = text.getSpans(indexStart, indexEnd, RelativeSizeSpan::class.java)
                 .map { text.getSpanEnd(it) }
-                .filter { it < wordStart }
+                .filter { it < edit_note_content.selectionStart }
                 .max()
 
-        val nextSpanPosition = text.getSpans(indexStart, indexEnd, StyleSpan::class.java)
+        val nextSpanPosition = text.getSpans(indexStart, indexEnd, RelativeSizeSpan::class.java)
                 .map { text.getSpanStart(it) }
-                .filter { it > wordEnd }
+                .filter { it > edit_note_content.selectionEnd }
                 .min()
 
         if (prevSpanPosition != null && prevSpanPosition != indexStart) {
@@ -577,17 +601,18 @@ class NoteEditFragment : BaseFragment(), NoteEditFragmentContract.MvpView {
     }
 
     private fun addTextColorSpan(wordStart: Int, wordEnd: Int, text: Editable, color: String) {
+        analytics.sendEvent(MyAnalytics.EVENT_RICH_TEXT_COLOR_APPLIED)
         var indexStart = wordStart
         var indexEnd = wordEnd
 
-        val prevSpanPosition = text.getSpans(indexStart, indexEnd, StyleSpan::class.java)
+        val prevSpanPosition = text.getSpans(indexStart, indexEnd, ForegroundColorSpan::class.java)
                 .map { text.getSpanEnd(it) }
-                .filter { it < wordStart }
+                .filter { it < edit_note_content.selectionStart }
                 .max()
 
-        val nextSpanPosition = text.getSpans(indexStart, indexEnd, StyleSpan::class.java)
+        val nextSpanPosition = text.getSpans(indexStart, indexEnd, ForegroundColorSpan::class.java)
                 .map { text.getSpanStart(it) }
-                .filter { it > wordEnd }
+                .filter { it > edit_note_content.selectionEnd }
                 .min()
 
         if (prevSpanPosition != null && prevSpanPosition != indexStart) {
@@ -651,17 +676,18 @@ class NoteEditFragment : BaseFragment(), NoteEditFragmentContract.MvpView {
     }
 
     private fun addTextFillColorSpan(wordStart: Int, wordEnd: Int, text: Editable, color: String) {
+        analytics.sendEvent(MyAnalytics.EVENT_RICH_TEXT_FILL_COLOR_APPLIED)
         var indexStart = wordStart
         var indexEnd = wordEnd
 
-        val prevSpanPosition = text.getSpans(indexStart, indexEnd, StyleSpan::class.java)
+        val prevSpanPosition = text.getSpans(indexStart, indexEnd, BackgroundColorSpan::class.java)
                 .map { text.getSpanEnd(it) }
-                .filter { it < wordStart }
+                .filter { it < edit_note_content.selectionStart }
                 .max()
 
-        val nextSpanPosition = text.getSpans(indexStart, indexEnd, StyleSpan::class.java)
+        val nextSpanPosition = text.getSpans(indexStart, indexEnd, BackgroundColorSpan::class.java)
                 .map { text.getSpanStart(it) }
-                .filter { it > wordEnd }
+                .filter { it > edit_note_content.selectionEnd }
                 .min()
 
         if (prevSpanPosition != null && prevSpanPosition != indexStart) {
@@ -793,14 +819,14 @@ class NoteEditFragment : BaseFragment(), NoteEditFragmentContract.MvpView {
         const val VIEW_CONTENT = 1
 
         @JvmStatic
-        fun newInstance(noteTitle: String, noteContent: String, clickedView: Int,
+        fun newInstance(noteTitle: String, noteContent: Spannable, clickedView: Int,
                         clickPosition: Int, appearance: MyNoteAppearance?) =
                 NoteEditFragment().apply {
                     arguments = Bundle().apply {
                         putInt(ARG_CLICKED_VIEW, clickedView)
                         putInt(ARG_POSITION, clickPosition)
                         putString(ARG_NOTE_TITLE, noteTitle)
-                        putString(ARG_NOTE_CONTENT, noteContent)
+                        putCharSequence(ARG_NOTE_CONTENT, noteContent)
                         appearance?.let { putParcelable(ARG_APPEARANCE, it) }
                     }
                 }

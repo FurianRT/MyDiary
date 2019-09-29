@@ -292,4 +292,5 @@
     <string name="fragment_note_settings_reset_settings_title">Сбросить настройки</string>
     <string name="fragment_note_settings_danger_zone">Опасная зона</string>
     <string name="fragment_note_settings_reset_settings_confirm">Сбросить настройки?</string>
+    <string name="fragment_note_google_serviсies_error">Google services не установлены</string>
 </resources>

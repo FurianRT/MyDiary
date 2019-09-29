@@ -27,14 +27,22 @@ class LockableViewPager : ViewPager {
     @SuppressLint("ClickableViewAccessibility")
     override fun onTouchEvent(ev: MotionEvent?): Boolean =
             if (swipeEnabled) {
-                super.onTouchEvent(ev)
+                try {
+                    super.onInterceptTouchEvent(ev)
+                } catch (e: IllegalArgumentException) {
+                    false
+                }
             } else {
                 false
             }
 
     override fun onInterceptTouchEvent(ev: MotionEvent?): Boolean =
             if (swipeEnabled) {
-                super.onInterceptTouchEvent(ev)
+                try {
+                    super.onInterceptTouchEvent(ev)
+                } catch (e: IllegalArgumentException) {
+                    false
+                }
             } else {
                 false
             }

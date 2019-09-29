@@ -11,7 +11,6 @@
 package com.furianrt.mydiary.view.screens.note.fragments.mainnote.content
 
 import android.os.Bundle
-import android.text.Editable
 import android.text.Spannable
 import android.util.Log
 import android.view.LayoutInflater
@@ -26,7 +25,6 @@ import com.furianrt.mydiary.view.screens.note.NoteActivity
 import com.furianrt.mydiary.view.screens.note.fragments.mainnote.NoteFragment
 import com.furianrt.mydiary.view.screens.note.fragments.mainnote.edit.NoteEditFragment
 import com.furianrt.mydiary.utils.inTransaction
-import com.furianrt.mydiary.utils.toHtmlString
 import kotlinx.android.synthetic.main.fragment_note_content.*
 import kotlinx.android.synthetic.main.fragment_note_content.view.*
 import javax.inject.Inject
@@ -39,7 +37,7 @@ class NoteContentFragment : BaseFragment(), NoteContentFragmentContract.MvpView 
     @Inject
     lateinit var mPresenter: NoteContentFragmentContract.Presenter
 
-    private var mTitle: Spannable? = null
+    private var mTitle: String? = null
     private var mContent: Spannable? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -78,7 +76,7 @@ class NoteContentFragment : BaseFragment(), NoteContentFragmentContract.MvpView 
         }
     }
 
-    fun showNoteText(title: Spannable, content: Spannable) {
+    fun showNoteText(title: String, content: Spannable) {
         Log.e(TAG, "showNoteText")
         mTitle = title
         mContent = content
@@ -138,13 +136,14 @@ class NoteContentFragment : BaseFragment(), NoteContentFragmentContract.MvpView 
             }
             fragmentManager?.let { manager ->
                 val editFragment = NoteEditFragment.newInstance(
-                        mTitle?.toHtmlString() ?: "",
-                        mContent?.toHtmlString() ?: "",
+                        mTitle ?: "",
+                        mContent ?: Spannable.Factory().newSpannable(""),
                         clickedView,
                         touchPosition,
                         mAppearance
                 )
                 manager.inTransaction {
+                    hide(this@NoteContentFragment)
                     add(R.id.container_note_edit, editFragment, NoteEditFragment.TAG)
                     addToBackStack(null)
                 }
@@ -152,9 +151,9 @@ class NoteContentFragment : BaseFragment(), NoteContentFragmentContract.MvpView 
         }
     }
 
-    fun getNoteTitleText(): Spannable = mTitle ?: Editable.Factory().newEditable("")
+    fun getNoteTitleText(): String = mTitle ?: ""
 
-    fun getNoteContentText(): Spannable = mContent ?: Editable.Factory().newEditable("")
+    fun getNoteContentText(): Spannable = mContent ?: Spannable.Factory().newSpannable("")
 
     fun removeEditFragment() {
         fragmentManager?.findFragmentByTag(NoteEditFragment.TAG)?.let {
@@ -163,15 +162,11 @@ class NoteContentFragment : BaseFragment(), NoteContentFragmentContract.MvpView 
         }
     }
 
-    fun updateNoteText(title: Spannable, content: Spannable) {
+    fun updateNoteText(title: String, content: Spannable) {
         mTitle = title
         mContent = content
-        text_note_title.setText(title, TextView.BufferType.SPANNABLE)
+        text_note_title.text = title
         text_note_content.setText(content, TextView.BufferType.SPANNABLE)
-    }
-
-    fun setVisibility(visibility: Int) {
-        layout_note_content_root.visibility = visibility
     }
 
     companion object {

@@ -53,6 +53,5 @@ class LinedEditText(context: Context, attributes: AttributeSet) : AppCompatEditT
     override fun onSelectionChanged(selStart: Int, selEnd: Int) {
         super.onSelectionChanged(selStart, selEnd)
         selectionListener?.invoke(selStart, selEnd)
-
     }
 }

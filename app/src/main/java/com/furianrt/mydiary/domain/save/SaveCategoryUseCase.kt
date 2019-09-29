@@ -20,9 +20,9 @@ class SaveCategoryUseCase @Inject constructor(
         private val categoryRepository: CategoryRepository
 ) {
 
-    fun invoke(name: String, color: Int): Single<String> {
-        val id = generateUniqueId()
-        return categoryRepository.insertCategory(MyCategory(id, name, color))
-                .andThen(Single.just(id))
-    }
+    fun invoke(name: String, color: Int): Single<String> =
+            with(generateUniqueId()) {
+                categoryRepository.insertCategory(MyCategory(this, name, color))
+                        .toSingleDefault(this)
+            }
 }
