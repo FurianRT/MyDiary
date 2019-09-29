@@ -261,7 +261,7 @@
 
     <include
         android:id="@+id/layout_rich_text"
-        android:visibility="invisible"
+        android:visibility="gone"
         tools:visibility="visible"
         layout="@layout/rich_text_menu" />
 
