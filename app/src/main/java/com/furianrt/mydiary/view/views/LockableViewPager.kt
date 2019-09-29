@@ -28,7 +28,7 @@ class LockableViewPager : ViewPager {
     override fun onTouchEvent(ev: MotionEvent?): Boolean =
             if (swipeEnabled) {
                 try {
-                    super.onInterceptTouchEvent(ev)
+                    super.onTouchEvent(ev)
                 } catch (e: IllegalArgumentException) {
                     false
                 }
