@@ -134,12 +134,11 @@ class PasswordFragment : BaseFragment(), PasswordContract.MvpView {
                 }
             }
         }
-        requireActivity().main_sheet_container.postDelayed({
-            BottomSheetBehavior.from(requireActivity().main_sheet_container).state =
-                    BottomSheetBehavior.STATE_COLLAPSED
-        },
-                CLOSE_AFTER_DONE_DELAY
-        )
+        activity?.main_sheet_container?.postDelayed({
+            activity?.let {
+                BottomSheetBehavior.from(it.main_sheet_container).state = BottomSheetBehavior.STATE_COLLAPSED
+            }
+        }, CLOSE_AFTER_DONE_DELAY)
     }
 
     override fun clearErrorMessage() {

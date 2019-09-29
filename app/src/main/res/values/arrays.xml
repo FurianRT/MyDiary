@@ -130,4 +130,12 @@
         <item>music</item>
     </string-array>
 
+    <string-array name="spinner_colors">
+        <item>#EF6C00</item>
+        <item>#C62828</item>
+        <item>#9C27B0</item>
+        <item>#388E3C</item>
+        <item>#0288D1</item>
+    </string-array>
+
 </resources>

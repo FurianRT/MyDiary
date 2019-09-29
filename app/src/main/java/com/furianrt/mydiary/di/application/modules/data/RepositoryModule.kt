@@ -32,6 +32,8 @@ import com.furianrt.mydiary.data.repository.pin.PinRepository
 import com.furianrt.mydiary.data.repository.pin.PinRepositoryImp
 import com.furianrt.mydiary.data.repository.profile.ProfileRepository
 import com.furianrt.mydiary.data.repository.profile.ProfileRepositoryImp
+import com.furianrt.mydiary.data.repository.span.SpanRepository
+import com.furianrt.mydiary.data.repository.span.SpanRepositoryImp
 import com.furianrt.mydiary.data.repository.tag.TagRepository
 import com.furianrt.mydiary.data.repository.tag.TagRepositoryImp
 import com.furianrt.mydiary.di.application.component.AppScope
@@ -88,4 +90,8 @@ interface RepositoryModule {
     @Binds
     @AppScope
     fun deviceRepository(imp: DeviceRepositoryImp): DeviceRepository
+
+    @Binds
+    @AppScope
+    fun spanRepository(imp: SpanRepositoryImp): SpanRepository
 }

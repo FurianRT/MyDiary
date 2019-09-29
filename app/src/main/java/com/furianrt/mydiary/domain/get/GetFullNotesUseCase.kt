@@ -14,10 +14,12 @@ import com.furianrt.mydiary.data.model.*
 import com.furianrt.mydiary.data.repository.image.ImageRepository
 import com.furianrt.mydiary.data.repository.location.LocationRepository
 import com.furianrt.mydiary.data.repository.note.NoteRepository
+import com.furianrt.mydiary.data.repository.span.SpanRepository
 import com.furianrt.mydiary.data.repository.tag.TagRepository
 import com.google.common.base.Optional
 import io.reactivex.Flowable
-import io.reactivex.functions.Function6
+import io.reactivex.functions.Function7
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 //Следит почти за всеми таблицами. Использовать только когда дейстительно необходимо!
@@ -25,7 +27,8 @@ class GetFullNotesUseCase @Inject constructor(
         private val noteRepository: NoteRepository,
         private val tagRepository: TagRepository,
         private val imageRepository: ImageRepository,
-        private val locationRepository: LocationRepository
+        private val locationRepository: LocationRepository,
+        private val spanRepository: SpanRepository
 ) {
 
     fun invoke(): Flowable<List<MyNoteWithProp>> =
@@ -50,9 +53,10 @@ class GetFullNotesUseCase @Inject constructor(
                     imageRepository.getAllImages(),
                     locationRepository.getAllNoteLocations(),
                     locationRepository.getAllDbLocations(),
-                    Function6<List<MyNoteWithProp>, List<NoteTag>, List<MyTag>, List<MyImage>,
-                            List<NoteLocation>, List<MyLocation>, List<MyNoteWithProp>>
-                    { notes, noteTags, tags, images, noteLocations, locations ->
+                    spanRepository.getAllTextSpans(),
+                    Function7<List<MyNoteWithProp>, List<NoteTag>, List<MyTag>, List<MyImage>,
+                            List<NoteLocation>, List<MyLocation>, List<MyTextSpan>, List<MyNoteWithProp>>
+                    { notes, noteTags, tags, images, noteLocations, locations, spans ->
                         notes.map { note ->
                             val noteTagsForNote = noteTags.filter { it.noteId == note.note.id }
                             note.tags = tags.filter { tag ->
@@ -66,8 +70,10 @@ class GetFullNotesUseCase @Inject constructor(
                                 noteLocationsForNote.find { it.locationId == location.id } != null
                             }
 
+                            note.textSpans = spans.filter { it.noteId == note.note.id }
+
                             return@map note
                         }
                     }
-            )
+            ).debounce(100L, TimeUnit.MILLISECONDS)
 }

@@ -15,6 +15,7 @@ import android.animation.PropertyValuesHolder
 import android.graphics.drawable.ColorDrawable
 import android.view.View
 import android.view.animation.OvershootInterpolator
+import android.widget.ImageButton
 
 fun View.animateScale(from: Float, to: Float, duration: Long) {
     ObjectAnimator.ofPropertyValuesHolder(
@@ -44,4 +45,13 @@ fun View.animateBackgroundColor(colorTo: Int, duration: Long = 250L) {
     ObjectAnimator.ofArgb(this, "backgroundColor", colorFrom, colorTo)
             .setDuration(duration)
             .start()
+}
+
+fun ImageButton.enableCustom(enable: Boolean) {
+    isEnabled = enable
+    alpha = if (enable) {
+        1f
+    } else {
+        0.4f
+    }
 }

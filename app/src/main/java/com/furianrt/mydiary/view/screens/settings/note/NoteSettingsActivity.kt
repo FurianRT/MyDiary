@@ -20,7 +20,7 @@ import com.google.android.gms.ads.AdListener
 import com.google.android.gms.ads.AdRequest
 import kotlinx.android.synthetic.main.activity_note_settings.*
 
-class NoteSettingsActivity : BaseActivity() {
+class NoteSettingsActivity : BaseActivity(R.layout.activity_note_settings) {
 
     companion object {
         const val EXTRA_NOTE_ID = "noteId"
@@ -28,8 +28,6 @@ class NoteSettingsActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_note_settings)
-
         val noteId = intent.getStringExtra(EXTRA_NOTE_ID) ?: throw IllegalArgumentException()
         addSettingsFragment(noteId)
 

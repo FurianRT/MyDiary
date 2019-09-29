@@ -32,12 +32,11 @@ import dagger.Provides
 import org.joda.time.DateTime
 
 @Module
-class DatabaseModule {
+object DatabaseModule {
 
-    companion object {
-        private const val DATABASE_NAME = "Notes.db"
-    }
+    private const val DATABASE_NAME = "Notes.db"
 
+    @JvmStatic
     @Provides
     @AppScope
     fun provideRoomCallback(@AppContext context: Context, storage: StorageHelper) =
@@ -49,6 +48,7 @@ class DatabaseModule {
                 }
             }
 
+    @JvmStatic
     @Provides
     @AppScope
     fun provideNoteDatabase(
@@ -80,60 +80,92 @@ class DatabaseModule {
             }
         }
 
+        val MIGRATION_2_3 = object : Migration(2, 3) {
+            override fun migrate(database: SupportSQLiteDatabase) {
+                database.execSQL("CREATE TABLE TextSpans (" +
+                        "id_span TEXT NOT NULL, " +
+                        "id_note TEXT NOT NULL, " +
+                        "type INTEGER NOT NULL, " +
+                        "start_index INTEGER NOT NULL, " +
+                        "end_index INTEGER NOT NULL, " +
+                        "color INTEGER, " +
+                        "size REAL, " +
+                        "span_sync_with TEXT NOT NULL, " +
+                        "is_span_deleted INTEGER NOT NULL, " +
+                        "PRIMARY KEY (id_span, id_note))")
+            }
+        }
+
         return Room.databaseBuilder(context, NoteDatabase::class.java, DATABASE_NAME)
-                .addMigrations(MIGRATION_1_2)
+                .addMigrations(MIGRATION_1_2, MIGRATION_2_3)
                 .addCallback(callback)
                 .build()
-
     }
 
+    @JvmStatic
     @Provides
     @AppScope
     fun provideMoodDao(database: NoteDatabase): MoodDao = database.moodDao()
 
+    @JvmStatic
     @Provides
     @AppScope
     fun provideAppearanceDao(database: NoteDatabase): AppearanceDao = database.appearanceDao()
 
+    @JvmStatic
     @Provides
     @AppScope
     fun provideCategoryDao(database: NoteDatabase): CategoryDao = database.categoryDao()
 
+    @JvmStatic
     @Provides
     @AppScope
     fun provideForecastDao(database: NoteDatabase): ForecastDao = database.forecastDao()
 
+    @JvmStatic
     @Provides
     @AppScope
     fun provideHeaderImageDao(database: NoteDatabase): HeaderImageDao = database.headerImageDao()
 
+    @JvmStatic
     @Provides
     @AppScope
     fun provideImageDao(database: NoteDatabase): ImageDao = database.imageDao()
 
+    @JvmStatic
     @Provides
     @AppScope
     fun provideLocationDao(database: NoteDatabase): LocationDao = database.locationDao()
 
+    @JvmStatic
     @Provides
     @AppScope
     fun provideNoteDao(database: NoteDatabase): NoteDao = database.noteDao()
 
+    @JvmStatic
     @Provides
     @AppScope
     fun provideNoteLocationDao(database: NoteDatabase): NoteLocationDao = database.noteLocationDao()
 
+    @JvmStatic
     @Provides
     @AppScope
     fun provideNoteTagDao(database: NoteDatabase): NoteTagDao = database.noteTagDao()
 
+    @JvmStatic
     @Provides
     @AppScope
     fun provideProfileDao(database: NoteDatabase): ProfileDao = database.profileDao()
 
+    @JvmStatic
     @Provides
     @AppScope
     fun provideTagDao(database: NoteDatabase): TagDao = database.tagDao()
+
+    @JvmStatic
+    @Provides
+    @AppScope
+    fun provideSpanDao(database: NoteDatabase): SpanDao = database.spanDao()
 
     private fun createDefaultProperties(db: SupportSQLiteDatabase, context: Context) {
         with(ContentValues()) {
@@ -146,14 +178,14 @@ class DatabaseModule {
                     context.resources.getResourceEntryName(R.drawable.ic_mood_good),
                     context.resources.getResourceEntryName(R.drawable.ic_mood_great)
             )
-            for (i in 0 until moodNames.size) {
+            for (i in moodNames.indices) {
                 put(MyMood.FIELD_NAME, moodNames[i])
                 put(MyMood.FIELD_ICON, moodIcons[i])
                 db.insert(MyMood.TABLE_NAME, SQLiteDatabase.CONFLICT_IGNORE, this)
             }
             clear()
             val tagNames = context.resources.getStringArray(R.array.tags)
-            for (i in 0 until tagNames.size) {
+            for (i in tagNames.indices) {
                 put(MyTag.FIELD_ID, "default_tag_$i")
                 put(MyTag.FIELD_NAME, tagNames[i])
                 put(MyTag.FIELD_SYNC_WITH, Gson().toJson(listOf(MyTag.DEFAULT_SYNC_EMAIL)))
@@ -163,7 +195,7 @@ class DatabaseModule {
             clear()
             val categoryNames = context.resources.getStringArray(R.array.categories)
             val categoryColors = context.resources.getStringArray(R.array.default_category_colors)
-            for (i in 0 until categoryNames.size) {
+            for (i in categoryNames.indices) {
                 put(MyCategory.FIELD_ID, "default_category_$i")
                 put(MyCategory.FIELD_NAME, categoryNames[i])
                 put(MyCategory.FIELD_COLOR, Color.parseColor(categoryColors[i]))

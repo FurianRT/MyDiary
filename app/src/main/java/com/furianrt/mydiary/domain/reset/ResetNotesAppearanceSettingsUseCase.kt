@@ -8,7 +8,7 @@
  *
  ******************************************************************************/
 
-package com.furianrt.mydiary.domain
+package com.furianrt.mydiary.domain.reset
 
 import com.furianrt.mydiary.data.repository.appearance.AppearanceRepository
 import io.reactivex.Completable

@@ -20,6 +20,7 @@ import com.furianrt.mydiary.domain.get.*
 import com.furianrt.mydiary.domain.save.AddForecastUseCase
 import com.furianrt.mydiary.domain.save.SaveImagesUseCase
 import com.furianrt.mydiary.domain.save.SaveLocationUseCase
+import com.furianrt.mydiary.domain.update.UpdateNoteSpansUseCase
 import com.furianrt.mydiary.domain.update.UpdateNoteUseCase
 import io.reactivex.android.schedulers.AndroidSchedulers
 import org.joda.time.DateTime
@@ -30,6 +31,7 @@ class NoteFragmentPresenter @Inject constructor(
         private val getImages: GetImagesUseCase,
         private val getTagsWithAppearance: GetTagsWithAppearanceUseCase,
         private val getNotes: GetNotesUseCase,
+        private val getNotesWithSpans: GetNotesWithSpansUseCase,
         private val getTimeFormat: GetTimeFormatUseCase,
         private val getAppearance: GetAppearanceUseCase,
         private val getWeatherUnits: GetWeatherUnitsUseCase,
@@ -45,7 +47,8 @@ class NoteFragmentPresenter @Inject constructor(
         private val addForecast: AddForecastUseCase,
         private val isLocationEnabled: IsLocationEnabledUseCase,
         private val isForecastEnabled: IsForecastEnabledUseCase,
-        private val findLocation: FindLocationUseCase
+        private val findLocation: FindLocationUseCase,
+        private val updateNoteSpans: UpdateNoteSpansUseCase
 ) : NoteFragmentContract.Presenter() {
 
     companion object {
@@ -65,9 +68,7 @@ class NoteFragmentPresenter @Inject constructor(
 
     override fun attachView(view: NoteFragmentContract.MvpView) {
         super.attachView(view)
-        if (!::mNoteId.isInitialized) {
-            throw IllegalStateException("Need to call init before attaching view")
-        }
+        check(::mNoteId.isInitialized) { "Need to call init before attaching view" }
         loadNote()
         loadNoteAppearance()
         loadTags()
@@ -113,19 +114,19 @@ class NoteFragmentPresenter @Inject constructor(
     }
 
     private fun loadNote() {
-        addDisposable(getNotes.invoke(mNoteId)
+        addDisposable(getNotesWithSpans.invoke(mNoteId)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { note ->
                     if (note.isPresent) {
                         if (mNoteTextBuffer.isEmpty()) {
-                            mNoteTextBuffer.add(UndoRedoEntry(note.get().title, note.get().content, true))
+                            mNoteTextBuffer.add(UndoRedoEntry(note.get().note.title, note.get().note.content, note.get().textSpans, true))
                         }
-                        view?.showNoteText(note.get().title, note.get().content)
+                        view?.showNoteText(note.get().note.title, note.get().note.content, note.get().textSpans)
                         view?.showDateAndTime(
-                                note.get().time,
+                                note.get().note.time,
                                 getTimeFormat.invoke() == GetTimeFormatUseCase.TIME_FORMAT_24
                         )
-                        showNoteMood(note.get().moodId)
+                        showNoteMood(note.get().note.moodId)
                     }
                 })
     }
@@ -259,11 +260,6 @@ class NoteFragmentPresenter @Inject constructor(
         view?.showNoteSettingsView(mNoteId)
     }
 
-    override fun updateNoteText(noteTitle: String, noteContent: String) {
-        addDisposable(updateNote.invoke(mNoteId, noteTitle, noteContent)
-                .subscribe())
-    }
-
     override fun onDateFieldClick() {
         addDisposable(getNotes.invoke(mNoteId)
                 .map { it.get() }
@@ -335,25 +331,6 @@ class NoteFragmentPresenter @Inject constructor(
         mNoteTextBuffer = buffer
     }
 
-    override fun onNoteTextChange(title: String, content: String) {
-        val selectedIndex = mNoteTextBuffer.indexOfFirst { it.current }
-        val selectedEntry = mNoteTextBuffer[selectedIndex]
-
-        if (selectedEntry.title == title && selectedEntry.content == content) {
-            return
-        }
-
-        mNoteTextBuffer = ArrayList(mNoteTextBuffer.subList(0, selectedIndex + 1))
-
-        mNoteTextBuffer[selectedIndex].current = false
-        if (mNoteTextBuffer.size == UNDO_REDO_BUFFER_SIZE) {
-            mNoteTextBuffer.removeAt(0)
-        }
-        mNoteTextBuffer.add(UndoRedoEntry(title, content, true))
-
-        view?.enableRedoButton(false)
-        view?.enableUndoButton(true)
-    }
 
     override fun onButtonUndoClick() {
         val selectedIndex = mNoteTextBuffer.indexOfFirst { it.current }
@@ -363,7 +340,7 @@ class NoteFragmentPresenter @Inject constructor(
             nextSelectedEntry.current = true
             view?.enableUndoButton(selectedIndex - 1 != 0)
             view?.enableRedoButton(true)
-            view?.showNoteText(nextSelectedEntry.title, nextSelectedEntry.content)
+            view?.showNoteText(nextSelectedEntry.title, nextSelectedEntry.content, nextSelectedEntry.textSpans)
         } else {
             Log.e(TAG, "Undo button should be disabled")
             view?.sendUndoErrorEvent()
@@ -378,7 +355,7 @@ class NoteFragmentPresenter @Inject constructor(
             nextSelectedEntry.current = true
             view?.enableRedoButton(selectedIndex + 1 != mNoteTextBuffer.size - 1)
             view?.enableUndoButton(true)
-            view?.showNoteText(nextSelectedEntry.title, nextSelectedEntry.content)
+            view?.showNoteText(nextSelectedEntry.title, nextSelectedEntry.content, nextSelectedEntry.textSpans)
         } else {
             Log.e(TAG, "Redo button should be disabled")
             view?.sendRedoErrorEvent()
@@ -391,11 +368,31 @@ class NoteFragmentPresenter @Inject constructor(
         view?.enableRedoButton(selectedIndex < mNoteTextBuffer.size - 1)
     }
 
+    override fun onNoteTextChange(title: String, content: String, textSpans: List<MyTextSpan>) {
+        val selectedIndex = mNoteTextBuffer.indexOfFirst { it.current }
+        val selectedEntry = mNoteTextBuffer[selectedIndex]
+
+        if (selectedEntry.title == title && selectedEntry.content == content && selectedEntry.textSpans == textSpans) {
+            return
+        }
+
+        mNoteTextBuffer = ArrayList(mNoteTextBuffer.subList(0, selectedIndex + 1))
+
+        mNoteTextBuffer[selectedIndex].current = false
+        if (mNoteTextBuffer.size == UNDO_REDO_BUFFER_SIZE) {
+            mNoteTextBuffer.removeAt(0)
+        }
+        mNoteTextBuffer.add(UndoRedoEntry(title, content, textSpans, true))
+
+        view?.enableRedoButton(false)
+        view?.enableUndoButton(true)
+    }
+
     override fun onButtonMicClick() {
         view?.recordSpeech()
     }
 
-    override fun onSpeechRecorded(curTitle: String, curContent: String, recordedText: String) {
+    override fun onSpeechRecorded(curTitle: String, curContent: String, textSpans: List<MyTextSpan>, recordedText: String) {
         val content = when {
             curContent.isBlank() ->
                 recordedText.capitalize()
@@ -405,7 +402,7 @@ class NoteFragmentPresenter @Inject constructor(
                 "$curContent $recordedText"
         }
         addDisposable(updateNote.invoke(mNoteId, curTitle, content)
-                .subscribe { onNoteTextChange(curTitle, content) })
+                .subscribe { onNoteTextChange(curTitle, content, textSpans) })
     }
 
     override fun onButtonShareClick() {
@@ -417,5 +414,14 @@ class NoteFragmentPresenter @Inject constructor(
                         view?.shareNote(note.get())
                     }
                 })
+    }
+
+    override fun onEditModeDisabled(noteTitle: String, noteContent: String, textSpans: List<MyTextSpan>) {
+        view?.hideRichTextOptions()
+
+        addDisposable(updateNote.invoke(mNoteId, noteTitle, noteContent)
+                .subscribe())
+
+        updateNoteSpans.invoke(mNoteId, textSpans)
     }
 }

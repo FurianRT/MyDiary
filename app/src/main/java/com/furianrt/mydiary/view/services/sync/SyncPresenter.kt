@@ -30,6 +30,7 @@ class SyncPresenter @Inject constructor(
         private val syncForecast: SyncForecastUseCase,
         private val syncImages: SyncImagesUseCase,
         private val syncCleanup: SyncCleanupUseCase,
+        private val syncNoteSpans: SyncNoteSpansUseCase,
         private val setLastSyncMessage: SetLastSyncMessageUseCase
 ) : SyncContract.Presenter() {
 
@@ -41,6 +42,7 @@ class SyncPresenter @Inject constructor(
         private const val PROGRESS_FORECAST = 40
         private const val PROGRESS_IMAGES = 65
         private const val PROGRESS_APPEARANCE = 75
+        private const val PROGRESS_SPANS = 80
         private const val PROGRESS_NOTES = 90
         private const val PROGRESS_CLEANUP = 100
         private const val PROGRESS_FINISHED = 100
@@ -59,6 +61,7 @@ class SyncPresenter @Inject constructor(
                             syncForecast.invoke(email).toSingleDefault(SyncProgressMessage.SYNC_FORECAST),
                             syncImages.invoke(email).toSingleDefault(SyncProgressMessage.SYNC_IMAGES),
                             syncAppearance.invoke(email).toSingleDefault(SyncProgressMessage.SYNC_APPEARANCE),
+                            syncNoteSpans.invoke(email).toSingleDefault(SyncProgressMessage.SYNC_SPANS),
                             syncNotes.invoke(email).toSingleDefault(SyncProgressMessage.SYNC_NOTES),
                             syncCleanup.invoke().toSingleDefault(SyncProgressMessage.CLEANUP)
                     ))
@@ -79,6 +82,7 @@ class SyncPresenter @Inject constructor(
                         SyncProgressMessage.SYNC_LOCATION -> PROGRESS_LOCATION
                         SyncProgressMessage.SYNC_FORECAST -> PROGRESS_FORECAST
                         SyncProgressMessage.SYNC_IMAGES -> PROGRESS_IMAGES
+                        SyncProgressMessage.SYNC_SPANS -> PROGRESS_SPANS
                         SyncProgressMessage.CLEANUP -> PROGRESS_CLEANUP
                         else -> throw IllegalStateException()
                     }
@@ -104,6 +108,8 @@ class SyncPresenter @Inject constructor(
                             SyncProgressMessage(taskIndex = SyncProgressMessage.SYNC_FORECAST, hasError = true)
                         is SyncImagesUseCase.SyncImagesException ->
                             SyncProgressMessage(taskIndex = SyncProgressMessage.SYNC_IMAGES, hasError = true)
+                        is SyncNoteSpansUseCase.SyncSpanException ->
+                            SyncProgressMessage(taskIndex = SyncProgressMessage.SYNC_SPANS, hasError = true)
                         is SyncCleanupUseCase.SyncCleanupException ->
                             SyncProgressMessage(taskIndex = SyncProgressMessage.CLEANUP, hasError = true)
                         else -> SyncProgressMessage(taskIndex = SyncProgressMessage.UNKNOWN, hasError = true)

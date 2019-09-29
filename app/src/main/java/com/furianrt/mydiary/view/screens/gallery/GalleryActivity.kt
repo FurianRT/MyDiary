@@ -26,7 +26,7 @@ import com.google.android.gms.ads.AdRequest
 import kotlinx.android.synthetic.main.activity_gallery.*
 import javax.inject.Inject
 
-class GalleryActivity : BaseActivity(), GalleryActivityContract.MvpView {
+class GalleryActivity : BaseActivity(R.layout.activity_gallery), GalleryActivityContract.MvpView {
 
     companion object {
         private const val EXTRA_POSITION = "position"
@@ -43,10 +43,8 @@ class GalleryActivity : BaseActivity(), GalleryActivityContract.MvpView {
     lateinit var mPresenter: GalleryActivityContract.Presenter
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
         getPresenterComponent(this).inject(this)
-        setContentView(R.layout.activity_gallery)
-
+        super.onCreate(savedInstanceState)
         setSupportActionBar(toolbar_gallery)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setDisplayShowHomeEnabled(true)

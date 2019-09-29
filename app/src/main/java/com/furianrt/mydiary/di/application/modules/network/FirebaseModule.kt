@@ -22,12 +22,14 @@ import dagger.Module
 import dagger.Provides
 
 @Module
-class FirebaseModule {
+object FirebaseModule {
 
+    @JvmStatic
     @Provides
     @AppScope
     fun provideFirebaseAuth(): FirebaseAuth = FirebaseAuth.getInstance()
 
+    @JvmStatic
     @Provides
     @AppScope
     fun provideFirestore(): FirebaseFirestore = FirebaseFirestore.getInstance()
@@ -37,10 +39,12 @@ class FirebaseModule {
                         .build()
             }
 
+    @JvmStatic
     @Provides
     @AppScope
     fun provideFirebaseStorage(): FirebaseStorage = FirebaseStorage.getInstance()
 
+    @JvmStatic
     @Provides
     @AppScope
     fun provideFirebaseAnalytics(@AppContext context: Context): FirebaseAnalytics =

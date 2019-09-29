@@ -21,8 +21,6 @@
     <string name="email">Email</string>
     <string name="send">Отправить</string>
     <string name="done">Готово</string>
-    <string name="undo">Отменить</string>
-    <string name="redo">Повторить</string>
     <string name="add">Добавить</string>
     <string name="network_error">Нет интернет соединения</string>
     <string name="change_password">Сменить пароль</string>
@@ -294,4 +292,5 @@
     <string name="fragment_note_settings_reset_settings_title">Сбросить настройки</string>
     <string name="fragment_note_settings_danger_zone">Опасная зона</string>
     <string name="fragment_note_settings_reset_settings_confirm">Сбросить настройки?</string>
+    <string name="fragment_note_google_serviсies_error">Google services не установлены</string>
 </resources>

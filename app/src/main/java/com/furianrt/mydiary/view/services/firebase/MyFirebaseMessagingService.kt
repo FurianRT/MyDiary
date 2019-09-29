@@ -30,9 +30,9 @@ class MyFirebaseMessagingService : FirebaseMessagingService(), BaseView {
         private const val NOTIFICATION_ID = 23
     }
 
-    override fun onMessageReceived(remoteMessage: RemoteMessage?) {
+    override fun onMessageReceived(remoteMessage: RemoteMessage) {
         super.onMessageReceived(remoteMessage)
-        remoteMessage?.notification?.let { showNotification(it) }
+        remoteMessage.notification?.let { showNotification(it) }
     }
 
     private fun showNotification(notification: RemoteMessage.Notification) {
@@ -57,8 +57,8 @@ class MyFirebaseMessagingService : FirebaseMessagingService(), BaseView {
                 addCategory(Intent.CATEGORY_LAUNCHER)
             }
 
-    override fun onNewToken(p0: String?) {
-        super.onNewToken(p0)
-        Log.e(TAG, "Token: $p0")
+    override fun onNewToken(token: String) {
+        super.onNewToken(token)
+        Log.e(TAG, "Token: $token")
     }
 }

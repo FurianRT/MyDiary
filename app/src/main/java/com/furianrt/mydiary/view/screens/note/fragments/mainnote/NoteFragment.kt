@@ -13,12 +13,18 @@ package com.furianrt.mydiary.view.screens.note.fragments.mainnote
 import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.content.ActivityNotFoundException
+import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.graphics.PorterDuff
+import android.graphics.Typeface
 import android.net.Uri
 import android.os.Bundle
 import android.speech.RecognizerIntent
+import android.text.ParcelableSpan
+import android.text.Spannable
+import android.text.style.*
 import android.util.Log
 import android.view.*
 import android.widget.*
@@ -50,6 +56,8 @@ import kotlinx.android.synthetic.main.fragment_note.*
 import kotlinx.android.synthetic.main.fragment_note.view.*
 import kotlinx.android.synthetic.main.fragment_note_toolbar.*
 import kotlinx.android.synthetic.main.fragment_note_toolbar.view.*
+import kotlinx.android.synthetic.main.rich_text_menu.*
+import kotlinx.android.synthetic.main.rich_text_menu.view.*
 import pub.devrel.easypermissions.AfterPermissionGranted
 import pub.devrel.easypermissions.EasyPermissions
 import java.util.Locale
@@ -87,6 +95,7 @@ class NoteFragment : BaseFragment(), NoteFragmentContract.MvpView, DatePickerDia
     @Inject
     lateinit var mPresenter: NoteFragmentContract.Presenter
 
+    private var mListener: OnNoteFragmentInteractionListener? = null
     private val mImagePagerAdapter = NoteImagePagerAdapter(listener = this)
     private var mIsNewNote = true
     private var mImagePagerPosition = 0
@@ -150,11 +159,70 @@ class NoteFragment : BaseFragment(), NoteFragmentContract.MvpView, DatePickerDia
             analytics.sendEvent(MyAnalytics.EVENT_NOTE_IMAGE_PAGER_OPENED)
             mPresenter.onButtonAddImageClick()
         }
+        view.button_text_bold.setOnClickListener {
+            childFragmentManager.findFragmentByTag(NoteEditFragment.TAG)?.let {
+                (it as NoteEditFragment).onButtonTextBoldClick()
+            }
+        }
+        view.button_text_italic.setOnClickListener {
+            childFragmentManager.findFragmentByTag(NoteEditFragment.TAG)?.let {
+                (it as NoteEditFragment).onButtonTextItalicClick()
+            }
+        }
+        view.button_text_strikethrough.setOnClickListener {
+            childFragmentManager.findFragmentByTag(NoteEditFragment.TAG)?.let {
+                (it as NoteEditFragment).onButtonTextStrikethroughClick()
+            }
+        }
+        view.button_text_large.setOnClickListener {
+            childFragmentManager.findFragmentByTag(NoteEditFragment.TAG)?.let {
+                (it as NoteEditFragment).onButtonTextLargeClick()
+            }
+        }
+        view.button_text_color.setOnClickListener {
+            childFragmentManager.findFragmentByTag(NoteEditFragment.TAG)?.let {
+                (it as NoteEditFragment).onButtonTextColorClick(null)
+            }
+        }
+        view.button_text_fill_color.setOnClickListener {
+            childFragmentManager.findFragmentByTag(NoteEditFragment.TAG)?.let {
+                (it as NoteEditFragment).onButtonTextFillColorClick(null)
+            }
+        }
+        view.button_redo.setOnClickListener {
+            analytics.sendEvent(MyAnalytics.EVENT_NOTE_REDO)
+            mPresenter.onButtonRedoClick()
+        }
+        view.button_undo.setOnClickListener {
+            analytics.sendEvent(MyAnalytics.EVENT_NOTE_UNDO)
+            mPresenter.onButtonUndoClick()
+        }
         view.layout_loading.setOnTouchListener { _, _ -> true }
+
+        view.button_undo.enableCustom(false)
+        view.button_redo.enableCustom(false)
 
         if (childFragmentManager.findFragmentByTag(NoteContentFragment.TAG) == null) {
             childFragmentManager.inTransaction {
                 add(R.id.container_note_edit, NoteContentFragment.newInstance(mIsNewNote), NoteContentFragment.TAG)
+            }
+        }
+
+        view.spinner_text_color.adapter = ColorSpinnerAdapter(requireContext(), R.array.spinner_colors)
+        view.spinner_text_color.dropDownVerticalOffset = -dpToPx(8f)
+        view.spinner_text_color.onItemSelectListener = { spinner, position ->
+            childFragmentManager.findFragmentByTag(NoteEditFragment.TAG)?.let {
+                val color = spinner.getItemAtPosition(position)
+                (it as NoteEditFragment).onButtonTextColorClick(color as String)
+            }
+        }
+
+        view.spinner_text_fill_color.adapter = ColorSpinnerAdapter(requireContext(), R.array.spinner_colors)
+        view.spinner_text_fill_color.dropDownVerticalOffset = -dpToPx(8f)
+        view.spinner_text_fill_color.onItemSelectListener = { spinner, position ->
+            childFragmentManager.findFragmentByTag(NoteEditFragment.TAG)?.let {
+                val color = spinner.getItemAtPosition(position)
+                (it as NoteEditFragment).onButtonTextFillColorClick(color as String)
             }
         }
 
@@ -174,11 +242,11 @@ class NoteFragment : BaseFragment(), NoteFragmentContract.MvpView, DatePickerDia
         mPresenter.detachView()
     }
 
-    override fun showNoteText(title: String, content: String) {
+    override fun showNoteText(title: String, content: String, textSpans: List<MyTextSpan>) {
         (childFragmentManager.findFragmentByTag(NoteContentFragment.TAG) as? NoteContentFragment?)
-                ?.showNoteText(title, content)
+                ?.showNoteText(title, content.applyTextSpans(textSpans))
         (childFragmentManager.findFragmentByTag(NoteEditFragment.TAG) as? NoteEditFragment?)
-                ?.showNoteText(title, content)
+                ?.showNoteText(title, content.applyTextSpans(textSpans))
     }
 
     @SuppressLint("SetTextI18n")
@@ -187,61 +255,50 @@ class NoteFragment : BaseFragment(), NoteFragmentContract.MvpView, DatePickerDia
         text_time.text = getTime(time, is24TimeFormat) + " "
     }
 
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return when (item.itemId) {
-            R.id.menu_image -> {
-                removeEditFragment()
-                mPresenter.onButtonAddImageClick()
-                true
+    override fun onOptionsItemSelected(item: MenuItem): Boolean =
+            when (item.itemId) {
+                R.id.menu_image -> {
+                    removeEditFragment()
+                    mPresenter.onButtonAddImageClick()
+                    true
+                }
+                R.id.menu_delete -> {
+                    mPresenter.onButtonDeleteClick()
+                    true
+                }
+                R.id.menu_appearance -> {
+                    removeEditFragment()
+                    analytics.sendEvent(MyAnalytics.EVENT_NOTE_SETTINGS)
+                    mPresenter.onButtonAppearanceClick()
+                    true
+                }
+                R.id.menu_date -> {
+                    removeEditFragment()
+                    mPresenter.onDateFieldClick()
+                    true
+                }
+                R.id.menu_time -> {
+                    removeEditFragment()
+                    mPresenter.onTimeFieldClick()
+                    true
+                }
+                R.id.menu_edit -> {
+                    mPresenter.onButtonEditClick()
+                    true
+                }
+                R.id.menu_mic -> {
+                    analytics.sendEvent(MyAnalytics.EVENT_SPEECH_TO_TEXT)
+                    mPresenter.onButtonMicClick()
+                    true
+                }
+                R.id.menu_share -> {
+                    removeEditFragment()
+                    analytics.sendEvent(MyAnalytics.EVENT_SHARE_NOTE)
+                    mPresenter.onButtonShareClick()
+                    true
+                }
+                else -> super.onOptionsItemSelected(item)
             }
-            R.id.menu_delete -> {
-                mPresenter.onButtonDeleteClick()
-                true
-            }
-            R.id.menu_appearance -> {
-                removeEditFragment()
-                analytics.sendEvent(MyAnalytics.EVENT_NOTE_SETTINGS)
-                mPresenter.onButtonAppearanceClick()
-                true
-            }
-            R.id.menu_date -> {
-                removeEditFragment()
-                mPresenter.onDateFieldClick()
-                true
-            }
-            R.id.menu_time -> {
-                removeEditFragment()
-                mPresenter.onTimeFieldClick()
-                true
-            }
-            R.id.menu_edit -> {
-                mPresenter.onButtonEditClick()
-                true
-            }
-            R.id.menu_undo -> {
-                analytics.sendEvent(MyAnalytics.EVENT_NOTE_UNDO)
-                mPresenter.onButtonUndoClick()
-                true
-            }
-            R.id.menu_redo -> {
-                analytics.sendEvent(MyAnalytics.EVENT_NOTE_REDO)
-                mPresenter.onButtonRedoClick()
-                true
-            }
-            R.id.menu_mic -> {
-                analytics.sendEvent(MyAnalytics.EVENT_SPEECH_TO_TEXT)
-                mPresenter.onButtonMicClick()
-                true
-            }
-            R.id.menu_share -> {
-                removeEditFragment()
-                analytics.sendEvent(MyAnalytics.EVENT_SHARE_NOTE)
-                mPresenter.onButtonShareClick()
-                true
-            }
-            else -> super.onOptionsItemSelected(item)
-        }
-    }
 
     override fun recordSpeech() {
         if (requireActivity().isGoogleServicesAvailable(PLAY_SERVICES_REQUEST_CODE)) {
@@ -249,7 +306,11 @@ class NoteFragment : BaseFragment(), NoteFragmentContract.MvpView, DatePickerDia
             intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM)
             intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.getDefault())
             intent.putExtra(RecognizerIntent.EXTRA_PROMPT, getString(R.string.speech_to_text_title))
-            startActivityForResult(intent, SPEECH_TO_TEXT_REQUEST_CODE)
+            try {
+                startActivityForResult(intent, SPEECH_TO_TEXT_REQUEST_CODE)
+            } catch (e: ActivityNotFoundException) {
+                Toast.makeText(requireContext(), getString(R.string.fragment_note_google_serviсies_error), Toast.LENGTH_SHORT).show()
+            }
         }
     }
 
@@ -272,14 +333,16 @@ class NoteFragment : BaseFragment(), NoteFragmentContract.MvpView, DatePickerDia
         if (editFragment != null) {
             mPresenter.onSpeechRecorded(
                     editFragment.getNoteTitleText(),
-                    editFragment.getNoteContentText(),
+                    editFragment.getNoteContentText().toString(),
+                    editFragment.getNoteContentText().getTextSpans(),
                     text
             )
         } else {
             childFragmentManager.findFragmentByTag(NoteContentFragment.TAG)?.let {
                 mPresenter.onSpeechRecorded(
                         (it as NoteContentFragment).getNoteTitleText(),
-                        it.getNoteContentText(),
+                        it.getNoteContentText().toString(),
+                        it.getNoteContentText().getTextSpans(),
                         text
                 )
             }
@@ -314,13 +377,6 @@ class NoteFragment : BaseFragment(), NoteFragmentContract.MvpView, DatePickerDia
         mPresenter.onToolbarImageClick(image)
     }
 
-    fun onNoteEditFinished(noteTitle: String, noteContent: String) {
-        val noteContentFragment =
-                childFragmentManager.findFragmentByTag(NoteContentFragment.TAG) as? NoteContentFragment
-        noteContentFragment?.showNoteText(noteTitle, noteContent)
-        mPresenter.updateNoteText(noteTitle, noteContent)
-    }
-
     override fun showGalleryView(noteId: String, image: MyImage) {
         startActivity(GalleryActivity.newIntent(requireContext(), noteId, pager_note_image.currentItem))
     }
@@ -351,7 +407,8 @@ class NoteFragment : BaseFragment(), NoteFragmentContract.MvpView, DatePickerDia
 
         val image = layout_tags.getChildAt(0) as ImageView
         image.setColorFilter(
-                tagsAndAppearance.appearance.surfaceTextColor ?: getColor(requireContext(), R.color.black),
+                tagsAndAppearance.appearance.surfaceTextColor
+                        ?: getColor(requireContext(), R.color.black),
                 PorterDuff.Mode.SRC_IN
         )
         image.alpha = 0.4f
@@ -559,11 +616,11 @@ class NoteFragment : BaseFragment(), NoteFragmentContract.MvpView, DatePickerDia
     }
 
     override fun showLoading() {
-        layout_loading.visibility = View.VISIBLE
+        layout_loading?.visibility = View.VISIBLE
     }
 
     override fun hideLoading() {
-        layout_loading.visibility = View.GONE
+        layout_loading?.visibility = View.GONE
     }
 
     override fun showImages(images: List<MyImage>) {
@@ -592,8 +649,8 @@ class NoteFragment : BaseFragment(), NoteFragmentContract.MvpView, DatePickerDia
         Toast.makeText(requireContext(), R.string.fragment_gallery_list_image_save_error, Toast.LENGTH_SHORT).show()
     }
 
-    fun onNoteTextChange(title: String, content: String) {
-        mPresenter.onNoteTextChange(title, content)
+    fun onNoteTextChange(title: String, content: Spannable) {
+        mPresenter.onNoteTextChange(title, content.toString(), content.getTextSpans())
         childFragmentManager.findFragmentByTag(NoteContentFragment.TAG)?.let {
             (it as NoteContentFragment).updateNoteText(title, content)
         }
@@ -632,13 +689,11 @@ class NoteFragment : BaseFragment(), NoteFragmentContract.MvpView, DatePickerDia
     }
 
     override fun enableRedoButton(enable: Boolean) {
-        (childFragmentManager.findFragmentByTag(NoteEditFragment.TAG) as? NoteEditFragment?)
-                ?.enableRedoButton(enable)
+        button_redo.enableCustom(enable)
     }
 
     override fun enableUndoButton(enable: Boolean) {
-        (childFragmentManager.findFragmentByTag(NoteEditFragment.TAG) as? NoteEditFragment?)
-                ?.enableUndoButton(enable)
+        button_undo.enableCustom(enable)
     }
 
     override fun sendUndoErrorEvent() {
@@ -650,7 +705,40 @@ class NoteFragment : BaseFragment(), NoteFragmentContract.MvpView, DatePickerDia
     }
 
     fun onNoteFragmentEditModeEnabled() {
+        mListener?.onNoteFragmentEditModeEnabled()
         mPresenter.onEditModeEnabled()
+    }
+
+    fun onNoteFragmentEditModeDisabled(noteTitle: String, noteContent: Spannable) {
+        enableActionBarExpanding(expanded = false, animate = false)
+        val noteContentFragment =
+                childFragmentManager.findFragmentByTag(NoteContentFragment.TAG) as? NoteContentFragment
+        noteContentFragment?.showNoteText(noteTitle, noteContent)
+        mListener?.onNoteFragmentEditModeDisabled()
+        mPresenter.onEditModeDisabled(noteTitle, noteContent.toString(), noteContent.getTextSpans())
+    }
+
+    override fun showRichTextOptions() {
+        layout_rich_text.visibility = View.VISIBLE
+    }
+
+    override fun hideRichTextOptions() {
+        layout_rich_text.visibility = View.GONE
+    }
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        if (context is OnNoteFragmentInteractionListener) {
+            mListener = context
+        } else {
+            throw RuntimeException(context.toString()
+                    + " must implement OnNoteFragmentInteractionListener")
+        }
+    }
+
+    override fun onDetach() {
+        super.onDetach()
+        mListener = null
     }
 
     override fun shareNote(note: MyNoteWithProp) {
@@ -679,5 +767,66 @@ class NoteFragment : BaseFragment(), NoteFragmentContract.MvpView, DatePickerDia
         intent.putExtra(Intent.EXTRA_SUBJECT, note.note.title)
         intent.putExtra(Intent.EXTRA_TEXT, note.note.content)
         startActivity(Intent.createChooser(intent, getString(R.string.share)))
+    }
+
+    fun onSpansChange(spans: Array<ParcelableSpan>) {
+        if (spans.find { it is StyleSpan && it.style == Typeface.BOLD } != null) {
+            button_text_bold.setBackgroundResource(R.drawable.background_corner_grey_stroke)
+            button_text_bold.setColorFilter(requireContext().getThemeAccentColor())
+        } else {
+            button_text_bold.background = null
+            button_text_bold.clearColorFilter()
+        }
+
+        if (spans.find { it is StyleSpan && it.style == Typeface.ITALIC } != null) {
+            button_text_italic.setBackgroundResource(R.drawable.background_corner_grey_stroke)
+            button_text_italic.setColorFilter(requireContext().getThemeAccentColor())
+        } else {
+            button_text_italic.background = null
+            button_text_italic.clearColorFilter()
+        }
+
+        if (spans.find { it is StrikethroughSpan } != null) {
+            button_text_strikethrough.setBackgroundResource(R.drawable.background_corner_grey_stroke)
+            button_text_strikethrough.setColorFilter(requireContext().getThemeAccentColor())
+        } else {
+            button_text_strikethrough.background = null
+            button_text_strikethrough.clearColorFilter()
+        }
+
+        if (spans.find { it is RelativeSizeSpan } != null) {
+            button_text_large.setBackgroundResource(R.drawable.background_corner_grey_stroke)
+            button_text_large.setColorFilter(requireContext().getThemeAccentColor())
+        } else {
+            button_text_large.background = null
+            button_text_large.clearColorFilter()
+        }
+
+        val textColorSpan = spans.find { it is ForegroundColorSpan } as ForegroundColorSpan?
+        if (textColorSpan != null) {
+            button_text_color.setBackgroundResource(R.drawable.background_corner_grey_stroke)
+            button_text_color.setColorFilter(textColorSpan.foregroundColor)
+            spinner_text_color.visibility = View.GONE
+        } else {
+            button_text_color.background = null
+            button_text_color.clearColorFilter()
+            spinner_text_color.visibility = View.VISIBLE
+        }
+
+        val textFillColorSpan = spans.find { it is BackgroundColorSpan } as BackgroundColorSpan?
+        if (textFillColorSpan != null) {
+            button_text_fill_color.setBackgroundResource(R.drawable.background_corner_grey_stroke)
+            button_text_fill_color.setColorFilter(textFillColorSpan.backgroundColor)
+            spinner_text_fill_color.visibility = View.GONE
+        } else {
+            button_text_fill_color.background = null
+            button_text_fill_color.clearColorFilter()
+            spinner_text_fill_color.visibility = View.VISIBLE
+        }
+    }
+
+    interface OnNoteFragmentInteractionListener {
+        fun onNoteFragmentEditModeEnabled()
+        fun onNoteFragmentEditModeDisabled()
     }
 }

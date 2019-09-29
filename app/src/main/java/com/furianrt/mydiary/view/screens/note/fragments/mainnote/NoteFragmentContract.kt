@@ -38,7 +38,7 @@ interface NoteFragmentContract {
         fun showCategoriesDialog(noteId: String)
         fun showNoteSettingsView(noteId: String)
         fun updateNoteAppearance(appearance: MyNoteAppearance)
-        fun showNoteText(title: String, content: String)
+        fun showNoteText(title: String, content: String, textSpans: List<MyTextSpan>)
         fun showDatePicker(year: Int, monthOfYear: Int, dayOfMonth: Int)
         fun showTimePicker(hourOfDay: Int, minute: Int, is24HourMode: Boolean)
         fun showDateAndTime(time: Long, is24TimeFormat: Boolean)
@@ -54,6 +54,8 @@ interface NoteFragmentContract {
         fun shareNote(note: MyNoteWithProp)
         fun showErrorSaveImage()
         fun showErrorForecast()
+        fun showRichTextOptions()
+        fun hideRichTextOptions()
     }
 
     abstract class Presenter : BaseMvpPresenter<MvpView>() {
@@ -67,7 +69,6 @@ interface NoteFragmentContract {
         abstract fun onMoodFieldClick()
         abstract fun onCategoryFieldClick()
         abstract fun onButtonAppearanceClick()
-        abstract fun updateNoteText(noteTitle: String, noteContent: String)
         abstract fun onDateFieldClick()
         abstract fun onTimeFieldClick()
         abstract fun onDateSelected(year: Int, monthOfYear: Int, dayOfMonth: Int)
@@ -76,12 +77,13 @@ interface NoteFragmentContract {
         abstract fun init(noteId: String, newNote: Boolean)
         abstract fun getNoteTextBuffer(): ArrayList<UndoRedoEntry>
         abstract fun setNoteTextBuffer(buffer: ArrayList<UndoRedoEntry>)
-        abstract fun onNoteTextChange(title: String, content: String)
+        abstract fun onNoteTextChange(title: String, content: String, textSpans: List<MyTextSpan>)
         abstract fun onButtonUndoClick()
         abstract fun onButtonRedoClick()
         abstract fun onEditModeEnabled()
+        abstract fun onEditModeDisabled(noteTitle: String, noteContent: String, textSpans: List<MyTextSpan>)
         abstract fun onButtonMicClick()
-        abstract fun onSpeechRecorded(curTitle: String, curContent: String, recordedText: String)
+        abstract fun onSpeechRecorded(curTitle: String, curContent: String, textSpans: List<MyTextSpan>, recordedText: String)
         abstract fun onButtonShareClick()
     }
 }

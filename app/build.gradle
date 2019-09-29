@@ -12,8 +12,8 @@ android {
         applicationId "com.furianrt.mydiary"
         minSdkVersion 21
         targetSdkVersion 29
-        versionCode 32
-        versionName "1.4.3"
+        versionCode 34
+        versionName "1.5.1"
 
         javaCompileOptions {
             annotationProcessorOptions {
@@ -72,16 +72,16 @@ dependencies {
 
     //Android
     implementation "androidx.appcompat:appcompat:$support_version"
-    implementation "androidx.recyclerview:recyclerview:1.1.0-beta01"
-    implementation "androidx.preference:preference:1.1.0-rc01"
-    implementation "com.google.android.material:material:1.1.0-alpha08"
+    implementation "androidx.recyclerview:recyclerview:1.1.0-beta04"
+    implementation "androidx.preference:preference:$support_version"
+    implementation 'com.google.android.material:material:1.1.0-alpha10'
     implementation 'androidx.constraintlayout:constraintlayout:2.0.0-beta1' //в beta2 баг констрейнтов (видно в PinActivity)
 
     //Layout for tags
     implementation 'com.google.android:flexbox:1.1.0'
 
     //Fingerprint
-    implementation 'androidx.biometric:biometric:1.0.0-alpha04'
+    implementation 'androidx.biometric:biometric:1.0.0-beta02'
 
     //RecyclerView animators
     implementation 'jp.wasabeef:recyclerview-animators:3.0.0'
@@ -131,21 +131,21 @@ dependencies {
     implementation 'com.jaredrummler:colorpicker:1.1.0'
 
     //DateTime
-    implementation 'net.danlew:android.joda:2.10.2'
+    implementation 'net.danlew:android.joda:2.10.3'
 
     //DateTime pickers
-    implementation 'com.wdullaer:materialdatetimepicker:4.2.1'
+    implementation 'com.wdullaer:materialdatetimepicker:4.2.3'
 
     //Calendar
     implementation 'com.github.kizitonwose:CalendarView:0.1.2'
 
     //Firebase
-    implementation 'com.google.firebase:firebase-core:17.0.1'
-    implementation 'com.google.firebase:firebase-storage:18.1.1'
-    implementation 'com.google.firebase:firebase-firestore:20.2.0'
-    implementation 'com.google.firebase:firebase-messaging:19.0.1'
-    implementation 'com.google.firebase:firebase-auth:18.1.0'
-    implementation 'com.google.firebase:firebase-ads:18.1.1'
+    implementation 'com.google.firebase:firebase-core:17.2.0'
+    implementation 'com.google.firebase:firebase-storage:19.0.1'
+    implementation 'com.google.firebase:firebase-firestore:21.1.1'
+    implementation 'com.google.firebase:firebase-messaging:20.0.0'
+    implementation 'com.google.firebase:firebase-auth:19.0.0'
+    implementation 'com.google.firebase:firebase-ads:18.2.0'
 
     //Rx for Firebase
     implementation 'com.github.FrangSierra:RxFirebase:1.5.6'
@@ -157,8 +157,8 @@ dependencies {
     implementation 'com.jsibbold:zoomage:1.2.0'
 
     //Sending email
-    implementation 'com.sun.mail:android-mail:1.6.3'
-    implementation 'com.sun.mail:android-activation:1.6.3'
+    implementation 'com.sun.mail:android-mail:1.6.4'
+    implementation 'com.sun.mail:android-activation:1.6.4'
 
     //In-App purchases
     implementation 'com.anjlab.android.iab.v3:library:1.1.0'

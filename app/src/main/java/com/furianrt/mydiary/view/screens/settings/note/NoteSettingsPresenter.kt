@@ -12,7 +12,7 @@ package com.furianrt.mydiary.view.screens.settings.note
 
 import android.util.Log
 import com.furianrt.mydiary.data.model.MyNoteAppearance
-import com.furianrt.mydiary.domain.ResetNoteSettingsUseCase
+import com.furianrt.mydiary.domain.reset.ResetNoteSettingsUseCase
 import com.furianrt.mydiary.domain.get.GetAppearanceUseCase
 import com.furianrt.mydiary.domain.update.UpdateAppearanceUseCase
 import io.reactivex.android.schedulers.AndroidSchedulers

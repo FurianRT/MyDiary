@@ -17,19 +17,19 @@ data class MyNoteWithProp(
         @Embedded var note: MyNote = MyNote(),
         @Embedded var mood: MyMood? = null,
         @Embedded var category: MyCategory? = null,
-        @Embedded var appearance: MyNoteAppearance? = null
+        @Embedded var appearance: MyNoteAppearance? = null,
+        //@Relation использовать не получится, с ним притянутся "удаленные" строки через "удаленные"
+        //строки связующих таблиц
+        @Ignore var tags: List<MyTag> = emptyList(),
+        @Ignore var locations: List<MyLocation> = emptyList(),
+        @Ignore var images: List<MyImage> = emptyList(),
+        @Ignore var textSpans: List<MyTextSpan> = emptyList()
 ) {
-
-    //@Relation использовать не получится, с ним притянутся "удаленные" строки через "удаленные"
-    //строки связующих таблиц
-    @Ignore var tags = emptyList<MyTag>()
-    @Ignore var locations = emptyList<MyLocation>()
-    @Ignore var images = emptyList<MyImage>()
 
     fun isSync(email: String): Boolean =
             note.isSync(email)
                     && images.all { it.isSync(email) }
                     && tags.all { it.isSync(email) }
                     && locations.all { it.isSync(email) }
-
+                    && textSpans.all { it.isSync(email) }
 }

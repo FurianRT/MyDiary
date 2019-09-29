@@ -169,7 +169,7 @@ class MainActivityPresenter @Inject constructor(
                 value = ArrayList()
                 map[dateTime.millis] = value
             }
-            value.add(note)
+            value.add(note.copy())
         }
         return map
     }
@@ -400,16 +400,16 @@ class MainActivityPresenter @Inject constructor(
     }
 
     override fun onDateFilterChange(startDate: Long?, endDate: Long?) {
-        if (startDate == null) {
-            mFilteredStartDate = null
+        mFilteredStartDate = if (startDate == null) {
+            null
         } else {
-            mFilteredStartDate = LocalDate(startDate)
+            LocalDate(startDate)
         }
 
-        if (endDate == null) {
-            mFilteredEndDate = null
+        mFilteredEndDate = if (endDate == null) {
+            null
         } else {
-            mFilteredEndDate = LocalDate(endDate)
+            LocalDate(endDate)
         }
 
         showNotes(mNoteList)

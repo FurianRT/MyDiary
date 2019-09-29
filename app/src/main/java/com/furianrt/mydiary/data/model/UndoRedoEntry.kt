@@ -17,5 +17,6 @@ import kotlinx.android.parcel.Parcelize
 data class UndoRedoEntry(
         val title: String = "",
         val content: String = "",
+        val textSpans: List<MyTextSpan>,
         var current: Boolean = false
 ) : Parcelable

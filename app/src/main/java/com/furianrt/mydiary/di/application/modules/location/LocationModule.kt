@@ -21,13 +21,15 @@ import dagger.Provides
 import java.util.Locale
 
 @Module
-class LocationModule {
+object LocationModule {
 
+    @JvmStatic
     @Provides
     @AppScope
     fun provideFusedLocation(@AppContext context: Context): FusedLocationProviderClient =
             LocationServices.getFusedLocationProviderClient(context)
 
+    @JvmStatic
     @Provides
     @AppScope
     fun provideGeocoder(@AppContext context: Context): Geocoder =

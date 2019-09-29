@@ -15,6 +15,7 @@ import com.furianrt.mydiary.data.repository.forecast.ForecastRepository
 import com.furianrt.mydiary.data.repository.image.ImageRepository
 import com.furianrt.mydiary.data.repository.location.LocationRepository
 import com.furianrt.mydiary.data.repository.note.NoteRepository
+import com.furianrt.mydiary.data.repository.span.SpanRepository
 import com.furianrt.mydiary.data.repository.tag.TagRepository
 import io.reactivex.Completable
 import io.reactivex.Observable
@@ -26,7 +27,8 @@ class DeleteNotesUseCase @Inject constructor(
         private val appearanceRepository: AppearanceRepository,
         private val imageRepository: ImageRepository,
         private val forecastRepository: ForecastRepository,
-        private val tagRepository: TagRepository
+        private val tagRepository: TagRepository,
+        private val spanRepository: SpanRepository
 ) {
 
     fun invoke(notesIds: List<String>): Completable =
@@ -43,5 +45,6 @@ class DeleteNotesUseCase @Inject constructor(
                     .first(emptyList())
                     .flatMapCompletable { images -> imageRepository.deleteImage(images.map { it.name }) }
                     .andThen(forecastRepository.deleteForecast(noteId))
+                    .andThen(spanRepository.deleteTextSpan(noteId))
                     .andThen(noteRepository.deleteNote(noteId))
 }

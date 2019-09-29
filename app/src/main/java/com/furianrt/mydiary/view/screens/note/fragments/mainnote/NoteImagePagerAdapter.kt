@@ -37,11 +37,9 @@ class NoteImagePagerAdapter(
 
     override fun getItemCount(): Int = images.size
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): NoteImageViewHolder {
-        val view = LayoutInflater.from(parent.context)
-                .inflate(R.layout.note_image_pager_item, parent, false)
-        return NoteImageViewHolder(view)
-    }
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): NoteImageViewHolder =
+            NoteImageViewHolder(LayoutInflater.from(parent.context)
+                    .inflate(R.layout.note_image_pager_item, parent, false))
 
     override fun onBindViewHolder(holder: NoteImageViewHolder, position: Int) {
         holder.bind(images[position])

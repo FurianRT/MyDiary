@@ -27,6 +27,7 @@ interface CloudHelper {
     fun saveForecasts(forecasts: List<MyForecast>, userId: String): Completable
     fun saveImages(images: List<MyImage>, userId: String): Completable
     fun saveImagesFiles(images: List<MyImage>, userId: String): Completable
+    fun saveTextSpans(textSpans: List<MyTextSpan>, userId: String): Completable
     fun deleteNotes(notes: List<MyNote>, userId: String): Completable
     fun deleteCategories(categories: List<MyCategory>, userId: String): Completable
     fun deleteNoteTags(noteTags: List<NoteTag>, userId: String): Completable
@@ -36,6 +37,7 @@ interface CloudHelper {
     fun deleteTags(tags: List<MyTag>, userId: String): Completable
     fun deleteAppearances(appearances: List<MyNoteAppearance>, userId: String): Completable
     fun deleteImages(images: List<MyImage>, userId: String): Completable
+    fun deleteTextSpans(textSpans: List<MyTextSpan>, userId: String): Completable
     fun getProfile(userId: String): Maybe<MyProfile>
     fun getAllNotes(userId: String): Single<List<MyNote>>
     fun getAllCategories(userId: String): Single<List<MyCategory>>
@@ -46,5 +48,6 @@ interface CloudHelper {
     fun getAllLocations(userId: String): Single<List<MyLocation>>
     fun getAllForecasts(userId: String): Single<List<MyForecast>>
     fun getAllImages(userId: String): Single<List<MyImage>>
+    fun getAllTextSpans(userId: String): Single<List<MyTextSpan>>
     fun loadImageFiles(images: List<MyImage>, userId: String): Completable
 }

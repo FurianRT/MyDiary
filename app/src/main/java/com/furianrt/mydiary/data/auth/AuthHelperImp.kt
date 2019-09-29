@@ -50,7 +50,7 @@ class AuthHelperImp @Inject constructor(
     override fun signIn(email: String, password: String): Single<String> =
             RxFirebaseAuth.signInWithEmailAndPassword(firebaseAuth, email, password)
                     .toSingle()
-                    .map { it.user.uid }
+                    .map { it.user?.uid }
 
     override fun signOut(): Completable = Completable.fromAction { firebaseAuth.signOut() }
 
