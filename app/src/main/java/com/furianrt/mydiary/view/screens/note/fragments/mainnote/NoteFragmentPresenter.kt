@@ -402,6 +402,7 @@ class NoteFragmentPresenter @Inject constructor(
                 "$curContent $recordedText"
         }
         addDisposable(updateNote.invoke(mNoteId, curTitle, content)
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { onNoteTextChange(curTitle, content, textSpans) })
     }
 

@@ -719,11 +719,11 @@ class NoteFragment : BaseFragment(), NoteFragmentContract.MvpView, DatePickerDia
     }
 
     override fun showRichTextOptions() {
-        layout_rich_text.visibility = View.VISIBLE
+        layout_rich_text?.visibility = View.VISIBLE
     }
 
     override fun hideRichTextOptions() {
-        layout_rich_text.visibility = View.GONE
+        layout_rich_text?.visibility = View.GONE
     }
 
     override fun onAttach(context: Context) {

@@ -23,6 +23,7 @@ import com.furianrt.mydiary.R
 import com.furianrt.mydiary.analytics.MyAnalytics
 import com.furianrt.mydiary.view.base.BaseFragment
 import com.furianrt.mydiary.data.model.MyNoteAppearance
+import com.furianrt.mydiary.utils.hideKeyboard
 import com.furianrt.mydiary.view.screens.note.fragments.mainnote.NoteFragment
 import com.furianrt.mydiary.utils.showKeyboard
 import kotlinx.android.synthetic.main.fragment_note_edit.*
@@ -127,6 +128,10 @@ class NoteEditFragment : BaseFragment(), NoteEditFragmentContract.MvpView {
             }
 
     override fun closeView() {
+        activity?.currentFocus?.let { focus ->
+            focus.hideKeyboard()
+            focus.clearFocus()
+        }
         fragmentManager?.popBackStack()
     }
 
