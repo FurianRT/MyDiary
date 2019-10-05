@@ -10,10 +10,10 @@
 
 package com.furianrt.mydiary.data.repository.span
 
-import com.furianrt.mydiary.data.auth.AuthHelper
-import com.furianrt.mydiary.data.cloud.CloudHelper
-import com.furianrt.mydiary.data.database.SpanDao
-import com.furianrt.mydiary.data.model.MyTextSpan
+import com.furianrt.mydiary.data.entity.MyTextSpan
+import com.furianrt.mydiary.data.source.auth.AuthHelper
+import com.furianrt.mydiary.data.source.cloud.CloudHelper
+import com.furianrt.mydiary.data.source.database.SpanDao
 import io.reactivex.Completable
 import io.reactivex.Flowable
 import io.reactivex.Scheduler
@@ -65,6 +65,10 @@ class SpanRepositoryImp @Inject constructor(
 
     override fun getAllTextSpans(): Flowable<List<MyTextSpan>> =
             spanDao.getAllTextSpans()
+                    .subscribeOn(rxScheduler)
+
+    override fun getTextSpans(noteId: String): Flowable<List<MyTextSpan>> =
+            spanDao.getTextSpans(noteId)
                     .subscribeOn(rxScheduler)
 
     override fun saveTextSpansInCloud(textSpans: List<MyTextSpan>): Completable =

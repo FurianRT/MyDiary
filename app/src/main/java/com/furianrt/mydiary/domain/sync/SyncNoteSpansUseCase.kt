@@ -35,5 +35,8 @@ class SyncNoteSpansUseCase @Inject constructor(
                     .flatMapCompletable { spanRepository.deleteTextSpansFromCloud(it) }
                     .andThen(spanRepository.getAllTextSpansFromCloud())
                     .flatMapCompletable { spanRepository.insertTextSpan(it) }
-                    .onErrorResumeNext { Completable.error(SyncSpanException()) }
+                    .onErrorResumeNext { error ->
+                        error.printStackTrace()
+                        Completable.error(SyncSpanException())
+                    }
 }

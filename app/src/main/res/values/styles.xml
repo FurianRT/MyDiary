@@ -23,15 +23,6 @@
         <item name="theme">@style/ThemeOverlay.MaterialComponents.Dark.ActionBar</item>
     </style>
 
-    <style name="collapsedToolbarLayout" parent="@android:style/TextAppearance.Medium">
-        <item name="android:textColor">@color/white</item>
-    </style>
-
-    <style name="expandedToolbarLayout" parent="@android:style/TextAppearance.Medium">
-        <item name="android:textSize">26sp</item>
-        <item name="android:textColor">@color/white</item>
-    </style>
-
     <style name="TextAppearance.App.TextInputLayout" parent="@android:style/TextAppearance">
         <item name="android:textColor">@color/white</item>
         <item name="android:textSize">11sp</item>

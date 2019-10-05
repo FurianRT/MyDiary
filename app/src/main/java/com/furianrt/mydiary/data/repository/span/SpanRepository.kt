@@ -10,7 +10,7 @@
 
 package com.furianrt.mydiary.data.repository.span
 
-import com.furianrt.mydiary.data.model.MyTextSpan
+import com.furianrt.mydiary.data.entity.MyTextSpan
 import io.reactivex.Completable
 import io.reactivex.Flowable
 import io.reactivex.Single
@@ -26,5 +26,6 @@ interface SpanRepository {
     fun getDeletedTextSpans(): Flowable<List<MyTextSpan>>
     fun getAllTextSpansFromCloud(): Single<List<MyTextSpan>>
     fun getAllTextSpans(): Flowable<List<MyTextSpan>>
+    fun getTextSpans(noteId: String): Flowable<List<MyTextSpan>>
     fun saveTextSpansInCloud(textSpans: List<MyTextSpan>): Completable
 }

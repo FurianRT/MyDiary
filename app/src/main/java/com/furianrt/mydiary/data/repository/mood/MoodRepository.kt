@@ -10,7 +10,7 @@
 
 package com.furianrt.mydiary.data.repository.mood
 
-import com.furianrt.mydiary.data.model.MyMood
+import com.furianrt.mydiary.data.entity.MyMood
 import io.reactivex.Single
 
 interface MoodRepository {

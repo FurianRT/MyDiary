@@ -10,7 +10,7 @@
 
 package com.furianrt.mydiary.view.dialogs.tags.fragments.list
 
-import com.furianrt.mydiary.data.model.MyTag
+import com.furianrt.mydiary.data.entity.MyTag
 import com.furianrt.mydiary.domain.save.AddTagToNoteUseCase
 import com.furianrt.mydiary.domain.get.GetTagsUseCase
 import com.furianrt.mydiary.domain.delete.RemoveTagFromNoteUseCase

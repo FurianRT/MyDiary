@@ -39,7 +39,10 @@ class SyncLocationsUseCase @Inject constructor(
                     .flatMapCompletable { locationRepository.deleteLocationsFromCloud(it) }
                     .andThen(locationRepository.getAllLocationsFromCloud())
                     .flatMapCompletable { locationRepository.insertLocation(it) }
-                    .onErrorResumeNext { Completable.error(SyncLocationsException()) }
+                    .onErrorResumeNext { error ->
+                        error.printStackTrace()
+                        Completable.error(SyncLocationsException())
+                    }
 
     private fun syncNoteLocations(email: String): Completable =
             locationRepository.getAllNoteLocations()
@@ -56,6 +59,9 @@ class SyncLocationsUseCase @Inject constructor(
                     .flatMapCompletable { locationRepository.deleteNoteLocationsFromCloud(it) }
                     .andThen(locationRepository.getAllNoteLocationsFromCloud())
                     .flatMapCompletable { locationRepository.insertNoteLocation(it) }
-                    .onErrorResumeNext { Completable.error(SyncNoteLocationsException()) }
+                    .onErrorResumeNext { error ->
+                        error.printStackTrace()
+                        Completable.error(SyncNoteLocationsException())
+                    }
 
 }

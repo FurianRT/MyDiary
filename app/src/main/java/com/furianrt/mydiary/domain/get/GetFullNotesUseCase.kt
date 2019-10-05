@@ -10,7 +10,7 @@
 
 package com.furianrt.mydiary.domain.get
 
-import com.furianrt.mydiary.data.model.*
+import com.furianrt.mydiary.data.entity.*
 import com.furianrt.mydiary.data.repository.image.ImageRepository
 import com.furianrt.mydiary.data.repository.location.LocationRepository
 import com.furianrt.mydiary.data.repository.note.NoteRepository
@@ -18,7 +18,7 @@ import com.furianrt.mydiary.data.repository.span.SpanRepository
 import com.furianrt.mydiary.data.repository.tag.TagRepository
 import com.google.common.base.Optional
 import io.reactivex.Flowable
-import io.reactivex.functions.Function7
+import io.reactivex.functions.Function9
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
@@ -54,9 +54,12 @@ class GetFullNotesUseCase @Inject constructor(
                     locationRepository.getAllNoteLocations(),
                     locationRepository.getAllDbLocations(),
                     spanRepository.getAllTextSpans(),
-                    Function7<List<MyNoteWithProp>, List<NoteTag>, List<MyTag>, List<MyImage>,
-                            List<NoteLocation>, List<MyLocation>, List<MyTextSpan>, List<MyNoteWithProp>>
-                    { notes, noteTags, tags, images, noteLocations, locations, spans ->
+                    spanRepository.getDeletedTextSpans(),
+                    imageRepository.getDeletedImages(),
+                    Function9<List<MyNoteWithProp>, List<NoteTag>, List<MyTag>, List<MyImage>,
+                            List<NoteLocation>, List<MyLocation>, List<MyTextSpan>, List<MyTextSpan>,
+                            List<MyImage>, List<MyNoteWithProp>>
+                    { notes, noteTags, tags, images, noteLocations, locations, spans, deletedSpans, deletedImages ->
                         notes.map { note ->
                             val noteTagsForNote = noteTags.filter { it.noteId == note.note.id }
                             note.tags = tags.filter { tag ->
@@ -64,6 +67,7 @@ class GetFullNotesUseCase @Inject constructor(
                             }
 
                             note.images = images.filter { it.noteId == note.note.id }
+                            note.deletedImages = deletedImages.filter { it.noteId == note.note.id }
 
                             val noteLocationsForNote = noteLocations.filter { it.noteId == note.note.id }
                             note.locations = locations.filter { location ->
@@ -71,6 +75,7 @@ class GetFullNotesUseCase @Inject constructor(
                             }
 
                             note.textSpans = spans.filter { it.noteId == note.note.id }
+                            note.deletedTextSpans = deletedSpans.filter { it.noteId == note.note.id }
 
                             return@map note
                         }

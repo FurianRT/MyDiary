@@ -11,8 +11,8 @@
 package com.furianrt.mydiary.data.repository.appearance
 
 import android.graphics.Color
-import com.furianrt.mydiary.data.model.MyNoteAppearance
-import com.furianrt.mydiary.data.prefs.PreferencesHelper
+import com.furianrt.mydiary.data.entity.MyNoteAppearance
+import com.furianrt.mydiary.data.source.preferences.PreferencesHelper
 import io.reactivex.Completable
 import io.reactivex.Flowable
 import io.reactivex.Single

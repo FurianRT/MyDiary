@@ -10,7 +10,7 @@
 
 package com.furianrt.mydiary.domain.update
 
-import com.furianrt.mydiary.data.model.MyCategory
+import com.furianrt.mydiary.data.entity.MyCategory
 import com.furianrt.mydiary.data.repository.category.CategoryRepository
 import com.furianrt.mydiary.data.repository.note.NoteRepository
 import io.reactivex.Completable

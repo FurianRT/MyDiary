@@ -23,6 +23,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AnticipateOvershootInterpolator
 import android.view.animation.OvershootInterpolator
+import androidx.core.content.ContextCompat
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -30,8 +31,8 @@ import com.furianrt.mydiary.BuildConfig
 import com.furianrt.mydiary.R
 import com.furianrt.mydiary.analytics.MyAnalytics
 import com.furianrt.mydiary.view.base.BaseFragment
-import com.furianrt.mydiary.data.model.*
-import com.furianrt.mydiary.data.model.pojo.SearchEntries
+import com.furianrt.mydiary.data.entity.*
+import com.furianrt.mydiary.data.entity.pojo.SearchEntries
 import com.furianrt.mydiary.view.screens.main.fragments.authentication.AuthFragment
 import com.furianrt.mydiary.view.screens.main.fragments.drawer.adapter.SearchGroup
 import com.furianrt.mydiary.view.screens.main.fragments.drawer.adapter.SearchItem
@@ -107,7 +108,7 @@ class DrawerMenuFragment : BaseFragment(), DrawerMenuContract.MvpView,
             }
             val category = note.category
             if (category == null) {
-                value.add(requireContext().getThemePrimaryColor())
+                value.add(ContextCompat.getColor(requireContext(), R.color.grey_dark))
             } else {
                 value.add(category.color)
             }
@@ -250,26 +251,57 @@ class DrawerMenuFragment : BaseFragment(), DrawerMenuContract.MvpView,
         groups.add(SearchGroup(
                 SearchGroup.TYPE_TAG,
                 getString(R.string.tags),
-                entries.tags.map { SearchItem(type = SearchItem.TYPE_TAG, tag = it) }
+                entries.tags.map { tag ->
+                    SearchItem(
+                            type = SearchItem.TYPE_TAG,
+                            tag = tag,
+                            count = entries.notes.count { note -> note.tags.find { it.id == tag.id } != null }
+                    )
+                }
                         .toMutableList()
-                        .apply { add(SearchItem(type = SearchItem.TYPE_NO_TAGS)) }
+                        .apply {
+                            add(SearchItem(
+                                    type = SearchItem.TYPE_NO_TAGS,
+                                    count = entries.notes.count { it.tags.isEmpty() }
+                            ))
+                        }
         ))
 
         groups.add(SearchGroup(
                 SearchGroup.TYPE_CATEGORY,
                 getString(R.string.categories),
-                entries.categories.map { SearchItem(type = SearchItem.TYPE_CATEGORY, category = it) }
+                entries.categories.map { category ->
+                    SearchItem(
+                            type = SearchItem.TYPE_CATEGORY,
+                            category = category,
+                            count = entries.notes.count { it.note.categoryId == category.id }
+                    )
+                }
                         .toMutableList()
-                        .apply { add(SearchItem(type = SearchItem.TYPE_NO_CATEGORY)) }
+                        .apply {
+                            add(SearchItem(
+                                    type = SearchItem.TYPE_NO_CATEGORY,
+                                    count = entries.notes.count { it.category == null }))
+                        }
         ))
 
         entries.moods?.let { moods ->
             groups.add(SearchGroup(
                     SearchGroup.TYPE_MOOD,
                     getString(R.string.moods),
-                    moods.map { SearchItem(type = SearchItem.TYPE_MOOD, mood = it) }
+                    moods.map { mood ->
+                        SearchItem(
+                                type = SearchItem.TYPE_MOOD,
+                                mood = mood,
+                                count = entries.notes.count { it.note.moodId == mood.id }
+                        )
+                    }
                             .toMutableList()
-                            .apply { add(SearchItem(type = SearchItem.TYPE_NO_MOOD)) }
+                            .apply {
+                                add(SearchItem(
+                                        type = SearchItem.TYPE_NO_MOOD,
+                                        count = entries.notes.count { it.mood == null }))
+                            }
             ))
         }
 
@@ -277,9 +309,19 @@ class DrawerMenuFragment : BaseFragment(), DrawerMenuContract.MvpView,
             groups.add(SearchGroup(
                     SearchGroup.TYPE_LOCATION,
                     getString(R.string.locations),
-                    locations.map { SearchItem(type = SearchItem.TYPE_LOCATION, location = it) }
+                    locations.map { location ->
+                        SearchItem(
+                                type = SearchItem.TYPE_LOCATION,
+                                location = location,
+                                count = entries.notes.count { note -> note.locations.find { it.id == location.id } != null }
+                        )
+                    }
                             .toMutableList()
-                            .apply { add(SearchItem(type = SearchItem.TYPE_NO_LOCATION)) }
+                            .apply {
+                                add(SearchItem(
+                                        type = SearchItem.TYPE_NO_LOCATION,
+                                        count = entries.notes.count { it.locations.isEmpty() }))
+                            }
             ))
         }
 

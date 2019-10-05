@@ -35,4 +35,4 @@
 -keep class com.yalantis.ucrop** { *; }
 -keep interface com.yalantis.ucrop** { *; }
 
--keepclassmembers class com.furianrt.mydiary.data.model.** { *; }
+-keepclassmembers class com.furianrt.mydiary.data.entity.** { *; }

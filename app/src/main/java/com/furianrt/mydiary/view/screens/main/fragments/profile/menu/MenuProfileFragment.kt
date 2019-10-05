@@ -22,7 +22,7 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.furianrt.mydiary.R
 import com.furianrt.mydiary.analytics.MyAnalytics
 import com.furianrt.mydiary.view.base.BaseFragment
-import com.furianrt.mydiary.data.model.SyncProgressMessage
+import com.furianrt.mydiary.data.entity.SyncProgressMessage
 import com.furianrt.mydiary.view.screens.main.fragments.profile.about.AboutProfileFragment
 import com.furianrt.mydiary.view.screens.main.fragments.profile.password.PasswordFragment
 import com.furianrt.mydiary.view.screens.main.fragments.profile.signout.SignOutFragment

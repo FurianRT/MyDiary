@@ -12,7 +12,7 @@ package com.furianrt.mydiary.view.dialogs.moods
 
 import com.furianrt.mydiary.view.base.mvp.BaseMvpView
 import com.furianrt.mydiary.view.base.mvp.BaseMvpPresenter
-import com.furianrt.mydiary.data.model.MyMood
+import com.furianrt.mydiary.data.entity.MyMood
 
 interface MoodsDialogContract {
 

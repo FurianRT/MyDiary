@@ -10,10 +10,10 @@
 
 package com.furianrt.mydiary.data.repository.category
 
-import com.furianrt.mydiary.data.auth.AuthHelper
-import com.furianrt.mydiary.data.cloud.CloudHelper
-import com.furianrt.mydiary.data.database.CategoryDao
-import com.furianrt.mydiary.data.model.MyCategory
+import com.furianrt.mydiary.data.entity.MyCategory
+import com.furianrt.mydiary.data.source.auth.AuthHelper
+import com.furianrt.mydiary.data.source.cloud.CloudHelper
+import com.furianrt.mydiary.data.source.database.CategoryDao
 import io.reactivex.*
 import javax.inject.Inject
 

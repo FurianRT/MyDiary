@@ -10,7 +10,7 @@
 
 package com.furianrt.mydiary.domain.get
 
-import com.furianrt.mydiary.data.model.MyHeaderImage
+import com.furianrt.mydiary.data.entity.MyHeaderImage
 import com.furianrt.mydiary.data.repository.device.DeviceRepository
 import com.furianrt.mydiary.data.repository.image.ImageRepository
 import io.reactivex.Single

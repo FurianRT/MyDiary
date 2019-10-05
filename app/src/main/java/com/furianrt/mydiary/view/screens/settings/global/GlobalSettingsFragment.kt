@@ -24,7 +24,7 @@ import androidx.preference.SwitchPreference
 import com.furianrt.mydiary.R
 import com.furianrt.mydiary.analytics.MyAnalytics
 import com.furianrt.mydiary.view.base.BaseView
-import com.furianrt.mydiary.data.prefs.PreferencesHelper
+import com.furianrt.mydiary.data.source.preferences.PreferencesHelper
 import com.furianrt.mydiary.view.screens.pin.PinActivity
 import javax.inject.Inject
 

@@ -35,5 +35,8 @@ class SyncNotesUseCase @Inject constructor(
                     .flatMapCompletable { noteRepository.deleteNotesFromCloud(it) }
                     .andThen(noteRepository.getAllNotesFromCloud())
                     .flatMapCompletable { noteRepository.insertNote(it) }
-                    .onErrorResumeNext { Completable.error(SyncNotesException()) }
+                    .onErrorResumeNext { error ->
+                        error.printStackTrace()
+                        Completable.error(SyncNotesException())
+                    }
 }

@@ -16,9 +16,10 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.signature.ObjectKey
 import com.furianrt.mydiary.R
-import com.furianrt.mydiary.data.model.MyImage
+import com.furianrt.mydiary.data.entity.MyImage
 import com.furianrt.mydiary.view.general.GlideApp
 import kotlinx.android.synthetic.main.note_image_pager_item.view.*
 
@@ -51,6 +52,8 @@ class NoteImagePagerAdapter(
             GlideApp.with(itemView)
                     .load(Uri.parse(image.uri))
                     .signature(ObjectKey(image.editedTime))
+                    .centerCrop()
+                    .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
                     .into(itemView.image_note)
         }
     }

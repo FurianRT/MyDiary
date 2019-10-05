@@ -10,7 +10,7 @@
 
 package com.furianrt.mydiary.data.repository.category
 
-import com.furianrt.mydiary.data.model.MyCategory
+import com.furianrt.mydiary.data.entity.MyCategory
 import io.reactivex.Completable
 import io.reactivex.Flowable
 import io.reactivex.Single

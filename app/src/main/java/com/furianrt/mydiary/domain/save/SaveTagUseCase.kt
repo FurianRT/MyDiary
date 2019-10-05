@@ -10,7 +10,7 @@
 
 package com.furianrt.mydiary.domain.save
 
-import com.furianrt.mydiary.data.model.MyTag
+import com.furianrt.mydiary.data.entity.MyTag
 import com.furianrt.mydiary.data.repository.tag.TagRepository
 import com.furianrt.mydiary.utils.generateUniqueId
 import io.reactivex.Single

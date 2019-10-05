@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?><!--Без корнегово лайаута дергано прорисовывается стики хедр-->
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="150dp"
+    android:layout_marginStart="16dp"
+    android:layout_marginTop="8dp"
+    android:layout_marginEnd="16dp"
+    android:layout_marginBottom="8dp"
+    app:cardCornerRadius="8dp"
+    app:cardElevation="7dp">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:id="@+id/text_note_image_day"
+            android:layout_width="80dp"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:paddingTop="16dp"
+            android:textColor="@color/grey_dark"
+            android:textSize="30sp"
+            tools:text="30" />
+
+        <ImageView
+            android:id="@+id/image_main_list"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentEnd="true"
+            android:layout_toEndOf="@id/text_note_image_day"
+            tools:ignore="ContentDescription"
+            tools:scaleType="centerCrop"
+            tools:src="@drawable/tutorial_header_image" />
+
+        <TextView
+            android:id="@+id/text_note_image_day_of_week"
+            android:layout_width="80dp"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/text_note_image_day"
+            android:gravity="center"
+            android:textColor="@color/grey_dark"
+            android:textSize="18sp"
+            tools:text="Mon" />
+
+        <ImageView
+            android:id="@+id/image_note_image_sync"
+            android:layout_width="80dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:paddingBottom="16dp"
+            android:src="@drawable/ic_cloud_off"
+            android:visibility="gone"
+            tools:ignore="ContentDescription"
+            tools:visibility="visible" />
+
+        <View
+            android:id="@+id/view_note_image_selected"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:alpha="0.2"
+            android:background="?attr/colorAccent"
+            android:elevation="4dp"
+            android:visibility="gone" />
+
+    </RelativeLayout>
+
+</com.google.android.material.card.MaterialCardView>

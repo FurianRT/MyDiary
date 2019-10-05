@@ -10,10 +10,10 @@
 
 package com.furianrt.mydiary.data.repository.profile
 
-import com.furianrt.mydiary.data.auth.AuthHelper
-import com.furianrt.mydiary.data.cloud.CloudHelper
-import com.furianrt.mydiary.data.database.ProfileDao
-import com.furianrt.mydiary.data.model.MyProfile
+import com.furianrt.mydiary.data.entity.MyProfile
+import com.furianrt.mydiary.data.source.auth.AuthHelper
+import com.furianrt.mydiary.data.source.cloud.CloudHelper
+import com.furianrt.mydiary.data.source.database.ProfileDao
 import io.reactivex.Completable
 import io.reactivex.Observable
 import io.reactivex.Scheduler

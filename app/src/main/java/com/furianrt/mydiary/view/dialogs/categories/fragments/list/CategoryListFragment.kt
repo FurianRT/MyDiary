@@ -20,7 +20,7 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.furianrt.mydiary.R
 import com.furianrt.mydiary.view.base.BaseFragment
-import com.furianrt.mydiary.data.model.MyCategory
+import com.furianrt.mydiary.data.entity.MyCategory
 import com.furianrt.mydiary.view.dialogs.categories.CategoriesDialog
 import com.furianrt.mydiary.view.dialogs.categories.fragments.add.CategoryAddFragment
 import com.furianrt.mydiary.view.dialogs.categories.fragments.delete.CategoryDeleteFragment

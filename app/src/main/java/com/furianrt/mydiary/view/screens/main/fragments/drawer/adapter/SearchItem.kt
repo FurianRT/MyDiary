@@ -11,10 +11,10 @@
 package com.furianrt.mydiary.view.screens.main.fragments.drawer.adapter
 
 import android.os.Parcelable
-import com.furianrt.mydiary.data.model.MyCategory
-import com.furianrt.mydiary.data.model.MyLocation
-import com.furianrt.mydiary.data.model.MyMood
-import com.furianrt.mydiary.data.model.MyTag
+import com.furianrt.mydiary.data.entity.MyCategory
+import com.furianrt.mydiary.data.entity.MyLocation
+import com.furianrt.mydiary.data.entity.MyMood
+import com.furianrt.mydiary.data.entity.MyTag
 import kotlinx.android.parcel.Parcelize
 import org.threeten.bp.LocalDate
 
@@ -26,6 +26,7 @@ data class SearchItem(
         val category: MyCategory? = null,
         val location: MyLocation? = null,
         val mood: MyMood? = null,
+        val count: Int = 0,
         val isChecked: Boolean = false
 ): Parcelable {
     companion object {

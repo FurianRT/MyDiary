@@ -10,8 +10,8 @@
 
 package com.furianrt.mydiary.data.repository.note
 
-import com.furianrt.mydiary.data.model.MyNote
-import com.furianrt.mydiary.data.model.MyNoteWithProp
+import com.furianrt.mydiary.data.entity.MyNote
+import com.furianrt.mydiary.data.entity.MyNoteWithProp
 import io.reactivex.Completable
 import io.reactivex.Flowable
 import io.reactivex.Maybe

@@ -12,7 +12,7 @@ package com.furianrt.mydiary.view.dialogs.tags.fragments.list
 
 import com.furianrt.mydiary.view.base.mvp.BaseMvpView
 import com.furianrt.mydiary.view.base.mvp.BaseMvpPresenter
-import com.furianrt.mydiary.data.model.MyTag
+import com.furianrt.mydiary.data.entity.MyTag
 
 interface TagListContract {
 

@@ -21,7 +21,7 @@
 package com.furianrt.mydiary.domain.update
 
 import com.furianrt.mydiary.BuildConfig
-import com.furianrt.mydiary.data.model.MyTextSpan
+import com.furianrt.mydiary.data.entity.MyTextSpan
 import com.furianrt.mydiary.data.repository.device.DeviceRepository
 import com.furianrt.mydiary.data.repository.span.SpanRepository
 import com.furianrt.mydiary.di.application.component.AppScope
@@ -35,25 +35,48 @@ class UpdateNoteSpansUseCase @Inject constructor(
         private val deviceRepository: DeviceRepository
 ) {
 
-    fun invoke(noteId: String, textSpans: List<MyTextSpan>) {
-        if (deviceRepository.isItemPurchased(BuildConfig.ITEM_PREMIUM_SKU)) {
-            spanRepository.deleteTextSpan(noteId)
-                    .andThen(spanRepository.insertTextSpan(textSpans.map { span ->
-                        span.apply {
-                            span.id = generateUniqueId()
-                            span.noteId = noteId
-                        }
-                    }))
-                    .subscribe()
-        } else {
-            spanRepository.deleteTextSpanPermanently(noteId)
-                    .andThen(spanRepository.insertTextSpan(textSpans.map { span ->
-                        span.apply {
-                            span.id = generateUniqueId()
-                            span.noteId = noteId
-                        }
-                    }))
-                    .subscribe()
+    private fun List<MyTextSpan>.isEqualTo(spans: List<MyTextSpan>): Boolean {
+        var isSpansEqual = size == spans.size
+        spans.forEach { span ->
+            if (find {
+                        it.type == span.type
+                                && it.startIndex == span.startIndex
+                                && it.endIndex == span.endIndex
+                                && it.size == span.size
+                                && it.color == span.color
+                    } == null) {
+                isSpansEqual = false
+            }
         }
+        return isSpansEqual
+    }
+
+    fun invoke(noteId: String, textSpans: List<MyTextSpan>) {
+        spanRepository.getTextSpans(noteId)
+                .firstOrError()
+                .flatMapCompletable { existingSpans ->
+                    if (existingSpans.isEqualTo(textSpans)) {
+                        Completable.complete()
+                    } else {
+                        if (deviceRepository.isItemPurchased(BuildConfig.ITEM_PREMIUM_SKU)) {
+                            spanRepository.deleteTextSpan(noteId)
+                                    .andThen(spanRepository.insertTextSpan(textSpans.map { span ->
+                                        span.apply {
+                                            span.id = generateUniqueId()
+                                            span.noteId = noteId
+                                        }
+                                    }))
+                        } else {
+                            spanRepository.deleteTextSpanPermanently(noteId)
+                                    .andThen(spanRepository.insertTextSpan(textSpans.map { span ->
+                                        span.apply {
+                                            span.id = generateUniqueId()
+                                            span.noteId = noteId
+                                        }
+                                    }))
+                        }
+                    }
+                }
+                .subscribe()
     }
 }

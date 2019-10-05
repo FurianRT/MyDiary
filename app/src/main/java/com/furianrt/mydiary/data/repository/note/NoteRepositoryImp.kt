@@ -10,12 +10,12 @@
 
 package com.furianrt.mydiary.data.repository.note
 
-import com.furianrt.mydiary.data.auth.AuthHelper
-import com.furianrt.mydiary.data.cloud.CloudHelper
-import com.furianrt.mydiary.data.database.NoteDao
-import com.furianrt.mydiary.data.database.NoteTagDao
-import com.furianrt.mydiary.data.model.*
-import com.furianrt.mydiary.data.prefs.PreferencesHelper
+import com.furianrt.mydiary.data.entity.*
+import com.furianrt.mydiary.data.source.auth.AuthHelper
+import com.furianrt.mydiary.data.source.cloud.CloudHelper
+import com.furianrt.mydiary.data.source.database.NoteDao
+import com.furianrt.mydiary.data.source.database.NoteTagDao
+import com.furianrt.mydiary.data.source.preferences.PreferencesHelper
 import io.reactivex.*
 import javax.inject.Inject
 

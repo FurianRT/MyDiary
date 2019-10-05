@@ -10,7 +10,7 @@
 
 package com.furianrt.mydiary.domain.update
 
-import com.furianrt.mydiary.data.model.MyNote
+import com.furianrt.mydiary.data.entity.MyNote
 import com.furianrt.mydiary.data.repository.note.NoteRepository
 import io.reactivex.Completable
 import io.reactivex.Observable
@@ -37,5 +37,12 @@ class UpdateNoteUseCase @Inject constructor(
                     .ignoreElement()
 
     fun invoke(noteId: String, title: String, content: String): Completable =
-            noteRepository.updateNoteText(noteId, title, content)
+            noteRepository.getNote(noteId)
+                    .flatMapCompletable { note ->
+                        if (note.title != title || note.content != content) {
+                            noteRepository.updateNoteText(noteId, title, content)
+                        } else {
+                            Completable.complete()
+                        }
+                    }
 }

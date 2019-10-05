@@ -10,8 +10,8 @@
 
 package com.furianrt.mydiary.data.repository.tag
 
-import com.furianrt.mydiary.data.model.MyTag
-import com.furianrt.mydiary.data.model.NoteTag
+import com.furianrt.mydiary.data.entity.MyTag
+import com.furianrt.mydiary.data.entity.NoteTag
 import io.reactivex.Completable
 import io.reactivex.Flowable
 import io.reactivex.Single

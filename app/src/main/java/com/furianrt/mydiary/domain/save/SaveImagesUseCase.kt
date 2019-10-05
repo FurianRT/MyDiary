@@ -10,7 +10,7 @@
 
 package com.furianrt.mydiary.domain.save
 
-import com.furianrt.mydiary.data.model.MyImage
+import com.furianrt.mydiary.data.entity.MyImage
 import com.furianrt.mydiary.data.repository.image.ImageRepository
 import com.furianrt.mydiary.utils.generateUniqueId
 import io.reactivex.Completable

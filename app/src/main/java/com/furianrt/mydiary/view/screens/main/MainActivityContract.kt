@@ -13,13 +13,12 @@ package com.furianrt.mydiary.view.screens.main
 import android.os.Bundle
 import com.furianrt.mydiary.view.base.mvp.BaseMvpView
 import com.furianrt.mydiary.view.base.mvp.BaseMvpPresenter
-import com.furianrt.mydiary.data.model.*
-import com.furianrt.mydiary.view.screens.main.adapter.NoteListItem
+import com.furianrt.mydiary.data.entity.*
 
 interface MainActivityContract {
 
     interface MvpView : BaseMvpView {
-        fun showNotes(items: List<NoteListItem>, selectedNoteIds: Set<String>)
+        fun showNotes(notes: List<MyNoteWithProp>, selectedNoteIds: Set<String>, scrollToTop: Boolean)
         fun showNotePager(position: Int, noteId: String)
         fun showHeaderImage(image: MyHeaderImage)
         fun showViewNewNote(noteId: String)
@@ -45,7 +44,7 @@ interface MainActivityContract {
     }
 
     abstract class Presenter : BaseMvpPresenter<MvpView>() {
-        abstract fun onMainListItemClick(note: MyNoteWithProp, position: Int)
+        abstract fun onMainListItemClick(note: MyNoteWithProp)
         abstract fun onMainImageClick()
         abstract fun onMainListItemLongClick(note: MyNoteWithProp)
         abstract fun onSaveInstanceState(bundle: Bundle?)
@@ -53,7 +52,6 @@ interface MainActivityContract {
         abstract fun onFabMenuClick()
         abstract fun onMenuAllNotesClick()
         abstract fun onButtonSettingsClick()
-        abstract fun is24TimeFormat(): Boolean
         abstract fun onButtonSortClick()
         abstract fun onButtonImageSettingsClick()
         abstract fun onButtonDeleteClick()

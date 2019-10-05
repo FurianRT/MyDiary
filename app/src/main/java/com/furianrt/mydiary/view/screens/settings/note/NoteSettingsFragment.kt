@@ -18,7 +18,7 @@ import androidx.preference.PreferenceFragmentCompat
 import com.furianrt.mydiary.R
 import com.furianrt.mydiary.analytics.MyAnalytics
 import com.furianrt.mydiary.view.base.BaseView
-import com.furianrt.mydiary.data.model.MyNoteAppearance
+import com.furianrt.mydiary.data.entity.MyNoteAppearance
 import com.jaredrummler.android.colorpicker.ColorPreferenceCompat
 import javax.inject.Inject
 

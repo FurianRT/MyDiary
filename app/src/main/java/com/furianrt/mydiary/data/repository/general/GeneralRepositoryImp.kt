@@ -10,8 +10,8 @@
 
 package com.furianrt.mydiary.data.repository.general
 
-import com.furianrt.mydiary.data.model.SyncProgressMessage
-import com.furianrt.mydiary.data.prefs.PreferencesHelper
+import com.furianrt.mydiary.data.entity.SyncProgressMessage
+import com.furianrt.mydiary.data.source.preferences.PreferencesHelper
 import com.google.gson.Gson
 import javax.inject.Inject
 

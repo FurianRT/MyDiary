@@ -18,14 +18,15 @@ import android.view.ViewGroup
 import android.widget.CheckBox
 import android.widget.Checkable
 import android.widget.TextView
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.furianrt.mydiary.R
-import com.furianrt.mydiary.data.model.MyCategory
-import com.furianrt.mydiary.data.model.MyLocation
-import com.furianrt.mydiary.data.model.MyMood
-import com.furianrt.mydiary.data.model.MyTag
+import com.furianrt.mydiary.data.entity.MyCategory
+import com.furianrt.mydiary.data.entity.MyLocation
+import com.furianrt.mydiary.data.entity.MyMood
+import com.furianrt.mydiary.data.entity.MyTag
 import com.furianrt.mydiary.view.screens.main.fragments.drawer.adapter.SearchListAdapter.SearchChildViewHolder
 import com.furianrt.mydiary.view.screens.main.fragments.drawer.adapter.SearchListAdapter.SearchGroupViewHolder
 import com.furianrt.mydiary.utils.*
@@ -46,10 +47,6 @@ import kotlinx.android.synthetic.main.nav_search_group.view.*
 import kotlinx.android.synthetic.main.nav_search_item_category.view.*
 import kotlinx.android.synthetic.main.nav_search_item_location.view.*
 import kotlinx.android.synthetic.main.nav_search_item_mood.view.*
-import kotlinx.android.synthetic.main.nav_search_item_no_category.view.*
-import kotlinx.android.synthetic.main.nav_search_item_no_location.view.*
-import kotlinx.android.synthetic.main.nav_search_item_no_mood.view.*
-import kotlinx.android.synthetic.main.nav_search_item_no_tags.view.*
 import kotlinx.android.synthetic.main.nav_search_item_tag.view.*
 import org.threeten.bp.LocalDate
 import org.threeten.bp.Month
@@ -229,13 +226,13 @@ class SearchListAdapter(
             SearchItem.TYPE_MOOD ->
                 SearchMoodsViewHolder(inflater.inflate(R.layout.nav_search_item_mood, parent, false))
             SearchItem.TYPE_NO_TAGS ->
-                SearchNoTagsViewHolder(inflater.inflate(R.layout.nav_search_item_no_tags, parent, false))
+                SearchNoTagsViewHolder(inflater.inflate(R.layout.nav_search_item_tag, parent, false))
             SearchItem.TYPE_NO_CATEGORY ->
-                SearchNoCategoryViewHolder(inflater.inflate(R.layout.nav_search_item_no_category, parent, false))
+                SearchNoCategoryViewHolder(inflater.inflate(R.layout.nav_search_item_category, parent, false))
             SearchItem.TYPE_NO_MOOD ->
-                SearchNoMoodViewHolder(inflater.inflate(R.layout.nav_search_item_no_mood, parent, false))
+                SearchNoMoodViewHolder(inflater.inflate(R.layout.nav_search_item_mood, parent, false))
             SearchItem.TYPE_NO_LOCATION ->
-                SearchNoLocationViewHolder(inflater.inflate(R.layout.nav_search_item_no_location, parent, false))
+                SearchNoLocationViewHolder(inflater.inflate(R.layout.nav_search_item_location, parent, false))
             else -> throw IllegalStateException("Unsupported holder type")
         }
     }
@@ -658,9 +655,11 @@ class SearchListAdapter(
 
     inner class SearchTagsViewHolder(view: View) : SearchChildViewHolder(view) {
         override fun bind(item: SearchItem) {
-            val tag = item.tag!!
+            item.tag?.let { tag ->
+                itemView.text_tag_name.text = tag.name
+                itemView.text_tag_count.text = item.count.toString()
+            }
             setOnChildCheckedListener(this@SearchListAdapter)
-            itemView.check_search_item_tag.text = tag.name
         }
 
         override fun getCheckable(): Checkable = itemView.check_search_item_tag
@@ -668,10 +667,12 @@ class SearchListAdapter(
 
     inner class SearchCategoriesViewHolder(view: View) : SearchChildViewHolder(view) {
         override fun bind(item: SearchItem) {
-            val category = item.category!!
+            item.category?.let { category ->
+                itemView.text_category_name.text = category.name
+                itemView.text_category_count.text = item.count.toString()
+                itemView.view_category_color.setBackgroundColor(category.color)
+            }
             setOnChildCheckedListener(this@SearchListAdapter)
-            itemView.check_search_item_category.text = category.name
-            itemView.view_category_color.setBackgroundColor(category.color)
         }
 
         override fun getCheckable(): Checkable = itemView.check_search_item_category
@@ -679,9 +680,11 @@ class SearchListAdapter(
 
     inner class SearchLocationsViewHolder(view: View) : SearchChildViewHolder(view) {
         override fun bind(item: SearchItem) {
-            val location = item.location!!
+            item.location?.let { location ->
+                itemView.text_location_name.text = location.name
+                itemView.text_location_count.text = item.count.toString()
+            }
             setOnChildCheckedListener(this@SearchListAdapter)
-            itemView.check_search_item_location.text = location.name
         }
 
         override fun getCheckable(): Checkable = itemView.check_search_item_location
@@ -689,12 +692,14 @@ class SearchListAdapter(
 
     inner class SearchMoodsViewHolder(view: View) : SearchChildViewHolder(view) {
         override fun bind(item: SearchItem) {
-            val mood = item.mood!!
+            item.mood?.let { mood ->
+                itemView.text_mood_name.text = mood.name
+                itemView.text_mood_count.text = item.count.toString()
+                val smile = itemView.context.resources
+                        .getIdentifier(mood.iconName, "drawable", itemView.context.packageName)
+                itemView.text_mood_name.setCompoundDrawablesWithIntrinsicBounds(smile, 0, 0, 0)
+            }
             setOnChildCheckedListener(this@SearchListAdapter)
-            itemView.check_search_item_mood.text = mood.name
-            val smile = itemView.context.resources
-                    .getIdentifier(mood.iconName, "drawable", itemView.context.packageName)
-            itemView.check_search_item_mood.setCompoundDrawablesWithIntrinsicBounds(smile, 0, 0, 0)
         }
 
         override fun getCheckable(): Checkable = itemView.check_search_item_mood
@@ -703,41 +708,44 @@ class SearchListAdapter(
     inner class SearchNoTagsViewHolder(view: View) : SearchChildViewHolder(view) {
         override fun bind(item: SearchItem) {
             setOnChildCheckedListener(this@SearchListAdapter)
-            itemView.check_search_no_tags.text =
-                    itemView.context.getString(R.string.fragment_drawer_menu_no_tags)
+            itemView.text_tag_name.text = itemView.context.getString(R.string.fragment_drawer_menu_no_tags)
+            itemView.text_tag_count.text = item.count.toString()
         }
 
-        override fun getCheckable(): Checkable = itemView.check_search_no_tags
+        override fun getCheckable(): Checkable = itemView.check_search_item_tag
     }
 
     inner class SearchNoCategoryViewHolder(view: View) : SearchChildViewHolder(view) {
         override fun bind(item: SearchItem) {
             setOnChildCheckedListener(this@SearchListAdapter)
-            itemView.check_search_no_category.text =
-                    itemView.context.getString(R.string.fragment_drawer_menu_no_category)
+            itemView.text_category_name.text = itemView.context.getString(R.string.fragment_drawer_menu_no_category)
+            itemView.text_category_count.text = item.count.toString()
+            itemView.view_category_color.setBackgroundColor(ContextCompat.getColor(itemView.context, R.color.transparent))
         }
 
-        override fun getCheckable(): Checkable = itemView.check_search_no_category
+        override fun getCheckable(): Checkable = itemView.check_search_item_category
     }
 
     inner class SearchNoMoodViewHolder(view: View) : SearchChildViewHolder(view) {
         override fun bind(item: SearchItem) {
             setOnChildCheckedListener(this@SearchListAdapter)
-            itemView.check_search_no_mood.text =
-                    itemView.context.getString(R.string.fragment_drawer_menu_no_mood)
+            itemView.text_mood_name.text = itemView.context.getString(R.string.fragment_drawer_menu_no_mood)
+            itemView.text_mood_count.text = item.count.toString()
+            val smile = ContextCompat.getDrawable(itemView.context, R.drawable.ic_smile)
+            itemView.text_mood_name.setCompoundDrawablesWithIntrinsicBounds(smile, null, null, null)
         }
 
-        override fun getCheckable(): Checkable = itemView.check_search_no_mood
+        override fun getCheckable(): Checkable = itemView.check_search_item_mood
     }
 
     inner class SearchNoLocationViewHolder(view: View) : SearchChildViewHolder(view) {
         override fun bind(item: SearchItem) {
             setOnChildCheckedListener(this@SearchListAdapter)
-            itemView.check_search_no_location.text =
-                    itemView.context.getString(R.string.fragment_drawer_menu_no_location)
+            itemView.text_location_name.text = itemView.context.getString(R.string.fragment_drawer_menu_no_location)
+            itemView.text_location_count.text = item.count.toString()
         }
 
-        override fun getCheckable(): Checkable = itemView.check_search_no_location
+        override fun getCheckable(): Checkable = itemView.check_search_item_location
     }
 
     interface OnSearchListInteractionListener {

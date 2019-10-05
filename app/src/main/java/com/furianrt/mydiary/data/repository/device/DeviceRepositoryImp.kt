@@ -18,7 +18,7 @@ import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.os.Looper
 import androidx.core.location.LocationManagerCompat
-import com.furianrt.mydiary.data.model.MyLocation
+import com.furianrt.mydiary.data.entity.MyLocation
 import com.furianrt.mydiary.di.application.modules.app.AppContext
 import com.google.android.gms.location.*
 import javax.inject.Inject

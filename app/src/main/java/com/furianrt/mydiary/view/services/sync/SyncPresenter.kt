@@ -10,7 +10,7 @@
 
 package com.furianrt.mydiary.view.services.sync
 
-import com.furianrt.mydiary.data.model.SyncProgressMessage
+import com.furianrt.mydiary.data.entity.SyncProgressMessage
 import com.furianrt.mydiary.domain.get.GetProfileUseCase
 import com.furianrt.mydiary.domain.save.SetLastSyncMessageUseCase
 import com.furianrt.mydiary.domain.sync.*

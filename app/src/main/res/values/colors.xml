@@ -15,6 +15,7 @@
     <color name="black35">#59000000</color>
     <color name="red">#B71C1C</color>
     <color name="transparent_black">#40000000</color>
+    <color name="transparent_black_50">#80000000</color>
 
     <color name="r1">#C62828</color>
     <color name="r11">#B71C1C</color>

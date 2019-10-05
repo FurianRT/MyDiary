@@ -10,11 +10,11 @@
 
 package com.furianrt.mydiary.data.repository.appearance
 
-import com.furianrt.mydiary.data.auth.AuthHelper
-import com.furianrt.mydiary.data.cloud.CloudHelper
-import com.furianrt.mydiary.data.database.AppearanceDao
-import com.furianrt.mydiary.data.model.MyNoteAppearance
-import com.furianrt.mydiary.data.prefs.PreferencesHelper
+import com.furianrt.mydiary.data.entity.MyNoteAppearance
+import com.furianrt.mydiary.data.source.auth.AuthHelper
+import com.furianrt.mydiary.data.source.cloud.CloudHelper
+import com.furianrt.mydiary.data.source.database.AppearanceDao
+import com.furianrt.mydiary.data.source.preferences.PreferencesHelper
 import io.reactivex.Completable
 import io.reactivex.Flowable
 import io.reactivex.Scheduler

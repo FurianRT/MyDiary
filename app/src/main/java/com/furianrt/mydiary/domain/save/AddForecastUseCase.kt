@@ -10,7 +10,7 @@
 
 package com.furianrt.mydiary.domain.save
 
-import com.furianrt.mydiary.data.model.MyForecast
+import com.furianrt.mydiary.data.entity.MyForecast
 import com.furianrt.mydiary.data.repository.forecast.ForecastRepository
 import com.furianrt.mydiary.domain.get.GetForecastsUseCase
 import io.reactivex.Maybe

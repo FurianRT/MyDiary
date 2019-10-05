@@ -18,20 +18,13 @@ import java.text.SimpleDateFormat
 import java.util.Locale
 import java.util.Date
 
-fun getDay(time: Long): String =
-        SimpleDateFormat("dd", Locale.getDefault()).format(Date(time))
+fun getDay(time: Long): String = SimpleDateFormat("dd", Locale.getDefault()).format(Date(time))
 
 fun getDayOfWeek(time: Long): String =
         SimpleDateFormat("EEE", Locale.getDefault()).format(Date(time))
 
 fun formatTime(time: Long): String =
         SimpleDateFormat("EEE, dd MMM, yyyy", Locale.getDefault()).format(Date(time))
-
-fun getMonth(time: Long): String =
-        SimpleDateFormat("LLLL", Locale.getDefault()).format(Date(time))
-
-fun getYear(time: Long): String =
-        SimpleDateFormat("yyyy", Locale.getDefault()).format(Date(time))
 
 fun getTime(time: Long, is24TimeFormat: Boolean): String =
         if (is24TimeFormat) {

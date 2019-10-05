@@ -11,7 +11,7 @@
 package com.furianrt.mydiary.data.repository.device
 
 import com.anjlab.android.iab.v3.BillingProcessor
-import com.furianrt.mydiary.data.model.MyLocation
+import com.furianrt.mydiary.data.entity.MyLocation
 
 interface DeviceRepository : BillingProcessor.IBillingHandler {
     fun isFingerprintHardwareSupported(): Boolean

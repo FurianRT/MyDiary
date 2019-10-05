@@ -1,21 +1,31 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?><!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  ~  @author FurianRT
+  ~  Copyright 2019
+  ~
+  ~  All rights reserved.
+  ~  Distribution of the software in any form is only allowed with
+  ~  explicit, prior permission from the owner.
+  ~
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="32dp"
-    android:background="@color/grey_light">
+    android:layout_height="wrap_content">
 
     <TextView
-        android:id="@+id/text_date"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/grey_light"
-        android:gravity="center_vertical|start"
+        android:id="@+id/text_header_date"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="4dp"
+        android:layout_marginBottom="4dp"
+        android:background="@drawable/background_corner"
+        android:backgroundTint="@color/grey_light"
+        android:gravity="center"
         android:paddingStart="16dp"
+        android:paddingTop="4dp"
         android:paddingEnd="16dp"
-        android:textAllCaps="true"
-        android:textSize="14sp"
-        tools:text="АПРЕЛЬ, 2019" />
+        android:paddingBottom="4dp"
+        tools:text="October 2019" />
 
 </FrameLayout>
-

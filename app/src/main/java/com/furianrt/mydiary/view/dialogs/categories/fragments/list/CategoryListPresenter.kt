@@ -10,7 +10,7 @@
 
 package com.furianrt.mydiary.view.dialogs.categories.fragments.list
 
-import com.furianrt.mydiary.data.model.MyCategory
+import com.furianrt.mydiary.data.entity.MyCategory
 import com.furianrt.mydiary.domain.get.GetCategoriesUseCase
 import com.furianrt.mydiary.domain.update.UpdateNoteUseCase
 import io.reactivex.android.schedulers.AndroidSchedulers

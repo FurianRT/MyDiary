@@ -10,7 +10,7 @@
 
 package com.furianrt.mydiary.data.repository.profile
 
-import com.furianrt.mydiary.data.model.MyProfile
+import com.furianrt.mydiary.data.entity.MyProfile
 import io.reactivex.Completable
 import io.reactivex.Observable
 import io.reactivex.Single

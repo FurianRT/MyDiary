@@ -22,8 +22,8 @@ import android.graphics.Typeface
 import android.net.Uri
 import android.os.Bundle
 import android.speech.RecognizerIntent
+import android.text.Editable
 import android.text.ParcelableSpan
-import android.text.Spannable
 import android.text.style.*
 import android.util.Log
 import android.view.*
@@ -34,8 +34,8 @@ import androidx.viewpager2.widget.ViewPager2
 import com.furianrt.mydiary.R
 import com.furianrt.mydiary.analytics.MyAnalytics
 import com.furianrt.mydiary.view.base.BaseFragment
-import com.furianrt.mydiary.data.model.*
-import com.furianrt.mydiary.data.model.pojo.TagsAndAppearance
+import com.furianrt.mydiary.data.entity.*
+import com.furianrt.mydiary.data.entity.pojo.TagsAndAppearance
 import com.furianrt.mydiary.view.dialogs.categories.CategoriesDialog
 import com.furianrt.mydiary.view.dialogs.delete.note.DeleteNoteDialog
 import com.furianrt.mydiary.view.dialogs.moods.MoodsDialog
@@ -649,7 +649,7 @@ class NoteFragment : BaseFragment(), NoteFragmentContract.MvpView, DatePickerDia
         Toast.makeText(requireContext(), R.string.fragment_gallery_list_image_save_error, Toast.LENGTH_SHORT).show()
     }
 
-    fun onNoteTextChange(title: String, content: Spannable) {
+    fun onNoteTextChange(title: String, content: Editable) {
         mPresenter.onNoteTextChange(title, content.toString(), content.getTextSpans())
         childFragmentManager.findFragmentByTag(NoteContentFragment.TAG)?.let {
             (it as NoteContentFragment).updateNoteText(title, content)
@@ -709,7 +709,7 @@ class NoteFragment : BaseFragment(), NoteFragmentContract.MvpView, DatePickerDia
         mPresenter.onEditModeEnabled()
     }
 
-    fun onNoteFragmentEditModeDisabled(noteTitle: String, noteContent: Spannable) {
+    fun onNoteFragmentEditModeDisabled(noteTitle: String, noteContent: Editable) {
         enableActionBarExpanding(expanded = false, animate = false)
         val noteContentFragment =
                 childFragmentManager.findFragmentByTag(NoteContentFragment.TAG) as? NoteContentFragment

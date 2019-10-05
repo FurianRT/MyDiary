@@ -10,15 +10,15 @@
 
 package com.furianrt.mydiary.data.repository.image
 
-import com.furianrt.mydiary.data.api.images.ImageApiService
-import com.furianrt.mydiary.data.auth.AuthHelper
-import com.furianrt.mydiary.data.cloud.CloudHelper
-import com.furianrt.mydiary.data.database.HeaderImageDao
-import com.furianrt.mydiary.data.database.ImageDao
-import com.furianrt.mydiary.data.model.MyHeaderImage
-import com.furianrt.mydiary.data.model.MyImage
-import com.furianrt.mydiary.data.prefs.PreferencesHelper
-import com.furianrt.mydiary.data.storage.StorageHelper
+import com.furianrt.mydiary.data.entity.MyHeaderImage
+import com.furianrt.mydiary.data.entity.MyImage
+import com.furianrt.mydiary.data.source.api.images.ImageApiService
+import com.furianrt.mydiary.data.source.auth.AuthHelper
+import com.furianrt.mydiary.data.source.cloud.CloudHelper
+import com.furianrt.mydiary.data.source.database.HeaderImageDao
+import com.furianrt.mydiary.data.source.database.ImageDao
+import com.furianrt.mydiary.data.source.preferences.PreferencesHelper
+import com.furianrt.mydiary.data.source.storage.StorageHelper
 import io.reactivex.*
 import org.joda.time.DateTime
 import javax.inject.Inject
