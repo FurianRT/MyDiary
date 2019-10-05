@@ -11,7 +11,7 @@
 package com.furianrt.mydiary.view.screens.gallery.fragments.pager
 
 import androidx.recyclerview.widget.DiffUtil
-import com.furianrt.mydiary.data.model.MyImage
+import com.furianrt.mydiary.data.entity.MyImage
 
 class GalleryPagerDiffCallback(
         private val oldList: List<MyImage>,

@@ -10,14 +10,15 @@
 
 package com.furianrt.mydiary.domain.get
 
-import com.furianrt.mydiary.data.model.MyNote
-import com.furianrt.mydiary.data.model.MyNoteWithSpans
-import com.furianrt.mydiary.data.model.MyTextSpan
+import com.furianrt.mydiary.data.entity.MyNote
+import com.furianrt.mydiary.data.entity.MyNoteWithSpans
+import com.furianrt.mydiary.data.entity.MyTextSpan
 import com.furianrt.mydiary.data.repository.note.NoteRepository
 import com.furianrt.mydiary.data.repository.span.SpanRepository
 import com.google.common.base.Optional
 import io.reactivex.Flowable
 import io.reactivex.functions.BiFunction
+import io.reactivex.functions.Function3
 import javax.inject.Inject
 
 class GetNotesWithSpansUseCase @Inject constructor(
@@ -43,8 +44,16 @@ class GetNotesWithSpansUseCase @Inject constructor(
             Flowable.combineLatest(
                     noteRepository.getAllNotes(),
                     spanRepository.getAllTextSpans(),
-                    BiFunction<List<MyNote>, List<MyTextSpan>, List<MyNoteWithSpans>> { notes, textSpans ->
-                        notes.map { note -> return@map MyNoteWithSpans(note, textSpans.filter { it.noteId == note.id }) }
+                    spanRepository.getDeletedTextSpans(),
+                    Function3<List<MyNote>, List<MyTextSpan>, List<MyTextSpan>, List<MyNoteWithSpans>>
+                    { notes, spans, deletedSpans ->
+                        notes.map { note ->
+                            MyNoteWithSpans(
+                                    note,
+                                    spans.filter { it.noteId == note.id },
+                                    deletedSpans.filter { it.noteId == note.id }
+                            )
+                        }
                     }
             )
 }

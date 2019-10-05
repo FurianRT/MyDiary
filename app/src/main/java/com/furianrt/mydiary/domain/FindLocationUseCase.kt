@@ -10,7 +10,7 @@
 
 package com.furianrt.mydiary.domain
 
-import com.furianrt.mydiary.data.model.MyLocation
+import com.furianrt.mydiary.data.entity.MyLocation
 import com.furianrt.mydiary.data.repository.device.DeviceRepository
 import io.reactivex.Maybe
 import javax.inject.Inject

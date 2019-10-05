@@ -10,7 +10,7 @@
 
 package com.furianrt.mydiary.domain.get
 
-import com.furianrt.mydiary.data.model.MyTag
+import com.furianrt.mydiary.data.entity.MyTag
 import com.furianrt.mydiary.data.repository.tag.TagRepository
 import io.reactivex.Flowable
 import javax.inject.Inject

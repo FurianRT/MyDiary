@@ -14,11 +14,7 @@
         android:id="@+id/collapsing_toolbar_main"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:collapsedTitleTextAppearance="@style/collapsedToolbarLayout"
         app:contentScrim="?attr/colorPrimary"
-        app:expandedTitleGravity="bottom|end"
-        app:expandedTitleMarginStart="48dp"
-        app:expandedTitleTextAppearance="@style/expandedToolbarLayout"
         app:layout_scrollFlags="scroll|exitUntilCollapsed">
 
         <ImageView
@@ -29,7 +25,8 @@
             android:scaleType="centerCrop"
             android:src="?attr/colorPrimary"
             app:layout_collapseMode="parallax"
-            tools:ignore="ContentDescription" />
+            tools:ignore="ContentDescription"
+            tools:src="@drawable/tutorial_header_image" />
 
         <FrameLayout
             android:id="@+id/layout_main_image_settings"
@@ -58,7 +55,7 @@
             android:layout_gravity="bottom"
             android:background="?attr/colorAccent"
             android:fitsSystemWindows="true"
-            app:layout_collapseMode="parallax" />
+            app:layout_collapseMode="pin" />
 
         <View
             android:layout_width="match_parent"

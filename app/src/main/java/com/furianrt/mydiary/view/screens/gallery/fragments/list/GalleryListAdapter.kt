@@ -21,9 +21,10 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.signature.ObjectKey
 import com.furianrt.mydiary.R
-import com.furianrt.mydiary.data.model.MyImage
+import com.furianrt.mydiary.data.entity.MyImage
 import com.furianrt.mydiary.view.general.GlideApp
 import com.furianrt.mydiary.view.general.ItemTouchHelperCallback
 import kotlinx.android.synthetic.main.fragment_gallery_list_item.view.*
@@ -50,6 +51,7 @@ class GalleryListAdapter(
     private var mDraggedItem: View? = null
     private val mDraggedItemPosition = Rect()
     private var mIsOverTrash = false
+    private val mGlide = GlideApp.with(recyclerView.context)
 
     init {
         val callback = ItemTouchHelperCallback(this)
@@ -163,9 +165,9 @@ class GalleryListAdapter(
                 mItemTouchHelper.startDrag(this)
                 return@setOnLongClickListener true
             }
-            GlideApp.with(itemView)
-                    .load(Uri.parse(mImage.uri))
-                    .override(550, 400)
+            mGlide.load(Uri.parse(mImage.uri))
+                    .centerCrop()
+                    .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
                     .signature(ObjectKey(mImage.editedTime))
                     .into(itemView.image_gallery_item)
 

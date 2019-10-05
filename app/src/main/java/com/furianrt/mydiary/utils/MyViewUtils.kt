@@ -34,7 +34,7 @@ fun View.animateShake(duration: Long = 400L) {
             .start()
 }
 
-fun View.animateAlpha(from: Float, to: Float, duration: Long) {
+fun View.animateAlpha(from: Float, to: Float, duration: Long = 400L) {
     ObjectAnimator.ofPropertyValuesHolder(this, PropertyValuesHolder.ofFloat(View.ALPHA, from, to))
             .apply { this.duration = duration }
             .start()

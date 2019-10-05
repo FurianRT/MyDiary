@@ -16,7 +16,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.furianrt.mydiary.R
 import com.furianrt.mydiary.view.base.BaseFragment
-import com.furianrt.mydiary.data.model.MyProfile
+import com.furianrt.mydiary.data.entity.MyProfile
 import com.furianrt.mydiary.utils.getTime
 import kotlinx.android.synthetic.main.fragment_about_profile.*
 import kotlinx.android.synthetic.main.fragment_about_profile.view.*

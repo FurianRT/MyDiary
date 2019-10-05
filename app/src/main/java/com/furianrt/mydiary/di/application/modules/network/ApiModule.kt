@@ -12,8 +12,8 @@ package com.furianrt.mydiary.di.application.modules.network
 
 import com.facebook.stetho.okhttp3.StethoInterceptor
 import com.furianrt.mydiary.BuildConfig
-import com.furianrt.mydiary.data.api.forecast.WeatherApiService
-import com.furianrt.mydiary.data.api.images.ImageApiService
+import com.furianrt.mydiary.data.source.api.forecast.WeatherApiService
+import com.furianrt.mydiary.data.source.api.images.ImageApiService
 import com.furianrt.mydiary.di.application.component.AppScope
 import dagger.Module
 import dagger.Provides

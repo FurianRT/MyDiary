@@ -35,5 +35,8 @@ class SyncAppearanceUseCase @Inject constructor(
                     .flatMapCompletable { appearanceRepository.deleteAppearancesFromCloud(it) }
                     .andThen(appearanceRepository.getAllAppearancesFromCloud())
                     .flatMapCompletable { appearanceRepository.insertAppearance(it) }
-                    .onErrorResumeNext { Completable.error(SyncAppearanceException()) }
+                    .onErrorResumeNext { error ->
+                        error.printStackTrace()
+                        Completable.error(SyncAppearanceException())
+                    }
 }

@@ -10,9 +10,9 @@
 
 package com.furianrt.mydiary.data.repository.mood
 
-import com.furianrt.mydiary.data.database.MoodDao
-import com.furianrt.mydiary.data.model.MyMood
-import com.furianrt.mydiary.data.prefs.PreferencesHelper
+import com.furianrt.mydiary.data.entity.MyMood
+import com.furianrt.mydiary.data.source.database.MoodDao
+import com.furianrt.mydiary.data.source.preferences.PreferencesHelper
 import io.reactivex.Scheduler
 import io.reactivex.Single
 import javax.inject.Inject

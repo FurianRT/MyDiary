@@ -10,7 +10,7 @@
 
 package com.furianrt.mydiary.view.dialogs.moods
 
-import com.furianrt.mydiary.data.model.MyMood
+import com.furianrt.mydiary.data.entity.MyMood
 import com.furianrt.mydiary.domain.get.GetMoodsUseCase
 import com.furianrt.mydiary.domain.update.UpdateNoteUseCase
 import io.reactivex.android.schedulers.AndroidSchedulers

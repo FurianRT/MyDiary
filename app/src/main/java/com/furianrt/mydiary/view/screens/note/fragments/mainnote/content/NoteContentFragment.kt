@@ -20,7 +20,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import com.furianrt.mydiary.R
 import com.furianrt.mydiary.view.base.BaseFragment
-import com.furianrt.mydiary.data.model.MyNoteAppearance
+import com.furianrt.mydiary.data.entity.MyNoteAppearance
 import com.furianrt.mydiary.view.screens.note.NoteActivity
 import com.furianrt.mydiary.view.screens.note.fragments.mainnote.NoteFragment
 import com.furianrt.mydiary.view.screens.note.fragments.mainnote.edit.NoteEditFragment

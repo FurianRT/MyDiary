@@ -23,6 +23,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AnticipateOvershootInterpolator
 import android.view.animation.OvershootInterpolator
+import androidx.core.content.ContextCompat
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -30,8 +31,8 @@ import com.furianrt.mydiary.BuildConfig
 import com.furianrt.mydiary.R
 import com.furianrt.mydiary.analytics.MyAnalytics
 import com.furianrt.mydiary.view.base.BaseFragment
-import com.furianrt.mydiary.data.model.*
-import com.furianrt.mydiary.data.model.pojo.SearchEntries
+import com.furianrt.mydiary.data.entity.*
+import com.furianrt.mydiary.data.entity.pojo.SearchEntries
 import com.furianrt.mydiary.view.screens.main.fragments.authentication.AuthFragment
 import com.furianrt.mydiary.view.screens.main.fragments.drawer.adapter.SearchGroup
 import com.furianrt.mydiary.view.screens.main.fragments.drawer.adapter.SearchItem
@@ -107,7 +108,7 @@ class DrawerMenuFragment : BaseFragment(), DrawerMenuContract.MvpView,
             }
             val category = note.category
             if (category == null) {
-                value.add(requireContext().getThemePrimaryColor())
+                value.add(ContextCompat.getColor(requireContext(), R.color.grey_dark))
             } else {
                 value.add(category.color)
             }

@@ -12,7 +12,7 @@ package com.furianrt.mydiary.view.screens.gallery.fragments.list
 
 import com.furianrt.mydiary.view.base.mvp.BaseMvpView
 import com.furianrt.mydiary.view.base.mvp.BaseMvpPresenter
-import com.furianrt.mydiary.data.model.MyImage
+import com.furianrt.mydiary.data.entity.MyImage
 
 interface GalleryListContract {
 

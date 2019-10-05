@@ -14,7 +14,7 @@ import android.graphics.Typeface
 import android.text.Editable
 import android.text.ParcelableSpan
 import android.text.style.*
-import com.furianrt.mydiary.data.model.MyTextSpan
+import com.furianrt.mydiary.data.entity.MyTextSpan
 
 fun String.applyTextSpans(spans: List<MyTextSpan>): Editable =
         Editable.Factory().newEditable(this).apply {

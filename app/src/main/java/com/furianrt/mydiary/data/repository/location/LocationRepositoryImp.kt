@@ -10,13 +10,13 @@
 
 package com.furianrt.mydiary.data.repository.location
 
-import com.furianrt.mydiary.data.auth.AuthHelper
-import com.furianrt.mydiary.data.cloud.CloudHelper
-import com.furianrt.mydiary.data.database.LocationDao
-import com.furianrt.mydiary.data.database.NoteLocationDao
-import com.furianrt.mydiary.data.model.MyLocation
-import com.furianrt.mydiary.data.model.NoteLocation
-import com.furianrt.mydiary.data.prefs.PreferencesHelper
+import com.furianrt.mydiary.data.entity.MyLocation
+import com.furianrt.mydiary.data.entity.NoteLocation
+import com.furianrt.mydiary.data.source.auth.AuthHelper
+import com.furianrt.mydiary.data.source.cloud.CloudHelper
+import com.furianrt.mydiary.data.source.database.LocationDao
+import com.furianrt.mydiary.data.source.database.NoteLocationDao
+import com.furianrt.mydiary.data.source.preferences.PreferencesHelper
 import io.reactivex.Completable
 import io.reactivex.Flowable
 import io.reactivex.Scheduler

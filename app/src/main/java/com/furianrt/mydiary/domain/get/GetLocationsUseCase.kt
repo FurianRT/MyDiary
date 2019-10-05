@@ -10,7 +10,7 @@
 
 package com.furianrt.mydiary.domain.get
 
-import com.furianrt.mydiary.data.model.MyLocation
+import com.furianrt.mydiary.data.entity.MyLocation
 import com.furianrt.mydiary.data.repository.location.LocationRepository
 import io.reactivex.Flowable
 import javax.inject.Inject

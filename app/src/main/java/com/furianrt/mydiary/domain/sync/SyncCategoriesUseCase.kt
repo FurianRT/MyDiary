@@ -35,5 +35,8 @@ class SyncCategoriesUseCase @Inject constructor(
                     .flatMapCompletable { categoryRepository.deleteCategoriesFromCloud(it) }
                     .andThen(categoryRepository.getAllCategoriesFromCloud())
                     .flatMapCompletable { categoryRepository.insertCategory(it) }
-                    .onErrorResumeNext { Completable.error(SyncCategoriesException()) }
+                    .onErrorResumeNext { error ->
+                        error.printStackTrace()
+                        Completable.error(SyncCategoriesException())
+                    }
 }

@@ -10,7 +10,7 @@
 
 package com.furianrt.mydiary.view.dialogs.categories.fragments.edit
 
-import com.furianrt.mydiary.data.model.MyCategory
+import com.furianrt.mydiary.data.entity.MyCategory
 import com.furianrt.mydiary.domain.update.UpdateCategoryUseCase
 import io.reactivex.android.schedulers.AndroidSchedulers
 import javax.inject.Inject

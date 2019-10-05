@@ -15,7 +15,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:contentScrim="?attr/colorPrimary"
-        app:expandedTitleMarginStart="48dp"
         app:layout_scrollFlags="scroll|exitUntilCollapsed">
 
         <androidx.viewpager2.widget.ViewPager2

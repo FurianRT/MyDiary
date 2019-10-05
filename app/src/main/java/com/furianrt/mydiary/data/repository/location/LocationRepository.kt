@@ -10,8 +10,8 @@
 
 package com.furianrt.mydiary.data.repository.location
 
-import com.furianrt.mydiary.data.model.MyLocation
-import com.furianrt.mydiary.data.model.NoteLocation
+import com.furianrt.mydiary.data.entity.MyLocation
+import com.furianrt.mydiary.data.entity.NoteLocation
 import io.reactivex.Completable
 import io.reactivex.Flowable
 import io.reactivex.Single

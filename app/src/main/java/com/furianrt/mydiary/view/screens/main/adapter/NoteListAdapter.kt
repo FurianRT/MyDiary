@@ -10,7 +10,7 @@
 
 package com.furianrt.mydiary.view.screens.main.adapter
 
-import android.graphics.PorterDuff
+import android.content.Context
 import android.net.Uri
 import android.view.LayoutInflater
 import android.view.View
@@ -19,202 +19,254 @@ import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
+import com.bumptech.glide.ListPreloader
+import com.bumptech.glide.RequestBuilder
+import com.bumptech.glide.integration.recyclerview.RecyclerViewPreloader
+import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.signature.ObjectKey
+import com.bumptech.glide.util.ViewPreloadSizeProvider
 import com.furianrt.mydiary.R
-import com.furianrt.mydiary.data.model.MyNoteWithProp
+import com.furianrt.mydiary.data.entity.MyNoteWithProp
+import com.furianrt.mydiary.utils.applyTextSpans
+import com.furianrt.mydiary.utils.getDay
+import com.furianrt.mydiary.utils.getDayOfWeek
 import com.furianrt.mydiary.view.general.GlideApp
-import com.furianrt.mydiary.view.general.HeaderItemDecoration
-import com.furianrt.mydiary.utils.*
-import kotlinx.android.synthetic.main.activity_main_list_content.view.*
+import com.furianrt.mydiary.view.general.StickyHeaderItemDecoration
 import kotlinx.android.synthetic.main.activity_main_list_header.view.*
+import kotlinx.android.synthetic.main.activity_main_list_note_image.view.*
+import kotlinx.android.synthetic.main.activity_main_list_note_text.view.*
+import java.lang.IllegalArgumentException
+import java.text.SimpleDateFormat
 import java.util.*
 
 class NoteListAdapter(
-        var selectedNoteIds: HashSet<String> = HashSet(),
-        val is24TimeFormat: Boolean
-) : RecyclerView.Adapter<NoteListAdapter.MyViewHolder>(),
-        HeaderItemDecoration.StickyHeaderInterface {
+        context: Context,
+        var selectedNoteIds: HashSet<String> = HashSet()
+) : RecyclerView.Adapter<NoteListAdapter.BaseNoteViewHolder>(),
+        ListPreloader.PreloadModelProvider<NoteListAdapter.NoteItemView>,
+        StickyHeaderItemDecoration.StickyHeaderInterface {
+
 
     companion object {
-        private const val PREVIEW_IMAGE_SIZE = 200
+        private const val MAX_PRELOAD = 20
     }
 
-    private val mItems = mutableListOf<NoteListItem>()
+    class NoteItemView(
+            val type: Int,
+            val note: MyNoteWithProp? = null,
+            val time: Long? = null
+    ) {
+        companion object {
+            const val TYPE_NOTE_WITH_IMAGE = 0
+            const val TYPE_NOTE_WITH_TEXT = 1
+            const val TYPE_HEADER = 2
+        }
+    }
 
     var listener: OnMainListItemInteractionListener? = null
     var syncEmail: String? = null
 
-    fun submitList(items: List<NoteListItem>) {
+    private val mItems = mutableListOf<NoteItemView>()
+    private val mSizeProvider = ViewPreloadSizeProvider<NoteItemView>()
+    private val mGlideBuilder = GlideApp.with(context)
+
+    val preloader = RecyclerViewPreloader<NoteItemView>(
+            Glide.with(context), this, mSizeProvider, MAX_PRELOAD
+    )
+
+    fun submitList(items: List<NoteItemView>) {
         val diffResult = DiffUtil.calculateDiff(NoteListDiffCallback(mItems, items))
         mItems.clear()
         mItems.addAll(items)
         diffResult.dispatchUpdatesTo(this)
     }
 
-    override fun getItemCount() = mItems.size
+    override fun getPreloadItems(position: Int): MutableList<NoteItemView> =
+            mItems.subList(position, position + 1)
+
+    override fun getPreloadRequestBuilder(item: NoteItemView): RequestBuilder<*>? =
+            if (item.type == NoteItemView.TYPE_NOTE_WITH_IMAGE) {
+                mGlideBuilder
+                        .load(Uri.parse(item.note!!.images.first().uri))
+                        .signature(ObjectKey(item.note.images.first().editedTime))
+                        .centerCrop()
+                        .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
+            } else {
+                null
+            }
+
+    override fun getHeaderLayout(headerPosition: Int): Int = R.layout.activity_main_list_header
 
     override fun bindHeaderData(header: View, headerPosition: Int) {
         if (headerPosition == RecyclerView.NO_POSITION) {
             header.layoutParams.height = 0
         }
 
-        val time = (mItems[headerPosition] as NoteListHeader).time
-        header.text_date.text = header.context.getString(
-                R.string.note_list_date_format,
-                getMonth(time),
-                getYear(time)
-        )
+        header.text_header_date.text = SimpleDateFormat("LLLL yyyy", Locale.getDefault())
+                .format(mItems[headerPosition].time)
+                .capitalize()
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(viewType, parent, false)
-        return when (viewType) {
-            R.layout.activity_main_list_header -> HeaderViewHolder(view)
-            R.layout.activity_main_list_content -> ContentViewHolder(view)
-            else -> throw IllegalStateException("Unsupported item type")
-        }
-    }
+    override fun getItemCount(): Int = mItems.size
 
-    override fun isHeader(itemPosition: Int) = mItems[itemPosition] is NoteListHeader
+    override fun getItemViewType(position: Int): Int = mItems[position].type
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BaseNoteViewHolder =
+            when (viewType) {
+                NoteItemView.TYPE_NOTE_WITH_TEXT ->
+                    NoteTextViewHolder(LayoutInflater.from(parent.context)
+                            .inflate(R.layout.activity_main_list_note_text, parent, false))
+                NoteItemView.TYPE_NOTE_WITH_IMAGE ->
+                    NoteImageViewHolder(LayoutInflater.from(parent.context)
+                            .inflate(R.layout.activity_main_list_note_image, parent, false)
+                            .apply { mSizeProvider.setView(image_main_list) })
+                NoteItemView.TYPE_HEADER ->
+                    NoteHeaderViewHolder(LayoutInflater.from(parent.context)
+                            .inflate(R.layout.activity_main_list_header, parent, false))
+                else ->
+                    throw IllegalArgumentException()
+            }
+
+    override fun isHeader(itemPosition: Int) = mItems[itemPosition].type == NoteItemView.TYPE_HEADER
 
     override fun getHeaderPositionForItem(itemPosition: Int): Int =
             (itemPosition downTo 0)
                     .map { Pair(isHeader(it), it) }
                     .firstOrNull { it.first }?.second ?: RecyclerView.NO_POSITION
 
-    override fun getHeaderLayout(headerPosition: Int): Int = R.layout.activity_main_list_header
-
-    override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
-        holder.bind(mItems[position])
-    }
-
-    override fun getItemViewType(position: Int) = mItems[position].getType()
-
-    abstract class MyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        abstract fun bind(item: NoteListItem)
-    }
-
-    inner class HeaderViewHolder(view: View) : MyViewHolder(view) {
-        override fun bind(item: NoteListItem) {
-            if (item is NoteListHeader) {
-                itemView.text_date.text = itemView.context.getString(
-                        R.string.note_list_date_format,
-                        getMonth(item.time),
-                        getYear(item.time)
-                )
-            }
+    override fun onBindViewHolder(holder: BaseNoteViewHolder, position: Int) {
+        when (holder) {
+            is NoteTextViewHolder -> mItems[position].note?.let { holder.bind(it) }
+            is NoteImageViewHolder -> mItems[position].note?.let { holder.bind(it) }
+            is NoteHeaderViewHolder -> mItems[position].time?.let { holder.bind(it) }
         }
     }
 
-    inner class ContentViewHolder(view: View) : MyViewHolder(view) {
-        override fun bind(item: NoteListItem) {
-            if (item is NoteListContent) {
-                with(itemView) {
-                    setOnClickListener {
-                        val position = mItems
-                                .filterIsInstance<NoteListContent>()
-                                .map { it.note.note.id }
-                                .indexOf(item.note.note.id)
-                        listener?.onMainListItemClick(item.note, position)
-                    }
-                    setOnLongClickListener {
-                        listener?.onMainListItemLongClick(item.note)
-                        return@setOnLongClickListener true
-                    }
-                    text_day_of_week.text = getDayOfWeek(item.note.note.time)
-                    text_day.text = getDay(item.note.note.time)
-                    text_time.text = getTime(item.note.note.time, is24TimeFormat)
-                    text_tags.text = item.note.tags.filter { !it.isDeleted }.size.toString()
-                    text_images.text = item.note.images.filter { !it.isDeleted }.size.toString()
-                    setCategory(item)
-                    setSyncIcon(item)
-                    setPreviewImage(item)
-                    setTitle(item)
-                    text_note_content.setText(item.note.note.content.applyTextSpans(item.note.textSpans), TextView.BufferType.EDITABLE)
-                    selectItem(item.note.note.id)
-                }
+    abstract class BaseNoteViewHolder(view: View) : RecyclerView.ViewHolder(view)
+
+    inner class NoteTextViewHolder(view: View) : BaseNoteViewHolder(view) {
+
+        fun bind(note: MyNoteWithProp) {
+            itemView.setOnClickListener { listener?.onMainListItemClick(note) }
+            itemView.setOnLongClickListener {
+                listener?.onMainListItemLongClick(note)
+                return@setOnLongClickListener true
+            }
+            itemView.text_note_text_day_of_week.text = getDayOfWeek(note.note.time)
+            itemView.text_note_text_day.text = getDay(note.note.time)
+            itemView.text_note_content.setText(note.note.content.applyTextSpans(note.textSpans), TextView.BufferType.EDITABLE)
+            setCategory(note)
+            setSyncIcon(note)
+            setTitle(note)
+            selectItem(note.note.id)
+        }
+
+        private fun setTitle(note: MyNoteWithProp) {
+            if (note.note.title.isEmpty()) {
+                itemView.text_note_title.visibility = View.GONE
+            } else {
+                itemView.text_note_title.text = note.note.title
+                itemView.text_note_title.visibility = View.VISIBLE
             }
         }
 
-        private fun setCategory(item: NoteListContent) {
-            with(itemView) {
-                val categoryColor = item.note.category?.color
-                if (categoryColor != null) {
-                    text_day_of_week.setBackgroundColor(categoryColor)
-                } else {
-                    text_day_of_week.setBackgroundColor(context.getThemePrimaryColor())
-                }
-
-                if (item.note.category != null) {
-                    text_category.text = item.note.category?.name
-                    text_category.visibility = View.VISIBLE
-                } else {
-                    text_category.visibility = View.INVISIBLE
-                    text_category.text = ""
-                }
-            }
+        private fun setCategory(note: MyNoteWithProp) {
+            val color = note.category?.color
+                    ?: ContextCompat.getColor(itemView.context, R.color.grey_dark)
+            itemView.text_note_text_day_of_week.setTextColor(color)
+            itemView.text_note_text_day.setTextColor(color)
         }
 
-        private fun setSyncIcon(item: NoteListContent) {
-            with(itemView) {
-                val email = syncEmail
-                if (email == null) {
-                    image_sync.visibility = View.INVISIBLE
+        private fun setSyncIcon(note: MyNoteWithProp) {
+            val email = syncEmail
+            if (email != null) {
+                itemView.image_note_text_sync.visibility = View.VISIBLE
+                if (note.isSync(email)) {
+                    itemView.image_note_text_sync.setImageResource(R.drawable.ic_cloud_done)
+                    itemView.image_note_text_sync.alpha = 0.3f
                 } else {
-                    if (item.note.isSync(email)) {
-                        image_sync.setImageResource(R.drawable.ic_cloud_done)
-                        image_sync.setColorFilter(itemView.context.getThemeAccentColor(), PorterDuff.Mode.SRC_IN)
-                    } else {
-                        image_sync.setImageResource(R.drawable.ic_cloud_off)
-                        image_sync.setColorFilter(
-                                ContextCompat.getColor(itemView.context, R.color.red),
-                                PorterDuff.Mode.SRC_IN)
-                    }
-                    image_sync.visibility = View.VISIBLE
+                    itemView.image_note_text_sync.setImageResource(R.drawable.ic_cloud_off)
+                    itemView.image_note_text_sync.alpha = 1f
                 }
-            }
-        }
-
-        private fun setPreviewImage(item: NoteListContent) {
-            with(itemView) {
-                val notDeletedImages = item.note.images.filter { !it.isDeleted }
-                if (notDeletedImages.isEmpty()) {
-                    image_main_list.visibility = View.GONE
-                    image_main_list.setImageDrawable(null)
-                } else {
-                    image_main_list.visibility = View.VISIBLE
-                    GlideApp.with(itemView)
-                            .load(Uri.parse(notDeletedImages.first().uri))
-                            .override(PREVIEW_IMAGE_SIZE, PREVIEW_IMAGE_SIZE)
-                            .signature(ObjectKey(notDeletedImages.first().editedTime))
-                            .into(image_main_list)
-                }
-            }
-        }
-
-        private fun setTitle(item: NoteListContent) {
-            with(itemView) {
-                val title = item.note.note.title
-                if (title.isEmpty()) {
-                    text_note_title.visibility = View.GONE
-                } else {
-                    text_note_title.text = title
-                    text_note_title.visibility = View.VISIBLE
-                }
+            } else {
+                itemView.image_note_text_sync.visibility = View.GONE
             }
         }
 
         private fun selectItem(noteId: String) {
-            itemView.view_selected.visibility = if (selectedNoteIds.contains(noteId)) {
+            itemView.view_note_text_selected.visibility = if (selectedNoteIds.contains(noteId)) {
                 View.VISIBLE
             } else {
-                View.INVISIBLE
+                View.GONE
             }
         }
     }
 
+    inner class NoteImageViewHolder(view: View) : BaseNoteViewHolder(view) {
+
+        fun bind(note: MyNoteWithProp) {
+            itemView.setOnClickListener { listener?.onMainListItemClick(note) }
+            itemView.setOnLongClickListener {
+                listener?.onMainListItemLongClick(note)
+                return@setOnLongClickListener true
+            }
+            itemView.text_note_image_day_of_week.text = getDayOfWeek(note.note.time)
+            itemView.text_note_image_day.text = getDay(note.note.time)
+            setCategory(note)
+            setSyncIcon(note)
+            selectItem(note.note.id)
+            mGlideBuilder
+                    .load(Uri.parse(note.images.first().uri))
+                    .signature(ObjectKey(note.images.first().editedTime))
+                    .centerCrop()
+                    .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
+                    .into(itemView.image_main_list)
+        }
+
+        private fun setCategory(note: MyNoteWithProp) {
+            val color = note.category?.color
+                    ?: ContextCompat.getColor(itemView.context, R.color.grey_dark)
+            itemView.text_note_image_day_of_week.setTextColor(color)
+            itemView.text_note_image_day.setTextColor(color)
+        }
+
+        private fun setSyncIcon(note: MyNoteWithProp) {
+            val email = syncEmail
+            if (email != null) {
+                itemView.image_note_image_sync.visibility = View.VISIBLE
+                if (note.isSync(email)) {
+                    itemView.image_note_image_sync.setImageResource(R.drawable.ic_cloud_done)
+                    itemView.image_note_image_sync.alpha = 0.3f
+                } else {
+                    itemView.image_note_image_sync.setImageResource(R.drawable.ic_cloud_off)
+                    itemView.image_note_image_sync.alpha = 1f
+                }
+            } else {
+                itemView.image_note_image_sync.visibility = View.GONE
+            }
+        }
+
+        private fun selectItem(noteId: String) {
+            itemView.view_note_image_selected.visibility = if (selectedNoteIds.contains(noteId)) {
+                View.VISIBLE
+            } else {
+                View.GONE
+            }
+        }
+    }
+
+    inner class NoteHeaderViewHolder(view: View) : BaseNoteViewHolder(view) {
+
+        fun bind(time: Long) {
+            itemView.text_header_date.text = SimpleDateFormat("LLLL yyyy", Locale.getDefault())
+                    .format(time)
+                    .capitalize()
+        }
+    }
+
     interface OnMainListItemInteractionListener {
-        fun onMainListItemClick(note: MyNoteWithProp, position: Int)
+        fun onMainListItemClick(note: MyNoteWithProp)
         fun onMainListItemLongClick(note: MyNoteWithProp)
     }
 }

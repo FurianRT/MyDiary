@@ -11,10 +11,11 @@
 package com.furianrt.mydiary.view.screens.main.adapter
 
 import androidx.recyclerview.widget.DiffUtil
+import com.furianrt.mydiary.view.screens.main.adapter.NoteListAdapter.*
 
 class NoteListDiffCallback(
-        private val oldList: List<NoteListItem>,
-        private val newList: List<NoteListItem>
+        private val oldList: List<NoteItemView>,
+        private val newList: List<NoteItemView>
 ) : DiffUtil.Callback() {
 
     override fun getOldListSize() = oldList.size
@@ -24,23 +25,28 @@ class NoteListDiffCallback(
     override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
         val oldItem = oldList[oldItemPosition]
         val newItem = newList[newItemPosition]
-        if (oldItem is NoteListContent && newItem is NoteListContent)
-            return oldItem.note.note.id == newItem.note.note.id
-        if (oldItem is NoteListHeader && newItem is NoteListHeader)
-            return oldItem.time == newItem.time
-        return false
+        return when {
+            oldItem.type == NoteItemView.TYPE_HEADER && oldItem.type == NoteItemView.TYPE_HEADER ->
+                oldItem.time == newItem.time
+            oldItem.type == NoteItemView.TYPE_NOTE_WITH_TEXT && oldItem.type == NoteItemView.TYPE_NOTE_WITH_TEXT ->
+                oldItem.note?.note?.id == newItem.note?.note?.id
+            oldItem.type == NoteItemView.TYPE_NOTE_WITH_IMAGE && oldItem.type == NoteItemView.TYPE_NOTE_WITH_IMAGE ->
+                oldItem.note?.note?.id == newItem.note?.note?.id
+            else -> false
+        }
     }
 
     override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
         val oldItem = oldList[oldItemPosition]
         val newItem = newList[newItemPosition]
-        if (oldItem is NoteListContent && newItem is NoteListContent)
-            return oldItem.note == newItem.note &&
-                    oldItem.note.images == newItem.note.images &&
-                    oldItem.note.tags == newItem.note.tags &&
-                    oldItem.note.textSpans == newItem.note.textSpans
-        if (oldItem is NoteListHeader && newItem is NoteListHeader)
-            return oldItem.time == newItem.time
-        return false
+        return when {
+            oldItem.type == NoteItemView.TYPE_HEADER && oldItem.type == NoteItemView.TYPE_HEADER ->
+                oldItem.time == newItem.time
+            oldItem.type == NoteItemView.TYPE_NOTE_WITH_TEXT && oldItem.type == NoteItemView.TYPE_NOTE_WITH_TEXT ->
+                oldList[oldItemPosition] == newList[newItemPosition]
+            oldItem.type == NoteItemView.TYPE_NOTE_WITH_IMAGE && oldItem.type == NoteItemView.TYPE_NOTE_WITH_IMAGE ->
+                oldList[oldItemPosition] == newList[newItemPosition]
+            else -> false
+        }
     }
 }

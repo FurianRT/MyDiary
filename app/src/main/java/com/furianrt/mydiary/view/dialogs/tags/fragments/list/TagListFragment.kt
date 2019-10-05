@@ -19,7 +19,7 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.furianrt.mydiary.R
 import com.furianrt.mydiary.view.base.BaseFragment
-import com.furianrt.mydiary.data.model.MyTag
+import com.furianrt.mydiary.data.entity.MyTag
 import com.furianrt.mydiary.view.dialogs.tags.TagsDialog
 import com.furianrt.mydiary.view.dialogs.tags.fragments.add.TagAddFragment
 import com.furianrt.mydiary.view.dialogs.tags.fragments.delete.TagDeleteFragment

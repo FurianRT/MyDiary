@@ -34,5 +34,8 @@ class SyncForecastUseCase @Inject constructor(
                     .flatMapCompletable { forecastRepository.deleteForecastsFromCloud(it) }
                     .andThen(forecastRepository.getAllForecastsFromCloud())
                     .flatMapCompletable { forecastRepository.insertForecast(it) }
-                    .onErrorResumeNext { Completable.error(SyncForecastsException()) }
+                    .onErrorResumeNext { error ->
+                        error.printStackTrace()
+                        Completable.error(SyncForecastsException())
+                    }
 }

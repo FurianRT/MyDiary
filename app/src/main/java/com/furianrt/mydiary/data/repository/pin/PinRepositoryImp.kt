@@ -10,9 +10,9 @@
 
 package com.furianrt.mydiary.data.repository.pin
 
-import com.furianrt.mydiary.data.auth.AuthHelper
 import com.furianrt.mydiary.data.encryption.EncryptionHelper
-import com.furianrt.mydiary.data.prefs.PreferencesHelper
+import com.furianrt.mydiary.data.source.auth.AuthHelper
+import com.furianrt.mydiary.data.source.preferences.PreferencesHelper
 import io.reactivex.Completable
 import io.reactivex.Scheduler
 import io.reactivex.Single

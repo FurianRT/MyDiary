@@ -17,7 +17,7 @@ import android.view.ViewGroup
 import com.furianrt.mydiary.R
 import com.furianrt.mydiary.analytics.MyAnalytics
 import com.furianrt.mydiary.view.base.BaseFragment
-import com.furianrt.mydiary.data.model.MyTag
+import com.furianrt.mydiary.data.entity.MyTag
 import kotlinx.android.synthetic.main.fragment_tag_delete.*
 import kotlinx.android.synthetic.main.fragment_tag_delete.view.*
 import javax.inject.Inject

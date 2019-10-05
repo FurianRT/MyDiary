@@ -34,8 +34,8 @@ import androidx.viewpager2.widget.ViewPager2
 import com.furianrt.mydiary.R
 import com.furianrt.mydiary.analytics.MyAnalytics
 import com.furianrt.mydiary.view.base.BaseFragment
-import com.furianrt.mydiary.data.model.*
-import com.furianrt.mydiary.data.model.pojo.TagsAndAppearance
+import com.furianrt.mydiary.data.entity.*
+import com.furianrt.mydiary.data.entity.pojo.TagsAndAppearance
 import com.furianrt.mydiary.view.dialogs.categories.CategoriesDialog
 import com.furianrt.mydiary.view.dialogs.delete.note.DeleteNoteDialog
 import com.furianrt.mydiary.view.dialogs.moods.MoodsDialog

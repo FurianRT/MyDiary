@@ -39,7 +39,10 @@ class SyncTagsUseCase @Inject constructor(
                     .flatMapCompletable { tagRepository.deleteTagsFromCloud(it) }
                     .andThen(tagRepository.getAllTagsFromCloud())
                     .flatMapCompletable { tagRepository.insertTag(it) }
-                    .onErrorResumeNext { Completable.error(SyncTagsException()) }
+                    .onErrorResumeNext { error ->
+                        error.printStackTrace()
+                        Completable.error(SyncTagsException())
+                    }
 
     private fun syncNoteTags(email: String): Completable =
             tagRepository.getAllNoteTags()
@@ -56,5 +59,8 @@ class SyncTagsUseCase @Inject constructor(
                     .flatMapCompletable { tagRepository.deleteNoteTagsFromCloud(it) }
                     .andThen(tagRepository.getAllNoteTagsFromCloud())
                     .flatMapCompletable { tagRepository.insertNoteTag(it) }
-                    .onErrorResumeNext { Completable.error(SyncNoteTagsException()) }
+                    .onErrorResumeNext { error ->
+                        error.printStackTrace()
+                        Completable.error(SyncNoteTagsException())
+                    }
 }

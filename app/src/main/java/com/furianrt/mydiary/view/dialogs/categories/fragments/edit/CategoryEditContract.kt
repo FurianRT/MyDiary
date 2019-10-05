@@ -12,7 +12,7 @@ package com.furianrt.mydiary.view.dialogs.categories.fragments.edit
 
 import com.furianrt.mydiary.view.base.mvp.BaseMvpView
 import com.furianrt.mydiary.view.base.mvp.BaseMvpPresenter
-import com.furianrt.mydiary.data.model.MyCategory
+import com.furianrt.mydiary.data.entity.MyCategory
 
 interface CategoryEditContract {
 

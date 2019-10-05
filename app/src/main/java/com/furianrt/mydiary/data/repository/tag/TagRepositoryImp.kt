@@ -10,12 +10,12 @@
 
 package com.furianrt.mydiary.data.repository.tag
 
-import com.furianrt.mydiary.data.auth.AuthHelper
-import com.furianrt.mydiary.data.cloud.CloudHelper
-import com.furianrt.mydiary.data.database.NoteTagDao
-import com.furianrt.mydiary.data.database.TagDao
-import com.furianrt.mydiary.data.model.MyTag
-import com.furianrt.mydiary.data.model.NoteTag
+import com.furianrt.mydiary.data.entity.MyTag
+import com.furianrt.mydiary.data.entity.NoteTag
+import com.furianrt.mydiary.data.source.auth.AuthHelper
+import com.furianrt.mydiary.data.source.cloud.CloudHelper
+import com.furianrt.mydiary.data.source.database.NoteTagDao
+import com.furianrt.mydiary.data.source.database.TagDao
 import io.reactivex.Completable
 import io.reactivex.Flowable
 import io.reactivex.Scheduler

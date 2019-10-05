@@ -10,7 +10,7 @@
 
 package com.furianrt.mydiary.data.repository.general
 
-import com.furianrt.mydiary.data.model.SyncProgressMessage
+import com.furianrt.mydiary.data.entity.SyncProgressMessage
 
 interface GeneralRepository {
     fun is24TimeFormat(): Boolean

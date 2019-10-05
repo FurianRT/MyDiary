@@ -11,7 +11,7 @@
 package com.furianrt.mydiary.view.screens.note.fragments.mainnote
 
 import android.util.Log
-import com.furianrt.mydiary.data.model.*
+import com.furianrt.mydiary.data.entity.*
 import com.furianrt.mydiary.domain.FindLocationUseCase
 import com.furianrt.mydiary.domain.check.IsForecastEnabledUseCase
 import com.furianrt.mydiary.domain.check.IsLocationEnabledUseCase

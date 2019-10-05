@@ -12,7 +12,7 @@ package com.furianrt.mydiary.view.screens.main
 
 import android.annotation.SuppressLint
 import android.os.Bundle
-import com.furianrt.mydiary.data.model.*
+import com.furianrt.mydiary.data.entity.*
 import com.furianrt.mydiary.domain.FilterNotesUseCase
 import com.furianrt.mydiary.domain.SwapNoteSortTypeUseCase
 import com.furianrt.mydiary.domain.check.CheckLogOutUseCase
@@ -20,17 +20,12 @@ import com.furianrt.mydiary.domain.check.IsDailyImageEnabledUseCase
 import com.furianrt.mydiary.domain.check.IsNeedRateOfferUseCase
 import com.furianrt.mydiary.domain.delete.DeleteProfileUseCase
 import com.furianrt.mydiary.domain.get.*
-import com.furianrt.mydiary.view.screens.main.adapter.NoteListContent
-import com.furianrt.mydiary.view.screens.main.adapter.NoteListHeader
-import com.furianrt.mydiary.view.screens.main.adapter.NoteListItem
 import com.furianrt.mydiary.utils.generateUniqueId
 import io.reactivex.android.schedulers.AndroidSchedulers
-import org.joda.time.DateTime
 import org.joda.time.LocalDate
-import java.util.TreeMap
+import java.lang.IllegalArgumentException
 import java.util.Locale
 import javax.inject.Inject
-import kotlin.Comparator
 import kotlin.collections.ArrayList
 import kotlin.collections.HashSet
 
@@ -39,7 +34,6 @@ class MainActivityPresenter @Inject constructor(
         private val getNotesSortType: GetNotesSortTypeUseCase,
         private val swapNoteSortType: SwapNoteSortTypeUseCase,
         private val getProfile: GetProfileUseCase,
-        private val getTimeFormat: GetTimeFormatUseCase,
         private val isNeedRateOffer: IsNeedRateOfferUseCase,
         private val isDailyImageEnabled: IsDailyImageEnabledUseCase,
         private val getDailyImage: GetDailyImageUseCase,
@@ -126,7 +120,6 @@ class MainActivityPresenter @Inject constructor(
             view?.showEmptyHeaderImage(false)
             return
         }
-
         addDisposable(getDailyImage.invoke()
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({ image ->
@@ -147,50 +140,8 @@ class MainActivityPresenter @Inject constructor(
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { notes ->
                     mNoteList = notes
-                    showNotes(mNoteList)
+                    showNotes(mNoteList, false)
                 })
-    }
-
-    private fun toMap(notes: List<MyNoteWithProp>): Map<Long, ArrayList<MyNoteWithProp>> {
-        val map = TreeMap<Long, ArrayList<MyNoteWithProp>>(Comparator<Long> { p0, p1 ->
-            when (getNotesSortType.invoke()) {
-                GetNotesSortTypeUseCase.SORT_TYPE_ASC -> p0.compareTo(p1)
-                GetNotesSortTypeUseCase.SORT_TYPE_DESC -> p1.compareTo(p0)
-                else -> throw IllegalStateException()
-            }
-        })
-        for (note in notes) {
-            val dateTime = DateTime(note.note.time).dayOfMonth()
-                    .withMinimumValue()
-                    .withTimeAtStartOfDay()
-                    .withMillisOfDay(0)
-            var value = map[dateTime.millis]
-            if (value == null) {
-                value = ArrayList()
-                map[dateTime.millis] = value
-            }
-            value.add(note.copy())
-        }
-        return map
-    }
-
-    private fun formatNotes(notes: Map<Long, List<MyNoteWithProp>>): ArrayList<NoteListItem> {
-        val list = ArrayList<NoteListItem>()
-        for (date in notes.keys) {
-            val header = NoteListHeader(date)
-            list.add(header)
-            val values = when (getNotesSortType.invoke()) {
-                GetNotesSortTypeUseCase.SORT_TYPE_ASC ->
-                    notes.getValue(date).sortedBy { it.note.time }
-                GetNotesSortTypeUseCase.SORT_TYPE_DESC ->
-                    notes.getValue(date).sortedByDescending { it.note.time }
-                else -> throw IllegalStateException()
-            }
-            for (note in values) {
-                list.add(NoteListContent(note))
-            }
-        }
-        return list
     }
 
     override fun onDailyImageLoadStateChange() {
@@ -214,7 +165,7 @@ class MainActivityPresenter @Inject constructor(
             GetNotesSortTypeUseCase.SORT_TYPE_DESC -> view?.setSortDesc()
             else -> throw IllegalStateException()
         }
-        showNotes(mNoteList)
+        showNotes(mNoteList, true)
     }
 
     override fun onMainImageClick() {
@@ -225,9 +176,20 @@ class MainActivityPresenter @Inject constructor(
         view?.showViewImageSettings()
     }
 
-    override fun onMainListItemClick(note: MyNoteWithProp, position: Int) {
+    override fun onMainListItemClick(note: MyNoteWithProp) {
         if (mSelectedNoteIds.isEmpty()) {
-            view?.showNotePager(position, note.note.id)
+            val position = when (getNotesSortType.invoke()) {
+                GetNotesSortTypeUseCase.SORT_TYPE_ASC -> mNoteList
+                        .sortedBy { it.note.time }
+                        .indexOfFirst { it.note.id == note.note.id }
+                GetNotesSortTypeUseCase.SORT_TYPE_DESC -> mNoteList
+                        .sortedByDescending { it.note.time }
+                        .indexOfFirst { it.note.id == note.note.id }
+                else -> throw IllegalArgumentException()
+            }
+            if (position != -1) {
+                view?.showNotePager(position, note.note.id)
+            }
         } else {
             selectListItem(note.note.id)
         }
@@ -282,7 +244,7 @@ class MainActivityPresenter @Inject constructor(
 
     private fun selectListItem(noteId: String) {
         if (mSelectedNoteIds.contains(noteId)) {
-            if ( mSelectedNoteIds.size == 1) {
+            if (mSelectedNoteIds.size == 1) {
                 view?.deactivateSelection()
             }
             mSelectedNoteIds.remove(noteId)
@@ -295,9 +257,6 @@ class MainActivityPresenter @Inject constructor(
     override fun onButtonSettingsClick() {
         view?.showSettingsView()
     }
-
-    override fun is24TimeFormat(): Boolean =
-            getTimeFormat.invoke() == GetTimeFormatUseCase.TIME_FORMAT_24
 
     private fun loadProfile() {
         addDisposable(getProfile.invoke()
@@ -316,7 +275,7 @@ class MainActivityPresenter @Inject constructor(
 
     override fun onSearchQueryChange(query: String) {
         mSearchQuery = query.toLowerCase(Locale.getDefault())
-        showNotes(mNoteList)
+        showNotes(mNoteList, true)
     }
 
     override fun onTagFilterChange(tag: MyTag, checked: Boolean) {
@@ -325,8 +284,7 @@ class MainActivityPresenter @Inject constructor(
         } else {
             mFilteredTagIds.remove(tag.id)
         }
-
-        showNotes(mNoteList)
+        showNotes(mNoteList, true)
     }
 
     override fun onCategoryFilterChange(category: MyCategory, checked: Boolean) {
@@ -335,8 +293,7 @@ class MainActivityPresenter @Inject constructor(
         } else {
             mFilteredCategoryIds.remove(category.id)
         }
-
-        showNotes(mNoteList)
+        showNotes(mNoteList, true)
     }
 
     override fun onLocationFilterChange(location: MyLocation, checked: Boolean) {
@@ -345,8 +302,7 @@ class MainActivityPresenter @Inject constructor(
         } else {
             mFilteredLocationNames.remove(location.name)
         }
-
-        showNotes(mNoteList)
+        showNotes(mNoteList, true)
     }
 
     override fun onMoodFilterChange(mood: MyMood, checked: Boolean) {
@@ -355,8 +311,7 @@ class MainActivityPresenter @Inject constructor(
         } else {
             mFilteredMoodIds.remove(mood.id)
         }
-
-        showNotes(mNoteList)
+        showNotes(mNoteList, true)
     }
 
     override fun onNoTagsFilterChange(checked: Boolean) {
@@ -365,8 +320,7 @@ class MainActivityPresenter @Inject constructor(
         } else {
             mFilteredTagIds.remove(MyTag.TABLE_NAME)
         }
-
-        showNotes(mNoteList)
+        showNotes(mNoteList, true)
     }
 
     override fun onNoCategoryFilterChange(checked: Boolean) {
@@ -375,8 +329,7 @@ class MainActivityPresenter @Inject constructor(
         } else {
             mFilteredCategoryIds.remove(MyCategory.TABLE_NAME)
         }
-
-        showNotes(mNoteList)
+        showNotes(mNoteList, true)
     }
 
     override fun onNoMoodFilterChange(checked: Boolean) {
@@ -385,8 +338,7 @@ class MainActivityPresenter @Inject constructor(
         } else {
             mFilteredMoodIds.remove(-1)
         }
-
-        showNotes(mNoteList)
+        showNotes(mNoteList, true)
     }
 
     override fun onNoLocationFilterChange(checked: Boolean) {
@@ -395,8 +347,7 @@ class MainActivityPresenter @Inject constructor(
         } else {
             mFilteredLocationNames.remove(MyLocation.TABLE_NAME)
         }
-
-        showNotes(mNoteList)
+        showNotes(mNoteList, true)
     }
 
     override fun onDateFilterChange(startDate: Long?, endDate: Long?) {
@@ -411,8 +362,7 @@ class MainActivityPresenter @Inject constructor(
         } else {
             LocalDate(endDate)
         }
-
-        showNotes(mNoteList)
+        showNotes(mNoteList, true)
     }
 
     override fun onClearFilters() {
@@ -422,18 +372,22 @@ class MainActivityPresenter @Inject constructor(
         mFilteredLocationNames.clear()
         mFilteredStartDate = null
         mFilteredEndDate = null
-
-        showNotes(mNoteList)
+        showNotes(mNoteList, true)
     }
 
-    private fun showNotes(notes: List<MyNoteWithProp>) {
-        if (notes.isEmpty()) {
+    private fun showNotes(notes: List<MyNoteWithProp>, scrollToTop: Boolean) {
+        val sortedNotes = when (getNotesSortType.invoke()) {
+            GetNotesSortTypeUseCase.SORT_TYPE_ASC -> notes.sortedBy { it.note.time }
+            GetNotesSortTypeUseCase.SORT_TYPE_DESC -> notes.sortedByDescending { it.note.time }
+            else -> throw IllegalArgumentException()
+        }
+        if (sortedNotes.isEmpty()) {
             view?.showEmptyNoteList()
-            view?.showNotes(formatNotes(toMap(notes)), mSelectedNoteIds)
+            view?.showNotes(sortedNotes, mSelectedNoteIds, scrollToTop)
         } else {
             view?.hideEmptyNoteList()
-            val filteredNotes = applySearchFilter(notes)
-            view?.showNotes(formatNotes(toMap(filteredNotes)), mSelectedNoteIds)
+            val filteredNotes = applySearchFilter(sortedNotes)
+            view?.showNotes(filteredNotes, mSelectedNoteIds, scrollToTop)
             if (filteredNotes.isEmpty()) {
                 view?.showNoSearchResults()
             } else {

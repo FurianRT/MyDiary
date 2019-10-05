@@ -10,12 +10,12 @@
 
 package com.furianrt.mydiary.data.repository.forecast
 
-import com.furianrt.mydiary.data.api.forecast.WeatherApiService
-import com.furianrt.mydiary.data.auth.AuthHelper
-import com.furianrt.mydiary.data.cloud.CloudHelper
-import com.furianrt.mydiary.data.database.ForecastDao
-import com.furianrt.mydiary.data.model.MyForecast
-import com.furianrt.mydiary.data.prefs.PreferencesHelper
+import com.furianrt.mydiary.data.entity.MyForecast
+import com.furianrt.mydiary.data.source.api.forecast.WeatherApiService
+import com.furianrt.mydiary.data.source.auth.AuthHelper
+import com.furianrt.mydiary.data.source.cloud.CloudHelper
+import com.furianrt.mydiary.data.source.database.ForecastDao
+import com.furianrt.mydiary.data.source.preferences.PreferencesHelper
 import io.reactivex.Completable
 import io.reactivex.Flowable
 import io.reactivex.Scheduler

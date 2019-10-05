@@ -11,7 +11,7 @@
 package com.furianrt.mydiary.view.dialogs.categories.fragments.list
 
 import androidx.recyclerview.widget.DiffUtil
-import com.furianrt.mydiary.data.model.MyCategory
+import com.furianrt.mydiary.data.entity.MyCategory
 
 class CategoriesDiffCallback : DiffUtil.ItemCallback<MyCategory>() {
 

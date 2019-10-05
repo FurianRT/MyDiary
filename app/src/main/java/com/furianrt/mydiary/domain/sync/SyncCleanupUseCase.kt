@@ -16,6 +16,7 @@ import com.furianrt.mydiary.data.repository.forecast.ForecastRepository
 import com.furianrt.mydiary.data.repository.image.ImageRepository
 import com.furianrt.mydiary.data.repository.location.LocationRepository
 import com.furianrt.mydiary.data.repository.note.NoteRepository
+import com.furianrt.mydiary.data.repository.span.SpanRepository
 import com.furianrt.mydiary.data.repository.tag.TagRepository
 import io.reactivex.Completable
 import javax.inject.Inject
@@ -27,7 +28,8 @@ class SyncCleanupUseCase @Inject constructor(
         private val tagRepository: TagRepository,
         private val imageRepository: ImageRepository,
         private val locationRepository: LocationRepository,
-        private val forecastRepository: ForecastRepository
+        private val forecastRepository: ForecastRepository,
+        private val spanRepository: SpanRepository
 ) {
 
     class SyncCleanupException : Throwable()
@@ -42,6 +44,9 @@ class SyncCleanupUseCase @Inject constructor(
                     .andThen(locationRepository.cleanupNoteLocations())
                     .andThen(locationRepository.cleanupLocations())
                     .andThen(forecastRepository.cleanupForecasts())
-                    .onErrorResumeNext { Completable.error(SyncCleanupException()) }
-
+                    .andThen(spanRepository.cleanupTextSpans())
+                    .onErrorResumeNext { error ->
+                        error.printStackTrace()
+                        Completable.error(SyncCleanupException())
+                    }
 }

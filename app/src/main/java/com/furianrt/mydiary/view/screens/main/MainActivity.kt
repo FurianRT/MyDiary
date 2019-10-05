@@ -39,15 +39,14 @@ import com.furianrt.mydiary.BuildConfig
 import com.furianrt.mydiary.R
 import com.furianrt.mydiary.analytics.MyAnalytics
 import com.furianrt.mydiary.view.base.BaseActivity
-import com.furianrt.mydiary.data.model.*
+import com.furianrt.mydiary.data.entity.*
 import com.furianrt.mydiary.view.dialogs.categories.CategoriesDialog
 import com.furianrt.mydiary.view.dialogs.delete.note.DeleteNoteDialog
 import com.furianrt.mydiary.view.dialogs.rate.RateDialog
 import com.furianrt.mydiary.view.general.AppBarLayoutBehavior
 import com.furianrt.mydiary.view.general.GlideApp
-import com.furianrt.mydiary.view.general.HeaderItemDecoration
 import com.furianrt.mydiary.view.screens.main.adapter.NoteListAdapter
-import com.furianrt.mydiary.view.screens.main.adapter.NoteListItem
+import com.furianrt.mydiary.view.screens.main.adapter.NoteListAdapter.NoteItemView
 import com.furianrt.mydiary.view.screens.main.fragments.authentication.AuthFragment
 import com.furianrt.mydiary.view.screens.main.fragments.drawer.DrawerMenuFragment
 import com.furianrt.mydiary.view.screens.main.fragments.imagesettings.ImageSettingsFragment
@@ -59,6 +58,7 @@ import com.furianrt.mydiary.view.screens.settings.global.GlobalSettingsActivity
 import com.furianrt.mydiary.utils.dpToPx
 import com.furianrt.mydiary.utils.getDisplayWidth
 import com.furianrt.mydiary.utils.inTransaction
+import com.furianrt.mydiary.view.general.StickyHeaderItemDecoration
 import com.google.android.gms.ads.AdListener
 import com.google.android.gms.ads.AdRequest
 import com.google.android.material.appbar.AppBarLayout
@@ -68,7 +68,11 @@ import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.activity_main_toolbar.*
 import kotlinx.android.synthetic.main.bottom_sheet_main.*
 import kotlinx.android.synthetic.main.empty_search_note_list.*
+import org.joda.time.DateTime
+import java.util.*
 import javax.inject.Inject
+import kotlin.Comparator
+import kotlin.collections.ArrayList
 import kotlin.math.min
 
 class MainActivity : BaseActivity(R.layout.activity_main), MainActivityContract.MvpView,
@@ -137,10 +141,10 @@ class MainActivity : BaseActivity(R.layout.activity_main), MainActivityContract.
         mPresenter.onRestoreInstanceState(savedInstanceState)
 
         setSupportActionBar(toolbar_main)
-        supportActionBar?.let {
-            it.setDisplayShowTitleEnabled(false)
-            it.setDisplayHomeAsUpEnabled(true)
-            it.setHomeAsUpIndicator(R.drawable.ic_menu)
+        supportActionBar?.let { toolbar ->
+            toolbar.setDisplayShowTitleEnabled(false)
+            toolbar.setDisplayHomeAsUpEnabled(true)
+            toolbar.setHomeAsUpIndicator(R.drawable.ic_menu)
         }
 
         val drawerWidth = min(getDisplayWidth() - dpToPx(56f), dpToPx(56f) * 5)
@@ -182,12 +186,13 @@ class MainActivity : BaseActivity(R.layout.activity_main), MainActivityContract.
             mPresenter.onButtonImageSettingsClick()
         }
 
-        mAdapter = NoteListAdapter(is24TimeFormat = mPresenter.is24TimeFormat())
+        mAdapter = NoteListAdapter(this)
         list_main.layoutManager = LinearLayoutManager(this)
-        list_main.addItemDecoration(HeaderItemDecoration(list_main, mAdapter))
         list_main.adapter = mAdapter
         list_main.setHasFixedSize(true)
         list_main.itemAnimator = LandingAnimator()
+        list_main.setItemViewCacheSize(15)
+        list_main.addItemDecoration(StickyHeaderItemDecoration(list_main, mAdapter))
     }
 
     override fun onTagCheckStateChange(tag: MyTag, checked: Boolean) {
@@ -311,29 +316,28 @@ class MainActivity : BaseActivity(R.layout.activity_main), MainActivityContract.
         (coordParams.behavior as AppBarLayoutBehavior).shouldScroll = true
     }
 
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return when (item.itemId) {
-            R.id.menu_all_notes -> {
-                mPresenter.onMenuAllNotesClick()
-                true
+    override fun onOptionsItemSelected(item: MenuItem): Boolean =
+            when (item.itemId) {
+                R.id.menu_all_notes -> {
+                    mPresenter.onMenuAllNotesClick()
+                    true
+                }
+                R.id.menu_image -> {
+                    analytics.sendEvent(MyAnalytics.EVENT_HEADER_IMAGE_SETTINGS)
+                    mPresenter.onButtonImageSettingsClick()
+                    true
+                }
+                R.id.menu_settings -> {
+                    analytics.sendEvent(MyAnalytics.EVENT_MAIN_SETTINGS)
+                    mPresenter.onButtonSettingsClick()
+                    true
+                }
+                R.id.menu_sort -> {
+                    mPresenter.onButtonSortClick()
+                    true
+                }
+                else -> super.onOptionsItemSelected(item)
             }
-            R.id.menu_image -> {
-                analytics.sendEvent(MyAnalytics.EVENT_HEADER_IMAGE_SETTINGS)
-                mPresenter.onButtonImageSettingsClick()
-                true
-            }
-            R.id.menu_settings -> {
-                analytics.sendEvent(MyAnalytics.EVENT_MAIN_SETTINGS)
-                mPresenter.onButtonSettingsClick()
-                true
-            }
-            R.id.menu_sort -> {
-                mPresenter.onButtonSortClick()
-                true
-            }
-            else -> super.onOptionsItemSelected(item)
-        }
-    }
 
     override fun showDeleteConfirmationDialog(noteIds: List<String>) {
         DeleteNoteDialog.newInstance(noteIds).apply {
@@ -430,15 +434,62 @@ class MainActivity : BaseActivity(R.layout.activity_main), MainActivityContract.
         startActivity(NoteActivity.newIntentModeAdd(this, noteId))
     }
 
-    override fun showNotes(items: List<NoteListItem>, selectedNoteIds: Set<String>) {
+    override fun showNotes(notes: List<MyNoteWithProp>, selectedNoteIds: Set<String>, scrollToTop: Boolean) {
         Log.e(TAG, "showNotes")
         mAdapter.selectedNoteIds.clear()
         mAdapter.selectedNoteIds.addAll(selectedNoteIds)
-        mAdapter.submitList(items)
+        mAdapter.submitList(toNoteViewItem(notes.map { it.copy() }))
         mRecyclerViewState?.let {
             list_main.layoutManager?.onRestoreInstanceState(it)
             mRecyclerViewState = null
         }
+
+        if (scrollToTop) {
+            list_main.scrollToPosition(0)
+        }
+    }
+
+    private fun toNoteViewItem(notes: List<MyNoteWithProp>): ArrayList<NoteItemView> {
+        val sortAsc = notes.size > 1 && notes[0].note.time < notes[1].note.time
+        val map = TreeMap<Long, ArrayList<MyNoteWithProp>>(Comparator<Long> { p0, p1 ->
+            if (sortAsc) {
+                p0.compareTo(p1)
+            } else {
+                p1.compareTo(p0)
+            }
+        })
+        for (note in notes) {
+            val dateTime = DateTime(note.note.time).dayOfMonth()
+                    .withMinimumValue()
+                    .withTimeAtStartOfDay()
+                    .withMillisOfDay(0)
+            var value = map[dateTime.millis]
+            if (value == null) {
+                value = ArrayList()
+                map[dateTime.millis] = value
+            }
+            value.add(note)
+        }
+
+        val list = ArrayList<NoteItemView>()
+        for (date in map.keys) {
+            val header = NoteItemView(type = NoteItemView.TYPE_HEADER, time = date)
+            list.add(header)
+            val values = if (sortAsc) {
+                map.getValue(date).sortedBy { it.note.time }
+            } else {
+                map.getValue(date).sortedByDescending { it.note.time }
+            }
+
+            for (note in values) {
+                if (note.images.isEmpty()) {
+                    list.add(NoteItemView(NoteItemView.TYPE_NOTE_WITH_TEXT, note))
+                } else {
+                    list.add(NoteItemView(NoteItemView.TYPE_NOTE_WITH_IMAGE, note))
+                }
+            }
+        }
+        return list
     }
 
     override fun showEmptyNoteList() {
@@ -475,6 +526,7 @@ class MainActivity : BaseActivity(R.layout.activity_main), MainActivityContract.
                     override fun onAnimationCancel(view: View?) {
                         view?.visibility = View.GONE
                     }
+
                     override fun onAnimationStart(view: View?) {}
                     override fun onAnimationEnd(view: View?) {
                         view?.visibility = View.GONE
@@ -483,8 +535,8 @@ class MainActivity : BaseActivity(R.layout.activity_main), MainActivityContract.
                 .start()
     }
 
-    override fun onMainListItemClick(note: MyNoteWithProp, position: Int) {
-        mPresenter.onMainListItemClick(note, position)
+    override fun onMainListItemClick(note: MyNoteWithProp) {
+        mPresenter.onMainListItemClick(note)
     }
 
     override fun onMainListItemLongClick(note: MyNoteWithProp) {
@@ -604,6 +656,7 @@ class MainActivity : BaseActivity(R.layout.activity_main), MainActivityContract.
         mBottomSheet.bottomSheetCallback = mBottomSheetCallback
         mAdapter.listener = this
         drawer.addDrawerListener(mOnDrawerListener)
+        list_main.addOnScrollListener(mAdapter.preloader)
         (supportFragmentManager.findFragmentByTag(DeleteNoteDialog.TAG) as? DeleteNoteDialog)
                 ?.setOnDeleteConfirmListener(this)
         supportFragmentManager.findFragmentByTag(CategoriesDialog.TAG)?.let {
@@ -620,6 +673,7 @@ class MainActivity : BaseActivity(R.layout.activity_main), MainActivityContract.
         mBackPressCount = 0
         mAdapter.listener = null
         drawer.removeDrawerListener(mOnDrawerListener)
+        list_main.removeOnScrollListener(mAdapter.preloader)
         mHandler.removeCallbacks(mBottomSheetOpenRunnable)
     }
 }

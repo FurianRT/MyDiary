@@ -23,10 +23,10 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.furianrt.mydiary.R
-import com.furianrt.mydiary.data.model.MyCategory
-import com.furianrt.mydiary.data.model.MyLocation
-import com.furianrt.mydiary.data.model.MyMood
-import com.furianrt.mydiary.data.model.MyTag
+import com.furianrt.mydiary.data.entity.MyCategory
+import com.furianrt.mydiary.data.entity.MyLocation
+import com.furianrt.mydiary.data.entity.MyMood
+import com.furianrt.mydiary.data.entity.MyTag
 import com.furianrt.mydiary.view.screens.main.fragments.drawer.adapter.SearchListAdapter.SearchChildViewHolder
 import com.furianrt.mydiary.view.screens.main.fragments.drawer.adapter.SearchListAdapter.SearchGroupViewHolder
 import com.furianrt.mydiary.utils.*

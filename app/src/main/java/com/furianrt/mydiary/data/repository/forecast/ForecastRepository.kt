@@ -10,7 +10,7 @@
 
 package com.furianrt.mydiary.data.repository.forecast
 
-import com.furianrt.mydiary.data.model.MyForecast
+import com.furianrt.mydiary.data.entity.MyForecast
 import io.reactivex.Completable
 import io.reactivex.Flowable
 import io.reactivex.Single
