@@ -33,10 +33,17 @@ class StickyHeaderItemDecoration(
     private var mStickyHeaderHeight: Int = 0
     private var mCurrentHeader: View? = null
     private var mCurrentHeaderPosition = 0
+
+    //todo Well, yeah...
     private var mTempFlag = false
     private var mTempFlag2 = false
+    private var mTempFlag3 = false
+
     private val mHandler = Handler()
-    private val mHideRunnable = Runnable { mCurrentHeader?.let { it.animateAlpha(it.alpha, 0f) } }
+    private val mHideRunnable = Runnable {
+        mTempFlag3 = false
+        mCurrentHeader?.let { it.animateAlpha(it.alpha, 0f) }
+    }
 
     init {
         val layout = FrameLayout(recyclerView.context)
@@ -53,6 +60,7 @@ class StickyHeaderItemDecoration(
                 when (newState) {
                     RecyclerView.SCROLL_STATE_DRAGGING -> if (recyclerView.childCount > 0) {
                         mHandler.removeCallbacks(mHideRunnable)
+                        mTempFlag3 = true
                         mCurrentHeader?.alpha = 1f
                     }
                     RecyclerView.SCROLL_STATE_IDLE -> mHandler.postDelayed(mHideRunnable, HIDE_DELAY)
@@ -64,7 +72,11 @@ class StickyHeaderItemDecoration(
     override fun onDrawOver(c: Canvas, parent: RecyclerView, state: RecyclerView.State) {
         super.onDrawOver(c, parent, state)
 
-        val topChild = parent.getChildAt(0) ?: return
+        val topChild = parent.getChildAt(0)
+        if (topChild == null) {
+            mHeaderContainer.visibility = View.GONE
+            return
+        }
 
         val topChildPosition = parent.getChildAdapterPosition(topChild)
         if (topChildPosition == RecyclerView.NO_POSITION) {
@@ -95,7 +107,9 @@ class StickyHeaderItemDecoration(
                 .forEach { it.visibility = View.VISIBLE }
 
         val childInContact = getChildInContact(parent, contactPoint) ?: return
-        childInContact.visibility = View.VISIBLE
+        if (childInContact.visibility == View.INVISIBLE) {
+            childInContact.visibility = View.VISIBLE
+        }
 
         if (mTempFlag2) {
             val itemPosition = parent.getChildAdapterPosition(parent.getChildAt(0))
@@ -111,7 +125,7 @@ class StickyHeaderItemDecoration(
             return
         }
 
-        drawHeader(currentHeader, topChildPosition)
+        drawHeader(currentHeader, topChildPosition, parent)
     }
 
     private fun getHeaderViewForItem(itemPosition: Int, parent: RecyclerView): View {
@@ -122,9 +136,12 @@ class StickyHeaderItemDecoration(
         return header
     }
 
-    private fun drawHeader(header: View, position: Int) {
-        mHeaderContainer.layoutParams.height = mStickyHeaderHeight
-        setCurrentHeader(header, position)
+    private fun drawHeader(header: View, position: Int, parent: RecyclerView) {
+        val firstVisiblePosition = (parent.layoutManager as LinearLayoutManager).findFirstCompletelyVisibleItemPosition()
+        if (mTempFlag3 || firstVisiblePosition == 0) {
+            mHeaderContainer.layoutParams.height = mStickyHeaderHeight
+            setCurrentHeader(header, position)
+        }
         mTempFlag2 = true
     }
 

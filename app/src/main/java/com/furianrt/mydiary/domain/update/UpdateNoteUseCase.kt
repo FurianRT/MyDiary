@@ -37,12 +37,13 @@ class UpdateNoteUseCase @Inject constructor(
                     .ignoreElement()
 
     fun invoke(noteId: String, title: String, content: String): Completable =
-            noteRepository.getNote(noteId)
+            noteRepository.updateNoteText(noteId, title, content)
+            /*noteRepository.getNote(noteId)        //todo исправить это дерьмо
                     .flatMapCompletable { note ->
                         if (note.title != title || note.content != content) {
                             noteRepository.updateNoteText(noteId, title, content)
                         } else {
                             Completable.complete()
                         }
-                    }
+                    }*/
 }
