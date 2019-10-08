@@ -49,8 +49,10 @@ class DeviceRepositoryImp @Inject constructor(
     private val mLocationCallback = object : LocationCallback() {
         override fun onLocationResult(result: LocationResult?) {
             super.onLocationResult(result)
-            result?.let { findAddress(it.lastLocation.latitude, it.lastLocation.longitude) }
-            fusedLocationClient.removeLocationUpdates(this)
+            Thread(Runnable {
+                result?.let { findAddress(it.lastLocation.latitude, it.lastLocation.longitude) }
+                fusedLocationClient.removeLocationUpdates(this)
+            }).start()
         }
     }
 

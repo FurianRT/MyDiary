@@ -32,7 +32,7 @@ class GetDailyImageUseCase @Inject constructor(
                     return@flatMap when {
                         dbImages.isNotEmpty() && DateUtils.isToday(DateTime(dbImages.first().addedTime)) ->
                             Single.just(dbImages.first())
-                        dbImages.isNotEmpty() && networkAvailable ->
+                        dbImages.isNotEmpty() && !networkAvailable ->
                             Single.just(dbImages.first())
                         dbImages.isEmpty() && networkAvailable ->
                             imageRepository.loadHeaderImages(category)
@@ -43,11 +43,7 @@ class GetDailyImageUseCase @Inject constructor(
                         dbImages.isNotEmpty() && networkAvailable ->
                             imageRepository.loadHeaderImages(category)
                                     .onErrorReturn { dbImages }
-                                    .map { list ->
-                                        list.find { apiImage ->
-                                            dbImages.find { it.id == apiImage.id } == null
-                                        } ?: dbImages.first()
-                                    }
+                                    .map { apiImages -> apiImages.find { apiImage -> dbImages.find { it.id == apiImage.id } == null } ?: dbImages.first() }
                                     .flatMapCompletable { imageRepository.insertHeaderImage(it) }
                                     .andThen(imageRepository.getHeaderImages().firstOrError())
                                     .map { it.first() }
@@ -56,5 +52,4 @@ class GetDailyImageUseCase @Inject constructor(
                     }
                 }
     }
-
 }
