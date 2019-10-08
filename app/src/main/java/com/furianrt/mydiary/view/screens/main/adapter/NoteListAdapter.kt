@@ -48,7 +48,6 @@ class NoteListAdapter(
         ListPreloader.PreloadModelProvider<NoteListAdapter.NoteItemView>,
         StickyHeaderItemDecoration.StickyHeaderInterface {
 
-
     companion object {
         private const val MAX_PRELOAD = 20
     }
@@ -103,7 +102,6 @@ class NoteListAdapter(
         if (headerPosition == RecyclerView.NO_POSITION) {
             header.layoutParams.height = 0
         }
-
         header.text_header_date.text = SimpleDateFormat("LLLL yyyy", Locale.getDefault())
                 .format(mItems[headerPosition].time)
                 .capitalize()
@@ -187,26 +185,20 @@ class NoteListAdapter(
                 itemView.image_note_text_sync.imageTintList = ColorStateList.valueOf(withCategoryColor)
                 itemView.view_note_text_category.setBackgroundColor(color)
             }
-
         }
 
         private fun setSyncIcon(note: MyNoteWithProp) {
-           /* val email = syncEmail
+            val email = syncEmail
             if (email != null) {
                 itemView.image_note_text_sync.visibility = View.VISIBLE
                 if (note.isSync(email)) {
                     itemView.image_note_text_sync.setImageResource(R.drawable.ic_cloud_done)
-                    itemView.image_note_text_sync.alpha = 0.3f
                 } else {
                     itemView.image_note_text_sync.setImageResource(R.drawable.ic_cloud_off)
-                    itemView.image_note_text_sync.alpha = 1f
                 }
             } else {
                 itemView.image_note_text_sync.visibility = View.GONE
-            }*/
-            itemView.image_note_text_sync.visibility = View.VISIBLE
-            itemView.image_note_text_sync.setImageResource(R.drawable.ic_cloud_done)
-            //itemView.image_note_text_sync.imageTintList = ColorStateList.valueOf(ContextCompat.getColor(itemView.context, R.color.white))
+            }
         }
 
         private fun selectItem(noteId: String) {
@@ -257,22 +249,17 @@ class NoteListAdapter(
         }
 
         private fun setSyncIcon(note: MyNoteWithProp) {
-            /*val email = syncEmail
+            val email = syncEmail
             if (email != null) {
                 itemView.image_note_image_sync.visibility = View.VISIBLE
                 if (note.isSync(email)) {
                     itemView.image_note_image_sync.setImageResource(R.drawable.ic_cloud_done)
-                    itemView.image_note_image_sync.alpha = 0.3f
                 } else {
                     itemView.image_note_image_sync.setImageResource(R.drawable.ic_cloud_off)
-                    itemView.image_note_image_sync.alpha = 1f
                 }
             } else {
                 itemView.image_note_image_sync.visibility = View.GONE
-            }*/
-            itemView.image_note_image_sync.visibility = View.VISIBLE
-            itemView.image_note_image_sync.setImageResource(R.drawable.ic_cloud_done)
-            //itemView.image_note_image_sync.imageTintList = ColorStateList.valueOf(note.category?.color ?: ContextCompat.getColor(itemView.context, R.color.grey_dark))
+            }
         }
 
         private fun selectItem(noteId: String) {

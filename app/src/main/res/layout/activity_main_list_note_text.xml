@@ -30,6 +30,7 @@
             android:layout_width="80dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
+            android:layout_marginBottom="-4dp"
             android:gravity="center"
             android:textColor="@color/white"
             android:textSize="18sp"
@@ -84,7 +85,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
             android:paddingBottom="20dp"
-            android:src="@drawable/ic_cloud_off"
+            android:src="@drawable/ic_cloud_done"
             android:visibility="gone"
             tools:ignore="ContentDescription"
             tools:visibility="visible" />
