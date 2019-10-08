@@ -24,6 +24,6 @@ interface HeaderImageDao {
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     fun insert(headerImage: MyHeaderImage): Completable
 
-    @Query("SELECT * FROM HeaderImages")
+    @Query("SELECT * FROM ${MyHeaderImage.TABLE_NAME}")
     fun getHeaderImages(): Flowable<List<MyHeaderImage>>
 }

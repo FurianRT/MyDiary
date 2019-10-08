@@ -12,11 +12,12 @@ package com.furianrt.mydiary.view.dialogs.tags.fragments.edit
 
 import com.furianrt.mydiary.data.entity.MyTag
 import com.furianrt.mydiary.domain.update.UpdateTagUseCase
-import io.reactivex.android.schedulers.AndroidSchedulers
+import com.furianrt.mydiary.utils.MyRxUtils
 import javax.inject.Inject
 
 class TagEditPresenter @Inject constructor(
-        private val updateTag: UpdateTagUseCase
+        private val updateTag: UpdateTagUseCase,
+        private val scheduler: MyRxUtils.BaseSchedulerProvider
 ) : TagEditContract.Presenter() {
 
     private lateinit var mTag: MyTag
@@ -39,7 +40,7 @@ class TagEditPresenter @Inject constructor(
             view?.showErrorEmptyTagName()
         } else {
             addDisposable(updateTag.invoke(mTag.apply { name = newTagName })
-                    .observeOn(AndroidSchedulers.mainThread())
+                    .observeOn(scheduler.ui())
                     .subscribe({
                         view?.closeView()
                     }, {

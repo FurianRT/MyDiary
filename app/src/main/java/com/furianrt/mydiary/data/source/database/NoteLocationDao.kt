@@ -28,21 +28,27 @@ interface NoteLocationDao {
     @Update
     fun update(noteLocations: List<NoteLocation>): Completable
 
-    @Query("UPDATE NoteLocation SET is_notelocation_deleted = 1, notelocation_sync_with = '[]' WHERE id_location IN (:locationIds)")
+    @Query("UPDATE ${NoteLocation.TABLE_NAME} SET ${NoteLocation.FIELD_IS_DELETED} = 1, ${NoteLocation.FIELD_SYNC_WITH} = '[]' " +
+            "WHERE ${NoteLocation.FIELD_LOCATION_ID} IN (:locationIds)")
     fun deleteWithLocationId(locationIds: List<String>): Completable
 
-    @Query("UPDATE NoteLocation SET is_notelocation_deleted = 1, notelocation_sync_with = '[]' WHERE id_note = :noteId")
+    @Query("UPDATE ${NoteLocation.TABLE_NAME} SET ${NoteLocation.FIELD_IS_DELETED} = 1, ${NoteLocation.FIELD_SYNC_WITH} = '[]' " +
+            "WHERE ${NoteLocation.FIELD_NOTE_ID} = :noteId")
     fun deleteWithNoteId(noteId: String): Completable
 
-    @Query("SELECT * FROM NoteLocation WHERE is_notelocation_deleted = 0")
+    @Query("SELECT * FROM ${NoteLocation.TABLE_NAME} WHERE ${NoteLocation.FIELD_IS_DELETED} = 0")
     fun getAllNoteLocations(): Flowable<List<NoteLocation>>
 
-    @Query("SELECT * FROM NoteLocation WHERE is_notelocation_deleted = 1")
+    @Query("SELECT * FROM ${NoteLocation.TABLE_NAME} WHERE ${NoteLocation.FIELD_IS_DELETED} = 1")
     fun getDeletedNoteLocations(): Flowable<List<NoteLocation>>
 
-    @Query("SELECT Locations.* FROM Locations INNER JOIN NoteLocation ON Locations.id_location = NoteLocation.id_location AND is_notelocation_deleted = 0 WHERE id_note = :noteId AND is_location_deleted = 0")
+    @Query("SELECT ${MyLocation.TABLE_NAME}.* FROM ${MyLocation.TABLE_NAME} " +
+            "INNER JOIN ${NoteLocation.TABLE_NAME} " +
+            "ON ${MyLocation.TABLE_NAME}.${MyLocation.FIELD_ID} = ${NoteLocation.TABLE_NAME}.${NoteLocation.FIELD_LOCATION_ID} " +
+            "AND ${NoteLocation.FIELD_IS_DELETED} = 0 " +
+            "WHERE ${NoteLocation.FIELD_NOTE_ID} = :noteId AND ${MyLocation.FIELD_IS_DELETED} = 0")
     fun getLocationsForNote(noteId: String): Flowable<List<MyLocation>>
 
-    @Query("DELETE FROM NoteLocation WHERE is_notelocation_deleted = 1")
+    @Query("DELETE FROM ${NoteLocation.TABLE_NAME} WHERE ${NoteLocation.FIELD_IS_DELETED} = 1")
     fun cleanup(): Completable
 }

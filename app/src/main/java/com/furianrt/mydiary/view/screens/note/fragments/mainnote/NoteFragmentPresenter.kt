@@ -22,7 +22,7 @@ import com.furianrt.mydiary.domain.save.SaveImagesUseCase
 import com.furianrt.mydiary.domain.save.SaveLocationUseCase
 import com.furianrt.mydiary.domain.update.UpdateNoteSpansUseCase
 import com.furianrt.mydiary.domain.update.UpdateNoteUseCase
-import io.reactivex.android.schedulers.AndroidSchedulers
+import com.furianrt.mydiary.utils.MyRxUtils
 import org.joda.time.DateTime
 import javax.inject.Inject
 import kotlin.collections.ArrayList
@@ -48,7 +48,8 @@ class NoteFragmentPresenter @Inject constructor(
         private val isLocationEnabled: IsLocationEnabledUseCase,
         private val isForecastEnabled: IsForecastEnabledUseCase,
         private val findLocation: FindLocationUseCase,
-        private val updateNoteSpans: UpdateNoteSpansUseCase
+        private val updateNoteSpans: UpdateNoteSpansUseCase,
+        private val scheduler: MyRxUtils.BaseSchedulerProvider
 ) : NoteFragmentContract.Presenter() {
 
     companion object {
@@ -91,7 +92,7 @@ class NoteFragmentPresenter @Inject constructor(
 
     private fun loadImages() {
         addDisposable(getImages.invoke(mNoteId)
-                .observeOn(AndroidSchedulers.mainThread())
+                .observeOn(scheduler.ui())
                 .subscribe { images ->
                     if (images.isEmpty()) {
                         view?.showNoImages()
@@ -103,7 +104,7 @@ class NoteFragmentPresenter @Inject constructor(
 
     private fun loadTags() {
         addDisposable(getTagsWithAppearance.invoke(mNoteId)
-                .observeOn(AndroidSchedulers.mainThread())
+                .observeOn(scheduler.ui())
                 .subscribe { tagsAndAppearance ->
                     if (tagsAndAppearance.tags.isEmpty()) {
                         view?.showNoTagsMessage(tagsAndAppearance)
@@ -115,7 +116,7 @@ class NoteFragmentPresenter @Inject constructor(
 
     private fun loadNote() {
         addDisposable(getNotesWithSpans.invoke(mNoteId)
-                .observeOn(AndroidSchedulers.mainThread())
+                .observeOn(scheduler.ui())
                 .subscribe { note ->
                     if (note.isPresent) {
                         if (mNoteTextBuffer.isEmpty()) {
@@ -133,7 +134,7 @@ class NoteFragmentPresenter @Inject constructor(
 
     private fun loadNoteAppearance() {
         addDisposable(getAppearance.invoke(mNoteId)
-                .observeOn(AndroidSchedulers.mainThread())
+                .observeOn(scheduler.ui())
                 .subscribe({ appearance ->
                     view?.updateNoteAppearance(appearance)
                 }, { error ->
@@ -143,7 +144,7 @@ class NoteFragmentPresenter @Inject constructor(
 
     private fun showForecast() {
         addDisposable(getForecasts.invoke(mNoteId)
-                .observeOn(AndroidSchedulers.mainThread())
+                .observeOn(scheduler.ui())
                 .subscribe { view?.showForecast(getWeatherTemp(it), it.icon) })
     }
 
@@ -156,7 +157,7 @@ class NoteFragmentPresenter @Inject constructor(
     private fun loadLocation() {
         addDisposable(getLocations.invoke(mNoteId)
                 .first(emptyList())
-                .observeOn(AndroidSchedulers.mainThread())
+                .observeOn(scheduler.ui())
                 .subscribe { locations ->
                     if (locations.isNotEmpty()) {
                         showLocation(locations.first())
@@ -169,7 +170,7 @@ class NoteFragmentPresenter @Inject constructor(
 
     override fun onLocationPermissionsGranted() {
         addDisposable(findLocation.invoke()
-                .observeOn(AndroidSchedulers.mainThread())
+                .observeOn(scheduler.ui())
                 .subscribe({ location ->
                     addLocation(location)
                     if (isForecastEnabled.invoke()) {
@@ -186,7 +187,7 @@ class NoteFragmentPresenter @Inject constructor(
                 view?.showNoMoodMessage()
             } else {
                 addDisposable(getMoods.invoke(moodId)
-                        .observeOn(AndroidSchedulers.mainThread())
+                        .observeOn(scheduler.ui())
                         .subscribe { mood -> view?.showMood(mood) })
             }
         }
@@ -194,7 +195,7 @@ class NoteFragmentPresenter @Inject constructor(
 
     private fun loadNoteCategory() {
         addDisposable(getCategories.invoke(mNoteId)
-                .observeOn(AndroidSchedulers.mainThread())
+                .observeOn(scheduler.ui())
                 .subscribe { category ->
                     if (category.isPresent) {
                         view?.showCategory(category.get())
@@ -206,7 +207,7 @@ class NoteFragmentPresenter @Inject constructor(
 
     private fun addForecastToNote(latitude: Double, longitude: Double) {
         addDisposable(addForecast.invoke(mNoteId, latitude, longitude)
-                .observeOn(AndroidSchedulers.mainThread())
+                .observeOn(scheduler.ui())
                 .subscribe({ forecast ->
                     view?.showForecast(getWeatherTemp(forecast), forecast.icon)
                 }, { error ->
@@ -225,7 +226,7 @@ class NoteFragmentPresenter @Inject constructor(
     private fun addLocation(location: MyLocation) {
         Log.e(TAG, "insertLocation")
         addDisposable(saveLocation.invoke(mNoteId, location)
-                .observeOn(AndroidSchedulers.mainThread())
+                .observeOn(scheduler.ui())
                 .subscribe { showLocation(location) })
     }
 
@@ -239,7 +240,7 @@ class NoteFragmentPresenter @Inject constructor(
 
     override fun onNoteImagesPicked(imageUrls: List<String>) {
         addDisposable(saveImages.invoke(mNoteId, imageUrls)
-                .observeOn(AndroidSchedulers.mainThread())
+                .observeOn(scheduler.ui())
                 .subscribe({
                     view?.hideLoading()
                 }, { error ->
@@ -264,7 +265,7 @@ class NoteFragmentPresenter @Inject constructor(
         addDisposable(getNotes.invoke(mNoteId)
                 .map { it.get() }
                 .firstOrError()
-                .observeOn(AndroidSchedulers.mainThread())
+                .observeOn(scheduler.ui())
                 .subscribe { note ->
                     val date = DateTime(note.time)
                     view?.showDatePicker(date.year, date.monthOfYear - 1, date.dayOfMonth)
@@ -282,7 +283,7 @@ class NoteFragmentPresenter @Inject constructor(
                             .withDayOfMonth(dayOfMonth)
                     updateNote.invoke(note.apply { time = date.millis })
                 }
-                .observeOn(AndroidSchedulers.mainThread())
+                .observeOn(scheduler.ui())
                 .subscribe())
     }
 
@@ -290,7 +291,7 @@ class NoteFragmentPresenter @Inject constructor(
         addDisposable(getNotes.invoke(mNoteId)
                 .map { it.get() }
                 .firstOrError()
-                .observeOn(AndroidSchedulers.mainThread())
+                .observeOn(scheduler.ui())
                 .subscribe { note ->
                     val date = DateTime(note.time)
                     view?.showTimePicker(
@@ -317,7 +318,7 @@ class NoteFragmentPresenter @Inject constructor(
                             .withMinuteOfHour(minute)
                     updateNote.invoke(note.apply { time = date.millis })
                 }
-                .observeOn(AndroidSchedulers.mainThread())
+                .observeOn(scheduler.ui())
                 .subscribe())
     }
 
@@ -402,14 +403,14 @@ class NoteFragmentPresenter @Inject constructor(
                 "$curContent $recordedText"
         }
         addDisposable(updateNote.invoke(mNoteId, curTitle, content)
-                .observeOn(AndroidSchedulers.mainThread())
+                .observeOn(scheduler.ui())
                 .subscribe { onNoteTextChange(curTitle, content, textSpans) })
     }
 
     override fun onButtonShareClick() {
         addDisposable(getFullNotes.invoke(mNoteId)
                 .firstOrError()
-                .observeOn(AndroidSchedulers.mainThread())
+                .observeOn(scheduler.ui())
                 .subscribe { note ->
                     if (note.isPresent) {
                         view?.shareNote(note.get())

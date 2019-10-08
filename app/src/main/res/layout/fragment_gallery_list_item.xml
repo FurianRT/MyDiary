@@ -16,21 +16,14 @@
         tools:ignore="ContentDescription"
         tools:src="?attr/colorAccent" />
 
-    <FrameLayout
+    <ImageView
         android:id="@+id/layout_selection"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:alpha="0.4"
-        android:background="?attr/colorAccent">
-
-        <ImageView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_gravity="center"
-            android:src="@drawable/ic_done_big"
-            tools:ignore="ContentDescription" />
-
-    </FrameLayout>
+        android:alpha="0.3"
+        android:background="?attr/colorAccent"
+        android:src="@drawable/ic_done_big"
+        tools:ignore="ContentDescription" />
 
     <View
         android:layout_width="match_parent"

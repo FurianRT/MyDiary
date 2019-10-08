@@ -11,11 +11,12 @@
 package com.furianrt.mydiary.view.screens.main.fragments.authentication.login
 
 import com.furianrt.mydiary.domain.auth.SignInUseCase
-import io.reactivex.android.schedulers.AndroidSchedulers
+import com.furianrt.mydiary.utils.MyRxUtils
 import javax.inject.Inject
 
 class LoginPresenter @Inject constructor(
-        private val signIn: SignInUseCase
+        private val signIn: SignInUseCase,
+        private val scheduler: MyRxUtils.BaseSchedulerProvider
 ) : LoginContract.Presenter() {
 
     override fun onButtonForgotClick(email: String) {
@@ -29,7 +30,7 @@ class LoginPresenter @Inject constructor(
     private fun signIn(email: String, password: String) {
         view?.showLoading()
         addDisposable(signIn.invoke(email, password)
-                .observeOn(AndroidSchedulers.mainThread())
+                .observeOn(scheduler.ui())
                 .subscribe({
                     view?.hideLoading()
                     view?.showLoginSuccess()

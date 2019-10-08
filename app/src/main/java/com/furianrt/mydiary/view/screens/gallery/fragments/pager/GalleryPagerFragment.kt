@@ -69,10 +69,9 @@ class GalleryPagerFragment : BaseFragment(), GalleryPagerContract.MvpView {
         getPresenterComponent(requireContext()).inject(this)
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
-        mPresenter.init(arguments?.getString(ARG_NOTE_ID)!!)
-
+        mPresenter.init(requireArguments().getString(ARG_NOTE_ID)!!)
         mPagerPosition = savedInstanceState?.getInt(ARG_POSITION)
-                ?: (arguments?.getInt(ARG_POSITION) ?: 0)
+                ?: requireArguments().getInt(ARG_POSITION, 0)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,

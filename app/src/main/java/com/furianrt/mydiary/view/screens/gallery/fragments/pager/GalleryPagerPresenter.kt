@@ -13,13 +13,14 @@ package com.furianrt.mydiary.view.screens.gallery.fragments.pager
 import com.furianrt.mydiary.data.entity.MyImage
 import com.furianrt.mydiary.domain.get.GetImagesUseCase
 import com.furianrt.mydiary.domain.update.UpdateImageUseCase
-import io.reactivex.android.schedulers.AndroidSchedulers
+import com.furianrt.mydiary.utils.MyRxUtils
 import org.joda.time.DateTime
 import javax.inject.Inject
 
 class GalleryPagerPresenter @Inject constructor(
         private val getImages: GetImagesUseCase,
-        private val updateImage: UpdateImageUseCase
+        private val updateImage: UpdateImageUseCase,
+        private val scheduler: MyRxUtils.BaseSchedulerProvider
 ) : GalleryPagerContract.Presenter() {
 
     private var mEditedImage: MyImage? = null
@@ -36,7 +37,7 @@ class GalleryPagerPresenter @Inject constructor(
 
     private fun loadImages(noteId: String) {
         addDisposable(getImages.invoke(noteId)
-                .observeOn(AndroidSchedulers.mainThread())
+                .observeOn(scheduler.ui())
                 .subscribe { images ->
                     if (images.isEmpty()) {
                         view?.showListImagesView(noteId)

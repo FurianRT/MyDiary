@@ -64,7 +64,7 @@ class NoteSettingsFragment : PreferenceFragmentCompat(), BaseView, NoteSettingsC
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         setPreferencesFromResource(R.xml.pref_note, rootKey)
 
-        mPresenter.init(arguments?.getString(ARG_NOTE_ID)!!)
+        mPresenter.init(requireArguments().getString(ARG_NOTE_ID)!!)
         mPresenter.attachView(this)
 
         findPreference<ListPreference>(TEXT_SIZE)?.onPreferenceChangeListener = mPreferenceListener

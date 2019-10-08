@@ -12,8 +12,8 @@ android {
         applicationId "com.furianrt.mydiary"
         minSdkVersion 21
         targetSdkVersion 29
-        versionCode 37
-        versionName "1.6"
+        versionCode 38
+        versionName "1.6.1"
 
         javaCompileOptions {
             annotationProcessorOptions {
@@ -94,7 +94,7 @@ dependencies {
     kapt "androidx.room:room-compiler:$room_version"
 
     //JSON
-    implementation 'com.google.code.gson:gson:2.8.5'
+    implementation 'com.google.code.gson:gson:2.8.6'
 
     //Rx
     implementation 'io.reactivex.rxjava2:rxandroid:2.1.1'

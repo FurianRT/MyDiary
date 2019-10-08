@@ -16,6 +16,7 @@ import com.furianrt.mydiary.data.repository.location.LocationRepository
 import com.furianrt.mydiary.data.repository.note.NoteRepository
 import com.furianrt.mydiary.data.repository.span.SpanRepository
 import com.furianrt.mydiary.data.repository.tag.TagRepository
+import com.furianrt.mydiary.utils.MyRxUtils
 import com.google.common.base.Optional
 import io.reactivex.Flowable
 import io.reactivex.functions.Function9
@@ -28,7 +29,8 @@ class GetFullNotesUseCase @Inject constructor(
         private val tagRepository: TagRepository,
         private val imageRepository: ImageRepository,
         private val locationRepository: LocationRepository,
-        private val spanRepository: SpanRepository
+        private val spanRepository: SpanRepository,
+        private val scheduler: MyRxUtils.BaseSchedulerProvider
 ) {
 
     fun invoke(): Flowable<List<MyNoteWithProp>> =
@@ -80,5 +82,5 @@ class GetFullNotesUseCase @Inject constructor(
                             return@map note
                         }
                     }
-            ).debounce(100L, TimeUnit.MILLISECONDS)
+            ).debounce(100L, TimeUnit.MILLISECONDS, scheduler.computation())
 }

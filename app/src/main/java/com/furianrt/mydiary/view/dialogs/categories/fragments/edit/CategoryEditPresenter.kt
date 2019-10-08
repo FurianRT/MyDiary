@@ -12,11 +12,12 @@ package com.furianrt.mydiary.view.dialogs.categories.fragments.edit
 
 import com.furianrt.mydiary.data.entity.MyCategory
 import com.furianrt.mydiary.domain.update.UpdateCategoryUseCase
-import io.reactivex.android.schedulers.AndroidSchedulers
+import com.furianrt.mydiary.utils.MyRxUtils
 import javax.inject.Inject
 
 class CategoryEditPresenter @Inject constructor(
-        private val updateCategory: UpdateCategoryUseCase
+        private val updateCategory: UpdateCategoryUseCase,
+        private val scheduler: MyRxUtils.BaseSchedulerProvider
 ) : CategoryEditContract.Presenter() {
 
     private lateinit var mCategory: MyCategory
@@ -37,7 +38,7 @@ class CategoryEditPresenter @Inject constructor(
             mCategory.name = categoryName
             mCategory.color = categoryColor
             addDisposable(updateCategory.invoke(mCategory)
-                    .observeOn(AndroidSchedulers.mainThread())
+                    .observeOn(scheduler.ui())
                     .subscribe { view?.close() })
         }
     }

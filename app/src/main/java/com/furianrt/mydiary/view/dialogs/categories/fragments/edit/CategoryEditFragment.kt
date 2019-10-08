@@ -34,7 +34,7 @@ class CategoryEditFragment : BaseFragment(), CategoryEditContract.MvpView {
     override fun onCreate(savedInstanceState: Bundle?) {
         getPresenterComponent(requireContext()).inject(this)
         super.onCreate(savedInstanceState)
-        val category = arguments?.getParcelable(ARG_CATEGORY) as MyCategory?
+        val category = requireArguments().getParcelable(ARG_CATEGORY) as MyCategory?
         savedInstanceState?.let { state ->
             category!!.name = state.getString(BUNDLE_CATEGORY_NAME, category.name)
             category.color = state.getInt(BUNDLE_CATEGORY_COLOR, category.color)

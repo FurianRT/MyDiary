@@ -184,7 +184,7 @@ class DrawerMenuFragment : BaseFragment(), DrawerMenuContract.MvpView,
         view_sync.layoutParams.width = (button_sync.width.toFloat() * message.progress.toFloat() / 100f).toInt()
         button_sync.text = getString(R.string.sync_progress_format, message.progress, message.message)
         view_sync.requestLayout()
-        if (message.taskIndex == SyncProgressMessage.SYNC_FINISHED) {
+        if (message.task == SyncProgressMessage.SYNC_FINISHED) {
             analytics.sendEvent(MyAnalytics.EVENT_SYNC_COMPLETED)
             animateProgressAlpha()
         }
@@ -201,7 +201,7 @@ class DrawerMenuFragment : BaseFragment(), DrawerMenuContract.MvpView,
 
     private fun showErrorSync(progressMessage: SyncProgressMessage) {
         val bundle = Bundle()
-        bundle.putInt(MyAnalytics.BUNDLE_TASK_INDEX, progressMessage.taskIndex)
+        bundle.putInt(MyAnalytics.BUNDLE_TASK_INDEX, progressMessage.task)
         analytics.sendEvent(MyAnalytics.EVENT_SYNC_FAILED, bundle)
         button_sync.text = progressMessage.message
         view_sync.layoutParams.width = button_sync.width

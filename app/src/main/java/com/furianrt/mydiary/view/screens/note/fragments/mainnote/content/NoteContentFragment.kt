@@ -43,7 +43,7 @@ class NoteContentFragment : BaseFragment(), NoteContentFragmentContract.MvpView 
     override fun onCreate(savedInstanceState: Bundle?) {
         getPresenterComponent(requireContext()).inject(this)
         super.onCreate(savedInstanceState)
-        mIsNewNote = arguments?.getBoolean(ARG_IS_NEW_NOTE)!!
+        mIsNewNote = requireArguments().getBoolean(ARG_IS_NEW_NOTE)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,

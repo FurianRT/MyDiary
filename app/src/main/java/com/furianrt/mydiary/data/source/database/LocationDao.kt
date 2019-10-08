@@ -27,15 +27,15 @@ interface LocationDao {
     @Update
     fun update(locations: List<MyLocation>): Completable
 
-    @Query("UPDATE Locations SET is_location_deleted = 1, location_sync_with = '[]' WHERE id_location IN (:locationIds)")
+    @Query("UPDATE ${MyLocation.TABLE_NAME} SET ${MyLocation.FIELD_IS_DELETED} = 1, ${MyLocation.FIELD_SYNC_WITH} = '[]' WHERE ${MyLocation.FIELD_ID} IN (:locationIds)")
     fun delete(locationIds: List<String>): Completable
 
-    @Query("SELECT * FROM Locations WHERE is_location_deleted = 0")
+    @Query("SELECT * FROM ${MyLocation.TABLE_NAME} WHERE ${MyLocation.FIELD_IS_DELETED} = 0")
     fun getAllLocations(): Flowable<List<MyLocation>>
 
-    @Query("SELECT * FROM Locations WHERE is_location_deleted = 1")
+    @Query("SELECT * FROM ${MyLocation.TABLE_NAME} WHERE ${MyLocation.FIELD_IS_DELETED} = 1")
     fun getDeletedLocations(): Flowable<List<MyLocation>>
 
-    @Query("DELETE FROM Locations WHERE is_location_deleted = 1")
+    @Query("DELETE FROM ${MyLocation.TABLE_NAME} WHERE ${MyLocation.FIELD_IS_DELETED} = 1")
     fun cleanup(): Completable
 }

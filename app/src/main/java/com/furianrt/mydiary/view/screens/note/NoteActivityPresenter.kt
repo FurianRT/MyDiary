@@ -12,12 +12,13 @@ package com.furianrt.mydiary.view.screens.note
 
 import com.furianrt.mydiary.domain.save.SaveNoteIfNotExistUseCase
 import com.furianrt.mydiary.domain.get.GetNotesUseCase
-import io.reactivex.android.schedulers.AndroidSchedulers
+import com.furianrt.mydiary.utils.MyRxUtils
 import javax.inject.Inject
 
 class NoteActivityPresenter @Inject constructor(
         private val getNotes: GetNotesUseCase,
-        private val saveNoteIfNotExist: SaveNoteIfNotExistUseCase
+        private val saveNoteIfNotExist: SaveNoteIfNotExistUseCase,
+        private val scheduler: MyRxUtils.BaseSchedulerProvider
 ) : NoteActivityContract.Presenter() {
 
     private lateinit var mNoteId: String
@@ -41,7 +42,7 @@ class NoteActivityPresenter @Inject constructor(
 
     private fun loadNotes() {
         addDisposable(getNotes.invoke()
-                .observeOn(AndroidSchedulers.mainThread())
+                .observeOn(scheduler.ui())
                 .subscribe { notes ->
                     if (notes.isEmpty()) {
                         view?.closeView()
@@ -54,7 +55,7 @@ class NoteActivityPresenter @Inject constructor(
     private fun loadNote(noteId: String) {
         addDisposable(saveNoteIfNotExist.invoke(noteId)
                 .andThen(getNotes.invoke(noteId))
-                .observeOn(AndroidSchedulers.mainThread())
+                .observeOn(scheduler.ui())
                 .subscribe { note ->
                     if (note.isPresent) {
                         view?.showNotes(listOf(note.get().id))

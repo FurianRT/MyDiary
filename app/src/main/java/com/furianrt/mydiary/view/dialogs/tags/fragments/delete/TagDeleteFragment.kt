@@ -30,7 +30,7 @@ class TagDeleteFragment : BaseFragment(), TagDeleteContract.MvpView {
     override fun onCreate(savedInstanceState: Bundle?) {
         getPresenterComponent(requireContext()).inject(this)
         super.onCreate(savedInstanceState)
-        mPresenter.init(arguments?.getParcelable(ARG_TAG)!!)
+        mPresenter.init(requireArguments().getParcelable(ARG_TAG)!!)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,

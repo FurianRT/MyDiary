@@ -12,11 +12,12 @@ package com.furianrt.mydiary.view.dialogs.tags.fragments.delete
 
 import com.furianrt.mydiary.data.entity.MyTag
 import com.furianrt.mydiary.domain.delete.DeleteTagUseCase
-import io.reactivex.android.schedulers.AndroidSchedulers
+import com.furianrt.mydiary.utils.MyRxUtils
 import javax.inject.Inject
 
 class TagDeletePresenter @Inject constructor(
-        private val deleteTag: DeleteTagUseCase
+        private val deleteTag: DeleteTagUseCase,
+        private val scheduler: MyRxUtils.BaseSchedulerProvider
 ) : TagDeleteContract.Presenter() {
 
     private lateinit var mTag: MyTag
@@ -32,7 +33,7 @@ class TagDeletePresenter @Inject constructor(
 
     override fun onButtonDeleteClick() {
         addDisposable(deleteTag.invoke(mTag)
-                .observeOn(AndroidSchedulers.mainThread())
+                .observeOn(scheduler.ui())
                 .subscribe { view?.closeView() })
     }
 

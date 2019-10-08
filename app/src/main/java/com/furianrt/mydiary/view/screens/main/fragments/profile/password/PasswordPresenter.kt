@@ -12,12 +12,13 @@ package com.furianrt.mydiary.view.screens.main.fragments.profile.password
 
 import com.furianrt.mydiary.domain.auth.ChangePasswordUseCase
 import com.furianrt.mydiary.domain.auth.SignOutUseCase
-import io.reactivex.android.schedulers.AndroidSchedulers
+import com.furianrt.mydiary.utils.MyRxUtils
 import javax.inject.Inject
 
 class PasswordPresenter @Inject constructor(
         private val changePassword: ChangePasswordUseCase,
-        private val signOut: SignOutUseCase
+        private val signOut: SignOutUseCase,
+        private val scheduler: MyRxUtils.BaseSchedulerProvider
 ) : PasswordContract.Presenter() {
 
     override fun onButtonCancelClick() {
@@ -33,7 +34,7 @@ class PasswordPresenter @Inject constructor(
     private fun changePassword(oldPassword: String, newPassword: String, repeatPassword: String) {
         view?.showLoading()
         addDisposable(changePassword.invoke(oldPassword, newPassword, repeatPassword)
-                .observeOn(AndroidSchedulers.mainThread())
+                .observeOn(scheduler.ui())
                 .subscribe({
                     view?.hideLoading()
                     view?.showSuccessPasswordChange()
@@ -64,7 +65,7 @@ class PasswordPresenter @Inject constructor(
 
     private fun signOut() {
         addDisposable(signOut.invoke()
-                .observeOn(AndroidSchedulers.mainThread())
+                .observeOn(scheduler.ui())
                 .subscribe {
                     view?.close()
                 })

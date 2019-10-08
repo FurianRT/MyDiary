@@ -11,10 +11,9 @@
 package com.furianrt.mydiary.di.application.modules.rx
 
 import com.furianrt.mydiary.di.application.component.AppScope
+import com.furianrt.mydiary.utils.MyRxUtils
 import dagger.Module
 import dagger.Provides
-import io.reactivex.Scheduler
-import io.reactivex.schedulers.Schedulers
 
 @Module
 object RxModule {
@@ -22,5 +21,5 @@ object RxModule {
     @JvmStatic
     @Provides
     @AppScope
-    fun provideRxScheduler(): Scheduler = Schedulers.io()
+    fun provideRxScheduler(): MyRxUtils.BaseSchedulerProvider = MyRxUtils.SchedulerProvider()
 }

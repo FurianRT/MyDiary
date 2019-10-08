@@ -14,6 +14,7 @@ import com.furianrt.mydiary.data.entity.MyCategory
 import com.furianrt.mydiary.data.source.auth.AuthHelper
 import com.furianrt.mydiary.data.source.cloud.CloudHelper
 import com.furianrt.mydiary.data.source.database.CategoryDao
+import com.furianrt.mydiary.utils.MyRxUtils
 import io.reactivex.*
 import javax.inject.Inject
 
@@ -21,54 +22,54 @@ class CategoryRepositoryImp @Inject constructor(
         private val categoryDao: CategoryDao,
         private val cloud: CloudHelper,
         private val auth: AuthHelper,
-        private val rxScheduler: Scheduler
+        private val scheduler: MyRxUtils.BaseSchedulerProvider
 ) : CategoryRepository {
 
     override fun insertCategory(category: MyCategory): Completable =
             categoryDao.insert(category)
-                    .subscribeOn(rxScheduler)
+                    .subscribeOn(scheduler.io())
 
     override fun insertCategory(categories: List<MyCategory>): Completable =
             categoryDao.insert(categories)
-                    .subscribeOn(rxScheduler)
+                    .subscribeOn(scheduler.io())
 
     override fun updateCategory(category: MyCategory): Completable =
             categoryDao.update(category)
-                    .subscribeOn(rxScheduler)
+                    .subscribeOn(scheduler.io())
 
     override fun updateCategoriesSync(categories: List<MyCategory>): Completable =
             categoryDao.update(categories)
-                    .subscribeOn(rxScheduler)
+                    .subscribeOn(scheduler.io())
 
     override fun deleteCategory(category: MyCategory): Completable =
             categoryDao.delete(category.id)
-                    .subscribeOn(rxScheduler)
+                    .subscribeOn(scheduler.io())
 
     override fun cleanupCategories(): Completable =
             categoryDao.cleanup()
-                    .subscribeOn(rxScheduler)
+                    .subscribeOn(scheduler.io())
 
     override fun getAllCategories(): Flowable<List<MyCategory>> =
             categoryDao.getAllCategories()
-                    .subscribeOn(rxScheduler)
+                    .subscribeOn(scheduler.io())
 
     override fun getCategory(categoryId: String): Single<MyCategory> =
             categoryDao.getCategory(categoryId)
-                    .subscribeOn(rxScheduler)
+                    .subscribeOn(scheduler.io())
 
     override fun getDeletedCategories(): Flowable<List<MyCategory>> =
             categoryDao.getDeletedCategories()
-                    .subscribeOn(rxScheduler)
+                    .subscribeOn(scheduler.io())
 
     override fun saveCategoriesInCloud(categories: List<MyCategory>): Completable =
             cloud.saveCategories(categories, auth.getUserId())
-                    .subscribeOn(rxScheduler)
+                    .subscribeOn(scheduler.io())
 
     override fun deleteCategoriesFromCloud(categories: List<MyCategory>): Completable =
             cloud.deleteCategories(categories, auth.getUserId())
-                    .subscribeOn(rxScheduler)
+                    .subscribeOn(scheduler.io())
 
     override fun getAllCategoriesFromCloud(): Single<List<MyCategory>> =
             cloud.getAllCategories(auth.getUserId())
-                    .subscribeOn(rxScheduler)
+                    .subscribeOn(scheduler.io())
 }

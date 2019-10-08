@@ -54,8 +54,8 @@ class PrivacyFragment : BaseFragment(), PrivacyContract.MvpView {
     override fun onCreate(savedInstanceState: Bundle?) {
         getPresenterComponent(requireContext()).inject(this)
         super.onCreate(savedInstanceState)
-        mEmail = arguments?.getString(ARG_EMAIL) ?: throw IllegalArgumentException()
-        mPassword = arguments?.getString(ARG_PASSWORD) ?: throw IllegalArgumentException()
+        mEmail = arguments?.getString(ARG_EMAIL)!!
+        mPassword = arguments?.getString(ARG_PASSWORD)!!
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,

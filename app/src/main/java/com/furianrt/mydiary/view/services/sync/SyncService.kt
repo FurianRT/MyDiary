@@ -66,9 +66,9 @@ class SyncService : Service(), BaseView, SyncContract.MvpView {
 
     override fun sendProgressUpdate(progressMessage: SyncProgressMessage) {
         progressMessage.message = if (progressMessage.hasError) {
-            getSyncErrorTextMessage(progressMessage.taskIndex)
+            getSyncErrorTextMessage(progressMessage.task)
         } else {
-            getSyncTextMessage(progressMessage.taskIndex)
+            getSyncTextMessage(progressMessage.task)
         }
         sendBroadcast(progressMessage)
     }

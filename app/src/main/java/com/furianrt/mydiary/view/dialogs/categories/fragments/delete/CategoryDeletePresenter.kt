@@ -12,11 +12,12 @@ package com.furianrt.mydiary.view.dialogs.categories.fragments.delete
 
 import com.furianrt.mydiary.data.entity.MyCategory
 import com.furianrt.mydiary.domain.delete.DeleteCategoryUseCase
-import io.reactivex.android.schedulers.AndroidSchedulers
+import com.furianrt.mydiary.utils.MyRxUtils
 import javax.inject.Inject
 
 class CategoryDeletePresenter @Inject constructor(
-        private val deleteCategory: DeleteCategoryUseCase
+        private val deleteCategory: DeleteCategoryUseCase,
+        private val scheduler: MyRxUtils.BaseSchedulerProvider
 ) : CategoryDeleteContract.Presenter() {
 
     private lateinit var mCategory: MyCategory
@@ -32,7 +33,7 @@ class CategoryDeletePresenter @Inject constructor(
 
     override fun onButtonDeleteClick() {
         addDisposable(deleteCategory.invoke(mCategory)
-               .observeOn(AndroidSchedulers.mainThread())
+               .observeOn(scheduler.ui())
                .subscribe { view?.closeView() })
     }
 

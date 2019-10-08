@@ -15,14 +15,15 @@ import com.furianrt.mydiary.domain.reset.ResetNotesAppearanceSettingsUseCase
 import com.furianrt.mydiary.domain.check.IsFingerprintSupportedUseCase
 import com.furianrt.mydiary.domain.delete.RemovePinEmailUseCase
 import com.furianrt.mydiary.domain.get.GetPinEmailUseCase
-import io.reactivex.android.schedulers.AndroidSchedulers
+import com.furianrt.mydiary.utils.MyRxUtils
 import javax.inject.Inject
 
 class GlobalSettingsPresenter @Inject constructor(
         private val getPinEmail: GetPinEmailUseCase,
         private val removePinEmail: RemovePinEmailUseCase,
         private val isFingerprintSupported: IsFingerprintSupportedUseCase,
-        private val resetNotesAppearanceSettings: ResetNotesAppearanceSettingsUseCase
+        private val resetNotesAppearanceSettings: ResetNotesAppearanceSettingsUseCase,
+        private val scheduler: MyRxUtils.BaseSchedulerProvider
 ) : GlobalSettingsContract.Presenter() {
 
     override fun attachView(view: GlobalSettingsContract.MvpView) {
@@ -61,7 +62,7 @@ class GlobalSettingsPresenter @Inject constructor(
 
     override fun onPrefResetNotesColorClick() {
         addDisposable(resetNotesAppearanceSettings.invoke()
-                .observeOn(AndroidSchedulers.mainThread())
+                .observeOn(scheduler.ui())
                 .subscribe { view?.onNotesAppearanceReset() })
     }
 }

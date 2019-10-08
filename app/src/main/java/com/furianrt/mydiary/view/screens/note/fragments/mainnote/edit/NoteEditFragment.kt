@@ -55,13 +55,11 @@ class NoteEditFragment : BaseFragment(), NoteEditFragmentContract.MvpView {
         getPresenterComponent(requireContext()).inject(this)
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
-        arguments?.let {
-            mNoteTitle = it.getString(ARG_NOTE_TITLE, "")
-            mNoteContent = it.getCharSequence(ARG_NOTE_CONTENT, "") as Editable
-            mClickedView = it.getInt(ARG_CLICKED_VIEW)
-            mClickPosition = it.getInt(ARG_POSITION)
-            mAppearance = it.getParcelable(ARG_APPEARANCE) as? MyNoteAppearance?
-        }
+            mNoteTitle = requireArguments().getString(ARG_NOTE_TITLE, "")
+            mNoteContent = requireArguments().getCharSequence(ARG_NOTE_CONTENT, "") as Editable
+            mClickedView = requireArguments().getInt(ARG_CLICKED_VIEW)
+            mClickPosition = requireArguments().getInt(ARG_POSITION)
+            mAppearance = requireArguments().getParcelable(ARG_APPEARANCE) as? MyNoteAppearance?
         if (savedInstanceState != null) {
             mClickedView = null
         }
