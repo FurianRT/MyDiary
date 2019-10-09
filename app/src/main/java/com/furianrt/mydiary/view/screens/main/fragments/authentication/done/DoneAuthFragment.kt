@@ -38,7 +38,7 @@ class DoneAuthFragment : BaseFragment() {
                               savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_done_auth, container, false)
 
-        view.text_success_message.text = arguments?.getString(ARG_MESSAGE) ?: ""
+        view.text_success_message.text = requireArguments().getString(ARG_MESSAGE, "")
 
         return view
     }

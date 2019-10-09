@@ -14,13 +14,14 @@ import com.furianrt.mydiary.data.entity.MyImage
 import com.furianrt.mydiary.domain.save.SaveImagesUseCase
 import com.furianrt.mydiary.domain.get.GetImagesUseCase
 import com.furianrt.mydiary.domain.update.UpdateImageUseCase
-import io.reactivex.android.schedulers.AndroidSchedulers
+import com.furianrt.mydiary.utils.MyRxUtils
 import javax.inject.Inject
 
 class GalleryListPresenter @Inject constructor(
         private val getImages: GetImagesUseCase,
         private val updateImage: UpdateImageUseCase,
-        private val saveImages: SaveImagesUseCase
+        private val saveImages: SaveImagesUseCase,
+        private val scheduler: MyRxUtils.BaseSchedulerProvider
 ) : GalleryListContract.Presenter() {
 
     private lateinit var mNoteId: String
@@ -56,7 +57,7 @@ class GalleryListPresenter @Inject constructor(
 
     private fun loadImages(noteId: String) {
         addDisposable(getImages.invoke(noteId)
-                .observeOn(AndroidSchedulers.mainThread())
+                .observeOn(scheduler.ui())
                 .subscribe { images ->
                     view?.showSelectedImageCount(mSelectedImageNames.size)
                     if (images.isEmpty()) {
@@ -71,7 +72,7 @@ class GalleryListPresenter @Inject constructor(
 
     override fun onImagesOrderChange(images: List<MyImage>) {
         addDisposable(updateImage.invoke(images)
-                .observeOn(AndroidSchedulers.mainThread())
+                .observeOn(scheduler.ui())
                 .subscribe())
     }
 
@@ -96,7 +97,7 @@ class GalleryListPresenter @Inject constructor(
     override fun onButtonCabSelectAllClick() {
         addDisposable(getImages.invoke(mNoteId)
                 .first(emptyList())
-                .observeOn(AndroidSchedulers.mainThread())
+                .observeOn(scheduler.ui())
                 .subscribe { images ->
                     mSelectedImageNames.clear()
                     mSelectedImageNames.addAll(images.map { it.name })
@@ -130,7 +131,7 @@ class GalleryListPresenter @Inject constructor(
 
     override fun onNoteImagesPicked(imageUrls: List<String>) {
         addDisposable(saveImages.invoke(mNoteId, imageUrls)
-                .observeOn(AndroidSchedulers.mainThread())
+                .observeOn(scheduler.ui())
                 .subscribe({
                     view?.hideLoading()
                 }, { error ->

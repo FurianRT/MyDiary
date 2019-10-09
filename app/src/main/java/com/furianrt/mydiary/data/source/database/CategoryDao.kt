@@ -31,18 +31,18 @@ interface CategoryDao {
     @Update
     fun update(category: List<MyCategory>): Completable
 
-    @Query("UPDATE Categories SET is_category_deleted = 1, category_sync_with = '[]' WHERE id_category = :categoryId")
+    @Query("UPDATE ${MyCategory.TABLE_NAME} SET ${MyCategory.FIELD_IS_DELETED} = 1, ${MyCategory.FIELD_SYNC_WITH} = '[]' WHERE ${MyCategory.FIELD_ID} = :categoryId")
     fun delete(categoryId: String): Completable
 
-    @Query("DELETE FROM Categories WHERE is_category_deleted = 1")
+    @Query("DELETE FROM ${MyCategory.TABLE_NAME} WHERE ${MyCategory.FIELD_IS_DELETED} = 1")
     fun cleanup(): Completable
 
-    @Query("SELECT * FROM Categories WHERE id_category = :categoryId AND is_category_deleted = 0")
+    @Query("SELECT * FROM ${MyCategory.TABLE_NAME} WHERE ${MyCategory.FIELD_ID} = :categoryId AND ${MyCategory.FIELD_IS_DELETED} = 0")
     fun getCategory(categoryId: String): Single<MyCategory>
 
-    @Query("SELECT * FROM Categories WHERE is_category_deleted = 1")
+    @Query("SELECT * FROM ${MyCategory.TABLE_NAME} WHERE ${MyCategory.FIELD_IS_DELETED} = 1")
     fun getDeletedCategories(): Flowable<List<MyCategory>>
 
-    @Query("SELECT * FROM Categories WHERE is_category_deleted = 0")
+    @Query("SELECT * FROM ${MyCategory.TABLE_NAME} WHERE ${MyCategory.FIELD_IS_DELETED} = 0")
     fun getAllCategories(): Flowable<List<MyCategory>>
 }

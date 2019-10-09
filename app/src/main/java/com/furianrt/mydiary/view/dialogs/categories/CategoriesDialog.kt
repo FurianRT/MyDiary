@@ -49,7 +49,7 @@ class CategoriesDialog : BaseDialog(), CategoriesDialogContract.MvpView {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         getPresenterComponent(requireContext()).inject(this)
-        mNoteIds = arguments?.getStringArrayList(ARG_NOTE_IDS) ?: throw IllegalArgumentException()
+        mNoteIds = requireArguments().getStringArrayList(ARG_NOTE_IDS)!!
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,

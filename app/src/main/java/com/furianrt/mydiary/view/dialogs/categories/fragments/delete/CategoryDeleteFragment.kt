@@ -30,7 +30,7 @@ class CategoryDeleteFragment : BaseFragment(), CategoryDeleteContract.MvpView {
     override fun onCreate(savedInstanceState: Bundle?) {
         getPresenterComponent(requireContext()).inject(this)
         super.onCreate(savedInstanceState)
-        mPresenter.init(arguments?.getParcelable(ARG_CATEGORY)!!)
+        mPresenter.init(requireArguments().getParcelable(ARG_CATEGORY)!!)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,

@@ -12,12 +12,13 @@ package com.furianrt.mydiary.view.dialogs.tags.fragments.add
 
 import com.furianrt.mydiary.domain.save.AddTagToNoteUseCase
 import com.furianrt.mydiary.domain.save.SaveTagUseCase
-import io.reactivex.android.schedulers.AndroidSchedulers
+import com.furianrt.mydiary.utils.MyRxUtils
 import javax.inject.Inject
 
 class TagAddPresenter @Inject constructor(
         private val saveTag: SaveTagUseCase,
-        private val addTagToNote: AddTagToNoteUseCase
+        private val addTagToNote: AddTagToNoteUseCase,
+        private val scheduler: MyRxUtils.BaseSchedulerProvider
 ) : TagAddContract.Presenter() {
 
     private lateinit var mNoteId: String
@@ -32,7 +33,7 @@ class TagAddPresenter @Inject constructor(
         } else {
             addDisposable(saveTag.invoke(name)
                     .flatMapCompletable { addTagToNote.invoke(mNoteId, it) }
-                    .observeOn(AndroidSchedulers.mainThread())
+                    .observeOn(scheduler.ui())
                     .subscribe({
                         view?.closeView()
                     }, {

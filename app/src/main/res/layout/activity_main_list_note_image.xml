@@ -15,15 +15,26 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
+        <View
+            android:id="@+id/view_note_image_category"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignEnd="@id/text_note_image_day"
+            android:layout_alignBottom="@id/image_note_image_sync"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            tools:background="@color/blue" />
+
         <TextView
-            android:id="@+id/text_note_image_day"
+            android:id="@+id/text_note_image_day_of_week"
             android:layout_width="80dp"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:paddingTop="16dp"
-            android:textColor="@color/grey_dark"
-            android:textSize="30sp"
-            tools:text="30" />
+            android:paddingTop="20dp"
+            android:layout_marginBottom="-4dp"
+            android:textColor="@color/white"
+            android:textSize="18sp"
+            tools:text="Mon" />
 
         <ImageView
             android:id="@+id/image_main_list"
@@ -36,35 +47,44 @@
             tools:src="@drawable/tutorial_header_image" />
 
         <TextView
-            android:id="@+id/text_note_image_day_of_week"
+            android:id="@+id/text_note_image_day"
             android:layout_width="80dp"
             android:layout_height="wrap_content"
-            android:layout_below="@id/text_note_image_day"
+            android:layout_below="@id/text_note_image_day_of_week"
             android:gravity="center"
-            android:textColor="@color/grey_dark"
-            android:textSize="18sp"
-            tools:text="Mon" />
+            android:textColor="@color/white"
+            android:textSize="28sp"
+            tools:text="30" />
 
         <ImageView
             android:id="@+id/image_note_image_sync"
             android:layout_width="80dp"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
-            android:paddingBottom="16dp"
+            android:paddingBottom="20dp"
             android:src="@drawable/ic_cloud_off"
+            android:tint="@color/white"
             android:visibility="gone"
             tools:ignore="ContentDescription"
             tools:visibility="visible" />
 
-        <View
-            android:id="@+id/view_note_image_selected"
+    </RelativeLayout>
+
+    <FrameLayout
+        android:id="@+id/layout_note_image_selected"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:alpha="0.2"
+        android:background="?attr/colorAccent"
+        android:visibility="gone">
+
+        <ImageView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:alpha="0.2"
-            android:background="?attr/colorAccent"
-            android:elevation="4dp"
-            android:visibility="gone" />
+            android:layout_marginStart="80dp"
+            android:src="@drawable/ic_done_big"
+            tools:ignore="ContentDescription" />
 
-    </RelativeLayout>
+    </FrameLayout>
 
 </com.google.android.material.card.MaterialCardView>

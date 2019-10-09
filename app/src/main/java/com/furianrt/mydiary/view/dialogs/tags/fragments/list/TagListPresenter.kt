@@ -14,8 +14,8 @@ import com.furianrt.mydiary.data.entity.MyTag
 import com.furianrt.mydiary.domain.save.AddTagToNoteUseCase
 import com.furianrt.mydiary.domain.get.GetTagsUseCase
 import com.furianrt.mydiary.domain.delete.RemoveTagFromNoteUseCase
+import com.furianrt.mydiary.utils.MyRxUtils
 import io.reactivex.Flowable
-import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.functions.BiFunction
 import java.util.Locale
 import javax.inject.Inject
@@ -23,7 +23,8 @@ import javax.inject.Inject
 class TagListPresenter @Inject constructor(
         private val getTags: GetTagsUseCase,
         private val addTagToNote: AddTagToNoteUseCase,
-        private val removeTagFromNote: RemoveTagFromNoteUseCase
+        private val removeTagFromNote: RemoveTagFromNoteUseCase,
+        private val scheduler: MyRxUtils.BaseSchedulerProvider
 ) : TagListContract.Presenter() {
 
     private lateinit var mNoteId: String
@@ -42,7 +43,7 @@ class TagListPresenter @Inject constructor(
                     items.forEach { item -> item.isChecked = selectedTags.find { it.id == item.tag.id } != null }
                     return@BiFunction items
                 })
-                .observeOn(AndroidSchedulers.mainThread())
+                .observeOn(scheduler.ui())
                 .subscribe { items ->
                     mItems = items
                     val matchingTags = mItems.filter { item ->

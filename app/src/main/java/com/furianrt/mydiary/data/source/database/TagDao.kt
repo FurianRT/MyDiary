@@ -30,15 +30,16 @@ interface TagDao {
     @Update
     fun update(tags: List<MyTag>): Completable
 
-    @Query("UPDATE Tags SET is_tag_deleted = 1, tag_sync_with = '[]' WHERE id_tag = :tagId")
+    @Query("UPDATE ${MyTag.TABLE_NAME} SET ${MyTag.FIELD_IS_DELETED} = 1, ${MyTag.FIELD_SYNC_WITH} = '[]'" +
+            " WHERE ${MyTag.FIELD_ID} = :tagId")
     fun delete(tagId: String): Completable
 
-    @Query("SELECT * FROM Tags WHERE is_tag_deleted = 1")
+    @Query("SELECT * FROM ${MyTag.TABLE_NAME} WHERE ${MyTag.FIELD_IS_DELETED} = 1")
     fun getDeletedTags(): Flowable<List<MyTag>>
 
-    @Query("DELETE FROM Tags WHERE is_tag_deleted = 1")
+    @Query("DELETE FROM ${MyTag.TABLE_NAME} WHERE ${MyTag.FIELD_IS_DELETED} = 1")
     fun cleanup(): Completable
 
-    @Query("SELECT * FROM Tags WHERE is_tag_deleted = 0")
+    @Query("SELECT * FROM ${MyTag.TABLE_NAME} WHERE ${MyTag.FIELD_IS_DELETED} = 0")
     fun getAllTags(): Flowable<List<MyTag>>
 }

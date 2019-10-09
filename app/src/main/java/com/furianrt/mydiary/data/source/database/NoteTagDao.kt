@@ -28,26 +28,31 @@ interface NoteTagDao {
     @Update
     fun update(noteTags: List<NoteTag>): Completable
 
-    @Query("UPDATE NoteTag SET is_notetag_deleted = 1, notetag_sync_with = '[]' WHERE id_note = :noteId AND id_tag = :tagId")
+    @Query("UPDATE ${NoteTag.TABLE_NAME} SET ${NoteTag.FIELD_IS_DELETED} = 1, ${NoteTag.FIELD_SYNC_WITH} = '[]' " +
+            "WHERE ${NoteTag.FIELD_NOTE_ID} = :noteId AND ${NoteTag.FIELD_TAG_ID} = :tagId")
     fun delete(noteId: String, tagId: String): Completable
 
-    @Query("UPDATE NoteTag SET is_notetag_deleted = 1, notetag_sync_with = '[]' WHERE id_note = :noteId")
+    @Query("UPDATE ${NoteTag.TABLE_NAME} SET ${NoteTag.FIELD_IS_DELETED} = 1, ${NoteTag.FIELD_SYNC_WITH} = '[]' " +
+            "WHERE ${NoteTag.FIELD_NOTE_ID} = :noteId")
     fun deleteWithNoteId(noteId: String): Completable
 
-    @Query("UPDATE NoteTag SET is_notetag_deleted = 1, notetag_sync_with = '[]' WHERE id_tag = :tagId")
+    @Query("UPDATE ${NoteTag.TABLE_NAME} SET ${NoteTag.FIELD_IS_DELETED} = 1, ${NoteTag.FIELD_SYNC_WITH} = '[]' " +
+            "WHERE ${NoteTag.FIELD_TAG_ID} = :tagId")
     fun deleteWithTagId(tagId: String): Completable
 
-    @Query("DELETE FROM NoteTag WHERE is_notetag_deleted = 1")
+    @Query("DELETE FROM ${NoteTag.TABLE_NAME} WHERE ${NoteTag.FIELD_IS_DELETED} = 1")
     fun cleanup(): Completable
 
-    @Query("SELECT * FROM NoteTag WHERE is_notetag_deleted = 0")
+    @Query("SELECT * FROM ${NoteTag.TABLE_NAME} WHERE ${NoteTag.FIELD_IS_DELETED} = 0")
     fun getAllNoteTags(): Flowable<List<NoteTag>>
 
-    @Query("SELECT * FROM NoteTag WHERE is_notetag_deleted = 1")
+    @Query("SELECT * FROM ${NoteTag.TABLE_NAME} WHERE ${NoteTag.FIELD_IS_DELETED} = 1")
     fun getDeletedNoteTags(): Flowable<List<NoteTag>>
 
-    @Query("SELECT Tags.* FROM Tags " +
-            "INNER JOIN NoteTag ON Tags.id_tag = NoteTag.id_tag AND is_notetag_deleted = 0 " +
-            "WHERE id_note = :noteId AND is_tag_deleted = 0")
+    @Query("SELECT ${MyTag.TABLE_NAME}.* FROM ${MyTag.TABLE_NAME} " +
+            "INNER JOIN ${NoteTag.TABLE_NAME} " +
+            "ON ${MyTag.TABLE_NAME}.${MyTag.FIELD_ID} = ${NoteTag.TABLE_NAME}.${NoteTag.FIELD_TAG_ID} " +
+            "AND ${NoteTag.FIELD_IS_DELETED} = 0 " +
+            "WHERE ${NoteTag.FIELD_NOTE_ID} = :noteId AND ${MyTag.FIELD_IS_DELETED} = 0")
     fun getTagsForNote(noteId: String): Flowable<List<MyTag>>
 }

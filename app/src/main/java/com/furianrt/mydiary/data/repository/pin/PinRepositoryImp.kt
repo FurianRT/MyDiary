@@ -13,8 +13,8 @@ package com.furianrt.mydiary.data.repository.pin
 import com.furianrt.mydiary.data.encryption.EncryptionHelper
 import com.furianrt.mydiary.data.source.auth.AuthHelper
 import com.furianrt.mydiary.data.source.preferences.PreferencesHelper
+import com.furianrt.mydiary.utils.MyRxUtils
 import io.reactivex.Completable
-import io.reactivex.Scheduler
 import io.reactivex.Single
 import javax.inject.Inject
 
@@ -22,17 +22,17 @@ class PinRepositoryImp @Inject constructor(
         private val prefs: PreferencesHelper,
         private val auth: AuthHelper,
         private val encryption: EncryptionHelper,
-        private val rxScheduler: Scheduler
+        private val scheduler: MyRxUtils.BaseSchedulerProvider
 ) : PinRepository {
 
     override fun getPin(): Single<String> =
             Single.fromCallable { prefs.getPin() }
                     .map { encryption.decryptString(it) }
-                    .subscribeOn(rxScheduler)
+                    .subscribeOn(scheduler.io())
 
     override fun setPin(pin: String): Completable =
             Completable.fromAction { prefs.setPin(encryption.encryptString(pin)) }
-                    .subscribeOn(rxScheduler)
+                    .subscribeOn(scheduler.io())
 
     override fun getBackupEmail(): String = prefs.getBackupEmail()
 
@@ -57,7 +57,7 @@ class PinRepositoryImp @Inject constructor(
     override fun sendPinResetEmail(): Completable =
             Completable.fromAction {
                 auth.sendPinResetEmail(prefs.getBackupEmail(), encryption.decryptString(prefs.getPin()))
-            }.subscribeOn(rxScheduler)
+            }.subscribeOn(scheduler.io())
 
     override fun isFingerprintEnabled(): Boolean = prefs.isFingerprintEnabled()
 }

@@ -11,14 +11,17 @@
 package com.furianrt.mydiary.view.dialogs.delete.note
 
 import com.furianrt.mydiary.domain.delete.DeleteNotesUseCase
+import com.furianrt.mydiary.utils.MyRxUtils
 import javax.inject.Inject
 
 class DeleteNotePresenter @Inject constructor(
-        private val deleteNotes: DeleteNotesUseCase
+        private val deleteNotes: DeleteNotesUseCase,
+        private val scheduler: MyRxUtils.BaseSchedulerProvider
 ) : DeleteNoteContract.Presenter() {
 
     override fun onButtonDeleteClick(notesIds: List<String>) {
         addDisposable(deleteNotes.invoke(notesIds)
+                .observeOn(scheduler.ui())
                 .subscribe { view?.closeView() })
     }
 

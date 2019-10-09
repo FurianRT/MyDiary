@@ -86,7 +86,7 @@ class GalleryListFragment : BaseFragment(), GalleryListAdapter.OnListItemInterac
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
 
-        mPresenter.init(arguments?.getString(ARG_NOTE_ID)!!)
+        mPresenter.init(requireArguments().getString(ARG_NOTE_ID)!!)
 
         savedInstanceState?.let {
             mRecyclerViewState = it.getParcelable(BUNDLE_RECYCLER_VIEW_STATE)

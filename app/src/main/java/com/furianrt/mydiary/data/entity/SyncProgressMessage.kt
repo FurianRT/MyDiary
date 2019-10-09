@@ -15,9 +15,8 @@ import kotlinx.android.parcel.Parcelize
 
 @Parcelize
 data class SyncProgressMessage(
-        val taskIndex: Int,
+        val task: Int,
         val progress: Int = 0,
-        val totalTasks: Int = 8,
         var message: String? = null,
         val hasError: Boolean = false
 ) : Parcelable {

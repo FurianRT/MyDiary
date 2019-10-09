@@ -34,7 +34,7 @@ class TagEditFragment : BaseFragment(), TagEditContract.MvpView {
     override fun onCreate(savedInstanceState: Bundle?) {
         getPresenterComponent(requireContext()).inject(this)
         super.onCreate(savedInstanceState)
-        val tag = arguments?.getParcelable(ARG_TAG) as MyTag?
+        val tag = requireArguments().getParcelable(ARG_TAG) as MyTag?
         savedInstanceState?.let { state ->
             tag!!.name = state.getString(BUNDLE_TAG_NAME, tag.name)
         }

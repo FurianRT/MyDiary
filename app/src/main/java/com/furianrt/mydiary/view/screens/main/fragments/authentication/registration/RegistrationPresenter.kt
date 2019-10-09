@@ -11,11 +11,12 @@
 package com.furianrt.mydiary.view.screens.main.fragments.authentication.registration
 
 import com.furianrt.mydiary.domain.check.CheckCredentialsUseCase
-import io.reactivex.android.schedulers.AndroidSchedulers
+import com.furianrt.mydiary.utils.MyRxUtils
 import javax.inject.Inject
 
 class RegistrationPresenter @Inject constructor(
-        private val checkCredentials: CheckCredentialsUseCase
+        private val checkCredentials: CheckCredentialsUseCase,
+        private val scheduler: MyRxUtils.BaseSchedulerProvider
 ) : RegistrationContract.Presenter() {
 
     private var mPrevEmail = ""
@@ -28,7 +29,7 @@ class RegistrationPresenter @Inject constructor(
         view?.clearEmailMessages()
         view?.showLoading()
         addDisposable(checkCredentials.invoke(email, password, passwordRepeat)
-                .observeOn(AndroidSchedulers.mainThread())
+                .observeOn(scheduler.ui())
                 .subscribe({
                     view?.hideLoading()
                     view?.showPrivacyView(email, password)
@@ -62,7 +63,7 @@ class RegistrationPresenter @Inject constructor(
             mPrevEmail = email
             view?.showLoadingEmail()
             addDisposable(checkCredentials.invoke(email)
-                    .observeOn(AndroidSchedulers.mainThread())
+                    .observeOn(scheduler.ui())
                     .subscribe({
                         view?.hideLoadingEmail()
                         view?.showMessageCorrectEmail()

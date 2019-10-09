@@ -15,40 +15,53 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <TextView
-            android:id="@+id/text_note_text_day"
-            android:layout_width="80dp"
+        <View
+            android:id="@+id/view_note_text_category"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:gravity="center"
-            android:paddingTop="16dp"
-            android:textColor="@color/grey_dark"
-            android:textSize="30sp"
-            tools:text="30" />
+            android:layout_alignEnd="@id/text_note_text_day"
+            android:layout_alignBottom="@id/image_note_text_sync"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            tools:background="@color/blue" />
 
         <TextView
             android:id="@+id/text_note_text_day_of_week"
             android:layout_width="80dp"
             android:layout_height="wrap_content"
-            android:layout_below="@id/text_note_text_day"
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="-4dp"
             android:gravity="center"
-            android:textColor="@color/grey_dark"
+            android:textColor="@color/white"
             android:textSize="18sp"
             tools:text="Mon" />
+
+        <TextView
+            android:id="@+id/text_note_text_day"
+            android:layout_width="80dp"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/text_note_text_day_of_week"
+            android:gravity="center"
+            android:textColor="@color/white"
+            android:textSize="28sp"
+            tools:text="30" />
 
         <TextView
             android:id="@+id/text_note_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
+            android:layout_alignTop="@id/text_note_text_day_of_week"
+            android:layout_alignBottom="@id/text_note_text_day_of_week"
             android:layout_alignParentEnd="true"
+            android:layout_marginStart="16dp"
             android:layout_marginEnd="24dp"
             android:layout_toEndOf="@id/text_note_text_day"
             android:ellipsize="end"
+            android:gravity="center_vertical"
             android:maxLines="1"
-            android:paddingTop="22dp"
             android:textColor="@color/black"
             android:textStyle="bold"
-            tools:text="Test title test title test title test title" />
+            tools:text="Test title test title test title test title test title test title test title test title" />
 
         <TextView
             android:id="@+id/text_note_content"
@@ -56,34 +69,44 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/text_note_title"
             android:layout_alignParentEnd="true"
+            android:layout_marginStart="16dp"
             android:layout_marginEnd="24dp"
             android:layout_toEndOf="@id/text_note_text_day"
             android:ellipsize="end"
             android:maxLines="4"
-            android:paddingTop="16dp"
-            android:paddingBottom="22dp"
+            android:paddingTop="12dp"
+            android:paddingBottom="16dp"
             android:textColor="@color/black"
-            tools:text="Test content test content test content test content test content test content test content test content test content test content test content test content" />
+            tools:text="Test content test content test content test content test content test content test content test content test content test content test content test content test content test content" />
 
         <ImageView
             android:id="@+id/image_note_text_sync"
             android:layout_width="80dp"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
-            android:paddingBottom="16dp"
-            android:src="@drawable/ic_cloud_off"
+            android:paddingBottom="20dp"
+            android:src="@drawable/ic_cloud_done"
             android:visibility="gone"
             tools:ignore="ContentDescription"
             tools:visibility="visible" />
 
-        <View
-            android:id="@+id/view_note_text_selected"
+    </RelativeLayout>
+
+    <FrameLayout
+        android:id="@+id/layout_note_text_selected"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:alpha="0.2"
+        android:background="?attr/colorAccent"
+        android:visibility="gone">
+
+        <ImageView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:alpha="0.2"
-            android:background="?attr/colorAccent"
-            android:elevation="4dp"
-            android:visibility="gone" />
+            android:layout_marginStart="80dp"
+            android:src="@drawable/ic_done_big"
+            tools:ignore="ContentDescription" />
 
-    </RelativeLayout>
+    </FrameLayout>
+
 </com.google.android.material.card.MaterialCardView>

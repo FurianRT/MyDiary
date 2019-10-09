@@ -20,8 +20,8 @@ import com.furianrt.mydiary.domain.check.IsDailyImageEnabledUseCase
 import com.furianrt.mydiary.domain.check.IsNeedRateOfferUseCase
 import com.furianrt.mydiary.domain.delete.DeleteProfileUseCase
 import com.furianrt.mydiary.domain.get.*
+import com.furianrt.mydiary.utils.MyRxUtils
 import com.furianrt.mydiary.utils.generateUniqueId
-import io.reactivex.android.schedulers.AndroidSchedulers
 import org.joda.time.LocalDate
 import java.lang.IllegalArgumentException
 import java.util.Locale
@@ -40,7 +40,8 @@ class MainActivityPresenter @Inject constructor(
         private val getAuthState: GetAuthStateUseCase,
         private val deleteProfile: DeleteProfileUseCase,
         private val checkLogOut: CheckLogOutUseCase,
-        private val filterNotes: FilterNotesUseCase
+        private val filterNotes: FilterNotesUseCase,
+        private val scheduler: MyRxUtils.BaseSchedulerProvider
 ) : MainActivityContract.Presenter() {
 
     companion object {
@@ -86,7 +87,7 @@ class MainActivityPresenter @Inject constructor(
     override fun onMenuAllNotesClick() {
         addDisposable(getFullNotes.invoke()
                 .first(ArrayList())
-                .observeOn(AndroidSchedulers.mainThread())
+                .observeOn(scheduler.ui())
                 .subscribe { notes ->
                     if (notes.isNotEmpty()) {
                         mSelectedNoteIds.clear()
@@ -121,7 +122,7 @@ class MainActivityPresenter @Inject constructor(
             return
         }
         addDisposable(getDailyImage.invoke()
-                .observeOn(AndroidSchedulers.mainThread())
+                .observeOn(scheduler.ui())
                 .subscribe({ image ->
                     view?.showHeaderImage(image)
                 }, { error ->
@@ -137,7 +138,7 @@ class MainActivityPresenter @Inject constructor(
             else -> throw IllegalStateException()
         }
         addDisposable(getFullNotes.invoke()
-                .observeOn(AndroidSchedulers.mainThread())
+                .observeOn(scheduler.ui())
                 .subscribe { notes ->
                     mNoteList = notes
                     showNotes(mNoteList, false)
@@ -260,15 +261,15 @@ class MainActivityPresenter @Inject constructor(
 
     private fun loadProfile() {
         addDisposable(getProfile.invoke()
-                .observeOn(AndroidSchedulers.mainThread())
+                .observeOn(scheduler.ui())
                 .subscribe { profile -> view?.showProfile(profile) })
 
         addDisposable(getAuthState.invoke()
                 .filter { it == GetAuthStateUseCase.STATE_SIGN_OUT }
-                .observeOn(AndroidSchedulers.mainThread())
+                .observeOn(scheduler.ui())
                 .subscribe {
                     addDisposable(deleteProfile.invoke()
-                            .observeOn(AndroidSchedulers.mainThread())
+                            .observeOn(scheduler.ui())
                             .subscribe { view?.showAnonymousProfile() })
                 })
     }

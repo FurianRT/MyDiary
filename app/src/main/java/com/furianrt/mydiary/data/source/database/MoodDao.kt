@@ -18,9 +18,9 @@ import io.reactivex.Single
 @Dao
 interface MoodDao {
 
-    @Query("SELECT * FROM Moods WHERE id_mood = :moodId")
+    @Query("SELECT * FROM ${MyMood.TABLE_NAME} WHERE ${MyMood.FIELD_ID} = :moodId")
     fun getMood(moodId: Int): Single<MyMood>
 
-    @Query("SELECT * FROM Moods ORDER BY id_mood DESC")
+    @Query("SELECT * FROM ${MyMood.TABLE_NAME} ORDER BY ${MyMood.FIELD_ID} DESC")
     fun getAllMoods(): Single<List<MyMood>>
 }

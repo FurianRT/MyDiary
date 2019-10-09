@@ -12,19 +12,20 @@ package com.furianrt.mydiary.view.screens.pin.fragments.backupemail
 
 import com.furianrt.mydiary.domain.check.CheckEmailUseCase
 import com.furianrt.mydiary.domain.get.GetProfileUseCase
-import io.reactivex.android.schedulers.AndroidSchedulers
+import com.furianrt.mydiary.utils.MyRxUtils
 import javax.inject.Inject
 
 class BackupEmailPresenter @Inject constructor(
         private val checkEmail: CheckEmailUseCase,
-        private val getProfile: GetProfileUseCase
+        private val getProfile: GetProfileUseCase,
+        private val scheduler: MyRxUtils.BaseSchedulerProvider
 ) : BackupEmailContract.Presenter() {
 
     override fun onViewCreated(email: String, firstLaunch: Boolean) {
         if (email.isEmpty() && firstLaunch) {
             addDisposable(getProfile.invoke()
                     .firstElement()
-                    .observeOn(AndroidSchedulers.mainThread())
+                    .observeOn(scheduler.ui())
                     .subscribe { view?.showEmail(it.email) })
         }
     }

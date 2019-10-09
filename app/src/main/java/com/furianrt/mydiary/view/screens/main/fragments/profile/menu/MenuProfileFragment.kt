@@ -44,7 +44,7 @@ class MenuProfileFragment : BaseFragment(), MenuProfileContract.MvpView, View.On
     private val mBroadcastReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
             SyncService.getProgressMessage(intent)?.let {
-                if (it.hasError || it.taskIndex == SyncProgressMessage.SYNC_FINISHED) {
+                if (it.hasError || it.task == SyncProgressMessage.SYNC_FINISHED) {
                    button_sign_out?.isEnabled = true
                 }
             }

@@ -16,14 +16,15 @@ import com.furianrt.mydiary.domain.auth.AuthorizeUseCase
 import com.furianrt.mydiary.domain.check.IsFingerprintAvailableUseCase
 import com.furianrt.mydiary.domain.check.CheckPinUseCase
 import com.furianrt.mydiary.domain.save.SavePinUseCase
-import io.reactivex.android.schedulers.AndroidSchedulers
+import com.furianrt.mydiary.utils.MyRxUtils
 import javax.inject.Inject
 
 class PinPresenter @Inject constructor(
         private val savePin: SavePinUseCase,
         private val authorize: AuthorizeUseCase,
         private val checkPin: CheckPinUseCase,
-        private val isFingerprintAvailable: IsFingerprintAvailableUseCase
+        private val isFingerprintAvailable: IsFingerprintAvailableUseCase,
+        private val scheduler: MyRxUtils.BaseSchedulerProvider
 ) : PinContract.Presenter() {
 
     companion object {
@@ -106,7 +107,7 @@ class PinPresenter @Inject constructor(
 
     private fun checkPinLockMode() {
         addDisposable(checkPin.invoke(mPin)
-                .observeOn(AndroidSchedulers.mainThread())
+                .observeOn(scheduler.ui())
                 .subscribe { validPin ->
                     if (validPin) {
                         authorize.invoke(true)
@@ -142,7 +143,7 @@ class PinPresenter @Inject constructor(
 
     private fun checkPinRemoveMode() {
         addDisposable(checkPin.invoke(mPin)
-                .observeOn(AndroidSchedulers.mainThread())
+                .observeOn(scheduler.ui())
                 .subscribe { validPin ->
                     if (validPin) {
                         view?.showMessagePinCorrect()
@@ -156,7 +157,7 @@ class PinPresenter @Inject constructor(
 
     override fun onEmailEntered(email: String) {
         addDisposable(savePin.invoke(mPin, email)
-                .observeOn(AndroidSchedulers.mainThread())
+                .observeOn(scheduler.ui())
                 .subscribe {
                     authorize.invoke(true)
                     view?.showMessagePinCreated()

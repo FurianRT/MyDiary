@@ -11,6 +11,7 @@
 package com.furianrt.mydiary.view.screens.main.adapter
 
 import android.content.Context
+import android.content.res.ColorStateList
 import android.net.Uri
 import android.view.LayoutInflater
 import android.view.View
@@ -46,7 +47,6 @@ class NoteListAdapter(
 ) : RecyclerView.Adapter<NoteListAdapter.BaseNoteViewHolder>(),
         ListPreloader.PreloadModelProvider<NoteListAdapter.NoteItemView>,
         StickyHeaderItemDecoration.StickyHeaderInterface {
-
 
     companion object {
         private const val MAX_PRELOAD = 20
@@ -102,7 +102,6 @@ class NoteListAdapter(
         if (headerPosition == RecyclerView.NO_POSITION) {
             header.layoutParams.height = 0
         }
-
         header.text_header_date.text = SimpleDateFormat("LLLL yyyy", Locale.getDefault())
                 .format(mItems[headerPosition].time)
                 .capitalize()
@@ -173,9 +172,19 @@ class NoteListAdapter(
 
         private fun setCategory(note: MyNoteWithProp) {
             val color = note.category?.color
-                    ?: ContextCompat.getColor(itemView.context, R.color.grey_dark)
-            itemView.text_note_text_day_of_week.setTextColor(color)
-            itemView.text_note_text_day.setTextColor(color)
+            if (color == null) {
+                val noCategoryColor = ContextCompat.getColor(itemView.context, R.color.grey_dark)
+                itemView.text_note_text_day_of_week.setTextColor(noCategoryColor)
+                itemView.text_note_text_day.setTextColor(noCategoryColor)
+                itemView.image_note_text_sync.imageTintList = ColorStateList.valueOf(noCategoryColor)
+                itemView.view_note_text_category.setBackgroundColor(ContextCompat.getColor(itemView.context, R.color.white))
+            } else {
+                val withCategoryColor = ContextCompat.getColor(itemView.context, R.color.white)
+                itemView.text_note_text_day_of_week.setTextColor(withCategoryColor)
+                itemView.text_note_text_day.setTextColor(withCategoryColor)
+                itemView.image_note_text_sync.imageTintList = ColorStateList.valueOf(withCategoryColor)
+                itemView.view_note_text_category.setBackgroundColor(color)
+            }
         }
 
         private fun setSyncIcon(note: MyNoteWithProp) {
@@ -184,10 +193,8 @@ class NoteListAdapter(
                 itemView.image_note_text_sync.visibility = View.VISIBLE
                 if (note.isSync(email)) {
                     itemView.image_note_text_sync.setImageResource(R.drawable.ic_cloud_done)
-                    itemView.image_note_text_sync.alpha = 0.3f
                 } else {
                     itemView.image_note_text_sync.setImageResource(R.drawable.ic_cloud_off)
-                    itemView.image_note_text_sync.alpha = 1f
                 }
             } else {
                 itemView.image_note_text_sync.visibility = View.GONE
@@ -195,7 +202,7 @@ class NoteListAdapter(
         }
 
         private fun selectItem(noteId: String) {
-            itemView.view_note_text_selected.visibility = if (selectedNoteIds.contains(noteId)) {
+            itemView.layout_note_text_selected.visibility = if (selectedNoteIds.contains(noteId)) {
                 View.VISIBLE
             } else {
                 View.GONE
@@ -226,9 +233,19 @@ class NoteListAdapter(
 
         private fun setCategory(note: MyNoteWithProp) {
             val color = note.category?.color
-                    ?: ContextCompat.getColor(itemView.context, R.color.grey_dark)
-            itemView.text_note_image_day_of_week.setTextColor(color)
-            itemView.text_note_image_day.setTextColor(color)
+            if (color == null) {
+                val noCategoryColor = ContextCompat.getColor(itemView.context, R.color.grey_dark)
+                itemView.text_note_image_day_of_week.setTextColor(noCategoryColor)
+                itemView.text_note_image_day.setTextColor(noCategoryColor)
+                itemView.image_note_image_sync.imageTintList = ColorStateList.valueOf(noCategoryColor)
+                itemView.view_note_image_category.setBackgroundColor(ContextCompat.getColor(itemView.context, R.color.white))
+            } else {
+                val withCategoryColor = ContextCompat.getColor(itemView.context, R.color.white)
+                itemView.text_note_image_day_of_week.setTextColor(withCategoryColor)
+                itemView.text_note_image_day.setTextColor(withCategoryColor)
+                itemView.image_note_image_sync.imageTintList = ColorStateList.valueOf(withCategoryColor)
+                itemView.view_note_image_category.setBackgroundColor(color)
+            }
         }
 
         private fun setSyncIcon(note: MyNoteWithProp) {
@@ -237,10 +254,8 @@ class NoteListAdapter(
                 itemView.image_note_image_sync.visibility = View.VISIBLE
                 if (note.isSync(email)) {
                     itemView.image_note_image_sync.setImageResource(R.drawable.ic_cloud_done)
-                    itemView.image_note_image_sync.alpha = 0.3f
                 } else {
                     itemView.image_note_image_sync.setImageResource(R.drawable.ic_cloud_off)
-                    itemView.image_note_image_sync.alpha = 1f
                 }
             } else {
                 itemView.image_note_image_sync.visibility = View.GONE
@@ -248,7 +263,7 @@ class NoteListAdapter(
         }
 
         private fun selectItem(noteId: String) {
-            itemView.view_note_image_selected.visibility = if (selectedNoteIds.contains(noteId)) {
+            itemView.layout_note_image_selected.visibility = if (selectedNoteIds.contains(noteId)) {
                 View.VISIBLE
             } else {
                 View.GONE

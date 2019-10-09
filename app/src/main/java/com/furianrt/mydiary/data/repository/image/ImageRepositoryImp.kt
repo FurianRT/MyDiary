@@ -19,6 +19,7 @@ import com.furianrt.mydiary.data.source.database.HeaderImageDao
 import com.furianrt.mydiary.data.source.database.ImageDao
 import com.furianrt.mydiary.data.source.preferences.PreferencesHelper
 import com.furianrt.mydiary.data.source.storage.StorageHelper
+import com.furianrt.mydiary.utils.MyRxUtils
 import io.reactivex.*
 import org.joda.time.DateTime
 import javax.inject.Inject
@@ -31,37 +32,37 @@ class ImageRepositoryImp @Inject constructor(
         private val imageApi: ImageApiService,
         private val cloud: CloudHelper,
         private val auth: AuthHelper,
-        private val rxScheduler: Scheduler
+        private val scheduler: MyRxUtils.BaseSchedulerProvider
 ) : ImageRepository {
 
     override fun insertImage(image: MyImage): Completable =
             imageDao.insert(image)
-                    .subscribeOn(rxScheduler)
+                    .subscribeOn(scheduler.io())
 
     override fun insertImages(images: List<MyImage>): Completable =
             imageDao.insert(images)
-                    .subscribeOn(rxScheduler)
+                    .subscribeOn(scheduler.io())
 
     override fun insertHeaderImage(headerImage: MyHeaderImage): Completable =
             headerImageDao.insert(headerImage)
-                    .subscribeOn(rxScheduler)
+                    .subscribeOn(scheduler.io())
 
     override fun updateImage(image: MyImage): Completable =
             imageDao.update(image.apply { syncWith.clear() })
-                    .subscribeOn(rxScheduler)
+                    .subscribeOn(scheduler.io())
 
     override fun updateImage(images: List<MyImage>): Completable =
             imageDao.update(images.map { it.apply { syncWith.clear() } })
-                    .subscribeOn(rxScheduler)
+                    .subscribeOn(scheduler.io())
 
     override fun updateImageSync(images: List<MyImage>): Completable =
             imageDao.update(images)
-                    .subscribeOn(rxScheduler)
+                    .subscribeOn(scheduler.io())
 
     override fun deleteImage(imageName: String): Completable =
             imageDao.delete(imageName)
                     .andThen(Completable.fromCallable { storage.deleteFile(imageName) })
-                    .subscribeOn(rxScheduler)
+                    .subscribeOn(scheduler.io())
 
     override fun deleteImage(imageNames: List<String>): Completable =
             imageDao.delete(imageNames)
@@ -69,41 +70,41 @@ class ImageRepositoryImp @Inject constructor(
                     .flatMapSingle { Single.fromCallable { storage.deleteFile(it) } }
                     .collectInto(mutableListOf<Boolean>()) { l, i -> l.add(i) }
                     .ignoreElement()
-                    .subscribeOn(rxScheduler)
+                    .subscribeOn(scheduler.io())
 
     override fun deleteImageFromStorage(fileName: String): Single<Boolean> =
             Single.fromCallable { storage.deleteFile(fileName) }
-                    .subscribeOn(rxScheduler)
+                    .subscribeOn(scheduler.io())
 
     override fun cleanupImages(): Completable =
             imageDao.cleanup()
-                    .subscribeOn(rxScheduler)
+                    .subscribeOn(scheduler.io())
 
     override fun getAllImages(): Flowable<List<MyImage>> =
             imageDao.getAllImages()
-                    .subscribeOn(rxScheduler)
+                    .subscribeOn(scheduler.io())
 
     override fun getDeletedImages(): Flowable<List<MyImage>> =
             imageDao.getDeletedImages()
-                    .subscribeOn(rxScheduler)
+                    .subscribeOn(scheduler.io())
 
     override fun saveImageToStorage(image: MyImage): Single<MyImage> =
             Single.fromCallable { storage.copyImageToStorage(image.uri, image.name) }
                     .map { file -> MyImage(file.name, file.toURI().toString(), image.noteId, image.addedTime) }
-                    .subscribeOn(rxScheduler)
+                    .subscribeOn(scheduler.io())
 
     override fun getImagesForNote(noteId: String): Flowable<List<MyImage>> =
             imageDao.getImagesForNote(noteId)
-                    .subscribeOn(rxScheduler)
+                    .subscribeOn(scheduler.io())
 
     override fun getImageCount(): Flowable<Int> =
             imageDao.getCount()
-                    .subscribeOn(rxScheduler)
+                    .subscribeOn(scheduler.io())
 
     override fun getHeaderImages(): Flowable<List<MyHeaderImage>> =
             headerImageDao.getHeaderImages()
                     .map { it.sortedByDescending { image -> image.addedTime } }
-                    .subscribeOn(rxScheduler)
+                    .subscribeOn(scheduler.io())
 
     override fun loadHeaderImages(category: String, page: Int, perPage: Int): Single<List<MyHeaderImage>> =
             imageApi.getImages(category, page, perPage)
@@ -112,27 +113,27 @@ class ImageRepositoryImp @Inject constructor(
                                 .map { MyHeaderImage(it.id, it.largeImageURL, DateTime.now().millis) }
                                 .sortedByDescending { it.addedTime }
                     }
-                    .subscribeOn(rxScheduler)
+                    .subscribeOn(scheduler.io())
 
     override fun saveImagesInCloud(images: List<MyImage>): Completable =
             cloud.saveImages(images, auth.getUserId())
-                    .subscribeOn(rxScheduler)
+                    .subscribeOn(scheduler.io())
 
     override fun saveImagesFilesInCloud(images: List<MyImage>): Completable =
             cloud.saveImagesFiles(images, auth.getUserId())
-                    .subscribeOn(rxScheduler)
+                    .subscribeOn(scheduler.io())
 
     override fun deleteImagesFromCloud(images: List<MyImage>): Completable =
             cloud.deleteImages(images, auth.getUserId())
-                    .subscribeOn(rxScheduler)
+                    .subscribeOn(scheduler.io())
 
     override fun getAllImagesFromCloud(): Single<List<MyImage>> =
             cloud.getAllImages(auth.getUserId())
-                    .subscribeOn(rxScheduler)
+                    .subscribeOn(scheduler.io())
 
     override fun loadImageFiles(images: List<MyImage>): Completable =
             cloud.loadImageFiles(images, auth.getUserId())
-                    .subscribeOn(rxScheduler)
+                    .subscribeOn(scheduler.io())
 
     override fun isDailyImageEnabled(): Boolean = prefs.isDailyImageEnabled()
 

@@ -15,13 +15,14 @@ import com.furianrt.mydiary.data.entity.MyNoteAppearance
 import com.furianrt.mydiary.domain.reset.ResetNoteSettingsUseCase
 import com.furianrt.mydiary.domain.get.GetAppearanceUseCase
 import com.furianrt.mydiary.domain.update.UpdateAppearanceUseCase
-import io.reactivex.android.schedulers.AndroidSchedulers
+import com.furianrt.mydiary.utils.MyRxUtils
 import javax.inject.Inject
 
 class NoteSettingsPresenter @Inject constructor(
         private val updateAppearance: UpdateAppearanceUseCase,
         private val getAppearance: GetAppearanceUseCase,
-        private val resetNoteSettings: ResetNoteSettingsUseCase
+        private val resetNoteSettings: ResetNoteSettingsUseCase,
+        private val scheduler: MyRxUtils.BaseSchedulerProvider
 ) : NoteSettingsContract.Presenter() {
 
     companion object {
@@ -39,7 +40,7 @@ class NoteSettingsPresenter @Inject constructor(
         super.attachView(view)
         addDisposable(getAppearance.invoke(mNoteId)
                 .firstElement()
-                .observeOn(AndroidSchedulers.mainThread())
+                .observeOn(scheduler.ui())
                 .subscribe { appearance ->
                     mAppearance = appearance
                     Log.e(TAG, "getNoteAppearance")
@@ -74,13 +75,13 @@ class NoteSettingsPresenter @Inject constructor(
 
     override fun onPrefResetSettingsClick() {
         addDisposable(resetNoteSettings.invoke(mAppearance.appearanceId)
-                .observeOn(AndroidSchedulers.mainThread())
+                .observeOn(scheduler.ui())
                 .subscribe { view?.onAppearanceReset() })
     }
 
     private fun updateAppearance(appearance: MyNoteAppearance) {
         addDisposable(updateAppearance.invoke(appearance)
-                .observeOn(AndroidSchedulers.mainThread())
+                .observeOn(scheduler.ui())
                 .subscribe())
     }
 }

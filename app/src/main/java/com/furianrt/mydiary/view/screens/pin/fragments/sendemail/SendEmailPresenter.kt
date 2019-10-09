@@ -11,17 +11,18 @@
 package com.furianrt.mydiary.view.screens.pin.fragments.sendemail
 
 import com.furianrt.mydiary.domain.send.SendPinResetEmailUseCase
-import io.reactivex.android.schedulers.AndroidSchedulers
+import com.furianrt.mydiary.utils.MyRxUtils
 import javax.inject.Inject
 
 class SendEmailPresenter @Inject constructor(
-        private val sendPinResetEmail: SendPinResetEmailUseCase
+        private val sendPinResetEmail: SendPinResetEmailUseCase,
+        private val scheduler: MyRxUtils.BaseSchedulerProvider
 ) : SendEmailContract.Presenter() {
 
     override fun onButtonSendClick() {
         view?.showLoading()
         addDisposable(sendPinResetEmail.invoke()
-                .observeOn(AndroidSchedulers.mainThread())
+                .observeOn(scheduler.ui())
                 .subscribe({
                     view?.hideLoading()
                     view?.showDoneView()

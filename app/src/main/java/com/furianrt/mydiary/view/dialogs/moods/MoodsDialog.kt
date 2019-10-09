@@ -28,7 +28,6 @@ class MoodsDialog : BaseDialog(), MoodsDialogContract.MvpView,
 
     companion object {
         const val TAG = "MoodsDialog"
-
         private const val ARG_NOTE_ID = "note_id"
 
         @JvmStatic
@@ -49,7 +48,7 @@ class MoodsDialog : BaseDialog(), MoodsDialogContract.MvpView,
     override fun onCreate(savedInstanceState: Bundle?) {
         getPresenterComponent(requireContext()).inject(this)
         super.onCreate(savedInstanceState)
-        mNoteId = arguments?.getString(ARG_NOTE_ID) ?: throw IllegalArgumentException()
+        mNoteId = requireArguments().getString(ARG_NOTE_ID)!!
     }
 
     @SuppressLint("InflateParams")

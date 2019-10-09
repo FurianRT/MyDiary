@@ -11,17 +11,18 @@
 package com.furianrt.mydiary.view.screens.main.fragments.profile
 
 import com.furianrt.mydiary.domain.get.GetProfileUseCase
-import io.reactivex.android.schedulers.AndroidSchedulers
+import com.furianrt.mydiary.utils.MyRxUtils
 import javax.inject.Inject
 
 class ProfilePresenter @Inject constructor(
-        private val getProfile: GetProfileUseCase
+        private val getProfile: GetProfileUseCase,
+        private val scheduler: MyRxUtils.BaseSchedulerProvider
 ) : ProfileContract.Presenter() {
 
     override fun attachView(view: ProfileContract.MvpView) {
         super.attachView(view)
         addDisposable(getProfile.invoke()
-                .observeOn(AndroidSchedulers.mainThread())
+                .observeOn(scheduler.ui())
                 .subscribe { view.showProfile(it) })
     }
 

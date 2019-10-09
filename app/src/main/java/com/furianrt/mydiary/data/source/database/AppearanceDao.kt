@@ -30,20 +30,20 @@ interface AppearanceDao {
     @Update
     fun update(appearance: List<MyNoteAppearance>): Completable
 
-    @Query("UPDATE NoteAppearances " +
-            "SET is_appearance_deleted = 1, appearance_sync_with = '[]' " +
-            "WHERE id_appearance = :noteId")
+    @Query("UPDATE ${MyNoteAppearance.TABLE_NAME} " +
+            "SET ${MyNoteAppearance.FIELD_IS_DELETED} = 1, ${MyNoteAppearance.FIELD_SYNC_WITH} = '[]' " +
+            "WHERE ${MyNoteAppearance.FIELD_ID} = :noteId")
     fun delete(noteId: String): Completable
 
-    @Query("DELETE FROM NoteAppearances WHERE is_appearance_deleted = 1")
+    @Query("DELETE FROM ${MyNoteAppearance.TABLE_NAME} WHERE ${MyNoteAppearance.FIELD_IS_DELETED} = 1")
     fun cleanup(): Completable
 
-    @Query("SELECT * FROM NoteAppearances WHERE id_appearance = :appearanceId")
+    @Query("SELECT * FROM ${MyNoteAppearance.TABLE_NAME} WHERE ${MyNoteAppearance.FIELD_ID} = :appearanceId")
     fun getNoteAppearance(appearanceId: String): Flowable<MyNoteAppearance>
 
-    @Query("SELECT * FROM NoteAppearances WHERE is_appearance_deleted = 1")
+    @Query("SELECT * FROM ${MyNoteAppearance.TABLE_NAME} WHERE ${MyNoteAppearance.FIELD_IS_DELETED} = 1")
     fun getDeletedAppearances(): Flowable<List<MyNoteAppearance>>
 
-    @Query("SELECT * FROM NoteAppearances")
+    @Query("SELECT * FROM ${MyNoteAppearance.TABLE_NAME}")
     fun getAllNoteAppearances(): Flowable<List<MyNoteAppearance>>
 }

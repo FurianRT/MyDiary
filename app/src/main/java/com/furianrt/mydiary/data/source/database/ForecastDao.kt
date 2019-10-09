@@ -28,15 +28,15 @@ interface ForecastDao {
     @Update
     fun update(forecasts: List<MyForecast>): Completable
 
-    @Query("UPDATE Forecasts SET is_forecast_deleted = 1, forecast_sync_with = '[]' WHERE note_id = :noteId")
+    @Query("UPDATE ${MyForecast.TABLE_NAME} SET ${MyForecast.FIELD_IS_DELETED} = 1, ${MyForecast.FIELD_SYNC_WITH} = '[]' WHERE ${MyForecast.FIELD_NOTE_ID} = :noteId")
     fun delete(noteId: String): Completable
 
-    @Query("SELECT * FROM Forecasts WHERE is_forecast_deleted = 0")
+    @Query("SELECT * FROM ${MyForecast.TABLE_NAME} WHERE ${MyForecast.FIELD_IS_DELETED} = 0")
     fun getAllForecasts(): Single<List<MyForecast>>
 
-    @Query("SELECT * FROM Forecasts WHERE is_forecast_deleted = 1")
+    @Query("SELECT * FROM ${MyForecast.TABLE_NAME} WHERE ${MyForecast.FIELD_IS_DELETED} = 1")
     fun getDeletedForecasts(): Flowable<List<MyForecast>>
 
-    @Query("DELETE FROM Forecasts WHERE is_forecast_deleted = 1")
+    @Query("DELETE FROM ${MyForecast.TABLE_NAME} WHERE ${MyForecast.FIELD_IS_DELETED} = 1")
     fun cleanup(): Completable
 }

@@ -39,7 +39,7 @@ class TagListFragment : BaseFragment(), TagListContract.MvpView,
     override fun onCreate(savedInstanceState: Bundle?) {
         getPresenterComponent(requireContext()).inject(this)
         super.onCreate(savedInstanceState)
-        mPresenter.init(arguments?.getString(ARG_NOTE_ID)!!)
+        mPresenter.init(requireArguments().getString(ARG_NOTE_ID)!!)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,

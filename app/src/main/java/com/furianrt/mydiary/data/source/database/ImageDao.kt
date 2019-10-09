@@ -30,29 +30,29 @@ interface ImageDao {
     @Update
     fun update(images: List<MyImage>): Completable
 
-    @Query("UPDATE Images SET is_image_deleted = 1, image_sync_with = '[]' WHERE id_note_image = :noteId")
+    @Query("UPDATE ${MyImage.TABLE_NAME} SET ${MyImage.FIELD_IS_DELETED} = 1, ${MyImage.FIELD_SYNC_WITH} = '[]' WHERE ${MyImage.FIELD_ID_NOTE} = :noteId")
     fun deleteByNoteId(noteId: String): Completable
 
-    @Query("UPDATE Images SET is_image_deleted = 1, image_sync_with = '[]' WHERE name = :imageId")
+    @Query("UPDATE ${MyImage.TABLE_NAME} SET ${MyImage.FIELD_IS_DELETED} = 1, ${MyImage.FIELD_SYNC_WITH} = '[]' WHERE ${MyImage.FIELD_NAME} = :imageId")
     fun delete(imageId: String): Completable
 
-    @Query("UPDATE Images SET is_image_deleted = 1, image_sync_with = '[]' WHERE name IN (:imageIds)")
+    @Query("UPDATE ${MyImage.TABLE_NAME} SET ${MyImage.FIELD_IS_DELETED} = 1, ${MyImage.FIELD_SYNC_WITH} = '[]' WHERE ${MyImage.FIELD_NAME} IN (:imageIds)")
     fun delete(imageIds: List<String>): Completable
 
-    @Query("SELECT * FROM Images WHERE is_image_deleted = 0 ORDER BY image_order, time_added")
+    @Query("SELECT * FROM ${MyImage.TABLE_NAME} WHERE ${MyImage.FIELD_IS_DELETED} = 0 ORDER BY ${MyImage.FIELD_ORDER}, ${MyImage.FIELD_ADDED_TIME}")
     fun getAllImages(): Flowable<List<MyImage>>
 
-    @Query("SELECT * FROM Images WHERE is_image_deleted = 1")
+    @Query("SELECT * FROM ${MyImage.TABLE_NAME} WHERE ${MyImage.FIELD_IS_DELETED} = 1")
     fun getDeletedImages(): Flowable<List<MyImage>>
 
-    @Query("SELECT * FROM Images " +
-            "WHERE id_note_image = :noteId AND is_image_deleted = 0 " +
-            "ORDER BY image_order ASC, time_added DESC")
+    @Query("SELECT * FROM ${MyImage.TABLE_NAME} " +
+            "WHERE ${MyImage.FIELD_ID_NOTE} = :noteId AND ${MyImage.FIELD_IS_DELETED} = 0 " +
+            "ORDER BY ${MyImage.FIELD_ORDER} ASC, ${MyImage.FIELD_ADDED_TIME} ASC")
     fun getImagesForNote(noteId: String): Flowable<List<MyImage>>
 
-    @Query("SELECT COUNT(*) FROM Images WHERE is_image_deleted = 0")
+    @Query("SELECT COUNT(*) FROM ${MyImage.TABLE_NAME} WHERE ${MyImage.FIELD_IS_DELETED} = 0")
     fun getCount(): Flowable<Int>
 
-    @Query("DELETE FROM Images WHERE is_image_deleted = 1")
+    @Query("DELETE FROM ${MyImage.TABLE_NAME} WHERE ${MyImage.FIELD_IS_DELETED} = 1")
     fun cleanup(): Completable
 }

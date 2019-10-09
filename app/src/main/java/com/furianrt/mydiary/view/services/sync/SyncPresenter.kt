@@ -91,28 +91,28 @@ class SyncPresenter @Inject constructor(
                     error.printStackTrace()
                     val progressMessage = when (error) {
                         is SyncNotesUseCase.SyncNotesException ->
-                            SyncProgressMessage(taskIndex = SyncProgressMessage.SYNC_NOTES, hasError = true)
+                            SyncProgressMessage(task = SyncProgressMessage.SYNC_NOTES, hasError = true)
                         is SyncAppearanceUseCase.SyncAppearanceException ->
-                            SyncProgressMessage(taskIndex = SyncProgressMessage.SYNC_APPEARANCE, hasError = true)
+                            SyncProgressMessage(task = SyncProgressMessage.SYNC_APPEARANCE, hasError = true)
                         is SyncCategoriesUseCase.SyncCategoriesException ->
-                            SyncProgressMessage(taskIndex = SyncProgressMessage.SYNC_CATEGORIES, hasError = true)
+                            SyncProgressMessage(task = SyncProgressMessage.SYNC_CATEGORIES, hasError = true)
                         is SyncTagsUseCase.SyncTagsException ->
-                            SyncProgressMessage(taskIndex = SyncProgressMessage.SYNC_TAGS, hasError = true)
+                            SyncProgressMessage(task = SyncProgressMessage.SYNC_TAGS, hasError = true)
                         is SyncTagsUseCase.SyncNoteTagsException ->
-                            SyncProgressMessage(taskIndex = SyncProgressMessage.SYNC_NOTE_TAGS, hasError = true)
+                            SyncProgressMessage(task = SyncProgressMessage.SYNC_NOTE_TAGS, hasError = true)
                         is SyncLocationsUseCase.SyncLocationsException ->
-                            SyncProgressMessage(taskIndex = SyncProgressMessage.SYNC_LOCATION, hasError = true)
+                            SyncProgressMessage(task = SyncProgressMessage.SYNC_LOCATION, hasError = true)
                         is SyncLocationsUseCase.SyncNoteLocationsException ->
-                            SyncProgressMessage(taskIndex = SyncProgressMessage.SYNC_NOTE_LOCATIONS, hasError = true)
+                            SyncProgressMessage(task = SyncProgressMessage.SYNC_NOTE_LOCATIONS, hasError = true)
                         is SyncForecastUseCase.SyncForecastsException ->
-                            SyncProgressMessage(taskIndex = SyncProgressMessage.SYNC_FORECAST, hasError = true)
+                            SyncProgressMessage(task = SyncProgressMessage.SYNC_FORECAST, hasError = true)
                         is SyncImagesUseCase.SyncImagesException ->
-                            SyncProgressMessage(taskIndex = SyncProgressMessage.SYNC_IMAGES, hasError = true)
+                            SyncProgressMessage(task = SyncProgressMessage.SYNC_IMAGES, hasError = true)
                         is SyncNoteSpansUseCase.SyncSpanException ->
-                            SyncProgressMessage(taskIndex = SyncProgressMessage.SYNC_SPANS, hasError = true)
+                            SyncProgressMessage(task = SyncProgressMessage.SYNC_SPANS, hasError = true)
                         is SyncCleanupUseCase.SyncCleanupException ->
-                            SyncProgressMessage(taskIndex = SyncProgressMessage.CLEANUP, hasError = true)
-                        else -> SyncProgressMessage(taskIndex = SyncProgressMessage.UNKNOWN, hasError = true)
+                            SyncProgressMessage(task = SyncProgressMessage.CLEANUP, hasError = true)
+                        else -> SyncProgressMessage(task = SyncProgressMessage.UNKNOWN, hasError = true)
                     }
                     view?.sendProgressUpdate(progressMessage)
                     view?.close()

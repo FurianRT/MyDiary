@@ -27,21 +27,22 @@ abstract class SpanDao {
     @Update
     abstract fun update(textSpans: List<MyTextSpan>): Completable
 
-    @Query("DELETE FROM TextSpans WHERE id_note = :noteId")
+    @Query("DELETE FROM ${MyTextSpan.TABLE_NAME} WHERE ${MyTextSpan.FIELD_NOTE_ID} = :noteId")
     abstract fun deletePermanently(noteId: String): Completable
 
-    @Query("UPDATE TextSpans SET is_span_deleted = 1, span_sync_with = '[]' WHERE id_note = :noteId")
+    @Query("UPDATE ${MyTextSpan.TABLE_NAME} SET ${MyTextSpan.FIELD_IS_DELETED} = 1, ${MyTextSpan.FIELD_SYNC_WITH} = '[]' " +
+            "WHERE ${MyTextSpan.FIELD_NOTE_ID} = :noteId")
     abstract fun delete(noteId: String): Completable
 
-    @Query("SELECT * FROM TextSpans WHERE is_span_deleted = 0")
+    @Query("SELECT * FROM ${MyTextSpan.TABLE_NAME} WHERE ${MyTextSpan.FIELD_IS_DELETED} = 0")
     abstract fun getAllTextSpans(): Flowable<List<MyTextSpan>>
 
-    @Query("SELECT * FROM TextSpans WHERE id_note = :noteId AND is_span_deleted = 0")
+    @Query("SELECT * FROM ${MyTextSpan.TABLE_NAME} WHERE ${MyTextSpan.FIELD_NOTE_ID} = :noteId AND ${MyTextSpan.FIELD_IS_DELETED} = 0")
     abstract fun getTextSpans(noteId: String): Flowable<List<MyTextSpan>>
 
-    @Query("SELECT * FROM TextSpans WHERE is_span_deleted = 1")
+    @Query("SELECT * FROM ${MyTextSpan.TABLE_NAME} WHERE ${MyTextSpan.FIELD_IS_DELETED} = 1")
     abstract fun getDeletedTextSpans(): Flowable<List<MyTextSpan>>
 
-    @Query("DELETE FROM TextSpans WHERE is_span_deleted = 1")
+    @Query("DELETE FROM ${MyTextSpan.TABLE_NAME} WHERE ${MyTextSpan.FIELD_IS_DELETED} = 1")
     abstract fun cleanup(): Completable
 }

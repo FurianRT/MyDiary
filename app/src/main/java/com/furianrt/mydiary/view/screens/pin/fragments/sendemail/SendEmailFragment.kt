@@ -30,7 +30,6 @@ class SendEmailFragment : BaseFragment(), SendEmailContract.MvpView {
 
     companion object {
         const val TAG = "SendEmailFragment"
-
         private const val CLOSE_AFTER_DONE_DELAY = 2000L
     }
 

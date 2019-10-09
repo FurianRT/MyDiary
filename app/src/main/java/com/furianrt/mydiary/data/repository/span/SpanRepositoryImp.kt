@@ -14,9 +14,9 @@ import com.furianrt.mydiary.data.entity.MyTextSpan
 import com.furianrt.mydiary.data.source.auth.AuthHelper
 import com.furianrt.mydiary.data.source.cloud.CloudHelper
 import com.furianrt.mydiary.data.source.database.SpanDao
+import com.furianrt.mydiary.utils.MyRxUtils
 import io.reactivex.Completable
 import io.reactivex.Flowable
-import io.reactivex.Scheduler
 import io.reactivex.Single
 import javax.inject.Inject
 
@@ -24,54 +24,54 @@ class SpanRepositoryImp @Inject constructor(
         private val spanDao: SpanDao,
         private val cloud: CloudHelper,
         private val auth: AuthHelper,
-        private val rxScheduler: Scheduler
+        private val scheduler: MyRxUtils.BaseSchedulerProvider
 ) : SpanRepository {
 
     override fun insertTextSpan(textSpans: List<MyTextSpan>): Completable =
             spanDao.insert(textSpans)
-                    .subscribeOn(rxScheduler)
+                    .subscribeOn(scheduler.io())
 
     override fun insertTextSpan(textSpan: MyTextSpan): Completable =
             spanDao.insert(textSpan)
-                    .subscribeOn(rxScheduler)
+                    .subscribeOn(scheduler.io())
 
     override fun updateTextSpansSync(textSpans: List<MyTextSpan>): Completable =
             spanDao.update(textSpans)
-                    .subscribeOn(rxScheduler)
+                    .subscribeOn(scheduler.io())
 
     override fun deleteTextSpan(noteId: String): Completable =
             spanDao.delete(noteId)
-                    .subscribeOn(rxScheduler)
+                    .subscribeOn(scheduler.io())
 
     override fun deleteTextSpanPermanently(noteId: String): Completable =
             spanDao.deletePermanently(noteId)
-                    .subscribeOn(rxScheduler)
+                    .subscribeOn(scheduler.io())
 
     override fun deleteTextSpansFromCloud(textSpans: List<MyTextSpan>): Completable =
             cloud.deleteTextSpans(textSpans, auth.getUserId())
-                    .subscribeOn(rxScheduler)
+                    .subscribeOn(scheduler.io())
 
     override fun cleanupTextSpans(): Completable =
             spanDao.cleanup()
-                    .subscribeOn(rxScheduler)
+                    .subscribeOn(scheduler.io())
 
     override fun getDeletedTextSpans(): Flowable<List<MyTextSpan>> =
             spanDao.getDeletedTextSpans()
-                    .subscribeOn(rxScheduler)
+                    .subscribeOn(scheduler.io())
 
     override fun getAllTextSpansFromCloud(): Single<List<MyTextSpan>> =
             cloud.getAllTextSpans(auth.getUserId())
-                    .subscribeOn(rxScheduler)
+                    .subscribeOn(scheduler.io())
 
     override fun getAllTextSpans(): Flowable<List<MyTextSpan>> =
             spanDao.getAllTextSpans()
-                    .subscribeOn(rxScheduler)
+                    .subscribeOn(scheduler.io())
 
     override fun getTextSpans(noteId: String): Flowable<List<MyTextSpan>> =
             spanDao.getTextSpans(noteId)
-                    .subscribeOn(rxScheduler)
+                    .subscribeOn(scheduler.io())
 
     override fun saveTextSpansInCloud(textSpans: List<MyTextSpan>): Completable =
             cloud.saveTextSpans(textSpans, auth.getUserId())
-                    .subscribeOn(rxScheduler)
+                    .subscribeOn(scheduler.io())
 }

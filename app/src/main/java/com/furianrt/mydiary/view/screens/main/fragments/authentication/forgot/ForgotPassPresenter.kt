@@ -11,11 +11,12 @@
 package com.furianrt.mydiary.view.screens.main.fragments.authentication.forgot
 
 import com.furianrt.mydiary.domain.send.SendPassResetEmailUseCase
-import io.reactivex.android.schedulers.AndroidSchedulers
+import com.furianrt.mydiary.utils.MyRxUtils
 import javax.inject.Inject
 
 class ForgotPassPresenter @Inject constructor(
-        private val sendPassResetEmail: SendPassResetEmailUseCase
+        private val sendPassResetEmail: SendPassResetEmailUseCase,
+        private val scheduler: MyRxUtils.BaseSchedulerProvider
 ) : ForgotPassContract.Presenter() {
 
     override fun onButtonCancelClick() {
@@ -25,7 +26,7 @@ class ForgotPassPresenter @Inject constructor(
     override fun onButtonSendClick(email: String) {
         view?.showLoading()
         addDisposable(sendPassResetEmail.invoke(email)
-                .observeOn(AndroidSchedulers.mainThread())
+                .observeOn(scheduler.ui())
                 .subscribe({
                     view?.hideLoading()
                     view?.showEmailSent()
