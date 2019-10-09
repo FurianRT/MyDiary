@@ -79,7 +79,7 @@ class DrawerMenuPresenter @Inject constructor(
     private fun loadImageCount() {
         addDisposable(getImageCount.invoke()
                 .observeOn(scheduler.ui())
-                .subscribe { view?.showNotesTotal(it) })
+                .subscribe { view?.showImageCount(it) })
     }
 
     private fun loadSearchEntries() {

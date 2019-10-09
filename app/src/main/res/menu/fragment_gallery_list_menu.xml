@@ -11,6 +11,7 @@
     <item
         android:id="@+id/menu_multi_select"
         android:title="@string/multi_selection"
-        app:showAsAction="never" />
+        android:icon="@drawable/ic_checklist"
+        app:showAsAction="ifRoom" />
 
 </menu>

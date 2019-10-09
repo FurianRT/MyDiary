@@ -95,6 +95,7 @@ class MainActivity : BaseActivity(R.layout.activity_main), MainActivityContract.
         private const val ANIMATION_IMAGE_SETTINGS_FADE_OUT_OFFSET = 2000L
         private const val ANIMATION_NO_SEARCH_RESULT_DURATION = 200L
         private const val ANIMATION_NO_SEARCH_RESULT_SIZE = 1.4f
+        private const val ANIMATION_EMPTY_SATE_DURATION = 500L
     }
 
     @Inject
@@ -493,14 +494,20 @@ class MainActivity : BaseActivity(R.layout.activity_main), MainActivityContract.
     }
 
     override fun showEmptyNoteList() {
-        empty_state.visibility = View.VISIBLE
-        list_main.visibility = View.INVISIBLE
-        app_bar_layout.setExpanded(false, true)
+        mAdapter.submitList(emptyList())
+        if (empty_state.visibility == View.GONE && (empty_state.animation == null || empty_state.animation.hasEnded())) {
+            empty_state.visibility = View.VISIBLE
+            app_bar_layout.setExpanded(false, true)
+            empty_state.translationY = empty_state.height + 100f
+            empty_state.animate()
+                    .translationY(0f)
+                    .setDuration(ANIMATION_EMPTY_SATE_DURATION)
+                    .interpolator = DecelerateInterpolator()
+        }
     }
 
     override fun hideEmptyNoteList() {
         empty_state.visibility = View.GONE
-        list_main.visibility = View.VISIBLE
     }
 
     override fun showNoSearchResults() {
@@ -523,14 +530,9 @@ class MainActivity : BaseActivity(R.layout.activity_main), MainActivityContract.
                 .setDuration(ANIMATION_NO_SEARCH_RESULT_DURATION)
                 .setInterpolator(AccelerateInterpolator())
                 .setListener(object : ViewPropertyAnimatorListener {
-                    override fun onAnimationCancel(view: View?) {
-                        view?.visibility = View.GONE
-                    }
-
                     override fun onAnimationStart(view: View?) {}
-                    override fun onAnimationEnd(view: View?) {
-                        view?.visibility = View.GONE
-                    }
+                    override fun onAnimationCancel(view: View?) { onAnimationEnd(view) }
+                    override fun onAnimationEnd(view: View?) { view?.visibility = View.GONE }
                 })
                 .start()
     }
