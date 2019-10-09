@@ -258,6 +258,7 @@ class DrawerMenuFragment : BaseFragment(), DrawerMenuContract.MvpView,
                             count = entries.notes.count { note -> note.tags.find { it.id == tag.id } != null }
                     )
                 }
+                        .sortedByDescending { it.count }
                         .toMutableList()
                         .apply {
                             add(SearchItem(
@@ -277,6 +278,7 @@ class DrawerMenuFragment : BaseFragment(), DrawerMenuContract.MvpView,
                             count = entries.notes.count { it.note.categoryId == category.id }
                     )
                 }
+                        .sortedByDescending { it.count }
                         .toMutableList()
                         .apply {
                             add(SearchItem(
@@ -316,6 +318,7 @@ class DrawerMenuFragment : BaseFragment(), DrawerMenuContract.MvpView,
                                 count = entries.notes.count { note -> note.locations.find { it.id == location.id } != null }
                         )
                     }
+                            .sortedByDescending { it.count }
                             .toMutableList()
                             .apply {
                                 add(SearchItem(

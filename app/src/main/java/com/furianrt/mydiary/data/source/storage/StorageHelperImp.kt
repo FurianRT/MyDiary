@@ -12,7 +12,6 @@ package com.furianrt.mydiary.data.source.storage
 
 import android.content.Context
 import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.os.Environment
 import com.furianrt.mydiary.di.application.modules.app.AppContext
 import id.zelory.compressor.Compressor
@@ -26,7 +25,8 @@ class StorageHelperImp @Inject constructor(
 ) : StorageHelper {
 
     companion object {
-        private const val COMPRESS_VALUE = 18
+        private const val COMPRESS_VALUE_BITMAP = 18
+        private const val COMPRESS_VALUE_IMAGE = 50
     }
 
     private val mDirectory = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES)
@@ -47,15 +47,15 @@ class StorageHelperImp @Inject constructor(
 
     override fun copyImageToStorage(sourcePath: String, destFileName: String): File =
             Compressor(context)
-                    .setQuality(50)
+                    .setQuality(COMPRESS_VALUE_IMAGE)
                     .setCompressFormat(Bitmap.CompressFormat.WEBP)
                     .setDestinationDirectoryPath("$mDirectory/$destFileName.webp")
                     .compressToFile(File(sourcePath), "")
 
     override fun copyBitmapToStorage(bitmap: Bitmap, destFileName: String): File {
-        val destFile = File(mDirectory, "$destFileName.webp")
+        val destFile = File(mDirectory, "$destFileName.png")
         val fos = FileOutputStream(destFile)
-        bitmap.compress(Bitmap.CompressFormat.WEBP, COMPRESS_VALUE, fos)
+        bitmap.compress(Bitmap.CompressFormat.PNG, COMPRESS_VALUE_BITMAP, fos)
         fos.flush()
         fos.close()
         return destFile

@@ -15,6 +15,12 @@
         app:showAsAction="ifRoom" />
 
     <item
+        android:id="@+id/menu_settings"
+        android:icon="@drawable/ic_settings"
+        android:title="@string/settings"
+        app:showAsAction="ifRoom" />
+
+    <item
         android:id="@+id/menu_sort"
         android:title="@string/sort_new_first"
         app:showAsAction="never" />
@@ -22,12 +28,6 @@
     <item
         android:id="@+id/menu_all_notes"
         android:title="@string/choose_all_notes"
-        app:showAsAction="never" />
-
-    <item
-        android:id="@+id/menu_settings"
-        android:icon="@drawable/ic_settings"
-        android:title="@string/settings"
         app:showAsAction="never" />
 
 </menu>
