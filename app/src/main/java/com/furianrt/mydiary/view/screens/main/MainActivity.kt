@@ -655,7 +655,7 @@ class MainActivity : BaseActivity(R.layout.activity_main), MainActivityContract.
 
     override fun onStart() {
         super.onStart()
-        mBottomSheet.bottomSheetCallback = mBottomSheetCallback
+        mBottomSheet.addBottomSheetCallback(mBottomSheetCallback)
         mAdapter.listener = this
         drawer.addDrawerListener(mOnDrawerListener)
         list_main.addOnScrollListener(mAdapter.preloader)
@@ -670,7 +670,7 @@ class MainActivity : BaseActivity(R.layout.activity_main), MainActivityContract.
     override fun onStop() {
         super.onStop()
         mPresenter.detachView()
-        mBottomSheet.bottomSheetCallback = null
+        mBottomSheet.removeBottomSheetCallback(mBottomSheetCallback)
         mNeedToOpenActionBar = false
         mBackPressCount = 0
         mAdapter.listener = null

@@ -246,7 +246,7 @@ class PinActivity : BaseActivity(R.layout.activity_pin), PinContract.MvpView,
 
     override fun onStart() {
         super.onStart()
-        mBottomSheet.bottomSheetCallback = mBottomSheetCallback
+        mBottomSheet.addBottomSheetCallback(mBottomSheetCallback)
         mPresenter.attachView(this)
         when (mMode) {
             MODE_CREATE -> mPresenter.onViewStartedModeCreate()
@@ -259,6 +259,6 @@ class PinActivity : BaseActivity(R.layout.activity_pin), PinContract.MvpView,
         super.onStop()
         mPresenter.detachView()
         mHandler.removeCallbacks(mBottomSheetOpenRunnable)
-        mBottomSheet.bottomSheetCallback = null
+        mBottomSheet.removeBottomSheetCallback(mBottomSheetCallback)
     }
 }

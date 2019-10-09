@@ -12,8 +12,8 @@ android {
         applicationId "com.furianrt.mydiary"
         minSdkVersion 21
         targetSdkVersion 29
-        versionCode 39
-        versionName "1.6.2"
+        versionCode 40
+        versionName "1.6.3"
 
         javaCompileOptions {
             annotationProcessorOptions {
@@ -74,7 +74,7 @@ dependencies {
     implementation "androidx.appcompat:appcompat:$support_version"
     implementation "androidx.recyclerview:recyclerview:1.1.0-beta04"
     implementation "androidx.preference:preference:$support_version"
-    implementation 'com.google.android.material:material:1.1.0-alpha10'
+    implementation 'com.google.android.material:material:1.1.0-beta01'
     implementation 'androidx.constraintlayout:constraintlayout:2.0.0-beta1' //в beta2 баг констрейнтов (видно в PinActivity)
 
     //Layout for tags
