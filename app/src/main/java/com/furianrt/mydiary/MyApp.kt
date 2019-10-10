@@ -20,6 +20,7 @@ import com.facebook.stetho.Stetho
 import com.furianrt.mydiary.di.application.component.AppComponent
 import com.furianrt.mydiary.di.application.component.DaggerAppComponent
 import com.furianrt.mydiary.di.application.modules.app.AppContextModule
+import com.furianrt.mydiary.domain.CreateTutorialNoteUseCase
 import com.furianrt.mydiary.domain.auth.AuthorizeUseCase
 import com.furianrt.mydiary.domain.IncrementLaunchCountUseCase
 import com.furianrt.mydiary.domain.check.IsPinEnabledUseCase
@@ -68,6 +69,9 @@ class MyApp : Application(), Application.ActivityLifecycleCallbacks {
     @Inject
     lateinit var resetSyncProgress: ResetSyncProgressUseCase
 
+    @Inject
+    lateinit var createTutorialNote: CreateTutorialNoteUseCase
+
     private val mHandler = Handler(Looper.getMainLooper())
     private val mLogoutRunnable = Runnable { setAuthorized(false) }
 
@@ -88,6 +92,7 @@ class MyApp : Application(), Application.ActivityLifecycleCallbacks {
         }
         incrementLaunchCount.invoke()
         resetSyncProgress.invoke()
+        createTutorialNote.invoke().subscribe()
     }
 
     override fun onActivityDestroyed(activity: Activity?) {}
@@ -205,7 +210,6 @@ class MyApp : Application(), Application.ActivityLifecycleCallbacks {
 *   сделать отмену удаления в списке
 *   добавить кнопку очистки фильтров
 *   изсправить баг с дефолтными настройками внешнего вида
-*   исправить долгую загрузку туториала
 *   добавить сортировку тегов и всего остального по популярности
 *   добавить счетчики к категориям, тегам и т.д
 *   заменить экран добавления картинок

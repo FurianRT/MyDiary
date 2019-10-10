@@ -22,10 +22,10 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:fitsSystemWindows="true"
-            android:scaleType="centerCrop"
             android:src="?attr/colorPrimary"
             app:layout_collapseMode="parallax"
             tools:ignore="ContentDescription"
+            tools:scaleType="centerCrop"
             tools:src="@drawable/tutorial_header_image" />
 
         <FrameLayout

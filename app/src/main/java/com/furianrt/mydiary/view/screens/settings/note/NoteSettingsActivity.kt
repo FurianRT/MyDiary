@@ -47,14 +47,14 @@ class NoteSettingsActivity : BaseActivity(R.layout.activity_note_settings) {
 
     override fun onBillingInitialized() {
         super.onBillingInitialized()
-        if (!isItemPurchased(BuildConfig.ITEM_PREMIUM_SKU)/* && !isItemPurchased(ITEM_TEST_SKU)*/) {
+        if (!isItemPurchased(BuildConfig.ITEM_PREMIUM_SKU)) {
             showAdView()
         }
     }
 
     override fun onProductPurchased(productId: String, details: TransactionDetails?) {
         super.onProductPurchased(productId, details)
-        if (productId == BuildConfig.ITEM_PREMIUM_SKU/* || productId == ITEM_TEST_SKU*/) {
+        if (productId == BuildConfig.ITEM_PREMIUM_SKU) {
             hideAdView()
         }
     }

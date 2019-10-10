@@ -10,6 +10,7 @@
 
 package com.furianrt.mydiary.data.repository.image
 
+import android.graphics.Bitmap
 import com.furianrt.mydiary.data.entity.MyHeaderImage
 import com.furianrt.mydiary.data.entity.MyImage
 import com.furianrt.mydiary.data.source.api.images.ImageApiService
@@ -20,6 +21,7 @@ import com.furianrt.mydiary.data.source.database.ImageDao
 import com.furianrt.mydiary.data.source.preferences.PreferencesHelper
 import com.furianrt.mydiary.data.source.storage.StorageHelper
 import com.furianrt.mydiary.utils.MyRxUtils
+import com.furianrt.mydiary.utils.generateUniqueId
 import io.reactivex.*
 import org.joda.time.DateTime
 import javax.inject.Inject
@@ -90,6 +92,11 @@ class ImageRepositoryImp @Inject constructor(
 
     override fun saveImageToStorage(image: MyImage): Single<MyImage> =
             Single.fromCallable { storage.copyImageToStorage(image.uri, image.name) }
+                    .map { file -> MyImage(file.name, file.toURI().toString(), image.noteId, image.addedTime) }
+                    .subscribeOn(scheduler.io())
+
+    override fun saveBitmapToStorage(bitmap: Bitmap, image: MyImage): Single<MyImage> =
+            Single.fromCallable { storage.copyBitmapToStorage(bitmap, image.name) }
                     .map { file -> MyImage(file.name, file.toURI().toString(), image.noteId, image.addedTime) }
                     .subscribeOn(scheduler.io())
 

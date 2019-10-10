@@ -120,7 +120,7 @@ class CloudHelperImp @Inject constructor(
                     transaction.set(firestore.collection(COLLECTION_USERS)
                             .document(userId)
                             .collection(COLLECTION_LOCATIONS)
-                            .document(location.name), location)
+                            .document(location.name.replace("/", " ")), location)
                 }
             }.timeout(1, TimeUnit.MINUTES)
 

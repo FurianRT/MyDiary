@@ -59,4 +59,10 @@ class GeneralRepositoryImp @Inject constructor(
     override fun getPrimaryColor(): Int = prefs.getPrimaryColor()
 
     override fun getAccentColor(): Int = prefs.getAccentColor()
+
+    override fun isNeedDefaultValues(): Boolean = prefs.isNeedDefaultValues()
+
+    override fun setNeedDefaultValues(need: Boolean) {
+        prefs.setNeedDefaultValues(need)
+    }
 }
