@@ -10,6 +10,7 @@
 
 package com.furianrt.mydiary.data.repository.image
 
+import android.graphics.Bitmap
 import com.furianrt.mydiary.data.entity.MyHeaderImage
 import com.furianrt.mydiary.data.entity.MyImage
 import io.reactivex.Completable
@@ -36,6 +37,7 @@ interface ImageRepository {
     fun getAllImagesFromCloud(): Single<List<MyImage>>
     fun loadHeaderImages(category: String, page: Int = 1, perPage: Int = 20): Single<List<MyHeaderImage>>
     fun saveImageToStorage(image: MyImage): Single<MyImage>
+    fun saveBitmapToStorage(bitmap: Bitmap, image: MyImage): Single<MyImage>
     fun saveImagesInCloud(images: List<MyImage>): Completable
     fun saveImagesFilesInCloud(images: List<MyImage>): Completable
     fun loadImageFiles(images: List<MyImage>): Completable

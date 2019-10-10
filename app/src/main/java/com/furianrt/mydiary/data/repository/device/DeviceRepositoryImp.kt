@@ -11,6 +11,8 @@
 package com.furianrt.mydiary.data.repository.device
 
 import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.location.Address
 import android.location.Geocoder
 import android.location.LocationManager
@@ -27,6 +29,7 @@ import androidx.core.hardware.fingerprint.FingerprintManagerCompat
 import com.anjlab.android.iab.v3.BillingProcessor
 import com.anjlab.android.iab.v3.TransactionDetails
 import com.furianrt.mydiary.BuildConfig
+import com.furianrt.mydiary.R
 import com.furianrt.mydiary.data.repository.device.DeviceRepository.*
 import com.furianrt.mydiary.utils.generateUniqueId
 import java.io.IOException
@@ -49,9 +52,9 @@ class DeviceRepositoryImp @Inject constructor(
     private val mLocationCallback = object : LocationCallback() {
         override fun onLocationResult(result: LocationResult?) {
             super.onLocationResult(result)
+            fusedLocationClient.removeLocationUpdates(this)
             Thread(Runnable {
                 result?.let { findAddress(it.lastLocation.latitude, it.lastLocation.longitude) }
-                fusedLocationClient.removeLocationUpdates(this)
             }).start()
         }
     }
@@ -65,7 +68,7 @@ class DeviceRepositoryImp @Inject constructor(
         }
 
         if (addresses.isNotEmpty()) {
-            val address = addresses[0].getAddressLine(0)
+            val address = addresses[0].getAddressLine(0)?.replace("/", " ")
             if (address != null) {
                 val location = MyLocation(generateUniqueId(), address, latitude, longitude)
                 mLocationListeners.forEach { it.onLocationFound(location) }
@@ -129,6 +132,15 @@ class DeviceRepositoryImp @Inject constructor(
             fusedLocationClient.removeLocationUpdates(mLocationCallback)
         }
     }
+
+    override fun getTutorialNoteBitmap(): Bitmap =
+            BitmapFactory.decodeResource(context.resources, R.drawable.tutorial_header_image)
+
+    override fun getTutorialNoteMoodId(): Int = context.resources.getStringArray(R.array.moods).size
+
+    override fun getTutorialNoteTitle(): String = context.getString(R.string.tutorial_note_title)
+
+    override fun getTutorialNoteContent(): String = context.getString(R.string.tutorial_note_content)
 
     override fun isItemPurchased(productId: String): Boolean = mBillingProcessor.isPurchased(productId)
 

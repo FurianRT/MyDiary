@@ -10,12 +10,12 @@
 
 package com.furianrt.mydiary.domain.save
 
+import android.graphics.Bitmap
 import com.furianrt.mydiary.data.entity.MyImage
 import com.furianrt.mydiary.data.repository.image.ImageRepository
 import com.furianrt.mydiary.utils.generateUniqueId
 import io.reactivex.Completable
 import io.reactivex.Flowable
-import org.joda.time.DateTime
 import javax.inject.Inject
 
 class SaveImagesUseCase @Inject constructor(
@@ -26,7 +26,7 @@ class SaveImagesUseCase @Inject constructor(
             Flowable.fromIterable(imageUrls)
                     .map { url ->
                         val name = noteId + "_" + generateUniqueId()
-                        return@map MyImage(name, url, noteId, DateTime.now().millis)
+                        return@map MyImage(name, url, noteId)
                     }
                     .flatMapSingle { image -> imageRepository.saveImageToStorage(image) }
                     .flatMapSingle { savedImage ->
@@ -35,4 +35,11 @@ class SaveImagesUseCase @Inject constructor(
                     .onErrorReturn { false }
                     .collectInto(mutableListOf<Boolean>()) { l, i -> l.add(i) }
                     .ignoreElement()
+
+    fun invoke(noteId: String, bitmap: Bitmap): Completable {
+        val image = MyImage(noteId + "_" + generateUniqueId(), "", noteId)
+        return imageRepository.saveBitmapToStorage(bitmap, image)
+                .flatMapCompletable { imageRepository.insertImage(it) }
+                .onErrorComplete()
+    }
 }

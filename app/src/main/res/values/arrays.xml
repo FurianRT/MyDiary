@@ -17,16 +17,16 @@
     </string-array>
 
     <string-array name="categories">
-        <item>@string/category_love</item>
         <item>@string/category_plan</item>
+        <item>@string/category_love</item>
         <item>@string/category_friends</item>
         <item>@string/category_entertainment</item>
         <item>@string/category_business</item>
     </string-array>
 
     <string-array name="default_category_colors">
-        <item>#9C27B0</item>
         <item>#1E88E5</item>
+        <item>#9C27B0</item>
         <item>#43A047</item>
         <item>#FB8C00</item>
         <item>#D81B60</item>

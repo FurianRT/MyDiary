@@ -35,6 +35,9 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.ViewPropertyAnimatorListener
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.anjlab.android.iab.v3.TransactionDetails
+import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
+import com.bumptech.glide.signature.ObjectKey
 import com.furianrt.mydiary.BuildConfig
 import com.furianrt.mydiary.R
 import com.furianrt.mydiary.analytics.MyAnalytics
@@ -234,14 +237,14 @@ class MainActivity : BaseActivity(R.layout.activity_main), MainActivityContract.
 
     override fun onBillingInitialized() {
         super.onBillingInitialized()
-        if (!getIsItemPurchased(BuildConfig.ITEM_PREMIUM_SKU)/* && !getIsItemPurchased(ITEM_TEST_SKU)*/) {
+        if (!getIsItemPurchased(BuildConfig.ITEM_PREMIUM_SKU)) {
             showAdView()
         }
     }
 
     override fun onProductPurchased(productId: String, details: TransactionDetails?) {
         super.onProductPurchased(productId, details)
-        if (productId == BuildConfig.ITEM_PREMIUM_SKU/* || productId == ITEM_TEST_SKU*/) {
+        if (productId == BuildConfig.ITEM_PREMIUM_SKU) {
             closeBottomSheet()
             hideAdView()
         }
@@ -272,6 +275,10 @@ class MainActivity : BaseActivity(R.layout.activity_main), MainActivityContract.
         mNeedToOpenActionBar = true
         GlideApp.with(this)
                 .load(image.url)
+                .transition(DrawableTransitionOptions.withCrossFade())
+                .centerCrop()
+                .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
+                .signature(ObjectKey(image.id))
                 .into(image_toolbar_main)
     }
 
@@ -495,7 +502,7 @@ class MainActivity : BaseActivity(R.layout.activity_main), MainActivityContract.
 
     override fun showEmptyNoteList() {
         mAdapter.submitList(emptyList())
-        if (empty_state.visibility == View.GONE && (empty_state.animation == null || empty_state.animation.hasEnded())) {
+        if (empty_state.visibility != View.VISIBLE && (empty_state.animation == null || empty_state.animation.hasEnded())) {
             empty_state.visibility = View.VISIBLE
             app_bar_layout.setExpanded(false, true)
             empty_state.translationY = empty_state.height + 100f
@@ -507,34 +514,45 @@ class MainActivity : BaseActivity(R.layout.activity_main), MainActivityContract.
     }
 
     override fun hideEmptyNoteList() {
-        empty_state.visibility = View.GONE
+        if (empty_state.visibility != View.GONE) {
+            empty_state.visibility = View.GONE
+        }
     }
 
     override fun showNoSearchResults() {
-        empty_search.visibility = View.VISIBLE
-        ViewCompat.animate(empty_search)
-                .alpha(1f)
-                .scaleX(1f)
-                .scaleY(1f)
-                .setDuration(ANIMATION_NO_SEARCH_RESULT_DURATION)
-                .setInterpolator(DecelerateInterpolator())
-                .setListener(null)
-                .start()
+        if (empty_search.visibility != View.VISIBLE) {
+            empty_search.visibility = View.VISIBLE
+            ViewCompat.animate(empty_search)
+                    .alpha(1f)
+                    .scaleX(1f)
+                    .scaleY(1f)
+                    .setDuration(ANIMATION_NO_SEARCH_RESULT_DURATION)
+                    .setInterpolator(DecelerateInterpolator())
+                    .setListener(null)
+                    .start()
+        }
     }
 
     override fun hideNoSearchResults() {
-        ViewCompat.animate(empty_search)
-                .alpha(0f)
-                .scaleX(ANIMATION_NO_SEARCH_RESULT_SIZE)
-                .scaleY(ANIMATION_NO_SEARCH_RESULT_SIZE)
-                .setDuration(ANIMATION_NO_SEARCH_RESULT_DURATION)
-                .setInterpolator(AccelerateInterpolator())
-                .setListener(object : ViewPropertyAnimatorListener {
-                    override fun onAnimationStart(view: View?) {}
-                    override fun onAnimationCancel(view: View?) { onAnimationEnd(view) }
-                    override fun onAnimationEnd(view: View?) { view?.visibility = View.GONE }
-                })
-                .start()
+        if (empty_search.visibility != View.GONE) {
+            ViewCompat.animate(empty_search)
+                    .alpha(0f)
+                    .scaleX(ANIMATION_NO_SEARCH_RESULT_SIZE)
+                    .scaleY(ANIMATION_NO_SEARCH_RESULT_SIZE)
+                    .setDuration(ANIMATION_NO_SEARCH_RESULT_DURATION)
+                    .setInterpolator(AccelerateInterpolator())
+                    .setListener(object : ViewPropertyAnimatorListener {
+                        override fun onAnimationStart(view: View?) {}
+                        override fun onAnimationCancel(view: View?) {
+                            onAnimationEnd(view)
+                        }
+
+                        override fun onAnimationEnd(view: View?) {
+                            view?.visibility = View.GONE
+                        }
+                    })
+                    .start()
+        }
     }
 
     override fun onMainListItemClick(note: MyNoteWithProp) {
@@ -587,7 +605,7 @@ class MainActivity : BaseActivity(R.layout.activity_main), MainActivityContract.
     }
 
     override fun showProfile(profile: MyProfile) {
-        if (isItemPurchased(BuildConfig.ITEM_PREMIUM_SKU)/* || isItemPurchased(ITEM_TEST_SKU)*/) {
+        if (isItemPurchased(BuildConfig.ITEM_PREMIUM_SKU)) {
             mAdapter.syncEmail = profile.email
         } else {
             mAdapter.syncEmail = null

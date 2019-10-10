@@ -24,4 +24,6 @@ interface GeneralRepository {
     fun isRateOfferEnabled(): Boolean
     fun getPrimaryColor(): Int
     fun getAccentColor(): Int
+    fun isNeedDefaultValues(): Boolean
+    fun setNeedDefaultValues(need: Boolean)
 }

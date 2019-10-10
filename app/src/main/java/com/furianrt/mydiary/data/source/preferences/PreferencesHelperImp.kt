@@ -163,4 +163,10 @@ class PreferencesHelperImp @Inject constructor(
     override fun setNeedRateOffer(need: Boolean) {
         mPrefs.edit().putBoolean(PreferencesHelper.RATE_OFFER, need).apply()
     }
+
+    override fun isNeedDefaultValues(): Boolean = mPrefs.getBoolean(PreferencesHelper.NEED_DEFAULT_VALUES, true)
+
+    override fun setNeedDefaultValues(need: Boolean) {
+        mPrefs.edit().putBoolean(PreferencesHelper.NEED_DEFAULT_VALUES, need).apply()
+    }
 }

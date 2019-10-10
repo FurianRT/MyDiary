@@ -51,6 +51,8 @@ interface PreferencesHelper {
     fun setNumberOfLaunches(count: Int)
     fun setNeedRateOffer(need: Boolean)
     fun isRateOfferEnabled(): Boolean
+    fun isNeedDefaultValues(): Boolean
+    fun setNeedDefaultValues(need: Boolean)
 
     companion object {
         const val COLOR_PRIMARY = "color_primary"
@@ -84,5 +86,6 @@ interface PreferencesHelper {
         const val RATE_APP_PREF_BUTTON = "rate_app"
         const val REPORT_PROBLEM_PREF_BUTTON = "problem_report"
         const val RESET_NOTES_APPEARANCE_SETTINGS = "reset_notes_appearance"
+        const val NEED_DEFAULT_VALUES = "need_default_values"
     }
 }

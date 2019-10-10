@@ -25,6 +25,7 @@ import com.bumptech.glide.ListPreloader
 import com.bumptech.glide.RequestBuilder
 import com.bumptech.glide.integration.recyclerview.RecyclerViewPreloader
 import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.bumptech.glide.signature.ObjectKey
 import com.bumptech.glide.util.ViewPreloadSizeProvider
 import com.furianrt.mydiary.R
@@ -89,6 +90,7 @@ class NoteListAdapter(
             if (item.type == NoteItemView.TYPE_NOTE_WITH_IMAGE) {
                 mGlideBuilder
                         .load(Uri.parse(item.note!!.images.first().uri))
+                        .transition(DrawableTransitionOptions.withCrossFade())
                         .signature(ObjectKey(item.note.images.first().editedTime))
                         .centerCrop()
                         .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
@@ -225,6 +227,7 @@ class NoteListAdapter(
             selectItem(note.note.id)
             mGlideBuilder
                     .load(Uri.parse(note.images.first().uri))
+                    .transition(DrawableTransitionOptions.withCrossFade())
                     .signature(ObjectKey(note.images.first().editedTime))
                     .centerCrop()
                     .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
