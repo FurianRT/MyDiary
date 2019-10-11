@@ -95,6 +95,7 @@ object DatabaseModule {
         val MIGRATION_3_4 = object : Migration(3, 4) {
             override fun migrate(database: SupportSQLiteDatabase) {
                 database.execSQL("UPDATE Locations SET location_sync_with = '[]'")
+                database.execSQL("UPDATE NoteLocation SET notelocation_sync_with = '[]'")
             }
         }
 
