@@ -68,7 +68,7 @@ class DeviceRepositoryImp @Inject constructor(
         }
 
         if (addresses.isNotEmpty()) {
-            val address = addresses[0].getAddressLine(0)?.replace("/", " ")
+            val address = addresses[0].getAddressLine(0)
             if (address != null) {
                 val location = MyLocation(generateUniqueId(), address, latitude, longitude)
                 mLocationListeners.forEach { it.onLocationFound(location) }

@@ -56,7 +56,7 @@ class NoteEditFragment : BaseFragment(), NoteEditFragmentContract.MvpView {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
             mNoteTitle = requireArguments().getString(ARG_NOTE_TITLE, "")
-            mNoteContent = requireArguments().getCharSequence(ARG_NOTE_CONTENT, "") as Editable
+            mNoteContent = requireArguments().getCharSequence(ARG_NOTE_CONTENT, Editable.Factory().newEditable("")) as Editable
             mClickedView = requireArguments().getInt(ARG_CLICKED_VIEW)
             mClickPosition = requireArguments().getInt(ARG_POSITION)
             mAppearance = requireArguments().getParcelable(ARG_APPEARANCE) as? MyNoteAppearance?

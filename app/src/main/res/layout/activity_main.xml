@@ -36,6 +36,30 @@
                     app:layout_behavior="@string/appbar_scrolling_view_behavior"
                     tools:listitem="@layout/activity_main_list_note_image" />
 
+                <FrameLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="120dp"
+                    android:alpha="0.5"
+                    app:layout_anchor="@id/app_bar_layout"
+                    app:layout_anchorGravity="bottom|start" >
+
+                    <com.google.android.material.floatingactionbutton.FloatingActionButton
+                        android:id="@+id/fab_quick_scroll"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:fabSize="mini"
+                        android:src="@drawable/ic_arrow_up"
+                        android:textColor="@color/white"
+                        app:backgroundTint="?colorPrimary"
+                        app:elevation="4dp"
+                        android:visibility="gone"
+                        android:layout_marginBottom="4dp"
+                        android:layout_marginEnd="4dp"
+                        android:layout_marginStart="16dp"
+                        android:layout_gravity="bottom" />
+
+                </FrameLayout>
+
                 <include
                     android:id="@+id/empty_state"
                     layout="@layout/empty_state_note_list"

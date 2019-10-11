@@ -120,7 +120,7 @@ class CloudHelperImp @Inject constructor(
                     transaction.set(firestore.collection(COLLECTION_USERS)
                             .document(userId)
                             .collection(COLLECTION_LOCATIONS)
-                            .document(location.name.replace("/", " ")), location)
+                            .document(location.id), location)
                 }
             }.timeout(1, TimeUnit.MINUTES)
 
@@ -219,7 +219,7 @@ class CloudHelperImp @Inject constructor(
                     transaction.delete(firestore.collection(COLLECTION_USERS)
                             .document(userId)
                             .collection(COLLECTION_LOCATIONS)
-                            .document(location.name))
+                            .document(location.id))
                 }
             }.timeout(1, TimeUnit.MINUTES).onErrorComplete()
 
@@ -343,6 +343,7 @@ class CloudHelperImp @Inject constructor(
                     .document(userId)
                     .collection(COLLECTION_LOCATIONS), MyLocation::class.java)
                     .timeout(1, TimeUnit.MINUTES)
+                    .map { locations -> locations.distinctBy { it.id } }
                     .toSingle(emptyList())
 
     override fun getAllForecasts(userId: String): Single<List<MyForecast>> =

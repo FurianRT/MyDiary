@@ -315,9 +315,10 @@ class DrawerMenuFragment : BaseFragment(), DrawerMenuContract.MvpView,
                         SearchItem(
                                 type = SearchItem.TYPE_LOCATION,
                                 location = location,
-                                count = entries.notes.count { note -> note.locations.find { it.id == location.id } != null }
+                                count = entries.notes.count { note -> note.locations.find { it.name == location.name } != null }
                         )
                     }
+                            .filter { it.count > 0 }
                             .sortedByDescending { it.count }
                             .toMutableList()
                             .apply {

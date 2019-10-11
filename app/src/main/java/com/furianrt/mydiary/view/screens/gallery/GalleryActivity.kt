@@ -51,7 +51,7 @@ class GalleryActivity : BaseActivity(R.layout.activity_gallery), GalleryActivity
         supportActionBar?.setDisplayShowTitleEnabled(false)
 
         val position = intent.getIntExtra(EXTRA_POSITION, 0)
-        val noteId = intent.getStringExtra(EXTRA_NOTE_ID) ?: throw IllegalArgumentException()
+        val noteId = intent.getStringExtra(EXTRA_NOTE_ID)!!
         if (supportFragmentManager.findFragmentByTag(GalleryPagerFragment.TAG) == null
                 && supportFragmentManager.findFragmentByTag(GalleryListFragment.TAG) == null) {
 
