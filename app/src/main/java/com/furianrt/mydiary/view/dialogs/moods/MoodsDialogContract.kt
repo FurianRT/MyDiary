@@ -13,11 +13,12 @@ package com.furianrt.mydiary.view.dialogs.moods
 import com.furianrt.mydiary.view.base.mvp.BaseMvpView
 import com.furianrt.mydiary.view.base.mvp.BaseMvpPresenter
 import com.furianrt.mydiary.data.entity.MyMood
+import com.furianrt.mydiary.data.entity.MyNote
 
 interface MoodsDialogContract {
 
     interface MvpView : BaseMvpView {
-        fun showMoods(moods: List<MyMood>)
+        fun showMoods(moods: List<MyMood>, notes: List<MyNote>)
         fun closeView()
     }
 

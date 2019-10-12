@@ -21,6 +21,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.furianrt.mydiary.R
 import com.furianrt.mydiary.view.base.BaseFragment
 import com.furianrt.mydiary.data.entity.MyCategory
+import com.furianrt.mydiary.data.entity.MyNote
 import com.furianrt.mydiary.view.dialogs.categories.CategoriesDialog
 import com.furianrt.mydiary.view.dialogs.categories.fragments.add.CategoryAddFragment
 import com.furianrt.mydiary.view.dialogs.categories.fragments.delete.CategoryDeleteFragment
@@ -64,10 +65,7 @@ class CategoryListFragment : BaseFragment(), CategoriesListAdapter.OnCategoryLis
 
         view.button_add_category.setOnClickListener { mPresenter.onButtonAddCategoryClick() }
         view.button_categories_close.setOnClickListener { mPresenter.onButtonCloseClick() }
-        view.button_no_category.setOnClickListener {
-            (parentFragment as? CategoriesDialog?)?.onCategorySelected()
-            mPresenter.onButtonNoCategoryClick(mNoteIds)
-        }
+
         with(view.list_categories) {
             val manager = LinearLayoutManager(context)
             layoutManager = manager
@@ -93,13 +91,29 @@ class CategoryListFragment : BaseFragment(), CategoriesListAdapter.OnCategoryLis
         replaceFragment(CategoryAddFragment(), CategoryAddFragment.TAG)
     }
 
-    override fun showCategories(categories: List<MyCategory>) {
-        mListAdapter.submitList(categories)
+    override fun showCategories(notes: List<MyNote>, categories: List<MyCategory>) {
+        val items = categories
+                .map { category ->
+                    val count = notes.count { note -> note.categoryId == category.id }
+                    CategoriesListAdapter.CategoryItemView(category, count)
+                }
+                .sortedByDescending { it.noteCount }
+                .toMutableList()
+                .apply {
+                    val count = notes.count { note -> note.categoryId.isEmpty() }
+                    add(CategoriesListAdapter.CategoryItemView(noteCount = count))
+                }
+        mListAdapter.submitList(items)
     }
 
     override fun onCategoryClick(category: MyCategory) {
         (parentFragment as? CategoriesDialog?)?.onCategorySelected()
         mPresenter.onCategoryClick(category, mNoteIds)
+    }
+
+    override fun onNoCategoryClick() {
+        (parentFragment as? CategoriesDialog?)?.onCategorySelected()
+        mPresenter.onButtonNoCategoryClick(mNoteIds)
     }
 
     override fun onCategoryDelete(category: MyCategory) {

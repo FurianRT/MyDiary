@@ -74,7 +74,7 @@
         android:id="@+id/layout_note_image_selected"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:alpha="0.2"
+        android:alpha="0.3"
         android:background="?attr/colorAccent"
         android:visibility="gone">
 

@@ -19,43 +19,66 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.furianrt.mydiary.R
 import com.furianrt.mydiary.data.entity.MyCategory
+import com.furianrt.mydiary.view.dialogs.categories.fragments.list.CategoriesListAdapter.*
 import kotlinx.android.synthetic.main.fragment_category_list_item.view.*
 
 class CategoriesListAdapter(
-        val listener: OnCategoryListInteractionListener
-) : ListAdapter<MyCategory,
-        CategoriesListAdapter.CategoriesDialogViewHolder>(CategoriesDiffCallback()) {
+        val listener: OnCategoryListInteractionListener? = null
+) : ListAdapter<CategoryItemView, CategoriesViewHolder>(CategoriesDiffCallback()) {
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CategoriesDialogViewHolder {
+    data class CategoryItemView(
+            val category: MyCategory? = null,
+            val noteCount: Int = 0
+    )
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CategoriesViewHolder {
         val view = LayoutInflater.from(parent.context)
                 .inflate(R.layout.fragment_category_list_item, parent, false)
-        return CategoriesDialogViewHolder(view)
+        return CategoriesViewHolder(view)
     }
 
-    override fun onBindViewHolder(holder: CategoriesDialogViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: CategoriesViewHolder, position: Int) {
         holder.bind(getItem(position))
     }
 
-    inner class CategoriesDialogViewHolder(view: View) : RecyclerView.ViewHolder(view),
-            PopupMenu.OnMenuItemClickListener {
+    inner class CategoriesViewHolder(view: View) : RecyclerView.ViewHolder(view) {
 
-        private lateinit var mCategory: MyCategory
-
-        fun bind(category: MyCategory) {
-            mCategory = category
-            with(itemView) {
-                setOnClickListener {
-                    listener.onCategoryClick(category)
+        fun bind(item: CategoryItemView) {
+            val category = item.category
+            if (category != null) {
+                val popupMenuListener = PopupMenu.OnMenuItemClickListener { popup ->
+                    when (popup.itemId) {
+                        R.id.menu_category_delete -> {
+                            listener?.onCategoryDelete(category)
+                            true
+                        }
+                        R.id.menu_category_edit -> {
+                            listener?.onCategoryEdit(category)
+                            true
+                        }
+                        else -> false
+                    }
                 }
-                setOnLongClickListener {
-                    showPopupMenu(it, this@CategoriesDialogViewHolder)
+
+                itemView.setOnClickListener { listener?.onCategoryClick(item.category) }
+                itemView.setOnLongClickListener {
+                    showPopupMenu(it, popupMenuListener)
                     return@setOnLongClickListener true
                 }
-                button_category_more.setOnClickListener {
-                    showPopupMenu(it, this@CategoriesDialogViewHolder)
+                itemView.button_category_more.setOnClickListener {
+                    showPopupMenu(it, popupMenuListener)
                 }
-                text_item_category.text = category.name
-                layout_category_color.setBackgroundColor(category.color)
+                itemView.text_item_category.text = item.category.name
+                itemView.text_category_count.text = item.noteCount.toString()
+                itemView.layout_category_color.setBackgroundColor(item.category.color)
+                itemView.layout_category_color.visibility = View.VISIBLE
+                itemView.button_category_more.visibility = View.VISIBLE
+            } else {
+                itemView.layout_category_color.visibility = View.INVISIBLE
+                itemView.button_category_more.visibility = View.INVISIBLE
+                itemView.text_category_count.text = item.noteCount.toString()
+                itemView.text_item_category.text = itemView.context.getString(R.string.no_category)
+                itemView.setOnClickListener { listener?.onNoCategoryClick() }
             }
         }
 
@@ -65,24 +88,11 @@ class CategoriesListAdapter(
             popup.inflate(R.menu.dialog_categories_list_item_menu)
             popup.show()
         }
-
-        override fun onMenuItemClick(item: MenuItem): Boolean {
-            return when (item.itemId) {
-                R.id.menu_category_delete -> {
-                    listener.onCategoryDelete(mCategory)
-                    true
-                }
-                R.id.menu_category_edit -> {
-                    listener.onCategoryEdit(mCategory)
-                    true
-                }
-                else -> false
-            }
-        }
     }
 
     interface OnCategoryListInteractionListener {
         fun onCategoryClick(category: MyCategory)
+        fun onNoCategoryClick()
         fun onCategoryDelete(category: MyCategory)
         fun onCategoryEdit(category: MyCategory)
     }

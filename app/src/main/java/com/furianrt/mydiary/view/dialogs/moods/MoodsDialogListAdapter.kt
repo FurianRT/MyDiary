@@ -19,11 +19,16 @@ import com.furianrt.mydiary.data.entity.MyMood
 import kotlinx.android.synthetic.main.dialog_moods_list_item.view.*
 
 class MoodsDialogListAdapter(
-        var moods: List<MyMood>,
-        var listener: OnMoodListInteractionListener?
+        var items: List<MoodItemView> = emptyList(),
+        var listener: OnMoodListInteractionListener? = null
 ) : RecyclerView.Adapter<MoodsDialogListAdapter.MoodsListViewHolder>() {
 
-    override fun getItemCount(): Int = moods.size
+    data class MoodItemView(
+            val mood: MyMood? = null,
+            var noteCount: Int = 0
+    )
+
+    override fun getItemCount(): Int = items.size
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MoodsListViewHolder {
         val view = LayoutInflater.from(parent.context)
@@ -32,21 +37,30 @@ class MoodsDialogListAdapter(
     }
 
     override fun onBindViewHolder(holder: MoodsListViewHolder, position: Int) {
-        holder.bind(moods[position])
+        holder.bind(items[position])
     }
 
     inner class MoodsListViewHolder(view: View) : RecyclerView.ViewHolder(view) {
 
-        fun bind(mood: MyMood) {
-            itemView.setOnClickListener { listener?.onMoodClicked(mood) }
-            itemView.text_item_mood.text = mood.name
-            val smile = itemView.context.resources
-                    .getIdentifier(mood.iconName, "drawable", itemView.context.packageName)
-            itemView.text_item_mood.setCompoundDrawablesWithIntrinsicBounds(smile, 0, 0, 0)
+        fun bind(item: MoodItemView) {
+            val mood = item.mood
+            if (mood != null) {
+                itemView.setOnClickListener { listener?.onMoodClicked(mood) }
+                itemView.text_item_mood.text = mood.name
+                val smile = itemView.context.resources
+                        .getIdentifier(mood.iconName, "drawable", itemView.context.packageName)
+                itemView.text_item_mood.setCompoundDrawablesWithIntrinsicBounds(smile, 0, 0, 0)
+            } else {
+                itemView.setOnClickListener { listener?.onNoMoodClicked() }
+                itemView.text_item_mood.text = itemView.context.getString(R.string.no_mood)
+                val smile = itemView.context.getDrawable(R.drawable.ic_smile)
+                itemView.text_item_mood.setCompoundDrawablesWithIntrinsicBounds(smile, null, null, null)
+            }
         }
     }
 
     interface OnMoodListInteractionListener {
         fun onMoodClicked(mood: MyMood)
+        fun onNoMoodClicked()
     }
 }

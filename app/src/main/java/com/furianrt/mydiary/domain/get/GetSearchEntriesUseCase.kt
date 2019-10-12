@@ -33,7 +33,7 @@ class GetSearchEntriesUseCase @Inject constructor(
                     getTagsUseCase.invoke(),
                     getCategoriesUseCase.invoke(),
                     getLocationsUseCase.invoke().map { locations -> locations.distinctBy { it.name } },
-                    getMoodsUseCase.invoke().toFlowable(),
+                    getMoodsUseCase.invoke(),
                     Function5<List<MyNoteWithProp>, List<MyTag>, List<MyCategory>, List<MyLocation>, List<MyMood>, SearchEntries>
                     { notes, tags, categories, locations, moods ->
                         val locationList = if (isLocationEnabled.invoke()) locations else null

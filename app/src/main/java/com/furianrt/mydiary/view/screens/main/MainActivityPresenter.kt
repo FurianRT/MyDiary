@@ -71,7 +71,7 @@ class MainActivityPresenter @Inject constructor(
 
     override fun onButtonDeleteConfirmClick() {
         mSelectedNoteIds.clear()
-        view?.deactivateSelection()
+        showNotes(mNoteList, false)
     }
 
     override fun onButtonFolderClick() {
@@ -80,8 +80,7 @@ class MainActivityPresenter @Inject constructor(
 
     override fun onCategorySelected() {
         mSelectedNoteIds.clear()
-        view?.updateItemSelection(mSelectedNoteIds)
-        view?.deactivateSelection()
+        showNotes(mNoteList, false)
     }
 
     override fun onMenuAllNotesClick() {
@@ -92,8 +91,7 @@ class MainActivityPresenter @Inject constructor(
                     if (notes.isNotEmpty()) {
                         mSelectedNoteIds.clear()
                         mSelectedNoteIds.addAll(notes.map { it.note.id })
-                        view?.activateSelection()
-                        view?.updateItemSelection(mSelectedNoteIds)
+                        showNotes(mNoteList, false)
                     }
                 })
     }
@@ -104,9 +102,6 @@ class MainActivityPresenter @Inject constructor(
         loadProfile()
         loadHeaderImage()
         addDisposable(checkLogOut.invoke().subscribe())
-        if (mSelectedNoteIds.isNotEmpty()) {
-            view.activateSelection()
-        }
         showRateProposal()
     }
 
@@ -154,8 +149,7 @@ class MainActivityPresenter @Inject constructor(
             view?.showViewNewNote(generateUniqueId())
         } else {
             mSelectedNoteIds.clear()
-            view?.deactivateSelection()
-            view?.updateItemSelection(mSelectedNoteIds)
+            showNotes(mNoteList, false)
         }
     }
 
@@ -197,9 +191,6 @@ class MainActivityPresenter @Inject constructor(
     }
 
     override fun onMainListItemLongClick(note: MyNoteWithProp) {
-        if (mSelectedNoteIds.isEmpty()) {
-            view?.activateSelection()
-        }
         selectListItem(note.note.id)
     }
 
@@ -245,14 +236,11 @@ class MainActivityPresenter @Inject constructor(
 
     private fun selectListItem(noteId: String) {
         if (mSelectedNoteIds.contains(noteId)) {
-            if (mSelectedNoteIds.size == 1) {
-                view?.deactivateSelection()
-            }
             mSelectedNoteIds.remove(noteId)
         } else {
             mSelectedNoteIds.add(noteId)
         }
-        view?.updateItemSelection(mSelectedNoteIds)
+        showNotes(mNoteList, false)
     }
 
     override fun onButtonSettingsClick() {

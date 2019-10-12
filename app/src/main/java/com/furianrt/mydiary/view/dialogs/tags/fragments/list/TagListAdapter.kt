@@ -26,6 +26,7 @@ class TagListAdapter(
 
     data class ViewItem(
             val tag: MyTag,
+            var count: Int = 0,
             var isChecked: Boolean = false
     )
 
@@ -53,6 +54,7 @@ class TagListAdapter(
         fun bind(item: ViewItem) {
             with(itemView) {
                 text_tag_name.text = item.tag.name
+                text_tag_count.text = item.count.toString()
 
                 setOnClickListener {
                     image_select_tag.visibility = if (image_select_tag.visibility == View.INVISIBLE) {

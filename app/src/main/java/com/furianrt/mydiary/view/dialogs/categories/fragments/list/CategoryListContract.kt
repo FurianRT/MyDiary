@@ -13,11 +13,12 @@ package com.furianrt.mydiary.view.dialogs.categories.fragments.list
 import com.furianrt.mydiary.view.base.mvp.BaseMvpView
 import com.furianrt.mydiary.view.base.mvp.BaseMvpPresenter
 import com.furianrt.mydiary.data.entity.MyCategory
+import com.furianrt.mydiary.data.entity.MyNote
 
 interface CategoryListContract {
 
     interface MvpView : BaseMvpView {
-        fun showCategories(categories: List<MyCategory>)
+        fun showCategories(notes: List<MyNote>, categories: List<MyCategory>)
         fun showViewAddCategory()
         fun showEditView(category: MyCategory)
         fun close()

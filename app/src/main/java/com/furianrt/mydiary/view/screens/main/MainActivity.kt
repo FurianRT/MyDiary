@@ -441,12 +441,12 @@ class MainActivity : BaseActivity(R.layout.activity_main), MainActivityContract.
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
         outState.putParcelable(BUNDLE_RECYCLER_VIEW_STATE, list_main.layoutManager?.onSaveInstanceState())
         outState.putFloat(BUNDLE_ROOT_LAYOUT_OFFSET, layout_main_root.translationX)
         outState.putInt(BUNDLE_BOTTOM_SHEET_STATE, mBottomSheet.state)
         outState.putString(BUNDLE_SEARCH_QUERY, mSearchQuery)
         mPresenter.onSaveInstanceState(outState)
-        super.onSaveInstanceState(outState)
     }
 
     override fun showViewNewNote(noteId: String) {
@@ -462,6 +462,18 @@ class MainActivity : BaseActivity(R.layout.activity_main), MainActivityContract.
         mRecyclerViewState?.let {
             list_main.layoutManager?.onRestoreInstanceState(it)
             mRecyclerViewState = null
+        }
+
+        if (selectedNoteIds.isEmpty()) {
+            fab_menu.close(true)
+        } else {
+            fab_menu.open(true)
+        }
+
+        text_selected_note_counter.text = if (selectedNoteIds.isNotEmpty()) {
+            getString(R.string.counter_format, selectedNoteIds.size, notes.size)
+        } else {
+            ""
         }
 
         if (scrollToTop) {
@@ -578,20 +590,6 @@ class MainActivity : BaseActivity(R.layout.activity_main), MainActivityContract.
             vibrator.vibrate(ITEM_LONG_CLICK_VIBRATION_DURATION)
         }
         mPresenter.onMainListItemLongClick(note)
-    }
-
-    override fun activateSelection() {
-        fab_menu.open(true)
-    }
-
-    override fun deactivateSelection() {
-        fab_menu.close(true)
-    }
-
-    override fun updateItemSelection(selectedNoteIds: Set<String>) {
-        mAdapter.selectedNoteIds.clear()
-        mAdapter.selectedNoteIds.addAll(selectedNoteIds)
-        mAdapter.notifyDataSetChanged()
     }
 
     override fun showNotePager(position: Int, noteId: String) {

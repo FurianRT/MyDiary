@@ -11,15 +11,13 @@
 package com.furianrt.mydiary.view.dialogs.categories.fragments.list
 
 import androidx.recyclerview.widget.DiffUtil
-import com.furianrt.mydiary.data.entity.MyCategory
+import com.furianrt.mydiary.view.dialogs.categories.fragments.list.CategoriesListAdapter.*
 
-class CategoriesDiffCallback : DiffUtil.ItemCallback<MyCategory>() {
+class CategoriesDiffCallback : DiffUtil.ItemCallback<CategoryItemView>() {
 
-    override fun areItemsTheSame(oldItem: MyCategory, newItem: MyCategory): Boolean {
-        return oldItem.id == newItem.id
-    }
+    override fun areItemsTheSame(oldItem: CategoryItemView, newItem: CategoryItemView): Boolean =
+            oldItem.category?.id == newItem.category?.id
 
-    override fun areContentsTheSame(oldItem: MyCategory, newItem: MyCategory): Boolean {
-        return oldItem == newItem
-    }
+    override fun areContentsTheSame(oldItem: CategoryItemView, newItem: CategoryItemView): Boolean =
+            oldItem == newItem
 }
