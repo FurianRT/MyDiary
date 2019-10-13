@@ -71,8 +71,10 @@ class DrawerMenuFragment : BaseFragment(), DrawerMenuContract.MvpView,
     private var mSearchListAdapter = SearchListAdapter(listener = this)
     private val mHandler = Handler()
     private val mBottomSheetOpenRunnable: Runnable = Runnable {
-        BottomSheetBehavior.from(requireActivity().main_sheet_container).state =
-                BottomSheetBehavior.STATE_EXPANDED
+        activity?.let {
+            BottomSheetBehavior.from(it.main_sheet_container).state =
+                    BottomSheetBehavior.STATE_EXPANDED
+        }
     }
 
     private val mProgressAnimationListener = object : Animator.AnimatorListener {
@@ -315,9 +317,10 @@ class DrawerMenuFragment : BaseFragment(), DrawerMenuContract.MvpView,
                         SearchItem(
                                 type = SearchItem.TYPE_LOCATION,
                                 location = location,
-                                count = entries.notes.count { note -> note.locations.find { it.id == location.id } != null }
+                                count = entries.notes.count { note -> note.locations.find { it.name == location.name } != null }
                         )
                     }
+                            .filter { it.count > 0 }
                             .sortedByDescending { it.count }
                             .toMutableList()
                             .apply {

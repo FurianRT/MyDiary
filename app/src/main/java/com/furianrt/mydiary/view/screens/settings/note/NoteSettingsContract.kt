@@ -19,6 +19,8 @@ interface NoteSettingsContract {
     interface MvpView : BaseMvpView {
         fun updateSettings(appearance: MyNoteAppearance)
         fun onAppearanceReset()
+        fun disableInput()
+        fun enableInput()
     }
 
     abstract class Presenter : BaseMvpPresenter<MvpView>() {

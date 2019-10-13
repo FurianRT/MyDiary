@@ -187,6 +187,7 @@ class NoteFragmentPresenter @Inject constructor(
                 view?.showNoMoodMessage()
             } else {
                 addDisposable(getMoods.invoke(moodId)
+                        .firstOrError()
                         .observeOn(scheduler.ui())
                         .subscribe { mood -> view?.showMood(mood) })
             }

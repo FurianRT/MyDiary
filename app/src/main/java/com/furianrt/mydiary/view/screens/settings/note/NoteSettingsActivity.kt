@@ -20,7 +20,8 @@ import com.google.android.gms.ads.AdListener
 import com.google.android.gms.ads.AdRequest
 import kotlinx.android.synthetic.main.activity_note_settings.*
 
-class NoteSettingsActivity : BaseActivity(R.layout.activity_note_settings) {
+class NoteSettingsActivity : BaseActivity(R.layout.activity_note_settings),
+        NoteSettingsFragment.OnNoteSettingsFragmentListener {
 
     companion object {
         const val EXTRA_NOTE_ID = "noteId"
@@ -34,6 +35,8 @@ class NoteSettingsActivity : BaseActivity(R.layout.activity_note_settings) {
         setSupportActionBar(toolbar_settings_note)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setDisplayShowHomeEnabled(true)
+
+        view_input_lock.setOnTouchListener { _, _ -> true }
     }
 
     private fun addSettingsFragment(noteId: String) {
@@ -57,6 +60,14 @@ class NoteSettingsActivity : BaseActivity(R.layout.activity_note_settings) {
         if (productId == BuildConfig.ITEM_PREMIUM_SKU) {
             hideAdView()
         }
+    }
+
+    override fun enableInput() {
+        view_input_lock.visibility = View.GONE
+    }
+
+    override fun disableInput() {
+        view_input_lock.visibility = View.VISIBLE
     }
 
     private fun showAdView() {

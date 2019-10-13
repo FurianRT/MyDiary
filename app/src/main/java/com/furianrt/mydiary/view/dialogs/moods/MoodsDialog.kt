@@ -20,11 +20,13 @@ import com.furianrt.mydiary.R
 import com.furianrt.mydiary.analytics.MyAnalytics
 import com.furianrt.mydiary.view.base.BaseDialog
 import com.furianrt.mydiary.data.entity.MyMood
+import com.furianrt.mydiary.data.entity.MyNote
+import com.furianrt.mydiary.view.dialogs.moods.MoodsDialogListAdapter.*
 import kotlinx.android.synthetic.main.dialog_moods.view.*
 import javax.inject.Inject
 
 class MoodsDialog : BaseDialog(), MoodsDialogContract.MvpView,
-        MoodsDialogListAdapter.OnMoodListInteractionListener {
+        OnMoodListInteractionListener {
 
     companion object {
         const val TAG = "MoodsDialog"
@@ -56,31 +58,34 @@ class MoodsDialog : BaseDialog(), MoodsDialogContract.MvpView,
         val view = requireActivity().layoutInflater.inflate(R.layout.dialog_moods, null)
 
         view.button_mood_close.setOnClickListener { mPresenter.onButtonCloseClick() }
-        view.button_no_mood.setOnClickListener { mPresenter.onButtonNoMoodClick(mNoteId) }
 
-        mAdapter = MoodsDialogListAdapter(emptyList(), this)
+        mAdapter = MoodsDialogListAdapter(listener = this)
 
-        with(view.list_moods) {
-            val manager = LinearLayoutManager(requireContext())
-            layoutManager = manager
-            adapter = mAdapter
-            setHasFixedSize(true)
-            addItemDecoration(DividerItemDecoration(requireContext(), manager.orientation))
-        }
-
+        val manager = LinearLayoutManager(requireContext())
+        view.list_moods.layoutManager = manager
+        view.list_moods.adapter = mAdapter
+        view.list_moods.setHasFixedSize(true)
+        view.list_moods.addItemDecoration(DividerItemDecoration(requireContext(), manager.orientation))
         return AlertDialog.Builder(requireContext())
                 .setView(view)
                 .create()
     }
 
-    override fun showMoods(moods: List<MyMood>) {
-        mAdapter.moods = moods
+    override fun showMoods(moods: List<MyMood>, notes: List<MyNote>) {
+        mAdapter.items = moods
+                .map { mood -> MoodItemView(mood, notes.count { it.moodId == mood.id }) }
+                .toMutableList()
+                .apply { add(MoodItemView(noteCount = notes.count { it.moodId == 0 })) }
         mAdapter.notifyDataSetChanged()
     }
 
     override fun onMoodClicked(mood: MyMood) {
         analytics.sendEvent(MyAnalytics.EVENT_NOTE_MOOD_CHANGED)
         mPresenter.onMoodPicked(mNoteId, mood)
+    }
+
+    override fun onNoMoodClicked() {
+        mPresenter.onButtonNoMoodClick(mNoteId)
     }
 
     override fun closeView() {

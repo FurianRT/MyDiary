@@ -10,13 +10,16 @@
 
 package com.furianrt.mydiary.view.dialogs.tags.fragments.list
 
+import com.furianrt.mydiary.data.entity.MyNoteWithProp
 import com.furianrt.mydiary.data.entity.MyTag
 import com.furianrt.mydiary.domain.save.AddTagToNoteUseCase
 import com.furianrt.mydiary.domain.get.GetTagsUseCase
 import com.furianrt.mydiary.domain.delete.RemoveTagFromNoteUseCase
+import com.furianrt.mydiary.domain.get.GetFullNotesUseCase
 import com.furianrt.mydiary.utils.MyRxUtils
+import com.furianrt.mydiary.view.dialogs.tags.fragments.list.TagListAdapter.*
 import io.reactivex.Flowable
-import io.reactivex.functions.BiFunction
+import io.reactivex.functions.Function3
 import java.util.Locale
 import javax.inject.Inject
 
@@ -24,11 +27,12 @@ class TagListPresenter @Inject constructor(
         private val getTags: GetTagsUseCase,
         private val addTagToNote: AddTagToNoteUseCase,
         private val removeTagFromNote: RemoveTagFromNoteUseCase,
+        private val getFullNotes: GetFullNotesUseCase,
         private val scheduler: MyRxUtils.BaseSchedulerProvider
 ) : TagListContract.Presenter() {
 
     private lateinit var mNoteId: String
-    private var mItems = emptyList<TagListAdapter.ViewItem>()
+    private var mItems = emptyList<ViewItem>()
     private var mQuery = ""
 
     override fun init(noteId: String) {
@@ -37,23 +41,30 @@ class TagListPresenter @Inject constructor(
 
     override fun attachView(view: TagListContract.MvpView) {
         super.attachView(view)
-        addDisposable(Flowable.combineLatest(getTags.invoke(), getTags.invoke(mNoteId),
-                BiFunction<List<MyTag>, List<MyTag>, List<TagListAdapter.ViewItem>> { allTags, selectedTags ->
-                    val items = allTags.map { TagListAdapter.ViewItem(it) }
-                    items.forEach { item -> item.isChecked = selectedTags.find { it.id == item.tag.id } != null }
-                    return@BiFunction items
+        addDisposable(Flowable.combineLatest(
+                getTags.invoke(),
+                getTags.invoke(mNoteId).firstOrError().toFlowable(),
+                getFullNotes.invoke().firstOrError().toFlowable(),
+                Function3<List<MyTag>, List<MyTag>, List<MyNoteWithProp>, List<ViewItem>>
+                { allTags, selectedTags, notes ->
+                    val items = allTags.map { ViewItem(it) }
+                    items.forEach { item ->
+                        item.isChecked = selectedTags.find { it.id == item.tag.id } != null
+                        item.count = notes.count { note -> note.tags.find { it.id == item.tag.id } != null }
+                    }
+                    return@Function3 items
                 })
                 .observeOn(scheduler.ui())
                 .subscribe { items ->
                     mItems = items
-                    val matchingTags = mItems.filter { item ->
-                        item.tag.name.toLowerCase().contains(mQuery.toLowerCase())
-                    }
+                    val matchingTags = mItems
+                            .filter { item -> item.tag.name.toLowerCase().contains(mQuery.toLowerCase()) }
+                            .sortedWith(Comparator { b, a -> compareValuesBy(a, b, { it.isChecked }, { it.count }) })
                     view.showItems(matchingTags)
                 })
     }
 
-    override fun onItemCheckChange(item: TagListAdapter.ViewItem) {
+    override fun onItemCheckChange(item: ViewItem) {
         if (item.isChecked) {
             addDisposable(addTagToNote.invoke(mNoteId, item.tag.id).subscribe())
         } else {
@@ -69,11 +80,11 @@ class TagListPresenter @Inject constructor(
         view?.showAddTagView(mNoteId)
     }
 
-    override fun onButtonEditTagClick(item: TagListAdapter.ViewItem) {
+    override fun onButtonEditTagClick(item: ViewItem) {
         view?.showEditTagView(item.tag)
     }
 
-    override fun onButtonDeleteTagClick(item: TagListAdapter.ViewItem) {
+    override fun onButtonDeleteTagClick(item: ViewItem) {
         view?.showDeleteTagView(item.tag)
     }
 

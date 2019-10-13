@@ -34,6 +34,7 @@ import androidx.core.view.GravityCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.ViewPropertyAnimatorListener
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.anjlab.android.iab.v3.TransactionDetails
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
@@ -112,6 +113,7 @@ class MainActivity : BaseActivity(R.layout.activity_main), MainActivityContract.
     private var mBackPressCount = 0
     private var mNeedToOpenActionBar = true
     private var mMenu: Menu? = null
+    private var mIsAppBarExpandEnabled = false
     private val mHandler = Handler()
     private val mBottomSheetOpenRunnable: Runnable = Runnable {
         mBottomSheet.state = BottomSheetBehavior.STATE_EXPANDED
@@ -197,6 +199,14 @@ class MainActivity : BaseActivity(R.layout.activity_main), MainActivityContract.
         list_main.itemAnimator = LandingAnimator()
         list_main.setItemViewCacheSize(15)
         list_main.addItemDecoration(StickyHeaderItemDecoration(list_main, mAdapter))
+
+        fab_quick_scroll.hide()
+        fab_quick_scroll.setOnClickListener {
+            list_main.scrollToPosition(0)
+            if (mIsAppBarExpandEnabled) {
+                app_bar_layout.setExpanded(true, true)
+            }
+        }
     }
 
     override fun onTagCheckStateChange(tag: MyTag, checked: Boolean) {
@@ -300,6 +310,7 @@ class MainActivity : BaseActivity(R.layout.activity_main), MainActivityContract.
         val coordParams =
                 app_bar_layout.layoutParams as CoordinatorLayout.LayoutParams
         (coordParams.behavior as AppBarLayoutBehavior).shouldScroll = false
+        mIsAppBarExpandEnabled = false
     }
 
     private fun enableActionBarExpanding(expand: Boolean) {
@@ -322,6 +333,7 @@ class MainActivity : BaseActivity(R.layout.activity_main), MainActivityContract.
         val coordParams =
                 app_bar_layout.layoutParams as CoordinatorLayout.LayoutParams
         (coordParams.behavior as AppBarLayoutBehavior).shouldScroll = true
+        mIsAppBarExpandEnabled = true
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean =
@@ -429,12 +441,12 @@ class MainActivity : BaseActivity(R.layout.activity_main), MainActivityContract.
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
         outState.putParcelable(BUNDLE_RECYCLER_VIEW_STATE, list_main.layoutManager?.onSaveInstanceState())
         outState.putFloat(BUNDLE_ROOT_LAYOUT_OFFSET, layout_main_root.translationX)
         outState.putInt(BUNDLE_BOTTOM_SHEET_STATE, mBottomSheet.state)
         outState.putString(BUNDLE_SEARCH_QUERY, mSearchQuery)
         mPresenter.onSaveInstanceState(outState)
-        super.onSaveInstanceState(outState)
     }
 
     override fun showViewNewNote(noteId: String) {
@@ -450,6 +462,18 @@ class MainActivity : BaseActivity(R.layout.activity_main), MainActivityContract.
         mRecyclerViewState?.let {
             list_main.layoutManager?.onRestoreInstanceState(it)
             mRecyclerViewState = null
+        }
+
+        if (selectedNoteIds.isEmpty()) {
+            fab_menu.close(true)
+        } else {
+            fab_menu.open(true)
+        }
+
+        text_selected_note_counter.text = if (selectedNoteIds.isNotEmpty()) {
+            getString(R.string.counter_format, selectedNoteIds.size, notes.size)
+        } else {
+            ""
         }
 
         if (scrollToTop) {
@@ -568,20 +592,6 @@ class MainActivity : BaseActivity(R.layout.activity_main), MainActivityContract.
         mPresenter.onMainListItemLongClick(note)
     }
 
-    override fun activateSelection() {
-        fab_menu.open(true)
-    }
-
-    override fun deactivateSelection() {
-        fab_menu.close(true)
-    }
-
-    override fun updateItemSelection(selectedNoteIds: Set<String>) {
-        mAdapter.selectedNoteIds.clear()
-        mAdapter.selectedNoteIds.addAll(selectedNoteIds)
-        mAdapter.notifyDataSetChanged()
-    }
-
     override fun showNotePager(position: Int, noteId: String) {
         analytics.sendEvent(MyAnalytics.EVENT_NOTE_OPENED)
         startActivity(NoteActivity.newIntentModeRead(this, noteId, position))
@@ -677,11 +687,24 @@ class MainActivity : BaseActivity(R.layout.activity_main), MainActivityContract.
         mAdapter.listener = this
         drawer.addDrawerListener(mOnDrawerListener)
         list_main.addOnScrollListener(mAdapter.preloader)
+        list_main.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+                val topChildPosition = (recyclerView.layoutManager as LinearLayoutManager?)
+                        ?.findFirstVisibleItemPosition() ?: 0
+                if (topChildPosition > 0) {
+                    fab_quick_scroll.show()
+                } else {
+                    fab_quick_scroll.hide()
+                }
+            }
+        })
         (supportFragmentManager.findFragmentByTag(DeleteNoteDialog.TAG) as? DeleteNoteDialog)
                 ?.setOnDeleteConfirmListener(this)
         supportFragmentManager.findFragmentByTag(CategoriesDialog.TAG)?.let {
             (it as CategoriesDialog).setOnCategorySelectedListener(this)
         }
+
         mPresenter.attachView(this)
     }
 
@@ -693,7 +716,7 @@ class MainActivity : BaseActivity(R.layout.activity_main), MainActivityContract.
         mBackPressCount = 0
         mAdapter.listener = null
         drawer.removeDrawerListener(mOnDrawerListener)
-        list_main.removeOnScrollListener(mAdapter.preloader)
+        list_main.clearOnScrollListeners()
         mHandler.removeCallbacks(mBottomSheetOpenRunnable)
     }
 }

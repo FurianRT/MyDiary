@@ -43,4 +43,5 @@ interface ImageRepository {
     fun loadImageFiles(images: List<MyImage>): Completable
     fun isDailyImageEnabled(): Boolean
     fun getDailyImageCategory(): String
+    fun getAvailableImageDirectory(): String
 }

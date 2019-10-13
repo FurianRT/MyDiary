@@ -12,14 +12,13 @@
         android:layout_marginTop="4dp"
         android:layout_marginBottom="4dp"
         android:background="@drawable/background_corner"
-        android:backgroundTint="@color/grey_light"
         android:gravity="center"
-        android:textColor="@color/grey_dark"
-        android:textSize="14sp"
         android:paddingStart="16dp"
         android:paddingTop="4dp"
         android:paddingEnd="16dp"
         android:paddingBottom="4dp"
+        android:textColor="@color/grey_dark"
+        android:textSize="14sp"
         tools:text="October 2019" />
 
 </FrameLayout>

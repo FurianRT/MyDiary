@@ -14,7 +14,7 @@ import com.furianrt.mydiary.data.entity.MyMood
 import com.furianrt.mydiary.data.source.database.MoodDao
 import com.furianrt.mydiary.data.source.preferences.PreferencesHelper
 import com.furianrt.mydiary.utils.MyRxUtils
-import io.reactivex.Single
+import io.reactivex.Flowable
 import javax.inject.Inject
 
 class MoodRepositoryImp @Inject constructor(
@@ -23,11 +23,11 @@ class MoodRepositoryImp @Inject constructor(
         private val scheduler: MyRxUtils.BaseSchedulerProvider
 ) : MoodRepository {
 
-    override fun getMood(moodId: Int): Single<MyMood> =
+    override fun getMood(moodId: Int): Flowable<MyMood> =
             moodDao.getMood(moodId)
                     .subscribeOn(scheduler.io())
 
-    override fun getAllMoods(): Single<List<MyMood>> =
+    override fun getAllMoods(): Flowable<List<MyMood>> =
             moodDao.getAllMoods()
                     .subscribeOn(scheduler.io())
 

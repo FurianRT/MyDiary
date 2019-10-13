@@ -11,16 +11,26 @@
 package com.furianrt.mydiary.view.dialogs.categories.fragments.list
 
 import com.furianrt.mydiary.data.entity.MyCategory
+import com.furianrt.mydiary.data.entity.MyNote
 import com.furianrt.mydiary.domain.get.GetCategoriesUseCase
+import com.furianrt.mydiary.domain.get.GetNotesUseCase
 import com.furianrt.mydiary.domain.update.UpdateNoteUseCase
 import com.furianrt.mydiary.utils.MyRxUtils
+import io.reactivex.Flowable
+import io.reactivex.functions.BiFunction
 import javax.inject.Inject
 
 class CategoryListPresenter @Inject constructor(
         private val updateNote: UpdateNoteUseCase,
         private val getCategories: GetCategoriesUseCase,
+        private val getNotes: GetNotesUseCase,
         private val scheduler: MyRxUtils.BaseSchedulerProvider
 ) : CategoryListContract.Presenter() {
+
+    private class NotesAndCategories(
+            val notes: List<MyNote>,
+            val categories: List<MyCategory>
+    )
 
     override fun onButtonAddCategoryClick() {
         view?.showViewAddCategory()
@@ -35,9 +45,15 @@ class CategoryListPresenter @Inject constructor(
     }
 
     override fun onViewStart() {
-        addDisposable(getCategories.invoke()
+        addDisposable(Flowable.combineLatest(
+                getNotes.invoke().firstOrError().toFlowable(),
+                getCategories.invoke(),
+                BiFunction<List<MyNote>, List<MyCategory>, NotesAndCategories> { notes, categories ->
+                    NotesAndCategories(notes, categories)
+                }
+        )
                 .observeOn(scheduler.ui())
-                .subscribe { categories -> view?.showCategories(categories) })
+                .subscribe { view?.showCategories(it.notes, it.categories) })
     }
 
     override fun onCategoryClick(category: MyCategory, noteIds: List<String>) {

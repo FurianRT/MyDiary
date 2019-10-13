@@ -10,6 +10,7 @@
 
 package com.furianrt.mydiary.view.screens.settings.note
 
+import android.content.Context
 import android.os.Bundle
 import androidx.appcompat.app.AlertDialog
 import androidx.preference.ListPreference
@@ -25,32 +26,34 @@ import javax.inject.Inject
 class NoteSettingsFragment : PreferenceFragmentCompat(), BaseView, NoteSettingsContract.MvpView {
 
     @Inject
-    lateinit var mPresenter: NoteSettingsContract.Presenter
+    lateinit var presenter: NoteSettingsContract.Presenter
 
     @Inject
-    lateinit var mAnalytics: MyAnalytics
+    lateinit var analytics: MyAnalytics
+
+    private var mListener: OnNoteSettingsFragmentListener? = null
 
     private val mPreferenceListener = Preference.OnPreferenceChangeListener { preference, value ->
         when {
             preference.key == TEXT_SIZE -> {
-                mAnalytics.sendEvent(MyAnalytics.EVENT_NOTE_TEXT_SIZE_CHANGED)
-                mPresenter.onTextSizeChange((value as String).toInt())
+                analytics.sendEvent(MyAnalytics.EVENT_NOTE_TEXT_SIZE_CHANGED)
+                presenter.onTextSizeChange((value as String).toInt())
             }
             preference.key == NOTE_TEXT_COLOR -> {
-                mAnalytics.sendEvent(MyAnalytics.EVENT_NOTE_TEXT_COLOR_CHANGED)
-                mPresenter.onTextColorChange(value as Int)
+                analytics.sendEvent(MyAnalytics.EVENT_NOTE_TEXT_COLOR_CHANGED)
+                presenter.onTextColorChange(value as Int)
             }
             preference.key == SURFACE_TEXT_COLOR -> {
-                mAnalytics.sendEvent(MyAnalytics.EVENT_NOTE_SURFACE_TEXT_COLOR_CHANGED)
-                mPresenter.onSurfaceTextColorChange(value as Int)
+                analytics.sendEvent(MyAnalytics.EVENT_NOTE_SURFACE_TEXT_COLOR_CHANGED)
+                presenter.onSurfaceTextColorChange(value as Int)
             }
             preference.key == BACKGROUND_COLOR -> {
-                mAnalytics.sendEvent(MyAnalytics.EVENT_NOTE_BACKGROUND_CHANGED)
-                mPresenter.onBackgroundColorChange(value as Int)
+                analytics.sendEvent(MyAnalytics.EVENT_NOTE_BACKGROUND_CHANGED)
+                presenter.onBackgroundColorChange(value as Int)
             }
             preference.key == TEXT_BACKGROUND_COLOR -> {
-                mAnalytics.sendEvent(MyAnalytics.EVENT_NOTE_TEXT_BACKGROUND_CHANGED)
-                mPresenter.onBackgroundTextColorChange(value as Int)
+                analytics.sendEvent(MyAnalytics.EVENT_NOTE_TEXT_BACKGROUND_CHANGED)
+                presenter.onBackgroundTextColorChange(value as Int)
             }
         }
         return@OnPreferenceChangeListener true
@@ -64,8 +67,8 @@ class NoteSettingsFragment : PreferenceFragmentCompat(), BaseView, NoteSettingsC
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         setPreferencesFromResource(R.xml.pref_note, rootKey)
 
-        mPresenter.init(requireArguments().getString(ARG_NOTE_ID)!!)
-        mPresenter.attachView(this)
+        presenter.init(requireArguments().getString(ARG_NOTE_ID)!!)
+        presenter.attachView(this)
 
         findPreference<ListPreference>(TEXT_SIZE)?.onPreferenceChangeListener = mPreferenceListener
 
@@ -96,7 +99,7 @@ class NoteSettingsFragment : PreferenceFragmentCompat(), BaseView, NoteSettingsC
         AlertDialog.Builder(requireContext())
                 .setMessage(getString(R.string.fragment_note_settings_reset_settings_confirm))
                 .setPositiveButton(R.string.reset) { dialogInterface, _ ->
-                    mPresenter.onPrefResetSettingsClick()
+                    presenter.onPrefResetSettingsClick()
                     dialogInterface.dismiss()
                 }
                 .setNegativeButton(R.string.cancel) { dialogInterface, _ ->
@@ -119,9 +122,37 @@ class NoteSettingsFragment : PreferenceFragmentCompat(), BaseView, NoteSettingsC
         requireActivity().recreate()
     }
 
+    override fun enableInput() {
+        mListener?.enableInput()
+    }
+
+    override fun disableInput() {
+        mListener?.disableInput()
+    }
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        if (context is OnNoteSettingsFragmentListener) {
+            mListener = context
+        } else {
+            throw RuntimeException(context.toString()
+                    + " must implement OnNoteSettingsFragmentListener")
+        }
+    }
+
+    override fun onDetach() {
+        super.onDetach()
+        mListener = null
+    }
+
     override fun onDestroy() {
         super.onDestroy()
-        mPresenter.detachView()
+        presenter.detachView()
+    }
+
+    interface OnNoteSettingsFragmentListener {
+        fun enableInput()
+        fun disableInput()
     }
 
     companion object {

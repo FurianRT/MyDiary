@@ -92,8 +92,15 @@ object DatabaseModule {
             }
         }
 
+        val MIGRATION_3_4 = object : Migration(3, 4) {
+            override fun migrate(database: SupportSQLiteDatabase) {
+                database.execSQL("UPDATE Locations SET location_sync_with = '[]'")
+                database.execSQL("UPDATE NoteLocation SET notelocation_sync_with = '[]'")
+            }
+        }
+
         return Room.databaseBuilder(context, NoteDatabase::class.java, DATABASE_NAME)
-                .addMigrations(MIGRATION_1_2, MIGRATION_2_3)
+                .addMigrations(MIGRATION_1_2, MIGRATION_2_3, MIGRATION_3_4)
                 .addCallback(callback)
                 .build()
     }
@@ -183,7 +190,7 @@ object DatabaseModule {
             clear()
             val tagNames = context.resources.getStringArray(R.array.tags)
             for (i in tagNames.indices) {
-                put(MyTag.FIELD_ID, generateUniqueId())
+                put(MyTag.FIELD_ID, "default_tag_$i")
                 put(MyTag.FIELD_NAME, tagNames[i])
                 put(MyTag.FIELD_SYNC_WITH, Gson().toJson(listOf(MyTag.DEFAULT_SYNC_EMAIL)))
                 put(MyTag.FIELD_IS_DELETED, false)
@@ -193,7 +200,7 @@ object DatabaseModule {
             val categoryNames = context.resources.getStringArray(R.array.categories)
             val categoryColors = context.resources.getStringArray(R.array.default_category_colors)
             for (i in categoryNames.indices) {
-                put(MyCategory.FIELD_ID, generateUniqueId())
+                put(MyCategory.FIELD_ID, "default_category_$i")
                 put(MyCategory.FIELD_NAME, categoryNames[i])
                 put(MyCategory.FIELD_COLOR, Color.parseColor(categoryColors[i]))
                 put(MyCategory.FIELD_SYNC_WITH, Gson().toJson(listOf(MyCategory.DEFAULT_SYNC_EMAIL)))

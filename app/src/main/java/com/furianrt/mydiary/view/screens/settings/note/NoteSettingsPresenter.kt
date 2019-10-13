@@ -38,6 +38,7 @@ class NoteSettingsPresenter @Inject constructor(
 
     override fun attachView(view: NoteSettingsContract.MvpView) {
         super.attachView(view)
+        view.disableInput()
         addDisposable(getAppearance.invoke(mNoteId)
                 .firstElement()
                 .observeOn(scheduler.ui())
@@ -45,6 +46,7 @@ class NoteSettingsPresenter @Inject constructor(
                     mAppearance = appearance
                     Log.e(TAG, "getNoteAppearance")
                     view.updateSettings(mAppearance)
+                    view.enableInput()
                 })
     }
 

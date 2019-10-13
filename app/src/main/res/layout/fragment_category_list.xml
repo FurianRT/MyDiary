@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:gravity="end"
     android:orientation="vertical">
 
     <FrameLayout
@@ -27,8 +28,9 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_gravity="end"
-            android:layout_marginEnd="8dp"
-            android:background="@color/transparent"
+            android:background="?selectableItemBackground"
+            android:paddingStart="8dp"
+            android:paddingEnd="8dp"
             android:src="@drawable/ic_add"
             tools:ignore="ContentDescription" />
 
@@ -38,38 +40,20 @@
         android:id="@+id/list_categories"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:scrollbars="vertical"
         android:layout_weight="1"
+        android:scrollbars="vertical"
         tools:listitem="@layout/fragment_category_list_item" />
 
-    <LinearLayout
-        android:layout_width="match_parent"
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/button_categories_close"
+        style="@style/Widget.MaterialComponents.Button.TextButton"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="8dp"
-        android:layout_weight="0"
-        android:gravity="end|center_vertical"
-        android:orientation="horizontal">
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/button_no_category"
-            style="@style/Widget.MaterialComponents.Button.TextButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="8dp"
-            android:letterSpacing="0.0"
-            android:text="@string/no_category" />
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/button_categories_close"
-            style="@style/Widget.MaterialComponents.Button.TextButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:letterSpacing="0.0"
-            android:text="@string/close" />
-
-    </LinearLayout>
+        android:letterSpacing="0.0"
+        android:text="@string/close" />
 
 </LinearLayout>

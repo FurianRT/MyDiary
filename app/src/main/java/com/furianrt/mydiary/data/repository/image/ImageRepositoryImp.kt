@@ -145,4 +145,6 @@ class ImageRepositoryImp @Inject constructor(
     override fun isDailyImageEnabled(): Boolean = prefs.isDailyImageEnabled()
 
     override fun getDailyImageCategory(): String = prefs.getDailyImageCategory()
+
+    override fun getAvailableImageDirectory(): String = storage.getAvailablePictureDirectory()
 }

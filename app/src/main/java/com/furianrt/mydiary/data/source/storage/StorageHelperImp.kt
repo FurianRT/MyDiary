@@ -16,48 +16,53 @@ import android.os.Environment
 import com.furianrt.mydiary.di.application.modules.app.AppContext
 import id.zelory.compressor.Compressor
 import java.io.File
-import java.io.FileNotFoundException
 import java.io.FileOutputStream
 import javax.inject.Inject
 
-class StorageHelperImp @Inject constructor(
-        @AppContext private val context: Context
-) : StorageHelper {
+class StorageHelperImp @Inject constructor(@AppContext context: Context) : StorageHelper {
 
     companion object {
         private const val COMPRESS_VALUE_BITMAP = 18
         private const val COMPRESS_VALUE_IMAGE = 50
     }
 
-    private val mDirectory = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES)
-
-    override fun getFile(fileName: String): File {
-        val files = mDirectory?.listFiles { file -> file.name.startsWith(fileName) }
-        if (files.isNullOrEmpty()) {
-            throw FileNotFoundException()
-        } else {
-            return files.first()
-        }
+    private val mCompressor = Compressor(context)
+    private val mExternalDir = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES)
+    private val mInternalDir = context.filesDir
+    private val mAvailableDir = if (isExternalStorageWritable()) {
+        mExternalDir!!
+    } else {
+        mInternalDir
     }
 
-    override fun deleteFile(fileName: String): Boolean = File(mDirectory, fileName).delete()
+    override fun deleteFile(fileName: String): Boolean =
+            if (File(mExternalDir, fileName).delete()) {
+                true
+            } else {
+                File(mInternalDir, fileName).delete()
+            }
 
     override fun deleteFiles(fileNames: List<String>): Map<String, Boolean> =
             HashMap<String, Boolean>().apply { fileNames.forEach { this[it] = deleteFile(it) } }
 
     override fun copyImageToStorage(sourcePath: String, destFileName: String): File =
-            Compressor(context)
+            mCompressor
                     .setQuality(COMPRESS_VALUE_IMAGE)
                     .setCompressFormat(Bitmap.CompressFormat.WEBP)
-                    .setDestinationDirectoryPath("$mDirectory/$destFileName.webp")
+                    .setDestinationDirectoryPath("$mAvailableDir/$destFileName.webp")
                     .compressToFile(File(sourcePath), "")
 
     override fun copyBitmapToStorage(bitmap: Bitmap, destFileName: String): File {
-        val destFile = File(mDirectory, "$destFileName.png")
+        val destFile = File(mAvailableDir, "$destFileName.webp")
         val fos = FileOutputStream(destFile)
-        bitmap.compress(Bitmap.CompressFormat.PNG, COMPRESS_VALUE_BITMAP, fos)
+        bitmap.compress(Bitmap.CompressFormat.WEBP, COMPRESS_VALUE_BITMAP, fos)
         fos.flush()
         fos.close()
         return destFile
     }
+
+    override fun getAvailablePictureDirectory(): String = mAvailableDir.toURI().toString()
+
+    private fun isExternalStorageWritable(): Boolean =
+            Environment.MEDIA_MOUNTED == Environment.getExternalStorageState()
 }
