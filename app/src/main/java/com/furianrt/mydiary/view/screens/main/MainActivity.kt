@@ -119,6 +119,19 @@ class MainActivity : BaseActivity(R.layout.activity_main), MainActivityContract.
         mBottomSheet.state = BottomSheetBehavior.STATE_EXPANDED
     }
 
+    private val mQuickScrollListener = object : RecyclerView.OnScrollListener() {
+        override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+            super.onScrolled(recyclerView, dx, dy)
+            val topChildPosition = (recyclerView.layoutManager as LinearLayoutManager?)
+                    ?.findFirstVisibleItemPosition() ?: 0
+            if (topChildPosition > 0) {
+                fab_quick_scroll.show()
+            } else {
+                fab_quick_scroll.hide()
+            }
+        }
+    }
+
     private val mBottomSheetCallback = object : BottomSheetBehavior.BottomSheetCallback() {
         override fun onSlide(bottomSheet: View, slideOffset: Float) {}
         override fun onStateChanged(bottomSheet: View, newState: Int) {
@@ -687,18 +700,7 @@ class MainActivity : BaseActivity(R.layout.activity_main), MainActivityContract.
         mAdapter.listener = this
         drawer.addDrawerListener(mOnDrawerListener)
         list_main.addOnScrollListener(mAdapter.preloader)
-        list_main.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                super.onScrolled(recyclerView, dx, dy)
-                val topChildPosition = (recyclerView.layoutManager as LinearLayoutManager?)
-                        ?.findFirstVisibleItemPosition() ?: 0
-                if (topChildPosition > 0) {
-                    fab_quick_scroll.show()
-                } else {
-                    fab_quick_scroll.hide()
-                }
-            }
-        })
+        list_main.addOnScrollListener(mQuickScrollListener)
         (supportFragmentManager.findFragmentByTag(DeleteNoteDialog.TAG) as? DeleteNoteDialog)
                 ?.setOnDeleteConfirmListener(this)
         supportFragmentManager.findFragmentByTag(CategoriesDialog.TAG)?.let {
@@ -716,7 +718,8 @@ class MainActivity : BaseActivity(R.layout.activity_main), MainActivityContract.
         mBackPressCount = 0
         mAdapter.listener = null
         drawer.removeDrawerListener(mOnDrawerListener)
-        list_main.clearOnScrollListeners()
+        list_main.removeOnScrollListener(mAdapter.preloader)
+        list_main.removeOnScrollListener(mQuickScrollListener)
         mHandler.removeCallbacks(mBottomSheetOpenRunnable)
     }
 }
