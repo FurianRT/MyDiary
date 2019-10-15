@@ -7,4 +7,5 @@
     android:layout_height="match_parent"
     app:zoomage_minScale="0.9"
     app:zoomage_restrictBounds="true"
+    app:zoomage_translatable="false"
     tools:ignore="ContentDescription" />

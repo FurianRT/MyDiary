@@ -156,7 +156,7 @@ class NoteListAdapter(
             }
             itemView.text_note_text_day_of_week.text = getDayOfWeek(note.note.time)
             itemView.text_note_text_day.text = getDay(note.note.time)
-            itemView.text_note_content.setText(note.note.content.applyTextSpans(note.textSpans), TextView.BufferType.EDITABLE)
+            itemView.text_note_content.setText(note.note.content.applyTextSpans(note.textSpans), TextView.BufferType.SPANNABLE)
             setCategory(note)
             setSyncIcon(note)
             setTitle(note)

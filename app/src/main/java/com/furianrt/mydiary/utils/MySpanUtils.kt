@@ -11,29 +11,29 @@
 package com.furianrt.mydiary.utils
 
 import android.graphics.Typeface
-import android.text.Editable
 import android.text.ParcelableSpan
+import android.text.Spannable
 import android.text.style.*
 import com.furianrt.mydiary.data.entity.MyTextSpan
 
-fun String.applyTextSpans(spans: List<MyTextSpan>): Editable =
-        Editable.Factory().newEditable(this).apply {
+fun String.applyTextSpans(spans: List<MyTextSpan>): Spannable =
+        Spannable.Factory().newSpannable(this).apply {
             spans.forEach { textSpan ->
                 if (textSpan.endIndex <= length) {
                     when (textSpan.type) {
                         MyTextSpan.TYPE_BOLD_TEXT -> setSpan(StyleSpan(Typeface.BOLD),
                                 textSpan.startIndex,
                                 textSpan.endIndex,
-                                Editable.SPAN_INCLUSIVE_INCLUSIVE)
+                                Spannable.SPAN_INCLUSIVE_INCLUSIVE)
                         MyTextSpan.TYPE_ITALIC_TEXT -> setSpan(StyleSpan(Typeface.ITALIC),
                                 textSpan.startIndex,
                                 textSpan.endIndex,
-                                Editable.SPAN_INCLUSIVE_INCLUSIVE)
+                                Spannable.SPAN_INCLUSIVE_INCLUSIVE)
                         MyTextSpan.TYPE_STRIKETHROUGH_TEXT -> setSpan(
                                 StrikethroughSpan(),
                                 textSpan.startIndex,
                                 textSpan.endIndex,
-                                Editable.SPAN_INCLUSIVE_INCLUSIVE
+                                Spannable.SPAN_INCLUSIVE_INCLUSIVE
                         )
                         MyTextSpan.TYPE_BIG_TEXT ->
                             textSpan.size?.let { size ->
@@ -41,7 +41,7 @@ fun String.applyTextSpans(spans: List<MyTextSpan>): Editable =
                                         RelativeSizeSpan(size),
                                         textSpan.startIndex,
                                         textSpan.endIndex,
-                                        Editable.SPAN_INCLUSIVE_INCLUSIVE
+                                        Spannable.SPAN_INCLUSIVE_INCLUSIVE
                                 )
                             }
                         MyTextSpan.TYPE_TEXT_COLOR ->
@@ -50,7 +50,7 @@ fun String.applyTextSpans(spans: List<MyTextSpan>): Editable =
                                         ForegroundColorSpan(color),
                                         textSpan.startIndex,
                                         textSpan.endIndex,
-                                        Editable.SPAN_INCLUSIVE_INCLUSIVE
+                                        Spannable.SPAN_INCLUSIVE_INCLUSIVE
                                 )
                             }
                         MyTextSpan.TYPE_FILL_COLOR ->
@@ -59,7 +59,7 @@ fun String.applyTextSpans(spans: List<MyTextSpan>): Editable =
                                         BackgroundColorSpan(color),
                                         textSpan.startIndex,
                                         textSpan.endIndex,
-                                        Editable.SPAN_INCLUSIVE_INCLUSIVE
+                                        Spannable.SPAN_INCLUSIVE_INCLUSIVE
                                 )
                             }
                     }
@@ -67,7 +67,7 @@ fun String.applyTextSpans(spans: List<MyTextSpan>): Editable =
             }
         }
 
-fun Editable.getTextSpans(): List<MyTextSpan> =
+fun Spannable.getTextSpans(): List<MyTextSpan> =
         mutableListOf<MyTextSpan>().apply {
             getSpans(0, length, ParcelableSpan::class.java).forEach { span ->
                 when {

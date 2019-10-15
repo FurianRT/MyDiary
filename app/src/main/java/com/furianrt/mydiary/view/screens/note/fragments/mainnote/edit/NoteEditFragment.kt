@@ -35,7 +35,7 @@ class NoteEditFragment : BaseFragment(), NoteEditFragmentContract.MvpView {
     private var mClickedView: Int? = null
     private var mClickPosition = 0
     private var mNoteTitle = ""
-    private var mNoteContent = Editable.Factory().newEditable("")
+    private var mNoteContent = Spannable.Factory().newSpannable("")
     private var mAppearance: MyNoteAppearance? = null
     private val mTextChangeListener = object : TextWatcher {
         override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
@@ -43,7 +43,7 @@ class NoteEditFragment : BaseFragment(), NoteEditFragmentContract.MvpView {
         override fun afterTextChanged(s: Editable?) {
             (parentFragment as NoteFragment).onNoteTextChange(
                     edit_note_title.text?.toString() ?: "",
-                    edit_note_content.text ?: Editable.Factory().newEditable("")
+                    edit_note_content.text ?: Spannable.Factory().newSpannable("")
             )
         }
     }
@@ -56,7 +56,7 @@ class NoteEditFragment : BaseFragment(), NoteEditFragmentContract.MvpView {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
             mNoteTitle = requireArguments().getString(ARG_NOTE_TITLE, "")
-            mNoteContent = requireArguments().getCharSequence(ARG_NOTE_CONTENT, Editable.Factory().newEditable("")) as Editable
+            mNoteContent = requireArguments().getCharSequence(ARG_NOTE_CONTENT, Spannable.Factory().newSpannable("")) as Spannable
             mClickedView = requireArguments().getInt(ARG_CLICKED_VIEW)
             mClickPosition = requireArguments().getInt(ARG_POSITION)
             mAppearance = requireArguments().getParcelable(ARG_APPEARANCE) as? MyNoteAppearance?
@@ -71,7 +71,7 @@ class NoteEditFragment : BaseFragment(), NoteEditFragmentContract.MvpView {
 
         if (savedInstanceState == null) {
             view.edit_note_title.setText(mNoteTitle)
-            view.edit_note_content.setText(mNoteContent, TextView.BufferType.EDITABLE)
+            view.edit_note_content.setText(mNoteContent, TextView.BufferType.SPANNABLE)
         }
 
         view.edit_note_content.enableLines = true
@@ -156,7 +156,7 @@ class NoteEditFragment : BaseFragment(), NoteEditFragmentContract.MvpView {
         edit_note_content.removeTextChangedListener(mTextChangeListener)
         (parentFragment as? NoteFragment?)?.onNoteFragmentEditModeDisabled(
                 edit_note_title.text?.toString() ?: "",
-                edit_note_content.text ?: Editable.Factory().newEditable("")
+                edit_note_content.text ?: Spannable.Factory().newSpannable("")
         )
         mPresenter.detachView()
     }
@@ -175,7 +175,7 @@ class NoteEditFragment : BaseFragment(), NoteEditFragmentContract.MvpView {
         }
     }
 
-    fun showNoteText(title: String, content: Editable) {
+    fun showNoteText(title: String, content: Spannable) {
         Log.e(TAG, "showNoteText")
         // Отключаем листенер что бы в undo/redo не прилетал измененный им же текст
         edit_note_title.removeTextChangedListener(mTextChangeListener)
@@ -198,7 +198,7 @@ class NoteEditFragment : BaseFragment(), NoteEditFragmentContract.MvpView {
         edit_note_content.inputType = InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS
 
         edit_note_title.setText(title)
-        edit_note_content.setText(content, TextView.BufferType.EDITABLE)
+        edit_note_content.setText(content, TextView.BufferType.SPANNABLE)
 
         edit_note_title.inputType = currentTitleInputType
         edit_note_content.inputType = currentContentInputType
@@ -225,8 +225,8 @@ class NoteEditFragment : BaseFragment(), NoteEditFragmentContract.MvpView {
 
     fun getNoteTitleText(): String = edit_note_title.text?.toString() ?: ""
 
-    fun getNoteContentText(): Editable = edit_note_content.text
-            ?: Editable.Factory().newEditable("")
+    fun getNoteContentText(): Spannable = edit_note_content.text
+            ?: Spannable.Factory().newSpannable("")
 
     override fun applyBoldText(wordStart: Int, wordEnd: Int) {
         val text = edit_note_content.text ?: return
@@ -361,7 +361,7 @@ class NoteEditFragment : BaseFragment(), NoteEditFragmentContract.MvpView {
         onSpansChange(edit_note_content.selectionStart, edit_note_content.selectionEnd)
     }
 
-    private fun addBoldTextSpan(wordStart: Int, wordEnd: Int, text: Editable) {
+    private fun addBoldTextSpan(wordStart: Int, wordEnd: Int, text: Spannable) {
         analytics.sendEvent(MyAnalytics.EVENT_RICH_TEXT_BOLD_APPLIED)
         var indexStart = wordStart
         var indexEnd = wordEnd
@@ -390,11 +390,11 @@ class NoteEditFragment : BaseFragment(), NoteEditFragmentContract.MvpView {
                 StyleSpan(Typeface.BOLD),
                 indexStart,
                 indexEnd,
-                Editable.SPAN_INCLUSIVE_INCLUSIVE
+                Spannable.SPAN_INCLUSIVE_INCLUSIVE
         )
     }
 
-    private fun removeBoldTextSpan(wordStart: Int, wordEnd: Int, boldSpans: List<StyleSpan>, text: Editable) {
+    private fun removeBoldTextSpan(wordStart: Int, wordEnd: Int, boldSpans: List<StyleSpan>, text: Spannable) {
         if (text.isEmpty()) {
             boldSpans.forEach { text.removeSpan(it) }
             return
@@ -406,19 +406,19 @@ class NoteEditFragment : BaseFragment(), NoteEditFragmentContract.MvpView {
 
             when {
                 spanStart < wordStart && spanEnd > wordEnd -> {
-                    text.setSpan(StyleSpan(Typeface.BOLD), spanStart, wordStart, Editable.SPAN_INCLUSIVE_EXCLUSIVE)
-                    text.setSpan(StyleSpan(Typeface.BOLD), wordEnd, spanEnd, Editable.SPAN_EXCLUSIVE_INCLUSIVE)
+                    text.setSpan(StyleSpan(Typeface.BOLD), spanStart, wordStart, Spannable.SPAN_INCLUSIVE_EXCLUSIVE)
+                    text.setSpan(StyleSpan(Typeface.BOLD), wordEnd, spanEnd, Spannable.SPAN_EXCLUSIVE_INCLUSIVE)
                 }
                 spanStart < wordStart && spanEnd <= wordEnd ->
-                    text.setSpan(StyleSpan(Typeface.BOLD), spanStart, wordStart, Editable.SPAN_INCLUSIVE_EXCLUSIVE)
+                    text.setSpan(StyleSpan(Typeface.BOLD), spanStart, wordStart, Spannable.SPAN_INCLUSIVE_EXCLUSIVE)
                 spanStart >= wordStart && spanEnd > wordEnd ->
-                    text.setSpan(StyleSpan(Typeface.BOLD), wordEnd, spanEnd, Editable.SPAN_EXCLUSIVE_INCLUSIVE)
+                    text.setSpan(StyleSpan(Typeface.BOLD), wordEnd, spanEnd, Spannable.SPAN_EXCLUSIVE_INCLUSIVE)
             }
             text.removeSpan(span)
         }
     }
 
-    private fun addItalicTextSpan(wordStart: Int, wordEnd: Int, text: Editable) {
+    private fun addItalicTextSpan(wordStart: Int, wordEnd: Int, text: Spannable) {
         analytics.sendEvent(MyAnalytics.EVENT_RICH_TEXT_ITALIC_APPLIED)
         var indexStart = wordStart
         var indexEnd = wordEnd
@@ -447,11 +447,11 @@ class NoteEditFragment : BaseFragment(), NoteEditFragmentContract.MvpView {
                 StyleSpan(Typeface.ITALIC),
                 indexStart,
                 indexEnd,
-                Editable.SPAN_INCLUSIVE_INCLUSIVE
+                Spannable.SPAN_INCLUSIVE_INCLUSIVE
         )
     }
 
-    private fun removeItalicTextSpan(wordStart: Int, wordEnd: Int, italicSpans: List<StyleSpan>, text: Editable) {
+    private fun removeItalicTextSpan(wordStart: Int, wordEnd: Int, italicSpans: List<StyleSpan>, text: Spannable) {
         if (text.isEmpty()) {
             italicSpans.forEach { text.removeSpan(it) }
             return
@@ -463,19 +463,19 @@ class NoteEditFragment : BaseFragment(), NoteEditFragmentContract.MvpView {
 
             when {
                 spanStart < wordStart && spanEnd > wordEnd -> {
-                    text.setSpan(StyleSpan(Typeface.ITALIC), spanStart, wordStart, Editable.SPAN_INCLUSIVE_EXCLUSIVE)
-                    text.setSpan(StyleSpan(Typeface.ITALIC), wordEnd, spanEnd, Editable.SPAN_EXCLUSIVE_INCLUSIVE)
+                    text.setSpan(StyleSpan(Typeface.ITALIC), spanStart, wordStart, Spannable.SPAN_INCLUSIVE_EXCLUSIVE)
+                    text.setSpan(StyleSpan(Typeface.ITALIC), wordEnd, spanEnd, Spannable.SPAN_EXCLUSIVE_INCLUSIVE)
                 }
                 spanStart < wordStart && spanEnd <= wordEnd ->
-                    text.setSpan(StyleSpan(Typeface.ITALIC), spanStart, wordStart, Editable.SPAN_INCLUSIVE_EXCLUSIVE)
+                    text.setSpan(StyleSpan(Typeface.ITALIC), spanStart, wordStart, Spannable.SPAN_INCLUSIVE_EXCLUSIVE)
                 spanStart >= wordStart && spanEnd > wordEnd ->
-                    text.setSpan(StyleSpan(Typeface.ITALIC), wordEnd, spanEnd, Editable.SPAN_EXCLUSIVE_INCLUSIVE)
+                    text.setSpan(StyleSpan(Typeface.ITALIC), wordEnd, spanEnd, Spannable.SPAN_EXCLUSIVE_INCLUSIVE)
             }
             text.removeSpan(span)
         }
     }
 
-    private fun addStrikethroughTextSpan(wordStart: Int, wordEnd: Int, text: Editable) {
+    private fun addStrikethroughTextSpan(wordStart: Int, wordEnd: Int, text: Spannable) {
         analytics.sendEvent(MyAnalytics.EVENT_RICH_TEXT_STRIKETHROUGH_APPLIED)
         var indexStart = wordStart
         var indexEnd = wordEnd
@@ -502,11 +502,11 @@ class NoteEditFragment : BaseFragment(), NoteEditFragmentContract.MvpView {
                 StrikethroughSpan(),
                 indexStart,
                 indexEnd,
-                Editable.SPAN_INCLUSIVE_INCLUSIVE
+                Spannable.SPAN_INCLUSIVE_INCLUSIVE
         )
     }
 
-    private fun removeStrikethroughTextSpan(wordStart: Int, wordEnd: Int, strikethroughSpans: List<StrikethroughSpan>, text: Editable) {
+    private fun removeStrikethroughTextSpan(wordStart: Int, wordEnd: Int, strikethroughSpans: List<StrikethroughSpan>, text: Spannable) {
         if (text.isEmpty()) {
             strikethroughSpans.forEach { text.removeSpan(it) }
             return
@@ -518,19 +518,19 @@ class NoteEditFragment : BaseFragment(), NoteEditFragmentContract.MvpView {
 
             when {
                 spanStart < wordStart && spanEnd > wordEnd -> {
-                    text.setSpan(StrikethroughSpan(), spanStart, wordStart, Editable.SPAN_INCLUSIVE_EXCLUSIVE)
-                    text.setSpan(StrikethroughSpan(), wordEnd, spanEnd, Editable.SPAN_EXCLUSIVE_INCLUSIVE)
+                    text.setSpan(StrikethroughSpan(), spanStart, wordStart, Spannable.SPAN_INCLUSIVE_EXCLUSIVE)
+                    text.setSpan(StrikethroughSpan(), wordEnd, spanEnd, Spannable.SPAN_EXCLUSIVE_INCLUSIVE)
                 }
                 spanStart < wordStart && spanEnd <= wordEnd ->
-                    text.setSpan(StrikethroughSpan(), spanStart, wordStart, Editable.SPAN_INCLUSIVE_EXCLUSIVE)
+                    text.setSpan(StrikethroughSpan(), spanStart, wordStart, Spannable.SPAN_INCLUSIVE_EXCLUSIVE)
                 spanStart >= wordStart && spanEnd > wordEnd ->
-                    text.setSpan(StrikethroughSpan(), wordEnd, spanEnd, Editable.SPAN_EXCLUSIVE_INCLUSIVE)
+                    text.setSpan(StrikethroughSpan(), wordEnd, spanEnd, Spannable.SPAN_EXCLUSIVE_INCLUSIVE)
             }
             text.removeSpan(span)
         }
     }
 
-    private fun addLargeTextSpan(wordStart: Int, wordEnd: Int, text: Editable) {
+    private fun addLargeTextSpan(wordStart: Int, wordEnd: Int, text: Spannable) {
         analytics.sendEvent(MyAnalytics.EVENT_RICH_TEXT_BIG_TEXT_APPLIED)
         var indexStart = wordStart
         var indexEnd = wordEnd
@@ -557,11 +557,11 @@ class NoteEditFragment : BaseFragment(), NoteEditFragmentContract.MvpView {
                 RelativeSizeSpan(SPAN_LARGE_TEXT_SIZE),
                 indexStart,
                 indexEnd,
-                Editable.SPAN_INCLUSIVE_INCLUSIVE
+                Spannable.SPAN_INCLUSIVE_INCLUSIVE
         )
     }
 
-    private fun removeLargeTextSpan(wordStart: Int, wordEnd: Int, largeTextSpans: List<RelativeSizeSpan>, text: Editable) {
+    private fun removeLargeTextSpan(wordStart: Int, wordEnd: Int, largeTextSpans: List<RelativeSizeSpan>, text: Spannable) {
         if (text.isEmpty()) {
             largeTextSpans.forEach { text.removeSpan(it) }
             return
@@ -577,13 +577,13 @@ class NoteEditFragment : BaseFragment(), NoteEditFragmentContract.MvpView {
                             RelativeSizeSpan(span.sizeChange),
                             spanStart,
                             wordStart,
-                            Editable.SPAN_INCLUSIVE_EXCLUSIVE
+                            Spannable.SPAN_INCLUSIVE_EXCLUSIVE
                     )
                     text.setSpan(
                             RelativeSizeSpan(span.sizeChange),
                             wordEnd,
                             spanEnd,
-                            Editable.SPAN_EXCLUSIVE_INCLUSIVE
+                            Spannable.SPAN_EXCLUSIVE_INCLUSIVE
                     )
                 }
                 spanStart < wordStart && spanEnd <= wordEnd ->
@@ -591,21 +591,21 @@ class NoteEditFragment : BaseFragment(), NoteEditFragmentContract.MvpView {
                             RelativeSizeSpan(span.sizeChange),
                             spanStart,
                             wordStart,
-                            Editable.SPAN_INCLUSIVE_EXCLUSIVE
+                            Spannable.SPAN_INCLUSIVE_EXCLUSIVE
                     )
                 spanStart >= wordStart && spanEnd > wordEnd ->
                     text.setSpan(
                             RelativeSizeSpan(span.sizeChange),
                             wordEnd,
                             spanEnd,
-                            Editable.SPAN_EXCLUSIVE_INCLUSIVE
+                            Spannable.SPAN_EXCLUSIVE_INCLUSIVE
                     )
             }
             text.removeSpan(span)
         }
     }
 
-    private fun addTextColorSpan(wordStart: Int, wordEnd: Int, text: Editable, color: String) {
+    private fun addTextColorSpan(wordStart: Int, wordEnd: Int, text: Spannable, color: String) {
         analytics.sendEvent(MyAnalytics.EVENT_RICH_TEXT_COLOR_APPLIED)
         var indexStart = wordStart
         var indexEnd = wordEnd
@@ -632,11 +632,11 @@ class NoteEditFragment : BaseFragment(), NoteEditFragmentContract.MvpView {
                 ForegroundColorSpan(Color.parseColor(color)),
                 indexStart,
                 indexEnd,
-                Editable.SPAN_INCLUSIVE_INCLUSIVE
+                Spannable.SPAN_INCLUSIVE_INCLUSIVE
         )
     }
 
-    private fun removeTextColorSpan(wordStart: Int, wordEnd: Int, textColorSpans: List<ForegroundColorSpan>, text: Editable) {
+    private fun removeTextColorSpan(wordStart: Int, wordEnd: Int, textColorSpans: List<ForegroundColorSpan>, text: Spannable) {
         if (text.isEmpty()) {
             textColorSpans.forEach { text.removeSpan(it) }
             return
@@ -652,13 +652,13 @@ class NoteEditFragment : BaseFragment(), NoteEditFragmentContract.MvpView {
                             ForegroundColorSpan(span.foregroundColor),
                             spanStart,
                             wordStart,
-                            Editable.SPAN_INCLUSIVE_EXCLUSIVE
+                            Spannable.SPAN_INCLUSIVE_EXCLUSIVE
                     )
                     text.setSpan(
                             ForegroundColorSpan(span.foregroundColor),
                             wordEnd,
                             spanEnd,
-                            Editable.SPAN_EXCLUSIVE_INCLUSIVE
+                            Spannable.SPAN_EXCLUSIVE_INCLUSIVE
                     )
                 }
                 spanStart < wordStart && spanEnd <= wordEnd ->
@@ -666,21 +666,21 @@ class NoteEditFragment : BaseFragment(), NoteEditFragmentContract.MvpView {
                             ForegroundColorSpan(span.foregroundColor),
                             spanStart,
                             wordStart,
-                            Editable.SPAN_INCLUSIVE_EXCLUSIVE
+                            Spannable.SPAN_INCLUSIVE_EXCLUSIVE
                     )
                 spanStart >= wordStart && spanEnd > wordEnd ->
                     text.setSpan(
                             ForegroundColorSpan(span.foregroundColor),
                             wordEnd,
                             spanEnd,
-                            Editable.SPAN_EXCLUSIVE_INCLUSIVE
+                            Spannable.SPAN_EXCLUSIVE_INCLUSIVE
                     )
             }
             text.removeSpan(span)
         }
     }
 
-    private fun addTextFillColorSpan(wordStart: Int, wordEnd: Int, text: Editable, color: String) {
+    private fun addTextFillColorSpan(wordStart: Int, wordEnd: Int, text: Spannable, color: String) {
         analytics.sendEvent(MyAnalytics.EVENT_RICH_TEXT_FILL_COLOR_APPLIED)
         var indexStart = wordStart
         var indexEnd = wordEnd
@@ -707,11 +707,11 @@ class NoteEditFragment : BaseFragment(), NoteEditFragmentContract.MvpView {
                 BackgroundColorSpan(Color.parseColor(color)),
                 indexStart,
                 indexEnd,
-                Editable.SPAN_INCLUSIVE_INCLUSIVE
+                Spannable.SPAN_INCLUSIVE_INCLUSIVE
         )
     }
 
-    private fun removeTextFillColorSpan(wordStart: Int, wordEnd: Int, textFillColorSpans: List<BackgroundColorSpan>, text: Editable) {
+    private fun removeTextFillColorSpan(wordStart: Int, wordEnd: Int, textFillColorSpans: List<BackgroundColorSpan>, text: Spannable) {
         if (text.isEmpty()) {
             textFillColorSpans.forEach { text.removeSpan(it) }
             return
@@ -727,13 +727,13 @@ class NoteEditFragment : BaseFragment(), NoteEditFragmentContract.MvpView {
                             BackgroundColorSpan(span.backgroundColor),
                             spanStart,
                             wordStart,
-                            Editable.SPAN_INCLUSIVE_EXCLUSIVE
+                            Spannable.SPAN_INCLUSIVE_EXCLUSIVE
                     )
                     text.setSpan(
                             BackgroundColorSpan(span.backgroundColor),
                             wordEnd,
                             spanEnd,
-                            Editable.SPAN_EXCLUSIVE_INCLUSIVE
+                            Spannable.SPAN_EXCLUSIVE_INCLUSIVE
                     )
                 }
                 spanStart < wordStart && spanEnd <= wordEnd ->
@@ -741,14 +741,14 @@ class NoteEditFragment : BaseFragment(), NoteEditFragmentContract.MvpView {
                             BackgroundColorSpan(span.backgroundColor),
                             spanStart,
                             wordStart,
-                            Editable.SPAN_INCLUSIVE_EXCLUSIVE
+                            Spannable.SPAN_INCLUSIVE_EXCLUSIVE
                     )
                 spanStart >= wordStart && spanEnd > wordEnd ->
                     text.setSpan(
                             BackgroundColorSpan(span.backgroundColor),
                             wordEnd,
                             spanEnd,
-                            Editable.SPAN_EXCLUSIVE_INCLUSIVE
+                            Spannable.SPAN_EXCLUSIVE_INCLUSIVE
                     )
             }
             text.removeSpan(span)
@@ -824,7 +824,7 @@ class NoteEditFragment : BaseFragment(), NoteEditFragmentContract.MvpView {
         const val VIEW_CONTENT = 1
 
         @JvmStatic
-        fun newInstance(noteTitle: String, noteContent: Editable, clickedView: Int,
+        fun newInstance(noteTitle: String, noteContent: Spannable, clickedView: Int,
                         clickPosition: Int, appearance: MyNoteAppearance?) =
                 NoteEditFragment().apply {
                     arguments = Bundle().apply {
