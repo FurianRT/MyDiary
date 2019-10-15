@@ -11,7 +11,7 @@
 package com.furianrt.mydiary.view.screens.note.fragments.mainnote.content
 
 import android.os.Bundle
-import android.text.Editable
+import android.text.Spannable
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.MotionEvent
@@ -38,7 +38,7 @@ class NoteContentFragment : BaseFragment(), NoteContentFragmentContract.MvpView 
     lateinit var mPresenter: NoteContentFragmentContract.Presenter
 
     private var mTitle: String? = null
-    private var mContent: Editable? = null
+    private var mContent: Spannable? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         getPresenterComponent(requireContext()).inject(this)
@@ -76,7 +76,7 @@ class NoteContentFragment : BaseFragment(), NoteContentFragmentContract.MvpView 
         }
     }
 
-    fun showNoteText(title: String, content: Editable) {
+    fun showNoteText(title: String, content: Spannable) {
         Log.e(TAG, "showNoteText")
         mTitle = title
         mContent = content
@@ -84,9 +84,9 @@ class NoteContentFragment : BaseFragment(), NoteContentFragmentContract.MvpView 
             text_note_title.visibility = View.GONE
         } else {
             text_note_title.visibility = View.VISIBLE
-            text_note_title.setText(title, TextView.BufferType.EDITABLE)
+            text_note_title.setText(title, TextView.BufferType.SPANNABLE)
         }
-        text_note_content.setText(content, TextView.BufferType.EDITABLE)
+        text_note_content.setText(content, TextView.BufferType.SPANNABLE)
     }
 
     fun setAppearance(appearance: MyNoteAppearance) {
@@ -137,7 +137,7 @@ class NoteContentFragment : BaseFragment(), NoteContentFragmentContract.MvpView 
             fragmentManager?.let { manager ->
                 val editFragment = NoteEditFragment.newInstance(
                         mTitle ?: "",
-                        mContent ?: Editable.Factory().newEditable(""),
+                        mContent ?: Spannable.Factory().newSpannable(""),
                         clickedView,
                         touchPosition,
                         mAppearance
@@ -153,7 +153,7 @@ class NoteContentFragment : BaseFragment(), NoteContentFragmentContract.MvpView 
 
     fun getNoteTitleText(): String = mTitle ?: ""
 
-    fun getNoteContentText(): Editable = mContent ?: Editable.Factory().newEditable("")
+    fun getNoteContentText(): Spannable = mContent ?: Spannable.Factory().newSpannable("")
 
     fun removeEditFragment() {
         fragmentManager?.findFragmentByTag(NoteEditFragment.TAG)?.let {
@@ -162,11 +162,11 @@ class NoteContentFragment : BaseFragment(), NoteContentFragmentContract.MvpView 
         }
     }
 
-    fun updateNoteText(title: String, content: Editable) {
+    fun updateNoteText(title: String, content: Spannable) {
         mTitle = title
         mContent = content
         text_note_title.text = title
-        text_note_content.setText(content, TextView.BufferType.EDITABLE)
+        text_note_content.setText(content, TextView.BufferType.SPANNABLE)
     }
 
     companion object {

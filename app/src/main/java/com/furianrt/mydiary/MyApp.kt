@@ -16,6 +16,7 @@ import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.os.*
 import android.widget.ImageView
+import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.facebook.stetho.Stetho
 import com.furianrt.mydiary.di.application.component.AppComponent
 import com.furianrt.mydiary.di.application.component.DaggerAppComponent
@@ -165,6 +166,7 @@ class MyApp : Application(), Application.ActivityLifecycleCallbacks {
                             GlideApp.with(imageView.context)
                                     .load(url)
                                     .placeholder(R.drawable.ic_image)
+                                    .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
                                     .into(imageView)
                         }
                     }
@@ -209,6 +211,7 @@ class MyApp : Application(), Application.ActivityLifecycleCallbacks {
 *   добавить кнопку очистки фильтров
 *   изсправить баг с дефолтными настройками внешнего вида
 *   заменить экран добавления картинок
+*
 *
 * */
 

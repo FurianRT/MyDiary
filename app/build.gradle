@@ -12,8 +12,8 @@ android {
         applicationId "com.furianrt.mydiary"
         minSdkVersion 21
         targetSdkVersion 29
-        versionCode 44
-        versionName "1.6.7"
+        versionCode 45
+        versionName "1.6.8"
 
         javaCompileOptions {
             annotationProcessorOptions {
@@ -72,7 +72,7 @@ dependencies {
 
     //Android
     implementation "androidx.appcompat:appcompat:$support_version"
-    implementation "androidx.recyclerview:recyclerview:1.1.0-beta04"
+    implementation "androidx.recyclerview:recyclerview:1.1.0-beta05"
     implementation "androidx.preference:preference:$support_version"
     implementation 'com.google.android.material:material:1.1.0-beta01'
     implementation 'androidx.constraintlayout:constraintlayout:2.0.0-beta1' //в beta2 баг констрейнтов (видно в PinActivity)
@@ -81,7 +81,7 @@ dependencies {
     implementation 'com.google.android:flexbox:1.1.0'
 
     //Fingerprint
-    implementation 'androidx.biometric:biometric:1.0.0-beta02'
+    implementation 'androidx.biometric:biometric:1.0.0-rc01'
 
     //RecyclerView animators
     implementation 'jp.wasabeef:recyclerview-animators:3.0.0'
@@ -161,7 +161,7 @@ dependencies {
     implementation 'com.crashlytics.sdk.android:crashlytics:2.10.1'
 
     //ImageView with zoom
-    implementation 'com.jsibbold:zoomage:1.2.0'
+    implementation 'com.jsibbold:zoomage:1.3.0'
 
     //Sending email
     implementation 'com.sun.mail:android-mail:1.6.4'
