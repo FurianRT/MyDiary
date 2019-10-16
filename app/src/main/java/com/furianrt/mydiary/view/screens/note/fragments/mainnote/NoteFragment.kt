@@ -601,6 +601,7 @@ class NoteFragment : BaseFragment(), NoteFragmentContract.MvpView, DatePickerDia
                     when (it) {
                         "jpeg" -> true
                         "jpg " -> true
+                        "webp " -> true
                         else -> false
                     }
                 }

@@ -350,6 +350,7 @@ class GalleryListFragment : BaseFragment(), GalleryListAdapter.OnListItemInterac
                     when (it) {
                         "jpeg" -> true
                         "jpg " -> true
+                        "webp " -> true
                         else -> false
                     }
                 }
@@ -381,7 +382,7 @@ class GalleryListFragment : BaseFragment(), GalleryListAdapter.OnListItemInterac
 
     private fun showEmptyState() {
         if (empty_state.visibility == View.INVISIBLE) {
-            empty_state.translationY = empty_state.height + 100f
+            empty_state.translationY = empty_state.height.toFloat()
             empty_state.visibility = View.VISIBLE
             empty_state.animate()
                     .translationY(0f)
@@ -394,7 +395,7 @@ class GalleryListFragment : BaseFragment(), GalleryListAdapter.OnListItemInterac
     private fun hideEmptyState() {
         if (empty_state.visibility == View.VISIBLE) {
             empty_state.animate()
-                    .translationY(empty_state.height + 100f)
+                    .translationY(empty_state.height.toFloat())
                     .setDuration(ANIMATION_MOVE_DURATION)
                     .setInterpolator(AccelerateInterpolator())
                     .setListener(object : Animator.AnimatorListener {
