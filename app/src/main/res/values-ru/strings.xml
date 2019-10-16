@@ -31,7 +31,6 @@
     <string name="choose_tags">Выберите теги</string>
     <string name="choose_category">Категория</string>
     <string name="choose_mood">Настроение</string>
-    <string name="add_tag">Добавить тег</string>
     <string name="tag_name">Название тега</string>
     <string name="open">Открыть</string>
     <string name="close">Закрыть</string>
@@ -292,5 +291,5 @@
     <string name="fragment_note_settings_reset_settings_title">Сбросить настройки</string>
     <string name="fragment_note_settings_danger_zone">Опасная зона</string>
     <string name="fragment_note_settings_reset_settings_confirm">Сбросить настройки?</string>
-    <string name="fragment_note_google_serviсies_error">Google services не установлены</string>
+    <string name="fragment_note_google_services_error">Google services не установлены</string>
 </resources>

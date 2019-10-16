@@ -11,7 +11,6 @@
 package com.furianrt.mydiary.view.dialogs.categories.fragments.list
 
 import android.view.LayoutInflater
-import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.widget.PopupMenu

@@ -170,7 +170,7 @@ dependencies {
     //In-App purchases
     implementation 'com.anjlab.android.iab.v3:library:1.1.0'
 
-    //Debugging instrument for network calls, database content, etc.
+    //Debugging tool for network calls, database content, etc.
     implementation 'com.facebook.stetho:stetho:1.5.1'
     implementation 'com.facebook.stetho:stetho-okhttp3:1.5.1'
 }

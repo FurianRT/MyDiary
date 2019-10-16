@@ -18,7 +18,6 @@ import androidx.appcompat.widget.AppCompatSpinner
 class CustomSpinner : AppCompatSpinner {
 
     constructor(context: Context) : super(context, null)
-
     constructor(context: Context, attrs: AttributeSet) : super(context, attrs)
 
     var onItemSelectListener: ((adapter: Spinner, position: Int) -> Unit)? = null

@@ -21,7 +21,6 @@ class LockableViewPager : ViewPager {
     var swipeEnabled = true
 
     constructor(context: Context) : super(context, null)
-
     constructor(context: Context, attrs: AttributeSet) : super(context, attrs)
 
     @SuppressLint("ClickableViewAccessibility")

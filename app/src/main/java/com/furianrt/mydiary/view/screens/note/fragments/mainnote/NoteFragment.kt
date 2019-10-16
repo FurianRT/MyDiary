@@ -309,7 +309,7 @@ class NoteFragment : BaseFragment(), NoteFragmentContract.MvpView, DatePickerDia
             try {
                 startActivityForResult(intent, SPEECH_TO_TEXT_REQUEST_CODE)
             } catch (e: ActivityNotFoundException) {
-                Toast.makeText(requireContext(), getString(R.string.fragment_note_google_serviсies_error), Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), getString(R.string.fragment_note_google_services_error), Toast.LENGTH_SHORT).show()
             }
         }
     }
