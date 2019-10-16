@@ -17,7 +17,10 @@ import android.view.MotionEvent
 import android.view.View
 import androidx.drawerlayout.widget.DrawerLayout
 
-class MyDrawerLayout(context: Context, attributes: AttributeSet) : DrawerLayout(context, attributes) {
+class MyDrawerLayout : DrawerLayout {
+
+    constructor(context: Context) : super(context, null)
+    constructor(context: Context, attrs: AttributeSet) : super(context, attrs)
 
     var touchEventChildId: Int = -1
 

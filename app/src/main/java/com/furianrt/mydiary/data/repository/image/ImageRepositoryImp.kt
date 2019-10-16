@@ -21,7 +21,6 @@ import com.furianrt.mydiary.data.source.database.ImageDao
 import com.furianrt.mydiary.data.source.preferences.PreferencesHelper
 import com.furianrt.mydiary.data.source.storage.StorageHelper
 import com.furianrt.mydiary.utils.MyRxUtils
-import com.furianrt.mydiary.utils.generateUniqueId
 import io.reactivex.*
 import org.joda.time.DateTime
 import javax.inject.Inject

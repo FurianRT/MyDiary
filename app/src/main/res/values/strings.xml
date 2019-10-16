@@ -34,7 +34,6 @@
     <string name="choose_tags">Choose tags</string>
     <string name="choose_category">Category</string>
     <string name="choose_mood">Mood</string>
-    <string name="add_tag">Add tag</string>
     <string name="tag_name">Tag name</string>
     <string name="open">Open</string>
     <string name="close">Close</string>
@@ -299,5 +298,5 @@
     <string name="fragment_note_settings_reset_settings_title">Reset settings</string>
     <string name="fragment_note_settings_danger_zone">Danger zone</string>
     <string name="fragment_note_settings_reset_settings_confirm">Reset settings?</string>
-    <string name="fragment_note_google_serviсies_error">Google services not installed</string>
+    <string name="fragment_note_google_services_error">Google services not installed</string>
 </resources>

@@ -17,7 +17,6 @@ import com.furianrt.mydiary.data.repository.note.NoteRepository
 import com.furianrt.mydiary.data.repository.span.SpanRepository
 import com.google.common.base.Optional
 import io.reactivex.Flowable
-import io.reactivex.functions.BiFunction
 import io.reactivex.functions.Function3
 import javax.inject.Inject
 

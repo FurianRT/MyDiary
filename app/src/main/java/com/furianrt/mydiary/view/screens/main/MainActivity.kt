@@ -542,7 +542,7 @@ class MainActivity : BaseActivity(R.layout.activity_main), MainActivityContract.
         if (empty_state.visibility != View.VISIBLE && (empty_state.animation == null || empty_state.animation.hasEnded())) {
             empty_state.visibility = View.VISIBLE
             app_bar_layout.setExpanded(false, true)
-            empty_state.translationY = empty_state.height + 100f
+            empty_state.translationY = empty_state.height.toFloat()
             empty_state.animate()
                     .translationY(0f)
                     .setDuration(ANIMATION_EMPTY_SATE_DURATION)

@@ -22,9 +22,11 @@ import com.furianrt.mydiary.domain.delete.DeleteProfileUseCase
 import com.furianrt.mydiary.domain.get.*
 import com.furianrt.mydiary.utils.MyRxUtils
 import com.furianrt.mydiary.utils.generateUniqueId
+import io.reactivex.disposables.Disposable
 import org.joda.time.LocalDate
 import java.lang.IllegalArgumentException
 import java.util.Locale
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import kotlin.collections.ArrayList
 import kotlin.collections.HashSet
@@ -64,6 +66,7 @@ class MainActivityPresenter @Inject constructor(
     private var mFilteredStartDate: LocalDate? = null
     private var mFilteredEndDate: LocalDate? = null
     private var mSearchQuery = ""
+    private var mFullNotesDisposable: Disposable? = null
 
     override fun onButtonDeleteClick() {
         view?.showDeleteConfirmationDialog(mSelectedNoteIds.toList())
@@ -105,6 +108,13 @@ class MainActivityPresenter @Inject constructor(
         showRateProposal()
     }
 
+    override fun detachView() {
+        super.detachView()
+        if (mFullNotesDisposable?.isDisposed == false) {
+            mFullNotesDisposable?.dispose()
+        }
+    }
+
     private fun showRateProposal() {
         if (isNeedRateOffer.invoke()) {
             view?.showRateProposal()
@@ -132,12 +142,13 @@ class MainActivityPresenter @Inject constructor(
             GetNotesSortTypeUseCase.SORT_TYPE_DESC -> view?.setSortDesc()
             else -> throw IllegalStateException()
         }
-        addDisposable(getFullNotes.invoke()
+        mFullNotesDisposable = getFullNotes.invoke()
+                .debounce(300L, TimeUnit.MILLISECONDS, scheduler.computation())
                 .observeOn(scheduler.ui())
                 .subscribe { notes ->
                     mNoteList = notes
                     showNotes(mNoteList, false)
-                })
+                }
     }
 
     override fun onDailyImageLoadStateChange() {
@@ -146,6 +157,9 @@ class MainActivityPresenter @Inject constructor(
 
     override fun onFabMenuClick() {
         if (mSelectedNoteIds.isEmpty()) {
+            if (mFullNotesDisposable?.isDisposed == false) {
+                mFullNotesDisposable?.dispose()
+            }
             view?.showViewNewNote(generateUniqueId())
         } else {
             mSelectedNoteIds.clear()

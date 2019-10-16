@@ -12,8 +12,8 @@ android {
         applicationId "com.furianrt.mydiary"
         minSdkVersion 21
         targetSdkVersion 29
-        versionCode 45
-        versionName "1.6.8"
+        versionCode 46
+        versionName "1.6.9"
 
         javaCompileOptions {
             annotationProcessorOptions {
@@ -72,7 +72,7 @@ dependencies {
 
     //Android
     implementation "androidx.appcompat:appcompat:$support_version"
-    implementation "androidx.recyclerview:recyclerview:1.1.0-beta05"
+    implementation "androidx.recyclerview:recyclerview:1.1.0-beta04" //в beta05 баг android.view.View.onInitializeAccessibilityNodeInfo StackOverflowError
     implementation "androidx.preference:preference:$support_version"
     implementation 'com.google.android.material:material:1.1.0-beta01'
     implementation 'androidx.constraintlayout:constraintlayout:2.0.0-beta1' //в beta2 баг констрейнтов (видно в PinActivity)
@@ -170,7 +170,7 @@ dependencies {
     //In-App purchases
     implementation 'com.anjlab.android.iab.v3:library:1.1.0'
 
-    //Debugging instrument for network calls, database content, etc.
+    //Debugging tool for network calls, database content, etc.
     implementation 'com.facebook.stetho:stetho:1.5.1'
     implementation 'com.facebook.stetho:stetho-okhttp3:1.5.1'
 }

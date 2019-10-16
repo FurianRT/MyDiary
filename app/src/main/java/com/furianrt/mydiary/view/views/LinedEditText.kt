@@ -21,10 +21,13 @@ import com.furianrt.mydiary.R
 import com.furianrt.mydiary.utils.dpToPx
 import kotlin.math.max
 
-class LinedEditText(context: Context, attributes: AttributeSet) : AppCompatEditText(context, attributes) {
+class LinedEditText : AppCompatEditText {
 
     private var mLinePaint: Paint = Paint()
     private var mBounds =  Rect()
+
+    constructor(context: Context) : super(context, null)
+    constructor(context: Context, attrs: AttributeSet) : super(context, attrs)
 
     var selectionListener: ((selStart: Int, selEnd: Int) -> Unit)? = null
     var enableLines = false
