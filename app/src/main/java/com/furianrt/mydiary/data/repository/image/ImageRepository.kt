@@ -13,6 +13,7 @@ package com.furianrt.mydiary.data.repository.image
 import android.graphics.Bitmap
 import com.furianrt.mydiary.data.entity.MyHeaderImage
 import com.furianrt.mydiary.data.entity.MyImage
+import com.furianrt.mydiary.utils.MyRxUtils
 import io.reactivex.Completable
 import io.reactivex.Flowable
 import io.reactivex.Single

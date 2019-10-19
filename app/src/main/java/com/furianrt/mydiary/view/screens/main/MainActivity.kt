@@ -422,6 +422,8 @@ class MainActivity : BaseActivity(R.layout.activity_main), MainActivityContract.
 
         val searchView = menu?.findItem(R.id.menu_search)?.actionView as SearchView?
 
+        searchView?.maxWidth = dpToPx(1000f)
+
         if (mSearchQuery.isNotEmpty()) {
             disableActionBarExpanding()
             searchView?.isIconified = false

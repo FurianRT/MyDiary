@@ -153,7 +153,7 @@ class CloudHelperImp @Inject constructor(
                                 .child(COLLECTION_NOTES)
                                 .child(image.noteId)
                                 .child(COLLECTION_IMAGES)
-                                .child(image.name), Uri.parse(image.uri))
+                                .child(image.name), Uri.parse(image.path))
                                 .timeout(1, TimeUnit.MINUTES)
                     }
                     .collectInto(mutableListOf<UploadTask.TaskSnapshot>()) { l, i -> l.add(i) }
@@ -369,7 +369,7 @@ class CloudHelperImp @Inject constructor(
                                 .child(COLLECTION_NOTES)
                                 .child(image.noteId)
                                 .child(COLLECTION_IMAGES)
-                                .child(image.name), Uri.parse(image.uri))
+                                .child(image.name), Uri.parse(image.path))
                                 .timeout(1, TimeUnit.MINUTES)
                     }
                     .collectInto(mutableListOf<FileDownloadTask.TaskSnapshot>()) { l, i -> l.add(i) }

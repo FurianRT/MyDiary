@@ -90,7 +90,7 @@ class ImageRepositoryImp @Inject constructor(
                     .subscribeOn(scheduler.io())
 
     override fun saveImageToStorage(image: MyImage): Single<MyImage> =
-            Single.fromCallable { storage.copyImageToStorage(image.uri, image.name) }
+            Single.fromCallable { storage.copyImageToStorage(image.path, image.name) }
                     .map { file -> MyImage(file.name, file.toURI().toString(), image.noteId, image.addedTime) }
                     .subscribeOn(scheduler.io())
 

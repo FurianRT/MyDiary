@@ -145,7 +145,7 @@ class GalleryPagerFragment : BaseFragment(), GalleryPagerContract.MvpView {
     }
 
     override fun showEditImageView(image: MyImage) {
-        val uri = Uri.parse(image.uri)
+        val uri = Uri.parse(image.path)
         UCrop.of(uri, uri)
                 .withOptions(UCrop.Options().apply {
                     setToolbarTitle(getString(R.string.fragment_gallery_pager_edit_photo))

@@ -50,7 +50,7 @@ class SyncImagesUseCase @Inject constructor(
                     ))
                     .flatMapCompletable { images ->
                         val path = imageRepository.getAvailableImageDirectory()
-                        val imagesWithPath = images.map { it.apply { uri = "$path/$name" } }
+                        val imagesWithPath = images.map { it.apply { this.path = "$path/$name" } }
                         Completable.concat(listOf(
                                 imageRepository.loadImageFiles(imagesWithPath),
                                 imageRepository.insertImages(imagesWithPath)

@@ -136,6 +136,7 @@ class GalleryListPresenter @Inject constructor(
                     view?.hideLoading()
                 }, { error ->
                     error.printStackTrace()
+                    view?.hideLoading()
                     view?.showErrorSaveImage()
                 }))
     }

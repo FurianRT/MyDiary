@@ -50,7 +50,7 @@ class NoteImagePagerAdapter(
         fun bind(image: MyImage) {
             itemView.setOnClickListener { listener?.onImageClick(image) }
             GlideApp.with(itemView)
-                    .load(Uri.parse(image.uri))
+                    .load(Uri.parse(image.path))
                     .signature(ObjectKey(image.editedTime))
                     .centerCrop()
                     .diskCacheStrategy(DiskCacheStrategy.RESOURCE)

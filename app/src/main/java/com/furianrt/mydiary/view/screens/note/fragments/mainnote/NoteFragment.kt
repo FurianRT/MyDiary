@@ -50,8 +50,6 @@ import com.furianrt.mydiary.utils.*
 import com.google.android.material.card.MaterialCardView
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog
 import com.wdullaer.materialdatetimepicker.time.TimePickerDialog
-import com.yanzhenjie.album.Album
-import com.yanzhenjie.album.api.widget.Widget
 import kotlinx.android.synthetic.main.fragment_note.*
 import kotlinx.android.synthetic.main.fragment_note.view.*
 import kotlinx.android.synthetic.main.fragment_note_toolbar.*
@@ -76,6 +74,7 @@ class NoteFragment : BaseFragment(), NoteFragmentContract.MvpView, DatePickerDia
         private const val STORAGE_PERMISSIONS_REQUEST_CODE = 2
         private const val PLAY_SERVICES_REQUEST_CODE = 3
         private const val SPEECH_TO_TEXT_REQUEST_CODE = 4
+        private const val IMAGE_PICKER_REQUEST_CODE = 6
         private const val BUNDLE_IMAGE_PAGER_POSITION = "imagePagerPosition"
         private const val BUNDLE_NOTE_TEXT_BUFFER = "noteTextBuffer"
         private const val TIME_PICKER_TAG = "timePicker"
@@ -324,6 +323,20 @@ class NoteFragment : BaseFragment(), NoteFragmentContract.MvpView, DatePickerDia
         } else if (requestCode == PLAY_SERVICES_REQUEST_CODE) {
             if (resultCode == Activity.RESULT_OK) {
                 recordSpeech()
+            }
+        } else if (requestCode == IMAGE_PICKER_REQUEST_CODE) {
+            if (resultCode == Activity.RESULT_OK) {
+                val clipData = data?.clipData
+                val uriPaths = mutableListOf<String>()
+                if (clipData != null && clipData.itemCount > 0) {
+                    for (i in 0 until clipData.itemCount) {
+                        clipData.getItemAt(i)?.uri?.let { uriPaths.add(it.toString()) }
+                    }
+                } else {
+                    data?.data?.let { uriPaths.add(it.toString()) }
+                }
+                showLoading()
+                mPresenter.onNoteImagesPicked(uriPaths)
             }
         }
     }
@@ -575,45 +588,23 @@ class NoteFragment : BaseFragment(), NoteFragmentContract.MvpView, DatePickerDia
 
     override fun requestStoragePermissions() {
         val readExtStorage = Manifest.permission.READ_EXTERNAL_STORAGE
-        val camera = Manifest.permission.CAMERA
-        if (EasyPermissions.hasPermissions(requireContext(), readExtStorage, camera)) {
+        if (EasyPermissions.hasPermissions(requireContext(), readExtStorage)) {
             mPresenter.onStoragePermissionsGranted()
         } else {
             EasyPermissions.requestPermissions(this,
                     getString(R.string.storage_permission_request),
-                    STORAGE_PERMISSIONS_REQUEST_CODE, readExtStorage, camera)
+                    STORAGE_PERMISSIONS_REQUEST_CODE, readExtStorage)
         }
     }
 
     @AfterPermissionGranted(STORAGE_PERMISSIONS_REQUEST_CODE)
     override fun showImageExplorer() {
-        val widget = Widget.newDarkBuilder(context)
-                .statusBarColor(requireContext().getThemePrimaryDarkColor())
-                .toolBarColor(requireContext().getThemePrimaryColor())
-                .navigationBarColor(getColor(requireContext(), R.color.black))
-                .title(R.string.album)
-                .build()
-
-        Album.image(this)
-                .multipleChoice()
-                .columnCount(3)
-                .filterMimeType {
-                    when (it) {
-                        "jpeg" -> true
-                        "jpg " -> true
-                        "webp " -> true
-                        else -> false
-                    }
-                }
-                .afterFilterVisibility(false)
-                .camera(true)
-                .widget(widget)
-                .onResult { albImage ->
-                    mImagePagerPosition = 0
-                    showLoading()
-                    mPresenter.onNoteImagesPicked(albImage.map { it.path })
-                }
-                .start()
+        with(Intent()) {
+            type = "image/*"
+            putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true)
+            action = Intent.ACTION_GET_CONTENT
+            startActivityForResult(Intent.createChooser(this, ""), IMAGE_PICKER_REQUEST_CODE)
+        }
     }
 
     override fun showLoading() {
@@ -746,7 +737,7 @@ class NoteFragment : BaseFragment(), NoteFragmentContract.MvpView, DatePickerDia
         val size = minOf(MAX_IMAGE_COUNT_TO_SHARE, note.images.size)
         val uris = ArrayList<Uri>()
         for (i in 0 until size) {
-            uris.add(Uri.parse(note.images[i].uri))
+            uris.add(Uri.parse(note.images[i].path))
         }
         val intent: Intent
         when {

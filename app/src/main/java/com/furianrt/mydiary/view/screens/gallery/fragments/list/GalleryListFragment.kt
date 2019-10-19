@@ -12,6 +12,8 @@ package com.furianrt.mydiary.view.screens.gallery.fragments.list
 
 import android.Manifest
 import android.animation.Animator
+import android.app.Activity
+import android.content.Intent
 import android.content.res.Configuration
 import android.graphics.Color
 import android.os.Bundle
@@ -30,8 +32,6 @@ import com.furianrt.mydiary.data.entity.MyImage
 import com.furianrt.mydiary.view.dialogs.delete.image.DeleteImageDialog
 import com.furianrt.mydiary.view.screens.gallery.fragments.pager.GalleryPagerFragment
 import com.furianrt.mydiary.utils.*
-import com.yanzhenjie.album.Album
-import com.yanzhenjie.album.api.widget.Widget
 import jp.wasabeef.recyclerview.animators.FadeInUpAnimator
 import kotlinx.android.synthetic.main.activity_gallery.*
 import kotlinx.android.synthetic.main.empty_state_gallery_list.view.*
@@ -46,6 +46,8 @@ class GalleryListFragment : BaseFragment(), GalleryListAdapter.OnListItemInterac
 
     companion object {
         const val TAG = "GalleryListFragment"
+        private val FAB_DEFAULT_SIZE = dpToPx(46f)
+        private val FAB_HIGHLIGHTED_SIZE = dpToPx(60f)
         private const val ARG_NOTE_ID = "note_id"
         private const val VERTICAL_LIST_SPAN_COUNT = 2
         private const val HORIZONTAL_LIST_SPAN_COUNT = 3
@@ -54,8 +56,7 @@ class GalleryListFragment : BaseFragment(), GalleryListAdapter.OnListItemInterac
         private const val BUNDLE_SELECTED_IMAGE_NAMES = "selected_image_names"
         private const val BUNDLE_RECYCLER_VIEW_STATE = "recycler_state"
         private const val STORAGE_PERMISSIONS_REQUEST_CODE = 1
-        private val FAB_DEFAULT_SIZE = dpToPx(46f)
-        private val FAB_HIGHLIGHTED_SIZE = dpToPx(60f)
+        private const val IMAGE_PICKER_REQUEST_CODE = 5
         private const val ITEM_HIDING_ALPHA = 0.5f
         private const val ITEM_DEFAULT_ALPHA = 1f
         private const val ITEM_DRAGGING_SCALE = 1.04f
@@ -320,12 +321,11 @@ class GalleryListFragment : BaseFragment(), GalleryListAdapter.OnListItemInterac
 
     override fun requestStoragePermissions() {
         val readExtStorage = Manifest.permission.READ_EXTERNAL_STORAGE
-        val camera = Manifest.permission.CAMERA
-        if (EasyPermissions.hasPermissions(requireContext(), readExtStorage, camera)) {
+        if (EasyPermissions.hasPermissions(requireContext(), readExtStorage)) {
             mPresenter.onStoragePermissionsGranted()
         } else {
             EasyPermissions.requestPermissions(this, getString(R.string.storage_permission_request),
-                    STORAGE_PERMISSIONS_REQUEST_CODE, readExtStorage, camera)
+                    STORAGE_PERMISSIONS_REQUEST_CODE, readExtStorage)
         }
     }
 
@@ -337,31 +337,29 @@ class GalleryListFragment : BaseFragment(), GalleryListAdapter.OnListItemInterac
 
     @AfterPermissionGranted(STORAGE_PERMISSIONS_REQUEST_CODE)
     override fun showImageExplorer() {
-        val widget = Widget.newDarkBuilder(requireContext())
-                .statusBarColor(requireContext().getThemePrimaryDarkColor())
-                .toolBarColor(requireContext().getThemePrimaryColor())
-                .navigationBarColor(Color.BLACK)
-                .title(R.string.album)
-                .build()
-        Album.image(this)
-                .multipleChoice()
-                .columnCount(3)
-                .filterMimeType {
-                    when (it) {
-                        "jpeg" -> true
-                        "jpg " -> true
-                        "webp " -> true
-                        else -> false
-                    }
+        with(Intent()) {
+            type = "image/*"
+            putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true)
+            action = Intent.ACTION_GET_CONTENT
+            startActivityForResult(Intent.createChooser(this, ""), IMAGE_PICKER_REQUEST_CODE)
+        }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == IMAGE_PICKER_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
+            val clipData = data?.clipData
+            val uris = mutableListOf<String>()
+            if (clipData != null && clipData.itemCount > 0) {
+                for (i in 0 until clipData.itemCount) {
+                    clipData.getItemAt(i)?.uri?.let {uris.add(it.toString()) }
                 }
-                .afterFilterVisibility(false)
-                .camera(true)
-                .widget(widget)
-                .onResult {
-                    showLoading()
-                    mPresenter.onNoteImagesPicked(it.map { image -> image.path })
-                }
-                .start()
+            } else {
+                data?.data?.let { uris.add(it.toString()) }
+            }
+            showLoading()
+            mPresenter.onNoteImagesPicked(uris)
+        }
     }
 
     override fun showLoading() {

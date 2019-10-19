@@ -165,7 +165,7 @@ class GalleryListAdapter(
                 mItemTouchHelper.startDrag(this)
                 return@setOnLongClickListener true
             }
-            mGlide.load(Uri.parse(mImage.uri))
+            mGlide.load(Uri.parse(mImage.path))
                     .centerCrop()
                     .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
                     .signature(ObjectKey(mImage.editedTime))
