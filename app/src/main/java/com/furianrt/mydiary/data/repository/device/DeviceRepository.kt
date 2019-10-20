@@ -16,7 +16,6 @@ import com.furianrt.mydiary.data.entity.MyLocation
 import com.hbisoft.pickit.PickiTCallbacks
 
 interface DeviceRepository : BillingProcessor.IBillingHandler, PickiTCallbacks {
-    fun isFingerprintHardwareSupported(): Boolean
     fun isFingerprintEnabled(): Boolean
     fun isNetworkAvailable(): Boolean
     fun isLocationAvailable(): Boolean

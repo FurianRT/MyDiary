@@ -11,8 +11,8 @@
 package com.furianrt.mydiary.view.screens.settings.global
 
 import com.furianrt.mydiary.BuildConfig
+import com.furianrt.mydiary.domain.check.IsFingerprintAvailableUseCase
 import com.furianrt.mydiary.domain.reset.ResetNotesAppearanceSettingsUseCase
-import com.furianrt.mydiary.domain.check.IsFingerprintSupportedUseCase
 import com.furianrt.mydiary.domain.delete.RemovePinEmailUseCase
 import com.furianrt.mydiary.domain.get.GetPinEmailUseCase
 import com.furianrt.mydiary.utils.MyRxUtils
@@ -21,7 +21,7 @@ import javax.inject.Inject
 class GlobalSettingsPresenter @Inject constructor(
         private val getPinEmail: GetPinEmailUseCase,
         private val removePinEmail: RemovePinEmailUseCase,
-        private val isFingerprintSupported: IsFingerprintSupportedUseCase,
+        private val isFingerprintAvailable: IsFingerprintAvailableUseCase,
         private val resetNotesAppearanceSettings: ResetNotesAppearanceSettingsUseCase,
         private val scheduler: MyRxUtils.BaseSchedulerProvider
 ) : GlobalSettingsContract.Presenter() {
@@ -29,7 +29,7 @@ class GlobalSettingsPresenter @Inject constructor(
     override fun attachView(view: GlobalSettingsContract.MvpView) {
         super.attachView(view)
         getPinEmail.invoke()?.let { view.showBackupEmail(it) }
-        if (isFingerprintSupported.invoke()) {
+        if (isFingerprintAvailable.invoke()) {
             view.showFingerprintOptions()
         } else {
             view.hideFingerprintOptions()

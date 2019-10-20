@@ -16,9 +16,7 @@ import android.graphics.BitmapFactory
 import android.location.Address
 import android.location.Geocoder
 import android.location.LocationManager
-import android.net.ConnectivityManager
-import android.net.NetworkCapabilities
-import android.net.Uri
+import android.net.*
 import android.os.Looper
 import androidx.core.location.LocationManagerCompat
 import com.furianrt.mydiary.data.entity.MyLocation
@@ -28,7 +26,7 @@ import javax.inject.Inject
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
-import androidx.core.hardware.fingerprint.FingerprintManagerCompat
+import androidx.biometric.BiometricManager
 import com.anjlab.android.iab.v3.BillingProcessor
 import com.anjlab.android.iab.v3.TransactionDetails
 import com.furianrt.mydiary.BuildConfig
@@ -52,18 +50,35 @@ class DeviceRepositoryImp @Inject constructor(
         private const val LOCATION_INTERVAL = 1000L
     }
 
+    private var mNetworkAvailability = false
     private val mBillingProcessor = BillingProcessor(context, BuildConfig.LICENSE_KEY, BuildConfig.MERCHANT_ID, this)
-    private val mPickiT = PickiT(context, this)
+    private val mPickit = PickiT(context, this)
     private val mUriConvertCallbacks = mutableListOf<OnUriConvertCallback>()
     private val mLocationCallbacks = mutableSetOf<OnLocationFoundCallback>()
     private val mLocationCallback = object : LocationCallback() {
         override fun onLocationResult(result: LocationResult?) {
             super.onLocationResult(result)
             fusedLocationClient.removeLocationUpdates(this)
-            Thread(Runnable {
-                result?.let { findAddress(it.lastLocation.latitude, it.lastLocation.longitude) }
-            }).start()
+            Thread(Runnable { result?.let {
+                findAddress(it.lastLocation.latitude, it.lastLocation.longitude)
+            } }).start()
         }
+    }
+
+    init {
+        val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        val networkRequest = NetworkRequest.Builder().build()
+        connectivityManager.registerNetworkCallback(networkRequest, object : ConnectivityManager.NetworkCallback() {
+            override fun onAvailable(network: Network) {
+                super.onAvailable(network)
+                mNetworkAvailability = true
+            }
+
+            override fun onLost(network: Network) {
+                super.onLost(network)
+                mNetworkAvailability = false
+            }
+        })
     }
 
     private fun findAddress(latitude: Double, longitude: Double) {
@@ -93,31 +108,10 @@ class DeviceRepositoryImp @Inject constructor(
         fusedLocationClient.requestLocationUpdates(locationRequest, mLocationCallback, Looper.myLooper())
     }
 
-    @Suppress("DEPRECATION")
     override fun isFingerprintEnabled(): Boolean =
-            FingerprintManagerCompat.from(context).hasEnrolledFingerprints()
+            BiometricManager.from(context).canAuthenticate() == BiometricManager.BIOMETRIC_SUCCESS
 
-    @Suppress("DEPRECATION")
-    override fun isFingerprintHardwareSupported(): Boolean =
-            FingerprintManagerCompat.from(context).isHardwareDetected
-
-    @Suppress("DEPRECATION")
-    override fun isNetworkAvailable(): Boolean {
-        try {
-            val cm = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-            return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                val an = cm.activeNetwork ?: return false
-                val capabilities = cm.getNetworkCapabilities(an) ?: return false
-                capabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
-            } else {
-                val a = cm.activeNetworkInfo ?: return false
-                a.isConnected && (a.type == ConnectivityManager.TYPE_WIFI || a.type == ConnectivityManager.TYPE_MOBILE)
-            }
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
-        return false
-    }
+    override fun isNetworkAvailable(): Boolean = mNetworkAvailability
 
     override fun isLocationAvailable(): Boolean {
         val manager = context.getSystemService(Context.LOCATION_SERVICE) as LocationManager?
@@ -169,7 +163,7 @@ class DeviceRepositoryImp @Inject constructor(
 
     override fun getRealPathFromUri(uri: String, callback: OnUriConvertCallback) {
         mUriConvertCallbacks.add(callback)
-        mPickiT.getPath(Uri.parse(uri), Build.VERSION.SDK_INT)
+        mPickit.getPath(Uri.parse(uri), Build.VERSION.SDK_INT)
     }
 
     override fun removeUriConvertCallback(callback: OnUriConvertCallback) {
@@ -177,7 +171,7 @@ class DeviceRepositoryImp @Inject constructor(
     }
 
     override fun clearUriTempFiles() {
-        mPickiT.deleteTemporaryFile()
+        mPickit.deleteTemporaryFile()
     }
 
     override fun PickiTonProgressUpdate(progress: Int) {

@@ -19,8 +19,5 @@ class IsFingerprintAvailableUseCase @Inject constructor(
         private var deviceRepository: DeviceRepository
 ) {
 
-    fun invoke(): Boolean =
-            deviceRepository.isFingerprintHardwareSupported()
-                    && deviceRepository.isFingerprintEnabled()
-                    && pinRepository.isFingerprintEnabled()
+    fun invoke(): Boolean = deviceRepository.isFingerprintEnabled() && pinRepository.isFingerprintEnabled()
 }
