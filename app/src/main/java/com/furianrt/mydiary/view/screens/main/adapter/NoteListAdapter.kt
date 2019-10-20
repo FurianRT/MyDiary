@@ -89,7 +89,7 @@ class NoteListAdapter(
     override fun getPreloadRequestBuilder(item: NoteItemView): RequestBuilder<*>? =
             if (item.type == NoteItemView.TYPE_NOTE_WITH_IMAGE) {
                 mGlideBuilder
-                        .load(Uri.parse(item.note!!.images.first().uri))
+                        .load(Uri.parse(item.note!!.images.first().path))
                         .transition(DrawableTransitionOptions.withCrossFade())
                         .signature(ObjectKey(item.note.images.first().editedTime))
                         .centerCrop()
@@ -226,7 +226,7 @@ class NoteListAdapter(
             setSyncIcon(note)
             selectItem(note.note.id)
             mGlideBuilder
-                    .load(Uri.parse(note.images.first().uri))
+                    .load(Uri.parse(note.images.first().path))
                     .transition(DrawableTransitionOptions.withCrossFade())
                     .signature(ObjectKey(note.images.first().editedTime))
                     .centerCrop()

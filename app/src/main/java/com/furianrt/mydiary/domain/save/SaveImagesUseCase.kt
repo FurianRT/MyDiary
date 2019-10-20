@@ -12,21 +12,29 @@ package com.furianrt.mydiary.domain.save
 
 import android.graphics.Bitmap
 import com.furianrt.mydiary.data.entity.MyImage
+import com.furianrt.mydiary.data.repository.device.DeviceRepository
 import com.furianrt.mydiary.data.repository.image.ImageRepository
+import com.furianrt.mydiary.domain.UriToRealPathUseCase
 import com.furianrt.mydiary.utils.generateUniqueId
 import io.reactivex.Completable
 import io.reactivex.Flowable
 import javax.inject.Inject
 
 class SaveImagesUseCase @Inject constructor(
-        private val imageRepository: ImageRepository
+        private val imageRepository: ImageRepository,
+        private val deviceRepository: DeviceRepository,
+        private val uriToRealPath: UriToRealPathUseCase
 ) {
 
-    fun invoke(noteId: String, imageUrls: List<String>): Completable =
-            Flowable.fromIterable(imageUrls)
-                    .map { url ->
+    fun invoke(noteId: String, imageUris: List<String>): Completable =
+            Flowable.fromIterable(imageUris)
+                    .flatMapSingle { uriToRealPath.invoke(it).onErrorReturn { "" } }
+                    .collectInto(mutableListOf<String>()) { l, i -> l.add(i) }
+                    .map { it.filter { uri -> uri.isNotEmpty() } }
+                    .flatMapPublisher { Flowable.fromIterable(it) }
+                    .map { path ->
                         val name = noteId + "_" + generateUniqueId()
-                        return@map MyImage(name, url, noteId)
+                        return@map MyImage(name, path, noteId)
                     }
                     .flatMapSingle { image -> imageRepository.saveImageToStorage(image) }
                     .flatMapSingle { savedImage ->
@@ -34,7 +42,7 @@ class SaveImagesUseCase @Inject constructor(
                     }
                     .onErrorReturn { false }
                     .collectInto(mutableListOf<Boolean>()) { l, i -> l.add(i) }
-                    .ignoreElement()
+                    .flatMapCompletable { Completable.fromAction { deviceRepository.clearUriTempFiles() } }
 
     fun invoke(noteId: String, bitmap: Bitmap): Completable {
         val image = MyImage(noteId + "_" + generateUniqueId(), "", noteId)

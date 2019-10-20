@@ -52,7 +52,7 @@ class GalleryPagerAdapter(
     class GalleryPagerViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         fun bind(image: MyImage) {
             GlideApp.with(itemView)
-                    .load(Uri.parse(image.uri))
+                    .load(Uri.parse(image.path))
                     .signature(ObjectKey(image.editedTime))
                     .transition(DrawableTransitionOptions.withCrossFade())
                     .into(itemView.image_gallery)

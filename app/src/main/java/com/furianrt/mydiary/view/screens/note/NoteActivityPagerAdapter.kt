@@ -18,7 +18,7 @@ import com.furianrt.mydiary.view.screens.note.fragments.mainnote.NoteFragment
 class NoteActivityPagerAdapter(
         fm: FragmentManager,
         private val isNewNote: Boolean
-) : FragmentStatePagerAdapter(fm, BEHAVIOR_SET_USER_VISIBLE_HINT) {
+) : FragmentStatePagerAdapter(fm, BEHAVIOR_SET_USER_VISIBLE_HINT) {  //todo  переделать под Viewpager2, когда пофиксят NestedScroll
 
     private var mIsSizeChanged = false
 

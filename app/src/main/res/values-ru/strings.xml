@@ -34,7 +34,6 @@
     <string name="tag_name">Название тега</string>
     <string name="open">Открыть</string>
     <string name="close">Закрыть</string>
-    <string name="album">Альбом</string>
     <string name="click_again_to_exit">Нажмите еще раз для выхода</string>
     <string name="search">Поиск</string>
     <string name="choose_all_notes">Выбрать все записи</string>

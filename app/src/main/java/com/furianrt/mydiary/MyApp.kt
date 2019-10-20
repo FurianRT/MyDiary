@@ -15,8 +15,6 @@ import android.app.Application
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.os.*
-import android.widget.ImageView
-import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.facebook.stetho.Stetho
 import com.furianrt.mydiary.di.application.component.AppComponent
 import com.furianrt.mydiary.di.application.component.DaggerAppComponent
@@ -27,17 +25,11 @@ import com.furianrt.mydiary.domain.IncrementLaunchCountUseCase
 import com.furianrt.mydiary.domain.check.IsPinEnabledUseCase
 import com.furianrt.mydiary.domain.get.GetPinRequestDelayUseCase
 import com.furianrt.mydiary.domain.save.ResetSyncProgressUseCase
-import com.furianrt.mydiary.view.general.GlideApp
 import com.furianrt.mydiary.view.screens.main.MainActivity
 import com.furianrt.mydiary.view.screens.pin.PinActivity
 import com.google.android.gms.ads.MobileAds
 import com.jakewharton.threetenabp.AndroidThreeTen
-import com.yanzhenjie.album.Album
-import com.yanzhenjie.album.AlbumConfig
-import com.yanzhenjie.album.AlbumFile
-import com.yanzhenjie.album.AlbumLoader
 import net.danlew.android.joda.JodaTimeAndroid
-import java.util.Locale
 import javax.inject.Inject
 
 class MyApp : Application(), Application.ActivityLifecycleCallbacks {
@@ -84,7 +76,6 @@ class MyApp : Application(), Application.ActivityLifecycleCallbacks {
         registerActivityLifecycleCallbacks(this)
         createNotificationSyncChannel()
         createNotificationFirebaseChannel()
-        initializeImageAlbum()
         MobileAds.initialize(this, getString(R.string.BANNER_AD_APP_ID))
         StrictMode.setVmPolicy(StrictMode.VmPolicy.Builder().build())
         AndroidThreeTen.init(this)
@@ -153,27 +144,6 @@ class MyApp : Application(), Application.ActivityLifecycleCallbacks {
                     ))
         }
     }
-
-    private fun initializeImageAlbum() {
-        Album.initialize(AlbumConfig.newBuilder(this)
-                .setAlbumLoader(object : AlbumLoader {
-                    override fun load(imageView: ImageView?, albumFile: AlbumFile?) {
-                        load(imageView, albumFile?.path)
-                    }
-
-                    override fun load(imageView: ImageView?, url: String?) {
-                        if (imageView != null && !url.isNullOrBlank()) {
-                            GlideApp.with(imageView.context)
-                                    .load(url)
-                                    .placeholder(R.drawable.ic_image)
-                                    .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
-                                    .into(imageView)
-                        }
-                    }
-                })
-                .setLocale(Locale.getDefault())
-                .build())
-    }
 }
 
 /*TODO
@@ -199,19 +169,15 @@ class MyApp : Application(), Application.ActivityLifecycleCallbacks {
 * добавить иконци в настройках
 * сделать определение локации опциональным
 * сделать дефолтную дейли-картинку
-* вынести модуль в git submodule
 * добавить таймер к паролю
 * добавить достижения с анимацией
 * добавить превью возможностей дневника
-* изменить дизайн даты в списке заметок
 * сделать пейджер на экране премиума
 * перенести аналитику в репозиторий
 *   добавить удаление заметок по свайпу
 *   сделать отмену удаления в списке
 *   добавить кнопку очистки фильтров
 *   изсправить баг с дефолтными настройками внешнего вида
-*   заменить экран добавления картинок
-*
 *
 * */
 

@@ -19,22 +19,21 @@ class FindLocationUseCase @Inject constructor(
         private val deviceRepository: DeviceRepository
 ) {
 
-    private lateinit var mListener: DeviceRepository.OnLocationFoundListener
+    private var mCallback: DeviceRepository.OnLocationFoundCallback? = null
 
     fun invoke(): Maybe<MyLocation> = Maybe.create<MyLocation> { emitter ->
         if (deviceRepository.isLocationAvailable()) {
-            mListener = object : DeviceRepository.OnLocationFoundListener {
+            mCallback = object : DeviceRepository.OnLocationFoundCallback {
                 override fun onLocationFound(location: MyLocation) {
                     emitter.onSuccess(location)
+                    mCallback?.let { deviceRepository.removeLocationCallback(it) }
                 }
             }
-            deviceRepository.findLocation(mListener)
+            mCallback?.let { deviceRepository.findLocation(it) }
         } else {
             emitter.onComplete()
         }
     }.doOnDispose {
-        if (::mListener.isInitialized) {
-            deviceRepository.removeLocationListener(mListener)
-        }
+        mCallback?.let { deviceRepository.removeLocationCallback(it) }
     }
 }
