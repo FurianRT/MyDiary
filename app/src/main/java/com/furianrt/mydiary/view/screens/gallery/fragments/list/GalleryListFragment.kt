@@ -13,6 +13,7 @@ package com.furianrt.mydiary.view.screens.gallery.fragments.list
 import android.Manifest
 import android.animation.Animator
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.content.res.Configuration
 import android.graphics.Color
@@ -81,6 +82,7 @@ class GalleryListFragment : BaseFragment(), GalleryListAdapter.OnListItemInterac
     private var mSelectionActive = false
     private var mRecyclerViewState: Parcelable? = null
     private var mActionMode: ActionMode? = null
+    private var mListener: OnGalleryListInteractionListener? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         getPresenterComponent(requireContext()).inject(this)
@@ -149,6 +151,20 @@ class GalleryListFragment : BaseFragment(), GalleryListAdapter.OnListItemInterac
     override fun onStop() {
         super.onStop()
         mPresenter.detachView()
+    }
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        if (context is OnGalleryListInteractionListener) {
+            mListener = context
+        } else {
+            throw RuntimeException("$context must implement OnGalleryListInteractionListener")
+        }
+    }
+
+    override fun onDetach() {
+        super.onDetach()
+        mListener = null
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -343,6 +359,7 @@ class GalleryListFragment : BaseFragment(), GalleryListAdapter.OnListItemInterac
             action = Intent.ACTION_GET_CONTENT
             startActivityForResult(Intent.createChooser(this, ""), IMAGE_PICKER_REQUEST_CODE)
         }
+        mListener?.onGalleryListImagePickerOpen()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -439,5 +456,9 @@ class GalleryListFragment : BaseFragment(), GalleryListAdapter.OnListItemInterac
 
     private fun hideTrash() {
         fab_trash.hide()
+    }
+
+    interface OnGalleryListInteractionListener {
+        fun onGalleryListImagePickerOpen()
     }
 }

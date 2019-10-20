@@ -66,13 +66,13 @@ class MyApp : Application(), Application.ActivityLifecycleCallbacks {
     lateinit var createTutorialNote: CreateTutorialNoteUseCase
 
     private val mHandler = Handler(Looper.getMainLooper())
-    private val mLogoutRunnable = Runnable { setAuthorized(false) }
+    private val mLogoutRunnable = Runnable { authorize.invoke(false) }
 
     override fun onCreate() {
         component.inject(this)
         super.onCreate()
         JodaTimeAndroid.init(this)
-        setAuthorized(false)
+        authorize.invoke(false)
         registerActivityLifecycleCallbacks(this)
         createNotificationSyncChannel()
         createNotificationFirebaseChannel()
@@ -99,7 +99,7 @@ class MyApp : Application(), Application.ActivityLifecycleCallbacks {
     }
 
     override fun onActivityPaused(activity: Activity?) {
-        setAuthorized(true)
+        authorize.invoke(true)
         activity?.run {
             if (isFinishing) {
                 if (this is PinActivity) {
@@ -115,10 +115,6 @@ class MyApp : Application(), Application.ActivityLifecycleCallbacks {
         if (isPinEnabled.invoke() && activity !is PinActivity) {
             mHandler.postDelayed(mLogoutRunnable, getPinRequestDelay.invoke())
         }
-    }
-
-    private fun setAuthorized(authorized: Boolean) {
-        authorize.invoke(authorized)
     }
 
     private fun createNotificationSyncChannel() {
@@ -163,9 +159,9 @@ class MyApp : Application(), Application.ActivityLifecycleCallbacks {
 * добавить выбор типа защиты
 * поддержка темной темы
 * добавить статистику по записям
-* разбить экран настроек на категории
 * добавить ссылку на гугл таблицы
 * добавить поддержку ссылок внутри текста
+* разбить экран настроек на категории
 * добавить иконци в настройках
 * сделать определение локации опциональным
 * сделать дефолтную дейли-картинку
@@ -178,6 +174,8 @@ class MyApp : Application(), Application.ActivityLifecycleCallbacks {
 *   сделать отмену удаления в списке
 *   добавить кнопку очистки фильтров
 *   изсправить баг с дефолтными настройками внешнего вида
+*   изменить дизайн текущей даты в поиске
+*   добавить включаемую автоматическу синхронизацию
 *
 * */
 

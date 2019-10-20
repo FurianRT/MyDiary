@@ -200,4 +200,8 @@ class NoteActivity : BaseActivity(R.layout.activity_note), NoteActivityContract.
         KeyboardUtils.removeKeyboardToggleListener(mKeyboardListener)
         mPresenter.detachView()
     }
+
+    override fun onNoteFragmentImagePickerOpen() {
+        skipOneLock = true
+    }
 }
