@@ -315,17 +315,15 @@ class NoteFragment : BaseFragment(), NoteFragmentContract.MvpView, DatePickerDia
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == SPEECH_TO_TEXT_REQUEST_CODE) {
-            if (resultCode == Activity.RESULT_OK && data != null) {
+        when (requestCode) {
+            SPEECH_TO_TEXT_REQUEST_CODE -> if (resultCode == Activity.RESULT_OK && data != null) {
                 val result = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS)?.first()
                 result?.let { appendToCurrentText(it) }
             }
-        } else if (requestCode == PLAY_SERVICES_REQUEST_CODE) {
-            if (resultCode == Activity.RESULT_OK) {
+            PLAY_SERVICES_REQUEST_CODE -> if (resultCode == Activity.RESULT_OK) {
                 recordSpeech()
             }
-        } else if (requestCode == IMAGE_PICKER_REQUEST_CODE) {
-            if (resultCode == Activity.RESULT_OK) {
+            IMAGE_PICKER_REQUEST_CODE -> if (resultCode == Activity.RESULT_OK) {
                 val clipData = data?.clipData
                 val uriPaths = mutableListOf<String>()
                 if (clipData != null && clipData.itemCount > 0) {
@@ -605,6 +603,7 @@ class NoteFragment : BaseFragment(), NoteFragmentContract.MvpView, DatePickerDia
             action = Intent.ACTION_GET_CONTENT
             startActivityForResult(Intent.createChooser(this, ""), IMAGE_PICKER_REQUEST_CODE)
         }
+        mListener?.onNoteFragmentImagePickerOpen()
     }
 
     override fun showLoading() {
@@ -723,8 +722,7 @@ class NoteFragment : BaseFragment(), NoteFragmentContract.MvpView, DatePickerDia
         if (context is OnNoteFragmentInteractionListener) {
             mListener = context
         } else {
-            throw RuntimeException(context.toString()
-                    + " must implement OnNoteFragmentInteractionListener")
+            throw RuntimeException("$context must implement OnNoteFragmentInteractionListener")
         }
     }
 
@@ -820,5 +818,6 @@ class NoteFragment : BaseFragment(), NoteFragmentContract.MvpView, DatePickerDia
     interface OnNoteFragmentInteractionListener {
         fun onNoteFragmentEditModeEnabled()
         fun onNoteFragmentEditModeDisabled()
+        fun onNoteFragmentImagePickerOpen()
     }
 }

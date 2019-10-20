@@ -22,6 +22,7 @@ import com.anjlab.android.iab.v3.TransactionDetails
 import com.furianrt.mydiary.BuildConfig
 import com.furianrt.mydiary.R
 import com.furianrt.mydiary.analytics.MyAnalytics
+import com.furianrt.mydiary.domain.auth.AuthorizeUseCase
 import com.furianrt.mydiary.domain.check.IsAuthorizedUseCase
 import com.furianrt.mydiary.domain.check.IsPinEnabledUseCase
 import com.furianrt.mydiary.domain.get.GetAppAccentColorUseCase
@@ -47,6 +48,9 @@ abstract class BaseActivity(
     lateinit var isAuthorized: IsAuthorizedUseCase
 
     @Inject
+    lateinit var authorize: AuthorizeUseCase
+
+    @Inject
     lateinit var getAppPrimaryColor: GetAppPrimaryColorUseCase
 
     @Inject
@@ -55,6 +59,7 @@ abstract class BaseActivity(
     private lateinit var mBillingProcessor: BillingProcessor
 
     protected open var needLockScreen = true
+    protected open var skipOneLock = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         getPresenterComponent(this).inject(this)
@@ -114,7 +119,10 @@ abstract class BaseActivity(
 
     override fun onStart() {
         super.onStart()
-        if (needLockScreen) {
+        if (skipOneLock) {
+            authorize.invoke(true)
+            skipOneLock = false
+        } else if (needLockScreen) {
             openPinScreen()
         }
     }

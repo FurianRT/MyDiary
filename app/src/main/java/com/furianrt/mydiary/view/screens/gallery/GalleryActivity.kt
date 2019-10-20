@@ -26,7 +26,8 @@ import com.google.android.gms.ads.AdRequest
 import kotlinx.android.synthetic.main.activity_gallery.*
 import javax.inject.Inject
 
-class GalleryActivity : BaseActivity(R.layout.activity_gallery), GalleryActivityContract.MvpView {
+class GalleryActivity : BaseActivity(R.layout.activity_gallery), GalleryActivityContract.MvpView,
+        GalleryListFragment.OnGalleryListInteractionListener {
 
     companion object {
         private const val EXTRA_POSITION = "position"
@@ -104,5 +105,9 @@ class GalleryActivity : BaseActivity(R.layout.activity_gallery), GalleryActivity
     override fun onSupportNavigateUp(): Boolean {
         finish()
         return true
+    }
+
+    override fun onGalleryListImagePickerOpen() {
+        skipOneLock = true
     }
 }
