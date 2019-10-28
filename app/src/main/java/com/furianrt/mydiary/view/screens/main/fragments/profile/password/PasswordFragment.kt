@@ -12,9 +12,7 @@ package com.furianrt.mydiary.view.screens.main.fragments.profile.password
 
 import android.os.Bundle
 import android.os.Handler
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.view.WindowManager
 import com.furianrt.mydiary.R
 import com.furianrt.mydiary.analytics.MyAnalytics
@@ -27,10 +25,9 @@ import com.furianrt.mydiary.utils.inTransaction
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import kotlinx.android.synthetic.main.bottom_sheet_main.*
 import kotlinx.android.synthetic.main.fragment_password.*
-import kotlinx.android.synthetic.main.fragment_password.view.*
 import javax.inject.Inject
 
-class PasswordFragment : BaseFragment(), PasswordContract.MvpView {
+class PasswordFragment : BaseFragment(R.layout.fragment_password), PasswordContract.MvpView {
 
     companion object {
         const val TAG = "PasswordFragment"
@@ -57,26 +54,22 @@ class PasswordFragment : BaseFragment(), PasswordContract.MvpView {
         super.onCreate(savedInstanceState)
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
-        val view = inflater.inflate(R.layout.fragment_password, container, false)
-
-        view.button_password_cancel.setOnClickListener { mPresenter.onButtonCancelClick() }
-        view.button_password_save.setOnClickListener {
-            val oldPassword = view.edit_old_password.text?.toString() ?: ""
-            val newPassword = view.edit_new_password.text?.toString() ?: ""
-            val repeatPassword = view.edit_password_repeat.text?.toString() ?: ""
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        button_password_cancel.setOnClickListener { mPresenter.onButtonCancelClick() }
+        button_password_save.setOnClickListener {
+            val oldPassword = edit_old_password.text?.toString() ?: ""
+            val newPassword = edit_new_password.text?.toString() ?: ""
+            val repeatPassword = edit_password_repeat.text?.toString() ?: ""
             mPresenter.onButtonSaveClick(oldPassword, newPassword, repeatPassword)
         }
-        view.edit_old_password.onFocusChangeListener = mOnEditFocusChangeListener
-        view.edit_new_password.onFocusChangeListener = mOnEditFocusChangeListener
-        view.edit_password_repeat.onFocusChangeListener = mOnEditFocusChangeListener
-        view.edit_old_password.setOnClickListener { mOnEditFocusChangeListener.onFocusChange(it, true) }
-        view.edit_new_password.setOnClickListener { mOnEditFocusChangeListener.onFocusChange(it, true) }
-        view.edit_password_repeat.setOnClickListener { mOnEditFocusChangeListener.onFocusChange(it, true) }
-        view.view_alpha.setOnTouchListener { _, _ -> true }
-
-        return view
+        edit_old_password.onFocusChangeListener = mOnEditFocusChangeListener
+        edit_new_password.onFocusChangeListener = mOnEditFocusChangeListener
+        edit_password_repeat.onFocusChangeListener = mOnEditFocusChangeListener
+        edit_old_password.setOnClickListener { mOnEditFocusChangeListener.onFocusChange(it, true) }
+        edit_new_password.setOnClickListener { mOnEditFocusChangeListener.onFocusChange(it, true) }
+        edit_password_repeat.setOnClickListener { mOnEditFocusChangeListener.onFocusChange(it, true) }
+        view_alpha.setOnTouchListener { _, _ -> true }
     }
 
     override fun showLoading() {

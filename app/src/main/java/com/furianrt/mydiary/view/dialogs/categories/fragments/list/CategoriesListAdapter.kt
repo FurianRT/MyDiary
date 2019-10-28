@@ -17,7 +17,7 @@ import androidx.appcompat.widget.PopupMenu
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.furianrt.mydiary.R
-import com.furianrt.mydiary.data.entity.MyCategory
+import com.furianrt.mydiary.model.entity.MyCategory
 import com.furianrt.mydiary.view.dialogs.categories.fragments.list.CategoriesListAdapter.*
 import kotlinx.android.synthetic.main.fragment_category_list_item.view.*
 

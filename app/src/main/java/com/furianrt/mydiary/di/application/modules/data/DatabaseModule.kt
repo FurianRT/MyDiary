@@ -19,8 +19,8 @@ import androidx.room.RoomDatabase
 import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
 import com.furianrt.mydiary.R
-import com.furianrt.mydiary.data.source.database.*
-import com.furianrt.mydiary.data.entity.*
+import com.furianrt.mydiary.model.source.database.*
+import com.furianrt.mydiary.model.entity.*
 import com.furianrt.mydiary.di.application.component.AppScope
 import com.furianrt.mydiary.di.application.modules.app.AppContext
 import com.google.gson.Gson

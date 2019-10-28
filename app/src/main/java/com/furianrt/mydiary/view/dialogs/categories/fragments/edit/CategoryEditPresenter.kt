@@ -10,7 +10,7 @@
 
 package com.furianrt.mydiary.view.dialogs.categories.fragments.edit
 
-import com.furianrt.mydiary.data.entity.MyCategory
+import com.furianrt.mydiary.model.entity.MyCategory
 import com.furianrt.mydiary.domain.update.UpdateCategoryUseCase
 import com.furianrt.mydiary.utils.MyRxUtils
 import javax.inject.Inject

@@ -36,7 +36,6 @@ class ColorSpinnerAdapter(
                 viewHolder.color = view_color
                 tag = viewHolder
             }
-
         } else {
             viewHolder = convertView.tag as ViewHolder
             convertView

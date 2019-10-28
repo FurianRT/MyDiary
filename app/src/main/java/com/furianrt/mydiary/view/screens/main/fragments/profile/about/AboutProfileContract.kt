@@ -12,7 +12,7 @@ package com.furianrt.mydiary.view.screens.main.fragments.profile.about
 
 import com.furianrt.mydiary.view.base.mvp.BaseMvpView
 import com.furianrt.mydiary.view.base.mvp.BaseMvpPresenter
-import com.furianrt.mydiary.data.entity.MyProfile
+import com.furianrt.mydiary.model.entity.MyProfile
 
 interface AboutProfileContract {
 

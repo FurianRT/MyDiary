@@ -22,7 +22,7 @@
         android:requestLegacyExternalStorage="true"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme.Launcher"
+        android:theme="@style/AppTheme"
         tools:ignore="AllowBackup,GoogleAppIndexingWarning,UnusedAttribute">
 
         <service
@@ -42,6 +42,7 @@
         <activity
             android:name=".view.screens.main.MainActivity"
             android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.TransparentActionBar"
             android:windowSoftInputMode="adjustNothing">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -52,18 +53,26 @@
         <activity
             android:name=".view.screens.note.NoteActivity"
             android:parentActivityName=".view.screens.main.MainActivity" />
+
         <activity
             android:name=".view.screens.gallery.GalleryActivity"
             android:parentActivityName=".view.screens.note.NoteActivity" />
+
         <activity
             android:name=".view.screens.settings.global.GlobalSettingsActivity"
             android:parentActivityName=".view.screens.main.MainActivity" />
+
         <activity
             android:name=".view.screens.settings.note.NoteSettingsActivity"
             android:parentActivityName=".view.screens.note.NoteActivity" />
+
         <activity
             android:name=".view.screens.pin.PinActivity"
-            android:launchMode="singleTop" />
+             />
+
+        <activity
+            android:name=".view.screens.statistics.StatsActivity"
+            android:parentActivityName=".view.screens.main.MainActivity" />
 
         <!--Этого требует библиотека для редактирования картинок-->
         <activity

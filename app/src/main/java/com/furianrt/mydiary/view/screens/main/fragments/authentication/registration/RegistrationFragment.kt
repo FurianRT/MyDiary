@@ -13,9 +13,7 @@ package com.furianrt.mydiary.view.screens.main.fragments.authentication.registra
 import android.graphics.PorterDuff
 import android.os.Bundle
 import android.os.Handler
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.view.WindowManager
 import androidx.core.content.ContextCompat
 import com.furianrt.mydiary.R
@@ -24,10 +22,9 @@ import com.furianrt.mydiary.view.screens.main.fragments.authentication.AuthFragm
 import com.furianrt.mydiary.view.screens.main.fragments.authentication.privacy.PrivacyFragment
 import com.furianrt.mydiary.utils.*
 import kotlinx.android.synthetic.main.fragment_registration.*
-import kotlinx.android.synthetic.main.fragment_registration.view.*
 import javax.inject.Inject
 
-class RegistrationFragment : BaseFragment(), RegistrationContract.MvpView {
+class RegistrationFragment : BaseFragment(R.layout.fragment_registration), RegistrationContract.MvpView {
 
     companion object {
         const val TAG = "RegistrationFragment"
@@ -53,29 +50,26 @@ class RegistrationFragment : BaseFragment(), RegistrationContract.MvpView {
         super.onCreate(savedInstanceState)
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
-        val view = inflater.inflate(R.layout.fragment_registration, container, false)
-
-        view.button_cancel.setOnClickListener { mPresenter.onButtonCancelClick() }
-        view.button_sign_up.setOnClickListener {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        button_cancel.setOnClickListener { mPresenter.onButtonCancelClick() }
+        button_sign_up.setOnClickListener {
             mPresenter.onButtonSignUpClick(
-                    view.edit_email.text.toString(),
-                    view.edit_password.text.toString(),
-                    view.edit_password_repeat.text.toString()
+                    edit_email.text.toString(),
+                    edit_password.text.toString(),
+                    edit_password_repeat.text.toString()
             )
         }
-        view.edit_email.onFocusChangeListener = View.OnFocusChangeListener { v, hasFocus ->
+        edit_email.onFocusChangeListener = View.OnFocusChangeListener { v, hasFocus ->
             mOnEditFocusChangeListener.onFocusChange(v, hasFocus)
-            mPresenter.onEmailFocusChange(view.edit_email.text.toString(), hasFocus)
+            mPresenter.onEmailFocusChange(edit_email.text.toString(), hasFocus)
         }
-        view.edit_password.onFocusChangeListener = mOnEditFocusChangeListener
-        view.edit_password_repeat.onFocusChangeListener = mOnEditFocusChangeListener
-        view.edit_email.setOnClickListener { mOnEditFocusChangeListener.onFocusChange(it, true) }
-        view.edit_password.setOnClickListener { mOnEditFocusChangeListener.onFocusChange(it, true) }
-        view.edit_password_repeat.setOnClickListener { mOnEditFocusChangeListener.onFocusChange(it, true) }
-        view.view_alpha.setOnTouchListener { _, _ -> true }
-        return view
+        edit_password.onFocusChangeListener = mOnEditFocusChangeListener
+        edit_password_repeat.onFocusChangeListener = mOnEditFocusChangeListener
+        edit_email.setOnClickListener { mOnEditFocusChangeListener.onFocusChange(it, true) }
+        edit_password.setOnClickListener { mOnEditFocusChangeListener.onFocusChange(it, true) }
+        edit_password_repeat.setOnClickListener { mOnEditFocusChangeListener.onFocusChange(it, true) }
+        view_alpha.setOnTouchListener { _, _ -> true }
     }
 
     override fun showErrorNetworkConnection() {

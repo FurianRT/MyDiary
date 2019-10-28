@@ -10,7 +10,7 @@
 
 package com.furianrt.mydiary.domain.delete
 
-import com.furianrt.mydiary.data.repository.profile.ProfileRepository
+import com.furianrt.mydiary.model.repository.profile.ProfileRepository
 import io.reactivex.Completable
 import javax.inject.Inject
 

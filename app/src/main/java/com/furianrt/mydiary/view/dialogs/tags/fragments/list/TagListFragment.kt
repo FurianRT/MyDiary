@@ -11,24 +11,22 @@
 package com.furianrt.mydiary.view.dialogs.tags.fragments.list
 
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import androidx.appcompat.widget.SearchView
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.furianrt.mydiary.R
 import com.furianrt.mydiary.view.base.BaseFragment
-import com.furianrt.mydiary.data.entity.MyTag
+import com.furianrt.mydiary.model.entity.MyTag
 import com.furianrt.mydiary.view.dialogs.tags.TagsDialog
 import com.furianrt.mydiary.view.dialogs.tags.fragments.add.TagAddFragment
 import com.furianrt.mydiary.view.dialogs.tags.fragments.delete.TagDeleteFragment
 import com.furianrt.mydiary.view.dialogs.tags.fragments.edit.TagEditFragment
 import com.furianrt.mydiary.utils.inTransaction
-import kotlinx.android.synthetic.main.fragment_tag_list.view.*
+import kotlinx.android.synthetic.main.fragment_tag_list.*
 import javax.inject.Inject
 
-class TagListFragment : BaseFragment(), TagListContract.MvpView,
+class TagListFragment : BaseFragment(R.layout.fragment_tag_list), TagListContract.MvpView,
         TagListAdapter.OnTagListItemInteractionListener {
 
     @Inject
@@ -42,13 +40,11 @@ class TagListFragment : BaseFragment(), TagListContract.MvpView,
         mPresenter.init(requireArguments().getString(ARG_NOTE_ID)!!)
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
-        val view = inflater.inflate(R.layout.fragment_tag_list, container, false)
-
-        view.button_tags_close.setOnClickListener { mPresenter.onButtonCloseClick() }
-        view.button_tags_add.setOnClickListener { mPresenter.onButtonAddClick() }
-        view.search_tags.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        button_tags_close.setOnClickListener { mPresenter.onButtonCloseClick() }
+        button_tags_add.setOnClickListener { mPresenter.onButtonAddClick() }
+        search_tags.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
                 return false
             }
@@ -59,14 +55,10 @@ class TagListFragment : BaseFragment(), TagListContract.MvpView,
             }
         })
 
-        with(view.list_tags) {
-            val manager = LinearLayoutManager(context)
-            layoutManager = manager
-            adapter = mListAdapter
-            addItemDecoration(DividerItemDecoration(context, manager.orientation))
-        }
-
-        return view
+        val manager = LinearLayoutManager(context)
+        list_tags.layoutManager = manager
+        list_tags.adapter = mListAdapter
+        list_tags.addItemDecoration(DividerItemDecoration(context, manager.orientation))
     }
 
     override fun showItems(items: List<TagListAdapter.ViewItem>) {
@@ -128,7 +120,6 @@ class TagListFragment : BaseFragment(), TagListContract.MvpView,
     }
 
     companion object {
-
         const val TAG = "TagListFragment"
         private const val ARG_NOTE_ID = "note_id"
 

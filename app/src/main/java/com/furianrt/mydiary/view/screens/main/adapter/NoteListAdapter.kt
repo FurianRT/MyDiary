@@ -29,7 +29,7 @@ import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.bumptech.glide.signature.ObjectKey
 import com.bumptech.glide.util.ViewPreloadSizeProvider
 import com.furianrt.mydiary.R
-import com.furianrt.mydiary.data.entity.MyNoteWithProp
+import com.furianrt.mydiary.model.entity.MyNoteWithProp
 import com.furianrt.mydiary.utils.applyTextSpans
 import com.furianrt.mydiary.utils.getDay
 import com.furianrt.mydiary.utils.getDayOfWeek

@@ -10,9 +10,9 @@
 
 package com.furianrt.mydiary.domain.get
 
-import com.furianrt.mydiary.data.entity.MyHeaderImage
-import com.furianrt.mydiary.data.repository.device.DeviceRepository
-import com.furianrt.mydiary.data.repository.image.ImageRepository
+import com.furianrt.mydiary.model.entity.MyHeaderImage
+import com.furianrt.mydiary.model.repository.device.DeviceRepository
+import com.furianrt.mydiary.model.repository.image.ImageRepository
 import io.reactivex.Single
 import net.danlew.android.joda.DateUtils
 import org.joda.time.DateTime

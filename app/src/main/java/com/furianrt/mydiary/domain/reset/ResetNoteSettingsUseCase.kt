@@ -10,7 +10,7 @@
 
 package com.furianrt.mydiary.domain.reset
 
-import com.furianrt.mydiary.data.entity.MyNoteAppearance
+import com.furianrt.mydiary.model.entity.MyNoteAppearance
 import com.furianrt.mydiary.domain.update.UpdateAppearanceUseCase
 import io.reactivex.Completable
 import javax.inject.Inject

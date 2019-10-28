@@ -10,7 +10,7 @@
 
 package com.furianrt.mydiary.view.screens.gallery.fragments.pager
 
-import com.furianrt.mydiary.data.entity.MyImage
+import com.furianrt.mydiary.model.entity.MyImage
 import com.furianrt.mydiary.domain.get.GetImagesUseCase
 import com.furianrt.mydiary.domain.update.UpdateImageUseCase
 import com.furianrt.mydiary.utils.MyRxUtils

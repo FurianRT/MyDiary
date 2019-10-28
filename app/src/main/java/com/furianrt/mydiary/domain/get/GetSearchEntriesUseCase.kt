@@ -10,8 +10,8 @@
 
 package com.furianrt.mydiary.domain.get
 
-import com.furianrt.mydiary.data.entity.*
-import com.furianrt.mydiary.data.entity.pojo.SearchEntries
+import com.furianrt.mydiary.model.entity.*
+import com.furianrt.mydiary.model.entity.pojo.SearchEntries
 import com.furianrt.mydiary.domain.check.IsLocationEnabledUseCase
 import com.furianrt.mydiary.domain.check.IsMoodEnabledUseCase
 import io.reactivex.Flowable

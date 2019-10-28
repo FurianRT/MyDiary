@@ -19,7 +19,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.bumptech.glide.signature.ObjectKey
 import com.furianrt.mydiary.R
-import com.furianrt.mydiary.data.entity.MyImage
+import com.furianrt.mydiary.model.entity.MyImage
 import com.furianrt.mydiary.view.general.GlideApp
 import kotlinx.android.synthetic.main.gallery_pager_item.view.*
 

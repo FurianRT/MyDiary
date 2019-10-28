@@ -11,22 +11,19 @@
 package com.furianrt.mydiary.view.dialogs.categories.fragments.edit
 
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.widget.Toast
 import com.furianrt.mydiary.R
 import com.furianrt.mydiary.analytics.MyAnalytics
 import com.furianrt.mydiary.view.base.BaseFragment
-import com.furianrt.mydiary.data.entity.MyCategory
+import com.furianrt.mydiary.model.entity.MyCategory
 import com.furianrt.mydiary.utils.animateShake
 import com.furianrt.mydiary.utils.hideKeyboard
 import com.furianrt.mydiary.utils.showKeyboard
 import kotlinx.android.synthetic.main.fragment_category_edit.*
-import kotlinx.android.synthetic.main.fragment_category_edit.view.*
 import javax.inject.Inject
 
-class CategoryEditFragment : BaseFragment(), CategoryEditContract.MvpView {
+class CategoryEditFragment : BaseFragment(R.layout.fragment_category_edit), CategoryEditContract.MvpView {
 
     @Inject
     lateinit var mPresenter: CategoryEditContract.Presenter
@@ -42,23 +39,19 @@ class CategoryEditFragment : BaseFragment(), CategoryEditContract.MvpView {
         mPresenter.init(arguments?.getParcelable(ARG_CATEGORY)!!)
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
-        val view = inflater.inflate(R.layout.fragment_category_edit, container, false)
-
-        view.color_picker_category.addSVBar(view.svbar_category)
-        view.color_picker_category.showOldCenterColor = false
-        view.button_category_edit_save_cancel.setOnClickListener {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        color_picker_category.addSVBar(svbar_category)
+        color_picker_category.showOldCenterColor = false
+        button_category_edit_save_cancel.setOnClickListener {
             mPresenter.onButtonCancelClick()
         }
-        view.button_category_edit_save.setOnClickListener {
+        button_category_edit_save.setOnClickListener {
             analytics.sendEvent(MyAnalytics.EVENT_NOTE_CATEGORY_EDITED)
             val color = color_picker_category.color
             val name = edit_category.text?.toString() ?: ""
             mPresenter.onButtonDoneClick(name, color)
         }
-
-        return view
     }
 
     override fun onSaveInstanceState(outState: Bundle) {

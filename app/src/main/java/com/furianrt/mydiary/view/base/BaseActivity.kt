@@ -12,7 +12,6 @@ package com.furianrt.mydiary.view.base
 
 import android.content.Intent
 import android.os.Bundle
-import android.os.PersistableBundle
 import android.util.Log
 import androidx.annotation.LayoutRes
 import androidx.appcompat.app.AppCompatActivity
@@ -30,9 +29,8 @@ import com.furianrt.mydiary.domain.get.GetAppPrimaryColorUseCase
 import com.furianrt.mydiary.view.screens.pin.PinActivity
 import javax.inject.Inject
 
-abstract class BaseActivity(
-        @LayoutRes contentLayoutId: Int
-) : AppCompatActivity(contentLayoutId), BaseView, BillingProcessor.IBillingHandler {
+abstract class BaseActivity(@LayoutRes contentLayoutId: Int) : AppCompatActivity(contentLayoutId),
+        BaseView, BillingProcessor.IBillingHandler {
 
     companion object {
         const val TAG = "BaseActivity"
@@ -63,16 +61,8 @@ abstract class BaseActivity(
 
     override fun onCreate(savedInstanceState: Bundle?) {
         getPresenterComponent(this).inject(this)
-        application.setTheme(R.style.AppTheme)
         applyStyleToTheme()
         super.onCreate(savedInstanceState)
-        mBillingProcessor = BillingProcessor(this, BuildConfig.LICENSE_KEY, BuildConfig.MERCHANT_ID, this)
-    }
-
-    override fun onCreate(savedInstanceState: Bundle?, persistentState: PersistableBundle?) {
-        application.setTheme(R.style.AppTheme)
-        applyStyleToTheme()
-        super.onCreate(savedInstanceState, persistentState)
         mBillingProcessor = BillingProcessor(this, BuildConfig.LICENSE_KEY, BuildConfig.MERCHANT_ID, this)
     }
 
@@ -90,6 +80,17 @@ abstract class BaseActivity(
     override fun startActivityForResult(intent: Intent?, requestCode: Int) {
         super.startActivityForResult(intent, requestCode)
         overridePendingTransition(R.anim.screen_right_in, R.anim.screen_left_out)
+    }
+
+    protected fun isOneTimePurchaseSupported() =
+            BillingProcessor.isIabServiceAvailable(this) && mBillingProcessor.isOneTimePurchaseSupported
+
+    protected fun loadOwnedPurchasesFromGoogle() {
+        if (mBillingProcessor.loadOwnedPurchasesFromGoogle()) {
+            Log.e(TAG, "loadOwnedPurchasesFromGoogle - success")
+        } else {
+            Log.e(TAG, "loadOwnedPurchasesFromGoogle - failure")
+        }
     }
 
     protected fun purchaseItem(productId: String) = mBillingProcessor.purchase(this, productId)

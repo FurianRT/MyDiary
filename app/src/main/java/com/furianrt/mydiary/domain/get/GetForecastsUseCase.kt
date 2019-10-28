@@ -10,8 +10,8 @@
 
 package com.furianrt.mydiary.domain.get
 
-import com.furianrt.mydiary.data.entity.MyForecast
-import com.furianrt.mydiary.data.repository.forecast.ForecastRepository
+import com.furianrt.mydiary.model.entity.MyForecast
+import com.furianrt.mydiary.model.repository.forecast.ForecastRepository
 import io.reactivex.Maybe
 import javax.inject.Inject
 

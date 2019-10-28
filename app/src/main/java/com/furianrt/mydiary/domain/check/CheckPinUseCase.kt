@@ -10,7 +10,7 @@
 
 package com.furianrt.mydiary.domain.check
 
-import com.furianrt.mydiary.data.repository.pin.PinRepository
+import com.furianrt.mydiary.model.repository.pin.PinRepository
 import io.reactivex.Single
 import javax.inject.Inject
 

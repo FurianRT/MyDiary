@@ -12,9 +12,7 @@ package com.furianrt.mydiary.view.screens.main.fragments.authentication.login
 
 import android.os.Bundle
 import android.os.Handler
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.view.WindowManager
 import android.widget.Toast
 import com.furianrt.mydiary.R
@@ -29,10 +27,9 @@ import com.furianrt.mydiary.utils.inTransaction
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import kotlinx.android.synthetic.main.bottom_sheet_main.*
 import kotlinx.android.synthetic.main.fragment_login.*
-import kotlinx.android.synthetic.main.fragment_login.view.*
 import javax.inject.Inject
 
-class LoginFragment : BaseFragment(), LoginContract.MvpView {
+class LoginFragment : BaseFragment(R.layout.fragment_login), LoginContract.MvpView {
 
     companion object {
         const val TAG = "LoginFragment"
@@ -60,27 +57,23 @@ class LoginFragment : BaseFragment(), LoginContract.MvpView {
         super.onCreate(savedInstanceState)
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
-        val view = inflater.inflate(R.layout.fragment_login, container, false)
-
-        view.button_forgot_password.setOnClickListener {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        button_forgot_password.setOnClickListener {
             (parentFragment as AuthFragment).hideRegistrationButton()
             mPresenter.onButtonForgotClick(edit_email.text?.toString() ?: "")
         }
-        view.button_sing_in.setOnClickListener {
+        button_sing_in.setOnClickListener {
             mPresenter.onButtonSignInClick(
-                    view.edit_email.text?.toString() ?: "",
-                    view.edit_password.text?.toString() ?: ""
+                    edit_email.text?.toString() ?: "",
+                    edit_password.text?.toString() ?: ""
             )
         }
-        view.edit_email.onFocusChangeListener = mOnEditFocusChangeListener
-        view.edit_password.onFocusChangeListener = mOnEditFocusChangeListener
-        view.edit_email.setOnClickListener { mOnEditFocusChangeListener.onFocusChange(it, true) }
-        view.edit_password.setOnClickListener { mOnEditFocusChangeListener.onFocusChange(it, true) }
-        view.view_alpha.setOnTouchListener { _, _ -> true }
-
-        return view
+        edit_email.onFocusChangeListener = mOnEditFocusChangeListener
+        edit_password.onFocusChangeListener = mOnEditFocusChangeListener
+        edit_email.setOnClickListener { mOnEditFocusChangeListener.onFocusChange(it, true) }
+        edit_password.setOnClickListener { mOnEditFocusChangeListener.onFocusChange(it, true) }
+        view_alpha.setOnTouchListener { _, _ -> true }
     }
 
     override fun showErrorNetworkConnection() {

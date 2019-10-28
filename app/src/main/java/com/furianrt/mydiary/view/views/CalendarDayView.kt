@@ -11,13 +11,9 @@
 package com.furianrt.mydiary.view.views
 
 import android.content.Context
-import android.graphics.Canvas
-import android.graphics.RectF
-import android.graphics.Color
-import android.graphics.Paint
+import android.graphics.*
 import android.util.AttributeSet
 import kotlin.math.min
-import android.graphics.PointF
 import androidx.appcompat.widget.AppCompatTextView
 import com.furianrt.mydiary.R
 import com.furianrt.mydiary.utils.getThemeAccentColor
@@ -29,7 +25,6 @@ class CalendarDayView : AppCompatTextView {
 
     companion object {
         private const val DEFAULT_PORTION_WIDTH = 11f
-        private const val DEFAULT_CURRENT_DAY_CIRCLE_WIDTH = 7f
         private const val DEFAULT_PORTION_SPACING = 5f
         private const val START_DEGREE = 270f
         private const val DEFAULT_COLOR = Color.GRAY
@@ -38,7 +33,7 @@ class CalendarDayView : AppCompatTextView {
     inner class Portion(
             val color: Int,
             val startAngle: Float,
-            val sweepAngle : Float
+            val sweepAngle: Float
     )
 
     private var mRadius: Float = 0f
@@ -53,6 +48,14 @@ class CalendarDayView : AppCompatTextView {
 
     var showCircle = false
     var isCurrentDay = false
+        set(value) {
+            if (value) {
+                setTypeface(null, Typeface.BOLD)
+            } else {
+                setTypeface(null, Typeface.NORMAL)
+            }
+            field = value
+        }
     var isCurrentMonth = true
 
     init {
@@ -75,6 +78,7 @@ class CalendarDayView : AppCompatTextView {
     override fun setSelected(selected: Boolean) {
         when {
             selected -> setTextColorResource(R.color.white)
+            isCurrentMonth && isCurrentDay -> context?.let { setTextColor(it.getThemeAccentColor()) }
             isCurrentMonth -> setTextColorResource(R.color.black)
             else -> setTextColorResource(R.color.black30)
         }
@@ -90,10 +94,6 @@ class CalendarDayView : AppCompatTextView {
         }
 
         drawCenterCircle(canvas)
-
-        if (isCurrentDay) {
-            drawCurrentDayCircle(canvas)
-        }
 
         super.onDraw(canvas)
     }
@@ -159,22 +159,6 @@ class CalendarDayView : AppCompatTextView {
             }
 
             when {
-                showCircle && isCurrentDay -> {
-                    canvas?.drawCircle(
-                            mBorderRect.centerX(),
-                            mBorderRect.centerY(),
-                            mRadius - mPortionWidth - DEFAULT_CURRENT_DAY_CIRCLE_WIDTH - 2f,
-                            mPaint
-                    )
-                }
-                isCurrentDay -> {
-                    canvas?.drawCircle(
-                            mBorderRect.centerX(),
-                            mBorderRect.centerY(),
-                            mRadius - DEFAULT_CURRENT_DAY_CIRCLE_WIDTH - 2f,
-                            mPaint
-                    )
-                }
                 showCircle -> {
                     canvas?.drawCircle(
                             mBorderRect.centerX(),
@@ -193,25 +177,6 @@ class CalendarDayView : AppCompatTextView {
                 }
             }
         }
-    }
-
-    private fun drawCurrentDayCircle(canvas: Canvas?) {
-        mPaint.color = Color.GRAY
-        mPaint.style = Paint.Style.STROKE
-        mPaint.strokeWidth = DEFAULT_CURRENT_DAY_CIRCLE_WIDTH
-
-        val radius = if (showCircle) {
-            mRadius - mPortionWidth - 2f
-        } else {
-            mRadius
-        }
-
-        canvas?.drawCircle(
-                mBorderRect.centerX(),
-                mBorderRect.centerY(),
-                radius,
-                mPaint
-        )
     }
 
     private fun normalizeVector(point: PointF) {

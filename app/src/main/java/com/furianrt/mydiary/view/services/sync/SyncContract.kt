@@ -12,7 +12,7 @@ package com.furianrt.mydiary.view.services.sync
 
 import com.furianrt.mydiary.view.base.mvp.BaseMvpView
 import com.furianrt.mydiary.view.base.mvp.BaseMvpPresenter
-import com.furianrt.mydiary.data.entity.SyncProgressMessage
+import com.furianrt.mydiary.model.entity.SyncProgressMessage
 
 interface SyncContract {
 

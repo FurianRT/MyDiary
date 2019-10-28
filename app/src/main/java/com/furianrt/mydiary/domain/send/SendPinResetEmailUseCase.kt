@@ -10,8 +10,8 @@
 
 package com.furianrt.mydiary.domain.send
 
-import com.furianrt.mydiary.data.repository.device.DeviceRepository
-import com.furianrt.mydiary.data.repository.pin.PinRepository
+import com.furianrt.mydiary.model.repository.device.DeviceRepository
+import com.furianrt.mydiary.model.repository.pin.PinRepository
 import io.reactivex.Completable
 import io.reactivex.Single
 import javax.inject.Inject

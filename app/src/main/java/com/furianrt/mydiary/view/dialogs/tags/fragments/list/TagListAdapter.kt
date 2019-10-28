@@ -17,7 +17,7 @@ import androidx.appcompat.widget.PopupMenu
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.furianrt.mydiary.R
-import com.furianrt.mydiary.data.entity.MyTag
+import com.furianrt.mydiary.model.entity.MyTag
 import kotlinx.android.synthetic.main.tags_list_item.view.*
 
 class TagListAdapter(

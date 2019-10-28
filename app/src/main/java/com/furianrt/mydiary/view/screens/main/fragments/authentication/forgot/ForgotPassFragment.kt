@@ -12,9 +12,7 @@ package com.furianrt.mydiary.view.screens.main.fragments.authentication.forgot
 
 import android.os.Bundle
 import android.os.Handler
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.view.WindowManager
 import android.widget.Toast
 import com.furianrt.mydiary.R
@@ -27,10 +25,9 @@ import com.furianrt.mydiary.utils.inTransaction
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import kotlinx.android.synthetic.main.bottom_sheet_main.*
 import kotlinx.android.synthetic.main.fragment_forgot_pass.*
-import kotlinx.android.synthetic.main.fragment_forgot_pass.view.*
 import javax.inject.Inject
 
-class ForgotPassFragment : BaseFragment(), ForgotPassContract.MvpView {
+class ForgotPassFragment : BaseFragment(R.layout.fragment_forgot_pass), ForgotPassContract.MvpView {
 
     companion object {
         const val TAG = "ForgotPassFragment"
@@ -66,20 +63,16 @@ class ForgotPassFragment : BaseFragment(), ForgotPassContract.MvpView {
         super.onCreate(savedInstanceState)
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
-        val view = inflater.inflate(R.layout.fragment_forgot_pass, container, false)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        arguments?.let { edit_email.setText(it.getString(ARG_EMAIL, "")) }
 
-        arguments?.let { view.edit_email.setText(it.getString(ARG_EMAIL, "")) }
-
-        view.button_forgot_cancel.setOnClickListener { mPresenter.onButtonCancelClick() }
-        view.button_send.setOnClickListener {
+        button_forgot_cancel.setOnClickListener { mPresenter.onButtonCancelClick() }
+        button_send.setOnClickListener {
             mPresenter.onButtonSendClick(edit_email.text?.toString() ?: "")
         }
-        view.edit_email.onFocusChangeListener = mOnEditFocusChangeListener
-        view.edit_email.setOnClickListener { mOnEditFocusChangeListener.onFocusChange(it, true) }
-
-        return view
+        edit_email.onFocusChangeListener = mOnEditFocusChangeListener
+        edit_email.setOnClickListener { mOnEditFocusChangeListener.onFocusChange(it, true) }
     }
 
     override fun showErrorEmailFormat() {

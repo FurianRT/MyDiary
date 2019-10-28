@@ -20,7 +20,7 @@ import androidx.viewpager2.widget.ViewPager2
 import com.furianrt.mydiary.R
 import com.furianrt.mydiary.analytics.MyAnalytics
 import com.furianrt.mydiary.view.base.BaseFragment
-import com.furianrt.mydiary.data.entity.MyImage
+import com.furianrt.mydiary.model.entity.MyImage
 import com.furianrt.mydiary.view.dialogs.delete.image.DeleteImageDialog
 import com.furianrt.mydiary.view.screens.gallery.fragments.list.GalleryListFragment
 import com.furianrt.mydiary.utils.getThemeAccentColor
@@ -30,10 +30,9 @@ import com.furianrt.mydiary.utils.inTransaction
 import com.yalantis.ucrop.UCrop
 import kotlinx.android.synthetic.main.activity_gallery.*
 import kotlinx.android.synthetic.main.fragment_gallery_pager.*
-import kotlinx.android.synthetic.main.fragment_gallery_pager.view.*
 import javax.inject.Inject
 
-class GalleryPagerFragment : BaseFragment(), GalleryPagerContract.MvpView {
+class GalleryPagerFragment : BaseFragment(R.layout.fragment_gallery_pager), GalleryPagerContract.MvpView {
 
     companion object {
 
@@ -74,14 +73,10 @@ class GalleryPagerFragment : BaseFragment(), GalleryPagerContract.MvpView {
                 ?: requireArguments().getInt(ARG_POSITION, 0)
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
-        val view = inflater.inflate(R.layout.fragment_gallery_pager, container, false)
-
-        view.pager_gallery.adapter = mPagerAdapter
-        view.pager_gallery.isSaveEnabled = false
-
-        return view
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        pager_gallery.adapter = mPagerAdapter
+        pager_gallery.isSaveEnabled = false
     }
 
     override fun onSaveInstanceState(outState: Bundle) {

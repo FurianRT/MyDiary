@@ -12,16 +12,14 @@ package com.furianrt.mydiary.view.screens.main.fragments.profile.signout
 
 import android.os.Bundle
 import android.os.Handler
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import com.furianrt.mydiary.R
 import com.furianrt.mydiary.view.base.BaseFragment
 import com.furianrt.mydiary.view.screens.main.MainActivity
-import kotlinx.android.synthetic.main.fragment_sign_out.view.*
+import kotlinx.android.synthetic.main.fragment_sign_out.*
 import javax.inject.Inject
 
-class SignOutFragment : BaseFragment(), SignOutContract.MvpView {
+class SignOutFragment : BaseFragment(R.layout.fragment_sign_out), SignOutContract.MvpView {
 
     companion object {
         const val TAG = "SignOutFragment"
@@ -41,14 +39,10 @@ class SignOutFragment : BaseFragment(), SignOutContract.MvpView {
         super.onCreate(savedInstanceState)
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
-        val view = inflater.inflate(R.layout.fragment_sign_out, container, false)
-
-        view.button_sign_out.setOnClickListener { mPresenter.onButtonSignOutClick() }
-        view.button_sign_out_cancel.setOnClickListener { mPresenter.onButtonSignOutCancelClick() }
-
-        return view
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        button_sign_out.setOnClickListener { mPresenter.onButtonSignOutClick() }
+        button_sign_out_cancel.setOnClickListener { mPresenter.onButtonSignOutCancelClick() }
     }
 
     override fun close() {

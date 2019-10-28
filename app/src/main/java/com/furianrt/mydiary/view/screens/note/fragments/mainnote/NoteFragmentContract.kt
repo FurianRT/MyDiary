@@ -12,8 +12,8 @@ package com.furianrt.mydiary.view.screens.note.fragments.mainnote
 
 import com.furianrt.mydiary.view.base.mvp.BaseMvpView
 import com.furianrt.mydiary.view.base.mvp.BaseMvpPresenter
-import com.furianrt.mydiary.data.entity.*
-import com.furianrt.mydiary.data.entity.pojo.TagsAndAppearance
+import com.furianrt.mydiary.model.entity.*
+import com.furianrt.mydiary.model.entity.pojo.TagsAndAppearance
 import java.util.*
 
 interface NoteFragmentContract {

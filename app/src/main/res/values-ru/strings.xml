@@ -38,6 +38,7 @@
     <string name="search">Поиск</string>
     <string name="choose_all_notes">Выбрать все записи</string>
     <string name="settings">Настройки</string>
+    <string name="statistics">Статистика</string>
     <string name="image">Картинка</string>
     <string name="date">Дата</string>
     <string name="share">Поделиться</string>
@@ -63,6 +64,7 @@
     <string name="keep">Оставить</string>
     <string name="support">Поддержка</string>
     <string name="reset">Сборосить</string>
+    <string name="not_available">Недоступно</string>
     <plurals name="note_delete_confirmation">
         <item quantity="one">Удалить %d запись?</item>
         <item quantity="few">Удалить %d записи?</item>

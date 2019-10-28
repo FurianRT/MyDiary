@@ -11,9 +11,9 @@
 package com.furianrt.mydiary.domain.save
 
 import android.graphics.Bitmap
-import com.furianrt.mydiary.data.entity.MyImage
-import com.furianrt.mydiary.data.repository.device.DeviceRepository
-import com.furianrt.mydiary.data.repository.image.ImageRepository
+import com.furianrt.mydiary.model.entity.MyImage
+import com.furianrt.mydiary.model.repository.device.DeviceRepository
+import com.furianrt.mydiary.model.repository.image.ImageRepository
 import com.furianrt.mydiary.domain.UriToRealPathUseCase
 import com.furianrt.mydiary.utils.generateUniqueId
 import io.reactivex.Completable

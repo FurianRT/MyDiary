@@ -29,20 +29,19 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.furianrt.mydiary.R
 import com.furianrt.mydiary.analytics.MyAnalytics
 import com.furianrt.mydiary.view.base.BaseFragment
-import com.furianrt.mydiary.data.entity.MyImage
+import com.furianrt.mydiary.model.entity.MyImage
 import com.furianrt.mydiary.view.dialogs.delete.image.DeleteImageDialog
 import com.furianrt.mydiary.view.screens.gallery.fragments.pager.GalleryPagerFragment
 import com.furianrt.mydiary.utils.*
 import jp.wasabeef.recyclerview.animators.FadeInUpAnimator
 import kotlinx.android.synthetic.main.activity_gallery.*
-import kotlinx.android.synthetic.main.empty_state_gallery_list.view.*
+import kotlinx.android.synthetic.main.empty_state_gallery_list.*
 import kotlinx.android.synthetic.main.fragment_gallery_list.*
-import kotlinx.android.synthetic.main.fragment_gallery_list.view.*
 import pub.devrel.easypermissions.AfterPermissionGranted
 import pub.devrel.easypermissions.EasyPermissions
 import javax.inject.Inject
 
-class GalleryListFragment : BaseFragment(), GalleryListAdapter.OnListItemInteractionListener,
+class GalleryListFragment : BaseFragment(R.layout.fragment_gallery_list), GalleryListAdapter.OnListItemInteractionListener,
         GalleryListContract.MvpView, ActionMode.Callback, DeleteImageDialog.OnDeleteImageConfirmListener {
 
     companion object {
@@ -98,14 +97,12 @@ class GalleryListFragment : BaseFragment(), GalleryListAdapter.OnListItemInterac
         }
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
-        val view = inflater.inflate(R.layout.fragment_gallery_list, container, false)
-
-        mAdapter = GalleryListAdapter(this@GalleryListFragment, view.list_gallery)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        mAdapter = GalleryListAdapter(this@GalleryListFragment, list_gallery)
         val orientation = requireContext().resources.configuration.orientation
 
-        view.list_gallery.layoutManager = if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
+        list_gallery.layoutManager = if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
             GridLayoutManager(context, HORIZONTAL_LIST_SPAN_COUNT).apply {
                 spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
                     override fun getSpanSize(position: Int): Int =
@@ -126,19 +123,17 @@ class GalleryListFragment : BaseFragment(), GalleryListAdapter.OnListItemInterac
                 }
             }
         }
-        view.list_gallery.adapter = mAdapter
-        view.list_gallery.itemAnimator = FadeInUpAnimator()
-        view.list_gallery.setHasFixedSize(true)
+        list_gallery.adapter = mAdapter
+        list_gallery.itemAnimator = FadeInUpAnimator()
+        list_gallery.setHasFixedSize(true)
 
-        view.fab_trash.drawable.mutate().setTint(Color.WHITE)
+        fab_trash.drawable.mutate().setTint(Color.WHITE)
 
         if (mSelectionActive) {
             mActionMode = (activity as AppCompatActivity).startSupportActionMode(this)
         }
 
-        view.button_add_images.setOnClickListener { mPresenter.onButtonAddImageClick() }
-
-        return view
+        button_add_images.setOnClickListener { mPresenter.onButtonAddImageClick() }
     }
 
     override fun onStart() {

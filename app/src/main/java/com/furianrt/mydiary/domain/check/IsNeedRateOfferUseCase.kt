@@ -10,7 +10,7 @@
 
 package com.furianrt.mydiary.domain.check
 
-import com.furianrt.mydiary.data.repository.general.GeneralRepository
+import com.furianrt.mydiary.model.repository.general.GeneralRepository
 import com.furianrt.mydiary.di.application.component.AppScope
 import javax.inject.Inject
 

@@ -10,7 +10,7 @@
 
 package com.furianrt.mydiary.domain.check
 
-import com.furianrt.mydiary.data.repository.location.LocationRepository
+import com.furianrt.mydiary.model.repository.location.LocationRepository
 import javax.inject.Inject
 
 class IsLocationEnabledUseCase @Inject constructor(

@@ -13,23 +13,20 @@ package com.furianrt.mydiary.view.screens.note.fragments.mainnote.content
 import android.os.Bundle
 import android.text.Spannable
 import android.util.Log
-import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
-import android.view.ViewGroup
 import android.widget.TextView
 import com.furianrt.mydiary.R
 import com.furianrt.mydiary.view.base.BaseFragment
-import com.furianrt.mydiary.data.entity.MyNoteAppearance
+import com.furianrt.mydiary.model.entity.MyNoteAppearance
 import com.furianrt.mydiary.view.screens.note.NoteActivity
 import com.furianrt.mydiary.view.screens.note.fragments.mainnote.NoteFragment
 import com.furianrt.mydiary.view.screens.note.fragments.mainnote.edit.NoteEditFragment
 import com.furianrt.mydiary.utils.inTransaction
 import kotlinx.android.synthetic.main.fragment_note_content.*
-import kotlinx.android.synthetic.main.fragment_note_content.view.*
 import javax.inject.Inject
 
-class NoteContentFragment : BaseFragment(), NoteContentFragmentContract.MvpView {
+class NoteContentFragment : BaseFragment(R.layout.fragment_note_content), NoteContentFragmentContract.MvpView {
 
     private var mAppearance: MyNoteAppearance? = null
     private var mIsNewNote = true
@@ -46,10 +43,8 @@ class NoteContentFragment : BaseFragment(), NoteContentFragmentContract.MvpView 
         mIsNewNote = requireArguments().getBoolean(ARG_IS_NEW_NOTE)
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
-        val view = inflater.inflate(R.layout.fragment_note_content, container, false)
-
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         val onTouchListener = View.OnTouchListener { v, motionEvent ->
             val layout = (v as TextView).layout
             val x = motionEvent.x
@@ -60,16 +55,11 @@ class NoteContentFragment : BaseFragment(), NoteContentFragmentContract.MvpView 
             }
             return@OnTouchListener false
         }
-        view.text_note_title.setOnTouchListener(onTouchListener)
-        view.text_note_title.setOnClickListener { mPresenter.onTitleClick() }
-        view.text_note_content.setOnTouchListener(onTouchListener)
-        view.text_note_content.setOnClickListener { mPresenter.onContentClick() }
+        text_note_title.setOnTouchListener(onTouchListener)
+        text_note_title.setOnClickListener { mPresenter.onTitleClick() }
+        text_note_content.setOnTouchListener(onTouchListener)
+        text_note_content.setOnClickListener { mPresenter.onContentClick() }
 
-        return view
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
         if (mIsNewNote && savedInstanceState == null) {
             (parentFragment as? NoteFragment)?.disableActionBarExpanding(false)
             showNoteEditView(NoteEditFragment.VIEW_TITLE, mTitle?.length ?: 0)

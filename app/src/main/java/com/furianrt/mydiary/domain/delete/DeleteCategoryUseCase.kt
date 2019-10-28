@@ -10,8 +10,8 @@
 
 package com.furianrt.mydiary.domain.delete
 
-import com.furianrt.mydiary.data.entity.MyCategory
-import com.furianrt.mydiary.data.repository.category.CategoryRepository
+import com.furianrt.mydiary.model.entity.MyCategory
+import com.furianrt.mydiary.model.repository.category.CategoryRepository
 import io.reactivex.Completable
 import javax.inject.Inject
 

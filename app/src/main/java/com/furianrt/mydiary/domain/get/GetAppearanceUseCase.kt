@@ -10,8 +10,8 @@
 
 package com.furianrt.mydiary.domain.get
 
-import com.furianrt.mydiary.data.entity.MyNoteAppearance
-import com.furianrt.mydiary.data.repository.appearance.AppearanceRepository
+import com.furianrt.mydiary.model.entity.MyNoteAppearance
+import com.furianrt.mydiary.model.repository.appearance.AppearanceRepository
 import io.reactivex.Flowable
 import javax.inject.Inject
 

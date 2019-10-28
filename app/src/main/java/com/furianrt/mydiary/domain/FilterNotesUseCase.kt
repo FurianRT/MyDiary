@@ -10,10 +10,10 @@
 
 package com.furianrt.mydiary.domain
 
-import com.furianrt.mydiary.data.entity.MyCategory
-import com.furianrt.mydiary.data.entity.MyLocation
-import com.furianrt.mydiary.data.entity.MyNoteWithProp
-import com.furianrt.mydiary.data.entity.MyTag
+import com.furianrt.mydiary.model.entity.MyCategory
+import com.furianrt.mydiary.model.entity.MyLocation
+import com.furianrt.mydiary.model.entity.MyNoteWithProp
+import com.furianrt.mydiary.model.entity.MyTag
 import org.joda.time.LocalDate
 import javax.inject.Inject
 

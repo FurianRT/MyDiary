@@ -10,7 +10,7 @@
 
 package com.furianrt.mydiary.domain
 
-import com.furianrt.mydiary.data.repository.note.NoteRepository
+import com.furianrt.mydiary.model.repository.note.NoteRepository
 import javax.inject.Inject
 
 class SwapNoteSortTypeUseCase @Inject constructor(

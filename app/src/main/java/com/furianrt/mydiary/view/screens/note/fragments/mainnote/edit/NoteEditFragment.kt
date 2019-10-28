@@ -22,15 +22,14 @@ import androidx.core.graphics.ColorUtils
 import com.furianrt.mydiary.R
 import com.furianrt.mydiary.analytics.MyAnalytics
 import com.furianrt.mydiary.view.base.BaseFragment
-import com.furianrt.mydiary.data.entity.MyNoteAppearance
+import com.furianrt.mydiary.model.entity.MyNoteAppearance
 import com.furianrt.mydiary.utils.hideKeyboard
 import com.furianrt.mydiary.view.screens.note.fragments.mainnote.NoteFragment
 import com.furianrt.mydiary.utils.showKeyboard
 import kotlinx.android.synthetic.main.fragment_note_edit.*
-import kotlinx.android.synthetic.main.fragment_note_edit.view.*
 import javax.inject.Inject
 
-class NoteEditFragment : BaseFragment(), NoteEditFragmentContract.MvpView {
+class NoteEditFragment : BaseFragment(R.layout.fragment_note_edit), NoteEditFragmentContract.MvpView {
 
     private var mClickedView: Int? = null
     private var mClickPosition = 0
@@ -55,28 +54,26 @@ class NoteEditFragment : BaseFragment(), NoteEditFragmentContract.MvpView {
         getPresenterComponent(requireContext()).inject(this)
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
-            mNoteTitle = requireArguments().getString(ARG_NOTE_TITLE, "")
-            mNoteContent = requireArguments().getCharSequence(ARG_NOTE_CONTENT, Spannable.Factory().newSpannable("")) as Spannable
-            mClickedView = requireArguments().getInt(ARG_CLICKED_VIEW)
-            mClickPosition = requireArguments().getInt(ARG_POSITION)
-            mAppearance = requireArguments().getParcelable(ARG_APPEARANCE) as? MyNoteAppearance?
+        mNoteTitle = requireArguments().getString(ARG_NOTE_TITLE, "")
+        mNoteContent = requireArguments().getCharSequence(ARG_NOTE_CONTENT, Spannable.Factory().newSpannable("")) as Spannable
+        mClickedView = requireArguments().getInt(ARG_CLICKED_VIEW)
+        mClickPosition = requireArguments().getInt(ARG_POSITION)
+        mAppearance = requireArguments().getParcelable(ARG_APPEARANCE) as? MyNoteAppearance?
         if (savedInstanceState != null) {
             mClickedView = null
         }
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
-        val view = inflater.inflate(R.layout.fragment_note_edit, container, false)
-
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         if (savedInstanceState == null) {
-            view.edit_note_title.setText(mNoteTitle)
-            view.edit_note_content.setText(mNoteContent, TextView.BufferType.SPANNABLE)
+            edit_note_title.setText(mNoteTitle)
+            edit_note_content.setText(mNoteContent, TextView.BufferType.SPANNABLE)
         }
 
-        view.edit_note_content.enableLines = true
-        view.edit_note_content.selectionListener = { selStart, selEnd -> onSpansChange(selStart, selEnd) }
-        view.edit_note_content.onFocusChangeListener = View.OnFocusChangeListener { _, hasFocus ->
+        edit_note_content.enableLines = true
+        edit_note_content.selectionListener = { selStart, selEnd -> onSpansChange(selStart, selEnd) }
+        edit_note_content.onFocusChangeListener = View.OnFocusChangeListener { _, hasFocus ->
             if (hasFocus) {
                 (parentFragment as? NoteFragment?)?.showRichTextOptions()
             } else {
@@ -84,11 +81,6 @@ class NoteEditFragment : BaseFragment(), NoteEditFragmentContract.MvpView {
             }
         }
 
-        return view
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
         mAppearance?.let { setAppearance(it) }
 
         if (savedInstanceState == null) {
@@ -756,9 +748,9 @@ class NoteEditFragment : BaseFragment(), NoteEditFragmentContract.MvpView {
     }
 
     private fun onSpansChange(selectionStart: Int, selectionEnd: Int) {
-        edit_note_content.text?.let { text ->
+        edit_note_content?.text?.let { text ->
             val spans = text.getSpans(selectionStart, selectionEnd, ParcelableSpan::class.java)
-            (parentFragment as NoteFragment).onSpansChange(spans)
+            (parentFragment as NoteFragment?)?.onSpansChange(spans)
         }
     }
 

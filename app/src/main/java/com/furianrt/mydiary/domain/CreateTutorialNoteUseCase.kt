@@ -10,9 +10,9 @@
 
 package com.furianrt.mydiary.domain
 
-import com.furianrt.mydiary.data.entity.MyNote
-import com.furianrt.mydiary.data.repository.device.DeviceRepository
-import com.furianrt.mydiary.data.repository.general.GeneralRepository
+import com.furianrt.mydiary.model.entity.MyNote
+import com.furianrt.mydiary.model.repository.device.DeviceRepository
+import com.furianrt.mydiary.model.repository.general.GeneralRepository
 import com.furianrt.mydiary.domain.get.GetCategoriesUseCase
 import com.furianrt.mydiary.domain.get.GetTagsUseCase
 import com.furianrt.mydiary.domain.save.AddTagToNoteUseCase

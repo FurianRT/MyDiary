@@ -13,14 +13,13 @@ package com.furianrt.mydiary.view.screens.main
 import android.content.Context
 import android.content.Intent
 import android.content.res.Configuration
+import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.os.Handler
 import android.os.Parcelable
 import android.os.Vibrator
 import android.util.Log
-import android.view.Menu
-import android.view.MenuItem
-import android.view.View
+import android.view.*
 import android.view.animation.AccelerateInterpolator
 import android.view.animation.AlphaAnimation
 import android.view.animation.Animation
@@ -36,14 +35,18 @@ import androidx.core.view.ViewPropertyAnimatorListener
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.anjlab.android.iab.v3.TransactionDetails
+import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
+import com.bumptech.glide.request.RequestListener
+import com.bumptech.glide.request.target.Target
 import com.bumptech.glide.signature.ObjectKey
 import com.furianrt.mydiary.BuildConfig
 import com.furianrt.mydiary.R
 import com.furianrt.mydiary.analytics.MyAnalytics
 import com.furianrt.mydiary.view.base.BaseActivity
-import com.furianrt.mydiary.data.entity.*
+import com.furianrt.mydiary.model.entity.*
 import com.furianrt.mydiary.view.dialogs.categories.CategoriesDialog
 import com.furianrt.mydiary.view.dialogs.delete.note.DeleteNoteDialog
 import com.furianrt.mydiary.view.dialogs.rate.RateDialog
@@ -63,6 +66,7 @@ import com.furianrt.mydiary.utils.dpToPx
 import com.furianrt.mydiary.utils.getDisplayWidth
 import com.furianrt.mydiary.utils.inTransaction
 import com.furianrt.mydiary.view.general.StickyHeaderItemDecoration
+import com.furianrt.mydiary.view.screens.statistics.StatsActivity
 import com.google.android.gms.ads.AdListener
 import com.google.android.gms.ads.AdRequest
 import com.google.android.material.appbar.AppBarLayout
@@ -92,6 +96,7 @@ class MainActivity : BaseActivity(R.layout.activity_main), MainActivityContract.
         private const val BUNDLE_ROOT_LAYOUT_OFFSET = "root_layout_offset"
         private const val BUNDLE_BOTTOM_SHEET_STATE = "bottom_sheet_state"
         private const val BUNDLE_SEARCH_QUERY = "query"
+        private const val BUNDLE_STATUS_BAR_HEIGHT = "status_bar_height"
         private const val ACTIVITY_SETTING_REQUEST_CODE = 2
         private const val ITEM_LONG_CLICK_VIBRATION_DURATION = 30L
         private const val BOTTOM_SHEET_EXPAND_DELAY = 500L
@@ -100,6 +105,7 @@ class MainActivity : BaseActivity(R.layout.activity_main), MainActivityContract.
         private const val ANIMATION_NO_SEARCH_RESULT_DURATION = 200L
         private const val ANIMATION_NO_SEARCH_RESULT_SIZE = 1.4f
         private const val ANIMATION_EMPTY_SATE_DURATION = 500L
+        private val TOOLBAR_HEIGHT = dpToPx(56f)
     }
 
     @Inject
@@ -111,10 +117,10 @@ class MainActivity : BaseActivity(R.layout.activity_main), MainActivityContract.
     private var mSearchQuery = ""
     private var mRecyclerViewState: Parcelable? = null
     private var mBackPressCount = 0
-    private var mNeedToOpenActionBar = true
     private var mMenu: Menu? = null
     private var mIsAppBarExpandEnabled = false
     private val mHandler = Handler()
+    private var mStatusBarHeight = 0
     private val mBottomSheetOpenRunnable: Runnable = Runnable {
         mBottomSheet.state = BottomSheetBehavior.STATE_EXPANDED
     }
@@ -133,29 +139,23 @@ class MainActivity : BaseActivity(R.layout.activity_main), MainActivityContract.
     }
 
     private val mBottomSheetCallback = object : BottomSheetBehavior.BottomSheetCallback() {
-        override fun onSlide(bottomSheet: View, slideOffset: Float) {}
+        override fun onSlide(bottomSheet: View, slideOffset: Float) {
+            view_actionbar?.layoutParams?.height = (mStatusBarHeight * slideOffset).toInt()
+            view_actionbar?.requestLayout()
+        }
         override fun onStateChanged(bottomSheet: View, newState: Int) {
             if (newState == BottomSheetBehavior.STATE_COLLAPSED) {
-                supportFragmentManager.findFragmentByTag(ImageSettingsFragment.TAG)?.let {
-                    supportFragmentManager.inTransaction { remove(it) }
-                }
-                supportFragmentManager.findFragmentByTag(PremiumFragment.TAG)?.let {
-                    supportFragmentManager.inTransaction { remove(it) }
-                }
-                supportFragmentManager.findFragmentByTag(ProfileFragment.TAG)?.let {
-                    supportFragmentManager.inTransaction { remove(it) }
-                }
                 supportFragmentManager.findFragmentByTag(AuthFragment.TAG)?.let {
                     (it as AuthFragment).clearFocus()
-                    supportFragmentManager.inTransaction { remove(it) }
                 }
             }
         }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
         getPresenterComponent(this).inject(this)
+        super.onCreate(savedInstanceState)
+        loadOwnedPurchasesFromGoogle()
 
         mPresenter.onRestoreInstanceState(savedInstanceState)
 
@@ -166,7 +166,9 @@ class MainActivity : BaseActivity(R.layout.activity_main), MainActivityContract.
             toolbar.setHomeAsUpIndicator(R.drawable.ic_menu)
         }
 
-        val drawerWidth = min(getDisplayWidth() - dpToPx(56f), dpToPx(56f) * 5)
+        layout_main.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_STABLE or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+
+        val drawerWidth = min(getDisplayWidth() - TOOLBAR_HEIGHT, TOOLBAR_HEIGHT * 5)
         container_main_drawer.layoutParams.width = drawerWidth
 
         drawer.touchEventChildId = R.id.calendar_search
@@ -186,11 +188,14 @@ class MainActivity : BaseActivity(R.layout.activity_main), MainActivityContract.
 
         mBottomSheet = BottomSheetBehavior.from(main_sheet_container)
 
-        savedInstanceState?.let {
-            mRecyclerViewState = it.getParcelable(BUNDLE_RECYCLER_VIEW_STATE)
-            layout_main_root.translationX = it.getFloat(BUNDLE_ROOT_LAYOUT_OFFSET, 0f)
-            mBottomSheet.state = it.getInt(BUNDLE_BOTTOM_SHEET_STATE, BottomSheetBehavior.STATE_COLLAPSED)
-            mSearchQuery = it.getString(BUNDLE_SEARCH_QUERY, "")
+        savedInstanceState?.let { state ->
+            mRecyclerViewState = state.getParcelable(BUNDLE_RECYCLER_VIEW_STATE)
+            layout_main_root.translationX = state.getFloat(BUNDLE_ROOT_LAYOUT_OFFSET, 0f)
+            mSearchQuery = state.getString(BUNDLE_SEARCH_QUERY, "")
+            mBottomSheet.state = state.getInt(BUNDLE_BOTTOM_SHEET_STATE, BottomSheetBehavior.STATE_COLLAPSED)
+            if (mBottomSheet.state == BottomSheetBehavior.STATE_EXPANDED) {
+                view_actionbar.layoutParams.height = state.getInt(BUNDLE_STATUS_BAR_HEIGHT, 0)
+            }
         }
 
         button_change_filters.setOnClickListener { mPresenter.onButtonChangeFiltersClick() }
@@ -219,6 +224,21 @@ class MainActivity : BaseActivity(R.layout.activity_main), MainActivityContract.
             if (mIsAppBarExpandEnabled) {
                 app_bar_layout.setExpanded(true, true)
             }
+        }
+
+        layout_main.setOnApplyWindowInsetsListener { _, insets ->
+            mStatusBarHeight = insets.systemWindowInsetTop
+
+            val toolbarParams = toolbar_main.layoutParams as ViewGroup.MarginLayoutParams
+            toolbarParams.topMargin = mStatusBarHeight
+
+            val sheetParams = layout_main_sheet_wrapper.layoutParams as ViewGroup.MarginLayoutParams
+            sheetParams.topMargin = mStatusBarHeight
+
+            (supportFragmentManager.findFragmentByTag(DrawerMenuFragment.TAG) as DrawerMenuFragment?)
+                    ?.onApplyWindowInsets(insets)
+
+            return@setOnApplyWindowInsetsListener insets
         }
     }
 
@@ -294,14 +314,26 @@ class MainActivity : BaseActivity(R.layout.activity_main), MainActivityContract.
 
     override fun showHeaderImage(image: MyHeaderImage) {
         Log.e(TAG, "showHeaderImage")
-        enableActionBarExpanding(mNeedToOpenActionBar)
-        mNeedToOpenActionBar = true
         GlideApp.with(this)
                 .load(image.url)
                 .transition(DrawableTransitionOptions.withCrossFade())
                 .centerCrop()
                 .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
                 .signature(ObjectKey(image.id))
+                .listener(object : RequestListener<Drawable> {
+                    override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>?,
+                                              isFirstResource: Boolean): Boolean {
+                        disableActionBarExpanding(false)
+                        return true
+                    }
+                    override fun onResourceReady(resource: Drawable?, model: Any?, target: Target<Drawable>?,
+                                                 dataSource: DataSource?, isFirstResource: Boolean): Boolean {
+                        if (!mIsAppBarExpandEnabled) {
+                            enableActionBarExpanding(true)
+                        }
+                        return false
+                    }
+                })
                 .into(image_toolbar_main)
     }
 
@@ -355,6 +387,10 @@ class MainActivity : BaseActivity(R.layout.activity_main), MainActivityContract.
                     mPresenter.onMenuAllNotesClick()
                     true
                 }
+                /*R.id.menu_statistics -> {
+                    mPresenter.onButtonStatisticsClick()
+                    true
+                }*/
                 R.id.menu_image -> {
                     analytics.sendEvent(MyAnalytics.EVENT_HEADER_IMAGE_SETTINGS)
                     mPresenter.onButtonImageSettingsClick()
@@ -406,6 +442,10 @@ class MainActivity : BaseActivity(R.layout.activity_main), MainActivityContract.
             }
         }
         mHandler.postDelayed(mBottomSheetOpenRunnable, BOTTOM_SHEET_EXPAND_DELAY)
+    }
+
+    override fun showStatisticsView() {
+        startActivity(Intent(this, StatsActivity::class.java))
     }
 
     override fun setSortDesc() {
@@ -461,6 +501,7 @@ class MainActivity : BaseActivity(R.layout.activity_main), MainActivityContract.
         outState.putFloat(BUNDLE_ROOT_LAYOUT_OFFSET, layout_main_root.translationX)
         outState.putInt(BUNDLE_BOTTOM_SHEET_STATE, mBottomSheet.state)
         outState.putString(BUNDLE_SEARCH_QUERY, mSearchQuery)
+        outState.putInt(BUNDLE_STATUS_BAR_HEIGHT, mStatusBarHeight)
         mPresenter.onSaveInstanceState(outState)
     }
 
@@ -679,7 +720,11 @@ class MainActivity : BaseActivity(R.layout.activity_main), MainActivityContract.
     }
 
     override fun onButtonPurchaseClick(productId: String) {
-        purchaseItem(productId)
+        if (isOneTimePurchaseSupported()) {
+            purchaseItem(productId)
+        } else {
+            Toast.makeText(this, getString(R.string.not_available), Toast.LENGTH_SHORT).show()
+        }
     }
 
     override fun showChangeFilters() {
@@ -716,7 +761,6 @@ class MainActivity : BaseActivity(R.layout.activity_main), MainActivityContract.
         super.onStop()
         mPresenter.detachView()
         mBottomSheet.removeBottomSheetCallback(mBottomSheetCallback)
-        mNeedToOpenActionBar = false
         mBackPressCount = 0
         mAdapter.listener = null
         drawer.removeDrawerListener(mOnDrawerListener)

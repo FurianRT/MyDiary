@@ -24,7 +24,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.signature.ObjectKey
 import com.furianrt.mydiary.R
-import com.furianrt.mydiary.data.entity.MyImage
+import com.furianrt.mydiary.model.entity.MyImage
 import com.furianrt.mydiary.view.general.GlideApp
 import com.furianrt.mydiary.view.general.ItemTouchHelperCallback
 import kotlinx.android.synthetic.main.fragment_gallery_list_item.view.*

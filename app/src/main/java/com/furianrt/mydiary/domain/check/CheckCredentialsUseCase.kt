@@ -11,8 +11,8 @@
 package com.furianrt.mydiary.domain.check
 
 import android.util.Patterns
-import com.furianrt.mydiary.data.repository.device.DeviceRepository
-import com.furianrt.mydiary.data.repository.profile.ProfileRepository
+import com.furianrt.mydiary.model.repository.device.DeviceRepository
+import com.furianrt.mydiary.model.repository.profile.ProfileRepository
 import io.reactivex.Completable
 import io.reactivex.Single
 import javax.inject.Inject

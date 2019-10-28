@@ -10,7 +10,7 @@
 
 package com.furianrt.mydiary.domain.check
 
-import com.furianrt.mydiary.data.repository.mood.MoodRepository
+import com.furianrt.mydiary.model.repository.mood.MoodRepository
 import javax.inject.Inject
 
 class IsMoodEnabledUseCase @Inject constructor(

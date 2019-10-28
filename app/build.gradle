@@ -17,7 +17,7 @@ android {
 
         javaCompileOptions {
             annotationProcessorOptions {
-                arguments = ["room.incremental":"true"]
+                arguments = ["room.incremental": "true"]
             }
         }
     }
@@ -55,6 +55,10 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
+
+    kotlinOptions {
+        jvmTarget = "1.8"
+    }
 }
 
 androidExtensions {
@@ -72,10 +76,11 @@ dependencies {
 
     //Android
     implementation "androidx.appcompat:appcompat:$support_version"
-    implementation "androidx.recyclerview:recyclerview:1.1.0-beta04" //в beta05 баг android.view.View.onInitializeAccessibilityNodeInfo StackOverflowError
+    implementation "androidx.recyclerview:recyclerview:1.1.0-rc01"
     implementation "androidx.preference:preference:$support_version"
-    implementation 'com.google.android.material:material:1.1.0-beta01'
-    implementation 'androidx.constraintlayout:constraintlayout:2.0.0-beta1' //в beta2 баг констрейнтов (видно в PinActivity)
+    implementation "androidx.viewpager2:viewpager2:1.0.0-rc01"
+    implementation 'androidx.constraintlayout:constraintlayout:2.0.0-beta3'
+    implementation 'com.google.android.material:material:1.1.0-beta01' //todo пофиксть EditText в новой версии
 
     //Layout for tags
     implementation 'com.google.android:flexbox:1.1.0'
@@ -117,7 +122,7 @@ dependencies {
     //Image loading
     implementation "com.github.bumptech.glide:glide:$glide_version"
     kapt "com.github.bumptech.glide:compiler:$glide_version"
-    implementation ('com.github.bumptech.glide:recyclerview-integration:4.10.0') {
+    implementation('com.github.bumptech.glide:recyclerview-integration:4.10.0') {
         // Excludes the support library because it's already included by Glide.
         transitive = false
     }

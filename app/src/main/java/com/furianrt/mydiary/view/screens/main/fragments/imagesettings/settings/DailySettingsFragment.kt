@@ -20,7 +20,7 @@ import androidx.preference.PreferenceManager
 import com.furianrt.mydiary.R
 import com.furianrt.mydiary.analytics.MyAnalytics
 import com.furianrt.mydiary.view.base.BaseView
-import com.furianrt.mydiary.data.source.preferences.PreferencesHelper
+import com.furianrt.mydiary.model.source.preferences.PreferencesHelper
 import javax.inject.Inject
 
 class DailySettingsFragment : PreferenceFragmentCompat(), BaseView, DailySettingsContract.MvpView,

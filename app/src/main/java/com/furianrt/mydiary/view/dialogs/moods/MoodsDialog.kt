@@ -19,8 +19,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.furianrt.mydiary.R
 import com.furianrt.mydiary.analytics.MyAnalytics
 import com.furianrt.mydiary.view.base.BaseDialog
-import com.furianrt.mydiary.data.entity.MyMood
-import com.furianrt.mydiary.data.entity.MyNote
+import com.furianrt.mydiary.model.entity.MyMood
+import com.furianrt.mydiary.model.entity.MyNote
 import com.furianrt.mydiary.view.dialogs.moods.MoodsDialogListAdapter.*
 import kotlinx.android.synthetic.main.dialog_moods.view.*
 import javax.inject.Inject

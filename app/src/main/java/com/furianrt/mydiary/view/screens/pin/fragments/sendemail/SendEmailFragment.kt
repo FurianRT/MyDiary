@@ -11,9 +11,7 @@
 package com.furianrt.mydiary.view.screens.pin.fragments.sendemail
 
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.widget.Toast
 import com.furianrt.mydiary.R
 import com.furianrt.mydiary.view.base.BaseFragment
@@ -23,10 +21,9 @@ import com.furianrt.mydiary.utils.inTransaction
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import kotlinx.android.synthetic.main.bottom_sheet_pin.*
 import kotlinx.android.synthetic.main.fragment_send_email.*
-import kotlinx.android.synthetic.main.fragment_send_email.view.*
 import javax.inject.Inject
 
-class SendEmailFragment : BaseFragment(), SendEmailContract.MvpView {
+class SendEmailFragment : BaseFragment(R.layout.fragment_send_email), SendEmailContract.MvpView {
 
     companion object {
         const val TAG = "SendEmailFragment"
@@ -41,15 +38,11 @@ class SendEmailFragment : BaseFragment(), SendEmailContract.MvpView {
         super.onCreate(savedInstanceState)
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
-        val view = inflater.inflate(R.layout.fragment_send_email, container, false)
-
-        view.button_send_email.setOnClickListener { mPresenter.onButtonSendClick() }
-        view.button_send_email_cancel.setOnClickListener { mPresenter.onButtonCancelClick() }
-        view.layout_loading.setOnTouchListener { _, _ -> true }
-
-        return view
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        button_send_email.setOnClickListener { mPresenter.onButtonSendClick() }
+        button_send_email_cancel.setOnClickListener { mPresenter.onButtonCancelClick() }
+        layout_loading.setOnTouchListener { _, _ -> true }
     }
 
     override fun showDoneView() {

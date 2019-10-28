@@ -11,15 +11,13 @@
 package com.furianrt.mydiary.view.screens.main.fragments.authentication.done
 
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 
 import com.furianrt.mydiary.R
 import com.furianrt.mydiary.view.base.BaseFragment
-import kotlinx.android.synthetic.main.fragment_done_auth.view.*
+import kotlinx.android.synthetic.main.fragment_done_auth.*
 
-class DoneAuthFragment : BaseFragment() {
+class DoneAuthFragment : BaseFragment(R.layout.fragment_done_auth) {
 
     companion object {
         const val TAG = "DoneAuthFragment"
@@ -34,12 +32,8 @@ class DoneAuthFragment : BaseFragment() {
                 }
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
-        val view = inflater.inflate(R.layout.fragment_done_auth, container, false)
-
-        view.text_success_message.text = requireArguments().getString(ARG_MESSAGE, "")
-
-        return view
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        text_success_message.text = requireArguments().getString(ARG_MESSAGE, "")
     }
 }

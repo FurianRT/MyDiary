@@ -10,9 +10,9 @@
 
 package com.furianrt.mydiary.domain.save
 
-import com.furianrt.mydiary.data.entity.MyLocation
-import com.furianrt.mydiary.data.entity.NoteLocation
-import com.furianrt.mydiary.data.repository.location.LocationRepository
+import com.furianrt.mydiary.model.entity.MyLocation
+import com.furianrt.mydiary.model.entity.NoteLocation
+import com.furianrt.mydiary.model.repository.location.LocationRepository
 import io.reactivex.Completable
 import javax.inject.Inject
 

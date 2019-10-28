@@ -15,7 +15,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.furianrt.mydiary.R
-import com.furianrt.mydiary.data.entity.MyMood
+import com.furianrt.mydiary.model.entity.MyMood
 import kotlinx.android.synthetic.main.dialog_moods_list_item.view.*
 
 class MoodsDialogListAdapter(
