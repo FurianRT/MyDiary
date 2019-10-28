@@ -8,7 +8,17 @@
  *
  ******************************************************************************/
 
-package com.furianrt.mydiary.view.screens.main.adapter
+/*******************************************************************************
+ *  @author FurianRT
+ *  Copyright 2019
+ *
+ *  All rights reserved.
+ *  Distribution of the software in any form is only allowed with
+ *  explicit, prior permission from the owner.
+ *
+ ******************************************************************************/
+
+package com.furianrt.mydiary.view.screens.main
 
 import android.content.Context
 import android.content.res.ColorStateList
@@ -88,10 +98,11 @@ class NoteListAdapter(
 
     override fun getPreloadRequestBuilder(item: NoteItemView): RequestBuilder<*>? =
             if (item.type == NoteItemView.TYPE_NOTE_WITH_IMAGE) {
+                val image = item.note!!.images.first()
                 mGlideBuilder
-                        .load(Uri.parse(item.note!!.images.first().path))
+                        .load(Uri.parse(image.path))
                         .transition(DrawableTransitionOptions.withCrossFade())
-                        .signature(ObjectKey(item.note.images.first().editedTime))
+                        .signature(ObjectKey(image.editedTime.toString() + image.name))
                         .centerCrop()
                         .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
             } else {
@@ -225,10 +236,11 @@ class NoteListAdapter(
             setCategory(note)
             setSyncIcon(note)
             selectItem(note.note.id)
+            val image = note.images.first()
             mGlideBuilder
-                    .load(Uri.parse(note.images.first().path))
+                    .load(Uri.parse(image.path))
                     .transition(DrawableTransitionOptions.withCrossFade())
-                    .signature(ObjectKey(note.images.first().editedTime))
+                    .signature(ObjectKey(image.editedTime.toString() + image.name))
                     .centerCrop()
                     .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
                     .into(itemView.image_main_list)

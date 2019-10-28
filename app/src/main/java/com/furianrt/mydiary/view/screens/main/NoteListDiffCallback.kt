@@ -8,10 +8,20 @@
  *
  ******************************************************************************/
 
-package com.furianrt.mydiary.view.screens.main.adapter
+/*******************************************************************************
+ *  @author FurianRT
+ *  Copyright 2019
+ *
+ *  All rights reserved.
+ *  Distribution of the software in any form is only allowed with
+ *  explicit, prior permission from the owner.
+ *
+ ******************************************************************************/
+
+package com.furianrt.mydiary.view.screens.main
 
 import androidx.recyclerview.widget.DiffUtil
-import com.furianrt.mydiary.view.screens.main.adapter.NoteListAdapter.*
+import com.furianrt.mydiary.view.screens.main.NoteListAdapter.*
 
 class NoteListDiffCallback(
         private val oldList: List<NoteItemView>,

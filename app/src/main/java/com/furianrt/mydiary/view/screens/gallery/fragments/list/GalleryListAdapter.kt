@@ -51,7 +51,6 @@ class GalleryListAdapter(
     private var mDraggedItem: View? = null
     private val mDraggedItemPosition = Rect()
     private var mIsOverTrash = false
-    private val mGlide = GlideApp.with(recyclerView.context)
 
     init {
         val callback = ItemTouchHelperCallback(this)
@@ -165,10 +164,11 @@ class GalleryListAdapter(
                 mItemTouchHelper.startDrag(this)
                 return@setOnLongClickListener true
             }
-            mGlide.load(Uri.parse(mImage.path))
+            GlideApp.with(itemView)
+                    .load(Uri.parse(mImage.path))
+                    .signature(ObjectKey(mImage.editedTime.toString() + mImage.name))
                     .centerCrop()
                     .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
-                    .signature(ObjectKey(mImage.editedTime))
                     .into(itemView.image_gallery_item)
 
             if (mIsTrashed) {

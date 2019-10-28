@@ -51,7 +51,7 @@ class NoteImagePagerAdapter(
             itemView.setOnClickListener { listener?.onImageClick(image) }
             GlideApp.with(itemView)
                     .load(Uri.parse(image.path))
-                    .signature(ObjectKey(image.editedTime))
+                    .signature(ObjectKey(image.editedTime.toString() + image.name))
                     .centerCrop()
                     .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
                     .into(itemView.image_note)

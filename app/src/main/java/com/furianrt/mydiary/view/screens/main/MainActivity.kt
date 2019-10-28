@@ -52,8 +52,7 @@ import com.furianrt.mydiary.view.dialogs.delete.note.DeleteNoteDialog
 import com.furianrt.mydiary.view.dialogs.rate.RateDialog
 import com.furianrt.mydiary.view.general.AppBarLayoutBehavior
 import com.furianrt.mydiary.view.general.GlideApp
-import com.furianrt.mydiary.view.screens.main.adapter.NoteListAdapter
-import com.furianrt.mydiary.view.screens.main.adapter.NoteListAdapter.NoteItemView
+import com.furianrt.mydiary.view.screens.main.NoteListAdapter.NoteItemView
 import com.furianrt.mydiary.view.screens.main.fragments.authentication.AuthFragment
 import com.furianrt.mydiary.view.screens.main.fragments.drawer.DrawerMenuFragment
 import com.furianrt.mydiary.view.screens.main.fragments.imagesettings.ImageSettingsFragment

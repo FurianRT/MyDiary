@@ -16,6 +16,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.bumptech.glide.signature.ObjectKey
 import com.furianrt.mydiary.R
@@ -53,8 +54,9 @@ class GalleryPagerAdapter(
         fun bind(image: MyImage) {
             GlideApp.with(itemView)
                     .load(Uri.parse(image.path))
-                    .signature(ObjectKey(image.editedTime))
+                    .signature(ObjectKey(image.editedTime.toString() + image.name))
                     .transition(DrawableTransitionOptions.withCrossFade())
+                    .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
                     .into(itemView.image_gallery)
         }
     }
