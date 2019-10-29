@@ -10,7 +10,7 @@
 
 package com.furianrt.mydiary.domain
 
-import com.furianrt.mydiary.data.repository.device.DeviceRepository
+import com.furianrt.mydiary.model.repository.device.DeviceRepository
 import io.reactivex.Single
 import javax.inject.Inject
 

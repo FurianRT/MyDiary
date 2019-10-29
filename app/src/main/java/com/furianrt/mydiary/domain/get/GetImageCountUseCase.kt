@@ -10,7 +10,7 @@
 
 package com.furianrt.mydiary.domain.get
 
-import com.furianrt.mydiary.data.repository.image.ImageRepository
+import com.furianrt.mydiary.model.repository.image.ImageRepository
 import io.reactivex.Flowable
 import javax.inject.Inject
 

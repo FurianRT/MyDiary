@@ -10,7 +10,7 @@
 
 package com.furianrt.mydiary.domain.check
 
-import com.furianrt.mydiary.data.repository.profile.ProfileRepository
+import com.furianrt.mydiary.model.repository.profile.ProfileRepository
 import javax.inject.Inject
 
 class IsSignedInUseCase @Inject constructor(

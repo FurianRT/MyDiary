@@ -13,9 +13,7 @@ package com.furianrt.mydiary.view.screens.main.fragments.authentication
 import android.animation.Animator
 import android.content.Context
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.view.WindowManager
 import android.view.animation.AnticipateOvershootInterpolator
 import android.view.animation.OvershootInterpolator
@@ -30,10 +28,9 @@ import com.furianrt.mydiary.utils.dpToPx
 import com.furianrt.mydiary.utils.hideKeyboard
 import com.furianrt.mydiary.utils.inTransaction
 import kotlinx.android.synthetic.main.fragment_auth.*
-import kotlinx.android.synthetic.main.fragment_auth.view.*
 import javax.inject.Inject
 
-class AuthFragment : BaseFragment(), AuthContract.MvpView {
+class AuthFragment : BaseFragment(R.layout.fragment_auth), AuthContract.MvpView {
 
     companion object {
         const val TAG = "AuthFragment"
@@ -65,15 +62,13 @@ class AuthFragment : BaseFragment(), AuthContract.MvpView {
         super.onCreate(savedInstanceState)
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
-        val view = inflater.inflate(R.layout.fragment_auth, container, false)
-
-        view.button_auth_close.setOnClickListener { mPresenter.onButtonCloseClick() }
-        view.button_create_account.setOnClickListener { mPresenter.onButtonCreateAccountClick() }
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        button_auth_close.setOnClickListener { mPresenter.onButtonCloseClick() }
+        button_create_account.setOnClickListener { mPresenter.onButtonCreateAccountClick() }
 
         savedInstanceState?.let {
-            view.card_create_account.translationY = it.getFloat(BUNDLE_CREATE_BUTTON_TRANSLATION_Y, 0f)
+            card_create_account.translationY = it.getFloat(BUNDLE_CREATE_BUTTON_TRANSLATION_Y, 0f)
         }
 
         if (childFragmentManager.findFragmentByTag(LoginFragment.TAG) == null) {
@@ -81,8 +76,6 @@ class AuthFragment : BaseFragment(), AuthContract.MvpView {
                 add(R.id.auth_container, LoginFragment(), LoginFragment.TAG)
             }
         }
-
-        return view
     }
 
     override fun onSaveInstanceState(outState: Bundle) {

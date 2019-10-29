@@ -10,32 +10,50 @@
 
 package com.furianrt.mydiary.view.screens.note
 
-import androidx.fragment.app.FragmentManager
-import androidx.fragment.app.FragmentStatePagerAdapter
-import androidx.viewpager.widget.PagerAdapter
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentActivity
+import androidx.recyclerview.widget.DiffUtil
+import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.furianrt.mydiary.view.screens.note.fragments.mainnote.NoteFragment
 
 class NoteActivityPagerAdapter(
-        fm: FragmentManager,
+        activity: FragmentActivity,
         private val isNewNote: Boolean
-) : FragmentStatePagerAdapter(fm, BEHAVIOR_SET_USER_VISIBLE_HINT) {  //todo  переделать под Viewpager2, когда пофиксят NestedScroll
+) : FragmentStateAdapter(activity) {
 
-    private var mIsSizeChanged = false
+    private val mNoteIds = mutableListOf<String>()
 
-    var noteIds = emptyList<String>()
-        set(value) {
-            mIsSizeChanged = field.size != value.size
-            field = value
-        }
+    fun submitList(noteIds: List<String>) {
+        val diffCallback = NoteListDiffCallback(mNoteIds, noteIds)
+        val diffResult = DiffUtil.calculateDiff(diffCallback)
+        mNoteIds.clear()
+        mNoteIds.addAll(noteIds)
+        diffResult.dispatchUpdatesTo(this)
+    }
 
-    override fun getItem(position: Int) = NoteFragment.newInstance(noteIds[position], isNewNote)
+    override fun createFragment(position: Int): Fragment =
+            NoteFragment.newInstance(mNoteIds[position], isNewNote)
 
-    override fun getCount(): Int = noteIds.size
+    override fun getItemCount(): Int = mNoteIds.size
 
-    override fun getItemPosition(`object`: Any): Int =
-            if (mIsSizeChanged) {
-                PagerAdapter.POSITION_NONE
-            } else {
-                super.getItemPosition(`object`)
-            }
+    override fun getItemId(position: Int): Long = mNoteIds[position].hashCode().toLong()
+
+    override fun containsItem(itemId: Long): Boolean =
+            mNoteIds.map { it.hashCode().toLong() }.contains(itemId)
+
+    private class NoteListDiffCallback(
+            private val oldList: List<String>,
+            private val newList: List<String>
+    ) : DiffUtil.Callback() {
+
+        override fun getNewListSize(): Int = newList.size
+
+        override fun getOldListSize(): Int = oldList.size
+
+        override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean =
+                oldList[oldItemPosition] == newList[newItemPosition]
+
+        override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean =
+                areItemsTheSame(oldItemPosition, newItemPosition)
+    }
 }

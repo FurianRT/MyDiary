@@ -10,8 +10,8 @@
 
 package com.furianrt.mydiary.domain.get
 
-import com.furianrt.mydiary.data.entity.SyncProgressMessage
-import com.furianrt.mydiary.data.repository.general.GeneralRepository
+import com.furianrt.mydiary.model.entity.SyncProgressMessage
+import com.furianrt.mydiary.model.repository.general.GeneralRepository
 import javax.inject.Inject
 
 class GetLastSyncMessageUseCase @Inject constructor(

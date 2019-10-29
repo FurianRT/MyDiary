@@ -15,24 +15,21 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.furianrt.mydiary.R
 import com.furianrt.mydiary.analytics.MyAnalytics
 import com.furianrt.mydiary.view.base.BaseFragment
-import com.furianrt.mydiary.data.entity.SyncProgressMessage
+import com.furianrt.mydiary.model.entity.SyncProgressMessage
 import com.furianrt.mydiary.view.screens.main.fragments.profile.about.AboutProfileFragment
 import com.furianrt.mydiary.view.screens.main.fragments.profile.password.PasswordFragment
 import com.furianrt.mydiary.view.screens.main.fragments.profile.signout.SignOutFragment
 import com.furianrt.mydiary.view.services.sync.SyncService
 import com.furianrt.mydiary.utils.inTransaction
 import kotlinx.android.synthetic.main.fragment_menu_profile.*
-import kotlinx.android.synthetic.main.fragment_menu_profile.view.*
 import javax.inject.Inject
 
-class MenuProfileFragment : BaseFragment(), MenuProfileContract.MvpView, View.OnClickListener {
+class MenuProfileFragment : BaseFragment(R.layout.fragment_menu_profile), MenuProfileContract.MvpView, View.OnClickListener {
 
     companion object {
         const val TAG = "MenuProfileFragment"
@@ -56,15 +53,11 @@ class MenuProfileFragment : BaseFragment(), MenuProfileContract.MvpView, View.On
         super.onCreate(savedInstanceState)
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
-        val view = inflater.inflate(R.layout.fragment_menu_profile, container, false)
-
-        view.button_sign_out.setOnClickListener(this)
-        view.button_change_password.setOnClickListener(this)
-        view.button_about.setOnClickListener(this)
-
-        return view
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        button_sign_out.setOnClickListener(this)
+        button_change_password.setOnClickListener(this)
+        button_about.setOnClickListener(this)
     }
 
     override fun onClick(v: View) {

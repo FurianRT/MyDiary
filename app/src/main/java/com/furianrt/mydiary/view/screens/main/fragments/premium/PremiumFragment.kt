@@ -12,17 +12,15 @@ package com.furianrt.mydiary.view.screens.main.fragments.premium
 
 import android.content.Context
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import com.furianrt.mydiary.BuildConfig
 import com.furianrt.mydiary.R
 import com.furianrt.mydiary.view.base.BaseFragment
 import com.furianrt.mydiary.view.screens.main.MainActivity
-import kotlinx.android.synthetic.main.fragment_premium.view.*
+import kotlinx.android.synthetic.main.fragment_premium.*
 import javax.inject.Inject
 
-class PremiumFragment : BaseFragment(), PremiumContract.MvpView {
+class PremiumFragment : BaseFragment(R.layout.fragment_premium), PremiumContract.MvpView {
 
     companion object {
         const val TAG = "PremiumFragment"
@@ -38,16 +36,12 @@ class PremiumFragment : BaseFragment(), PremiumContract.MvpView {
         super.onCreate(savedInstanceState)
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
-        val view = inflater.inflate(R.layout.fragment_premium, container, false)
-
-        view.button_premium_close.setOnClickListener { mPresenter.onButtonCloseClick() }
-        view.button_get_premium.setOnClickListener {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        button_premium_close.setOnClickListener { mPresenter.onButtonCloseClick() }
+        button_get_premium.setOnClickListener {
             mListener?.onButtonPurchaseClick(BuildConfig.ITEM_PREMIUM_SKU)
         }
-
-        return view
     }
 
     override fun onAttach(context: Context) {

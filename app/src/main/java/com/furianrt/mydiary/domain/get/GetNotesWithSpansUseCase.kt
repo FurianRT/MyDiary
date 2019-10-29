@@ -10,11 +10,11 @@
 
 package com.furianrt.mydiary.domain.get
 
-import com.furianrt.mydiary.data.entity.MyNote
-import com.furianrt.mydiary.data.entity.MyNoteWithSpans
-import com.furianrt.mydiary.data.entity.MyTextSpan
-import com.furianrt.mydiary.data.repository.note.NoteRepository
-import com.furianrt.mydiary.data.repository.span.SpanRepository
+import com.furianrt.mydiary.model.entity.MyNote
+import com.furianrt.mydiary.model.entity.MyNoteWithSpans
+import com.furianrt.mydiary.model.entity.MyTextSpan
+import com.furianrt.mydiary.model.repository.note.NoteRepository
+import com.furianrt.mydiary.model.repository.span.SpanRepository
 import com.google.common.base.Optional
 import io.reactivex.Flowable
 import io.reactivex.functions.Function3

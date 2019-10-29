@@ -10,7 +10,7 @@
 
 package com.furianrt.mydiary.domain.get
 
-import com.furianrt.mydiary.data.repository.forecast.ForecastRepository
+import com.furianrt.mydiary.model.repository.forecast.ForecastRepository
 import javax.inject.Inject
 
 class GetWeatherUnitsUseCase @Inject constructor(

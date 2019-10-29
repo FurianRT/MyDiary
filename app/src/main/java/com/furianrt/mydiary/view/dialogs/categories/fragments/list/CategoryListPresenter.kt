@@ -10,8 +10,8 @@
 
 package com.furianrt.mydiary.view.dialogs.categories.fragments.list
 
-import com.furianrt.mydiary.data.entity.MyCategory
-import com.furianrt.mydiary.data.entity.MyNote
+import com.furianrt.mydiary.model.entity.MyCategory
+import com.furianrt.mydiary.model.entity.MyNote
 import com.furianrt.mydiary.domain.get.GetCategoriesUseCase
 import com.furianrt.mydiary.domain.get.GetNotesUseCase
 import com.furianrt.mydiary.domain.update.UpdateNoteUseCase

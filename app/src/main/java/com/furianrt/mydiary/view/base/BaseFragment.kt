@@ -12,12 +12,13 @@ package com.furianrt.mydiary.view.base
 
 import android.content.Intent
 import android.os.Bundle
+import androidx.annotation.LayoutRes
 import androidx.fragment.app.Fragment
 import com.furianrt.mydiary.R
 import com.furianrt.mydiary.analytics.MyAnalytics
 import javax.inject.Inject
 
-abstract class BaseFragment : Fragment(), BaseView {
+abstract class BaseFragment(@LayoutRes contentLayoutId: Int) : Fragment(contentLayoutId), BaseView {
 
     @Inject
     lateinit var analytics: MyAnalytics

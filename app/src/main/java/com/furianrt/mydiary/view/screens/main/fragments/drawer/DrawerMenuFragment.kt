@@ -18,9 +18,9 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.os.Bundle
 import android.os.Handler
-import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.WindowInsets
 import android.view.animation.AnticipateOvershootInterpolator
 import android.view.animation.OvershootInterpolator
 import androidx.core.content.ContextCompat
@@ -31,8 +31,8 @@ import com.furianrt.mydiary.BuildConfig
 import com.furianrt.mydiary.R
 import com.furianrt.mydiary.analytics.MyAnalytics
 import com.furianrt.mydiary.view.base.BaseFragment
-import com.furianrt.mydiary.data.entity.*
-import com.furianrt.mydiary.data.entity.pojo.SearchEntries
+import com.furianrt.mydiary.model.entity.*
+import com.furianrt.mydiary.model.entity.pojo.SearchEntries
 import com.furianrt.mydiary.view.screens.main.fragments.authentication.AuthFragment
 import com.furianrt.mydiary.view.screens.main.fragments.drawer.adapter.SearchGroup
 import com.furianrt.mydiary.view.screens.main.fragments.drawer.adapter.SearchItem
@@ -42,14 +42,14 @@ import com.furianrt.mydiary.view.screens.main.fragments.profile.ProfileFragment
 import com.furianrt.mydiary.view.services.sync.SyncService
 import com.furianrt.mydiary.utils.*
 import com.google.android.material.bottomsheet.BottomSheetBehavior
+import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.bottom_sheet_main.*
 import kotlinx.android.synthetic.main.fragment_drawer_menu.*
-import kotlinx.android.synthetic.main.fragment_drawer_menu.view.*
 import org.threeten.bp.LocalDate
 import java.util.TreeMap
 import javax.inject.Inject
 
-class DrawerMenuFragment : BaseFragment(), DrawerMenuContract.MvpView,
+class DrawerMenuFragment : BaseFragment(R.layout.fragment_drawer_menu), DrawerMenuContract.MvpView,
         SearchListAdapter.OnSearchListInteractionListener {
 
     companion object {
@@ -124,20 +124,18 @@ class DrawerMenuFragment : BaseFragment(), DrawerMenuContract.MvpView,
         mSearchListAdapter.onRestoreInstanceState(savedInstanceState)
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
-        val view = inflater.inflate(R.layout.fragment_drawer_menu, container, false)
-
-        view.image_drawer_header.setOnClickListener {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        image_drawer_header.setOnClickListener {
             if (requireActivity().isGoogleServicesAvailable(PLAY_SERVICES_REQUEST_CODE)) {
                 mPresenter.onButtonProfileClick()
             }
         }
 
-        view.button_sync.setOnClickListener {
+        button_sync.setOnClickListener {
             mListener?.let {
                 if (it.getIsBillingInitialized()) {
-                    if (it.getIsItemPurchased(BuildConfig.ITEM_PREMIUM_SKU)/* || it.getIsItemPurchased(ITEM_TEST_SKU)*/) {
+                    if (it.getIsItemPurchased(BuildConfig.ITEM_PREMIUM_SKU)) {
                         mPresenter.onButtonSyncClick()
                     } else {
                         mPresenter.onButtonPremiumClick()
@@ -147,21 +145,19 @@ class DrawerMenuFragment : BaseFragment(), DrawerMenuContract.MvpView,
         }
 
         savedInstanceState?.let {
-            view.button_clear_filters.translationY = it.getFloat(BUNDLE_CLEAR_CHOICES_TRANSLATION_Y, 0f)
+            button_clear_filters.translationY = it.getFloat(BUNDLE_CLEAR_CHOICES_TRANSLATION_Y, 0f)
         }
-        view.button_clear_filters.setOnClickListener { mPresenter.onButtonClearFiltersClick() }
+        button_clear_filters.setOnClickListener { mPresenter.onButtonClearFiltersClick() }
 
-        view.list_search.layoutManager = LinearLayoutManager(requireContext())
-        view.list_search.adapter = mSearchListAdapter
-        view.list_search.setHasFixedSize(true)
-        view.list_search.setItemViewCacheSize(100)
+        list_search.layoutManager = LinearLayoutManager(requireContext())
+        list_search.adapter = mSearchListAdapter
+        list_search.setHasFixedSize(true)
+        list_search.setItemViewCacheSize(100)
 
-        val animator = view.list_search.itemAnimator
+        val animator = list_search.itemAnimator
         if (animator is DefaultItemAnimator) {
             animator.supportsChangeAnimations = false
         }
-
-        return view
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -177,6 +173,17 @@ class DrawerMenuFragment : BaseFragment(), DrawerMenuContract.MvpView,
         super.onSaveInstanceState(outState)
         outState.putFloat(BUNDLE_CLEAR_CHOICES_TRANSLATION_Y, button_clear_filters.translationY)
         mSearchListAdapter.onSaveInstanceState(outState)
+    }
+
+    fun onApplyWindowInsets(insets: WindowInsets) {
+        image_drawer_header?.let { header ->
+            image_profile?.let { profile ->
+                val profileMarginParams = profile.layoutParams as ViewGroup.MarginLayoutParams
+                val headerParams = header.layoutParams as ViewGroup.LayoutParams
+                headerParams.height = dpToPx(130f) + insets.systemWindowInsetTop
+                profileMarginParams.topMargin = dpToPx(16f) + insets.systemWindowInsetTop
+            }
+        }
     }
 
     override fun showSyncProgress(message: SyncProgressMessage) {
@@ -457,6 +464,7 @@ class DrawerMenuFragment : BaseFragment(), DrawerMenuContract.MvpView,
 
     override fun onStart() {
         super.onStart()
+        activity?.layout_main?.requestApplyInsets()
         mPresenter.attachView(this)
         LocalBroadcastManager.getInstance(requireContext())
                 .registerReceiver(mBroadcastReceiver, IntentFilter(Intent.ACTION_SYNC))

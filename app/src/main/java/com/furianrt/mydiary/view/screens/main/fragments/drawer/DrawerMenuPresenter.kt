@@ -10,7 +10,7 @@
 
 package com.furianrt.mydiary.view.screens.main.fragments.drawer
 
-import com.furianrt.mydiary.data.entity.*
+import com.furianrt.mydiary.model.entity.*
 import com.furianrt.mydiary.domain.check.CheckLogOutUseCase
 import com.furianrt.mydiary.domain.check.IsSignedInUseCase
 import com.furianrt.mydiary.domain.get.*

@@ -12,8 +12,8 @@ package com.furianrt.mydiary.view.dialogs.moods
 
 import com.furianrt.mydiary.view.base.mvp.BaseMvpView
 import com.furianrt.mydiary.view.base.mvp.BaseMvpPresenter
-import com.furianrt.mydiary.data.entity.MyMood
-import com.furianrt.mydiary.data.entity.MyNote
+import com.furianrt.mydiary.model.entity.MyMood
+import com.furianrt.mydiary.model.entity.MyNote
 
 interface MoodsDialogContract {
 

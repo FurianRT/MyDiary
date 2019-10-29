@@ -10,8 +10,8 @@
 
 package com.furianrt.mydiary.view.dialogs.moods
 
-import com.furianrt.mydiary.data.entity.MyMood
-import com.furianrt.mydiary.data.entity.MyNote
+import com.furianrt.mydiary.model.entity.MyMood
+import com.furianrt.mydiary.model.entity.MyNote
 import com.furianrt.mydiary.domain.get.GetMoodsUseCase
 import com.furianrt.mydiary.domain.get.GetNotesUseCase
 import com.furianrt.mydiary.domain.update.UpdateNoteUseCase

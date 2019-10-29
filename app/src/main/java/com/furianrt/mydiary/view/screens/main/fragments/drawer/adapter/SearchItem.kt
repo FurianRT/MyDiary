@@ -11,10 +11,10 @@
 package com.furianrt.mydiary.view.screens.main.fragments.drawer.adapter
 
 import android.os.Parcelable
-import com.furianrt.mydiary.data.entity.MyCategory
-import com.furianrt.mydiary.data.entity.MyLocation
-import com.furianrt.mydiary.data.entity.MyMood
-import com.furianrt.mydiary.data.entity.MyTag
+import com.furianrt.mydiary.model.entity.MyCategory
+import com.furianrt.mydiary.model.entity.MyLocation
+import com.furianrt.mydiary.model.entity.MyMood
+import com.furianrt.mydiary.model.entity.MyTag
 import kotlinx.android.parcel.Parcelize
 import org.threeten.bp.LocalDate
 

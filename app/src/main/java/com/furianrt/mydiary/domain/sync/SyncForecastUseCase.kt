@@ -10,7 +10,7 @@
 
 package com.furianrt.mydiary.domain.sync
 
-import com.furianrt.mydiary.data.repository.forecast.ForecastRepository
+import com.furianrt.mydiary.model.repository.forecast.ForecastRepository
 import io.reactivex.Completable
 import javax.inject.Inject
 

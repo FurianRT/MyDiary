@@ -11,18 +11,15 @@
 package com.furianrt.mydiary.view.dialogs.tags.fragments.delete
 
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import com.furianrt.mydiary.R
 import com.furianrt.mydiary.analytics.MyAnalytics
 import com.furianrt.mydiary.view.base.BaseFragment
-import com.furianrt.mydiary.data.entity.MyTag
+import com.furianrt.mydiary.model.entity.MyTag
 import kotlinx.android.synthetic.main.fragment_tag_delete.*
-import kotlinx.android.synthetic.main.fragment_tag_delete.view.*
 import javax.inject.Inject
 
-class TagDeleteFragment : BaseFragment(), TagDeleteContract.MvpView {
+class TagDeleteFragment : BaseFragment(R.layout.fragment_tag_delete), TagDeleteContract.MvpView {
 
     @Inject
     lateinit var mPresenter: TagDeleteContract.Presenter
@@ -33,18 +30,14 @@ class TagDeleteFragment : BaseFragment(), TagDeleteContract.MvpView {
         mPresenter.init(requireArguments().getParcelable(ARG_TAG)!!)
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
-        val view = inflater.inflate(R.layout.fragment_tag_delete, container, false)
-
-        view.button_delete_tag.setOnClickListener {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        button_delete_tag.setOnClickListener {
             analytics.sendEvent(MyAnalytics.EVENT_NOTE_TAG_DELETED)
             button_delete_tag.isEnabled = false
             mPresenter.onButtonDeleteClick()
         }
-        view.button_delete_tag_cancel.setOnClickListener { mPresenter.onButtonCancelClick() }
-
-        return view
+        button_delete_tag_cancel.setOnClickListener { mPresenter.onButtonCancelClick() }
     }
 
     override fun showTagName(name: String) {

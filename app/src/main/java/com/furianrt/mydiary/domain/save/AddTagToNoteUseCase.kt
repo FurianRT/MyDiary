@@ -10,8 +10,8 @@
 
 package com.furianrt.mydiary.domain.save
 
-import com.furianrt.mydiary.data.entity.NoteTag
-import com.furianrt.mydiary.data.repository.tag.TagRepository
+import com.furianrt.mydiary.model.entity.NoteTag
+import com.furianrt.mydiary.model.repository.tag.TagRepository
 import io.reactivex.Completable
 import javax.inject.Inject
 

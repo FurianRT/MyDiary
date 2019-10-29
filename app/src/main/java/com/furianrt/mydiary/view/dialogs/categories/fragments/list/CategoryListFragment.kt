@@ -11,27 +11,25 @@
 package com.furianrt.mydiary.view.dialogs.categories.fragments.list
 
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.furianrt.mydiary.R
 import com.furianrt.mydiary.view.base.BaseFragment
-import com.furianrt.mydiary.data.entity.MyCategory
-import com.furianrt.mydiary.data.entity.MyNote
+import com.furianrt.mydiary.model.entity.MyCategory
+import com.furianrt.mydiary.model.entity.MyNote
 import com.furianrt.mydiary.view.dialogs.categories.CategoriesDialog
 import com.furianrt.mydiary.view.dialogs.categories.fragments.add.CategoryAddFragment
 import com.furianrt.mydiary.view.dialogs.categories.fragments.delete.CategoryDeleteFragment
 import com.furianrt.mydiary.view.dialogs.categories.fragments.edit.CategoryEditFragment
 import com.furianrt.mydiary.utils.inTransaction
-import kotlinx.android.synthetic.main.fragment_category_list.view.*
+import kotlinx.android.synthetic.main.fragment_category_list.*
 import javax.inject.Inject
 
-class CategoryListFragment : BaseFragment(), CategoriesListAdapter.OnCategoryListInteractionListener,
-        CategoryListContract.MvpView {
+class CategoryListFragment : BaseFragment(R.layout.fragment_category_list),
+        CategoriesListAdapter.OnCategoryListInteractionListener, CategoryListContract.MvpView {
 
     companion object {
 
@@ -59,21 +57,14 @@ class CategoryListFragment : BaseFragment(), CategoriesListAdapter.OnCategoryLis
         mNoteIds = requireArguments().getStringArrayList(ARG_NOTE_IDS)!!
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
-        val view = inflater.inflate(R.layout.fragment_category_list, container, false)
-
-        view.button_add_category.setOnClickListener { mPresenter.onButtonAddCategoryClick() }
-        view.button_categories_close.setOnClickListener { mPresenter.onButtonCloseClick() }
-
-        with(view.list_categories) {
-            val manager = LinearLayoutManager(context)
-            layoutManager = manager
-            adapter = mListAdapter
-            addItemDecoration(DividerItemDecoration(context, manager.orientation))
-        }
-
-        return view
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        button_add_category.setOnClickListener { mPresenter.onButtonAddCategoryClick() }
+        button_categories_close.setOnClickListener { mPresenter.onButtonCloseClick() }
+        val manager = LinearLayoutManager(context)
+        list_categories.layoutManager = manager
+        list_categories.adapter = mListAdapter
+        list_categories.addItemDecoration(DividerItemDecoration(context, manager.orientation))
     }
 
     override fun onStart() {

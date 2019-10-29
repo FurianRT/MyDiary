@@ -11,7 +11,7 @@
 package com.furianrt.mydiary.view.screens.note.fragments.mainnote
 
 import androidx.recyclerview.widget.DiffUtil
-import com.furianrt.mydiary.data.entity.MyImage
+import com.furianrt.mydiary.model.entity.MyImage
 
 class NoteImagePagerDiffCallback(
         private val oldList: List<MyImage>,

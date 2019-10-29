@@ -12,9 +12,9 @@ package com.furianrt.mydiary.view.screens.main.fragments.drawer
 
 import com.furianrt.mydiary.view.base.mvp.BaseMvpView
 import com.furianrt.mydiary.view.base.mvp.BaseMvpPresenter
-import com.furianrt.mydiary.data.entity.MyProfile
-import com.furianrt.mydiary.data.entity.SyncProgressMessage
-import com.furianrt.mydiary.data.entity.pojo.SearchEntries
+import com.furianrt.mydiary.model.entity.MyProfile
+import com.furianrt.mydiary.model.entity.SyncProgressMessage
+import com.furianrt.mydiary.model.entity.pojo.SearchEntries
 
 interface DrawerMenuContract {
 

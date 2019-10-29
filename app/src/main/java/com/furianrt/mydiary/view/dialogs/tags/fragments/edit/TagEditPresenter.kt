@@ -10,7 +10,7 @@
 
 package com.furianrt.mydiary.view.dialogs.tags.fragments.edit
 
-import com.furianrt.mydiary.data.entity.MyTag
+import com.furianrt.mydiary.model.entity.MyTag
 import com.furianrt.mydiary.domain.update.UpdateTagUseCase
 import com.furianrt.mydiary.utils.MyRxUtils
 import javax.inject.Inject

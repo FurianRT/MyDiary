@@ -10,7 +10,7 @@
 
 package com.furianrt.mydiary.domain.sync
 
-import com.furianrt.mydiary.data.repository.note.NoteRepository
+import com.furianrt.mydiary.model.repository.note.NoteRepository
 import io.reactivex.Completable
 import javax.inject.Inject
 

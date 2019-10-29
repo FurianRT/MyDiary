@@ -13,23 +13,20 @@ package com.furianrt.mydiary.view.screens.main.fragments.profile
 import android.animation.Animator
 import android.content.Context
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.view.WindowManager
 import android.view.animation.OvershootInterpolator
 import com.furianrt.mydiary.R
 import com.furianrt.mydiary.view.base.BaseFragment
-import com.furianrt.mydiary.data.entity.MyProfile
+import com.furianrt.mydiary.model.entity.MyProfile
 import com.furianrt.mydiary.view.screens.main.MainActivity
 import com.furianrt.mydiary.view.screens.main.fragments.profile.menu.MenuProfileFragment
 import com.furianrt.mydiary.utils.KeyboardUtils
 import com.furianrt.mydiary.utils.inTransaction
 import kotlinx.android.synthetic.main.fragment_profile.*
-import kotlinx.android.synthetic.main.fragment_profile.view.*
 import javax.inject.Inject
 
-class ProfileFragment : BaseFragment(), ProfileContract.MvpView {
+class ProfileFragment : BaseFragment(R.layout.fragment_profile), ProfileContract.MvpView {
 
     companion object {
         const val TAG = "ProfileFragment"
@@ -57,18 +54,15 @@ class ProfileFragment : BaseFragment(), ProfileContract.MvpView {
         super.onCreate(savedInstanceState)
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val view = inflater.inflate(R.layout.fragment_profile, container, false)
-
-        view.button_profile_close.setOnClickListener { mPresenter.onButtonCloseClick() }
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        button_profile_close.setOnClickListener { mPresenter.onButtonCloseClick() }
 
         if (childFragmentManager.findFragmentByTag(MenuProfileFragment.TAG) == null) {
             childFragmentManager.inTransaction {
                 add(R.id.profile_container, MenuProfileFragment(), MenuProfileFragment.TAG)
             }
         }
-
-        return view
     }
 
     override fun showProfile(profile: MyProfile) {

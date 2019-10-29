@@ -11,9 +11,7 @@
 package com.furianrt.mydiary.view.dialogs.categories.fragments.add
 
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.widget.Toast
 import com.furianrt.mydiary.R
 import com.furianrt.mydiary.view.base.BaseFragment
@@ -21,10 +19,9 @@ import com.furianrt.mydiary.utils.animateShake
 import com.furianrt.mydiary.utils.hideKeyboard
 import com.furianrt.mydiary.utils.showKeyboard
 import kotlinx.android.synthetic.main.fragment_category_add.*
-import kotlinx.android.synthetic.main.fragment_category_add.view.*
 import javax.inject.Inject
 
-class CategoryAddFragment : BaseFragment(), CategoryAddContract.MvpView {
+class CategoryAddFragment : BaseFragment(R.layout.fragment_category_add), CategoryAddContract.MvpView {
 
     @Inject
     lateinit var mPresenter: CategoryAddContract.Presenter
@@ -34,22 +31,18 @@ class CategoryAddFragment : BaseFragment(), CategoryAddContract.MvpView {
         super.onCreate(savedInstanceState)
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
-        val view = inflater.inflate(R.layout.fragment_category_add, container, false)
-
-        view.color_picker_category.addSVBar(view.svbar_category)
-        view.color_picker_category.showOldCenterColor = false
-        view.button_category_add_cancel.setOnClickListener {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        color_picker_category.addSVBar(svbar_category)
+        color_picker_category.showOldCenterColor = false
+        button_category_add_cancel.setOnClickListener {
             mPresenter.onButtonCancelClick()
         }
-        view.button_category_add.setOnClickListener {
+        button_category_add.setOnClickListener {
             val color = color_picker_category.color
             val name = edit_category.text?.toString() ?: ""
             mPresenter.onButtonDoneClick(name, color)
         }
-
-        return view
     }
 
     override fun close() {

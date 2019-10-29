@@ -34,8 +34,8 @@ import androidx.viewpager2.widget.ViewPager2
 import com.furianrt.mydiary.R
 import com.furianrt.mydiary.analytics.MyAnalytics
 import com.furianrt.mydiary.view.base.BaseFragment
-import com.furianrt.mydiary.data.entity.*
-import com.furianrt.mydiary.data.entity.pojo.TagsAndAppearance
+import com.furianrt.mydiary.model.entity.*
+import com.furianrt.mydiary.model.entity.pojo.TagsAndAppearance
 import com.furianrt.mydiary.view.dialogs.categories.CategoriesDialog
 import com.furianrt.mydiary.view.dialogs.delete.note.DeleteNoteDialog
 import com.furianrt.mydiary.view.dialogs.moods.MoodsDialog
@@ -51,11 +51,8 @@ import com.google.android.material.card.MaterialCardView
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog
 import com.wdullaer.materialdatetimepicker.time.TimePickerDialog
 import kotlinx.android.synthetic.main.fragment_note.*
-import kotlinx.android.synthetic.main.fragment_note.view.*
 import kotlinx.android.synthetic.main.fragment_note_toolbar.*
-import kotlinx.android.synthetic.main.fragment_note_toolbar.view.*
 import kotlinx.android.synthetic.main.rich_text_menu.*
-import kotlinx.android.synthetic.main.rich_text_menu.view.*
 import pub.devrel.easypermissions.AfterPermissionGranted
 import pub.devrel.easypermissions.EasyPermissions
 import java.util.Locale
@@ -63,7 +60,7 @@ import java.util.Calendar
 import javax.inject.Inject
 import kotlin.collections.ArrayList
 
-class NoteFragment : BaseFragment(), NoteFragmentContract.MvpView, DatePickerDialog.OnDateSetListener,
+class NoteFragment : BaseFragment(R.layout.fragment_note), NoteFragmentContract.MvpView, DatePickerDialog.OnDateSetListener,
         TimePickerDialog.OnTimeSetListener, NoteImagePagerAdapter.OnNoteImagePagerInteractionListener {
 
     companion object {
@@ -126,80 +123,78 @@ class NoteFragment : BaseFragment(), NoteFragmentContract.MvpView, DatePickerDia
         }
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
-        val view = inflater.inflate(R.layout.fragment_note, container, false)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        pager_note_image.adapter = mImagePagerAdapter
+        pager_note_image.isSaveEnabled = false
 
-        view.pager_note_image.adapter = mImagePagerAdapter
-        view.pager_note_image.isSaveEnabled = false
-
-        view.layout_mood.setOnClickListener {
+        layout_mood.setOnClickListener {
             removeEditFragment()
             mPresenter.onMoodFieldClick()
         }
-        view.layout_category.setOnClickListener {
+        layout_category.setOnClickListener {
             removeEditFragment()
             mPresenter.onCategoryFieldClick()
         }
-        view.layout_tags.setOnClickListener {
+        layout_tags.setOnClickListener {
             removeEditFragment()
             mPresenter.onTagsFieldClick()
         }
-        view.text_date.setOnClickListener {
+        text_date.setOnClickListener {
             removeEditFragment()
             mPresenter.onDateFieldClick()
         }
-        view.text_time.setOnClickListener {
+        text_time.setOnClickListener {
             removeEditFragment()
             mPresenter.onTimeFieldClick()
         }
-        view.fab_add_image.setOnClickListener {
+        fab_add_image.setOnClickListener {
             removeEditFragment()
             analytics.sendEvent(MyAnalytics.EVENT_NOTE_IMAGE_PAGER_OPENED)
             mPresenter.onButtonAddImageClick()
         }
-        view.button_text_bold.setOnClickListener {
+        button_text_bold.setOnClickListener {
             childFragmentManager.findFragmentByTag(NoteEditFragment.TAG)?.let {
                 (it as NoteEditFragment).onButtonTextBoldClick()
             }
         }
-        view.button_text_italic.setOnClickListener {
+        button_text_italic.setOnClickListener {
             childFragmentManager.findFragmentByTag(NoteEditFragment.TAG)?.let {
                 (it as NoteEditFragment).onButtonTextItalicClick()
             }
         }
-        view.button_text_strikethrough.setOnClickListener {
+        button_text_strikethrough.setOnClickListener {
             childFragmentManager.findFragmentByTag(NoteEditFragment.TAG)?.let {
                 (it as NoteEditFragment).onButtonTextStrikethroughClick()
             }
         }
-        view.button_text_large.setOnClickListener {
+        button_text_large.setOnClickListener {
             childFragmentManager.findFragmentByTag(NoteEditFragment.TAG)?.let {
                 (it as NoteEditFragment).onButtonTextLargeClick()
             }
         }
-        view.button_text_color.setOnClickListener {
+        button_text_color.setOnClickListener {
             childFragmentManager.findFragmentByTag(NoteEditFragment.TAG)?.let {
                 (it as NoteEditFragment).onButtonTextColorClick(null)
             }
         }
-        view.button_text_fill_color.setOnClickListener {
+        button_text_fill_color.setOnClickListener {
             childFragmentManager.findFragmentByTag(NoteEditFragment.TAG)?.let {
                 (it as NoteEditFragment).onButtonTextFillColorClick(null)
             }
         }
-        view.button_redo.setOnClickListener {
+        button_redo.setOnClickListener {
             analytics.sendEvent(MyAnalytics.EVENT_NOTE_REDO)
             mPresenter.onButtonRedoClick()
         }
-        view.button_undo.setOnClickListener {
+        button_undo.setOnClickListener {
             analytics.sendEvent(MyAnalytics.EVENT_NOTE_UNDO)
             mPresenter.onButtonUndoClick()
         }
-        view.layout_loading.setOnTouchListener { _, _ -> true }
+        layout_loading.setOnTouchListener { _, _ -> true }
 
-        view.button_undo.enableCustom(false)
-        view.button_redo.enableCustom(false)
+        button_undo.enableCustom(false)
+        button_redo.enableCustom(false)
 
         if (childFragmentManager.findFragmentByTag(NoteContentFragment.TAG) == null) {
             childFragmentManager.inTransaction {
@@ -207,25 +202,23 @@ class NoteFragment : BaseFragment(), NoteFragmentContract.MvpView, DatePickerDia
             }
         }
 
-        view.spinner_text_color.adapter = ColorSpinnerAdapter(requireContext(), R.array.spinner_colors)
-        view.spinner_text_color.dropDownVerticalOffset = -dpToPx(8f)
-        view.spinner_text_color.onItemSelectListener = { spinner, position ->
+        spinner_text_color.adapter = ColorSpinnerAdapter(requireContext(), R.array.spinner_colors)
+        spinner_text_color.dropDownVerticalOffset = -dpToPx(8f)
+        spinner_text_color.onItemSelectListener = { spinner, position ->
             childFragmentManager.findFragmentByTag(NoteEditFragment.TAG)?.let {
                 val color = spinner.getItemAtPosition(position)
                 (it as NoteEditFragment).onButtonTextColorClick(color as String)
             }
         }
 
-        view.spinner_text_fill_color.adapter = ColorSpinnerAdapter(requireContext(), R.array.spinner_colors)
-        view.spinner_text_fill_color.dropDownVerticalOffset = -dpToPx(8f)
-        view.spinner_text_fill_color.onItemSelectListener = { spinner, position ->
+        spinner_text_fill_color.adapter = ColorSpinnerAdapter(requireContext(), R.array.spinner_colors)
+        spinner_text_fill_color.dropDownVerticalOffset = -dpToPx(8f)
+        spinner_text_fill_color.onItemSelectListener = { spinner, position ->
             childFragmentManager.findFragmentByTag(NoteEditFragment.TAG)?.let {
                 val color = spinner.getItemAtPosition(position)
                 (it as NoteEditFragment).onButtonTextFillColorClick(color as String)
             }
         }
-
-        return view
     }
 
     override fun onStart() {

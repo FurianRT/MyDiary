@@ -11,7 +11,7 @@
 package com.furianrt.mydiary.domain.send
 
 import android.util.Patterns
-import com.furianrt.mydiary.data.repository.profile.ProfileRepository
+import com.furianrt.mydiary.model.repository.profile.ProfileRepository
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
 import io.reactivex.Completable
 import io.reactivex.Single

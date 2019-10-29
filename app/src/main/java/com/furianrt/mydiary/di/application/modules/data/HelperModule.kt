@@ -10,16 +10,16 @@
 
 package com.furianrt.mydiary.di.application.modules.data
 
-import com.furianrt.mydiary.data.encryption.EncryptionHelper
-import com.furianrt.mydiary.data.encryption.EncryptionHelperImp
-import com.furianrt.mydiary.data.source.auth.AuthHelper
-import com.furianrt.mydiary.data.source.auth.AuthHelperImp
-import com.furianrt.mydiary.data.source.cloud.CloudHelper
-import com.furianrt.mydiary.data.source.cloud.CloudHelperImp
-import com.furianrt.mydiary.data.source.preferences.PreferencesHelper
-import com.furianrt.mydiary.data.source.preferences.PreferencesHelperImp
-import com.furianrt.mydiary.data.source.storage.StorageHelper
-import com.furianrt.mydiary.data.source.storage.StorageHelperImp
+import com.furianrt.mydiary.model.encryption.EncryptionHelper
+import com.furianrt.mydiary.model.encryption.EncryptionHelperImp
+import com.furianrt.mydiary.model.source.auth.AuthHelper
+import com.furianrt.mydiary.model.source.auth.AuthHelperImp
+import com.furianrt.mydiary.model.source.cloud.CloudHelper
+import com.furianrt.mydiary.model.source.cloud.CloudHelperImp
+import com.furianrt.mydiary.model.source.preferences.PreferencesHelper
+import com.furianrt.mydiary.model.source.preferences.PreferencesHelperImp
+import com.furianrt.mydiary.model.source.storage.StorageHelper
+import com.furianrt.mydiary.model.source.storage.StorageHelperImp
 import com.furianrt.mydiary.di.application.component.AppScope
 import dagger.Binds
 import dagger.Module

@@ -10,7 +10,7 @@
 
 package com.furianrt.mydiary.domain.check
 
-import com.furianrt.mydiary.data.repository.image.ImageRepository
+import com.furianrt.mydiary.model.repository.image.ImageRepository
 import javax.inject.Inject
 
 class IsDailyImageEnabledUseCase @Inject constructor(

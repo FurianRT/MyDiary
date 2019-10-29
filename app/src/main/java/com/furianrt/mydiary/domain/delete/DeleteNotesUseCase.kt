@@ -10,13 +10,13 @@
 
 package com.furianrt.mydiary.domain.delete
 
-import com.furianrt.mydiary.data.repository.appearance.AppearanceRepository
-import com.furianrt.mydiary.data.repository.forecast.ForecastRepository
-import com.furianrt.mydiary.data.repository.image.ImageRepository
-import com.furianrt.mydiary.data.repository.location.LocationRepository
-import com.furianrt.mydiary.data.repository.note.NoteRepository
-import com.furianrt.mydiary.data.repository.span.SpanRepository
-import com.furianrt.mydiary.data.repository.tag.TagRepository
+import com.furianrt.mydiary.model.repository.appearance.AppearanceRepository
+import com.furianrt.mydiary.model.repository.forecast.ForecastRepository
+import com.furianrt.mydiary.model.repository.image.ImageRepository
+import com.furianrt.mydiary.model.repository.location.LocationRepository
+import com.furianrt.mydiary.model.repository.note.NoteRepository
+import com.furianrt.mydiary.model.repository.span.SpanRepository
+import com.furianrt.mydiary.model.repository.tag.TagRepository
 import io.reactivex.Completable
 import io.reactivex.Observable
 import javax.inject.Inject

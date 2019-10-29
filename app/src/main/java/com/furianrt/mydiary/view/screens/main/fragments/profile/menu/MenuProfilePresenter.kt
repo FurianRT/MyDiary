@@ -10,7 +10,7 @@
 
 package com.furianrt.mydiary.view.screens.main.fragments.profile.menu
 
-import com.furianrt.mydiary.data.entity.SyncProgressMessage
+import com.furianrt.mydiary.model.entity.SyncProgressMessage
 import com.furianrt.mydiary.domain.get.GetLastSyncMessageUseCase
 import javax.inject.Inject
 

@@ -10,8 +10,8 @@
 
 package com.furianrt.mydiary.domain.sync
 
-import com.furianrt.mydiary.data.entity.MyImage
-import com.furianrt.mydiary.data.repository.image.ImageRepository
+import com.furianrt.mydiary.model.entity.MyImage
+import com.furianrt.mydiary.model.repository.image.ImageRepository
 import io.reactivex.Completable
 import io.reactivex.Single
 import io.reactivex.functions.BiFunction

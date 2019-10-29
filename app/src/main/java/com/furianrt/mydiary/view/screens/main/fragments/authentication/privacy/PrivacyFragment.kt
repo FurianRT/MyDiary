@@ -13,9 +13,7 @@ package com.furianrt.mydiary.view.screens.main.fragments.authentication.privacy
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.widget.Toast
 import com.furianrt.mydiary.R
 import com.furianrt.mydiary.analytics.MyAnalytics
@@ -24,10 +22,9 @@ import com.furianrt.mydiary.utils.animateShake
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import kotlinx.android.synthetic.main.bottom_sheet_main.*
 import kotlinx.android.synthetic.main.fragment_privacy.*
-import kotlinx.android.synthetic.main.fragment_privacy.view.*
 import javax.inject.Inject
 
-class PrivacyFragment : BaseFragment(), PrivacyContract.MvpView {
+class PrivacyFragment : BaseFragment(R.layout.fragment_privacy), PrivacyContract.MvpView {
 
     companion object {
         const val TAG = "PrivacyFragment"
@@ -58,16 +55,12 @@ class PrivacyFragment : BaseFragment(), PrivacyContract.MvpView {
         mPassword = arguments?.getString(ARG_PASSWORD)!!
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
-        val view = inflater.inflate(R.layout.fragment_privacy, container, false)
-
-        view.button_privacy_accept.setOnClickListener { mPresenter.onButtonAcceptClick(mEmail, mPassword) }
-        view.button_privacy_cancel.setOnClickListener { mPresenter.onButtonCancelClick() }
-        view.text_privacy_title.setOnClickListener { mPresenter.onPrivacyLinkClick() }
-        view.view_alpha.setOnTouchListener { _, _ -> true }
-
-        return view
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        button_privacy_accept.setOnClickListener { mPresenter.onButtonAcceptClick(mEmail, mPassword) }
+        button_privacy_cancel.setOnClickListener { mPresenter.onButtonCancelClick() }
+        text_privacy_title.setOnClickListener { mPresenter.onPrivacyLinkClick() }
+        view_alpha.setOnTouchListener { _, _ -> true }
     }
 
     override fun showLoading() {

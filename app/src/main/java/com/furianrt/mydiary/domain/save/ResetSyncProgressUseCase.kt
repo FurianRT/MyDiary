@@ -10,7 +10,7 @@
 
 package com.furianrt.mydiary.domain.save
 
-import com.furianrt.mydiary.data.repository.general.GeneralRepository
+import com.furianrt.mydiary.model.repository.general.GeneralRepository
 import org.joda.time.DateTime
 import javax.inject.Inject
 

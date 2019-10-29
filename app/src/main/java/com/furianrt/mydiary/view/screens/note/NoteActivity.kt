@@ -16,7 +16,7 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.View
 import android.view.WindowManager
-import androidx.viewpager.widget.ViewPager
+import androidx.viewpager2.widget.ViewPager2
 import com.anjlab.android.iab.v3.TransactionDetails
 import com.furianrt.mydiary.BuildConfig
 import com.furianrt.mydiary.R
@@ -59,12 +59,10 @@ class NoteActivity : BaseActivity(R.layout.activity_note), NoteActivityContract.
     private var mIsNewNote = true
     private var mIsEditModeEnabled = false
 
-    private val mOnPageChangeListener = object : ViewPager.OnPageChangeListener {
-        override fun onPageScrollStateChanged(state: Int) {}
-        override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {}
+    private val mOnPageChangeListener = object : ViewPager2.OnPageChangeCallback() {
         override fun onPageSelected(position: Int) {
             mPagerPosition = position
-            showImageCounter(mPagerPosition + 1, mPagerAdapter.count)
+            showImageCounter(mPagerPosition + 1, mPagerAdapter.itemCount)
         }
     }
 
@@ -72,7 +70,7 @@ class NoteActivity : BaseActivity(R.layout.activity_note), NoteActivityContract.
         override fun onToggleSoftKeyboard(isVisible: Boolean) {
             if (isVisible) {
                 view_ad?.visibility = View.GONE
-            } else if (!isItemPurchased(BuildConfig.ITEM_PREMIUM_SKU)) {
+            } else {
                 view_ad?.postDelayed({
                     if (view_ad?.isLoading == false && !mIsEditModeEnabled) {
                         view_ad?.visibility = View.VISIBLE
@@ -86,7 +84,6 @@ class NoteActivity : BaseActivity(R.layout.activity_note), NoteActivityContract.
         getPresenterComponent(this).inject(this)
         super.onCreate(savedInstanceState)
         window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN)
-
         setSupportActionBar(toolbar_note_activity)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setDisplayShowHomeEnabled(true)
@@ -102,7 +99,7 @@ class NoteActivity : BaseActivity(R.layout.activity_note), NoteActivityContract.
 
         mIsNewNote = intent.getBooleanExtra(EXTRA_IS_NEW_NOTE, true)
 
-        mPagerAdapter = NoteActivityPagerAdapter(supportFragmentManager, mIsNewNote)
+        mPagerAdapter = NoteActivityPagerAdapter(this, mIsNewNote)
         pager_note.adapter = mPagerAdapter
     }
 
@@ -151,20 +148,19 @@ class NoteActivity : BaseActivity(R.layout.activity_note), NoteActivityContract.
         if (mPagerPosition >= noteIds.size) {
             mPagerPosition = noteIds.size - 1
         }
-        mPagerAdapter.noteIds = noteIds
-        mPagerAdapter.notifyDataSetChanged()
+        mPagerAdapter.submitList(noteIds)
         pager_note.setCurrentItem(mPagerPosition, false)
-        showImageCounter(mPagerPosition + 1, mPagerAdapter.count)
+        showImageCounter(mPagerPosition + 1, mPagerAdapter.itemCount)
     }
 
     override fun onNoteFragmentEditModeDisabled() {
-        pager_note.swipeEnabled = true
+        pager_note.isUserInputEnabled = true
         text_toolbar_title.visibility = View.VISIBLE
         mIsEditModeEnabled = false
     }
 
     override fun onNoteFragmentEditModeEnabled() {
-        pager_note.swipeEnabled = false
+        pager_note.isUserInputEnabled = false
         text_toolbar_title.visibility = View.GONE
         view_ad.visibility = View.GONE
         mIsEditModeEnabled = true
@@ -190,13 +186,13 @@ class NoteActivity : BaseActivity(R.layout.activity_note), NoteActivityContract.
     override fun onStart() {
         super.onStart()
         mPresenter.attachView(this)
-        pager_note.addOnPageChangeListener(mOnPageChangeListener)
+        pager_note.registerOnPageChangeCallback(mOnPageChangeListener)
         KeyboardUtils.addKeyboardToggleListener(this, mKeyboardListener)
     }
 
     override fun onStop() {
         super.onStop()
-        pager_note.removeOnPageChangeListener(mOnPageChangeListener)
+        pager_note.unregisterOnPageChangeCallback(mOnPageChangeListener)
         KeyboardUtils.removeKeyboardToggleListener(mKeyboardListener)
         mPresenter.detachView()
     }

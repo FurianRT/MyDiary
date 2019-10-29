@@ -12,7 +12,7 @@ package com.furianrt.mydiary.view.screens.settings.note
 
 import com.furianrt.mydiary.view.base.mvp.BaseMvpView
 import com.furianrt.mydiary.view.base.mvp.BaseMvpPresenter
-import com.furianrt.mydiary.data.entity.MyNoteAppearance
+import com.furianrt.mydiary.model.entity.MyNoteAppearance
 
 interface NoteSettingsContract {
 

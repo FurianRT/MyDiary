@@ -13,7 +13,7 @@ package com.furianrt.mydiary.view.screens.main
 import android.os.Bundle
 import com.furianrt.mydiary.view.base.mvp.BaseMvpView
 import com.furianrt.mydiary.view.base.mvp.BaseMvpPresenter
-import com.furianrt.mydiary.data.entity.*
+import com.furianrt.mydiary.model.entity.*
 
 interface MainActivityContract {
 
@@ -38,6 +38,7 @@ interface MainActivityContract {
         fun hideNoSearchResults()
         fun showChangeFilters()
         fun showRateProposal()
+        fun showStatisticsView()
     }
 
     abstract class Presenter : BaseMvpPresenter<MvpView>() {
@@ -68,5 +69,6 @@ interface MainActivityContract {
         abstract fun onDateFilterChange(startDate: Long?, endDate: Long?)
         abstract fun onButtonChangeFiltersClick()
         abstract fun onDailyImageLoadStateChange()
+        abstract fun onButtonStatisticsClick()
     }
 }

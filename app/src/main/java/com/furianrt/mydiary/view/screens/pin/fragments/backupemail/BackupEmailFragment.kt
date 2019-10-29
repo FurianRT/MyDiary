@@ -14,19 +14,16 @@ import android.content.Context
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.widget.Toast
 import com.furianrt.mydiary.R
 import com.furianrt.mydiary.view.base.BaseFragment
 import com.furianrt.mydiary.utils.KeyboardUtils
 import com.furianrt.mydiary.utils.animateShake
 import kotlinx.android.synthetic.main.fragment_backup_email.*
-import kotlinx.android.synthetic.main.fragment_backup_email.view.*
 import javax.inject.Inject
 
-class BackupEmailFragment : BaseFragment(), BackupEmailContract.MvpView {
+class BackupEmailFragment : BaseFragment(R.layout.fragment_backup_email), BackupEmailContract.MvpView {
 
     companion object {
         const val TAG = "BackupEmailFragment"
@@ -57,21 +54,14 @@ class BackupEmailFragment : BaseFragment(), BackupEmailContract.MvpView {
         super.onCreate(savedInstanceState)
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
-        val view = inflater.inflate(R.layout.fragment_backup_email, container, false)
-
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         mPresenter.attachView(this)
 
-        view.button_create_pin.setOnClickListener {
+        button_create_pin.setOnClickListener {
             mPresenter.onButtonDoneClick(edit_backup_email.text?.toString() ?: "")
         }
 
-        return view
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
         mPresenter.onViewCreated(edit_backup_email.text?.toString() ?: "", savedInstanceState == null)
     }
 

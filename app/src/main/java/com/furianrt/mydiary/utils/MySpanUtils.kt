@@ -14,7 +14,7 @@ import android.graphics.Typeface
 import android.text.ParcelableSpan
 import android.text.Spannable
 import android.text.style.*
-import com.furianrt.mydiary.data.entity.MyTextSpan
+import com.furianrt.mydiary.model.entity.MyTextSpan
 
 fun String.applyTextSpans(spans: List<MyTextSpan>): Spannable =
         Spannable.Factory().newSpannable(this).apply {

@@ -12,7 +12,7 @@ package com.furianrt.mydiary.view.screens.main
 
 import android.annotation.SuppressLint
 import android.os.Bundle
-import com.furianrt.mydiary.data.entity.*
+import com.furianrt.mydiary.model.entity.*
 import com.furianrt.mydiary.domain.FilterNotesUseCase
 import com.furianrt.mydiary.domain.SwapNoteSortTypeUseCase
 import com.furianrt.mydiary.domain.check.CheckLogOutUseCase
@@ -259,6 +259,10 @@ class MainActivityPresenter @Inject constructor(
 
     override fun onButtonSettingsClick() {
         view?.showSettingsView()
+    }
+
+    override fun onButtonStatisticsClick() {
+        view?.showStatisticsView()
     }
 
     private fun loadProfile() {

@@ -31,6 +31,8 @@ import com.google.android.gms.ads.MobileAds
 import com.jakewharton.threetenabp.AndroidThreeTen
 import net.danlew.android.joda.JodaTimeAndroid
 import javax.inject.Inject
+import android.os.StrictMode.VmPolicy
+import android.os.StrictMode
 
 class MyApp : Application(), Application.ActivityLifecycleCallbacks {
 
@@ -43,7 +45,7 @@ class MyApp : Application(), Application.ActivityLifecycleCallbacks {
 
     val component: AppComponent by lazy {
         DaggerAppComponent.builder()
-                .appContextModule(AppContextModule(this))
+                .appContextModule(AppContextModule(applicationContext))
                 .build()
     }
 
@@ -71,17 +73,27 @@ class MyApp : Application(), Application.ActivityLifecycleCallbacks {
     override fun onCreate() {
         component.inject(this)
         super.onCreate()
+        if (BuildConfig.DEBUG) {
+            Stetho.initializeWithDefaults(this)
+            StrictMode.setThreadPolicy(StrictMode.ThreadPolicy.Builder()
+                    .detectNetwork()
+                    .penaltyLog()
+                    .build())
+            StrictMode.setVmPolicy(VmPolicy.Builder()
+                    .detectLeakedSqlLiteObjects()
+                    .detectLeakedClosableObjects()
+                    .detectActivityLeaks()
+                    .detectLeakedRegistrationObjects()
+                    .penaltyLog()
+                    .build())
+        }
         JodaTimeAndroid.init(this)
         authorize.invoke(false)
         registerActivityLifecycleCallbacks(this)
         createNotificationSyncChannel()
         createNotificationFirebaseChannel()
         MobileAds.initialize(this, getString(R.string.BANNER_AD_APP_ID))
-        StrictMode.setVmPolicy(StrictMode.VmPolicy.Builder().build())
         AndroidThreeTen.init(this)
-        if (BuildConfig.DEBUG) {
-            Stetho.initializeWithDefaults(this)
-        }
         incrementLaunchCount.invoke()
         resetSyncProgress.invoke()
         createTutorialNote.invoke().subscribe()
@@ -153,12 +165,10 @@ class MyApp : Application(), Application.ActivityLifecycleCallbacks {
 * поддержать планшеты
 * добавить ссылки на используемые библиотеки
 * добавить отправку картинок или текста из других приложений
-* добавить вывод в pdf
 * сделать ежедневный локальный бэкап
 * добавить выбор локации
 * добавить выбор типа защиты
 * поддержка темной темы
-* добавить статистику по записям
 * добавить ссылку на гугл таблицы
 * добавить поддержку ссылок внутри текста
 * разбить экран настроек на категории
@@ -174,8 +184,15 @@ class MyApp : Application(), Application.ActivityLifecycleCallbacks {
 *   сделать отмену удаления в списке
 *   добавить кнопку очистки фильтров
 *   изсправить баг с дефолтными настройками внешнего вида
-*   изменить дизайн текущей даты в поиске
 *   добавить включаемую автоматическу синхронизацию
+*
+* */
+
+/*TODO премиум фичи
+*
+* включаемая автоматическая синхронизация
+* статистика по записям
+* вывод в pdf
 *
 * */
 

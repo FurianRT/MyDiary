@@ -10,9 +10,9 @@
 
 package com.furianrt.mydiary.domain.update
 
-import com.furianrt.mydiary.data.entity.MyNoteAppearance
-import com.furianrt.mydiary.data.repository.appearance.AppearanceRepository
-import com.furianrt.mydiary.data.repository.note.NoteRepository
+import com.furianrt.mydiary.model.entity.MyNoteAppearance
+import com.furianrt.mydiary.model.repository.appearance.AppearanceRepository
+import com.furianrt.mydiary.model.repository.note.NoteRepository
 import io.reactivex.Completable
 import javax.inject.Inject
 

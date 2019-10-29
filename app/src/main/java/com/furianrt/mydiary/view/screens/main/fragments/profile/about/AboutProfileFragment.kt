@@ -11,20 +11,17 @@
 package com.furianrt.mydiary.view.screens.main.fragments.profile.about
 
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import com.furianrt.mydiary.R
 import com.furianrt.mydiary.view.base.BaseFragment
-import com.furianrt.mydiary.data.entity.MyProfile
+import com.furianrt.mydiary.model.entity.MyProfile
 import com.furianrt.mydiary.utils.getTime
 import kotlinx.android.synthetic.main.fragment_about_profile.*
-import kotlinx.android.synthetic.main.fragment_about_profile.view.*
 import org.joda.time.DateTime
 import java.util.*
 import javax.inject.Inject
 
-class AboutProfileFragment : BaseFragment(), AboutProfileContract.MvpView {
+class AboutProfileFragment : BaseFragment(R.layout.fragment_about_profile), AboutProfileContract.MvpView {
 
     companion object {
         const val TAG = "AboutProfileFragment"
@@ -38,13 +35,9 @@ class AboutProfileFragment : BaseFragment(), AboutProfileContract.MvpView {
         super.onCreate(savedInstanceState)
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
-        val view = inflater.inflate(R.layout.fragment_about_profile, container, false)
-
-        view.button_about_back.setOnClickListener { mPresenter.onButtonBackClick() }
-
-        return view
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        button_about_back.setOnClickListener { mPresenter.onButtonBackClick() }
     }
 
     override fun showProfileInfo(profile: MyProfile, is24TimeFormat: Boolean) {

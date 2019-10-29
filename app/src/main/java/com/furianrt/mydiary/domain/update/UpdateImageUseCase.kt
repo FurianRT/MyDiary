@@ -10,8 +10,8 @@
 
 package com.furianrt.mydiary.domain.update
 
-import com.furianrt.mydiary.data.entity.MyImage
-import com.furianrt.mydiary.data.repository.image.ImageRepository
+import com.furianrt.mydiary.model.entity.MyImage
+import com.furianrt.mydiary.model.repository.image.ImageRepository
 import io.reactivex.Completable
 import javax.inject.Inject
 

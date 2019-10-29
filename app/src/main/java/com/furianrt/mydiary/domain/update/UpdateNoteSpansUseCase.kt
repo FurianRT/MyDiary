@@ -8,22 +8,12 @@
  *
  ******************************************************************************/
 
-/*******************************************************************************
- *  @author FurianRT
- *  Copyright 2019
- *
- *  All rights reserved.
- *  Distribution of the software in any form is only allowed with
- *  explicit, prior permission from the owner.
- *
- ******************************************************************************/
-
 package com.furianrt.mydiary.domain.update
 
 import com.furianrt.mydiary.BuildConfig
-import com.furianrt.mydiary.data.entity.MyTextSpan
-import com.furianrt.mydiary.data.repository.device.DeviceRepository
-import com.furianrt.mydiary.data.repository.span.SpanRepository
+import com.furianrt.mydiary.model.entity.MyTextSpan
+import com.furianrt.mydiary.model.repository.device.DeviceRepository
+import com.furianrt.mydiary.model.repository.span.SpanRepository
 import com.furianrt.mydiary.di.application.component.AppScope
 import com.furianrt.mydiary.utils.generateUniqueId
 import io.reactivex.Completable

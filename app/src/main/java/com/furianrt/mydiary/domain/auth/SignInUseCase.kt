@@ -10,8 +10,8 @@
 
 package com.furianrt.mydiary.domain.auth
 
-import com.furianrt.mydiary.data.repository.device.DeviceRepository
-import com.furianrt.mydiary.data.repository.profile.ProfileRepository
+import com.furianrt.mydiary.model.repository.device.DeviceRepository
+import com.furianrt.mydiary.model.repository.profile.ProfileRepository
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
 import com.google.firebase.auth.FirebaseAuthInvalidUserException
 import io.reactivex.Completable

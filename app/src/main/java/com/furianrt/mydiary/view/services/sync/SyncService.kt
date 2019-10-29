@@ -20,7 +20,7 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.furianrt.mydiary.MyApp
 import com.furianrt.mydiary.R
 import com.furianrt.mydiary.view.base.BaseView
-import com.furianrt.mydiary.data.entity.SyncProgressMessage
+import com.furianrt.mydiary.model.entity.SyncProgressMessage
 import com.furianrt.mydiary.view.screens.main.MainActivity
 import javax.inject.Inject
 

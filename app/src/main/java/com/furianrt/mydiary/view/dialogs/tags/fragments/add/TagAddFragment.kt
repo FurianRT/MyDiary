@@ -11,9 +11,7 @@
 package com.furianrt.mydiary.view.dialogs.tags.fragments.add
 
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.widget.Toast
 import com.furianrt.mydiary.R
 import com.furianrt.mydiary.view.base.BaseFragment
@@ -21,10 +19,9 @@ import com.furianrt.mydiary.utils.animateShake
 import com.furianrt.mydiary.utils.hideKeyboard
 import com.furianrt.mydiary.utils.showKeyboard
 import kotlinx.android.synthetic.main.fragment_tag_add.*
-import kotlinx.android.synthetic.main.fragment_tag_add.view.*
 import javax.inject.Inject
 
-class TagAddFragment : BaseFragment(), TagAddContract.MvpView {
+class TagAddFragment : BaseFragment(R.layout.fragment_tag_add), TagAddContract.MvpView {
 
     @Inject
     lateinit var mPresenter: TagAddContract.Presenter
@@ -35,16 +32,12 @@ class TagAddFragment : BaseFragment(), TagAddContract.MvpView {
         mPresenter.init(requireArguments().getString(ARG_NOTE_ID)!!)
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
-        val view = inflater.inflate(R.layout.fragment_tag_add, container, false)
-
-        view.button_tag_add.setOnClickListener {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        button_tag_add.setOnClickListener {
             mPresenter.onButtonAddClick(edit_add_tag.text?.toString() ?: "")
         }
-        view.button_tag_add_close.setOnClickListener { mPresenter.onButtonCloseClick() }
-
-        return view
+        button_tag_add_close.setOnClickListener { mPresenter.onButtonCloseClick() }
     }
 
     override fun showErrorEmptyTagName() {

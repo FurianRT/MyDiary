@@ -10,7 +10,7 @@
 
 package com.furianrt.mydiary.domain.get
 
-import com.furianrt.mydiary.data.repository.pin.PinRepository
+import com.furianrt.mydiary.model.repository.pin.PinRepository
 import javax.inject.Inject
 
 class GetPinRequestDelayUseCase @Inject constructor(

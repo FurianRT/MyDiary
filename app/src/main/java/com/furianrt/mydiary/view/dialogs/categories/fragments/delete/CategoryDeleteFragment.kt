@@ -11,18 +11,15 @@
 package com.furianrt.mydiary.view.dialogs.categories.fragments.delete
 
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import com.furianrt.mydiary.R
 import com.furianrt.mydiary.analytics.MyAnalytics
 import com.furianrt.mydiary.view.base.BaseFragment
-import com.furianrt.mydiary.data.entity.MyCategory
+import com.furianrt.mydiary.model.entity.MyCategory
 import kotlinx.android.synthetic.main.fragment_category_delete.*
-import kotlinx.android.synthetic.main.fragment_category_delete.view.*
 import javax.inject.Inject
 
-class CategoryDeleteFragment : BaseFragment(), CategoryDeleteContract.MvpView {
+class CategoryDeleteFragment : BaseFragment(R.layout.fragment_category_delete), CategoryDeleteContract.MvpView {
 
     @Inject
     lateinit var mPresenter: CategoryDeleteContract.Presenter
@@ -33,19 +30,13 @@ class CategoryDeleteFragment : BaseFragment(), CategoryDeleteContract.MvpView {
         mPresenter.init(requireArguments().getParcelable(ARG_CATEGORY)!!)
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
-        val view = inflater.inflate(R.layout.fragment_category_delete, container, false)
-
-
-
-        view.button_delete_category.setOnClickListener {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        button_delete_category.setOnClickListener {
             analytics.sendEvent(MyAnalytics.EVENT_NOTE_CATEGORY_DELETED)
             mPresenter.onButtonDeleteClick()
         }
-        view.button_delete_category_cancel.setOnClickListener { mPresenter.onButtonCancelClick() }
-
-        return view
+        button_delete_category_cancel.setOnClickListener { mPresenter.onButtonCancelClick() }
     }
 
     override fun showDeleteMessage(name: String) {

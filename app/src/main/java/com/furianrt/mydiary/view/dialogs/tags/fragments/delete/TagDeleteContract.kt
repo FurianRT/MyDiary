@@ -12,7 +12,7 @@ package com.furianrt.mydiary.view.dialogs.tags.fragments.delete
 
 import com.furianrt.mydiary.view.base.mvp.BaseMvpView
 import com.furianrt.mydiary.view.base.mvp.BaseMvpPresenter
-import com.furianrt.mydiary.data.entity.MyTag
+import com.furianrt.mydiary.model.entity.MyTag
 
 interface TagDeleteContract {
 

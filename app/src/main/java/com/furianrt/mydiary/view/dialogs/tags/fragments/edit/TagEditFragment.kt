@@ -11,22 +11,19 @@
 package com.furianrt.mydiary.view.dialogs.tags.fragments.edit
 
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.widget.Toast
 import com.furianrt.mydiary.R
 import com.furianrt.mydiary.analytics.MyAnalytics
 import com.furianrt.mydiary.view.base.BaseFragment
-import com.furianrt.mydiary.data.entity.MyTag
+import com.furianrt.mydiary.model.entity.MyTag
 import com.furianrt.mydiary.utils.animateShake
 import com.furianrt.mydiary.utils.hideKeyboard
 import com.furianrt.mydiary.utils.showKeyboard
 import kotlinx.android.synthetic.main.fragment_tag_edit.*
-import kotlinx.android.synthetic.main.fragment_tag_edit.view.*
 import javax.inject.Inject
 
-class TagEditFragment : BaseFragment(), TagEditContract.MvpView {
+class TagEditFragment : BaseFragment(R.layout.fragment_tag_edit), TagEditContract.MvpView {
 
     @Inject
     lateinit var mPresenter: TagEditContract.Presenter
@@ -41,17 +38,13 @@ class TagEditFragment : BaseFragment(), TagEditContract.MvpView {
         mPresenter.init(tag!!)
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
-        val view = inflater.inflate(R.layout.fragment_tag_edit, container, false)
-
-        view.button_tag_edit_confirm.setOnClickListener {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        button_tag_edit_confirm.setOnClickListener {
             analytics.sendEvent(MyAnalytics.EVENT_NOTE_TAG_EDITED)
             mPresenter.onButtonConfirmClick(edit_edit_tag.text?.toString() ?: "")
         }
-        view.button_tag_edit_close.setOnClickListener { mPresenter.onButtonCloseClick() }
-
-        return view
+        button_tag_edit_close.setOnClickListener { mPresenter.onButtonCloseClick() }
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
