@@ -12,12 +12,15 @@ android {
         applicationId "com.furianrt.mydiary"
         minSdkVersion 21
         targetSdkVersion 29
-        versionCode 50
-        versionName "1.7.2"
+        versionCode 51
+        versionName "1.7.3"
 
         javaCompileOptions {
             annotationProcessorOptions {
-                arguments = ["room.incremental": "true"]
+                arguments = [
+                        "room.incremental":"true",
+                        "room.expandProjection":"true"
+                ]
             }
         }
     }
@@ -86,7 +89,7 @@ dependencies {
     implementation 'com.google.android:flexbox:1.1.0'
 
     //Fingerprint
-    implementation 'androidx.biometric:biometric:1.0.0-rc01'
+    implementation 'androidx.biometric:biometric:1.0.0-rc02'
 
     //RecyclerView animators
     implementation 'jp.wasabeef:recyclerview-animators:3.0.0'

@@ -17,6 +17,7 @@ import android.text.*
 import android.text.style.*
 import android.util.Log
 import android.view.*
+import android.view.inputmethod.EditorInfo
 import android.widget.TextView
 import androidx.core.graphics.ColorUtils
 import com.furianrt.mydiary.R
@@ -80,6 +81,9 @@ class NoteEditFragment : BaseFragment(R.layout.fragment_note_edit), NoteEditFrag
                 (parentFragment as? NoteFragment?)?.hideRichTextOptions()
             }
         }
+
+        edit_note_title.imeOptions = EditorInfo.IME_ACTION_DONE
+        edit_note_title.setRawInputType(InputType.TYPE_CLASS_TEXT)
 
         mAppearance?.let { setAppearance(it) }
 
