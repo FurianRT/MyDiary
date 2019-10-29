@@ -15,7 +15,6 @@ import android.os.Bundle
 import android.util.Log
 import androidx.annotation.LayoutRes
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat
 import com.anjlab.android.iab.v3.BillingProcessor
 import com.anjlab.android.iab.v3.TransactionDetails
 import com.furianrt.mydiary.BuildConfig
@@ -26,6 +25,7 @@ import com.furianrt.mydiary.domain.check.IsAuthorizedUseCase
 import com.furianrt.mydiary.domain.check.IsPinEnabledUseCase
 import com.furianrt.mydiary.domain.get.GetAppAccentColorUseCase
 import com.furianrt.mydiary.domain.get.GetAppPrimaryColorUseCase
+import com.furianrt.mydiary.utils.getColorSupport
 import com.furianrt.mydiary.view.screens.pin.PinActivity
 import javax.inject.Inject
 
@@ -95,8 +95,6 @@ abstract class BaseActivity(@LayoutRes contentLayoutId: Int) : AppCompatActivity
 
     protected fun purchaseItem(productId: String) = mBillingProcessor.purchase(this, productId)
 
-    protected fun consumePurchase(productId: String) = mBillingProcessor.consumePurchase(productId)
-
     protected fun isItemPurchased(productId: String) = mBillingProcessor.isPurchased(productId)
 
     protected fun isBillingInitialized() = mBillingProcessor.isInitialized
@@ -143,105 +141,57 @@ abstract class BaseActivity(@LayoutRes contentLayoutId: Int) : AppCompatActivity
     // поэтому приходится хардкодить этот бред
     private fun applyStyleToTheme() {
         when (getAppPrimaryColor.invoke()) {
-            ContextCompat.getColor(this, R.color.r1) ->
-                theme.applyStyle(R.style.OverlayPrimaryColorR1, true)
-            ContextCompat.getColor(this, R.color.r4) ->
-                theme.applyStyle(R.style.OverlayPrimaryColorR4, true)
-            ContextCompat.getColor(this, R.color.r5) ->
-                theme.applyStyle(R.style.OverlayPrimaryColorR5, true)
-            ContextCompat.getColor(this, R.color.p1) ->
-                theme.applyStyle(R.style.OverlayPrimaryColorP1, true)
-            ContextCompat.getColor(this, R.color.p2) ->
-                theme.applyStyle(R.style.OverlayPrimaryColorP2, true)
-            ContextCompat.getColor(this, R.color.p3) ->
-                theme.applyStyle(R.style.OverlayPrimaryColorP3, true)
-            ContextCompat.getColor(this, R.color.b1) ->
-                theme.applyStyle(R.style.OverlayPrimaryColorB1, true)
-            ContextCompat.getColor(this, R.color.b4) ->
-                theme.applyStyle(R.style.OverlayPrimaryColorB4, true)
-            ContextCompat.getColor(this, R.color.b5) ->
-                theme.applyStyle(R.style.OverlayPrimaryColorB5, true)
-            ContextCompat.getColor(this, R.color.g1) ->
-                theme.applyStyle(R.style.OverlayPrimaryColorG1, true)
-            ContextCompat.getColor(this, R.color.g3) ->
-                theme.applyStyle(R.style.OverlayPrimaryColorG3, true)
-            ContextCompat.getColor(this, R.color.g4) ->
-                theme.applyStyle(R.style.OverlayPrimaryColorG4, true)
-            ContextCompat.getColor(this, R.color.g5) ->
-                theme.applyStyle(R.style.OverlayPrimaryColorG5, true)
-            ContextCompat.getColor(this, R.color.e1) ->
-                theme.applyStyle(R.style.OverlayPrimaryColorE1, true)
-            ContextCompat.getColor(this, R.color.e3) ->
-                theme.applyStyle(R.style.OverlayPrimaryColorE3, true)
-            ContextCompat.getColor(this, R.color.e4) ->
-                theme.applyStyle(R.style.OverlayPrimaryColorE4, true)
-            ContextCompat.getColor(this, R.color.e5) ->
-                theme.applyStyle(R.style.OverlayPrimaryColorE5, true)
-            ContextCompat.getColor(this, R.color.br1) ->
-                theme.applyStyle(R.style.OverlayPrimaryColorBr1, true)
-            ContextCompat.getColor(this, R.color.br2) ->
-                theme.applyStyle(R.style.OverlayPrimaryColorBr2, true)
-            ContextCompat.getColor(this, R.color.gr1) ->
-                theme.applyStyle(R.style.OverlayPrimaryColorGr1, true)
-            ContextCompat.getColor(this, R.color.gr2) ->
-                theme.applyStyle(R.style.OverlayPrimaryColorGr2, true)
-            ContextCompat.getColor(this, R.color.u1) ->
-                theme.applyStyle(R.style.OverlayPrimaryColorU1, true)
-            ContextCompat.getColor(this, R.color.u2) ->
-                theme.applyStyle(R.style.OverlayPrimaryColorU2, true)
-            ContextCompat.getColor(this, R.color.black) ->
-                theme.applyStyle(R.style.OverlayPrimaryColorBlack, true)
+            getColorSupport(R.color.r1) -> theme.applyStyle(R.style.OverlayPrimaryColorR1, true)
+            getColorSupport(R.color.r4) -> theme.applyStyle(R.style.OverlayPrimaryColorR4, true)
+            getColorSupport(R.color.r5) -> theme.applyStyle(R.style.OverlayPrimaryColorR5, true)
+            getColorSupport(R.color.p1) -> theme.applyStyle(R.style.OverlayPrimaryColorP1, true)
+            getColorSupport(R.color.p2) -> theme.applyStyle(R.style.OverlayPrimaryColorP2, true)
+            getColorSupport(R.color.p3) -> theme.applyStyle(R.style.OverlayPrimaryColorP3, true)
+            getColorSupport(R.color.b1) -> theme.applyStyle(R.style.OverlayPrimaryColorB1, true)
+            getColorSupport(R.color.b4) -> theme.applyStyle(R.style.OverlayPrimaryColorB4, true)
+            getColorSupport(R.color.b5) -> theme.applyStyle(R.style.OverlayPrimaryColorB5, true)
+            getColorSupport(R.color.g1) -> theme.applyStyle(R.style.OverlayPrimaryColorG1, true)
+            getColorSupport(R.color.g3) -> theme.applyStyle(R.style.OverlayPrimaryColorG3, true)
+            getColorSupport(R.color.g4) -> theme.applyStyle(R.style.OverlayPrimaryColorG4, true)
+            getColorSupport(R.color.g5) -> theme.applyStyle(R.style.OverlayPrimaryColorG5, true)
+            getColorSupport(R.color.e1) -> theme.applyStyle(R.style.OverlayPrimaryColorE1, true)
+            getColorSupport(R.color.e3) -> theme.applyStyle(R.style.OverlayPrimaryColorE3, true)
+            getColorSupport(R.color.e4) -> theme.applyStyle(R.style.OverlayPrimaryColorE4, true)
+            getColorSupport(R.color.e5) -> theme.applyStyle(R.style.OverlayPrimaryColorE5, true)
+            getColorSupport(R.color.br1) -> theme.applyStyle(R.style.OverlayPrimaryColorBr1, true)
+            getColorSupport(R.color.br2) -> theme.applyStyle(R.style.OverlayPrimaryColorBr2, true)
+            getColorSupport(R.color.gr1) -> theme.applyStyle(R.style.OverlayPrimaryColorGr1, true)
+            getColorSupport(R.color.gr2) -> theme.applyStyle(R.style.OverlayPrimaryColorGr2, true)
+            getColorSupport(R.color.u1) -> theme.applyStyle(R.style.OverlayPrimaryColorU1, true)
+            getColorSupport(R.color.u2) -> theme.applyStyle(R.style.OverlayPrimaryColorU2, true)
+            getColorSupport(R.color.black) -> theme.applyStyle(R.style.OverlayPrimaryColorBlack, true)
         }
 
         when (getAppAccentColor.invoke()) {
-            ContextCompat.getColor(this, R.color.r1) ->
-                theme.applyStyle(R.style.OverlayAccentColorR1, true)
-            ContextCompat.getColor(this, R.color.r4) ->
-                theme.applyStyle(R.style.OverlayAccentColorR4, true)
-            ContextCompat.getColor(this, R.color.r5) ->
-                theme.applyStyle(R.style.OverlayAccentColorR5, true)
-            ContextCompat.getColor(this, R.color.p1) ->
-                theme.applyStyle(R.style.OverlayAccentColorP1, true)
-            ContextCompat.getColor(this, R.color.p2) ->
-                theme.applyStyle(R.style.OverlayAccentColorP2, true)
-            ContextCompat.getColor(this, R.color.p3) ->
-                theme.applyStyle(R.style.OverlayAccentColorP3, true)
-            ContextCompat.getColor(this, R.color.b1) ->
-                theme.applyStyle(R.style.OverlayAccentColorB1, true)
-            ContextCompat.getColor(this, R.color.b4) ->
-                theme.applyStyle(R.style.OverlayAccentColorB4, true)
-            ContextCompat.getColor(this, R.color.b5) ->
-                theme.applyStyle(R.style.OverlayAccentColorB5, true)
-            ContextCompat.getColor(this, R.color.g1) ->
-                theme.applyStyle(R.style.OverlayAccentColorG1, true)
-            ContextCompat.getColor(this, R.color.g3) ->
-                theme.applyStyle(R.style.OverlayAccentColorG3, true)
-            ContextCompat.getColor(this, R.color.g4) ->
-                theme.applyStyle(R.style.OverlayAccentColorG4, true)
-            ContextCompat.getColor(this, R.color.g5) ->
-                theme.applyStyle(R.style.OverlayAccentColorG5, true)
-            ContextCompat.getColor(this, R.color.e1) ->
-                theme.applyStyle(R.style.OverlayAccentColorE1, true)
-            ContextCompat.getColor(this, R.color.e3) ->
-                theme.applyStyle(R.style.OverlayAccentColorE3, true)
-            ContextCompat.getColor(this, R.color.e4) ->
-                theme.applyStyle(R.style.OverlayAccentColorE4, true)
-            ContextCompat.getColor(this, R.color.e5) ->
-                theme.applyStyle(R.style.OverlayAccentColorE5, true)
-            ContextCompat.getColor(this, R.color.br1) ->
-                theme.applyStyle(R.style.OverlayAccentColorBr1, true)
-            ContextCompat.getColor(this, R.color.br2) ->
-                theme.applyStyle(R.style.OverlayAccentColorBr2, true)
-            ContextCompat.getColor(this, R.color.gr1) ->
-                theme.applyStyle(R.style.OverlayAccentColorGr1, true)
-            ContextCompat.getColor(this, R.color.gr2) ->
-                theme.applyStyle(R.style.OverlayAccentColorGr2, true)
-            ContextCompat.getColor(this, R.color.u1) ->
-                theme.applyStyle(R.style.OverlayAccentColorU1, true)
-            ContextCompat.getColor(this, R.color.u2) ->
-                theme.applyStyle(R.style.OverlayAccentColorU2, true)
-            ContextCompat.getColor(this, R.color.black) ->
-                theme.applyStyle(R.style.OverlayAccentColorBlack, true)
+            getColorSupport(R.color.r1) -> theme.applyStyle(R.style.OverlayAccentColorR1, true)
+            getColorSupport(R.color.r4) -> theme.applyStyle(R.style.OverlayAccentColorR4, true)
+            getColorSupport(R.color.r5) -> theme.applyStyle(R.style.OverlayAccentColorR5, true)
+            getColorSupport(R.color.p1) -> theme.applyStyle(R.style.OverlayAccentColorP1, true)
+            getColorSupport(R.color.p2) -> theme.applyStyle(R.style.OverlayAccentColorP2, true)
+            getColorSupport(R.color.p3) -> theme.applyStyle(R.style.OverlayAccentColorP3, true)
+            getColorSupport(R.color.b1) -> theme.applyStyle(R.style.OverlayAccentColorB1, true)
+            getColorSupport(R.color.b4) -> theme.applyStyle(R.style.OverlayAccentColorB4, true)
+            getColorSupport(R.color.b5) -> theme.applyStyle(R.style.OverlayAccentColorB5, true)
+            getColorSupport(R.color.g1) -> theme.applyStyle(R.style.OverlayAccentColorG1, true)
+            getColorSupport(R.color.g3) -> theme.applyStyle(R.style.OverlayAccentColorG3, true)
+            getColorSupport(R.color.g4) -> theme.applyStyle(R.style.OverlayAccentColorG4, true)
+            getColorSupport(R.color.g5) -> theme.applyStyle(R.style.OverlayAccentColorG5, true)
+            getColorSupport(R.color.e1) -> theme.applyStyle(R.style.OverlayAccentColorE1, true)
+            getColorSupport(R.color.e3) -> theme.applyStyle(R.style.OverlayAccentColorE3, true)
+            getColorSupport(R.color.e4) -> theme.applyStyle(R.style.OverlayAccentColorE4, true)
+            getColorSupport(R.color.e5) -> theme.applyStyle(R.style.OverlayAccentColorE5, true)
+            getColorSupport(R.color.br1) -> theme.applyStyle(R.style.OverlayAccentColorBr1, true)
+            getColorSupport(R.color.br2) -> theme.applyStyle(R.style.OverlayAccentColorBr2, true)
+            getColorSupport(R.color.gr1) -> theme.applyStyle(R.style.OverlayAccentColorGr1, true)
+            getColorSupport(R.color.gr2) -> theme.applyStyle(R.style.OverlayAccentColorGr2, true)
+            getColorSupport(R.color.u1) -> theme.applyStyle(R.style.OverlayAccentColorU1, true)
+            getColorSupport(R.color.u2) -> theme.applyStyle(R.style.OverlayAccentColorU2, true)
+            getColorSupport(R.color.black) -> theme.applyStyle(R.style.OverlayAccentColorBlack, true)
         }
     }
 }

@@ -15,8 +15,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.View
-import android.view.WindowManager
-import androidx.viewpager2.widget.ViewPager2
+import androidx.viewpager.widget.ViewPager
 import com.anjlab.android.iab.v3.TransactionDetails
 import com.furianrt.mydiary.BuildConfig
 import com.furianrt.mydiary.R
@@ -59,10 +58,12 @@ class NoteActivity : BaseActivity(R.layout.activity_note), NoteActivityContract.
     private var mIsNewNote = true
     private var mIsEditModeEnabled = false
 
-    private val mOnPageChangeListener = object : ViewPager2.OnPageChangeCallback() {
+    private val mOnPageChangeListener = object : ViewPager.OnPageChangeListener {
+        override fun onPageScrollStateChanged(state: Int) = Unit
+        override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) = Unit
         override fun onPageSelected(position: Int) {
             mPagerPosition = position
-            showImageCounter(mPagerPosition + 1, mPagerAdapter.itemCount)
+            showImageCounter(mPagerPosition + 1, mPagerAdapter.count)
         }
     }
 
@@ -83,7 +84,6 @@ class NoteActivity : BaseActivity(R.layout.activity_note), NoteActivityContract.
     override fun onCreate(savedInstanceState: Bundle?) {
         getPresenterComponent(this).inject(this)
         super.onCreate(savedInstanceState)
-        window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN)
         setSupportActionBar(toolbar_note_activity)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setDisplayShowHomeEnabled(true)
@@ -99,7 +99,7 @@ class NoteActivity : BaseActivity(R.layout.activity_note), NoteActivityContract.
 
         mIsNewNote = intent.getBooleanExtra(EXTRA_IS_NEW_NOTE, true)
 
-        mPagerAdapter = NoteActivityPagerAdapter(this, mIsNewNote)
+        mPagerAdapter = NoteActivityPagerAdapter(supportFragmentManager, mIsNewNote)
         pager_note.adapter = mPagerAdapter
     }
 
@@ -148,19 +148,20 @@ class NoteActivity : BaseActivity(R.layout.activity_note), NoteActivityContract.
         if (mPagerPosition >= noteIds.size) {
             mPagerPosition = noteIds.size - 1
         }
-        mPagerAdapter.submitList(noteIds)
+        mPagerAdapter.noteIds = noteIds
+        mPagerAdapter.notifyDataSetChanged()
         pager_note.setCurrentItem(mPagerPosition, false)
-        showImageCounter(mPagerPosition + 1, mPagerAdapter.itemCount)
+        showImageCounter(mPagerPosition + 1, mPagerAdapter.count)
     }
 
     override fun onNoteFragmentEditModeDisabled() {
-        pager_note.isUserInputEnabled = true
+        pager_note.swipeEnabled = true
         text_toolbar_title.visibility = View.VISIBLE
         mIsEditModeEnabled = false
     }
 
     override fun onNoteFragmentEditModeEnabled() {
-        pager_note.isUserInputEnabled = false
+        pager_note.swipeEnabled = false
         text_toolbar_title.visibility = View.GONE
         view_ad.visibility = View.GONE
         mIsEditModeEnabled = true
@@ -186,13 +187,13 @@ class NoteActivity : BaseActivity(R.layout.activity_note), NoteActivityContract.
     override fun onStart() {
         super.onStart()
         mPresenter.attachView(this)
-        pager_note.registerOnPageChangeCallback(mOnPageChangeListener)
+        pager_note.addOnPageChangeListener(mOnPageChangeListener)
         KeyboardUtils.addKeyboardToggleListener(this, mKeyboardListener)
     }
 
     override fun onStop() {
         super.onStop()
-        pager_note.unregisterOnPageChangeCallback(mOnPageChangeListener)
+        pager_note.removeOnPageChangeListener(mOnPageChangeListener)
         KeyboardUtils.removeKeyboardToggleListener(mKeyboardListener)
         mPresenter.detachView()
     }

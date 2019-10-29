@@ -29,7 +29,6 @@ import android.util.Log
 import android.view.*
 import android.widget.*
 import androidx.coordinatorlayout.widget.CoordinatorLayout
-import androidx.core.content.ContextCompat.getColor
 import androidx.viewpager2.widget.ViewPager2
 import com.furianrt.mydiary.R
 import com.furianrt.mydiary.analytics.MyAnalytics
@@ -223,7 +222,6 @@ class NoteFragment : BaseFragment(R.layout.fragment_note), NoteFragmentContract.
 
     override fun onStart() {
         super.onStart()
-        requireActivity().window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE)
         pager_note_image.registerOnPageChangeCallback(mOnPageChangeCallback)
         mPresenter.attachView(this)
     }
@@ -412,7 +410,7 @@ class NoteFragment : BaseFragment(R.layout.fragment_note), NoteFragmentContract.
         val image = layout_tags.getChildAt(0) as ImageView
         image.setColorFilter(
                 tagsAndAppearance.appearance.surfaceTextColor
-                        ?: getColor(requireContext(), R.color.black),
+                        ?: requireContext().getColorSupport(R.color.black),
                 PorterDuff.Mode.SRC_IN
         )
         image.alpha = 0.4f
@@ -450,7 +448,7 @@ class NoteFragment : BaseFragment(R.layout.fragment_note), NoteFragmentContract.
                 elevation = 5f
                 radius = 25f
                 setCardBackgroundColor(
-                        appearance.textBackground ?: getColor(requireContext(), R.color.white)
+                        appearance.textBackground ?: requireContext().getColorSupport(R.color.white)
                 )
                 val params = FrameLayout.LayoutParams(
                         FrameLayout.LayoutParams.WRAP_CONTENT,
@@ -462,7 +460,7 @@ class NoteFragment : BaseFragment(R.layout.fragment_note), NoteFragmentContract.
                 addView(TextView(context).apply {
                     this.text = text
                     setTextColor(
-                            appearance.textColor ?: getColor(requireContext(), R.color.black)
+                            appearance.textColor ?: requireContext().getColorSupport(R.color.black)
                     )
                     setPadding(20, 10, 20, 10)
                 })

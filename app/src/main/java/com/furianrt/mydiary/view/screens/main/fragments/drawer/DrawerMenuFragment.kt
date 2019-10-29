@@ -23,7 +23,6 @@ import android.view.ViewGroup
 import android.view.WindowInsets
 import android.view.animation.AnticipateOvershootInterpolator
 import android.view.animation.OvershootInterpolator
-import androidx.core.content.ContextCompat
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -110,7 +109,7 @@ class DrawerMenuFragment : BaseFragment(R.layout.fragment_drawer_menu), DrawerMe
             }
             val category = note.category
             if (category == null) {
-                value.add(ContextCompat.getColor(requireContext(), R.color.grey_dark))
+                value.add(requireContext().getColorSupport(R.color.grey_dark))
             } else {
                 value.add(category.color)
             }

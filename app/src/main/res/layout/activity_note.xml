@@ -8,7 +8,7 @@
     android:background="@color/grey_light"
     tools:context=".view.screens.note.NoteActivity">
 
-    <androidx.viewpager2.widget.ViewPager2
+    <com.furianrt.mydiary.view.views.LockableViewPager
         android:id="@+id/pager_note"
         android:layout_width="0dp"
         android:layout_height="0dp"
