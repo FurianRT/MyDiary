@@ -10,50 +10,32 @@
 
 package com.furianrt.mydiary.view.screens.note
 
-import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentActivity
-import androidx.recyclerview.widget.DiffUtil
-import androidx.viewpager2.adapter.FragmentStateAdapter
+import androidx.fragment.app.FragmentManager
+import androidx.fragment.app.FragmentStatePagerAdapter
+import androidx.viewpager.widget.PagerAdapter
 import com.furianrt.mydiary.view.screens.note.fragments.mainnote.NoteFragment
 
 class NoteActivityPagerAdapter(
-        activity: FragmentActivity,
+        fm: FragmentManager,
         private val isNewNote: Boolean
-) : FragmentStateAdapter(activity) {
+) : FragmentStatePagerAdapter(fm, BEHAVIOR_SET_USER_VISIBLE_HINT) {
 
-    private val mNoteIds = mutableListOf<String>()
+    private var mIsSizeChanged = false
 
-    fun submitList(noteIds: List<String>) {
-        val diffCallback = NoteListDiffCallback(mNoteIds, noteIds)
-        val diffResult = DiffUtil.calculateDiff(diffCallback)
-        mNoteIds.clear()
-        mNoteIds.addAll(noteIds)
-        diffResult.dispatchUpdatesTo(this)
-    }
+    var noteIds = emptyList<String>()
+        set(value) {
+            mIsSizeChanged = field.size != value.size
+            field = value
+        }
 
-    override fun createFragment(position: Int): Fragment =
-            NoteFragment.newInstance(mNoteIds[position], isNewNote)
+    override fun getItem(position: Int) = NoteFragment.newInstance(noteIds[position], isNewNote)
 
-    override fun getItemCount(): Int = mNoteIds.size
+    override fun getCount(): Int = noteIds.size
 
-    override fun getItemId(position: Int): Long = mNoteIds[position].hashCode().toLong()
-
-    override fun containsItem(itemId: Long): Boolean =
-            mNoteIds.map { it.hashCode().toLong() }.contains(itemId)
-
-    private class NoteListDiffCallback(
-            private val oldList: List<String>,
-            private val newList: List<String>
-    ) : DiffUtil.Callback() {
-
-        override fun getNewListSize(): Int = newList.size
-
-        override fun getOldListSize(): Int = oldList.size
-
-        override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean =
-                oldList[oldItemPosition] == newList[newItemPosition]
-
-        override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean =
-                areItemsTheSame(oldItemPosition, newItemPosition)
-    }
+    override fun getItemPosition(`object`: Any): Int =
+            if (mIsSizeChanged) {
+                PagerAdapter.POSITION_NONE
+            } else {
+                super.getItemPosition(`object`)
+            }
 }

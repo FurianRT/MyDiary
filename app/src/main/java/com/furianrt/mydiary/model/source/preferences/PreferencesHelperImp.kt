@@ -11,10 +11,10 @@
 package com.furianrt.mydiary.model.source.preferences
 
 import android.content.Context
-import androidx.core.content.ContextCompat
 import androidx.preference.PreferenceManager
 import com.furianrt.mydiary.R
 import com.furianrt.mydiary.di.application.modules.app.AppContext
+import com.furianrt.mydiary.utils.getColorSupport
 import com.furianrt.mydiary.utils.getThemeAccentColor
 import com.furianrt.mydiary.utils.getThemePrimaryColor
 import org.joda.time.DateTime
@@ -45,16 +45,14 @@ class PreferencesHelperImp @Inject constructor(
             mPrefs.getBoolean(PreferencesHelper.MOOD_AVAILABILITY, true)
 
     override fun getTextColor(): Int =
-            mPrefs.getInt(PreferencesHelper.TEXT_COLOR,
-                    ContextCompat.getColor(context, R.color.black))
+            mPrefs.getInt(PreferencesHelper.TEXT_COLOR, context.getColorSupport(R.color.black))
 
     override fun setTextColor(color: Int) {
         mPrefs.edit().putInt(PreferencesHelper.TEXT_COLOR, color).apply()
     }
 
     override fun getSurfaceTextColor(): Int =
-            mPrefs.getInt(PreferencesHelper.SURFACE_TEXT_COLOR,
-                    ContextCompat.getColor(context, R.color.black))
+            mPrefs.getInt(PreferencesHelper.SURFACE_TEXT_COLOR, context.getColorSupport(R.color.black))
 
     override fun setSurfaceTextColor(color: Int) {
         mPrefs.edit().putInt(PreferencesHelper.SURFACE_TEXT_COLOR, color).apply()
@@ -68,16 +66,14 @@ class PreferencesHelperImp @Inject constructor(
     }
 
     override fun getNoteBackgroundColor(): Int =
-            mPrefs.getInt(PreferencesHelper.NOTE_BACKGROUND_COLOR,
-                    ContextCompat.getColor(context, R.color.grey_light))
+            mPrefs.getInt(PreferencesHelper.NOTE_BACKGROUND_COLOR, context.getColorSupport(R.color.grey_light))
 
     override fun setNoteBackgroundColor(color: Int) {
         mPrefs.edit().putInt(PreferencesHelper.NOTE_BACKGROUND_COLOR, color).apply()
     }
 
     override fun getNoteTextBackgroundColor(): Int =
-            mPrefs.getInt(PreferencesHelper.NOTE_TEXT_BACKGROUND_COLOR,
-                    ContextCompat.getColor(context, R.color.white))
+            mPrefs.getInt(PreferencesHelper.NOTE_TEXT_BACKGROUND_COLOR, context.getColorSupport(R.color.white))
 
     override fun setNoteTextBackgroundColor(color: Int) {
         mPrefs.edit().putInt(PreferencesHelper.NOTE_TEXT_BACKGROUND_COLOR, color).apply()

@@ -170,8 +170,8 @@ class AuthFragment : BaseFragment(R.layout.fragment_auth), AuthContract.MvpView 
     }
 
     fun clearFocus() {
-        activity?.hideKeyboard()
-        auth_container?.clearFocus()
+        activity?.currentFocus?.hideKeyboard()
+        activity?.currentFocus?.clearFocus()
     }
 
     fun enableSignUpButton(enable: Boolean) {

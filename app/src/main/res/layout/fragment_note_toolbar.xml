@@ -17,17 +17,11 @@
         app:contentScrim="?attr/colorPrimary"
         app:layout_scrollFlags="scroll|exitUntilCollapsed">
 
-        <com.furianrt.mydiary.view.views.NestedScrollableHost
+        <androidx.viewpager2.widget.ViewPager2
+            android:id="@+id/pager_note_image"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            app:layout_collapseMode="parallax">
-
-            <androidx.viewpager2.widget.ViewPager2
-                android:id="@+id/pager_note_image"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent" />
-
-        </com.furianrt.mydiary.view.views.NestedScrollableHost>
+            app:layout_collapseMode="parallax" />
 
         <TextView
             android:id="@+id/text_note_image_counter"

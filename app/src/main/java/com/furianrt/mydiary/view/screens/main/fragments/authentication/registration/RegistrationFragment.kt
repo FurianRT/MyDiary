@@ -15,7 +15,6 @@ import android.os.Bundle
 import android.os.Handler
 import android.view.View
 import android.view.WindowManager
-import androidx.core.content.ContextCompat
 import com.furianrt.mydiary.R
 import com.furianrt.mydiary.view.base.BaseFragment
 import com.furianrt.mydiary.view.screens.main.fragments.authentication.AuthFragment
@@ -119,7 +118,7 @@ class RegistrationFragment : BaseFragment(R.layout.fragment_registration), Regis
 
     private fun showEmailError() {
         image_email.setImageResource(R.drawable.ic_error)
-        image_email.setColorFilter(ContextCompat.getColor(requireContext(), R.color.red), PorterDuff.Mode.SRC_IN)
+        image_email.setColorFilter(requireContext().getColorSupport(R.color.red), PorterDuff.Mode.SRC_IN)
         hideLoadingEmail()
         image_email.visibility = View.VISIBLE
     }

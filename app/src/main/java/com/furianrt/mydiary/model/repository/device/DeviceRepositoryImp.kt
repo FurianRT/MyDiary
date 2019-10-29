@@ -49,7 +49,6 @@ class DeviceRepositoryImp @Inject constructor(
         private const val LOCATION_INTERVAL = 1000L
     }
 
-    private var mNetworkAvailability = false
     private val mBillingProcessor = BillingProcessor(context, BuildConfig.LICENSE_KEY, BuildConfig.MERCHANT_ID, this)
     private val mPickit = PickiT(context, this)
     private val mUriConvertCallbacks = mutableListOf<OnUriConvertCallback>()
@@ -62,22 +61,6 @@ class DeviceRepositoryImp @Inject constructor(
                 findAddress(it.lastLocation.latitude, it.lastLocation.longitude)
             } }).start()
         }
-    }
-
-    init {
-        val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-        val networkRequest = NetworkRequest.Builder().build()
-        connectivityManager.registerNetworkCallback(networkRequest, object : ConnectivityManager.NetworkCallback() {
-            override fun onAvailable(network: Network) {
-                super.onAvailable(network)
-                mNetworkAvailability = true
-            }
-
-            override fun onLost(network: Network) {
-                super.onLost(network)
-                mNetworkAvailability = false
-            }
-        })
     }
 
     @Synchronized
@@ -111,7 +94,23 @@ class DeviceRepositoryImp @Inject constructor(
     override fun isFingerprintEnabled(): Boolean =
             BiometricManager.from(context).canAuthenticate() == BiometricManager.BIOMETRIC_SUCCESS
 
-    override fun isNetworkAvailable(): Boolean = mNetworkAvailability
+    @Suppress("DEPRECATION")
+    override fun isNetworkAvailable(): Boolean {
+        try {
+            val cm = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+            return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                val an = cm.activeNetwork ?: return false
+                val capabilities = cm.getNetworkCapabilities(an) ?: return false
+                capabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
+            } else {
+                val a = cm.activeNetworkInfo ?: return false
+                a.isConnected && (a.type == ConnectivityManager.TYPE_WIFI || a.type == ConnectivityManager.TYPE_MOBILE)
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+        return false
+    }
 
     override fun isLocationAvailable(): Boolean {
         val manager = context.getSystemService(Context.LOCATION_SERVICE) as LocationManager?

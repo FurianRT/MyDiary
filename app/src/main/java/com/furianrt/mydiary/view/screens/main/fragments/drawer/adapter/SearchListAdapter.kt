@@ -720,7 +720,7 @@ class SearchListAdapter(
             setOnChildCheckedListener(this@SearchListAdapter)
             itemView.text_category_name.text = itemView.context.getString(R.string.fragment_drawer_menu_no_category)
             itemView.text_category_count.text = item.count.toString()
-            itemView.view_category_color.setBackgroundColor(ContextCompat.getColor(itemView.context, R.color.transparent))
+            itemView.view_category_color.setBackgroundColor(itemView.context.getColorSupport(R.color.transparent))
         }
 
         override fun getCheckable(): Checkable = itemView.check_search_item_category

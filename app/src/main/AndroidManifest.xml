@@ -52,7 +52,8 @@
 
         <activity
             android:name=".view.screens.note.NoteActivity"
-            android:parentActivityName=".view.screens.main.MainActivity" />
+            android:parentActivityName=".view.screens.main.MainActivity"
+            android:windowSoftInputMode="adjustResize" />
 
         <activity
             android:name=".view.screens.gallery.GalleryActivity"
@@ -66,9 +67,7 @@
             android:name=".view.screens.settings.note.NoteSettingsActivity"
             android:parentActivityName=".view.screens.note.NoteActivity" />
 
-        <activity
-            android:name=".view.screens.pin.PinActivity"
-             />
+        <activity android:name=".view.screens.pin.PinActivity" />
 
         <activity
             android:name=".view.screens.statistics.StatsActivity"
