@@ -82,6 +82,7 @@ class MyApp : Application(), Application.ActivityLifecycleCallbacks {
             StrictMode.setVmPolicy(VmPolicy.Builder()
                     .detectLeakedSqlLiteObjects()
                     .detectLeakedClosableObjects()
+                    .detectFileUriExposure()
                     .detectActivityLeaks()
                     .detectLeakedRegistrationObjects()
                     .penaltyLog()
