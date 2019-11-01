@@ -186,6 +186,7 @@ class MyApp : Application(), Application.ActivityLifecycleCallbacks {
 *   добавить кнопку очистки фильтров
 *   изсправить баг с дефолтными настройками внешнего вида
 *   добавить включаемую автоматическу синхронизацию
+*   исправить shareNOte
 *
 * */
 
@@ -194,6 +195,7 @@ class MyApp : Application(), Application.ActivityLifecycleCallbacks {
 * включаемая автоматическая синхронизация
 * статистика по записям
 * вывод в pdf
+* шифрование выбраной заметки
 *
 * */
 

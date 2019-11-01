@@ -281,12 +281,12 @@ class NoteFragment : BaseFragment(R.layout.fragment_note), NoteFragmentContract.
                     mPresenter.onButtonMicClick()
                     true
                 }
-                R.id.menu_share -> {
+               /* R.id.menu_share -> {
                     removeEditFragment()
                     analytics.sendEvent(MyAnalytics.EVENT_SHARE_NOTE)
                     mPresenter.onButtonShareClick()
                     true
-                }
+                }*/
                 else -> super.onOptionsItemSelected(item)
             }
 
