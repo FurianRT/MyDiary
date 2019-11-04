@@ -11,27 +11,27 @@
 package com.furianrt.mydiary.domain.get
 
 import com.furianrt.mydiary.model.entity.MyNoteAppearance
-import com.furianrt.mydiary.model.repository.appearance.AppearanceRepository
+import com.furianrt.mydiary.model.gateway.appearance.AppearanceGateway
 import io.reactivex.Flowable
 import javax.inject.Inject
 
 class GetAppearanceUseCase @Inject constructor(
-        private val appearanceRepository: AppearanceRepository
+        private val appearanceGateway: AppearanceGateway
 ) {
 
     fun invoke(noteId: String): Flowable<MyNoteAppearance> =
-            appearanceRepository.getNoteAppearance(noteId)
+            appearanceGateway.getNoteAppearance(noteId)
                     .map { appearance ->
                         appearance.textSize =
-                                appearance.textSize ?: appearanceRepository.getTextSize()
+                                appearance.textSize ?: appearanceGateway.getTextSize()
                         appearance.textColor =
-                                appearance.textColor ?: appearanceRepository.getTextColor()
+                                appearance.textColor ?: appearanceGateway.getTextColor()
                         appearance.surfaceTextColor =
-                                appearance.surfaceTextColor ?: appearanceRepository.getSurfaceTextColor()
+                                appearance.surfaceTextColor ?: appearanceGateway.getSurfaceTextColor()
                         appearance.background =
-                                appearance.background ?: appearanceRepository.getNoteBackgroundColor()
+                                appearance.background ?: appearanceGateway.getNoteBackgroundColor()
                         appearance.textBackground =
-                                appearance.textBackground ?: appearanceRepository.getNoteTextBackgroundColor()
+                                appearance.textBackground ?: appearanceGateway.getNoteTextBackgroundColor()
                         return@map appearance
                     }
 }

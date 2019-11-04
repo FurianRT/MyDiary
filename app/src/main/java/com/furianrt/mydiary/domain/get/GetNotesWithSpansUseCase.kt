@@ -13,21 +13,21 @@ package com.furianrt.mydiary.domain.get
 import com.furianrt.mydiary.model.entity.MyNote
 import com.furianrt.mydiary.model.entity.MyNoteWithSpans
 import com.furianrt.mydiary.model.entity.MyTextSpan
-import com.furianrt.mydiary.model.repository.note.NoteRepository
-import com.furianrt.mydiary.model.repository.span.SpanRepository
+import com.furianrt.mydiary.model.gateway.note.NoteGateway
+import com.furianrt.mydiary.model.gateway.span.SpanGateway
 import com.google.common.base.Optional
 import io.reactivex.Flowable
 import io.reactivex.functions.Function3
 import javax.inject.Inject
 
 class GetNotesWithSpansUseCase @Inject constructor(
-        private val noteRepository: NoteRepository,
-        private val spanRepository: SpanRepository
+        private val noteGateway: NoteGateway,
+        private val spanGateway: SpanGateway
 ) {
 
     fun invoke(): Flowable<List<MyNoteWithSpans>> =
             getAllNotes().map { notes ->
-                if (noteRepository.isSortDesc()) {
+                if (noteGateway.isSortDesc()) {
                     notes.sortedByDescending { it.note.time }
                 } else {
                     notes.sortedBy { it.note.time }
@@ -41,9 +41,9 @@ class GetNotesWithSpansUseCase @Inject constructor(
 
     private fun getAllNotes(): Flowable<List<MyNoteWithSpans>> =
             Flowable.combineLatest(
-                    noteRepository.getAllNotes(),
-                    spanRepository.getAllTextSpans(),
-                    spanRepository.getDeletedTextSpans(),
+                    noteGateway.getAllNotes(),
+                    spanGateway.getAllTextSpans(),
+                    spanGateway.getDeletedTextSpans(),
                     Function3<List<MyNote>, List<MyTextSpan>, List<MyTextSpan>, List<MyNoteWithSpans>>
                     { notes, spans, deletedSpans ->
                         notes.map { note ->

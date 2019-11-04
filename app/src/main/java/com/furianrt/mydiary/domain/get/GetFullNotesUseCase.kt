@@ -11,11 +11,11 @@
 package com.furianrt.mydiary.domain.get
 
 import com.furianrt.mydiary.model.entity.*
-import com.furianrt.mydiary.model.repository.image.ImageRepository
-import com.furianrt.mydiary.model.repository.location.LocationRepository
-import com.furianrt.mydiary.model.repository.note.NoteRepository
-import com.furianrt.mydiary.model.repository.span.SpanRepository
-import com.furianrt.mydiary.model.repository.tag.TagRepository
+import com.furianrt.mydiary.model.gateway.image.ImageGateway
+import com.furianrt.mydiary.model.gateway.location.LocationGateway
+import com.furianrt.mydiary.model.gateway.note.NoteGateway
+import com.furianrt.mydiary.model.gateway.span.SpanGateway
+import com.furianrt.mydiary.model.gateway.tag.TagGateway
 import com.furianrt.mydiary.utils.MyRxUtils
 import com.google.common.base.Optional
 import io.reactivex.Flowable
@@ -25,17 +25,17 @@ import javax.inject.Inject
 
 //Следит почти за всеми таблицами. Использовать только когда дейстительно необходимо!
 class GetFullNotesUseCase @Inject constructor(
-        private val noteRepository: NoteRepository,
-        private val tagRepository: TagRepository,
-        private val imageRepository: ImageRepository,
-        private val locationRepository: LocationRepository,
-        private val spanRepository: SpanRepository,
+        private val noteGateway: NoteGateway,
+        private val tagGateway: TagGateway,
+        private val imageGateway: ImageGateway,
+        private val locationGateway: LocationGateway,
+        private val spanGateway: SpanGateway,
         private val scheduler: MyRxUtils.BaseSchedulerProvider
 ) {
 
     fun invoke(): Flowable<List<MyNoteWithProp>> =
             getAllNotes().map { notes ->
-                if (noteRepository.isSortDesc()) {
+                if (noteGateway.isSortDesc()) {
                     notes.sortedByDescending { it.note.time }
                 } else {
                     notes.sortedBy { it.note.time }
@@ -49,15 +49,15 @@ class GetFullNotesUseCase @Inject constructor(
 
     private fun getAllNotes(): Flowable<List<MyNoteWithProp>> =
             Flowable.combineLatest(
-                    noteRepository.getAllNotesWithProp(),
-                    tagRepository.getAllNoteTags(),
-                    tagRepository.getAllTags(),
-                    imageRepository.getAllImages(),
-                    locationRepository.getAllNoteLocations(),
-                    locationRepository.getAllDbLocations(),
-                    spanRepository.getAllTextSpans(),
-                    spanRepository.getDeletedTextSpans(),
-                    imageRepository.getDeletedImages(),
+                    noteGateway.getAllNotesWithProp(),
+                    tagGateway.getAllNoteTags(),
+                    tagGateway.getAllTags(),
+                    imageGateway.getAllImages(),
+                    locationGateway.getAllNoteLocations(),
+                    locationGateway.getAllDbLocations(),
+                    spanGateway.getAllTextSpans(),
+                    spanGateway.getDeletedTextSpans(),
+                    imageGateway.getDeletedImages(),
                     Function9<List<MyNoteWithProp>, List<NoteTag>, List<MyTag>, List<MyImage>,
                             List<NoteLocation>, List<MyLocation>, List<MyTextSpan>, List<MyTextSpan>,
                             List<MyImage>, List<MyNoteWithProp>>

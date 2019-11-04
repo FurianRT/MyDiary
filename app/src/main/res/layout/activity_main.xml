@@ -7,9 +7,9 @@
     android:layout_height="match_parent"
     android:background="@color/grey_light"
     android:fitsSystemWindows="false"
-    tools:context=".view.screens.main.MainActivity">
+    tools:context=".presentation.screens.main.MainActivity">
 
-    <com.furianrt.mydiary.view.views.MyDrawerLayout
+    <com.furianrt.mydiary.presentation.views.MyDrawerLayout
         android:id="@+id/drawer"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -123,7 +123,7 @@
             android:layout_height="match_parent"
             android:layout_gravity="start" />
 
-    </com.furianrt.mydiary.view.views.MyDrawerLayout>
+    </com.furianrt.mydiary.presentation.views.MyDrawerLayout>
 
     <View
         android:id="@+id/view_actionbar"

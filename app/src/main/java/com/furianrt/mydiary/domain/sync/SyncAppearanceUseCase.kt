@@ -10,31 +10,31 @@
 
 package com.furianrt.mydiary.domain.sync
 
-import com.furianrt.mydiary.model.repository.appearance.AppearanceRepository
+import com.furianrt.mydiary.model.gateway.appearance.AppearanceGateway
 import io.reactivex.Completable
 import javax.inject.Inject
 
 class SyncAppearanceUseCase @Inject constructor(
-        private val appearanceRepository: AppearanceRepository
+        private val appearanceGateway: AppearanceGateway
 ) {
 
     class SyncAppearanceException : Throwable()
 
     fun invoke(email: String): Completable =
-            appearanceRepository.getAllNoteAppearances()
+            appearanceGateway.getAllNoteAppearances()
                     .first(emptyList())
                     .map { appearances -> appearances.filter { !it.isSync(email) } }
                     .map { appearances -> appearances.apply { forEach { it.syncWith.add(email) } } }
                     .flatMapCompletable { appearances ->
                         Completable.concat(listOf(
-                                appearanceRepository.saveAppearancesInCloud(appearances),
-                                appearanceRepository.updateAppearancesSync(appearances)
+                                appearanceGateway.saveAppearancesInCloud(appearances),
+                                appearanceGateway.updateAppearancesSync(appearances)
                         ))
                     }
-                    .andThen(appearanceRepository.getDeletedAppearances().first(emptyList()))
-                    .flatMapCompletable { appearanceRepository.deleteAppearancesFromCloud(it) }
-                    .andThen(appearanceRepository.getAllAppearancesFromCloud())
-                    .flatMapCompletable { appearanceRepository.insertAppearance(it) }
+                    .andThen(appearanceGateway.getDeletedAppearances().first(emptyList()))
+                    .flatMapCompletable { appearanceGateway.deleteAppearancesFromCloud(it) }
+                    .andThen(appearanceGateway.getAllAppearancesFromCloud())
+                    .flatMapCompletable { appearanceGateway.insertAppearance(it) }
                     .onErrorResumeNext { error ->
                         error.printStackTrace()
                         Completable.error(SyncAppearanceException())

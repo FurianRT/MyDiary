@@ -12,16 +12,16 @@ package com.furianrt.mydiary.domain.save
 
 import com.furianrt.mydiary.model.entity.MyNote
 import com.furianrt.mydiary.model.entity.MyNoteAppearance
-import com.furianrt.mydiary.model.repository.appearance.AppearanceRepository
-import com.furianrt.mydiary.model.repository.note.NoteRepository
+import com.furianrt.mydiary.model.gateway.appearance.AppearanceGateway
+import com.furianrt.mydiary.model.gateway.note.NoteGateway
 import io.reactivex.Completable
 import javax.inject.Inject
 
 class SaveNoteIfNotExistUseCase @Inject constructor(
-        private val noteRepository: NoteRepository,
-        private val appearanceRepository: AppearanceRepository
+        private val noteGateway: NoteGateway,
+        private val appearanceGateway: AppearanceGateway
 ) {
     fun invoke(noteId: String): Completable =
-        noteRepository.insertNote(MyNote(noteId))
-                .andThen(appearanceRepository.insertAppearance(MyNoteAppearance(noteId)))
+        noteGateway.insertNote(MyNote(noteId))
+                .andThen(appearanceGateway.insertAppearance(MyNoteAppearance(noteId)))
 }

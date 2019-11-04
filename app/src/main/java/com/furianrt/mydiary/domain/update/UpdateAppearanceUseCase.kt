@@ -11,19 +11,19 @@
 package com.furianrt.mydiary.domain.update
 
 import com.furianrt.mydiary.model.entity.MyNoteAppearance
-import com.furianrt.mydiary.model.repository.appearance.AppearanceRepository
-import com.furianrt.mydiary.model.repository.note.NoteRepository
+import com.furianrt.mydiary.model.gateway.appearance.AppearanceGateway
+import com.furianrt.mydiary.model.gateway.note.NoteGateway
 import io.reactivex.Completable
 import javax.inject.Inject
 
 class UpdateAppearanceUseCase @Inject constructor(
-        private val appearanceRepository: AppearanceRepository,
-        private val noteRepository: NoteRepository
+        private val appearanceGateway: AppearanceGateway,
+        private val noteGateway: NoteGateway
 ) {
 
     fun invoke(appearance: MyNoteAppearance): Completable =
-            appearanceRepository.updateAppearance(appearance.apply { syncWith.clear() })
-                    .andThen(noteRepository.getNote(appearance.appearanceId))
+            appearanceGateway.updateAppearance(appearance.apply { syncWith.clear() })
+                    .andThen(noteGateway.getNote(appearance.appearanceId))
                     .map { it.apply { it.syncWith.clear() } }
-                    .flatMapCompletable { noteRepository.updateNote(it) }
+                    .flatMapCompletable { noteGateway.updateNote(it) }
 }

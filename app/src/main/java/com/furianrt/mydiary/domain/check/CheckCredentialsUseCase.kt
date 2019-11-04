@@ -11,15 +11,15 @@
 package com.furianrt.mydiary.domain.check
 
 import android.util.Patterns
-import com.furianrt.mydiary.model.repository.device.DeviceRepository
-import com.furianrt.mydiary.model.repository.profile.ProfileRepository
+import com.furianrt.mydiary.model.gateway.device.DeviceGateway
+import com.furianrt.mydiary.model.gateway.profile.ProfileGateway
 import io.reactivex.Completable
 import io.reactivex.Single
 import javax.inject.Inject
 
 class CheckCredentialsUseCase @Inject constructor(
-        private val profileRepository: ProfileRepository,
-        private val deviceRepository: DeviceRepository
+        private val profileGateway: ProfileGateway,
+        private val deviceGateway: DeviceGateway
 ) {
 
     class EmailFormatException : Throwable()
@@ -36,7 +36,7 @@ class CheckCredentialsUseCase @Inject constructor(
     }
 
     fun invoke(email: String, password: String, passwordRepeat: String): Completable =
-            Single.fromCallable { deviceRepository.isNetworkAvailable() }
+            Single.fromCallable { deviceGateway.isNetworkAvailable() }
                     .flatMap { networkAvailable ->
                         if (networkAvailable) {
                             Single.fromCallable { validateEmail(email) }
@@ -45,7 +45,7 @@ class CheckCredentialsUseCase @Inject constructor(
                         }
                     }
                     .flatMap { Single.fromCallable { validatePassword(password, passwordRepeat) } }
-                    .flatMap { profileRepository.isProfileExists(email) }
+                    .flatMap { profileGateway.isProfileExists(email) }
                     .flatMapCompletable { exist ->
                         if (exist) {
                             throw EmailExistException()
@@ -56,7 +56,7 @@ class CheckCredentialsUseCase @Inject constructor(
 
     fun invoke(email: String): Completable =
             Single.fromCallable { validateEmail(email) }
-                    .flatMap { profileRepository.isProfileExists(email) }
+                    .flatMap { profileGateway.isProfileExists(email) }
                     .flatMapCompletable { exist ->
                         if (exist) {
                             throw EmailExistException()

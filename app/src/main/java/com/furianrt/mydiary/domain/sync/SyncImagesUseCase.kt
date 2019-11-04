@@ -11,20 +11,20 @@
 package com.furianrt.mydiary.domain.sync
 
 import com.furianrt.mydiary.model.entity.MyImage
-import com.furianrt.mydiary.model.repository.image.ImageRepository
+import com.furianrt.mydiary.model.gateway.image.ImageGateway
 import io.reactivex.Completable
 import io.reactivex.Single
 import io.reactivex.functions.BiFunction
 import javax.inject.Inject
 
 class SyncImagesUseCase @Inject constructor(
-        private val imageRepository: ImageRepository
+        private val imageGateway: ImageGateway
 ) {
 
     class SyncImagesException : Throwable()
 
     fun invoke(email: String): Completable =
-            imageRepository.getAllImages()
+            imageGateway.getAllImages()
                     .first(emptyList())
                     .map { images -> images.filter { !it.isSync(email) } }
                     .map { notSyncImages -> notSyncImages.apply { forEach { it.syncWith.add(email) } } }
@@ -32,16 +32,16 @@ class SyncImagesUseCase @Inject constructor(
                         val notSyncFiles = images.filter { !it.isFileSync(email) }
                         notSyncFiles.forEach { it.fileSyncWith.add(email) }
                         Completable.concat(listOf(
-                                imageRepository.saveImagesFilesInCloud(notSyncFiles),
-                                imageRepository.saveImagesInCloud(images),
-                                imageRepository.updateImageSync(images)
+                                imageGateway.saveImagesFilesInCloud(notSyncFiles),
+                                imageGateway.saveImagesInCloud(images),
+                                imageGateway.updateImageSync(images)
                         ))
                     }
-                    .andThen(imageRepository.getDeletedImages().first(emptyList()))
-                    .flatMapCompletable { imageRepository.deleteImagesFromCloud(it) }
+                    .andThen(imageGateway.getDeletedImages().first(emptyList()))
+                    .flatMapCompletable { imageGateway.deleteImagesFromCloud(it) }
                     .andThen(Single.zip(
-                            imageRepository.getAllImagesFromCloud(),
-                            imageRepository.getAllImages().firstOrError(),
+                            imageGateway.getAllImagesFromCloud(),
+                            imageGateway.getAllImages().firstOrError(),
                             BiFunction<List<MyImage>, List<MyImage>, List<MyImage>> { cloudImages, dbImages ->
                                 cloudImages.toMutableList().apply {
                                     dbImages.forEach { image -> removeAll { it.name == image.name } }
@@ -49,11 +49,11 @@ class SyncImagesUseCase @Inject constructor(
                             }
                     ))
                     .flatMapCompletable { images ->
-                        val path = imageRepository.getAvailableImageDirectory()
+                        val path = imageGateway.getAvailableImageDirectory()
                         val imagesWithPath = images.map { it.apply { this.path = "$path/$name" } }
                         Completable.concat(listOf(
-                                imageRepository.loadImageFiles(imagesWithPath),
-                                imageRepository.insertImages(imagesWithPath)
+                                imageGateway.loadImageFiles(imagesWithPath),
+                                imageGateway.insertImages(imagesWithPath)
                         ))
                     }
                     .onErrorResumeNext { error ->

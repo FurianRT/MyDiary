@@ -10,14 +10,14 @@
 
 package com.furianrt.mydiary.domain.delete
 
-import com.furianrt.mydiary.model.repository.tag.TagRepository
+import com.furianrt.mydiary.model.gateway.tag.TagGateway
 import io.reactivex.Completable
 import javax.inject.Inject
 
 class RemoveTagFromNoteUseCase @Inject constructor(
-        private val tagRepository: TagRepository
+        private val tagGateway: TagGateway
 ) {
 
     fun invoke(noteId: String, tagId: String): Completable =
-            tagRepository.deleteNoteTag(noteId, tagId)
+            tagGateway.deleteNoteTag(noteId, tagId)
 }

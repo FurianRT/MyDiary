@@ -10,14 +10,14 @@
 
 package com.furianrt.mydiary.domain.save
 
-import com.furianrt.mydiary.model.repository.general.GeneralRepository
+import com.furianrt.mydiary.model.gateway.general.GeneralGateway
 import javax.inject.Inject
 
 class SetNeedRateOfferUseCase @Inject constructor(
-        private val generalRepository: GeneralRepository
+        private val generalGateway: GeneralGateway
 ) {
 
     fun invoke(need: Boolean) {
-        generalRepository.enableRateOffer(need)
+        generalGateway.enableRateOffer(need)
     }
 }

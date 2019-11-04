@@ -11,15 +11,15 @@
 package com.furianrt.mydiary.domain.save
 
 import com.furianrt.mydiary.model.entity.NoteTag
-import com.furianrt.mydiary.model.repository.tag.TagRepository
+import com.furianrt.mydiary.model.gateway.tag.TagGateway
 import io.reactivex.Completable
 import javax.inject.Inject
 
 class AddTagToNoteUseCase @Inject constructor(
-        private val tagRepository: TagRepository
+        private val tagGateway: TagGateway
 ) {
 
     fun invoke(noteId: String, tagId: String): Completable =
-            tagRepository.insertNoteTag(NoteTag(noteId, tagId))
+            tagGateway.insertNoteTag(NoteTag(noteId, tagId))
 
 }

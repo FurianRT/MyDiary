@@ -11,17 +11,17 @@
 package com.furianrt.mydiary.domain.get
 
 import com.furianrt.mydiary.model.entity.MyForecast
-import com.furianrt.mydiary.model.repository.forecast.ForecastRepository
+import com.furianrt.mydiary.model.gateway.forecast.ForecastGateway
 import io.reactivex.Maybe
 import javax.inject.Inject
 
 class GetForecastsUseCase @Inject constructor(
-        private val forecastRepository: ForecastRepository
+        private val forecastGateway: ForecastGateway
 ) {
 
     fun invoke(noteId: String): Maybe<MyForecast> {
-        return if (forecastRepository.isWeatherEnabled()) {
-            forecastRepository.getAllDbForecasts()
+        return if (forecastGateway.isWeatherEnabled()) {
+            forecastGateway.getAllDbForecasts()
                     .map { forecasts -> forecasts.filter { it.noteId == noteId } }
                     .flatMapMaybe { forecasts ->
                         if (forecasts.isNotEmpty()) {

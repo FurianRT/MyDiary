@@ -10,12 +10,12 @@
 
 package com.furianrt.mydiary.domain.get
 
-import com.furianrt.mydiary.model.repository.pin.PinRepository
+import com.furianrt.mydiary.model.gateway.pin.PinGateway
 import javax.inject.Inject
 
 class GetPinRequestDelayUseCase @Inject constructor(
-        private val pinRepository: PinRepository
+        private val pinGateway: PinGateway
 ) {
 
-    fun invoke(): Long = pinRepository.getPinRequestDelay()
+    fun invoke(): Long = pinGateway.getPinRequestDelay()
 }

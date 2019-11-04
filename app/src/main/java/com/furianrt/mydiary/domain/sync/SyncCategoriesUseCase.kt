@@ -10,31 +10,31 @@
 
 package com.furianrt.mydiary.domain.sync
 
-import com.furianrt.mydiary.model.repository.category.CategoryRepository
+import com.furianrt.mydiary.model.gateway.category.CategoryGateway
 import io.reactivex.Completable
 import javax.inject.Inject
 
 class SyncCategoriesUseCase @Inject constructor(
-        private val categoryRepository: CategoryRepository
+        private val categoryGateway: CategoryGateway
 ) {
 
     class SyncCategoriesException : Throwable()
 
     fun invoke(email: String): Completable =
-            categoryRepository.getAllCategories()
+            categoryGateway.getAllCategories()
                     .first(emptyList())
                     .map { categories -> categories.filter { !it.isSync(email) } }
                     .map { categories -> categories.apply { forEach { it.syncWith.add(email) } } }
                     .flatMapCompletable { categories ->
                         Completable.concat(listOf(
-                                categoryRepository.saveCategoriesInCloud(categories),
-                                categoryRepository.updateCategoriesSync(categories)
+                                categoryGateway.saveCategoriesInCloud(categories),
+                                categoryGateway.updateCategoriesSync(categories)
                         ))
                     }
-                    .andThen(categoryRepository.getDeletedCategories().first(emptyList()))
-                    .flatMapCompletable { categoryRepository.deleteCategoriesFromCloud(it) }
-                    .andThen(categoryRepository.getAllCategoriesFromCloud())
-                    .flatMapCompletable { categoryRepository.insertCategory(it) }
+                    .andThen(categoryGateway.getDeletedCategories().first(emptyList()))
+                    .flatMapCompletable { categoryGateway.deleteCategoriesFromCloud(it) }
+                    .andThen(categoryGateway.getAllCategoriesFromCloud())
+                    .flatMapCompletable { categoryGateway.insertCategory(it) }
                     .onErrorResumeNext { error ->
                         error.printStackTrace()
                         Completable.error(SyncCategoriesException())

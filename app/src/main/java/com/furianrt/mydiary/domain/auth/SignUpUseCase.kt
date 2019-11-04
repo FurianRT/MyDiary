@@ -10,14 +10,14 @@
 
 package com.furianrt.mydiary.domain.auth
 
-import com.furianrt.mydiary.model.repository.profile.ProfileRepository
+import com.furianrt.mydiary.model.gateway.profile.ProfileGateway
 import io.reactivex.Completable
 import javax.inject.Inject
 
 class SignUpUseCase @Inject constructor(
-        private val profileRepository: ProfileRepository
+        private val profileGateway: ProfileGateway
 ) {
 
     fun invoke(email: String, password: String): Completable =
-            profileRepository.signUp(email, password)
+            profileGateway.signUp(email, password)
 }

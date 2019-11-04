@@ -10,14 +10,14 @@
 
 package com.furianrt.mydiary.domain.delete
 
-import com.furianrt.mydiary.model.repository.image.ImageRepository
+import com.furianrt.mydiary.model.gateway.image.ImageGateway
 import io.reactivex.Completable
 import javax.inject.Inject
 
 class DeleteImagesUseCase @Inject constructor(
-        private val imageRepository: ImageRepository
+        private val imageGateway: ImageGateway
 ) {
 
     fun invoke(imageNames: List<String>): Completable =
-            imageRepository.deleteImage(imageNames)
+            imageGateway.deleteImage(imageNames)
 }

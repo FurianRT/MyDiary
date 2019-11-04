@@ -44,11 +44,11 @@
         android:title="@string/time"
         app:showAsAction="never" />
 
-   <!-- <item
+    <item
         android:id="@+id/menu_share"
         android:orderInCategory="7"
         android:title="@string/share"
-        app:showAsAction="never" />-->
+        app:showAsAction="never" />
 
     <item
         android:id="@+id/menu_delete"

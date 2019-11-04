@@ -10,14 +10,14 @@
 
 package com.furianrt.mydiary.domain.check
 
-import com.furianrt.mydiary.model.repository.pin.PinRepository
+import com.furianrt.mydiary.model.gateway.pin.PinGateway
 import io.reactivex.Single
 import javax.inject.Inject
 
 class CheckPinUseCase @Inject constructor(
-        private val pinRepository: PinRepository
+        private val pinGateway: PinGateway
 ) {
 
     fun invoke(newPin: String): Single<Boolean> =
-            pinRepository.getPin().map { oldPin -> newPin == oldPin }
+            pinGateway.getPin().map { oldPin -> newPin == oldPin }
 }

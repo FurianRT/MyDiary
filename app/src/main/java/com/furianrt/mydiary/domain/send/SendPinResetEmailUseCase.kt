@@ -10,24 +10,24 @@
 
 package com.furianrt.mydiary.domain.send
 
-import com.furianrt.mydiary.model.repository.device.DeviceRepository
-import com.furianrt.mydiary.model.repository.pin.PinRepository
+import com.furianrt.mydiary.model.gateway.device.DeviceGateway
+import com.furianrt.mydiary.model.gateway.pin.PinGateway
 import io.reactivex.Completable
 import io.reactivex.Single
 import javax.inject.Inject
 
 class SendPinResetEmailUseCase @Inject constructor(
-        private val pinRepository: PinRepository,
-        private val deviceRepository: DeviceRepository
+        private val pinGateway: PinGateway,
+        private val deviceGateway: DeviceGateway
 ) {
 
     class NetworkNotAvailableException : Throwable()
 
     fun invoke(): Completable =
-            Single.fromCallable { deviceRepository.isNetworkAvailable() }
+            Single.fromCallable { deviceGateway.isNetworkAvailable() }
                     .flatMapCompletable { networkAvailable ->
                         if (networkAvailable) {
-                            pinRepository.sendPinResetEmail()
+                            pinGateway.sendPinResetEmail()
                         } else {
                             throw NetworkNotAvailableException()
                         }

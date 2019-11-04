@@ -10,12 +10,12 @@
 
 package com.furianrt.mydiary.domain.check
 
-import com.furianrt.mydiary.model.repository.forecast.ForecastRepository
+import com.furianrt.mydiary.model.gateway.forecast.ForecastGateway
 import javax.inject.Inject
 
 class IsForecastEnabledUseCase @Inject constructor(
-        private val forecastRepository: ForecastRepository
+        private val forecastGateway: ForecastGateway
 ) {
 
-    fun invoke(): Boolean = forecastRepository.isWeatherEnabled()
+    fun invoke(): Boolean = forecastGateway.isWeatherEnabled()
 }

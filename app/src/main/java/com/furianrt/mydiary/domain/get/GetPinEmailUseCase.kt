@@ -10,15 +10,15 @@
 
 package com.furianrt.mydiary.domain.get
 
-import com.furianrt.mydiary.model.repository.pin.PinRepository
+import com.furianrt.mydiary.model.gateway.pin.PinGateway
 import javax.inject.Inject
 
 class GetPinEmailUseCase @Inject constructor(
-        private val pinRepository: PinRepository
+        private val pinGateway: PinGateway
 ) {
 
-    fun invoke(): String? = if (pinRepository.isPinEnabled()) {
-        pinRepository.getBackupEmail()
+    fun invoke(): String? = if (pinGateway.isPinEnabled()) {
+        pinGateway.getBackupEmail()
     } else {
         null
     }

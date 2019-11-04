@@ -10,12 +10,12 @@
 
 package com.furianrt.mydiary.domain.get
 
-import com.furianrt.mydiary.model.repository.profile.ProfileRepository
+import com.furianrt.mydiary.model.gateway.profile.ProfileGateway
 import io.reactivex.Observable
 import javax.inject.Inject
 
 class GetAuthStateUseCase @Inject constructor(
-        private val profileRepository: ProfileRepository
+        private val profileGateway: ProfileGateway
 ) {
 
     companion object {
@@ -23,11 +23,11 @@ class GetAuthStateUseCase @Inject constructor(
         const val STATE_SIGN_IN = 1
     }
 
-    fun invoke(): Observable<Int> = profileRepository.observeAuthState()
+    fun invoke(): Observable<Int> = profileGateway.observeAuthState()
             .map { state ->
                 when (state) {
-                    ProfileRepository.SIGN_STATE_SIGN_OUT -> STATE_SIGN_OUT
-                    ProfileRepository.SIGN_STATE_SIGN_IN -> STATE_SIGN_IN
+                    ProfileGateway.SIGN_STATE_SIGN_OUT -> STATE_SIGN_OUT
+                    ProfileGateway.SIGN_STATE_SIGN_IN -> STATE_SIGN_IN
                     else -> throw IllegalStateException()
                 }
             }

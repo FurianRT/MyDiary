@@ -11,15 +11,15 @@
 package com.furianrt.mydiary.domain.get
 
 import com.furianrt.mydiary.model.entity.MyTag
-import com.furianrt.mydiary.model.repository.tag.TagRepository
+import com.furianrt.mydiary.model.gateway.tag.TagGateway
 import io.reactivex.Flowable
 import javax.inject.Inject
 
 class GetTagsUseCase @Inject constructor(
-        private val tagRepository: TagRepository
+        private val tagGateway: TagGateway
 ) {
 
-    fun invoke(noteId: String): Flowable<List<MyTag>> = tagRepository.getTagsForNote(noteId)
+    fun invoke(noteId: String): Flowable<List<MyTag>> = tagGateway.getTagsForNote(noteId)
 
-    fun invoke(): Flowable<List<MyTag>> = tagRepository.getAllTags()
+    fun invoke(): Flowable<List<MyTag>> = tagGateway.getAllTags()
 }

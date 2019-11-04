@@ -11,15 +11,15 @@
 package com.furianrt.mydiary.domain.update
 
 import com.furianrt.mydiary.model.entity.MyImage
-import com.furianrt.mydiary.model.repository.image.ImageRepository
+import com.furianrt.mydiary.model.gateway.image.ImageGateway
 import io.reactivex.Completable
 import javax.inject.Inject
 
 class UpdateImageUseCase @Inject constructor(
-        private val imageRepository: ImageRepository
+        private val imageGateway: ImageGateway
 ) {
 
-    fun invoke(image: MyImage): Completable = imageRepository.updateImage(image)
+    fun invoke(image: MyImage): Completable = imageGateway.updateImage(image)
 
-    fun invoke(images: List<MyImage>): Completable = imageRepository.updateImage(images)
+    fun invoke(images: List<MyImage>): Completable = imageGateway.updateImage(images)
 }

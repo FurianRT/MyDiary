@@ -12,8 +12,8 @@ package com.furianrt.mydiary.domain.save
 
 import android.graphics.Bitmap
 import com.furianrt.mydiary.model.entity.MyImage
-import com.furianrt.mydiary.model.repository.device.DeviceRepository
-import com.furianrt.mydiary.model.repository.image.ImageRepository
+import com.furianrt.mydiary.model.gateway.device.DeviceGateway
+import com.furianrt.mydiary.model.gateway.image.ImageGateway
 import com.furianrt.mydiary.domain.UriToRealPathUseCase
 import com.furianrt.mydiary.utils.generateUniqueId
 import io.reactivex.Completable
@@ -21,8 +21,8 @@ import io.reactivex.Flowable
 import javax.inject.Inject
 
 class SaveImagesUseCase @Inject constructor(
-        private val imageRepository: ImageRepository,
-        private val deviceRepository: DeviceRepository,
+        private val imageGateway: ImageGateway,
+        private val deviceGateway: DeviceGateway,
         private val uriToRealPath: UriToRealPathUseCase
 ) {
 
@@ -36,18 +36,18 @@ class SaveImagesUseCase @Inject constructor(
                         val name = noteId + "_" + generateUniqueId()
                         return@map MyImage(name, path, noteId)
                     }
-                    .flatMapSingle { image -> imageRepository.saveImageToStorage(image) }
+                    .flatMapSingle { image -> imageGateway.saveImageToStorage(image) }
                     .flatMapSingle { savedImage ->
-                        imageRepository.insertImage(savedImage).toSingleDefault(true)
+                        imageGateway.insertImage(savedImage).toSingleDefault(true)
                     }
                     .onErrorReturn { false }
                     .collectInto(mutableListOf<Boolean>()) { l, i -> l.add(i) }
-                    .flatMapCompletable { Completable.fromAction { deviceRepository.clearUriTempFiles() } }
+                    .flatMapCompletable { Completable.fromAction { deviceGateway.clearUriTempFiles() } }
 
     fun invoke(noteId: String, bitmap: Bitmap): Completable {
         val image = MyImage(noteId + "_" + generateUniqueId(), "", noteId)
-        return imageRepository.saveBitmapToStorage(bitmap, image)
-                .flatMapCompletable { imageRepository.insertImage(it) }
+        return imageGateway.saveBitmapToStorage(bitmap, image)
+                .flatMapCompletable { imageGateway.insertImage(it) }
                 .onErrorComplete()
     }
 }

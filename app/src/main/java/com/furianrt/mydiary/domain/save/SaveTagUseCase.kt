@@ -11,26 +11,26 @@
 package com.furianrt.mydiary.domain.save
 
 import com.furianrt.mydiary.model.entity.MyTag
-import com.furianrt.mydiary.model.repository.tag.TagRepository
+import com.furianrt.mydiary.model.gateway.tag.TagGateway
 import com.furianrt.mydiary.utils.generateUniqueId
 import io.reactivex.Single
 import javax.inject.Inject
 
 class SaveTagUseCase @Inject constructor(
-        private val tagRepository: TagRepository
+        private val tagGateway: TagGateway
 ) {
 
     class InvalidTagNameException : Throwable()
 
     fun invoke(name: String): Single<String> {
         val id = generateUniqueId()
-        return tagRepository.getAllTags()
+        return tagGateway.getAllTags()
                 .first(emptyList())
                 .flatMapCompletable { tags ->
                     if (tags.find { it.name == name } != null) {
                         throw InvalidTagNameException()
                     } else {
-                        tagRepository.insertTag(MyTag(id, name))
+                        tagGateway.insertTag(MyTag(id, name))
                     }
                 }
                 .andThen(Single.just(id))

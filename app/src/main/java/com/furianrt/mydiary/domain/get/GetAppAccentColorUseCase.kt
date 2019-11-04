@@ -10,12 +10,12 @@
 
 package com.furianrt.mydiary.domain.get
 
-import com.furianrt.mydiary.model.repository.general.GeneralRepository
+import com.furianrt.mydiary.model.gateway.general.GeneralGateway
 import javax.inject.Inject
 
 class GetAppAccentColorUseCase @Inject constructor(
-        private val generalRepository: GeneralRepository
+        private val generalGateway: GeneralGateway
 ) {
 
-    fun invoke(): Int = generalRepository.getAccentColor()
+    fun invoke(): Int = generalGateway.getAccentColor()
 }

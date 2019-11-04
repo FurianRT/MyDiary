@@ -10,12 +10,12 @@
 
 package com.furianrt.mydiary.domain.check
 
-import com.furianrt.mydiary.model.repository.profile.ProfileRepository
+import com.furianrt.mydiary.model.gateway.profile.ProfileGateway
 import javax.inject.Inject
 
 class IsSignedInUseCase @Inject constructor(
-        private val profileRepository: ProfileRepository
+        private val profileGateway: ProfileGateway
 ) {
 
-    fun invoke(): Boolean = profileRepository.isSignedIn()
+    fun invoke(): Boolean = profileGateway.isSignedIn()
 }

@@ -10,14 +10,14 @@
 
 package com.furianrt.mydiary.domain
 
-import com.furianrt.mydiary.model.repository.general.GeneralRepository
+import com.furianrt.mydiary.model.gateway.general.GeneralGateway
 import javax.inject.Inject
 
 class IncrementLaunchCountUseCase @Inject constructor(
-        private val generalRepository: GeneralRepository
+        private val generalGateway: GeneralGateway
 ) {
 
     fun invoke() {
-        generalRepository.setNumberOfLaunches(generalRepository.getNumberOfLaunches() + 1)
+        generalGateway.setNumberOfLaunches(generalGateway.getNumberOfLaunches() + 1)
     }
 }

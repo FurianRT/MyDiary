@@ -16,7 +16,6 @@
     <application
         android:name=".MyApp"
         android:allowBackup="true"
-        android:allowClearUserData="false"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:requestLegacyExternalStorage="true"
@@ -25,12 +24,24 @@
         android:theme="@style/AppTheme"
         tools:ignore="AllowBackup,GoogleAppIndexingWarning,UnusedAttribute">
 
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="com.furianrt.mydiary.fileprovider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths"/>
+
+        </provider>
+
         <service
-            android:name=".view.services.sync.SyncService"
+            android:name=".presentation.services.sync.SyncService"
             android:exported="false" />
 
         <service
-            android:name=".view.services.firebase.MyFirebaseMessagingService"
+            android:name=".presentation.services.firebase.MyFirebaseMessagingService"
             tools:ignore="ExportedService">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
@@ -40,7 +51,7 @@
 
         <!--TODO разлочить ориентацию, когда будут готовы лейауты-->
         <activity
-            android:name=".view.screens.main.MainActivity"
+            android:name=".presentation.screens.main.MainActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.TransparentActionBar"
             android:windowSoftInputMode="adjustNothing">
@@ -51,32 +62,32 @@
         </activity>
 
         <activity
-            android:name=".view.screens.note.NoteActivity"
-            android:parentActivityName=".view.screens.main.MainActivity"
+            android:name=".presentation.screens.note.NoteActivity"
+            android:parentActivityName=".presentation.screens.main.MainActivity"
             android:windowSoftInputMode="adjustResize" />
 
         <activity
-            android:name=".view.screens.gallery.GalleryActivity"
-            android:parentActivityName=".view.screens.note.NoteActivity" />
+            android:name=".presentation.screens.gallery.GalleryActivity"
+            android:parentActivityName=".presentation.screens.note.NoteActivity" />
 
         <activity
-            android:name=".view.screens.settings.global.GlobalSettingsActivity"
-            android:parentActivityName=".view.screens.main.MainActivity" />
+            android:name=".presentation.screens.settings.global.GlobalSettingsActivity"
+            android:parentActivityName=".presentation.screens.main.MainActivity" />
 
         <activity
-            android:name=".view.screens.settings.note.NoteSettingsActivity"
-            android:parentActivityName=".view.screens.note.NoteActivity" />
+            android:name=".presentation.screens.settings.note.NoteSettingsActivity"
+            android:parentActivityName=".presentation.screens.note.NoteActivity" />
 
-        <activity android:name=".view.screens.pin.PinActivity" />
+        <activity android:name=".presentation.screens.pin.PinActivity" />
 
         <activity
-            android:name=".view.screens.statistics.StatsActivity"
-            android:parentActivityName=".view.screens.main.MainActivity" />
+            android:name=".presentation.screens.statistics.StatsActivity"
+            android:parentActivityName=".presentation.screens.main.MainActivity" />
 
         <!--Этого требует библиотека для редактирования картинок-->
         <activity
             android:name="com.yalantis.ucrop.UCropActivity"
-            android:parentActivityName=".view.screens.gallery.GalleryActivity"
+            android:parentActivityName=".presentation.screens.gallery.GalleryActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme" />
 

@@ -10,32 +10,32 @@
 
 package com.furianrt.mydiary.domain
 
-import com.furianrt.mydiary.model.repository.device.DeviceRepository
+import com.furianrt.mydiary.model.gateway.device.DeviceGateway
 import io.reactivex.Single
 import javax.inject.Inject
 
 class UriToRealPathUseCase @Inject constructor(
-        private val deviceRepository: DeviceRepository
+        private val deviceGateway: DeviceGateway
 ) {
 
     class UriConvertException : Throwable()
 
-    private var mCallback: DeviceRepository.OnUriConvertCallback? = null
+    private var mCallback: DeviceGateway.OnUriConvertCallback? = null
 
     fun invoke(uri: String): Single<String> = Single.create<String> {  emitter ->
-        mCallback = object : DeviceRepository.OnUriConvertCallback {
+        mCallback = object : DeviceGateway.OnUriConvertCallback {
             override fun onUriRealPathError() {
                 emitter.onError(UriConvertException())
-                mCallback?.let { deviceRepository.removeUriConvertCallback(it) }
+                mCallback?.let { deviceGateway.removeUriConvertCallback(it) }
             }
 
             override fun onUriRealPathReceived(path: String) {
                 emitter.onSuccess(path)
-                mCallback?.let { deviceRepository.removeUriConvertCallback(it) }
+                mCallback?.let { deviceGateway.removeUriConvertCallback(it) }
             }
         }
-        mCallback?.let { deviceRepository.getRealPathFromUri(uri, it) }
+        mCallback?.let { deviceGateway.getRealPathFromUri(uri, it) }
     }.doOnDispose {
-        mCallback?.let { deviceRepository.removeUriConvertCallback(it) }
+        mCallback?.let { deviceGateway.removeUriConvertCallback(it) }
     }
 }

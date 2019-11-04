@@ -10,11 +10,11 @@
 
 package com.furianrt.mydiary.domain.get
 
-import com.furianrt.mydiary.model.repository.forecast.ForecastRepository
+import com.furianrt.mydiary.model.gateway.forecast.ForecastGateway
 import javax.inject.Inject
 
 class GetWeatherUnitsUseCase @Inject constructor(
-        private val forecastRepository: ForecastRepository
+        private val forecastGateway: ForecastGateway
 ) {
 
     companion object {
@@ -23,9 +23,9 @@ class GetWeatherUnitsUseCase @Inject constructor(
     }
 
     fun invoke(): Int =
-            when (forecastRepository.getWeatherUnits()) {
-                ForecastRepository.WEATHER_UNITS_CELSIUS -> UNITS_CELSIUS
-                ForecastRepository.WEATHER_UNITS_FAHRENHEIT -> UNITS_FAHRENHEIT
+            when (forecastGateway.getWeatherUnits()) {
+                ForecastGateway.WEATHER_UNITS_CELSIUS -> UNITS_CELSIUS
+                ForecastGateway.WEATHER_UNITS_FAHRENHEIT -> UNITS_FAHRENHEIT
                 else -> throw IllegalStateException()
             }
 }

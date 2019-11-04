@@ -10,12 +10,12 @@
 
 package com.furianrt.mydiary.domain.check
 
-import com.furianrt.mydiary.model.repository.pin.PinRepository
+import com.furianrt.mydiary.model.gateway.pin.PinGateway
 import javax.inject.Inject
 
 class IsPinEnabledUseCase @Inject constructor(
-        private val pinRepository: PinRepository
+        private val pinGateway: PinGateway
 ) {
 
-    fun invoke(): Boolean = pinRepository.isPinEnabled()
+    fun invoke(): Boolean = pinGateway.isPinEnabled()
 }

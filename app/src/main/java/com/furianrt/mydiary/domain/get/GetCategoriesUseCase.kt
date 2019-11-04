@@ -12,23 +12,23 @@ package com.furianrt.mydiary.domain.get
 
 import com.furianrt.mydiary.model.entity.MyCategory
 import com.furianrt.mydiary.model.entity.MyNote
-import com.furianrt.mydiary.model.repository.category.CategoryRepository
-import com.furianrt.mydiary.model.repository.note.NoteRepository
+import com.furianrt.mydiary.model.gateway.category.CategoryGateway
+import com.furianrt.mydiary.model.gateway.note.NoteGateway
 import com.google.common.base.Optional
 import io.reactivex.Flowable
 import io.reactivex.functions.BiFunction
 import javax.inject.Inject
 
 class GetCategoriesUseCase @Inject constructor(
-        private val categoryRepository: CategoryRepository,
-        private val noteRepository: NoteRepository
+        private val categoryGateway: CategoryGateway,
+        private val noteGateway: NoteGateway
 ) {
 
-    fun invoke(): Flowable<List<MyCategory>> = categoryRepository.getAllCategories()
+    fun invoke(): Flowable<List<MyCategory>> = categoryGateway.getAllCategories()
 
     fun invoke(noteId: String): Flowable<Optional<MyCategory>> =
-            Flowable.combineLatest(noteRepository.getNoteAsList(noteId),
-                    categoryRepository.getAllCategories(),
+            Flowable.combineLatest(noteGateway.getNoteAsList(noteId),
+                    categoryGateway.getAllCategories(),
                     BiFunction<List<MyNote>, List<MyCategory>, Optional<MyCategory>> { note, categories ->
                         if (categories.isEmpty() || note.isEmpty()) {
                             Optional.absent()

@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/white"
-    tools:context=".view.dialogs.categories.fragments.edit.CategoryEditFragment">
+    tools:context=".presentation.dialogs.categories.fragments.edit.CategoryEditFragment">
 
     <FrameLayout
         android:id="@+id/layout_category_header"

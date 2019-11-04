@@ -10,31 +10,31 @@
 
 package com.furianrt.mydiary.domain.sync
 
-import com.furianrt.mydiary.model.repository.span.SpanRepository
+import com.furianrt.mydiary.model.gateway.span.SpanGateway
 import io.reactivex.Completable
 import javax.inject.Inject
 
 class SyncNoteSpansUseCase @Inject constructor(
-        private val spanRepository: SpanRepository
+        private val spanGateway: SpanGateway
 ) {
 
     class SyncSpanException : Throwable()
 
     fun invoke(email: String): Completable =
-            spanRepository.getAllTextSpans()
+            spanGateway.getAllTextSpans()
                     .first(emptyList())
                     .map { spans -> spans.filter { !it.isSync(email) } }
                     .map { spans -> spans.apply { forEach { it.syncWith.add(email) } } }
                     .flatMapCompletable { spans ->
                         Completable.concat(listOf(
-                                spanRepository.saveTextSpansInCloud(spans),
-                                spanRepository.updateTextSpansSync(spans)
+                                spanGateway.saveTextSpansInCloud(spans),
+                                spanGateway.updateTextSpansSync(spans)
                         ))
                     }
-                    .andThen(spanRepository.getDeletedTextSpans().first(emptyList()))
-                    .flatMapCompletable { spanRepository.deleteTextSpansFromCloud(it) }
-                    .andThen(spanRepository.getAllTextSpansFromCloud())
-                    .flatMapCompletable { spanRepository.insertTextSpan(it) }
+                    .andThen(spanGateway.getDeletedTextSpans().first(emptyList()))
+                    .flatMapCompletable { spanGateway.deleteTextSpansFromCloud(it) }
+                    .andThen(spanGateway.getAllTextSpansFromCloud())
+                    .flatMapCompletable { spanGateway.insertTextSpan(it) }
                     .onErrorResumeNext { error ->
                         error.printStackTrace()
                         Completable.error(SyncSpanException())
