@@ -181,6 +181,7 @@ class DeviceGatewayImp @Inject constructor(
         Log.e(TAG, "PickiTonStartListener")
     }
 
+    @Synchronized
     override fun PickiTonCompleteListener(path: String?, wasDriveFile: Boolean, wasUnknownProvider: Boolean, wasSuccessful: Boolean, Reason: String?) {
         mUriConvertCallbacks.forEach { callback ->
             if (wasSuccessful && path != null) {

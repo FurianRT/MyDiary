@@ -7,7 +7,7 @@
     android:layout_height="250dp"
     android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
     app:expanded="false"
-    app:layout_behavior="com.furianrt.mydiary.view.general.AppBarLayoutBehavior"
+    app:layout_behavior="com.furianrt.mydiary.presentation.general.AppBarLayoutBehavior"
     tools:expanded="true">
 
     <com.google.android.material.appbar.CollapsingToolbarLayout

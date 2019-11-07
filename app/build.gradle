@@ -88,7 +88,7 @@ dependencies {
     implementation 'com.google.android:flexbox:1.1.0'
 
     //Fingerprint
-    implementation 'androidx.biometric:biometric:1.0.0-rc02'
+    implementation 'androidx.biometric:biometric:1.0.0'
 
     //RecyclerView animators
     implementation 'jp.wasabeef:recyclerview-animators:3.0.0'

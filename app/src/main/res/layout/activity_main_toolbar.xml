@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="250dp"
     app:expanded="false"
-    app:layout_behavior="com.furianrt.mydiary.view.general.AppBarLayoutBehavior"
+    app:layout_behavior="com.furianrt.mydiary.presentation.general.AppBarLayoutBehavior"
     app:titleTextColor="@color/white">
 
     <com.google.android.material.appbar.CollapsingToolbarLayout
