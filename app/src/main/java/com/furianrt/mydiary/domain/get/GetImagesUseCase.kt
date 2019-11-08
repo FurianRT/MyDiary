@@ -11,14 +11,14 @@
 package com.furianrt.mydiary.domain.get
 
 import com.furianrt.mydiary.model.entity.MyImage
-import com.furianrt.mydiary.model.repository.image.ImageRepository
+import com.furianrt.mydiary.model.gateway.image.ImageGateway
 import io.reactivex.Flowable
 import javax.inject.Inject
 
 class GetImagesUseCase @Inject constructor(
-        private val imageRepository: ImageRepository
+        private val imageGateway: ImageGateway
 ) {
 
     fun invoke(noteId: String): Flowable<List<MyImage>> =
-            imageRepository.getImagesForNote(noteId)
+            imageGateway.getImagesForNote(noteId)
 }

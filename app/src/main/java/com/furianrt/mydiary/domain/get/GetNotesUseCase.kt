@@ -11,19 +11,19 @@
 package com.furianrt.mydiary.domain.get
 
 import com.furianrt.mydiary.model.entity.MyNote
-import com.furianrt.mydiary.model.repository.note.NoteRepository
+import com.furianrt.mydiary.model.gateway.note.NoteGateway
 import com.google.common.base.Optional
 import io.reactivex.Flowable
 import javax.inject.Inject
 
 class GetNotesUseCase @Inject constructor(
-        private val noteRepository: NoteRepository
+        private val noteGateway: NoteGateway
 ) {
 
     fun invoke(): Flowable<List<MyNote>> =
-            noteRepository.getAllNotes()
+            noteGateway.getAllNotes()
                     .map { notes ->
-                        if (noteRepository.isSortDesc()) {
+                        if (noteGateway.isSortDesc()) {
                             notes.sortedByDescending { it.time }
                         } else {
                             notes.sortedBy { it.time }
@@ -31,6 +31,6 @@ class GetNotesUseCase @Inject constructor(
                     }
 
     fun invoke(noteId: String): Flowable<Optional<MyNote>> =
-            noteRepository.getNoteAsList(noteId)
+            noteGateway.getNoteAsList(noteId)
                     .map { note -> Optional.fromNullable(note.find { it.id == noteId }) }
 }

@@ -11,13 +11,13 @@
 package com.furianrt.mydiary.domain.delete
 
 import com.furianrt.mydiary.model.entity.MyTag
-import com.furianrt.mydiary.model.repository.tag.TagRepository
+import com.furianrt.mydiary.model.gateway.tag.TagGateway
 import io.reactivex.Completable
 import javax.inject.Inject
 
 class DeleteTagUseCase @Inject constructor(
-        private val tagRepository: TagRepository
+        private val tagGateway: TagGateway
 ) {
 
-    fun invoke(tag: MyTag): Completable = tagRepository.deleteTag(tag)
+    fun invoke(tag: MyTag): Completable = tagGateway.deleteTag(tag)
 }

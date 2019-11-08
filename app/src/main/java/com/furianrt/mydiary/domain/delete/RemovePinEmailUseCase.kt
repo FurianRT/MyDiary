@@ -10,14 +10,14 @@
 
 package com.furianrt.mydiary.domain.delete
 
-import com.furianrt.mydiary.model.repository.pin.PinRepository
+import com.furianrt.mydiary.model.gateway.pin.PinGateway
 import javax.inject.Inject
 
 class RemovePinEmailUseCase @Inject constructor(
-        private val pinRepository: PinRepository
+        private val pinGateway: PinGateway
 ) {
 
     fun invoke() {
-        pinRepository.setBackupEmail("")
+        pinGateway.setBackupEmail("")
     }
 }

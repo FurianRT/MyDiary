@@ -11,25 +11,25 @@
 package com.furianrt.mydiary.domain.update
 
 import com.furianrt.mydiary.model.entity.MyCategory
-import com.furianrt.mydiary.model.repository.category.CategoryRepository
-import com.furianrt.mydiary.model.repository.note.NoteRepository
+import com.furianrt.mydiary.model.gateway.category.CategoryGateway
+import com.furianrt.mydiary.model.gateway.note.NoteGateway
 import io.reactivex.Completable
 import io.reactivex.Observable
 import javax.inject.Inject
 
 class UpdateCategoryUseCase @Inject constructor(
-        private val categoryRepository: CategoryRepository,
-        private val noteRepository: NoteRepository
+        private val categoryGateway: CategoryGateway,
+        private val noteGateway: NoteGateway
 ) {
 
     fun invoke(category: MyCategory): Completable =
-            categoryRepository.updateCategory(category.apply { syncWith.clear() })
-                    .andThen(noteRepository.getAllNotes())
+            categoryGateway.updateCategory(category.apply { syncWith.clear() })
+                    .andThen(noteGateway.getAllNotes())
                     .first(emptyList())
                     .flatMapObservable { Observable.fromIterable(it) }
                     .filter { it.categoryId == category.id }
                     .map { it.apply { it.syncWith.clear() } }
-                    .flatMapSingle { noteRepository.updateNote(it).toSingleDefault(true) }
+                    .flatMapSingle { noteGateway.updateNote(it).toSingleDefault(true) }
                     .collectInto(mutableListOf<Boolean>()) { l, i -> l.add(i) }
                     .ignoreElement()
 }

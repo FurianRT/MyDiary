@@ -10,12 +10,12 @@
 
 package com.furianrt.mydiary.domain.save
 
-import com.furianrt.mydiary.model.repository.general.GeneralRepository
+import com.furianrt.mydiary.model.gateway.general.GeneralGateway
 import org.joda.time.DateTime
 import javax.inject.Inject
 
 class ResetSyncProgressUseCase @Inject constructor(
-        private val generalRepository: GeneralRepository
+        private val generalGateway: GeneralGateway
 ) {
 
     companion object {
@@ -24,10 +24,10 @@ class ResetSyncProgressUseCase @Inject constructor(
 
     fun invoke() {
         val currentTime = DateTime.now().millis
-        val launchTimeDiff = currentTime - generalRepository.getLastAppLaunchTime()
+        val launchTimeDiff = currentTime - generalGateway.getLastAppLaunchTime()
         if (launchTimeDiff >= SYNC_PROGRESS_RESET_TIME) {
-            generalRepository.setLastSyncMessage(null)
+            generalGateway.setLastSyncMessage(null)
         }
-        generalRepository.setLastAppLaunchTime(currentTime)
+        generalGateway.setLastAppLaunchTime(currentTime)
     }
 }

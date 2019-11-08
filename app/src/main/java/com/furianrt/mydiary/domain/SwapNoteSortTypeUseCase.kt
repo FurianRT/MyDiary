@@ -10,13 +10,13 @@
 
 package com.furianrt.mydiary.domain
 
-import com.furianrt.mydiary.model.repository.note.NoteRepository
+import com.furianrt.mydiary.model.gateway.note.NoteGateway
 import javax.inject.Inject
 
 class SwapNoteSortTypeUseCase @Inject constructor(
-        private val noteRepository: NoteRepository
+        private val noteGateway: NoteGateway
 ) {
     fun invoke() {
-        noteRepository.setSortDesc(!noteRepository.isSortDesc())
+        noteGateway.setSortDesc(!noteGateway.isSortDesc())
     }
 }

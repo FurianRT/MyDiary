@@ -11,8 +11,8 @@
 package com.furianrt.mydiary.domain
 
 import com.furianrt.mydiary.model.entity.MyNote
-import com.furianrt.mydiary.model.repository.device.DeviceRepository
-import com.furianrt.mydiary.model.repository.general.GeneralRepository
+import com.furianrt.mydiary.model.gateway.device.DeviceGateway
+import com.furianrt.mydiary.model.gateway.general.GeneralGateway
 import com.furianrt.mydiary.domain.get.GetCategoriesUseCase
 import com.furianrt.mydiary.domain.get.GetTagsUseCase
 import com.furianrt.mydiary.domain.save.AddTagToNoteUseCase
@@ -25,8 +25,8 @@ import org.joda.time.DateTime
 import javax.inject.Inject
 
 class CreateTutorialNoteUseCase @Inject constructor(
-        private val deviceRepository: DeviceRepository,
-        private val generalRepository: GeneralRepository,
+        private val deviceGateway: DeviceGateway,
+        private val generalGateway: GeneralGateway,
         private val saveNotes: SaveNotesUseCase,
         private val saveImages: SaveImagesUseCase,
         private val addTagToNote: AddTagToNoteUseCase,
@@ -35,19 +35,19 @@ class CreateTutorialNoteUseCase @Inject constructor(
 ) {
 
     fun invoke(): Completable {
-        return if (generalRepository.isNeedDefaultValues()) {
-            generalRepository.setNeedDefaultValues(false)
+        return if (generalGateway.isNeedDefaultValues()) {
+            generalGateway.setNeedDefaultValues(false)
             val noteId = generateUniqueId()
-            saveImages.invoke(noteId, deviceRepository.getTutorialNoteBitmap())
+            saveImages.invoke(noteId, deviceGateway.getTutorialNoteBitmap())
                     .andThen(getCategories.invoke().firstOrError())
                     .map { it.first() }
                     .flatMapCompletable { category ->
                         val note = MyNote(
                                 id = noteId,
-                                title = deviceRepository.getTutorialNoteTitle(),
-                                content = deviceRepository.getTutorialNoteContent(),
+                                title = deviceGateway.getTutorialNoteTitle(),
+                                content = deviceGateway.getTutorialNoteContent(),
                                 time = DateTime.now().millis,
-                                moodId = deviceRepository.getTutorialNoteMoodId(),
+                                moodId = deviceGateway.getTutorialNoteMoodId(),
                                 categoryId = category.id,
                                 creationTime = DateTime.now().millis
                         )

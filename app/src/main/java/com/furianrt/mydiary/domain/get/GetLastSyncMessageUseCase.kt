@@ -11,12 +11,12 @@
 package com.furianrt.mydiary.domain.get
 
 import com.furianrt.mydiary.model.entity.SyncProgressMessage
-import com.furianrt.mydiary.model.repository.general.GeneralRepository
+import com.furianrt.mydiary.model.gateway.general.GeneralGateway
 import javax.inject.Inject
 
 class GetLastSyncMessageUseCase @Inject constructor(
-        private val generalRepository: GeneralRepository
+        private val generalGateway: GeneralGateway
 ) {
 
-    fun invoke(): SyncProgressMessage? = generalRepository.getLastSyncMessage()
+    fun invoke(): SyncProgressMessage? = generalGateway.getLastSyncMessage()
 }

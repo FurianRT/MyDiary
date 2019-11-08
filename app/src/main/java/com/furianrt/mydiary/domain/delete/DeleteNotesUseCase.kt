@@ -10,25 +10,25 @@
 
 package com.furianrt.mydiary.domain.delete
 
-import com.furianrt.mydiary.model.repository.appearance.AppearanceRepository
-import com.furianrt.mydiary.model.repository.forecast.ForecastRepository
-import com.furianrt.mydiary.model.repository.image.ImageRepository
-import com.furianrt.mydiary.model.repository.location.LocationRepository
-import com.furianrt.mydiary.model.repository.note.NoteRepository
-import com.furianrt.mydiary.model.repository.span.SpanRepository
-import com.furianrt.mydiary.model.repository.tag.TagRepository
+import com.furianrt.mydiary.model.gateway.appearance.AppearanceGateway
+import com.furianrt.mydiary.model.gateway.forecast.ForecastGateway
+import com.furianrt.mydiary.model.gateway.image.ImageGateway
+import com.furianrt.mydiary.model.gateway.location.LocationGateway
+import com.furianrt.mydiary.model.gateway.note.NoteGateway
+import com.furianrt.mydiary.model.gateway.span.SpanGateway
+import com.furianrt.mydiary.model.gateway.tag.TagGateway
 import io.reactivex.Completable
 import io.reactivex.Observable
 import javax.inject.Inject
 
 class DeleteNotesUseCase @Inject constructor(
-        private val noteRepository: NoteRepository,
-        private val locationRepository: LocationRepository,
-        private val appearanceRepository: AppearanceRepository,
-        private val imageRepository: ImageRepository,
-        private val forecastRepository: ForecastRepository,
-        private val tagRepository: TagRepository,
-        private val spanRepository: SpanRepository
+        private val noteGateway: NoteGateway,
+        private val locationGateway: LocationGateway,
+        private val appearanceGateway: AppearanceGateway,
+        private val imageGateway: ImageGateway,
+        private val forecastGateway: ForecastGateway,
+        private val tagGateway: TagGateway,
+        private val spanGateway: SpanGateway
 ) {
 
     fun invoke(notesIds: List<String>): Completable =
@@ -36,15 +36,15 @@ class DeleteNotesUseCase @Inject constructor(
                     .flatMapCompletable { deleteNoteWithDependencies(it) }
 
     private fun deleteNoteWithDependencies(noteId: String): Completable =
-            locationRepository.getLocationsForNote(noteId)
+            locationGateway.getLocationsForNote(noteId)
                     .first(emptyList())
-                    .flatMapCompletable { locations -> locationRepository.deleteLocations(locations.map { it.id }) }
-                    .andThen(appearanceRepository.deleteAppearance(noteId))
-                    .andThen(tagRepository.deleteNoteTags(noteId))
-                    .andThen(imageRepository.getImagesForNote(noteId))
+                    .flatMapCompletable { locations -> locationGateway.deleteLocations(locations.map { it.id }) }
+                    .andThen(appearanceGateway.deleteAppearance(noteId))
+                    .andThen(tagGateway.deleteNoteTags(noteId))
+                    .andThen(imageGateway.getImagesForNote(noteId))
                     .first(emptyList())
-                    .flatMapCompletable { images -> imageRepository.deleteImage(images.map { it.name }) }
-                    .andThen(forecastRepository.deleteForecast(noteId))
-                    .andThen(spanRepository.deleteTextSpan(noteId))
-                    .andThen(noteRepository.deleteNote(noteId))
+                    .flatMapCompletable { images -> imageGateway.deleteImage(images.map { it.name }) }
+                    .andThen(forecastGateway.deleteForecast(noteId))
+                    .andThen(spanGateway.deleteTextSpan(noteId))
+                    .andThen(noteGateway.deleteNote(noteId))
 }

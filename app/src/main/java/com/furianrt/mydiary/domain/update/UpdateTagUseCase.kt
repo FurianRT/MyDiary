@@ -11,24 +11,24 @@
 package com.furianrt.mydiary.domain.update
 
 import com.furianrt.mydiary.model.entity.MyTag
-import com.furianrt.mydiary.model.repository.tag.TagRepository
+import com.furianrt.mydiary.model.gateway.tag.TagGateway
 import io.reactivex.Completable
 import javax.inject.Inject
 
 class UpdateTagUseCase @Inject constructor(
-        private val tagRepository: TagRepository
+        private val tagGateway: TagGateway
 ) {
 
     class InvalidTagNameException : Throwable()
 
     fun invoke(tag: MyTag): Completable =
-            tagRepository.getAllTags()
+            tagGateway.getAllTags()
                     .first(emptyList())
                     .flatMapCompletable { tags ->
                         if (tags.find { it.name == tag.name } != null) {
                             throw InvalidTagNameException()
                         } else {
-                            tagRepository.updateTag(tag.apply { syncWith.clear() })
+                            tagGateway.updateTag(tag.apply { syncWith.clear() })
                         }
                     }
 }

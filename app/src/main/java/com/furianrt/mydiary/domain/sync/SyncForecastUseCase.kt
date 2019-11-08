@@ -10,30 +10,30 @@
 
 package com.furianrt.mydiary.domain.sync
 
-import com.furianrt.mydiary.model.repository.forecast.ForecastRepository
+import com.furianrt.mydiary.model.gateway.forecast.ForecastGateway
 import io.reactivex.Completable
 import javax.inject.Inject
 
 class SyncForecastUseCase @Inject constructor(
-        private val forecastRepository: ForecastRepository
+        private val forecastGateway: ForecastGateway
 ) {
 
     class SyncForecastsException : Throwable()
 
     fun invoke(email: String): Completable =
-            forecastRepository.getAllDbForecasts()
+            forecastGateway.getAllDbForecasts()
                     .map { forecasts -> forecasts.filter { !it.isSync(email) } }
                     .map { forecasts -> forecasts.apply { forEach { it.syncWith.add(email) } } }
                     .flatMapCompletable { forecasts ->
                         Completable.concat(listOf(
-                                forecastRepository.saveForecastsInCloud(forecasts),
-                                forecastRepository.updateForecastsSync(forecasts)
+                                forecastGateway.saveForecastsInCloud(forecasts),
+                                forecastGateway.updateForecastsSync(forecasts)
                         ))
                     }
-                    .andThen(forecastRepository.getDeletedForecasts().first(emptyList()))
-                    .flatMapCompletable { forecastRepository.deleteForecastsFromCloud(it) }
-                    .andThen(forecastRepository.getAllForecastsFromCloud())
-                    .flatMapCompletable { forecastRepository.insertForecast(it) }
+                    .andThen(forecastGateway.getDeletedForecasts().first(emptyList()))
+                    .flatMapCompletable { forecastGateway.deleteForecastsFromCloud(it) }
+                    .andThen(forecastGateway.getAllForecastsFromCloud())
+                    .flatMapCompletable { forecastGateway.insertForecast(it) }
                     .onErrorResumeNext { error ->
                         error.printStackTrace()
                         Completable.error(SyncForecastsException())

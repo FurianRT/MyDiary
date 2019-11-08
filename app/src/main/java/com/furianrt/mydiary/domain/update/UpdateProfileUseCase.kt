@@ -10,16 +10,16 @@
 
 package com.furianrt.mydiary.domain.update
 
-import com.furianrt.mydiary.model.repository.profile.ProfileRepository
+import com.furianrt.mydiary.model.gateway.profile.ProfileGateway
 import io.reactivex.Completable
 import javax.inject.Inject
 
 class UpdateProfileUseCase @Inject constructor(
-        private val profileRepository: ProfileRepository
+        private val profileGateway: ProfileGateway
 ) {
 
     fun invoke(syncTime: Long): Completable =
-            profileRepository.getDbProfile()
+            profileGateway.getDbProfile()
                     .firstOrError()
-                    .flatMapCompletable { profileRepository.updateProfile(it.apply { lastSyncTime = syncTime }) }
+                    .flatMapCompletable { profileGateway.updateProfile(it.apply { lastSyncTime = syncTime }) }
 }

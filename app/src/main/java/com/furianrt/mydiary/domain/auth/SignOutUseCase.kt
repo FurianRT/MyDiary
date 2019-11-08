@@ -10,13 +10,13 @@
 
 package com.furianrt.mydiary.domain.auth
 
-import com.furianrt.mydiary.model.repository.profile.ProfileRepository
+import com.furianrt.mydiary.model.gateway.profile.ProfileGateway
 import io.reactivex.Completable
 import javax.inject.Inject
 
 class SignOutUseCase @Inject constructor(
-        private val profileRepository: ProfileRepository
+        private val profileGateway: ProfileGateway
 ) {
 
-    fun invoke(): Completable = profileRepository.signOut()
+    fun invoke(): Completable = profileGateway.signOut()
 }

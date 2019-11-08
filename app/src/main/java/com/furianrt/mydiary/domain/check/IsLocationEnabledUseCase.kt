@@ -10,12 +10,12 @@
 
 package com.furianrt.mydiary.domain.check
 
-import com.furianrt.mydiary.model.repository.location.LocationRepository
+import com.furianrt.mydiary.model.gateway.location.LocationGateway
 import javax.inject.Inject
 
 class IsLocationEnabledUseCase @Inject constructor(
-        private val locationRepository: LocationRepository
+        private val locationGateway: LocationGateway
 ) {
 
-    fun invoke(): Boolean = locationRepository.isLocationEnabled()
+    fun invoke(): Boolean = locationGateway.isLocationEnabled()
 }

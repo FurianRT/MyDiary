@@ -11,22 +11,22 @@
 package com.furianrt.mydiary.domain.get
 
 import com.furianrt.mydiary.model.entity.MyHeaderImage
-import com.furianrt.mydiary.model.repository.device.DeviceRepository
-import com.furianrt.mydiary.model.repository.image.ImageRepository
+import com.furianrt.mydiary.model.gateway.device.DeviceGateway
+import com.furianrt.mydiary.model.gateway.image.ImageGateway
 import io.reactivex.Single
 import net.danlew.android.joda.DateUtils
 import org.joda.time.DateTime
 import javax.inject.Inject
 
 class GetDailyImageUseCase @Inject constructor(
-        private val imageRepository: ImageRepository,
-        private val deviceRepository: DeviceRepository
+        private val imageGateway: ImageGateway,
+        private val deviceGateway: DeviceGateway
 ) {
 
     fun invoke(): Single<MyHeaderImage> {
-        val category = imageRepository.getDailyImageCategory()
-        val networkAvailable = deviceRepository.isNetworkAvailable()
-        return imageRepository.getHeaderImages()
+        val category = imageGateway.getDailyImageCategory()
+        val networkAvailable = deviceGateway.isNetworkAvailable()
+        return imageGateway.getHeaderImages()
                 .first(emptyList())
                 .flatMap { dbImages ->
                     return@flatMap when {
@@ -35,17 +35,17 @@ class GetDailyImageUseCase @Inject constructor(
                         dbImages.isNotEmpty() && !networkAvailable ->
                             Single.just(dbImages.first())
                         dbImages.isEmpty() && networkAvailable ->
-                            imageRepository.loadHeaderImages(category)
+                            imageGateway.loadHeaderImages(category)
                                     .map { it.first() }
-                                    .flatMapCompletable { imageRepository.insertHeaderImage(it) }
-                                    .andThen(imageRepository.getHeaderImages().firstOrError())
+                                    .flatMapCompletable { imageGateway.insertHeaderImage(it) }
+                                    .andThen(imageGateway.getHeaderImages().firstOrError())
                                     .map { it.first() }
                         dbImages.isNotEmpty() && networkAvailable ->
-                            imageRepository.loadHeaderImages(category)
+                            imageGateway.loadHeaderImages(category)
                                     .onErrorReturn { dbImages }
                                     .map { apiImages -> apiImages.find { apiImage -> dbImages.find { it.id == apiImage.id } == null } ?: dbImages.first() }
-                                    .flatMapCompletable { imageRepository.insertHeaderImage(it) }
-                                    .andThen(imageRepository.getHeaderImages().firstOrError())
+                                    .flatMapCompletable { imageGateway.insertHeaderImage(it) }
+                                    .andThen(imageGateway.getHeaderImages().firstOrError())
                                     .map { it.first() }
                         else ->
                             throw Exception()

@@ -12,15 +12,15 @@ package com.furianrt.mydiary.domain.save
 
 import com.furianrt.mydiary.model.entity.MyLocation
 import com.furianrt.mydiary.model.entity.NoteLocation
-import com.furianrt.mydiary.model.repository.location.LocationRepository
+import com.furianrt.mydiary.model.gateway.location.LocationGateway
 import io.reactivex.Completable
 import javax.inject.Inject
 
 class SaveLocationUseCase @Inject constructor(
-        private val locationRepository: LocationRepository
+        private val locationGateway: LocationGateway
 ) {
 
     fun invoke(noteId: String, location: MyLocation): Completable =
-            locationRepository.insertLocation(location)
-                    .andThen(locationRepository.insertNoteLocation(NoteLocation(noteId, location.id)))
+            locationGateway.insertLocation(location)
+                    .andThen(locationGateway.insertNoteLocation(NoteLocation(noteId, location.id)))
 }

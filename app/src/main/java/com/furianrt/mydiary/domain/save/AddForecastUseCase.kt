@@ -11,18 +11,18 @@
 package com.furianrt.mydiary.domain.save
 
 import com.furianrt.mydiary.model.entity.MyForecast
-import com.furianrt.mydiary.model.repository.forecast.ForecastRepository
+import com.furianrt.mydiary.model.gateway.forecast.ForecastGateway
 import com.furianrt.mydiary.domain.get.GetForecastsUseCase
 import io.reactivex.Maybe
 import javax.inject.Inject
 
 class AddForecastUseCase @Inject constructor(
-        private val forecastRepository: ForecastRepository,
+        private val forecastGateway: ForecastGateway,
         private val getForecasts: GetForecastsUseCase
 ) {
 
     fun invoke(noteId: String, latitude: Double, longitude: Double): Maybe<MyForecast> =
-            forecastRepository.loadForecast(noteId, latitude, longitude)
-                    .flatMapCompletable { forecastRepository.insertForecast(it) }
+            forecastGateway.loadForecast(noteId, latitude, longitude)
+                    .flatMapCompletable { forecastGateway.insertForecast(it) }
                     .andThen(getForecasts.invoke(noteId))
 }

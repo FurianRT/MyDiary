@@ -10,11 +10,11 @@
 
 package com.furianrt.mydiary.domain.get
 
-import com.furianrt.mydiary.model.repository.note.NoteRepository
+import com.furianrt.mydiary.model.gateway.note.NoteGateway
 import javax.inject.Inject
 
 class GetNotesSortTypeUseCase @Inject constructor(
-        private val noteRepository: NoteRepository
+        private val noteGateway: NoteGateway
 ) {
 
     companion object {
@@ -22,7 +22,7 @@ class GetNotesSortTypeUseCase @Inject constructor(
         const val SORT_TYPE_ASC = 1
     }
 
-    fun invoke(): Int = if (noteRepository.isSortDesc()) {
+    fun invoke(): Int = if (noteGateway.isSortDesc()) {
         SORT_TYPE_DESC
     } else {
         SORT_TYPE_ASC

@@ -10,12 +10,12 @@
 
 package com.furianrt.mydiary.domain.sync
 
-import com.furianrt.mydiary.model.repository.location.LocationRepository
+import com.furianrt.mydiary.model.gateway.location.LocationGateway
 import io.reactivex.Completable
 import javax.inject.Inject
 
 class SyncLocationsUseCase @Inject constructor(
-        private val locationRepository: LocationRepository
+        private val locationGateway: LocationGateway
 ) {
 
     class SyncLocationsException : Throwable()
@@ -25,40 +25,40 @@ class SyncLocationsUseCase @Inject constructor(
             Completable.concat(listOf(syncLocations(email), syncNoteLocations(email)))
 
     private fun syncLocations(email: String): Completable =
-            locationRepository.getAllDbLocations()
+            locationGateway.getAllDbLocations()
                     .first(emptyList())
                     .map { locations -> locations.filter { !it.isSync(email) } }
                     .map { locations -> locations.apply { forEach { it.syncWith.add(email) } } }
                     .flatMapCompletable { locations ->
                         Completable.concat(listOf(
-                                locationRepository.saveLocationsInCloud(locations),
-                                locationRepository.updateLocationsSync(locations)
+                                locationGateway.saveLocationsInCloud(locations),
+                                locationGateway.updateLocationsSync(locations)
                         ))
                     }
-                    .andThen(locationRepository.getDeletedLocations().first(emptyList()))
-                    .flatMapCompletable { locationRepository.deleteLocationsFromCloud(it) }
-                    .andThen(locationRepository.getAllLocationsFromCloud())
-                    .flatMapCompletable { locationRepository.insertLocation(it) }
+                    .andThen(locationGateway.getDeletedLocations().first(emptyList()))
+                    .flatMapCompletable { locationGateway.deleteLocationsFromCloud(it) }
+                    .andThen(locationGateway.getAllLocationsFromCloud())
+                    .flatMapCompletable { locationGateway.insertLocation(it) }
                     .onErrorResumeNext { error ->
                         error.printStackTrace()
                         Completable.error(SyncLocationsException())
                     }
 
     private fun syncNoteLocations(email: String): Completable =
-            locationRepository.getAllNoteLocations()
+            locationGateway.getAllNoteLocations()
                     .first(emptyList())
                     .map { noteLocations -> noteLocations.filter { !it.isSync(email) } }
                     .map { noteLocations -> noteLocations.apply { forEach { it.syncWith.add(email) } } }
                     .flatMapCompletable { noteLocations ->
                         Completable.concat(listOf(
-                                locationRepository.saveNoteLocationsInCloud(noteLocations),
-                                locationRepository.updateNoteLocationsSync(noteLocations)
+                                locationGateway.saveNoteLocationsInCloud(noteLocations),
+                                locationGateway.updateNoteLocationsSync(noteLocations)
                         ))
                     }
-                    .andThen(locationRepository.getDeletedNoteLocations().first(emptyList()))
-                    .flatMapCompletable { locationRepository.deleteNoteLocationsFromCloud(it) }
-                    .andThen(locationRepository.getAllNoteLocationsFromCloud())
-                    .flatMapCompletable { locationRepository.insertNoteLocation(it) }
+                    .andThen(locationGateway.getDeletedNoteLocations().first(emptyList()))
+                    .flatMapCompletable { locationGateway.deleteNoteLocationsFromCloud(it) }
+                    .andThen(locationGateway.getAllNoteLocationsFromCloud())
+                    .flatMapCompletable { locationGateway.insertNoteLocation(it) }
                     .onErrorResumeNext { error ->
                         error.printStackTrace()
                         Completable.error(SyncNoteLocationsException())

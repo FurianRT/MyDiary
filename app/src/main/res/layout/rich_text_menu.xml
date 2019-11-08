@@ -94,7 +94,7 @@
             app:layout_constraintTop_toTopOf="parent"
             tools:ignore="ContentDescription" />
 
-        <com.furianrt.mydiary.view.views.CustomSpinner
+        <com.furianrt.mydiary.presentation.views.CustomSpinner
             android:id="@+id/spinner_text_color"
             android:layout_width="0dp"
             android:layout_height="0dp"
@@ -120,7 +120,7 @@
             app:layout_constraintTop_toTopOf="parent"
             tools:ignore="ContentDescription" />
 
-        <com.furianrt.mydiary.view.views.CustomSpinner
+        <com.furianrt.mydiary.presentation.views.CustomSpinner
             android:id="@+id/spinner_text_fill_color"
             android:layout_width="0dp"
             android:layout_height="0dp"

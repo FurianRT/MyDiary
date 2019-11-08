@@ -11,29 +11,29 @@
 package com.furianrt.mydiary.domain
 
 import com.furianrt.mydiary.model.entity.MyLocation
-import com.furianrt.mydiary.model.repository.device.DeviceRepository
+import com.furianrt.mydiary.model.gateway.device.DeviceGateway
 import io.reactivex.Maybe
 import javax.inject.Inject
 
 class FindLocationUseCase @Inject constructor(
-        private val deviceRepository: DeviceRepository
+        private val deviceGateway: DeviceGateway
 ) {
 
-    private var mCallback: DeviceRepository.OnLocationFoundCallback? = null
+    private var mCallback: DeviceGateway.OnLocationFoundCallback? = null
 
     fun invoke(): Maybe<MyLocation> = Maybe.create<MyLocation> { emitter ->
-        if (deviceRepository.isLocationAvailable()) {
-            mCallback = object : DeviceRepository.OnLocationFoundCallback {
+        if (deviceGateway.isLocationAvailable()) {
+            mCallback = object : DeviceGateway.OnLocationFoundCallback {
                 override fun onLocationFound(location: MyLocation) {
                     emitter.onSuccess(location)
-                    mCallback?.let { deviceRepository.removeLocationCallback(it) }
+                    mCallback?.let { deviceGateway.removeLocationCallback(it) }
                 }
             }
-            mCallback?.let { deviceRepository.findLocation(it) }
+            mCallback?.let { deviceGateway.findLocation(it) }
         } else {
             emitter.onComplete()
         }
     }.doOnDispose {
-        mCallback?.let { deviceRepository.removeLocationCallback(it) }
+        mCallback?.let { deviceGateway.removeLocationCallback(it) }
     }
 }

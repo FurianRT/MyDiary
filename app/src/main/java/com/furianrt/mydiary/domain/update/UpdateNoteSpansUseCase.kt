@@ -12,8 +12,8 @@ package com.furianrt.mydiary.domain.update
 
 import com.furianrt.mydiary.BuildConfig
 import com.furianrt.mydiary.model.entity.MyTextSpan
-import com.furianrt.mydiary.model.repository.device.DeviceRepository
-import com.furianrt.mydiary.model.repository.span.SpanRepository
+import com.furianrt.mydiary.model.gateway.device.DeviceGateway
+import com.furianrt.mydiary.model.gateway.span.SpanGateway
 import com.furianrt.mydiary.di.application.component.AppScope
 import com.furianrt.mydiary.utils.generateUniqueId
 import io.reactivex.Completable
@@ -21,8 +21,8 @@ import javax.inject.Inject
 
 @AppScope
 class UpdateNoteSpansUseCase @Inject constructor(
-        private val spanRepository: SpanRepository,
-        private val deviceRepository: DeviceRepository
+        private val spanGateway: SpanGateway,
+        private val deviceGateway: DeviceGateway
 ) {
 
     private fun List<MyTextSpan>.isEqualTo(spans: List<MyTextSpan>): Boolean {
@@ -42,23 +42,23 @@ class UpdateNoteSpansUseCase @Inject constructor(
     }
 
     fun invoke(noteId: String, textSpans: List<MyTextSpan>) {
-        spanRepository.getTextSpans(noteId)
+        spanGateway.getTextSpans(noteId)
                 .firstOrError()
                 .flatMapCompletable { existingSpans ->
                     if (existingSpans.isEqualTo(textSpans)) {
                         Completable.complete()
                     } else {
-                        if (deviceRepository.isItemPurchased(BuildConfig.ITEM_PREMIUM_SKU)) {
-                            spanRepository.deleteTextSpan(noteId)
-                                    .andThen(spanRepository.insertTextSpan(textSpans.map { span ->
+                        if (deviceGateway.isItemPurchased(BuildConfig.ITEM_PREMIUM_SKU)) {
+                            spanGateway.deleteTextSpan(noteId)
+                                    .andThen(spanGateway.insertTextSpan(textSpans.map { span ->
                                         span.apply {
                                             span.id = generateUniqueId()
                                             span.noteId = noteId
                                         }
                                     }))
                         } else {
-                            spanRepository.deleteTextSpanPermanently(noteId)
-                                    .andThen(spanRepository.insertTextSpan(textSpans.map { span ->
+                            spanGateway.deleteTextSpanPermanently(noteId)
+                                    .andThen(spanGateway.insertTextSpan(textSpans.map { span ->
                                         span.apply {
                                             span.id = generateUniqueId()
                                             span.noteId = noteId

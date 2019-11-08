@@ -10,13 +10,13 @@
 
 package com.furianrt.mydiary.domain.get
 
-import com.furianrt.mydiary.model.repository.image.ImageRepository
+import com.furianrt.mydiary.model.gateway.image.ImageGateway
 import io.reactivex.Flowable
 import javax.inject.Inject
 
 class GetImageCountUseCase @Inject constructor(
-        private val imageRepository: ImageRepository
+        private val imageGateway: ImageGateway
 ) {
 
-    fun invoke(): Flowable<Int> = imageRepository.getImageCount()
+    fun invoke(): Flowable<Int> = imageGateway.getImageCount()
 }

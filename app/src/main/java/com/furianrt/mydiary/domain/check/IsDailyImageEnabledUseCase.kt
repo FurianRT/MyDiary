@@ -10,12 +10,12 @@
 
 package com.furianrt.mydiary.domain.check
 
-import com.furianrt.mydiary.model.repository.image.ImageRepository
+import com.furianrt.mydiary.model.gateway.image.ImageGateway
 import javax.inject.Inject
 
 class IsDailyImageEnabledUseCase @Inject constructor(
-        private val imageRepository: ImageRepository
+        private val imageGateway: ImageGateway
 ) {
 
-    fun invoke(): Boolean = imageRepository.isDailyImageEnabled()
+    fun invoke(): Boolean = imageGateway.isDailyImageEnabled()
 }

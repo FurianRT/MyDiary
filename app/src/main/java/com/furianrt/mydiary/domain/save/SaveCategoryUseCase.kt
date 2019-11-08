@@ -11,18 +11,18 @@
 package com.furianrt.mydiary.domain.save
 
 import com.furianrt.mydiary.model.entity.MyCategory
-import com.furianrt.mydiary.model.repository.category.CategoryRepository
+import com.furianrt.mydiary.model.gateway.category.CategoryGateway
 import com.furianrt.mydiary.utils.generateUniqueId
 import io.reactivex.Single
 import javax.inject.Inject
 
 class SaveCategoryUseCase @Inject constructor(
-        private val categoryRepository: CategoryRepository
+        private val categoryGateway: CategoryGateway
 ) {
 
     fun invoke(name: String, color: Int): Single<String> =
             with(generateUniqueId()) {
-                categoryRepository.insertCategory(MyCategory(this, name, color))
+                categoryGateway.insertCategory(MyCategory(this, name, color))
                         .toSingleDefault(this)
             }
 }

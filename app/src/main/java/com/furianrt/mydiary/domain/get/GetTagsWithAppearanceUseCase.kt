@@ -13,20 +13,20 @@ package com.furianrt.mydiary.domain.get
 import com.furianrt.mydiary.model.entity.MyNoteAppearance
 import com.furianrt.mydiary.model.entity.MyTag
 import com.furianrt.mydiary.model.entity.pojo.TagsAndAppearance
-import com.furianrt.mydiary.model.repository.appearance.AppearanceRepository
-import com.furianrt.mydiary.model.repository.tag.TagRepository
+import com.furianrt.mydiary.model.gateway.appearance.AppearanceGateway
+import com.furianrt.mydiary.model.gateway.tag.TagGateway
 import io.reactivex.Flowable
 import io.reactivex.functions.BiFunction
 import javax.inject.Inject
 
 class GetTagsWithAppearanceUseCase @Inject constructor(
-        private val tagRepository: TagRepository,
-        private val appearanceRepository: AppearanceRepository
+        private val tagGateway: TagGateway,
+        private val appearanceGateway: AppearanceGateway
 ) {
 
     fun invoke(noteId: String): Flowable<TagsAndAppearance> =
-            Flowable.combineLatest(tagRepository.getTagsForNote(noteId),
-                    appearanceRepository.getNoteAppearance(noteId),
+            Flowable.combineLatest(tagGateway.getTagsForNote(noteId),
+                    appearanceGateway.getNoteAppearance(noteId),
                     BiFunction<List<MyTag>, MyNoteAppearance, TagsAndAppearance> { tags, appearance ->
                         TagsAndAppearance(tags, appearance)
                     })

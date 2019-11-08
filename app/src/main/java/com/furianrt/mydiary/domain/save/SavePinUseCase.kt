@@ -10,16 +10,16 @@
 
 package com.furianrt.mydiary.domain.save
 
-import com.furianrt.mydiary.model.repository.pin.PinRepository
+import com.furianrt.mydiary.model.gateway.pin.PinGateway
 import io.reactivex.Completable
 import javax.inject.Inject
 
 class SavePinUseCase @Inject constructor(
-        private val pinRepository: PinRepository
+        private val pinGateway: PinGateway
 ) {
 
     fun invoke(pin: String, email: String): Completable {
-        pinRepository.setBackupEmail(email)
-        return pinRepository.setPin(pin)
+        pinGateway.setBackupEmail(email)
+        return pinGateway.setPin(pin)
     }
 }

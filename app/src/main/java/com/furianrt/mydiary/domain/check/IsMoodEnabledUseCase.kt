@@ -10,12 +10,12 @@
 
 package com.furianrt.mydiary.domain.check
 
-import com.furianrt.mydiary.model.repository.mood.MoodRepository
+import com.furianrt.mydiary.model.gateway.mood.MoodGateway
 import javax.inject.Inject
 
 class IsMoodEnabledUseCase @Inject constructor(
-        private val moodRepository: MoodRepository
+        private val moodGateway: MoodGateway
 ) {
 
-    fun invoke(): Boolean = moodRepository.isMoodEnabled()
+    fun invoke(): Boolean = moodGateway.isMoodEnabled()
 }

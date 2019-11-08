@@ -10,8 +10,8 @@
 
 package com.furianrt.mydiary.domain.auth
 
-import com.furianrt.mydiary.model.repository.device.DeviceRepository
-import com.furianrt.mydiary.model.repository.profile.ProfileRepository
+import com.furianrt.mydiary.model.gateway.device.DeviceGateway
+import com.furianrt.mydiary.model.gateway.profile.ProfileGateway
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
 import com.google.firebase.auth.FirebaseAuthInvalidUserException
 import io.reactivex.Completable
@@ -19,8 +19,8 @@ import io.reactivex.Single
 import javax.inject.Inject
 
 class ChangePasswordUseCase @Inject constructor(
-        private val profileRepository: ProfileRepository,
-        private val deviceRepository: DeviceRepository
+        private val profileGateway: ProfileGateway,
+        private val deviceGateway: DeviceGateway
 ) {
 
     class EmptyOldPasswordException : Throwable()
@@ -37,7 +37,7 @@ class ChangePasswordUseCase @Inject constructor(
     }
 
     fun invoke(oldPassword: String, newPassword: String, repeatPassword: String): Completable =
-            Single.fromCallable { deviceRepository.isNetworkAvailable() }
+            Single.fromCallable { deviceGateway.isNetworkAvailable() }
                     .flatMap { networkAvailable ->
                         if (networkAvailable) {
                             Single.fromCallable { validateCredentials(oldPassword, newPassword, repeatPassword) }
@@ -45,7 +45,7 @@ class ChangePasswordUseCase @Inject constructor(
                             throw NetworkNotAvailableException()
                         }
                     }
-                    .flatMapCompletable { profileRepository.updatePassword(oldPassword, newPassword) }
+                    .flatMapCompletable { profileGateway.updatePassword(oldPassword, newPassword) }
                     .onErrorResumeNext { error ->
                         when (error) {
                             is FirebaseAuthInvalidCredentialsException -> throw WrongOldPasswordException()

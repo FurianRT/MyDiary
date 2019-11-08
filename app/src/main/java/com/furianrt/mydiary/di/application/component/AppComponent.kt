@@ -15,7 +15,7 @@ import com.furianrt.mydiary.di.application.modules.app.AnalyticsModule
 import com.furianrt.mydiary.di.application.modules.app.AppContextModule
 import com.furianrt.mydiary.di.application.modules.data.DatabaseModule
 import com.furianrt.mydiary.di.application.modules.data.HelperModule
-import com.furianrt.mydiary.di.application.modules.data.RepositoryModule
+import com.furianrt.mydiary.di.application.modules.data.GatewayModule
 import com.furianrt.mydiary.di.application.modules.location.LocationModule
 import com.furianrt.mydiary.di.application.modules.network.ApiModule
 import com.furianrt.mydiary.di.application.modules.network.FirebaseModule
@@ -26,7 +26,7 @@ import dagger.Component
 
 @AppScope
 @Component(modules = [AppContextModule::class, ApiModule::class, HelperModule::class,
-    RepositoryModule::class, FirebaseModule::class, DatabaseModule::class, RxModule::class,
+    GatewayModule::class, FirebaseModule::class, DatabaseModule::class, RxModule::class,
     AnalyticsModule::class, LocationModule::class])
 
 interface AppComponent {

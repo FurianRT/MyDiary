@@ -10,12 +10,12 @@
 
 package com.furianrt.mydiary.domain.sync
 
-import com.furianrt.mydiary.model.repository.tag.TagRepository
+import com.furianrt.mydiary.model.gateway.tag.TagGateway
 import io.reactivex.Completable
 import javax.inject.Inject
 
 class SyncTagsUseCase @Inject constructor(
-        private val tagRepository: TagRepository
+        private val tagGateway: TagGateway
 ) {
 
     class SyncTagsException : Throwable()
@@ -25,40 +25,40 @@ class SyncTagsUseCase @Inject constructor(
             Completable.concat(listOf(syncTags(email), syncNoteTags(email)))
 
     private fun syncTags(email: String): Completable =
-            tagRepository.getAllTags()
+            tagGateway.getAllTags()
                     .first(emptyList())
                     .map { tags -> tags.filter { !it.isSync(email) } }
                     .map { tags -> tags.apply { forEach { it.syncWith.add(email) } } }
                     .flatMapCompletable { tags ->
                         Completable.concat(listOf(
-                                tagRepository.saveTagsInCloud(tags),
-                                tagRepository.updateTagsSync(tags)
+                                tagGateway.saveTagsInCloud(tags),
+                                tagGateway.updateTagsSync(tags)
                         ))
                     }
-                    .andThen(tagRepository.getDeletedTags().first(emptyList()))
-                    .flatMapCompletable { tagRepository.deleteTagsFromCloud(it) }
-                    .andThen(tagRepository.getAllTagsFromCloud())
-                    .flatMapCompletable { tagRepository.insertTag(it) }
+                    .andThen(tagGateway.getDeletedTags().first(emptyList()))
+                    .flatMapCompletable { tagGateway.deleteTagsFromCloud(it) }
+                    .andThen(tagGateway.getAllTagsFromCloud())
+                    .flatMapCompletable { tagGateway.insertTag(it) }
                     .onErrorResumeNext { error ->
                         error.printStackTrace()
                         Completable.error(SyncTagsException())
                     }
 
     private fun syncNoteTags(email: String): Completable =
-            tagRepository.getAllNoteTags()
+            tagGateway.getAllNoteTags()
                     .first(emptyList())
                     .map { noteTags -> noteTags.filter { !it.isSync(email) } }
                     .map { noteTags -> noteTags.apply { forEach { it.syncWith.add(email) } } }
                     .flatMapCompletable { noteTags ->
                         Completable.concat(listOf(
-                                tagRepository.saveNoteTagsInCloud(noteTags),
-                                tagRepository.updateNoteTagsSync(noteTags)
+                                tagGateway.saveNoteTagsInCloud(noteTags),
+                                tagGateway.updateNoteTagsSync(noteTags)
                         ))
                     }
-                    .andThen(tagRepository.getDeletedNoteTags().first(emptyList()))
-                    .flatMapCompletable { tagRepository.deleteNoteTagsFromCloud(it) }
-                    .andThen(tagRepository.getAllNoteTagsFromCloud())
-                    .flatMapCompletable { tagRepository.insertNoteTag(it) }
+                    .andThen(tagGateway.getDeletedNoteTags().first(emptyList()))
+                    .flatMapCompletable { tagGateway.deleteNoteTagsFromCloud(it) }
+                    .andThen(tagGateway.getAllNoteTagsFromCloud())
+                    .flatMapCompletable { tagGateway.insertNoteTag(it) }
                     .onErrorResumeNext { error ->
                         error.printStackTrace()
                         Completable.error(SyncNoteTagsException())

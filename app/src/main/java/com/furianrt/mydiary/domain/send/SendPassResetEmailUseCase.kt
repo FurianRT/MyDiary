@@ -11,14 +11,14 @@
 package com.furianrt.mydiary.domain.send
 
 import android.util.Patterns
-import com.furianrt.mydiary.model.repository.profile.ProfileRepository
+import com.furianrt.mydiary.model.gateway.profile.ProfileGateway
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
 import io.reactivex.Completable
 import io.reactivex.Single
 import javax.inject.Inject
 
 class SendPassResetEmailUseCase @Inject constructor(
-        private val profileRepository: ProfileRepository
+        private val profileGateway: ProfileGateway
 ) {
 
     class EmailFormatException : Throwable()
@@ -26,7 +26,7 @@ class SendPassResetEmailUseCase @Inject constructor(
 
     fun invoke(email: String): Completable =
             Single.fromCallable { validateEmail(email) }
-                    .flatMapCompletable { profileRepository.sendPasswordResetEmail(email) }
+                    .flatMapCompletable { profileGateway.sendPasswordResetEmail(email) }
                     .onErrorResumeNext { error ->
                         if (error is FirebaseAuthInvalidCredentialsException) {
                             Completable.error(EmailFormatException())

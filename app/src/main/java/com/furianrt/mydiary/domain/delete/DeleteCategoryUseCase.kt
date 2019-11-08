@@ -11,14 +11,14 @@
 package com.furianrt.mydiary.domain.delete
 
 import com.furianrt.mydiary.model.entity.MyCategory
-import com.furianrt.mydiary.model.repository.category.CategoryRepository
+import com.furianrt.mydiary.model.gateway.category.CategoryGateway
 import io.reactivex.Completable
 import javax.inject.Inject
 
 class DeleteCategoryUseCase @Inject constructor(
-        private val categoryRepository: CategoryRepository
+        private val categoryGateway: CategoryGateway
 ) {
 
     fun invoke(category: MyCategory): Completable =
-            categoryRepository.deleteCategory(category)
+            categoryGateway.deleteCategory(category)
 }

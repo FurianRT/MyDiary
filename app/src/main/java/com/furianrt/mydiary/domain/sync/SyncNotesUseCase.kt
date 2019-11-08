@@ -10,31 +10,31 @@
 
 package com.furianrt.mydiary.domain.sync
 
-import com.furianrt.mydiary.model.repository.note.NoteRepository
+import com.furianrt.mydiary.model.gateway.note.NoteGateway
 import io.reactivex.Completable
 import javax.inject.Inject
 
 class SyncNotesUseCase @Inject constructor(
-        private val noteRepository: NoteRepository
+        private val noteGateway: NoteGateway
 ) {
 
     class SyncNotesException : Throwable()
 
     fun invoke(email: String): Completable =
-            noteRepository.getAllNotes()
+            noteGateway.getAllNotes()
                     .first(emptyList())
                     .map { notes -> notes.filter { !it.isSync(email) } }
                     .map { notes -> notes.apply { forEach { it.syncWith.add(email) } } }
                     .flatMapCompletable { notes ->
                         Completable.concat(listOf(
-                                noteRepository.saveNotesInCloud(notes),
-                                noteRepository.updateNotesSync(notes)
+                                noteGateway.saveNotesInCloud(notes),
+                                noteGateway.updateNotesSync(notes)
                         ))
                     }
-                    .andThen(noteRepository.getDeletedNotes().first(emptyList()))
-                    .flatMapCompletable { noteRepository.deleteNotesFromCloud(it) }
-                    .andThen(noteRepository.getAllNotesFromCloud())
-                    .flatMapCompletable { noteRepository.insertNote(it) }
+                    .andThen(noteGateway.getDeletedNotes().first(emptyList()))
+                    .flatMapCompletable { noteGateway.deleteNotesFromCloud(it) }
+                    .andThen(noteGateway.getAllNotesFromCloud())
+                    .flatMapCompletable { noteGateway.insertNote(it) }
                     .onErrorResumeNext { error ->
                         error.printStackTrace()
                         Completable.error(SyncNotesException())

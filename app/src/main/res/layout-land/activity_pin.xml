@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="?attr/colorPrimaryDark"
-    tools:context=".view.screens.pin.PinActivity">
+    tools:context=".presentation.screens.pin.PinActivity">
 
     <ImageView
         android:id="@+id/imageView2"

@@ -10,19 +10,19 @@
 
 package com.furianrt.mydiary.domain.reset
 
-import com.furianrt.mydiary.model.repository.appearance.AppearanceRepository
+import com.furianrt.mydiary.model.gateway.appearance.AppearanceGateway
 import io.reactivex.Completable
 import javax.inject.Inject
 
 class ResetNotesAppearanceSettingsUseCase @Inject constructor(
-        private val appearanceRepository: AppearanceRepository
+        private val appearanceGateway: AppearanceGateway
 ) {
 
     fun invoke(): Completable = Completable.fromAction {
-        appearanceRepository.setNoteBackgroundColor(AppearanceRepository.DEFAULT_NOTE_BACKGROUND_COLOR)
-        appearanceRepository.setNoteTextBackgroundColor(AppearanceRepository.DEFAULT_NOTE_TEXT_BACKGROUND_COLOR)
-        appearanceRepository.setTextSize(AppearanceRepository.DEFAULT_NOTE_TEXT_SIZE)
-        appearanceRepository.setTextColor(AppearanceRepository.DEFAULT_NOTE_TEXT_COLOR)
-        appearanceRepository.setSurfaceTextColor(AppearanceRepository.DEFAULT_NOTE_TEXT_COLOR)
+        appearanceGateway.setNoteBackgroundColor(AppearanceGateway.DEFAULT_NOTE_BACKGROUND_COLOR)
+        appearanceGateway.setNoteTextBackgroundColor(AppearanceGateway.DEFAULT_NOTE_TEXT_BACKGROUND_COLOR)
+        appearanceGateway.setTextSize(AppearanceGateway.DEFAULT_NOTE_TEXT_SIZE)
+        appearanceGateway.setTextColor(AppearanceGateway.DEFAULT_NOTE_TEXT_COLOR)
+        appearanceGateway.setSurfaceTextColor(AppearanceGateway.DEFAULT_NOTE_TEXT_COLOR)
     }
 }

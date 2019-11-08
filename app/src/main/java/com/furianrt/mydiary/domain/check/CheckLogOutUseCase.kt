@@ -10,21 +10,21 @@
 
 package com.furianrt.mydiary.domain.check
 
-import com.furianrt.mydiary.model.repository.profile.ProfileRepository
+import com.furianrt.mydiary.model.gateway.profile.ProfileGateway
 import io.reactivex.Completable
 import javax.inject.Inject
 
 class CheckLogOutUseCase @Inject constructor(
-        private val profileRepository: ProfileRepository
+        private val profileGateway: ProfileGateway
 ) {
 
     fun invoke(): Completable =
-            profileRepository.getDbProfileCount()
+            profileGateway.getDbProfileCount()
                     .flatMapCompletable { count ->
-                        if (profileRepository.isSignedIn() && count == 0) {
-                            profileRepository.signOut()
+                        if (profileGateway.isSignedIn() && count == 0) {
+                            profileGateway.signOut()
                         } else if (count > 1) {
-                            profileRepository.signOut().andThen(profileRepository.clearDbProfile())
+                            profileGateway.signOut().andThen(profileGateway.clearDbProfile())
                         } else {
                             Completable.complete()
                         }

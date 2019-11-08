@@ -11,15 +11,15 @@
 package com.furianrt.mydiary.domain.get
 
 import com.furianrt.mydiary.model.entity.MyMood
-import com.furianrt.mydiary.model.repository.mood.MoodRepository
+import com.furianrt.mydiary.model.gateway.mood.MoodGateway
 import io.reactivex.Flowable
 import javax.inject.Inject
 
 class GetMoodsUseCase @Inject constructor(
-        private val moodRepository: MoodRepository
+        private val moodGateway: MoodGateway
 ) {
 
-    fun invoke(): Flowable<List<MyMood>> = moodRepository.getAllMoods()
+    fun invoke(): Flowable<List<MyMood>> = moodGateway.getAllMoods()
 
-    fun invoke(moodId: Int): Flowable<MyMood> = moodRepository.getMood(moodId)
+    fun invoke(moodId: Int): Flowable<MyMood> = moodGateway.getMood(moodId)
 }
