@@ -20,22 +20,16 @@ class UriToRealPathUseCase @Inject constructor(
 
     class UriConvertException : Throwable()
 
-    private var mCallback: DeviceGateway.OnUriConvertCallback? = null
-
-    fun invoke(uri: String): Single<String> = Single.create<String> {  emitter ->
-        mCallback = object : DeviceGateway.OnUriConvertCallback {
+    fun invoke(uri: String): Single<String> = Single.create<String> { emitter ->
+        val callback = object : DeviceGateway.OnUriConvertCallback {
             override fun onUriRealPathError() {
                 emitter.onError(UriConvertException())
-                mCallback?.let { deviceGateway.removeUriConvertCallback(it) }
             }
 
             override fun onUriRealPathReceived(path: String) {
                 emitter.onSuccess(path)
-                mCallback?.let { deviceGateway.removeUriConvertCallback(it) }
             }
         }
-        mCallback?.let { deviceGateway.getRealPathFromUri(uri, it) }
-    }.doOnDispose {
-        mCallback?.let { deviceGateway.removeUriConvertCallback(it) }
+        deviceGateway.getRealPathFromUri(uri, callback)
     }
 }

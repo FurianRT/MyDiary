@@ -15,7 +15,7 @@ import com.anjlab.android.iab.v3.BillingProcessor
 import com.furianrt.mydiary.model.entity.MyLocation
 import com.hbisoft.pickit.PickiTCallbacks
 
-interface DeviceGateway : BillingProcessor.IBillingHandler, PickiTCallbacks {
+interface DeviceGateway : BillingProcessor.IBillingHandler {
     fun isFingerprintEnabled(): Boolean
     fun isNetworkAvailable(): Boolean
     fun isLocationAvailable(): Boolean
@@ -27,7 +27,6 @@ interface DeviceGateway : BillingProcessor.IBillingHandler, PickiTCallbacks {
     fun getTutorialNoteContent(): String
     fun getTutorialNoteBitmap(): Bitmap
     fun getRealPathFromUri(uri: String, callback: OnUriConvertCallback)
-    fun removeUriConvertCallback(callback: OnUriConvertCallback)
     fun clearUriTempFiles()
 
     interface OnLocationFoundCallback {
