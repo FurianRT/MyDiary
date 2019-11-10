@@ -181,7 +181,7 @@
             android:negativeButtonText="@null"
             android:positiveButtonText="@null"
             android:summary="%s"
-            android:title="Формат времени"
+            android:title="@string/time_format"
             app:iconSpaceReserved="false" />
 
     </PreferenceCategory>

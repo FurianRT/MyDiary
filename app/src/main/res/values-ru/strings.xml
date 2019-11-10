@@ -147,13 +147,14 @@
     <string name="all_notes_text_size_settings_title">Размер шрифта</string>
     <string name="all_notes_text_color_settings_summary">Применяется ко всем заметкам для которых не указан отдельно</string>
     <string name="all_notes_text_color_settings_title">Цвет текста</string>
+    <string name="time_format">Формат времени</string>
     <string name="settings_title_notes">Настройки заметок</string>
     <string name="settings_title_protection">Защита</string>
-    <string name="weather_activation_settings_off">Включить проказ погоды</string>
+    <string name="weather_activation_settings_off">Включить показ погоды</string>
     <string name="weather_activation_settings_on">Отключить показ погоды</string>
     <string name="weather_activation_settings_title">Погода</string>
     <string name="weather_units_settings_title">Единицы измерения погоды</string>
-    <string name="mood_activation_settings_off">Включить проказ настроения</string>
+    <string name="mood_activation_settings_off">Включить показ настроения</string>
     <string name="mood_activation_settings_on">Отключить показ настроения</string>
     <string name="mood_activation_settings_title">Настроение</string>
     <string name="map_activation_settings_off">Включить определение местонахождения</string>
