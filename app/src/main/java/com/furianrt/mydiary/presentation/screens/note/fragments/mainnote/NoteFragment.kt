@@ -590,11 +590,9 @@ class NoteFragment : BaseFragment(R.layout.fragment_note), NoteFragmentContract.
 
     @AfterPermissionGranted(STORAGE_PERMISSIONS_REQUEST_CODE)
     override fun showImageExplorer() {
-        with(Intent()) {
-            type = "image/*"
+        Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI).apply {
             putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true)
-            action = Intent.ACTION_GET_CONTENT
-            startActivityForResult(Intent.createChooser(this, ""), IMAGE_PICKER_REQUEST_CODE)
+            startActivityForResult(this, IMAGE_PICKER_REQUEST_CODE)
         }
         mListener?.onNoteFragmentImagePickerOpen()
     }

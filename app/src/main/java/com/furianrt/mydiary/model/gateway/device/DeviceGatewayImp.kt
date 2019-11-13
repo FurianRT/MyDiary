@@ -35,8 +35,10 @@ import com.furianrt.mydiary.analytics.MyAnalytics
 import com.furianrt.mydiary.model.gateway.device.DeviceGateway.*
 import com.furianrt.mydiary.utils.generateUniqueId
 import com.hbisoft.pickit.PickiT
+import com.hbisoft.pickit.PickiTCallbacks
 import java.io.IOException
 
+@AppContext
 class DeviceGatewayImp @Inject constructor(
         @AppContext private val context: Context,
         private val fusedLocationClient: FusedLocationProviderClient,
@@ -50,8 +52,7 @@ class DeviceGatewayImp @Inject constructor(
     }
 
     private val mBillingProcessor = BillingProcessor(context, BuildConfig.LICENSE_KEY, BuildConfig.MERCHANT_ID, this)
-    private val mPickit = PickiT(context, this)
-    private val mUriConvertCallbacks = mutableListOf<OnUriConvertCallback>()
+    private val mPickits = mutableListOf<PickiT>()
     private val mLocationCallbacks = mutableSetOf<OnLocationFoundCallback>()
     private val mLocationCallback = object : LocationCallback() {
         override fun onLocationResult(result: LocationResult?) {
@@ -121,11 +122,13 @@ class DeviceGatewayImp @Inject constructor(
         }
     }
 
+    @Synchronized
     override fun findLocation(callback: OnLocationFoundCallback) {
         mLocationCallbacks.add(callback)
         requestLocation()
     }
 
+    @Synchronized
     override fun removeLocationCallback(callback: OnLocationFoundCallback) {
         mLocationCallbacks.remove(callback)
         if (mLocationCallbacks.isEmpty()) {
@@ -161,37 +164,32 @@ class DeviceGatewayImp @Inject constructor(
     }
 
     override fun getRealPathFromUri(uri: String, callback: OnUriConvertCallback) {
-        mUriConvertCallbacks.add(callback)
-        mPickit.getPath(Uri.parse(uri), Build.VERSION.SDK_INT)
-    }
+        val pickit = PickiT(context, object : PickiTCallbacks {
+            override fun PickiTonProgressUpdate(progress: Int) {
+                Log.e(TAG, "PickiTonProgressUpdate $progress")
+            }
 
-    override fun removeUriConvertCallback(callback: OnUriConvertCallback) {
-        mUriConvertCallbacks.remove(callback)
+            override fun PickiTonStartListener() {
+                Log.e(TAG, "PickiTonStartListener")
+            }
+
+            override fun PickiTonCompleteListener(path: String?, wasDriveFile: Boolean, wasUnknownProvider: Boolean, wasSuccessful: Boolean, Reason: String?) {
+                if (wasSuccessful && path != null) {
+                    callback.onUriRealPathReceived(path)
+                } else {
+                    callback.onUriRealPathError()
+                    var bundle: Bundle? = null
+                    Reason?.let { bundle = Bundle().apply { putString(MyAnalytics.BUNDLE_ERROR_TEXT, it) } }
+                    analytics.sendEvent(MyAnalytics.EVENT_IMAGE_COPY_ERROR, bundle)
+                }
+            }
+        })
+        mPickits.add(pickit)
+        pickit.getPath(Uri.parse(uri), Build.VERSION.SDK_INT)
     }
 
     override fun clearUriTempFiles() {
-        mPickit.deleteTemporaryFile()
-    }
-
-    override fun PickiTonProgressUpdate(progress: Int) {
-        Log.e(TAG, "PickiTonProgressUpdate $progress")
-    }
-
-    override fun PickiTonStartListener() {
-        Log.e(TAG, "PickiTonStartListener")
-    }
-
-    @Synchronized
-    override fun PickiTonCompleteListener(path: String?, wasDriveFile: Boolean, wasUnknownProvider: Boolean, wasSuccessful: Boolean, Reason: String?) {
-        mUriConvertCallbacks.forEach { callback ->
-            if (wasSuccessful && path != null) {
-                callback.onUriRealPathReceived(path)
-            } else {
-                callback.onUriRealPathError()
-                var bundle: Bundle? = null
-                Reason?.let { bundle = Bundle().apply { putString(MyAnalytics.BUNDLE_ERROR_TEXT, it) } }
-                analytics.sendEvent(MyAnalytics.EVENT_IMAGE_COPY_ERROR, bundle)
-            }
-        }
+        mPickits.forEach { it.deleteTemporaryFile() }
+        mPickits.clear()
     }
 }

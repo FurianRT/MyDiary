@@ -348,11 +348,9 @@ class GalleryListFragment : BaseFragment(R.layout.fragment_gallery_list), Galler
 
     @AfterPermissionGranted(STORAGE_PERMISSIONS_REQUEST_CODE)
     override fun showImageExplorer() {
-        with(Intent()) {
-            type = "image/*"
+        Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI).apply {
             putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true)
-            action = Intent.ACTION_GET_CONTENT
-            startActivityForResult(Intent.createChooser(this, ""), IMAGE_PICKER_REQUEST_CODE)
+            startActivityForResult(this, IMAGE_PICKER_REQUEST_CODE)
         }
         mListener?.onGalleryListImagePickerOpen()
     }
@@ -426,19 +424,19 @@ class GalleryListFragment : BaseFragment(R.layout.fragment_gallery_list), Galler
 
     private fun restoreTrash(animate: Boolean) {
         if (animate) {
-            fab_trash.animateScale(
+            fab_trash?.animateScale(
                     FAB_HIGHLIGHTED_SIZE.toFloat() / FAB_DEFAULT_SIZE.toFloat(),
                     1f,
                     ANIMATION_SCALE_DURATION
             )
         } else {
-            fab_trash.customSize = FAB_HIGHLIGHTED_SIZE
-            fab_trash.requestLayout()
+            fab_trash?.customSize = FAB_HIGHLIGHTED_SIZE
+            fab_trash?.requestLayout()
         }
     }
 
     private fun highlightTrash() {
-        fab_trash.animateScale(
+        fab_trash?.animateScale(
                 1f,
                 FAB_HIGHLIGHTED_SIZE.toFloat() / FAB_DEFAULT_SIZE.toFloat(),
                 ANIMATION_SCALE_DURATION
@@ -446,11 +444,11 @@ class GalleryListFragment : BaseFragment(R.layout.fragment_gallery_list), Galler
     }
 
     private fun showTrash() {
-        fab_trash.show()
+        fab_trash?.show()
     }
 
     private fun hideTrash() {
-        fab_trash.hide()
+        fab_trash?.hide()
     }
 
     interface OnGalleryListInteractionListener {

@@ -156,6 +156,7 @@
     <string name="all_notes_text_color_settings_title">Font color</string>
     <string name="settings_title_notes">Note settings</string>
     <string name="settings_title_protection">Security</string>
+    <string name="time_format">Time format</string>
     <string name="weather_activation_settings_off">Enable forecast</string>
     <string name="weather_activation_settings_on">Disable forecast</string>
     <string name="weather_activation_settings_title">Forecast</string>
