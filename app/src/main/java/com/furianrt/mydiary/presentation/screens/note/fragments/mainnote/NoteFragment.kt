@@ -45,6 +45,7 @@ import com.furianrt.mydiary.presentation.general.GlideApp
 import com.furianrt.mydiary.presentation.screens.gallery.GalleryActivity
 import com.furianrt.mydiary.presentation.screens.note.fragments.mainnote.content.NoteContentFragment
 import com.furianrt.mydiary.presentation.screens.note.fragments.mainnote.edit.NoteEditFragment
+import com.furianrt.mydiary.presentation.screens.note.fragments.mainnote.reminder.ReminderFragment
 import com.furianrt.mydiary.presentation.screens.settings.note.NoteSettingsActivity
 import com.furianrt.mydiary.utils.*
 import com.google.android.material.card.MaterialCardView
@@ -200,6 +201,12 @@ class NoteFragment : BaseFragment(R.layout.fragment_note), NoteFragmentContract.
         if (childFragmentManager.findFragmentByTag(NoteContentFragment.TAG) == null) {
             childFragmentManager.inTransaction {
                 add(R.id.container_note_edit, NoteContentFragment.newInstance(mIsNewNote), NoteContentFragment.TAG)
+            }
+        }
+
+        if (childFragmentManager.findFragmentByTag(ReminderFragment.TAG) == null) {
+            childFragmentManager.inTransaction {
+                add(R.id.container_reminder, ReminderFragment.newInstance(), ReminderFragment.TAG)
             }
         }
 
