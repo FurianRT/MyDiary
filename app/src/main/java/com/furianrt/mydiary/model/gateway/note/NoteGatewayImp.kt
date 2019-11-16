@@ -13,8 +13,8 @@ package com.furianrt.mydiary.model.gateway.note
 import com.furianrt.mydiary.model.entity.*
 import com.furianrt.mydiary.model.source.auth.AuthHelper
 import com.furianrt.mydiary.model.source.cloud.CloudHelper
-import com.furianrt.mydiary.model.source.database.NoteDao
-import com.furianrt.mydiary.model.source.database.NoteTagDao
+import com.furianrt.mydiary.model.source.database.dao.NoteDao
+import com.furianrt.mydiary.model.source.database.dao.NoteTagDao
 import com.furianrt.mydiary.model.source.preferences.PreferencesHelper
 import com.furianrt.mydiary.utils.MyRxUtils
 import io.reactivex.*

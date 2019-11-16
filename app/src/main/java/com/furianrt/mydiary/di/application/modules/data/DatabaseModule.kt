@@ -23,6 +23,7 @@ import com.furianrt.mydiary.model.source.database.*
 import com.furianrt.mydiary.model.entity.*
 import com.furianrt.mydiary.di.application.component.AppScope
 import com.furianrt.mydiary.di.application.modules.app.AppContext
+import com.furianrt.mydiary.model.source.database.dao.*
 import com.google.gson.Gson
 import dagger.Module
 import dagger.Provides

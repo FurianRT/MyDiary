@@ -26,7 +26,7 @@ class TagEditPresenter @Inject constructor(
         mTag = tag
     }
 
-    override fun attachView(view: TagEditContract.MvpView) {
+    override fun attachView(view: TagEditContract.View) {
         super.attachView(view)
         view.showTagName(mTag.name)
     }

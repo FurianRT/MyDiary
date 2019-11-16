@@ -20,7 +20,7 @@ import com.furianrt.mydiary.presentation.base.BaseDialog
 import kotlinx.android.synthetic.main.dialog_delete_image.view.*
 import javax.inject.Inject
 
-class DeleteImageDialog : BaseDialog(), DeleteImageContract.MvpView {
+class DeleteImageDialog : BaseDialog(), DeleteImageContract.View {
 
     companion object {
         const val TAG = "DeleteImageDialog"

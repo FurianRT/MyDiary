@@ -26,7 +26,7 @@ class CategoryDeletePresenter @Inject constructor(
         mCategory = category
     }
 
-    override fun attachView(view: CategoryDeleteContract.MvpView) {
+    override fun attachView(view: CategoryDeleteContract.View) {
         super.attachView(view)
         view.showDeleteMessage(mCategory.name)
     }

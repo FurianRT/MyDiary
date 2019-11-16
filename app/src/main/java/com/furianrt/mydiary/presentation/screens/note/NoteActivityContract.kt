@@ -15,12 +15,12 @@ import com.furianrt.mydiary.presentation.base.mvp.BaseMvpPresenter
 
 interface NoteActivityContract {
 
-    interface MvpView : BaseMvpView {
+    interface View : BaseMvpView {
         fun showNotes(noteIds: List<String>)
         fun closeView()
     }
 
-    abstract class Presenter : BaseMvpPresenter<MvpView>() {
+    abstract class Presenter : BaseMvpPresenter<View>() {
         abstract fun init(noteId: String, newNote: Boolean)
     }
 }

@@ -23,7 +23,7 @@ import kotlinx.android.synthetic.main.bottom_sheet_pin.*
 import kotlinx.android.synthetic.main.fragment_send_email.*
 import javax.inject.Inject
 
-class SendEmailFragment : BaseFragment(R.layout.fragment_send_email), SendEmailContract.MvpView {
+class SendEmailFragment : BaseFragment(R.layout.fragment_send_email), SendEmailContract.View {
 
     companion object {
         const val TAG = "SendEmailFragment"

@@ -30,7 +30,7 @@ class NoteActivityPresenter @Inject constructor(
 
     }
 
-    override fun attachView(view: NoteActivityContract.MvpView) {
+    override fun attachView(view: NoteActivityContract.View) {
         super.attachView(view)
         check(::mNoteId.isInitialized) { "Need to call init before attaching view" }
         if (mIsNewNote) {

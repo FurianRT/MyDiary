@@ -79,10 +79,12 @@ import com.furianrt.mydiary.presentation.screens.note.NoteActivityContract
 import com.furianrt.mydiary.presentation.screens.note.NoteActivityPresenter
 import com.furianrt.mydiary.presentation.screens.note.fragments.mainnote.NoteFragmentContract
 import com.furianrt.mydiary.presentation.screens.note.fragments.mainnote.NoteFragmentPresenter
-import com.furianrt.mydiary.presentation.screens.note.fragments.mainnote.content.NoteContentFragmentContract
-import com.furianrt.mydiary.presentation.screens.note.fragments.mainnote.content.NoteContentFragmentPresenter
-import com.furianrt.mydiary.presentation.screens.note.fragments.mainnote.edit.NoteEditFragmentContract
-import com.furianrt.mydiary.presentation.screens.note.fragments.mainnote.edit.NoteEditFragmentPresenter
+import com.furianrt.mydiary.presentation.screens.note.fragments.mainnote.content.NoteContentContract
+import com.furianrt.mydiary.presentation.screens.note.fragments.mainnote.content.NoteContentPresenter
+import com.furianrt.mydiary.presentation.screens.note.fragments.mainnote.edit.NoteEditContract
+import com.furianrt.mydiary.presentation.screens.note.fragments.mainnote.edit.NoteEditPresenter
+import com.furianrt.mydiary.presentation.screens.note.fragments.mainnote.reminder.ReminderContract
+import com.furianrt.mydiary.presentation.screens.note.fragments.mainnote.reminder.ReminderPresenter
 import com.furianrt.mydiary.presentation.screens.pin.PinContract
 import com.furianrt.mydiary.presentation.screens.pin.PinPresenter
 import com.furianrt.mydiary.presentation.screens.pin.fragments.backupemail.BackupEmailContract
@@ -111,11 +113,11 @@ interface PresenterModule {
 
     @Binds
     @PresenterScope
-    fun noteContentFragmentPresenter(presenter: NoteContentFragmentPresenter): NoteContentFragmentContract.Presenter
+    fun noteContentFragmentPresenter(presenter: NoteContentPresenter): NoteContentContract.Presenter
 
     @Binds
     @PresenterScope
-    fun noteEditFragmentPresenter(presenter: NoteEditFragmentPresenter): NoteEditFragmentContract.Presenter
+    fun noteEditFragmentPresenter(presenter: NoteEditPresenter): NoteEditContract.Presenter
 
     @Binds
     @PresenterScope
@@ -268,4 +270,8 @@ interface PresenterModule {
     @Binds
     @PresenterScope
     fun dailySettingsPresenter(presenter: DailySettingsPresenter): DailySettingsContract.Presenter
+
+    @Binds
+    @PresenterScope
+    fun reminderPresenter(presenter: ReminderPresenter): ReminderContract.Presenter
 }

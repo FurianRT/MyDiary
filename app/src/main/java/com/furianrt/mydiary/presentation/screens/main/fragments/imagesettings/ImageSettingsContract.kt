@@ -15,11 +15,11 @@ import com.furianrt.mydiary.presentation.base.mvp.BaseMvpPresenter
 
 interface ImageSettingsContract {
 
-    interface MvpView : BaseMvpView {
+    interface View : BaseMvpView {
         fun close()
     }
 
-    abstract class Presenter : BaseMvpPresenter<MvpView>() {
+    abstract class Presenter : BaseMvpPresenter<View>() {
         abstract fun onButtonCloseClick()
     }
 }

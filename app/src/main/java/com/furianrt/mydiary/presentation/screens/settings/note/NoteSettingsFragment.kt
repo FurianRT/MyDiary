@@ -23,7 +23,7 @@ import com.furianrt.mydiary.model.entity.MyNoteAppearance
 import com.jaredrummler.android.colorpicker.ColorPreferenceCompat
 import javax.inject.Inject
 
-class NoteSettingsFragment : PreferenceFragmentCompat(), BaseView, NoteSettingsContract.MvpView {
+class NoteSettingsFragment : PreferenceFragmentCompat(), BaseView, NoteSettingsContract.View {
 
     @Inject
     lateinit var presenter: NoteSettingsContract.Presenter

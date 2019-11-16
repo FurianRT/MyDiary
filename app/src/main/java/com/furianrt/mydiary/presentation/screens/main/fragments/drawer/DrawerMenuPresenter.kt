@@ -32,7 +32,7 @@ class DrawerMenuPresenter @Inject constructor(
        private val scheduler: MyRxUtils.BaseSchedulerProvider
 ) : DrawerMenuContract.Presenter() {
 
-    override fun attachView(view: DrawerMenuContract.MvpView) {
+    override fun attachView(view: DrawerMenuContract.View) {
         super.attachView(view)
         loadNotes()
         loadImageCount()

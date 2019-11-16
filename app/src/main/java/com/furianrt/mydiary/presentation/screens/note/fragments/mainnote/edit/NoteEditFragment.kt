@@ -29,7 +29,7 @@ import com.furianrt.mydiary.utils.showKeyboard
 import kotlinx.android.synthetic.main.fragment_note_edit.*
 import javax.inject.Inject
 
-class NoteEditFragment : BaseFragment(R.layout.fragment_note_edit), NoteEditFragmentContract.MvpView {
+class NoteEditFragment : BaseFragment(R.layout.fragment_note_edit), NoteEditContract.View {
 
     private var mClickedView: Int? = null
     private var mClickPosition = 0
@@ -48,7 +48,7 @@ class NoteEditFragment : BaseFragment(R.layout.fragment_note_edit), NoteEditFrag
     }
 
     @Inject
-    lateinit var mPresenter: NoteEditFragmentContract.Presenter
+    lateinit var mPresenter: NoteEditContract.Presenter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         getPresenterComponent(requireContext()).inject(this)

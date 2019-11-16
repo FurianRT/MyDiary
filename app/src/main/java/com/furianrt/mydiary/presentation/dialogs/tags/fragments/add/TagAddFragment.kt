@@ -21,7 +21,7 @@ import com.furianrt.mydiary.utils.showKeyboard
 import kotlinx.android.synthetic.main.fragment_tag_add.*
 import javax.inject.Inject
 
-class TagAddFragment : BaseFragment(R.layout.fragment_tag_add), TagAddContract.MvpView {
+class TagAddFragment : BaseFragment(R.layout.fragment_tag_add), TagAddContract.View {
 
     @Inject
     lateinit var mPresenter: TagAddContract.Presenter

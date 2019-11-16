@@ -15,13 +15,13 @@ import com.furianrt.mydiary.presentation.base.mvp.BaseMvpPresenter
 
 interface TagAddContract {
 
-    interface MvpView : BaseMvpView {
+    interface View : BaseMvpView {
         fun closeView()
         fun showErrorEmptyTagName()
         fun showErrorExistingTagName()
     }
 
-    abstract class Presenter : BaseMvpPresenter<MvpView>() {
+    abstract class Presenter : BaseMvpPresenter<View>() {
         abstract fun init(noteId: String)
         abstract fun onButtonAddClick(name: String)
         abstract fun onButtonCloseClick()

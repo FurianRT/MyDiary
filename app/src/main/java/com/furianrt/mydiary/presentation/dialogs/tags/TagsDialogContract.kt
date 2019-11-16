@@ -15,11 +15,11 @@ import com.furianrt.mydiary.presentation.base.mvp.BaseMvpPresenter
 
 interface TagsDialogContract {
 
-    interface MvpView : BaseMvpView {
+    interface View : BaseMvpView {
         fun showTagListView(noteId: String)
     }
 
-    abstract class Presenter : BaseMvpPresenter<MvpView>() {
+    abstract class Presenter : BaseMvpPresenter<View>() {
         abstract fun init(noteId: String)
     }
 }

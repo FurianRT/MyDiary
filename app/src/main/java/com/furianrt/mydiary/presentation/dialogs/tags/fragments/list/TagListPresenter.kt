@@ -39,7 +39,7 @@ class TagListPresenter @Inject constructor(
         mNoteId = noteId
     }
 
-    override fun attachView(view: TagListContract.MvpView) {
+    override fun attachView(view: TagListContract.View) {
         super.attachView(view)
         addDisposable(Flowable.combineLatest(
                 getTags.invoke(),

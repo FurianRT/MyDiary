@@ -15,12 +15,12 @@ import com.furianrt.mydiary.presentation.base.mvp.BaseMvpPresenter
 
 interface CategoryAddContract {
 
-    interface MvpView : BaseMvpView {
+    interface View : BaseMvpView {
         fun close()
         fun showErrorEmptyName()
     }
 
-    abstract class Presenter : BaseMvpPresenter<MvpView>() {
+    abstract class Presenter : BaseMvpPresenter<View>() {
         abstract fun onButtonDoneClick(categoryName: String, categoryColor: Int)
         abstract fun onButtonCancelClick()
     }

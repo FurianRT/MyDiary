@@ -24,7 +24,7 @@ import kotlinx.android.synthetic.main.bottom_sheet_main.*
 import kotlinx.android.synthetic.main.fragment_privacy.*
 import javax.inject.Inject
 
-class PrivacyFragment : BaseFragment(R.layout.fragment_privacy), PrivacyContract.MvpView {
+class PrivacyFragment : BaseFragment(R.layout.fragment_privacy), PrivacyContract.View {
 
     companion object {
         const val TAG = "PrivacyFragment"

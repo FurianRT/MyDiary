@@ -35,7 +35,7 @@ import kotlinx.android.synthetic.main.bottom_sheet_pin.*
 import java.util.concurrent.Executors
 import javax.inject.Inject
 
-class PinActivity : BaseActivity(R.layout.activity_pin), PinContract.MvpView,
+class PinActivity : BaseActivity(R.layout.activity_pin), PinContract.View,
         BackupEmailFragment.OnBackupEmailFragmentListener {
 
     companion object {

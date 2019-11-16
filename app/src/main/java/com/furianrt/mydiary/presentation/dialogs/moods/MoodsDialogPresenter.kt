@@ -29,7 +29,7 @@ class MoodsDialogPresenter @Inject constructor(
 
     private class MoodsAndNotes(val moods: List<MyMood>, val notes: List<MyNote>)
 
-    override fun attachView(view: MoodsDialogContract.MvpView) {
+    override fun attachView(view: MoodsDialogContract.View) {
         super.attachView(view)
         addDisposable(Flowable.combineLatest(
                 getMoods.invoke(),

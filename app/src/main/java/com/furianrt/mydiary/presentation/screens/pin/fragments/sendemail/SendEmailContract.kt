@@ -15,7 +15,7 @@ import com.furianrt.mydiary.presentation.base.mvp.BaseMvpPresenter
 
 interface SendEmailContract {
 
-    interface MvpView : BaseMvpView {
+    interface View : BaseMvpView {
         fun closeView()
         fun showLoading()
         fun hideLoading()
@@ -24,7 +24,7 @@ interface SendEmailContract {
         fun showErrorNetworkConnection()
     }
 
-    abstract class Presenter : BaseMvpPresenter<MvpView>() {
+    abstract class Presenter : BaseMvpPresenter<View>() {
         abstract fun onButtonSendClick()
         abstract fun onButtonCancelClick()
     }

@@ -16,14 +16,14 @@ import com.furianrt.mydiary.model.entity.MyImage
 
 interface GalleryPagerContract {
 
-    interface MvpView : BaseMvpView {
+    interface View : BaseMvpView {
         fun showImages(images: List<MyImage>)
         fun showListImagesView(noteId: String)
         fun showEditImageView(image: MyImage)
         fun showDeleteConfirmationDialog(image: MyImage)
     }
 
-    abstract class Presenter : BaseMvpPresenter<MvpView>() {
+    abstract class Presenter : BaseMvpPresenter<View>() {
         abstract fun init(noteId: String)
         abstract fun onButtonListModeClick()
         abstract fun onButtonDeleteClick(image: MyImage)

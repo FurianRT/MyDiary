@@ -23,7 +23,7 @@ import com.furianrt.mydiary.utils.showKeyboard
 import kotlinx.android.synthetic.main.fragment_tag_edit.*
 import javax.inject.Inject
 
-class TagEditFragment : BaseFragment(R.layout.fragment_tag_edit), TagEditContract.MvpView {
+class TagEditFragment : BaseFragment(R.layout.fragment_tag_edit), TagEditContract.View {
 
     @Inject
     lateinit var mPresenter: TagEditContract.Presenter

@@ -8,22 +8,18 @@
  *
  ******************************************************************************/
 
-package com.furianrt.mydiary.presentation.screens.note.fragments.mainnote.content
+package com.furianrt.mydiary.presentation.screens.note.fragments.mainnote.reminder
 
-import com.furianrt.mydiary.presentation.base.mvp.BaseMvpView
 import com.furianrt.mydiary.presentation.base.mvp.BaseMvpPresenter
+import com.furianrt.mydiary.presentation.base.mvp.BaseMvpView
 
-interface NoteContentFragmentContract {
+interface ReminderContract {
 
     interface MvpView : BaseMvpView {
-        fun showNoteEditViewForTitle(touchPosition: Int)
-        fun showNoteEditViewForContent(touchPosition: Int)
-        fun showNoteEditViewForTitleEnd()
+
     }
 
     abstract class Presenter : BaseMvpPresenter<MvpView>() {
-        abstract fun onTouchPositionChange(touchPosition: Int)
-        abstract fun onTitleClick()
-        abstract fun onContentClick()
+
     }
 }

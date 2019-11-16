@@ -17,7 +17,7 @@ import com.furianrt.mydiary.model.entity.*
 
 interface MainActivityContract {
 
-    interface MvpView : BaseMvpView {
+    interface View : BaseMvpView {
         fun showNotes(notes: List<MyNoteWithProp>, selectedNoteIds: Set<String>, scrollToTop: Boolean)
         fun showNotePager(position: Int, noteId: String)
         fun showHeaderImage(image: MyHeaderImage)
@@ -41,7 +41,7 @@ interface MainActivityContract {
         fun showStatisticsView()
     }
 
-    abstract class Presenter : BaseMvpPresenter<MvpView>() {
+    abstract class Presenter : BaseMvpPresenter<View>() {
         abstract fun onMainListItemClick(note: MyNoteWithProp)
         abstract fun onMainImageClick()
         abstract fun onMainListItemLongClick(note: MyNoteWithProp)

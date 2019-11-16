@@ -27,7 +27,7 @@ import kotlinx.android.synthetic.main.bottom_sheet_main.*
 import kotlinx.android.synthetic.main.fragment_forgot_pass.*
 import javax.inject.Inject
 
-class ForgotPassFragment : BaseFragment(R.layout.fragment_forgot_pass), ForgotPassContract.MvpView {
+class ForgotPassFragment : BaseFragment(R.layout.fragment_forgot_pass), ForgotPassContract.View {
 
     companion object {
         const val TAG = "ForgotPassFragment"

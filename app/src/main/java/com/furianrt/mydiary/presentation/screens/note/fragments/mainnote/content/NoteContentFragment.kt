@@ -26,13 +26,13 @@ import com.furianrt.mydiary.utils.inTransaction
 import kotlinx.android.synthetic.main.fragment_note_content.*
 import javax.inject.Inject
 
-class NoteContentFragment : BaseFragment(R.layout.fragment_note_content), NoteContentFragmentContract.MvpView {
+class NoteContentFragment : BaseFragment(R.layout.fragment_note_content), NoteContentContract.View {
 
     private var mAppearance: MyNoteAppearance? = null
     private var mIsNewNote = true
 
     @Inject
-    lateinit var mPresenter: NoteContentFragmentContract.Presenter
+    lateinit var mPresenter: NoteContentContract.Presenter
 
     private var mTitle: String? = null
     private var mContent: Spannable? = null

@@ -26,7 +26,7 @@ import com.furianrt.mydiary.utils.inTransaction
 import kotlinx.android.synthetic.main.fragment_tag_list.*
 import javax.inject.Inject
 
-class TagListFragment : BaseFragment(R.layout.fragment_tag_list), TagListContract.MvpView,
+class TagListFragment : BaseFragment(R.layout.fragment_tag_list), TagListContract.View,
         TagListAdapter.OnTagListItemInteractionListener {
 
     @Inject

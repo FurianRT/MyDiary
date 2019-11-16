@@ -14,6 +14,7 @@ import androidx.room.Database
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import com.furianrt.mydiary.model.entity.*
+import com.furianrt.mydiary.model.source.database.dao.*
 
 @Database(
         entities = [MyNote::class, MyCategory::class, MyTag::class, MyLocation::class, MyMood::class,

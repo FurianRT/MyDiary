@@ -15,13 +15,13 @@ import com.furianrt.mydiary.presentation.base.mvp.BaseMvpPresenter
 
 interface BackupEmailContract {
 
-    interface MvpView : BaseMvpView {
+    interface View : BaseMvpView {
         fun showEmailIsCorrect(email: String)
         fun showErrorEmailFormat()
         fun showEmail(email: String)
     }
 
-    abstract class Presenter : BaseMvpPresenter<MvpView>() {
+    abstract class Presenter : BaseMvpPresenter<View>() {
         abstract fun onButtonDoneClick(email: String)
         abstract fun onViewCreated(email: String, firstLaunch: Boolean)
 

@@ -12,7 +12,7 @@ package com.furianrt.mydiary.presentation.screens.note.fragments.mainnote.edit
 
 import javax.inject.Inject
 
-class NoteEditFragmentPresenter @Inject constructor() : NoteEditFragmentContract.Presenter() {
+class NoteEditPresenter @Inject constructor() : NoteEditContract.Presenter() {
 
     override fun onDoneButtonClick() {
         view?.closeView()

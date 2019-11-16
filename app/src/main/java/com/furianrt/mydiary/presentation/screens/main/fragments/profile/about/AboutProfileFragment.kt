@@ -21,7 +21,7 @@ import org.joda.time.DateTime
 import java.util.*
 import javax.inject.Inject
 
-class AboutProfileFragment : BaseFragment(R.layout.fragment_about_profile), AboutProfileContract.MvpView {
+class AboutProfileFragment : BaseFragment(R.layout.fragment_about_profile), AboutProfileContract.View {
 
     companion object {
         const val TAG = "AboutProfileFragment"

@@ -19,7 +19,7 @@ class ProfilePresenter @Inject constructor(
         private val scheduler: MyRxUtils.BaseSchedulerProvider
 ) : ProfileContract.Presenter() {
 
-    override fun attachView(view: ProfileContract.MvpView) {
+    override fun attachView(view: ProfileContract.View) {
         super.attachView(view)
         addDisposable(getProfile.invoke()
                 .observeOn(scheduler.ui())

@@ -16,12 +16,12 @@ import com.furianrt.mydiary.model.entity.SyncProgressMessage
 
 interface SyncContract {
 
-    interface MvpView : BaseMvpView {
+    interface View : BaseMvpView {
         fun close()
         fun sendProgressUpdate(progressMessage: SyncProgressMessage)
     }
 
-    abstract class Presenter : BaseMvpPresenter<MvpView>() {
+    abstract class Presenter : BaseMvpPresenter<View>() {
         abstract fun onStartCommand()
     }
 }

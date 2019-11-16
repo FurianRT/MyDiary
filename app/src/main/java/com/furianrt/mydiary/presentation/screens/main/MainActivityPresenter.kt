@@ -99,7 +99,7 @@ class MainActivityPresenter @Inject constructor(
                 })
     }
 
-    override fun attachView(view: MainActivityContract.MvpView) {
+    override fun attachView(view: MainActivityContract.View) {
         super.attachView(view)
         loadNotes()
         loadProfile()

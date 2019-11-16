@@ -31,7 +31,7 @@ class GalleryListPresenter @Inject constructor(
         mNoteId = noteId
     }
 
-    override fun attachView(view: GalleryListContract.MvpView) {
+    override fun attachView(view: GalleryListContract.View) {
         super.attachView(view)
         loadImages(mNoteId)
     }

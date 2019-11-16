@@ -15,7 +15,7 @@ import com.furianrt.mydiary.presentation.base.mvp.BaseMvpPresenter
 
 interface RegistrationContract {
 
-    interface MvpView : BaseMvpView {
+    interface View : BaseMvpView {
         fun close()
         fun showErrorNetworkConnection()
         fun showErrorPassword()
@@ -34,7 +34,7 @@ interface RegistrationContract {
         fun showPrivacyView(email: String, password: String)
     }
 
-    abstract class Presenter : BaseMvpPresenter<MvpView>() {
+    abstract class Presenter : BaseMvpPresenter<View>() {
         abstract fun onButtonCancelClick()
         abstract fun onButtonSignUpClick(email: String, password: String, passwordRepeat: String)
         abstract fun onEmailFocusChange(email: String, hasFocus: Boolean)

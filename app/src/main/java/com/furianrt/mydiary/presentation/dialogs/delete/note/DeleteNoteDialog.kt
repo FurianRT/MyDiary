@@ -20,7 +20,7 @@ import com.furianrt.mydiary.presentation.base.BaseDialog
 import kotlinx.android.synthetic.main.dialog_delete_note.view.*
 import javax.inject.Inject
 
-class DeleteNoteDialog : BaseDialog(), DeleteNoteContract.MvpView {
+class DeleteNoteDialog : BaseDialog(), DeleteNoteContract.View {
 
     companion object {
         const val TAG = "DeleteNoteDialog"

@@ -27,7 +27,7 @@ import com.google.android.gms.ads.AdRequest
 import kotlinx.android.synthetic.main.activity_note.*
 import javax.inject.Inject
 
-class NoteActivity : BaseActivity(R.layout.activity_note), NoteActivityContract.MvpView,
+class NoteActivity : BaseActivity(R.layout.activity_note), NoteActivityContract.View,
         NoteFragment.OnNoteFragmentInteractionListener {
 
     companion object {

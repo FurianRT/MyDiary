@@ -20,7 +20,7 @@ class TagsDialogPresenter @Inject constructor() : TagsDialogContract.Presenter()
         mNoteId = noteId
     }
 
-    override fun attachView(view: TagsDialogContract.MvpView) {
+    override fun attachView(view: TagsDialogContract.View) {
         super.attachView(view)
         view.showTagListView(mNoteId)
     }

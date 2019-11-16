@@ -38,11 +38,22 @@ class PreferencesHelperImp @Inject constructor(
     override fun isWeatherEnabled(): Boolean =
             mPrefs.getBoolean(PreferencesHelper.WEATHER_AVAILABILITY, true)
 
+    override fun setWeatherEnabled(enabled: Boolean) {
+        mPrefs.edit().putBoolean(PreferencesHelper.WEATHER_AVAILABILITY, enabled).apply()
+    }
+
     override fun isMapEnabled(): Boolean =
             mPrefs.getBoolean(PreferencesHelper.MAP_AVAILABILITY, true)
 
+    override fun setMapEnabled(enabled: Boolean) {
+        mPrefs.edit().putBoolean(PreferencesHelper.MAP_AVAILABILITY, enabled).apply()
+    }
+
     override fun isMoodEnabled(): Boolean =
             mPrefs.getBoolean(PreferencesHelper.MOOD_AVAILABILITY, true)
+
+    override fun isPanoramaEnabled(): Boolean =
+            mPrefs.getBoolean(PreferencesHelper.PANORAMA_AVAILABILITY, true)
 
     override fun getTextColor(): Int =
             mPrefs.getInt(PreferencesHelper.TEXT_COLOR, context.getColorSupport(R.color.black))

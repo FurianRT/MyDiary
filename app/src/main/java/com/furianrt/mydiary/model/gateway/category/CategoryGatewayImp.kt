@@ -13,7 +13,7 @@ package com.furianrt.mydiary.model.gateway.category
 import com.furianrt.mydiary.model.entity.MyCategory
 import com.furianrt.mydiary.model.source.auth.AuthHelper
 import com.furianrt.mydiary.model.source.cloud.CloudHelper
-import com.furianrt.mydiary.model.source.database.CategoryDao
+import com.furianrt.mydiary.model.source.database.dao.CategoryDao
 import com.furianrt.mydiary.utils.MyRxUtils
 import io.reactivex.*
 import javax.inject.Inject

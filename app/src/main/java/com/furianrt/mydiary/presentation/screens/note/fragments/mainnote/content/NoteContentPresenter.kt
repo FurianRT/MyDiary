@@ -12,7 +12,7 @@ package com.furianrt.mydiary.presentation.screens.note.fragments.mainnote.conten
 
 import javax.inject.Inject
 
-class NoteContentFragmentPresenter @Inject constructor() : NoteContentFragmentContract.Presenter() {
+class NoteContentPresenter @Inject constructor() : NoteContentContract.Presenter() {
 
     private var mTouchPosition = 0
 

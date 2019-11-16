@@ -16,12 +16,12 @@ import com.furianrt.mydiary.model.entity.MyTag
 
 interface TagDeleteContract {
 
-    interface MvpView : BaseMvpView {
+    interface View : BaseMvpView {
         fun closeView()
         fun showTagName(name: String)
     }
 
-    abstract class Presenter : BaseMvpPresenter<MvpView>() {
+    abstract class Presenter : BaseMvpPresenter<View>() {
         abstract fun init(tag: MyTag)
         abstract fun onButtonDeleteClick()
         abstract fun onButtonCancelClick()

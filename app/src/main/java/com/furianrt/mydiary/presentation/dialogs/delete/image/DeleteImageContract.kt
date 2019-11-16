@@ -15,11 +15,11 @@ import com.furianrt.mydiary.presentation.base.mvp.BaseMvpPresenter
 
 interface DeleteImageContract {
 
-    interface MvpView : BaseMvpView {
+    interface View : BaseMvpView {
         fun closeView()
     }
 
-    abstract class Presenter : BaseMvpPresenter<MvpView>() {
+    abstract class Presenter : BaseMvpPresenter<View>() {
         abstract fun onButtonDeleteClick(imageNames: List<String>)
         abstract fun onButtonCancelClick()
     }

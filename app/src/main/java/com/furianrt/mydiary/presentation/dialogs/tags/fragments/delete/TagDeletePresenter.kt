@@ -26,7 +26,7 @@ class TagDeletePresenter @Inject constructor(
         mTag = tag
     }
 
-    override fun attachView(view: TagDeleteContract.MvpView) {
+    override fun attachView(view: TagDeleteContract.View) {
         super.attachView(view)
         view.showTagName(mTag.name)
     }

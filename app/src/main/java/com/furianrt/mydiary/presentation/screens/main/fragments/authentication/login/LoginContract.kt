@@ -15,7 +15,7 @@ import com.furianrt.mydiary.presentation.base.mvp.BaseMvpPresenter
 
 interface LoginContract {
 
-    interface MvpView : BaseMvpView {
+    interface View : BaseMvpView {
         fun showErrorEmptyEmail()
         fun showErrorNetworkConnection()
         fun showErrorEmptyPassword()
@@ -26,7 +26,7 @@ interface LoginContract {
         fun showForgotPassView(email: String)
     }
 
-    abstract class Presenter : BaseMvpPresenter<MvpView>() {
+    abstract class Presenter : BaseMvpPresenter<View>() {
         abstract fun onButtonForgotClick(email: String)
         abstract fun onButtonSignInClick(email: String, password: String)
 

@@ -16,13 +16,13 @@ import com.furianrt.mydiary.model.entity.MyCategory
 
 interface CategoryEditContract {
 
-    interface MvpView : BaseMvpView {
+    interface View : BaseMvpView {
         fun close()
         fun showCategory(category: MyCategory)
         fun showErrorEmptyName()
     }
 
-    abstract class Presenter : BaseMvpPresenter<MvpView>() {
+    abstract class Presenter : BaseMvpPresenter<View>() {
         abstract fun init(category: MyCategory)
         abstract fun onButtonDoneClick(categoryName: String, categoryColor: Int)
         abstract fun onButtonCancelClick()

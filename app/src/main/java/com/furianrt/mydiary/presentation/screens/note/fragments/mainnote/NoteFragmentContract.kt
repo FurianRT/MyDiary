@@ -20,7 +20,7 @@ interface NoteFragmentContract {
 
     interface MvpView : BaseMvpView {
         fun showForecast(temp: String, iconUri: String)
-        fun showTagsDialog(noteId: String)
+        fun showTagsView(noteId: String)
         fun showTags(tagsAndAppearance: TagsAndAppearance)
         fun requestLocationPermissions()
         fun showCategory(category: MyCategory)
@@ -31,11 +31,11 @@ interface NoteFragmentContract {
         fun showLocation(location: MyLocation)
         fun requestStoragePermissions()
         fun showImageExplorer()
-        fun showImages(images: List<MyImage>)
+        fun showImages(images: List<MyImage>, panorama: Boolean)
         fun showNoImages()
         fun showGalleryView(noteId: String, image: MyImage)
-        fun showMoodsDialog(noteId: String)
-        fun showCategoriesDialog(noteId: String)
+        fun showMoodsView(noteId: String)
+        fun showCategoriesView(noteId: String)
         fun showNoteSettingsView(noteId: String)
         fun updateNoteAppearance(appearance: MyNoteAppearance)
         fun showNoteText(title: String, content: String, textSpans: List<MyTextSpan>)
@@ -56,6 +56,7 @@ interface NoteFragmentContract {
         fun showErrorForecast()
         fun showRichTextOptions()
         fun hideRichTextOptions()
+        fun showReminderView(noteId: String)
     }
 
     abstract class Presenter : BaseMvpPresenter<MvpView>() {
@@ -85,5 +86,7 @@ interface NoteFragmentContract {
         abstract fun onButtonMicClick()
         abstract fun onSpeechRecorded(curTitle: String, curContent: String, textSpans: List<MyTextSpan>, recordedText: String)
         abstract fun onButtonShareClick()
+        abstract fun onReminderFieldClick()
+        abstract fun onLocationPermissionDenied()
     }
 }

@@ -36,7 +36,7 @@ class NoteSettingsPresenter @Inject constructor(
         mNoteId = noteId
     }
 
-    override fun attachView(view: NoteSettingsContract.MvpView) {
+    override fun attachView(view: NoteSettingsContract.View) {
         super.attachView(view)
         view.disableInput()
         addDisposable(getAppearance.invoke(mNoteId)

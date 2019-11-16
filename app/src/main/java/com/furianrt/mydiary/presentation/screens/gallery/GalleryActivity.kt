@@ -26,7 +26,7 @@ import com.google.android.gms.ads.AdRequest
 import kotlinx.android.synthetic.main.activity_gallery.*
 import javax.inject.Inject
 
-class GalleryActivity : BaseActivity(R.layout.activity_gallery), GalleryActivityContract.MvpView,
+class GalleryActivity : BaseActivity(R.layout.activity_gallery), GalleryActivityContract.View,
         GalleryListFragment.OnGalleryListInteractionListener {
 
     companion object {

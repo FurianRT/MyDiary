@@ -29,7 +29,7 @@ import com.furianrt.mydiary.utils.inTransaction
 import kotlinx.android.synthetic.main.fragment_menu_profile.*
 import javax.inject.Inject
 
-class MenuProfileFragment : BaseFragment(R.layout.fragment_menu_profile), MenuProfileContract.MvpView, View.OnClickListener {
+class MenuProfileFragment : BaseFragment(R.layout.fragment_menu_profile), MenuProfileContract.View, View.OnClickListener {
 
     companion object {
         const val TAG = "MenuProfileFragment"

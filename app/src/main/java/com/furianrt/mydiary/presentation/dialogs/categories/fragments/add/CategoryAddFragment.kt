@@ -21,7 +21,7 @@ import com.furianrt.mydiary.utils.showKeyboard
 import kotlinx.android.synthetic.main.fragment_category_add.*
 import javax.inject.Inject
 
-class CategoryAddFragment : BaseFragment(R.layout.fragment_category_add), CategoryAddContract.MvpView {
+class CategoryAddFragment : BaseFragment(R.layout.fragment_category_add), CategoryAddContract.View {
 
     @Inject
     lateinit var mPresenter: CategoryAddContract.Presenter

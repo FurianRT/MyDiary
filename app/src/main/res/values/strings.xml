@@ -301,4 +301,8 @@
     <string name="fragment_note_settings_danger_zone">Danger zone</string>
     <string name="fragment_note_settings_reset_settings_confirm">Reset settings?</string>
     <string name="fragment_note_google_services_error">Google services not installed</string>
+    <string name="fragment_note_add_reminder">Add reminder</string>
+    <string name="panorama_activation_settings_on">Disable panoramic photos</string>
+    <string name="panorama_activation_settings_off">Enable panoramic photos</string>
+    <string name="panorama_activation_settings_title">Panoramic photos</string>
 </resources>
