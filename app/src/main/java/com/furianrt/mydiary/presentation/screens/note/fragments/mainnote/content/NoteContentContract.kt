@@ -8,24 +8,22 @@
  *
  ******************************************************************************/
 
-package com.furianrt.mydiary.presentation.screens.pin.fragments.sendemail
+package com.furianrt.mydiary.presentation.screens.note.fragments.mainnote.content
 
 import com.furianrt.mydiary.presentation.base.mvp.BaseMvpView
 import com.furianrt.mydiary.presentation.base.mvp.BaseMvpPresenter
 
-interface SendEmailContract {
+interface NoteContentContract {
 
     interface View : BaseMvpView {
-        fun closeView()
-        fun showLoading()
-        fun hideLoading()
-        fun showDoneView()
-        fun showErrorMessageSend()
-        fun showErrorNetworkConnection()
+        fun showNoteEditViewForTitle(touchPosition: Int)
+        fun showNoteEditViewForContent(touchPosition: Int)
+        fun showNoteEditViewForTitleEnd()
     }
 
     abstract class Presenter : BaseMvpPresenter<View>() {
-        abstract fun onButtonSendClick()
-        abstract fun onButtonCancelClick()
+        abstract fun onTouchPositionChange(touchPosition: Int)
+        abstract fun onTitleClick()
+        abstract fun onContentClick()
     }
 }

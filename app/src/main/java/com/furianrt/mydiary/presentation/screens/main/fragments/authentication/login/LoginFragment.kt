@@ -29,7 +29,7 @@ import kotlinx.android.synthetic.main.bottom_sheet_main.*
 import kotlinx.android.synthetic.main.fragment_login.*
 import javax.inject.Inject
 
-class LoginFragment : BaseFragment(R.layout.fragment_login), LoginContract.MvpView {
+class LoginFragment : BaseFragment(R.layout.fragment_login), LoginContract.View {
 
     companion object {
         const val TAG = "LoginFragment"

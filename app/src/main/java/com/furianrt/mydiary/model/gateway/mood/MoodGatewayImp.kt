@@ -11,7 +11,7 @@
 package com.furianrt.mydiary.model.gateway.mood
 
 import com.furianrt.mydiary.model.entity.MyMood
-import com.furianrt.mydiary.model.source.database.MoodDao
+import com.furianrt.mydiary.model.source.database.dao.MoodDao
 import com.furianrt.mydiary.model.source.preferences.PreferencesHelper
 import com.furianrt.mydiary.utils.MyRxUtils
 import io.reactivex.Flowable

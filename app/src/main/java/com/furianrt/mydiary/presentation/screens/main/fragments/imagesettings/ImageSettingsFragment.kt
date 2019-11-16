@@ -20,7 +20,7 @@ import com.furianrt.mydiary.utils.inTransaction
 import kotlinx.android.synthetic.main.fragment_image_settings.*
 import javax.inject.Inject
 
-class ImageSettingsFragment : BaseFragment(R.layout.fragment_image_settings), ImageSettingsContract.MvpView {
+class ImageSettingsFragment : BaseFragment(R.layout.fragment_image_settings), ImageSettingsContract.View {
 
     companion object {
         const val TAG = "ImageSettingsFragment"

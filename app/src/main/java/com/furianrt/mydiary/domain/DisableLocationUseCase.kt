@@ -8,14 +8,16 @@
  *
  ******************************************************************************/
 
-package com.furianrt.mydiary.presentation.dialogs.categories
+package com.furianrt.mydiary.domain
 
-import com.furianrt.mydiary.presentation.base.mvp.BaseMvpView
-import com.furianrt.mydiary.presentation.base.mvp.BaseMvpPresenter
+import com.furianrt.mydiary.model.gateway.location.LocationGateway
+import javax.inject.Inject
 
-interface CategoriesDialogContract {
+class DisableLocationUseCase @Inject constructor(
+        private val locationGateway: LocationGateway
+) {
 
-    interface View : BaseMvpView
-
-    abstract class Presenter : BaseMvpPresenter<View>()
+    fun invoke() {
+        locationGateway.setLocationEnabled(false)
+    }
 }

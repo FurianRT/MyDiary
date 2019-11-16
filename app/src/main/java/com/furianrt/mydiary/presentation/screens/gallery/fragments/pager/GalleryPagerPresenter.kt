@@ -30,7 +30,7 @@ class GalleryPagerPresenter @Inject constructor(
         mNoteId = noteId
     }
 
-    override fun attachView(view: GalleryPagerContract.MvpView) {
+    override fun attachView(view: GalleryPagerContract.View) {
         super.attachView(view)
         loadImages(mNoteId)
     }

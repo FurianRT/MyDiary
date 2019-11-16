@@ -23,7 +23,7 @@ import com.furianrt.mydiary.utils.*
 import kotlinx.android.synthetic.main.fragment_registration.*
 import javax.inject.Inject
 
-class RegistrationFragment : BaseFragment(R.layout.fragment_registration), RegistrationContract.MvpView {
+class RegistrationFragment : BaseFragment(R.layout.fragment_registration), RegistrationContract.View {
 
     companion object {
         const val TAG = "RegistrationFragment"

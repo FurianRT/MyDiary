@@ -15,7 +15,7 @@ import com.furianrt.mydiary.presentation.base.mvp.BaseMvpPresenter
 
 interface PrivacyContract {
 
-    interface MvpView : BaseMvpView {
+    interface View : BaseMvpView {
         fun showLoading()
         fun hideLoading()
         fun showMessageSuccessRegistration()
@@ -24,7 +24,7 @@ interface PrivacyContract {
         fun openLink(link: String)
     }
 
-    abstract class Presenter : BaseMvpPresenter<MvpView>() {
+    abstract class Presenter : BaseMvpPresenter<View>() {
         abstract fun onButtonAcceptClick(email: String, password: String)
         abstract fun onButtonCancelClick()
         abstract fun onPrivacyLinkClick()

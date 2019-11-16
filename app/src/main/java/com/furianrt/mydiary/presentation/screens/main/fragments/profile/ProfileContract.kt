@@ -16,12 +16,12 @@ import com.furianrt.mydiary.model.entity.MyProfile
 
 interface ProfileContract {
 
-    interface MvpView : BaseMvpView {
+    interface View : BaseMvpView {
         fun close()
         fun showProfile(profile: MyProfile)
     }
 
-    abstract class Presenter : BaseMvpPresenter<MvpView>() {
+    abstract class Presenter : BaseMvpPresenter<View>() {
         abstract fun onButtonCloseClick()
     }
 }

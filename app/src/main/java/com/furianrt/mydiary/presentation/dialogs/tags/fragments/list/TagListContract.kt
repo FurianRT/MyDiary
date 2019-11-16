@@ -16,7 +16,7 @@ import com.furianrt.mydiary.model.entity.MyTag
 
 interface TagListContract {
 
-    interface MvpView : BaseMvpView {
+    interface View : BaseMvpView {
         fun showItems(items: List<TagListAdapter.ViewItem>)
         fun closeView()
         fun showAddTagView(noteId: String)
@@ -24,7 +24,7 @@ interface TagListContract {
         fun showDeleteTagView(tag: MyTag)
     }
 
-    abstract class Presenter : BaseMvpPresenter<MvpView>() {
+    abstract class Presenter : BaseMvpPresenter<View>() {
         abstract fun init(noteId: String)
         abstract fun onItemCheckChange(item: TagListAdapter.ViewItem)
         abstract fun onButtonCloseClick()

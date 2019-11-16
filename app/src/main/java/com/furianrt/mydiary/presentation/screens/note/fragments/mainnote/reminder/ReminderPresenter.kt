@@ -8,14 +8,14 @@
  *
  ******************************************************************************/
 
-package com.furianrt.mydiary.presentation.dialogs.categories
+package com.furianrt.mydiary.presentation.screens.note.fragments.mainnote.reminder
 
-import com.furianrt.mydiary.presentation.base.mvp.BaseMvpView
-import com.furianrt.mydiary.presentation.base.mvp.BaseMvpPresenter
+import com.furianrt.mydiary.utils.MyRxUtils
+import javax.inject.Inject
 
-interface CategoriesDialogContract {
+class ReminderPresenter @Inject constructor(
+        private val scheduler: MyRxUtils.BaseSchedulerProvider
+) : ReminderContract.Presenter() {
 
-    interface View : BaseMvpView
 
-    abstract class Presenter : BaseMvpPresenter<View>()
 }

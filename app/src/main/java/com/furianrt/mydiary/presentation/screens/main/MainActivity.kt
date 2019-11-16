@@ -82,7 +82,7 @@ import kotlin.Comparator
 import kotlin.collections.ArrayList
 import kotlin.math.min
 
-class MainActivity : BaseActivity(R.layout.activity_main), MainActivityContract.MvpView,
+class MainActivity : BaseActivity(R.layout.activity_main), MainActivityContract.View,
         NoteListAdapter.OnMainListItemInteractionListener,
         DailySettingsFragment.OnImageSettingsInteractionListener,
         DeleteNoteDialog.OnDeleteNoteConfirmListener, CategoriesDialog.OnCategorySelectedListener,

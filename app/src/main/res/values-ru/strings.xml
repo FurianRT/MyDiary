@@ -294,4 +294,8 @@
     <string name="fragment_note_settings_danger_zone">Опасная зона</string>
     <string name="fragment_note_settings_reset_settings_confirm">Сбросить настройки?</string>
     <string name="fragment_note_google_services_error">Google services не установлены</string>
+    <string name="fragment_note_add_reminder">Добавить напоминание</string>
+    <string name="panorama_activation_settings_on">Отключить панорамные фото</string>
+    <string name="panorama_activation_settings_off">Включить панорамные фото</string>
+    <string name="panorama_activation_settings_title">Панорамные фото</string>
 </resources>

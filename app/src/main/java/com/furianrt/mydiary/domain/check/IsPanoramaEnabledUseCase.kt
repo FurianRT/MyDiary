@@ -8,14 +8,14 @@
  *
  ******************************************************************************/
 
-package com.furianrt.mydiary.presentation.dialogs.categories
+package com.furianrt.mydiary.domain.check
 
-import com.furianrt.mydiary.presentation.base.mvp.BaseMvpView
-import com.furianrt.mydiary.presentation.base.mvp.BaseMvpPresenter
+import com.furianrt.mydiary.model.gateway.image.ImageGateway
+import javax.inject.Inject
 
-interface CategoriesDialogContract {
+class IsPanoramaEnabledUseCase @Inject constructor(
+        private val imageGateway: ImageGateway
+) {
 
-    interface View : BaseMvpView
-
-    abstract class Presenter : BaseMvpPresenter<View>()
+    fun invoke(): Boolean = imageGateway.isPanoramaEnabled()
 }

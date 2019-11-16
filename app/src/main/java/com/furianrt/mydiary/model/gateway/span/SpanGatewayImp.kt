@@ -13,7 +13,7 @@ package com.furianrt.mydiary.model.gateway.span
 import com.furianrt.mydiary.model.entity.MyTextSpan
 import com.furianrt.mydiary.model.source.auth.AuthHelper
 import com.furianrt.mydiary.model.source.cloud.CloudHelper
-import com.furianrt.mydiary.model.source.database.SpanDao
+import com.furianrt.mydiary.model.source.database.dao.SpanDao
 import com.furianrt.mydiary.utils.MyRxUtils
 import io.reactivex.Completable
 import io.reactivex.Flowable

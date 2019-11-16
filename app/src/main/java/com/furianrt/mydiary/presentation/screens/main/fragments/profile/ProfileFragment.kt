@@ -26,7 +26,7 @@ import com.furianrt.mydiary.utils.inTransaction
 import kotlinx.android.synthetic.main.fragment_profile.*
 import javax.inject.Inject
 
-class ProfileFragment : BaseFragment(R.layout.fragment_profile), ProfileContract.MvpView {
+class ProfileFragment : BaseFragment(R.layout.fragment_profile), ProfileContract.View {
 
     companion object {
         const val TAG = "ProfileFragment"

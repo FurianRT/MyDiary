@@ -48,6 +48,7 @@ import com.furianrt.mydiary.presentation.screens.note.fragments.mainnote.edit.No
 import com.furianrt.mydiary.presentation.screens.note.fragments.mainnote.reminder.ReminderFragment
 import com.furianrt.mydiary.presentation.screens.settings.note.NoteSettingsActivity
 import com.furianrt.mydiary.utils.*
+import com.gjiazhe.panoramaimageview.GyroscopeObserver
 import com.google.android.material.card.MaterialCardView
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog
 import com.wdullaer.materialdatetimepicker.time.TimePickerDialog
@@ -63,7 +64,8 @@ import javax.inject.Inject
 import kotlin.collections.ArrayList
 
 class NoteFragment : BaseFragment(R.layout.fragment_note), NoteFragmentContract.MvpView, DatePickerDialog.OnDateSetListener,
-        TimePickerDialog.OnTimeSetListener, NoteImagePagerAdapter.OnNoteImagePagerInteractionListener {
+        TimePickerDialog.OnTimeSetListener, NoteImagePagerAdapter.OnNoteImagePagerInteractionListener,
+        EasyPermissions.PermissionCallbacks {
 
     companion object {
         const val TAG = "NoteFragment"
@@ -93,8 +95,9 @@ class NoteFragment : BaseFragment(R.layout.fragment_note), NoteFragmentContract.
     @Inject
     lateinit var mPresenter: NoteFragmentContract.Presenter
 
+    private val mGyroscopeObserver = GyroscopeObserver()
     private var mListener: OnNoteFragmentInteractionListener? = null
-    private val mImagePagerAdapter = NoteImagePagerAdapter(listener = this)
+    private val mImagePagerAdapter = NoteImagePagerAdapter(listener = this, gyroscope = mGyroscopeObserver)
     private var mIsNewNote = true
     private var mImagePagerPosition = 0
     private val mOnPageChangeCallback = object : ViewPager2.OnPageChangeCallback() {
@@ -141,6 +144,9 @@ class NoteFragment : BaseFragment(R.layout.fragment_note), NoteFragmentContract.
         layout_tags.setOnClickListener {
             removeEditFragment()
             mPresenter.onTagsFieldClick()
+        }
+        layout_reminder.setOnClickListener {
+            //mPresenter.onReminderFieldClick()
         }
         text_date.setOnClickListener {
             removeEditFragment()
@@ -204,12 +210,6 @@ class NoteFragment : BaseFragment(R.layout.fragment_note), NoteFragmentContract.
             }
         }
 
-        if (childFragmentManager.findFragmentByTag(ReminderFragment.TAG) == null) {
-            childFragmentManager.inTransaction {
-                add(R.id.container_reminder, ReminderFragment.newInstance(), ReminderFragment.TAG)
-            }
-        }
-
         spinner_text_color.adapter = ColorSpinnerAdapter(requireContext(), R.array.spinner_colors)
         spinner_text_color.dropDownVerticalOffset = -dpToPx(8f)
         spinner_text_color.onItemSelectListener = { spinner, position ->
@@ -227,6 +227,16 @@ class NoteFragment : BaseFragment(R.layout.fragment_note), NoteFragmentContract.
                 (it as NoteEditFragment).onButtonTextFillColorClick(color as String)
             }
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        mGyroscopeObserver.register(requireContext())
+    }
+
+    override fun onPause() {
+        super.onPause()
+        mGyroscopeObserver.unregister()
     }
 
     override fun onStart() {
@@ -511,7 +521,7 @@ class NoteFragment : BaseFragment(R.layout.fragment_note), NoteFragmentContract.
         image_mood.setColorFilter(Color.BLACK, PorterDuff.Mode.SRC_IN)
     }
 
-    override fun showMoodsDialog(noteId: String) {
+    override fun showMoodsView(noteId: String) {
         MoodsDialog.newInstance(noteId).show(requireActivity().supportFragmentManager, MoodsDialog.TAG)
     }
 
@@ -529,6 +539,13 @@ class NoteFragment : BaseFragment(R.layout.fragment_note), NoteFragmentContract.
         } else {
             EasyPermissions.requestPermissions(this, getString(R.string.location_permission_request),
                     LOCATION_PERMISSIONS_REQUEST_CODE, fineLocation, coarseLocation)
+        }
+    }
+
+    override fun onPermissionsGranted(requestCode: Int, perms: MutableList<String>) = Unit
+    override fun onPermissionsDenied(requestCode: Int, perms: MutableList<String>) {
+        if (requestCode == LOCATION_PERMISSIONS_REQUEST_CODE) {
+            mPresenter.onLocationPermissionDenied()
         }
     }
 
@@ -557,13 +574,23 @@ class NoteFragment : BaseFragment(R.layout.fragment_note), NoteFragmentContract.
         (params.behavior as AppBarLayoutBehavior).shouldScroll = true
     }
 
-    override fun showCategoriesDialog(noteId: String) {
+    override fun showCategoriesView(noteId: String) {
         CategoriesDialog.newInstance(listOf(noteId))
                 .show(requireActivity().supportFragmentManager, CategoriesDialog.TAG)
     }
 
-    override fun showTagsDialog(noteId: String) {
+    override fun showTagsView(noteId: String) {
         TagsDialog.newInstance(noteId).show(requireActivity().supportFragmentManager, TagsDialog.TAG)
+    }
+
+    override fun showReminderView(noteId: String) {
+        if (childFragmentManager.findFragmentByTag(ReminderFragment.TAG) == null) {
+            childFragmentManager.inTransaction {
+                setCustomAnimations(R.anim.scale_up, R.anim.scale_up)
+                add(R.id.container_reminder, ReminderFragment.newInstance(noteId), ReminderFragment.TAG)
+                runOnCommit { layout_reminder.animateAlpha(1f, 0f) }
+            }
+        }
     }
 
     override fun showForecast(temp: String, iconUri: String) {
@@ -578,8 +605,7 @@ class NoteFragment : BaseFragment(R.layout.fragment_note), NoteFragmentContract.
         analytics.sendEvent(MyAnalytics.EVENT_FORECAST_LOAD_ERROR)
     }
 
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>,
-                                            grantResults: IntArray) {
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults, this)
     }
@@ -597,9 +623,17 @@ class NoteFragment : BaseFragment(R.layout.fragment_note), NoteFragmentContract.
 
     @AfterPermissionGranted(STORAGE_PERMISSIONS_REQUEST_CODE)
     override fun showImageExplorer() {
-        Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI).apply {
-            putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true)
-            startActivityForResult(this, IMAGE_PICKER_REQUEST_CODE)
+        val galleryIntent = Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
+        galleryIntent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true)
+        if (galleryIntent.resolveActivity(requireActivity().packageManager) != null) {
+            startActivityForResult(galleryIntent, IMAGE_PICKER_REQUEST_CODE)
+        } else {
+            with(Intent()) {
+                type = "image/*"
+                putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true)
+                action = Intent.ACTION_GET_CONTENT
+                startActivityForResult(Intent.createChooser(this, ""), IMAGE_PICKER_REQUEST_CODE)
+            }
         }
         mListener?.onNoteFragmentImagePickerOpen()
     }
@@ -612,9 +646,9 @@ class NoteFragment : BaseFragment(R.layout.fragment_note), NoteFragmentContract.
         layout_loading?.visibility = View.GONE
     }
 
-    override fun showImages(images: List<MyImage>) {
+    override fun showImages(images: List<MyImage>, panorama: Boolean) {
         Log.e(TAG, "showImages")
-        mImagePagerAdapter.submitImages(images.toMutableList())
+        mImagePagerAdapter.submitImages(images.toMutableList(), panorama)
         pager_note_image.setCurrentItem(mImagePagerPosition, false)
         text_note_image_counter.text = getString(
                 R.string.counter_format,
@@ -818,6 +852,22 @@ class NoteFragment : BaseFragment(R.layout.fragment_note), NoteFragmentContract.
             button_text_fill_color.clearColorFilter()
             spinner_text_fill_color.visibility = View.VISIBLE
         }
+    }
+
+    fun onReminderButtonCloseClick() {
+        childFragmentManager.findFragmentByTag(ReminderFragment.TAG)?.let {
+            childFragmentManager.inTransaction {
+                remove(it)
+                runOnCommit {
+                    layout_reminder.visibility = View.VISIBLE
+                    layout_reminder.animateAlpha(0f, 1f, 600L)
+                }
+            }
+        }
+    }
+
+    fun onReminderStart() {
+        layout_reminder.visibility = View.GONE
     }
 
     interface OnNoteFragmentInteractionListener {

@@ -28,7 +28,7 @@ import com.furianrt.mydiary.model.source.preferences.PreferencesHelper
 import com.furianrt.mydiary.presentation.screens.pin.PinActivity
 import javax.inject.Inject
 
-class GlobalSettingsFragment : PreferenceFragmentCompat(), BaseView, GlobalSettingsContract.MvpView,
+class GlobalSettingsFragment : PreferenceFragmentCompat(), BaseView, GlobalSettingsContract.View,
         SharedPreferences.OnSharedPreferenceChangeListener {
 
     companion object {

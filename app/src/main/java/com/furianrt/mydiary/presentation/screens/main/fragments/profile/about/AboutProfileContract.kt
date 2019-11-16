@@ -16,13 +16,13 @@ import com.furianrt.mydiary.model.entity.MyProfile
 
 interface AboutProfileContract {
 
-    interface MvpView : BaseMvpView {
+    interface View : BaseMvpView {
         fun showProfileInfo(profile: MyProfile, is24TimeFormat: Boolean)
         fun returnToMenuView()
 
     }
 
-    abstract class Presenter : BaseMvpPresenter<MvpView>() {
+    abstract class Presenter : BaseMvpPresenter<View>() {
         abstract fun onViewStart()
         abstract fun onButtonBackClick()
     }

@@ -16,14 +16,14 @@ import com.furianrt.mydiary.model.entity.MyTag
 
 interface TagEditContract {
 
-    interface MvpView : BaseMvpView {
+    interface View : BaseMvpView {
         fun closeView()
         fun showErrorEmptyTagName()
         fun showErrorExistingTagName()
         fun showTagName(name: String)
     }
 
-    abstract class Presenter : BaseMvpPresenter<MvpView>() {
+    abstract class Presenter : BaseMvpPresenter<View>() {
         abstract fun init(tag: MyTag)
         abstract fun onButtonConfirmClick(newTagName: String)
         abstract fun onButtonCloseClick()

@@ -15,7 +15,7 @@ import com.furianrt.mydiary.presentation.base.mvp.BaseMvpPresenter
 
 interface GlobalSettingsContract {
 
-    interface MvpView : BaseMvpView {
+    interface View : BaseMvpView {
         fun showCreatePasswordView()
         fun showRemovePasswordView()
         fun showBackupEmail(email: String)
@@ -26,7 +26,7 @@ interface GlobalSettingsContract {
         fun onNotesAppearanceReset()
     }
 
-    abstract class Presenter : BaseMvpPresenter<MvpView>() {
+    abstract class Presenter : BaseMvpPresenter<View>() {
         abstract fun onPrefSecurityKeyClick()
         abstract fun onPasswordCreated()
         abstract fun onPasswordRemoved()

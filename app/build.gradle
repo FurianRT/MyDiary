@@ -179,6 +179,9 @@ dependencies {
     //Uri to real path converter
     implementation 'com.github.HBiSoft:PickiT:0.1.7'
 
+    //Panorama view for images
+    implementation 'com.gjiazhe:PanoramaImageView:1.0'
+
     //Debugging tool for network calls, database content, etc.
     implementation 'com.facebook.stetho:stetho:1.5.1'
     implementation 'com.facebook.stetho:stetho-okhttp3:1.5.1'

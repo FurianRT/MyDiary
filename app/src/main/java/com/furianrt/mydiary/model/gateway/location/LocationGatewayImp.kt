@@ -14,8 +14,8 @@ import com.furianrt.mydiary.model.entity.MyLocation
 import com.furianrt.mydiary.model.entity.NoteLocation
 import com.furianrt.mydiary.model.source.auth.AuthHelper
 import com.furianrt.mydiary.model.source.cloud.CloudHelper
-import com.furianrt.mydiary.model.source.database.LocationDao
-import com.furianrt.mydiary.model.source.database.NoteLocationDao
+import com.furianrt.mydiary.model.source.database.dao.LocationDao
+import com.furianrt.mydiary.model.source.database.dao.NoteLocationDao
 import com.furianrt.mydiary.model.source.preferences.PreferencesHelper
 import com.furianrt.mydiary.utils.MyRxUtils
 import io.reactivex.Completable
@@ -114,4 +114,8 @@ class LocationGatewayImp @Inject constructor(
                     .subscribeOn(scheduler.io())
 
     override fun isLocationEnabled(): Boolean = prefs.isMapEnabled()
+
+    override fun setLocationEnabled(enabled: Boolean) {
+        prefs.setMapEnabled(enabled)
+    }
 }

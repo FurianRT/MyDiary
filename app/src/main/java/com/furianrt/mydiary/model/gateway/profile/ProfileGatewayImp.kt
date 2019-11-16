@@ -13,7 +13,7 @@ package com.furianrt.mydiary.model.gateway.profile
 import com.furianrt.mydiary.model.entity.MyProfile
 import com.furianrt.mydiary.model.source.auth.AuthHelper
 import com.furianrt.mydiary.model.source.cloud.CloudHelper
-import com.furianrt.mydiary.model.source.database.ProfileDao
+import com.furianrt.mydiary.model.source.database.dao.ProfileDao
 import com.furianrt.mydiary.utils.MyRxUtils
 import io.reactivex.Completable
 import io.reactivex.Observable

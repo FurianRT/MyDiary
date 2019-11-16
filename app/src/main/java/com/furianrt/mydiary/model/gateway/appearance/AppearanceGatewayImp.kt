@@ -13,7 +13,7 @@ package com.furianrt.mydiary.model.gateway.appearance
 import com.furianrt.mydiary.model.entity.MyNoteAppearance
 import com.furianrt.mydiary.model.source.auth.AuthHelper
 import com.furianrt.mydiary.model.source.cloud.CloudHelper
-import com.furianrt.mydiary.model.source.database.AppearanceDao
+import com.furianrt.mydiary.model.source.database.dao.AppearanceDao
 import com.furianrt.mydiary.model.source.preferences.PreferencesHelper
 import com.furianrt.mydiary.utils.MyRxUtils
 import io.reactivex.Completable

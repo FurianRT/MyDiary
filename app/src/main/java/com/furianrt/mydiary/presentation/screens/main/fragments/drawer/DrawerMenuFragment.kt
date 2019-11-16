@@ -48,7 +48,7 @@ import org.threeten.bp.LocalDate
 import java.util.TreeMap
 import javax.inject.Inject
 
-class DrawerMenuFragment : BaseFragment(R.layout.fragment_drawer_menu), DrawerMenuContract.MvpView,
+class DrawerMenuFragment : BaseFragment(R.layout.fragment_drawer_menu), DrawerMenuContract.View,
         SearchListAdapter.OnSearchListInteractionListener {
 
     companion object {

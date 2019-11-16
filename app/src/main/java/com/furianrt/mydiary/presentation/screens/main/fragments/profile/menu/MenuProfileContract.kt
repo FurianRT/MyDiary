@@ -15,14 +15,14 @@ import com.furianrt.mydiary.presentation.base.mvp.BaseMvpPresenter
 
 interface MenuProfileContract {
 
-    interface MvpView : BaseMvpView {
+    interface View : BaseMvpView {
         fun showSignOutView()
         fun showPasswordView()
         fun showAboutView()
         fun disableSignOut(disable: Boolean)
     }
 
-    abstract class Presenter : BaseMvpPresenter<MvpView>() {
+    abstract class Presenter : BaseMvpPresenter<View>() {
         abstract fun onButtonSignOutClick()
         abstract fun onButtonChangePasswordClick()
         abstract fun onButtonAboutClick()

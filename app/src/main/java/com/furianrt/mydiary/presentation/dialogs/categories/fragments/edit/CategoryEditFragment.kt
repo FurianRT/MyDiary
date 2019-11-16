@@ -23,7 +23,7 @@ import com.furianrt.mydiary.utils.showKeyboard
 import kotlinx.android.synthetic.main.fragment_category_edit.*
 import javax.inject.Inject
 
-class CategoryEditFragment : BaseFragment(R.layout.fragment_category_edit), CategoryEditContract.MvpView {
+class CategoryEditFragment : BaseFragment(R.layout.fragment_category_edit), CategoryEditContract.View {
 
     @Inject
     lateinit var mPresenter: CategoryEditContract.Presenter

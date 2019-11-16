@@ -19,7 +19,7 @@ import com.furianrt.mydiary.model.entity.MyTag
 import kotlinx.android.synthetic.main.fragment_tag_delete.*
 import javax.inject.Inject
 
-class TagDeleteFragment : BaseFragment(R.layout.fragment_tag_delete), TagDeleteContract.MvpView {
+class TagDeleteFragment : BaseFragment(R.layout.fragment_tag_delete), TagDeleteContract.View {
 
     @Inject
     lateinit var mPresenter: TagDeleteContract.Presenter

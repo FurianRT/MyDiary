@@ -18,7 +18,7 @@ import com.furianrt.mydiary.model.entity.pojo.SearchEntries
 
 interface DrawerMenuContract {
 
-    interface MvpView : BaseMvpView {
+    interface View : BaseMvpView {
         fun showSyncProgress(message: SyncProgressMessage)
         fun clearSyncProgress()
         fun showSearchEntries(entries: SearchEntries)
@@ -34,7 +34,7 @@ interface DrawerMenuContract {
         fun clearFilters()
     }
 
-    abstract class Presenter : BaseMvpPresenter<MvpView>() {
+    abstract class Presenter : BaseMvpPresenter<View>() {
         abstract fun onButtonProfileClick()
         abstract fun onButtonSyncClick()
         abstract fun onButtonPremiumClick()

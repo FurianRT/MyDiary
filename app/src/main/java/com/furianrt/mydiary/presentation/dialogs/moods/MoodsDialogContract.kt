@@ -17,12 +17,12 @@ import com.furianrt.mydiary.model.entity.MyNote
 
 interface MoodsDialogContract {
 
-    interface MvpView : BaseMvpView {
+    interface View : BaseMvpView {
         fun showMoods(moods: List<MyMood>, notes: List<MyNote>)
         fun closeView()
     }
 
-    abstract class Presenter : BaseMvpPresenter<MvpView>() {
+    abstract class Presenter : BaseMvpPresenter<View>() {
         abstract fun onButtonCloseClick()
         abstract fun onButtonNoMoodClick(noteId: String)
         abstract fun onMoodPicked(noteId: String, mood: MyMood)

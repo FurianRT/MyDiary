@@ -24,7 +24,7 @@ import com.furianrt.mydiary.presentation.dialogs.tags.fragments.list.TagListFrag
 import com.furianrt.mydiary.utils.inTransaction
 import javax.inject.Inject
 
-class TagsDialog : BaseDialog(), TagsDialogContract.MvpView {
+class TagsDialog : BaseDialog(), TagsDialogContract.View {
 
     companion object {
         const val TAG = "TagsDialog"

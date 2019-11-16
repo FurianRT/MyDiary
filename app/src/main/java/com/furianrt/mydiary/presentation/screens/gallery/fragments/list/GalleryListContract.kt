@@ -16,7 +16,7 @@ import com.furianrt.mydiary.model.entity.MyImage
 
 interface GalleryListContract {
 
-    interface MvpView : BaseMvpView {
+    interface View : BaseMvpView {
         fun showViewImagePager(noteId: String, position: Int)
         fun showImages(images: List<MyImage>, selectedImageNames: Set<String>)
         fun activateSelection()
@@ -35,7 +35,7 @@ interface GalleryListContract {
         fun showErrorSaveImage()
     }
 
-    abstract class Presenter : BaseMvpPresenter<MvpView>() {
+    abstract class Presenter : BaseMvpPresenter<View>() {
         abstract fun onListItemClick(image: MyImage, position: Int, selectionActive: Boolean)
         abstract fun init(noteId: String)
         abstract fun onImagesOrderChange(images: List<MyImage>)

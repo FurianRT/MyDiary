@@ -17,7 +17,7 @@ import com.furianrt.mydiary.model.entity.MyNote
 
 interface CategoryListContract {
 
-    interface MvpView : BaseMvpView {
+    interface View : BaseMvpView {
         fun showCategories(notes: List<MyNote>, categories: List<MyCategory>)
         fun showViewAddCategory()
         fun showEditView(category: MyCategory)
@@ -25,7 +25,7 @@ interface CategoryListContract {
         fun showDeleteCategoryView(category: MyCategory)
     }
 
-    abstract class Presenter : BaseMvpPresenter<MvpView>() {
+    abstract class Presenter : BaseMvpPresenter<View>() {
         abstract fun onViewStart()
         abstract fun onButtonAddCategoryClick()
         abstract fun onButtonDeleteCategoryClick(category: MyCategory)

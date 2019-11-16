@@ -13,9 +13,9 @@ package com.furianrt.mydiary.presentation.screens.note.fragments.mainnote.edit
 import com.furianrt.mydiary.presentation.base.mvp.BaseMvpView
 import com.furianrt.mydiary.presentation.base.mvp.BaseMvpPresenter
 
-interface NoteEditFragmentContract {
+interface NoteEditContract {
 
-    interface MvpView : BaseMvpView {
+    interface View : BaseMvpView {
         fun closeView()
         fun applyBoldText(wordStart: Int, wordEnd: Int)
         fun applyItalicText(wordStart: Int, wordEnd: Int)
@@ -25,7 +25,7 @@ interface NoteEditFragmentContract {
         fun applyTextFillColor(wordStart: Int, wordEnd: Int, color: String?)
     }
 
-    abstract class Presenter : BaseMvpPresenter<MvpView>() {
+    abstract class Presenter : BaseMvpPresenter<View>() {
         abstract fun onDoneButtonClick()
         abstract fun onButtonTextBoldClick(selectionStart: Int, selectionEnd: Int, text: String?)
         abstract fun onButtonTextItalicClick(selectionStart: Int, selectionEnd: Int, text: String?)

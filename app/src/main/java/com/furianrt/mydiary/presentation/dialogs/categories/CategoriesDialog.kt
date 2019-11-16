@@ -23,7 +23,7 @@ import com.furianrt.mydiary.presentation.dialogs.categories.fragments.list.Categ
 import com.furianrt.mydiary.utils.inTransaction
 import javax.inject.Inject
 
-class CategoriesDialog : BaseDialog(), CategoriesDialogContract.MvpView {
+class CategoriesDialog : BaseDialog(), CategoriesDialogContract.View {
 
     @Inject
     lateinit var mPresenter: CategoriesDialogContract.Presenter

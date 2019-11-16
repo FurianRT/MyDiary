@@ -16,7 +16,7 @@ import com.furianrt.mydiary.presentation.base.mvp.BaseMvpPresenter
 
 interface PinContract {
 
-    interface MvpView : BaseMvpView {
+    interface View : BaseMvpView {
         fun showPin(pin: String)
         fun showMessageRepeatPin()
         fun showMessagePinCreated()
@@ -34,7 +34,7 @@ interface PinContract {
         fun showFingerprintButton()
     }
 
-    abstract class Presenter : BaseMvpPresenter<MvpView>() {
+    abstract class Presenter : BaseMvpPresenter<View>() {
         abstract fun onButtonForgotPinClick()
         abstract fun onRestoreInstanceState(bundle: Bundle)
         abstract fun onSaveInstanceState(bundle: Bundle)

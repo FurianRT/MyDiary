@@ -15,7 +15,7 @@ import com.furianrt.mydiary.presentation.base.mvp.BaseMvpPresenter
 
 interface PasswordContract {
 
-    interface MvpView : BaseMvpView {
+    interface View : BaseMvpView {
         fun returnToMenuView()
         fun showLoading()
         fun hideLoading()
@@ -31,7 +31,7 @@ interface PasswordContract {
         fun close()
     }
 
-    abstract class Presenter : BaseMvpPresenter<MvpView>() {
+    abstract class Presenter : BaseMvpPresenter<View>() {
         abstract fun onButtonCancelClick()
         abstract fun onButtonSaveClick(oldPassword: String, newPassword: String, repeatPassword: String)
     }

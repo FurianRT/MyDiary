@@ -26,7 +26,7 @@ class GlobalSettingsPresenter @Inject constructor(
         private val scheduler: MyRxUtils.BaseSchedulerProvider
 ) : GlobalSettingsContract.Presenter() {
 
-    override fun attachView(view: GlobalSettingsContract.MvpView) {
+    override fun attachView(view: GlobalSettingsContract.View) {
         super.attachView(view)
         getPinEmail.invoke()?.let { view.showBackupEmail(it) }
         if (isFingerprintAvailable.invoke()) {

@@ -29,7 +29,7 @@ import kotlinx.android.synthetic.main.fragment_category_list.*
 import javax.inject.Inject
 
 class CategoryListFragment : BaseFragment(R.layout.fragment_category_list),
-        CategoriesListAdapter.OnCategoryListInteractionListener, CategoryListContract.MvpView {
+        CategoriesListAdapter.OnCategoryListInteractionListener, CategoryListContract.View {
 
     companion object {
 

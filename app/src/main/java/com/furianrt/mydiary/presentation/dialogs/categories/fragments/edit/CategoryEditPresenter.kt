@@ -26,7 +26,7 @@ class CategoryEditPresenter @Inject constructor(
         mCategory = category
     }
 
-    override fun attachView(view: CategoryEditContract.MvpView) {
+    override fun attachView(view: CategoryEditContract.View) {
         super.attachView(view)
         view.showCategory(mCategory)
     }

@@ -14,7 +14,7 @@ import com.furianrt.mydiary.model.entity.MyForecast
 import com.furianrt.mydiary.model.source.api.forecast.WeatherApiService
 import com.furianrt.mydiary.model.source.auth.AuthHelper
 import com.furianrt.mydiary.model.source.cloud.CloudHelper
-import com.furianrt.mydiary.model.source.database.ForecastDao
+import com.furianrt.mydiary.model.source.database.dao.ForecastDao
 import com.furianrt.mydiary.model.source.preferences.PreferencesHelper
 import com.furianrt.mydiary.utils.MyRxUtils
 import io.reactivex.Completable
@@ -85,4 +85,8 @@ class ForecastGatewayImp @Inject constructor(
     override fun getWeatherUnits(): Int = prefs.getWeatherUnits()
 
     override fun isWeatherEnabled(): Boolean = prefs.isWeatherEnabled()
+
+    override fun setWeatherEnabled(enabled: Boolean) {
+        prefs.setWeatherEnabled(enabled)
+    }
 }

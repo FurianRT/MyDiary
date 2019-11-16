@@ -14,8 +14,8 @@ import com.furianrt.mydiary.model.entity.MyTag
 import com.furianrt.mydiary.model.entity.NoteTag
 import com.furianrt.mydiary.model.source.auth.AuthHelper
 import com.furianrt.mydiary.model.source.cloud.CloudHelper
-import com.furianrt.mydiary.model.source.database.NoteTagDao
-import com.furianrt.mydiary.model.source.database.TagDao
+import com.furianrt.mydiary.model.source.database.dao.NoteTagDao
+import com.furianrt.mydiary.model.source.database.dao.TagDao
 import com.furianrt.mydiary.utils.MyRxUtils
 import io.reactivex.Completable
 import io.reactivex.Flowable

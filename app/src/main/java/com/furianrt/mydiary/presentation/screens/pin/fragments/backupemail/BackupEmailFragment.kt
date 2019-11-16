@@ -23,7 +23,7 @@ import com.furianrt.mydiary.utils.animateShake
 import kotlinx.android.synthetic.main.fragment_backup_email.*
 import javax.inject.Inject
 
-class BackupEmailFragment : BaseFragment(R.layout.fragment_backup_email), BackupEmailContract.MvpView {
+class BackupEmailFragment : BaseFragment(R.layout.fragment_backup_email), BackupEmailContract.View {
 
     companion object {
         const val TAG = "BackupEmailFragment"

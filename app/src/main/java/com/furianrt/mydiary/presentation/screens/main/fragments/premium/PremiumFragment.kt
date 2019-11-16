@@ -20,7 +20,7 @@ import com.furianrt.mydiary.presentation.screens.main.MainActivity
 import kotlinx.android.synthetic.main.fragment_premium.*
 import javax.inject.Inject
 
-class PremiumFragment : BaseFragment(R.layout.fragment_premium), PremiumContract.MvpView {
+class PremiumFragment : BaseFragment(R.layout.fragment_premium), PremiumContract.View {
 
     companion object {
         const val TAG = "PremiumFragment"

@@ -24,7 +24,7 @@ import com.furianrt.mydiary.model.entity.SyncProgressMessage
 import com.furianrt.mydiary.presentation.screens.main.MainActivity
 import javax.inject.Inject
 
-class SyncService : Service(), BaseView, SyncContract.MvpView {
+class SyncService : Service(), BaseView, SyncContract.View {
 
     companion object {
         private const val FOREGROUND_ID = 1

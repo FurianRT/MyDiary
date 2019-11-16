@@ -22,7 +22,7 @@ import com.furianrt.mydiary.presentation.base.BaseDialog
 import kotlinx.android.synthetic.main.dialog_rate.view.*
 import javax.inject.Inject
 
-class RateDialog : BaseDialog(), RateDialogContract.MvpView {
+class RateDialog : BaseDialog(), RateDialogContract.View {
 
     companion object {
         const val TAG = "MoodsDialog"

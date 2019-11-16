@@ -42,7 +42,7 @@ import pub.devrel.easypermissions.EasyPermissions
 import javax.inject.Inject
 
 class GalleryListFragment : BaseFragment(R.layout.fragment_gallery_list), GalleryListAdapter.OnListItemInteractionListener,
-        GalleryListContract.MvpView, ActionMode.Callback, DeleteImageDialog.OnDeleteImageConfirmListener {
+        GalleryListContract.View, ActionMode.Callback, DeleteImageDialog.OnDeleteImageConfirmListener {
 
     companion object {
         const val TAG = "GalleryListFragment"
@@ -348,9 +348,17 @@ class GalleryListFragment : BaseFragment(R.layout.fragment_gallery_list), Galler
 
     @AfterPermissionGranted(STORAGE_PERMISSIONS_REQUEST_CODE)
     override fun showImageExplorer() {
-        Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI).apply {
-            putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true)
-            startActivityForResult(this, IMAGE_PICKER_REQUEST_CODE)
+        val galleryIntent = Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
+        galleryIntent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true)
+        if (galleryIntent.resolveActivity(requireActivity().packageManager) != null) {
+            startActivityForResult(galleryIntent, IMAGE_PICKER_REQUEST_CODE)
+        } else {
+            with(Intent()) {
+                type = "image/*"
+                putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true)
+                action = Intent.ACTION_GET_CONTENT
+                startActivityForResult(Intent.createChooser(this, ""), IMAGE_PICKER_REQUEST_CODE)
+            }
         }
         mListener?.onGalleryListImagePickerOpen()
     }

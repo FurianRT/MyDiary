@@ -25,7 +25,7 @@ import com.furianrt.mydiary.presentation.dialogs.moods.MoodsDialogListAdapter.*
 import kotlinx.android.synthetic.main.dialog_moods.view.*
 import javax.inject.Inject
 
-class MoodsDialog : BaseDialog(), MoodsDialogContract.MvpView,
+class MoodsDialog : BaseDialog(), MoodsDialogContract.View,
         OnMoodListInteractionListener {
 
     companion object {

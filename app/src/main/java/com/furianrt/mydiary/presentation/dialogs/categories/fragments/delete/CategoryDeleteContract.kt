@@ -16,12 +16,12 @@ import com.furianrt.mydiary.model.entity.MyCategory
 
 interface CategoryDeleteContract {
 
-    interface MvpView : BaseMvpView {
+    interface View : BaseMvpView {
         fun closeView()
         fun showDeleteMessage(name: String)
     }
 
-    abstract class Presenter : BaseMvpPresenter<MvpView>() {
+    abstract class Presenter : BaseMvpPresenter<View>() {
         abstract fun init(category: MyCategory)
         abstract fun onButtonDeleteClick()
         abstract fun onButtonCancelClick()

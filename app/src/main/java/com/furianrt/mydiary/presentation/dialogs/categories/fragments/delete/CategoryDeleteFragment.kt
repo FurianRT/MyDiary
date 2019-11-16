@@ -19,7 +19,7 @@ import com.furianrt.mydiary.model.entity.MyCategory
 import kotlinx.android.synthetic.main.fragment_category_delete.*
 import javax.inject.Inject
 
-class CategoryDeleteFragment : BaseFragment(R.layout.fragment_category_delete), CategoryDeleteContract.MvpView {
+class CategoryDeleteFragment : BaseFragment(R.layout.fragment_category_delete), CategoryDeleteContract.View {
 
     @Inject
     lateinit var mPresenter: CategoryDeleteContract.Presenter

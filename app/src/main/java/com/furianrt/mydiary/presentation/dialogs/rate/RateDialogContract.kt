@@ -14,13 +14,14 @@ import com.furianrt.mydiary.presentation.base.mvp.BaseMvpView
 import com.furianrt.mydiary.presentation.base.mvp.BaseMvpPresenter
 
 interface RateDialogContract {
-    interface MvpView : BaseMvpView {
+
+    interface View : BaseMvpView {
         fun sendEmailToSupport(supportEmail: String)
         fun openAppPage()
         fun close()
     }
 
-    abstract class Presenter : BaseMvpPresenter<MvpView>() {
+    abstract class Presenter : BaseMvpPresenter<View>() {
         abstract fun onButtonRateClick(rating: Int)
         abstract fun onButtonLaterClick()
         abstract fun onButtonNeverClick()

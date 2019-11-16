@@ -8,7 +8,7 @@
  *
  ******************************************************************************/
 
-package com.furianrt.mydiary.model.source.database
+package com.furianrt.mydiary.model.source.database.dao
 
 import androidx.room.*
 import com.furianrt.mydiary.model.entity.MyCategory

@@ -19,7 +19,7 @@ import com.furianrt.mydiary.presentation.screens.main.MainActivity
 import kotlinx.android.synthetic.main.fragment_sign_out.*
 import javax.inject.Inject
 
-class SignOutFragment : BaseFragment(R.layout.fragment_sign_out), SignOutContract.MvpView {
+class SignOutFragment : BaseFragment(R.layout.fragment_sign_out), SignOutContract.View {
 
     companion object {
         const val TAG = "SignOutFragment"

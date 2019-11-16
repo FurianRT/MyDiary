@@ -38,4 +38,5 @@ interface LocationGateway {
     fun saveNoteLocationsInCloud(noteLocations: List<NoteLocation>): Completable
     fun saveLocationsInCloud(locations: List<MyLocation>): Completable
     fun isLocationEnabled(): Boolean
+    fun setLocationEnabled(enabled: Boolean)
 }

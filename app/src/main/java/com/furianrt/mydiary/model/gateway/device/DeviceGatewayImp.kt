@@ -64,7 +64,6 @@ class DeviceGatewayImp @Inject constructor(
         }
     }
 
-    @Synchronized
     private fun findAddress(latitude: Double, longitude: Double) {
         val addresses = try {
             geocoder.getFromLocation(latitude, longitude, 1)
@@ -77,7 +76,10 @@ class DeviceGatewayImp @Inject constructor(
             val address = addresses[0].getAddressLine(0)
             if (address != null) {
                 val location = MyLocation(generateUniqueId(), address, latitude, longitude)
-                mLocationCallbacks.forEach { it.onLocationFound(location) }
+                val iterator = mLocationCallbacks.iterator()
+                while(iterator.hasNext()){
+                    iterator.next().onLocationFound(location)
+                }
             }
         }
     }
@@ -189,7 +191,10 @@ class DeviceGatewayImp @Inject constructor(
     }
 
     override fun clearUriTempFiles() {
-        mPickits.forEach { it.deleteTemporaryFile() }
+        val iterator = mPickits.iterator()
+        while(iterator.hasNext()){
+            iterator.next().deleteTemporaryFile()
+        }
         mPickits.clear()
     }
 }

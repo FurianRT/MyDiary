@@ -11,11 +11,13 @@
 package com.furianrt.mydiary.presentation.screens.note.fragments.mainnote
 
 import android.util.Log
+import com.furianrt.mydiary.domain.DisableLocationUseCase
 import com.furianrt.mydiary.model.entity.*
 import com.furianrt.mydiary.domain.FindLocationUseCase
 import com.furianrt.mydiary.domain.check.IsForecastEnabledUseCase
 import com.furianrt.mydiary.domain.check.IsLocationEnabledUseCase
 import com.furianrt.mydiary.domain.check.IsMoodEnabledUseCase
+import com.furianrt.mydiary.domain.check.IsPanoramaEnabledUseCase
 import com.furianrt.mydiary.domain.get.*
 import com.furianrt.mydiary.domain.save.AddForecastUseCase
 import com.furianrt.mydiary.domain.save.SaveImagesUseCase
@@ -49,6 +51,8 @@ class NoteFragmentPresenter @Inject constructor(
         private val isForecastEnabled: IsForecastEnabledUseCase,
         private val findLocation: FindLocationUseCase,
         private val updateNoteSpans: UpdateNoteSpansUseCase,
+        private val isPanoramaEnabled: IsPanoramaEnabledUseCase,
+        private val disableLocation: DisableLocationUseCase,
         private val scheduler: MyRxUtils.BaseSchedulerProvider
 ) : NoteFragmentContract.Presenter() {
 
@@ -79,25 +83,30 @@ class NoteFragmentPresenter @Inject constructor(
     }
 
     override fun onMoodFieldClick() {
-        view?.showMoodsDialog(mNoteId)
+        view?.showMoodsView(mNoteId)
     }
 
     override fun onTagsFieldClick() {
-        view?.showTagsDialog(mNoteId)
+        view?.showTagsView(mNoteId)
     }
 
     override fun onCategoryFieldClick() {
-        view?.showCategoriesDialog(mNoteId)
+        view?.showCategoriesView(mNoteId)
+    }
+
+    override fun onReminderFieldClick() {
+        view?.showReminderView(mNoteId)
     }
 
     private fun loadImages() {
         addDisposable(getImages.invoke(mNoteId)
+                .map { Pair(it, isPanoramaEnabled.invoke()) }
                 .observeOn(scheduler.ui())
-                .subscribe { images ->
-                    if (images.isEmpty()) {
+                .subscribe { imagesAndPanorama ->
+                    if (imagesAndPanorama.first.isEmpty()) {
                         view?.showNoImages()
                     } else {
-                        view?.showImages(images)
+                        view?.showImages(imagesAndPanorama.first, imagesAndPanorama.second)
                     }
                 })
     }
@@ -179,6 +188,10 @@ class NoteFragmentPresenter @Inject constructor(
                 }, { error ->
                     error.printStackTrace()
                 }))
+    }
+
+    override fun onLocationPermissionDenied() {
+        disableLocation.invoke()
     }
 
     private fun showNoteMood(moodId: Int) {

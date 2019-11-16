@@ -16,8 +16,8 @@ import com.furianrt.mydiary.model.entity.MyImage
 import com.furianrt.mydiary.model.source.api.images.ImageApiService
 import com.furianrt.mydiary.model.source.auth.AuthHelper
 import com.furianrt.mydiary.model.source.cloud.CloudHelper
-import com.furianrt.mydiary.model.source.database.HeaderImageDao
-import com.furianrt.mydiary.model.source.database.ImageDao
+import com.furianrt.mydiary.model.source.database.dao.HeaderImageDao
+import com.furianrt.mydiary.model.source.database.dao.ImageDao
 import com.furianrt.mydiary.model.source.preferences.PreferencesHelper
 import com.furianrt.mydiary.model.source.storage.StorageHelper
 import com.furianrt.mydiary.utils.MyRxUtils
@@ -146,4 +146,6 @@ class ImageGatewayImp @Inject constructor(
     override fun getDailyImageCategory(): String = prefs.getDailyImageCategory()
 
     override fun getAvailableImageDirectory(): String = storage.getAvailablePictureDirectory()
+
+    override fun isPanoramaEnabled(): Boolean = prefs.isPanoramaEnabled()
 }

@@ -15,12 +15,12 @@ import com.furianrt.mydiary.presentation.base.mvp.BaseMvpPresenter
 
 interface SignOutContract {
 
-    interface MvpView : BaseMvpView {
+    interface View : BaseMvpView {
         fun close()
         fun returnToMenuView()
     }
 
-    abstract class Presenter : BaseMvpPresenter<MvpView>() {
+    abstract class Presenter : BaseMvpPresenter<View>() {
         abstract fun onButtonSignOutClick()
         abstract fun onButtonSignOutCancelClick()
     }

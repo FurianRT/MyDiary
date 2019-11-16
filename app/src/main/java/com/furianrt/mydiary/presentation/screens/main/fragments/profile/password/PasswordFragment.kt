@@ -27,7 +27,7 @@ import kotlinx.android.synthetic.main.bottom_sheet_main.*
 import kotlinx.android.synthetic.main.fragment_password.*
 import javax.inject.Inject
 
-class PasswordFragment : BaseFragment(R.layout.fragment_password), PasswordContract.MvpView {
+class PasswordFragment : BaseFragment(R.layout.fragment_password), PasswordContract.View {
 
     companion object {
         const val TAG = "PasswordFragment"

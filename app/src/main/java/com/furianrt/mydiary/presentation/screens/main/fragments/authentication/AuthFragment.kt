@@ -30,7 +30,7 @@ import com.furianrt.mydiary.utils.inTransaction
 import kotlinx.android.synthetic.main.fragment_auth.*
 import javax.inject.Inject
 
-class AuthFragment : BaseFragment(R.layout.fragment_auth), AuthContract.MvpView {
+class AuthFragment : BaseFragment(R.layout.fragment_auth), AuthContract.View {
 
     companion object {
         const val TAG = "AuthFragment"

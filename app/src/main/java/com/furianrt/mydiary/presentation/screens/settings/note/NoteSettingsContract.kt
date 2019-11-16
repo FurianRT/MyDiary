@@ -16,14 +16,14 @@ import com.furianrt.mydiary.model.entity.MyNoteAppearance
 
 interface NoteSettingsContract {
 
-    interface MvpView : BaseMvpView {
+    interface View : BaseMvpView {
         fun updateSettings(appearance: MyNoteAppearance)
         fun onAppearanceReset()
         fun disableInput()
         fun enableInput()
     }
 
-    abstract class Presenter : BaseMvpPresenter<MvpView>() {
+    abstract class Presenter : BaseMvpPresenter<View>() {
         abstract fun init(noteId: String)
         abstract fun onTextSizeChange(size: Int)
         abstract fun onTextColorChange(color: Int)

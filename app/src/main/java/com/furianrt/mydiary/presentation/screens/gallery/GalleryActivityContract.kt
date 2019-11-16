@@ -15,7 +15,7 @@ import com.furianrt.mydiary.presentation.base.mvp.BaseMvpPresenter
 
 interface GalleryActivityContract {
 
-    interface MvpView : BaseMvpView
+    interface View : BaseMvpView
 
-    abstract class Presenter : BaseMvpPresenter<MvpView>()
+    abstract class Presenter : BaseMvpPresenter<View>()
 }

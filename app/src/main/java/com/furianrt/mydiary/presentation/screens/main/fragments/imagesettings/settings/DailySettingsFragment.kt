@@ -23,7 +23,7 @@ import com.furianrt.mydiary.presentation.base.BaseView
 import com.furianrt.mydiary.model.source.preferences.PreferencesHelper
 import javax.inject.Inject
 
-class DailySettingsFragment : PreferenceFragmentCompat(), BaseView, DailySettingsContract.MvpView,
+class DailySettingsFragment : PreferenceFragmentCompat(), BaseView, DailySettingsContract.View,
         SharedPreferences.OnSharedPreferenceChangeListener {
 
     companion object {

@@ -32,7 +32,7 @@ import kotlinx.android.synthetic.main.activity_gallery.*
 import kotlinx.android.synthetic.main.fragment_gallery_pager.*
 import javax.inject.Inject
 
-class GalleryPagerFragment : BaseFragment(R.layout.fragment_gallery_pager), GalleryPagerContract.MvpView {
+class GalleryPagerFragment : BaseFragment(R.layout.fragment_gallery_pager), GalleryPagerContract.View {
 
     companion object {
 

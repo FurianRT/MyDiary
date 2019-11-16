@@ -18,7 +18,7 @@ class MenuProfilePresenter @Inject constructor(
         private val getLastSyncMessage: GetLastSyncMessageUseCase
 ) : MenuProfileContract.Presenter() {
 
-    override fun attachView(view: MenuProfileContract.MvpView) {
+    override fun attachView(view: MenuProfileContract.View) {
         super.attachView(view)
         val message = getLastSyncMessage.invoke()
         view.disableSignOut(message != null && message.task != SyncProgressMessage.SYNC_FINISHED)
