@@ -15,6 +15,7 @@ import com.furianrt.mydiary.presentation.base.BaseDialog
 import com.furianrt.mydiary.presentation.base.BaseFragment
 import com.furianrt.mydiary.di.presenter.modules.presenter.PresenterContextModule
 import com.furianrt.mydiary.di.presenter.modules.presenter.PresenterModule
+import com.furianrt.mydiary.presentation.base.BasePreference
 import com.furianrt.mydiary.presentation.dialogs.categories.CategoriesDialog
 import com.furianrt.mydiary.presentation.dialogs.categories.fragments.add.CategoryAddFragment
 import com.furianrt.mydiary.presentation.dialogs.categories.fragments.delete.CategoryDeleteFragment
@@ -76,6 +77,7 @@ interface PresenterComponent {
     fun inject(dialog: DeleteImageDialog)
     fun inject(dialog: RateDialog)
     fun inject(fragment: BaseFragment)
+    fun inject(fragment: BasePreference)
     fun inject(fragment: NoteContentFragment)
     fun inject(fragment: NoteEditFragment)
     fun inject(fragment: NoteFragment)

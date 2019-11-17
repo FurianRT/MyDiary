@@ -19,7 +19,7 @@ import com.furianrt.mydiary.presentation.screens.note.fragments.mainnote.NoteFra
 import kotlinx.android.synthetic.main.fragment_reminder.*
 import javax.inject.Inject
 
-class ReminderFragment : BaseFragment(R.layout.fragment_reminder), ReminderContract.MvpView {
+class ReminderFragment : BaseFragment(R.layout.fragment_reminder), ReminderContract.View {
 
     companion object {
         const val TAG = "ReminderFragment"

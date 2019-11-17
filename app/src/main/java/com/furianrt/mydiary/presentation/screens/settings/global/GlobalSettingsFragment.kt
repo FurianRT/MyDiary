@@ -18,17 +18,16 @@ import android.os.Bundle
 import android.os.Handler
 import androidx.appcompat.app.AlertDialog
 import androidx.preference.Preference
-import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.PreferenceManager
 import androidx.preference.SwitchPreference
 import com.furianrt.mydiary.R
 import com.furianrt.mydiary.analytics.MyAnalytics
-import com.furianrt.mydiary.presentation.base.BaseView
 import com.furianrt.mydiary.model.source.preferences.PreferencesHelper
+import com.furianrt.mydiary.presentation.base.BasePreference
 import com.furianrt.mydiary.presentation.screens.pin.PinActivity
 import javax.inject.Inject
 
-class GlobalSettingsFragment : PreferenceFragmentCompat(), BaseView, GlobalSettingsContract.View,
+class GlobalSettingsFragment : BasePreference(), GlobalSettingsContract.View,
         SharedPreferences.OnSharedPreferenceChangeListener {
 
     companion object {
@@ -40,11 +39,13 @@ class GlobalSettingsFragment : PreferenceFragmentCompat(), BaseView, GlobalSetti
     @Inject
     lateinit var presenter: GlobalSettingsContract.Presenter
 
-    @Inject
-    lateinit var mAnalytics: MyAnalytics
-
     private val mHandler = Handler()
     private val mRecreateRunnable = Runnable { activity?.recreate() }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        getPresenterComponent(requireActivity()).inject(this)
+        super.onCreate(savedInstanceState)
+    }
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         setPreferencesFromResource(R.xml.pref_global, rootKey)
@@ -77,19 +78,14 @@ class GlobalSettingsFragment : PreferenceFragmentCompat(), BaseView, GlobalSetti
                 }
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        getPresenterComponent(requireActivity()).inject(this)
-        super.onCreate(savedInstanceState)
-    }
-
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
         when (key) {
             PreferencesHelper.COLOR_PRIMARY -> {
-                mAnalytics.sendEvent(MyAnalytics.EVENT_PRIMARY_COLOR_CHANGED)
+                analytics.sendEvent(MyAnalytics.EVENT_PRIMARY_COLOR_CHANGED)
                 mHandler.postDelayed(mRecreateRunnable, RECREATE_DELAY)
             }
             PreferencesHelper.COLOR_ACCENT -> {
-                mAnalytics.sendEvent(MyAnalytics.EVENT_ACCENT_COLOR_CHANGED)
+                analytics.sendEvent(MyAnalytics.EVENT_ACCENT_COLOR_CHANGED)
                 mHandler.postDelayed(mRecreateRunnable, RECREATE_DELAY)
             }
         }
@@ -100,7 +96,7 @@ class GlobalSettingsFragment : PreferenceFragmentCompat(), BaseView, GlobalSetti
         if (requestCode == REQUEST_CODE_CREATE_PIN) {
             val keyPref = findPreference<SwitchPreference>(PreferencesHelper.SECURITY_KEY)
             if (resultCode == Activity.RESULT_OK) {
-                mAnalytics.sendEvent(MyAnalytics.EVENT_PIN_CREATED)
+                analytics.sendEvent(MyAnalytics.EVENT_PIN_CREATED)
                 keyPref?.isChecked = true
                 presenter.onPasswordCreated()
             } else {
@@ -109,7 +105,7 @@ class GlobalSettingsFragment : PreferenceFragmentCompat(), BaseView, GlobalSetti
         } else if (requestCode == REQUEST_CODE_REMOVE_PIN) {
             val keyPref = findPreference<SwitchPreference>(PreferencesHelper.SECURITY_KEY)
             if (resultCode == Activity.RESULT_OK) {
-                mAnalytics.sendEvent(MyAnalytics.EVENT_PIN_REMOVED)
+                analytics.sendEvent(MyAnalytics.EVENT_PIN_REMOVED)
                 keyPref?.isChecked = false
                 presenter.onPasswordRemoved()
             } else {

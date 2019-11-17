@@ -10,17 +10,17 @@
 
 package com.furianrt.mydiary.presentation.screens.main.fragments.premium
 
-import com.furianrt.mydiary.presentation.base.mvp.BaseMvpView
-import com.furianrt.mydiary.presentation.base.mvp.BaseMvpPresenter
+import com.furianrt.mydiary.presentation.base.BaseView
+import com.furianrt.mydiary.presentation.base.BasePresenter
 
 interface PremiumContract {
 
-    interface View : BaseMvpView {
+    interface View : BaseView {
         fun close()
 
     }
 
-    abstract class Presenter : BaseMvpPresenter<View>() {
+    abstract class Presenter : BasePresenter<View>() {
         abstract fun onButtonCloseClick()
 
     }

@@ -10,12 +10,12 @@
 
 package com.furianrt.mydiary.presentation.screens.main.fragments.authentication.registration
 
-import com.furianrt.mydiary.presentation.base.mvp.BaseMvpView
-import com.furianrt.mydiary.presentation.base.mvp.BaseMvpPresenter
+import com.furianrt.mydiary.presentation.base.BaseView
+import com.furianrt.mydiary.presentation.base.BasePresenter
 
 interface RegistrationContract {
 
-    interface View : BaseMvpView {
+    interface View : BaseView {
         fun close()
         fun showErrorNetworkConnection()
         fun showErrorPassword()
@@ -34,7 +34,7 @@ interface RegistrationContract {
         fun showPrivacyView(email: String, password: String)
     }
 
-    abstract class Presenter : BaseMvpPresenter<View>() {
+    abstract class Presenter : BasePresenter<View>() {
         abstract fun onButtonCancelClick()
         abstract fun onButtonSignUpClick(email: String, password: String, passwordRepeat: String)
         abstract fun onEmailFocusChange(email: String, hasFocus: Boolean)

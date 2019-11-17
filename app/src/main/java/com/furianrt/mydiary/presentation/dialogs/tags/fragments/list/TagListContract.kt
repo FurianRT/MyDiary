@@ -10,13 +10,13 @@
 
 package com.furianrt.mydiary.presentation.dialogs.tags.fragments.list
 
-import com.furianrt.mydiary.presentation.base.mvp.BaseMvpView
-import com.furianrt.mydiary.presentation.base.mvp.BaseMvpPresenter
+import com.furianrt.mydiary.presentation.base.BaseView
+import com.furianrt.mydiary.presentation.base.BasePresenter
 import com.furianrt.mydiary.model.entity.MyTag
 
 interface TagListContract {
 
-    interface View : BaseMvpView {
+    interface View : BaseView {
         fun showItems(items: List<TagListAdapter.ViewItem>)
         fun closeView()
         fun showAddTagView(noteId: String)
@@ -24,7 +24,7 @@ interface TagListContract {
         fun showDeleteTagView(tag: MyTag)
     }
 
-    abstract class Presenter : BaseMvpPresenter<View>() {
+    abstract class Presenter : BasePresenter<View>() {
         abstract fun init(noteId: String)
         abstract fun onItemCheckChange(item: TagListAdapter.ViewItem)
         abstract fun onButtonCloseClick()

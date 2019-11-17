@@ -23,11 +23,11 @@ import kotlin.math.max
 
 class LinedEditText : AppCompatEditText {
 
-    private var mLinePaint: Paint = Paint()
-    private var mBounds =  Rect()
-
     constructor(context: Context) : super(context, null)
     constructor(context: Context, attrs: AttributeSet) : super(context, attrs)
+
+    private var mBounds =  Rect()
+    private var mLinePaint: Paint = Paint()
 
     var selectionListener: ((selStart: Int, selEnd: Int) -> Unit)? = null
     var enableLines = false

@@ -63,7 +63,7 @@ import java.util.Calendar
 import javax.inject.Inject
 import kotlin.collections.ArrayList
 
-class NoteFragment : BaseFragment(R.layout.fragment_note), NoteFragmentContract.MvpView, DatePickerDialog.OnDateSetListener,
+class NoteFragment : BaseFragment(R.layout.fragment_note), NoteFragmentContract.View, DatePickerDialog.OnDateSetListener,
         TimePickerDialog.OnTimeSetListener, NoteImagePagerAdapter.OnNoteImagePagerInteractionListener,
         EasyPermissions.PermissionCallbacks {
 

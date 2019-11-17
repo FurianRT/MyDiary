@@ -13,17 +13,15 @@ package com.furianrt.mydiary.presentation.screens.main.fragments.imagesettings.s
 import android.content.Context
 import android.content.SharedPreferences
 import android.os.Bundle
-
-import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.PreferenceManager
 
 import com.furianrt.mydiary.R
 import com.furianrt.mydiary.analytics.MyAnalytics
-import com.furianrt.mydiary.presentation.base.BaseView
 import com.furianrt.mydiary.model.source.preferences.PreferencesHelper
+import com.furianrt.mydiary.presentation.base.BasePreference
 import javax.inject.Inject
 
-class DailySettingsFragment : PreferenceFragmentCompat(), BaseView, DailySettingsContract.View,
+class DailySettingsFragment : BasePreference(), DailySettingsContract.View,
         SharedPreferences.OnSharedPreferenceChangeListener {
 
     companion object {
@@ -32,9 +30,6 @@ class DailySettingsFragment : PreferenceFragmentCompat(), BaseView, DailySetting
 
     @Inject
     lateinit var presenter: DailySettingsContract.Presenter
-
-    @Inject
-    lateinit var mAnalytics: MyAnalytics
 
     private var mListener: OnImageSettingsInteractionListener? = null
 
@@ -55,9 +50,9 @@ class DailySettingsFragment : PreferenceFragmentCompat(), BaseView, DailySetting
 
                 val value = sharedPreferences?.getBoolean(PreferencesHelper.LOAD_DAILY_IMAGE, true) ?: true
                 if (value) {
-                    mAnalytics.sendEvent(MyAnalytics.EVENT_DAILY_IMAGE_TURN_ON)
+                    analytics.sendEvent(MyAnalytics.EVENT_DAILY_IMAGE_TURN_ON)
                 } else {
-                    mAnalytics.sendEvent(MyAnalytics.EVENT_DAILY_IMAGE_TURN_OFF)
+                    analytics.sendEvent(MyAnalytics.EVENT_DAILY_IMAGE_TURN_OFF)
                 }
             }
             PreferencesHelper.DAILY_IMAGE_CATEGORY -> {
@@ -65,7 +60,7 @@ class DailySettingsFragment : PreferenceFragmentCompat(), BaseView, DailySetting
                         ?: PreferencesHelper.DAILY_IMAGE_CATEGORY_DEFAULT
                 val bundle = Bundle()
                 bundle.putString(MyAnalytics.BUNDLE_CATEGORY, value)
-                mAnalytics.sendEvent(MyAnalytics.EVENT_DAILY_IMAGE_CATEGORY_CHANGED, bundle)
+                analytics.sendEvent(MyAnalytics.EVENT_DAILY_IMAGE_CATEGORY_CHANGED, bundle)
             }
         }
     }

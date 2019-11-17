@@ -10,18 +10,18 @@
 
 package com.furianrt.mydiary.presentation.screens.note.fragments.mainnote.content
 
-import com.furianrt.mydiary.presentation.base.mvp.BaseMvpView
-import com.furianrt.mydiary.presentation.base.mvp.BaseMvpPresenter
+import com.furianrt.mydiary.presentation.base.BaseView
+import com.furianrt.mydiary.presentation.base.BasePresenter
 
 interface NoteContentContract {
 
-    interface View : BaseMvpView {
+    interface View : BaseView {
         fun showNoteEditViewForTitle(touchPosition: Int)
         fun showNoteEditViewForContent(touchPosition: Int)
         fun showNoteEditViewForTitleEnd()
     }
 
-    abstract class Presenter : BaseMvpPresenter<View>() {
+    abstract class Presenter : BasePresenter<View>() {
         abstract fun onTouchPositionChange(touchPosition: Int)
         abstract fun onTitleClick()
         abstract fun onContentClick()

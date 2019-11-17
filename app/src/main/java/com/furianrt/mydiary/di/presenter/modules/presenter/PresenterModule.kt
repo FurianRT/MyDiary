@@ -95,7 +95,6 @@ import com.furianrt.mydiary.presentation.screens.settings.global.GlobalSettingsC
 import com.furianrt.mydiary.presentation.screens.settings.global.GlobalSettingsPresenter
 import com.furianrt.mydiary.presentation.screens.settings.note.NoteSettingsContract
 import com.furianrt.mydiary.presentation.screens.settings.note.NoteSettingsPresenter
-import com.furianrt.mydiary.presentation.services.sync.SyncContract
 import dagger.Binds
 import dagger.Module
 

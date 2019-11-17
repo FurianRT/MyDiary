@@ -10,18 +10,18 @@
 
 package com.furianrt.mydiary.presentation.screens.main.fragments.profile
 
-import com.furianrt.mydiary.presentation.base.mvp.BaseMvpView
-import com.furianrt.mydiary.presentation.base.mvp.BaseMvpPresenter
+import com.furianrt.mydiary.presentation.base.BaseView
+import com.furianrt.mydiary.presentation.base.BasePresenter
 import com.furianrt.mydiary.model.entity.MyProfile
 
 interface ProfileContract {
 
-    interface View : BaseMvpView {
+    interface View : BaseView {
         fun close()
         fun showProfile(profile: MyProfile)
     }
 
-    abstract class Presenter : BaseMvpPresenter<View>() {
+    abstract class Presenter : BasePresenter<View>() {
         abstract fun onButtonCloseClick()
     }
 }

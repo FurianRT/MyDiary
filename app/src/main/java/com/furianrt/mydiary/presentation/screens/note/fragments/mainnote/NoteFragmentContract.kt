@@ -10,15 +10,15 @@
 
 package com.furianrt.mydiary.presentation.screens.note.fragments.mainnote
 
-import com.furianrt.mydiary.presentation.base.mvp.BaseMvpView
-import com.furianrt.mydiary.presentation.base.mvp.BaseMvpPresenter
+import com.furianrt.mydiary.presentation.base.BaseView
+import com.furianrt.mydiary.presentation.base.BasePresenter
 import com.furianrt.mydiary.model.entity.*
 import com.furianrt.mydiary.model.entity.pojo.TagsAndAppearance
 import java.util.*
 
 interface NoteFragmentContract {
 
-    interface MvpView : BaseMvpView {
+    interface View : BaseView {
         fun showForecast(temp: String, iconUri: String)
         fun showTagsView(noteId: String)
         fun showTags(tagsAndAppearance: TagsAndAppearance)
@@ -59,7 +59,7 @@ interface NoteFragmentContract {
         fun showReminderView(noteId: String)
     }
 
-    abstract class Presenter : BaseMvpPresenter<MvpView>() {
+    abstract class Presenter : BasePresenter<View>() {
         abstract fun onTagsFieldClick()
         abstract fun onLocationPermissionsGranted()
         abstract fun onButtonAddImageClick()

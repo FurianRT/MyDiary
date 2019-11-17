@@ -10,14 +10,14 @@
 
 package com.furianrt.mydiary.presentation.dialogs.categories.fragments.list
 
-import com.furianrt.mydiary.presentation.base.mvp.BaseMvpView
-import com.furianrt.mydiary.presentation.base.mvp.BaseMvpPresenter
+import com.furianrt.mydiary.presentation.base.BaseView
+import com.furianrt.mydiary.presentation.base.BasePresenter
 import com.furianrt.mydiary.model.entity.MyCategory
 import com.furianrt.mydiary.model.entity.MyNote
 
 interface CategoryListContract {
 
-    interface View : BaseMvpView {
+    interface View : BaseView {
         fun showCategories(notes: List<MyNote>, categories: List<MyCategory>)
         fun showViewAddCategory()
         fun showEditView(category: MyCategory)
@@ -25,7 +25,7 @@ interface CategoryListContract {
         fun showDeleteCategoryView(category: MyCategory)
     }
 
-    abstract class Presenter : BaseMvpPresenter<View>() {
+    abstract class Presenter : BasePresenter<View>() {
         abstract fun onViewStart()
         abstract fun onButtonAddCategoryClick()
         abstract fun onButtonDeleteCategoryClick(category: MyCategory)

@@ -10,11 +10,11 @@
 
 package com.furianrt.mydiary.presentation.screens.main.fragments.imagesettings.settings
 
-import com.furianrt.mydiary.presentation.base.mvp.BaseMvpView
-import com.furianrt.mydiary.presentation.base.mvp.BaseMvpPresenter
+import com.furianrt.mydiary.presentation.base.BaseView
+import com.furianrt.mydiary.presentation.base.BasePresenter
 
 interface DailySettingsContract {
-    interface View : BaseMvpView
+    interface View : BaseView
 
-    abstract class Presenter : BaseMvpPresenter<View>()
+    abstract class Presenter : BasePresenter<View>()
 }

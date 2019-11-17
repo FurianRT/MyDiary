@@ -8,12 +8,12 @@
  *
  ******************************************************************************/
 
-package com.furianrt.mydiary.presentation.base.mvp
+package com.furianrt.mydiary.presentation.base
 
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
 
-abstract class BaseMvpPresenter<T : BaseMvpView> {
+abstract class BasePresenter<T : BaseView> {
 
     protected var view: T? = null
 

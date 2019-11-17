@@ -71,7 +71,7 @@ class NoteFragmentPresenter @Inject constructor(
         mNoteId = noteId
     }
 
-    override fun attachView(view: NoteFragmentContract.MvpView) {
+    override fun attachView(view: NoteFragmentContract.View) {
         super.attachView(view)
         check(::mNoteId.isInitialized) { "Need to call init before attaching view" }
         loadNote()

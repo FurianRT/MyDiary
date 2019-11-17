@@ -10,15 +10,15 @@
 
 package com.furianrt.mydiary.presentation.screens.main.fragments.drawer
 
-import com.furianrt.mydiary.presentation.base.mvp.BaseMvpView
-import com.furianrt.mydiary.presentation.base.mvp.BaseMvpPresenter
+import com.furianrt.mydiary.presentation.base.BaseView
+import com.furianrt.mydiary.presentation.base.BasePresenter
 import com.furianrt.mydiary.model.entity.MyProfile
 import com.furianrt.mydiary.model.entity.SyncProgressMessage
 import com.furianrt.mydiary.model.entity.pojo.SearchEntries
 
 interface DrawerMenuContract {
 
-    interface View : BaseMvpView {
+    interface View : BaseView {
         fun showSyncProgress(message: SyncProgressMessage)
         fun clearSyncProgress()
         fun showSearchEntries(entries: SearchEntries)
@@ -34,7 +34,7 @@ interface DrawerMenuContract {
         fun clearFilters()
     }
 
-    abstract class Presenter : BaseMvpPresenter<View>() {
+    abstract class Presenter : BasePresenter<View>() {
         abstract fun onButtonProfileClick()
         abstract fun onButtonSyncClick()
         abstract fun onButtonPremiumClick()
