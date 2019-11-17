@@ -8,13 +8,15 @@
  *
  ******************************************************************************/
 
-package com.furianrt.mydiary.presentation.screens.main.fragments.premium
+package com.furianrt.mydiary.receivers
 
-import javax.inject.Inject
+import android.content.BroadcastReceiver
+import android.content.Context
+import android.content.Intent
 
-class Premiupresenter @Inject constructor() : PremiumContract.Presenter() {
+class ReminderReceiver : BroadcastReceiver() {
 
-    override fun onButtonCloseClick() {
-        view?.close()
+    override fun onReceive(context: Context, intent: Intent) {
+
     }
 }

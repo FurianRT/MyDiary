@@ -22,7 +22,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
-        tools:ignore="AllowBackup,GoogleAppIndexingWarning,UnusedAttribute">
+        tools:ignore="AllowBackup,GoogleAppIndexingWarning">
 
         <provider
             android:name="androidx.core.content.FileProvider"
@@ -32,16 +32,18 @@
 
             <meta-data
                 android:name="android.support.FILE_PROVIDER_PATHS"
-                android:resource="@xml/file_paths"/>
+                android:resource="@xml/file_paths" />
 
         </provider>
 
+        <receiver android:name=".receivers.ReminderReceiver" />
+
         <service
-            android:name=".presentation.services.sync.SyncService"
+            android:name=".services.SyncService"
             android:exported="false" />
 
         <service
-            android:name=".presentation.services.firebase.MyFirebaseMessagingService"
+            android:name=".services.MessagingService"
             tools:ignore="ExportedService">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />

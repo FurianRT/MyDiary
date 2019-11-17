@@ -24,7 +24,7 @@ import javax.inject.Inject
 class CategoryAddFragment : BaseFragment(R.layout.fragment_category_add), CategoryAddContract.View {
 
     @Inject
-    lateinit var mPresenter: CategoryAddContract.Presenter
+    lateinit var presenter: CategoryAddContract.Presenter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         getPresenterComponent(requireContext()).inject(this)
@@ -36,12 +36,12 @@ class CategoryAddFragment : BaseFragment(R.layout.fragment_category_add), Catego
         color_picker_category.addSVBar(svbar_category)
         color_picker_category.showOldCenterColor = false
         button_category_add_cancel.setOnClickListener {
-            mPresenter.onButtonCancelClick()
+            presenter.onButtonCancelClick()
         }
         button_category_add.setOnClickListener {
             val color = color_picker_category.color
             val name = edit_category.text?.toString() ?: ""
-            mPresenter.onButtonDoneClick(name, color)
+            presenter.onButtonDoneClick(name, color)
         }
     }
 
@@ -58,14 +58,14 @@ class CategoryAddFragment : BaseFragment(R.layout.fragment_category_add), Catego
         super.onStart()
         edit_category.requestFocus()
         edit_category.showKeyboard()
-        mPresenter.attachView(this)
+        presenter.attachView(this)
     }
 
     override fun onStop() {
         super.onStop()
         edit_category.clearFocus()
         edit_category.hideKeyboard()
-        mPresenter.detachView()
+        presenter.detachView()
     }
 
     companion object {

@@ -48,7 +48,7 @@ class NoteEditFragment : BaseFragment(R.layout.fragment_note_edit), NoteEditCont
     }
 
     @Inject
-    lateinit var mPresenter: NoteEditContract.Presenter
+    lateinit var presenter: NoteEditContract.Presenter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         getPresenterComponent(requireContext()).inject(this)
@@ -111,7 +111,7 @@ class NoteEditFragment : BaseFragment(R.layout.fragment_note_edit), NoteEditCont
     override fun onOptionsItemSelected(item: MenuItem): Boolean =
             when (item.itemId) {
                 R.id.menu_done -> {
-                    mPresenter.onDoneButtonClick()
+                    presenter.onDoneButtonClick()
                     true
                 }
                 else -> super.onOptionsItemSelected(item)
@@ -136,7 +136,7 @@ class NoteEditFragment : BaseFragment(R.layout.fragment_note_edit), NoteEditCont
 
     override fun onStart() {
         super.onStart()
-        mPresenter.attachView(this)
+        presenter.attachView(this)
         (parentFragment as? NoteFragment?)?.onNoteFragmentEditModeEnabled()
         edit_note_title.addTextChangedListener(mTextChangeListener)
         edit_note_content.addTextChangedListener(mTextChangeListener)
@@ -150,7 +150,7 @@ class NoteEditFragment : BaseFragment(R.layout.fragment_note_edit), NoteEditCont
                 edit_note_title.text?.toString() ?: "",
                 edit_note_content.text ?: Spannable.Factory().newSpannable("")
         )
-        mPresenter.detachView()
+        presenter.detachView()
     }
 
     fun setAppearance(appearance: MyNoteAppearance) {
@@ -755,7 +755,7 @@ class NoteEditFragment : BaseFragment(R.layout.fragment_note_edit), NoteEditCont
     }
 
     fun onButtonTextBoldClick() {
-        mPresenter.onButtonTextBoldClick(
+        presenter.onButtonTextBoldClick(
                 edit_note_content.selectionStart,
                 edit_note_content.selectionEnd,
                 edit_note_content.text?.toString()
@@ -763,7 +763,7 @@ class NoteEditFragment : BaseFragment(R.layout.fragment_note_edit), NoteEditCont
     }
 
     fun onButtonTextItalicClick() {
-        mPresenter.onButtonTextItalicClick(
+        presenter.onButtonTextItalicClick(
                 edit_note_content.selectionStart,
                 edit_note_content.selectionEnd,
                 edit_note_content.text?.toString()
@@ -771,7 +771,7 @@ class NoteEditFragment : BaseFragment(R.layout.fragment_note_edit), NoteEditCont
     }
 
     fun onButtonTextStrikethroughClick() {
-        mPresenter.onButtonTextStrikethroughClick(
+        presenter.onButtonTextStrikethroughClick(
                 edit_note_content.selectionStart,
                 edit_note_content.selectionEnd,
                 edit_note_content.text?.toString()
@@ -779,7 +779,7 @@ class NoteEditFragment : BaseFragment(R.layout.fragment_note_edit), NoteEditCont
     }
 
     fun onButtonTextLargeClick() {
-        mPresenter.onButtonTextLargeClick(
+        presenter.onButtonTextLargeClick(
                 edit_note_content.selectionStart,
                 edit_note_content.selectionEnd,
                 edit_note_content.text?.toString()
@@ -787,7 +787,7 @@ class NoteEditFragment : BaseFragment(R.layout.fragment_note_edit), NoteEditCont
     }
 
     fun onButtonTextColorClick(color: String?) {
-        mPresenter.onButtonTextColorClick(
+        presenter.onButtonTextColorClick(
                 edit_note_content.selectionStart,
                 edit_note_content.selectionEnd,
                 edit_note_content.text?.toString(),
@@ -796,7 +796,7 @@ class NoteEditFragment : BaseFragment(R.layout.fragment_note_edit), NoteEditCont
     }
 
     fun onButtonTextFillColorClick(color: String?) {
-        mPresenter.onButtonTextFillColorClick(
+        presenter.onButtonTextFillColorClick(
                 edit_note_content.selectionStart,
                 edit_note_content.selectionEnd,
                 edit_note_content.text?.toString(),

@@ -22,21 +22,21 @@ import javax.inject.Inject
 class CategoryDeleteFragment : BaseFragment(R.layout.fragment_category_delete), CategoryDeleteContract.View {
 
     @Inject
-    lateinit var mPresenter: CategoryDeleteContract.Presenter
+    lateinit var presenter: CategoryDeleteContract.Presenter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         getPresenterComponent(requireContext()).inject(this)
         super.onCreate(savedInstanceState)
-        mPresenter.init(requireArguments().getParcelable(ARG_CATEGORY)!!)
+        presenter.init(requireArguments().getParcelable(ARG_CATEGORY)!!)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         button_delete_category.setOnClickListener {
             analytics.sendEvent(MyAnalytics.EVENT_NOTE_CATEGORY_DELETED)
-            mPresenter.onButtonDeleteClick()
+            presenter.onButtonDeleteClick()
         }
-        button_delete_category_cancel.setOnClickListener { mPresenter.onButtonCancelClick() }
+        button_delete_category_cancel.setOnClickListener { presenter.onButtonCancelClick() }
     }
 
     override fun showDeleteMessage(name: String) {
@@ -49,12 +49,12 @@ class CategoryDeleteFragment : BaseFragment(R.layout.fragment_category_delete), 
 
     override fun onStart() {
         super.onStart()
-        mPresenter.attachView(this)
+        presenter.attachView(this)
     }
 
     override fun onStop() {
         super.onStop()
-        mPresenter.detachView()
+        presenter.detachView()
     }
 
     companion object {

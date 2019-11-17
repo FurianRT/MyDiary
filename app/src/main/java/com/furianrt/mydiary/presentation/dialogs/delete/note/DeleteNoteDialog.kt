@@ -36,7 +36,7 @@ class DeleteNoteDialog : BaseDialog(), DeleteNoteContract.View {
     }
 
     @Inject
-    lateinit var mPresenter: DeleteNoteContract.Presenter
+    lateinit var presenter: DeleteNoteContract.Presenter
 
     private lateinit var mNotesIds: List<String>
     private var mListener: OnDeleteNoteConfirmListener? = null
@@ -53,10 +53,10 @@ class DeleteNoteDialog : BaseDialog(), DeleteNoteContract.View {
 
         view.button_note_delete.setOnClickListener {
             analytics.sendEvent(MyAnalytics.EVENT_NOTE_DELETED)
-            mPresenter.onButtonDeleteClick(mNotesIds)
+            presenter.onButtonDeleteClick(mNotesIds)
             mListener?.onDialogButtonDeleteClick()
         }
-        view.button_note_delete_cancel.setOnClickListener { mPresenter.onButtonCancelClick() }
+        view.button_note_delete_cancel.setOnClickListener { presenter.onButtonCancelClick() }
         view.text_note_delete_title.text = resources.getQuantityString(
                 R.plurals.note_delete_confirmation,
                 mNotesIds.size,
@@ -73,12 +73,12 @@ class DeleteNoteDialog : BaseDialog(), DeleteNoteContract.View {
 
     override fun onStart() {
         super.onStart()
-        mPresenter.attachView(this)
+        presenter.attachView(this)
     }
 
     override fun onStop() {
         super.onStop()
-        mPresenter.detachView()
+        presenter.detachView()
     }
 
     fun setOnDeleteConfirmListener(listener: OnDeleteNoteConfirmListener?) {

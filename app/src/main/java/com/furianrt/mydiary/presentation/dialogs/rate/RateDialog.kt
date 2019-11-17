@@ -29,7 +29,7 @@ class RateDialog : BaseDialog(), RateDialogContract.View {
     }
 
     @Inject
-    lateinit var mPresenter: RateDialogContract.Presenter
+    lateinit var presenter: RateDialogContract.Presenter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         getPresenterComponent(requireContext()).inject(this)
@@ -40,9 +40,9 @@ class RateDialog : BaseDialog(), RateDialogContract.View {
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val view = requireActivity().layoutInflater.inflate(R.layout.dialog_rate, null)
 
-        view.button_later.setOnClickListener { mPresenter.onButtonLaterClick() }
-        view.button_never.setOnClickListener { mPresenter.onButtonNeverClick() }
-        view.button_rate.setOnClickListener { mPresenter.onButtonRateClick(view.rating.rating.toInt()) }
+        view.button_later.setOnClickListener { presenter.onButtonLaterClick() }
+        view.button_never.setOnClickListener { presenter.onButtonNeverClick() }
+        view.button_rate.setOnClickListener { presenter.onButtonRateClick(view.rating.rating.toInt()) }
         view.rating.onRatingBarChangeListener = RatingBar.OnRatingBarChangeListener { _, rating, _ ->
             view.button_rate.text = getString(R.string.dialog_rate_continue, rating.toInt(), view.rating.max)
         }
@@ -74,11 +74,11 @@ class RateDialog : BaseDialog(), RateDialogContract.View {
 
     override fun onStart() {
         super.onStart()
-        mPresenter.attachView(this)
+        presenter.attachView(this)
     }
 
     override fun onStop() {
         super.onStop()
-        mPresenter.detachView()
+        presenter.detachView()
     }
 }

@@ -26,7 +26,7 @@ import javax.inject.Inject
 class CategoryEditFragment : BaseFragment(R.layout.fragment_category_edit), CategoryEditContract.View {
 
     @Inject
-    lateinit var mPresenter: CategoryEditContract.Presenter
+    lateinit var presenter: CategoryEditContract.Presenter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         getPresenterComponent(requireContext()).inject(this)
@@ -36,7 +36,7 @@ class CategoryEditFragment : BaseFragment(R.layout.fragment_category_edit), Cate
             category!!.name = state.getString(BUNDLE_CATEGORY_NAME, category.name)
             category.color = state.getInt(BUNDLE_CATEGORY_COLOR, category.color)
         }
-        mPresenter.init(arguments?.getParcelable(ARG_CATEGORY)!!)
+        presenter.init(arguments?.getParcelable(ARG_CATEGORY)!!)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -44,13 +44,13 @@ class CategoryEditFragment : BaseFragment(R.layout.fragment_category_edit), Cate
         color_picker_category.addSVBar(svbar_category)
         color_picker_category.showOldCenterColor = false
         button_category_edit_save_cancel.setOnClickListener {
-            mPresenter.onButtonCancelClick()
+            presenter.onButtonCancelClick()
         }
         button_category_edit_save.setOnClickListener {
             analytics.sendEvent(MyAnalytics.EVENT_NOTE_CATEGORY_EDITED)
             val color = color_picker_category.color
             val name = edit_category.text?.toString() ?: ""
-            mPresenter.onButtonDoneClick(name, color)
+            presenter.onButtonDoneClick(name, color)
         }
     }
 
@@ -78,14 +78,14 @@ class CategoryEditFragment : BaseFragment(R.layout.fragment_category_edit), Cate
         super.onStart()
         edit_category.requestFocus()
         edit_category.showKeyboard()
-        mPresenter.attachView(this)
+        presenter.attachView(this)
     }
 
     override fun onStop() {
         super.onStop()
         edit_category.clearFocus()
         edit_category.hideKeyboard()
-        mPresenter.detachView()
+        presenter.detachView()
     }
 
     companion object {

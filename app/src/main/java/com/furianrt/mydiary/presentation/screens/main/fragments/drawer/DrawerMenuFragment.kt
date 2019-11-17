@@ -38,7 +38,7 @@ import com.furianrt.mydiary.presentation.screens.main.fragments.drawer.adapter.S
 import com.furianrt.mydiary.presentation.screens.main.fragments.drawer.adapter.SearchListAdapter
 import com.furianrt.mydiary.presentation.screens.main.fragments.premium.PremiumFragment
 import com.furianrt.mydiary.presentation.screens.main.fragments.profile.ProfileFragment
-import com.furianrt.mydiary.presentation.services.sync.SyncService
+import com.furianrt.mydiary.services.SyncService
 import com.furianrt.mydiary.utils.*
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import kotlinx.android.synthetic.main.activity_main.*
@@ -64,7 +64,7 @@ class DrawerMenuFragment : BaseFragment(R.layout.fragment_drawer_menu), DrawerMe
     }
 
     @Inject
-    lateinit var mPresenter: DrawerMenuContract.Presenter
+    lateinit var presenter: DrawerMenuContract.Presenter
 
     private var mListener: OnDrawerMenuInteractionListener? = null
     private var mSearchListAdapter = SearchListAdapter(listener = this)
@@ -127,7 +127,7 @@ class DrawerMenuFragment : BaseFragment(R.layout.fragment_drawer_menu), DrawerMe
         super.onViewCreated(view, savedInstanceState)
         image_drawer_header.setOnClickListener {
             if (requireActivity().isGoogleServicesAvailable(PLAY_SERVICES_REQUEST_CODE)) {
-                mPresenter.onButtonProfileClick()
+                presenter.onButtonProfileClick()
             }
         }
 
@@ -135,9 +135,9 @@ class DrawerMenuFragment : BaseFragment(R.layout.fragment_drawer_menu), DrawerMe
             mListener?.let {
                 if (it.getIsBillingInitialized()) {
                     if (it.getIsItemPurchased(BuildConfig.ITEM_PREMIUM_SKU)) {
-                        mPresenter.onButtonSyncClick()
+                        presenter.onButtonSyncClick()
                     } else {
-                        mPresenter.onButtonPremiumClick()
+                        presenter.onButtonPremiumClick()
                     }
                 }
             }
@@ -146,7 +146,7 @@ class DrawerMenuFragment : BaseFragment(R.layout.fragment_drawer_menu), DrawerMe
         savedInstanceState?.let {
             button_clear_filters.translationY = it.getFloat(BUNDLE_CLEAR_CHOICES_TRANSLATION_Y, 0f)
         }
-        button_clear_filters.setOnClickListener { mPresenter.onButtonClearFiltersClick() }
+        button_clear_filters.setOnClickListener { presenter.onButtonClearFiltersClick() }
 
         list_search.layoutManager = LinearLayoutManager(requireContext())
         list_search.adapter = mSearchListAdapter
@@ -163,7 +163,7 @@ class DrawerMenuFragment : BaseFragment(R.layout.fragment_drawer_menu), DrawerMe
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == PLAY_SERVICES_REQUEST_CODE) {
             if (resultCode == Activity.RESULT_OK) {
-                mPresenter.onButtonProfileClick()
+                presenter.onButtonProfileClick()
             }
         }
     }
@@ -464,7 +464,7 @@ class DrawerMenuFragment : BaseFragment(R.layout.fragment_drawer_menu), DrawerMe
     override fun onStart() {
         super.onStart()
         activity?.layout_main?.requestApplyInsets()
-        mPresenter.attachView(this)
+        presenter.attachView(this)
         LocalBroadcastManager.getInstance(requireContext())
                 .registerReceiver(mBroadcastReceiver, IntentFilter(Intent.ACTION_SYNC))
     }
@@ -472,7 +472,7 @@ class DrawerMenuFragment : BaseFragment(R.layout.fragment_drawer_menu), DrawerMe
     override fun onStop() {
         super.onStop()
         LocalBroadcastManager.getInstance(requireContext()).unregisterReceiver(mBroadcastReceiver)
-        mPresenter.detachView()
+        presenter.detachView()
     }
 
     interface OnDrawerMenuInteractionListener {

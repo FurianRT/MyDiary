@@ -38,7 +38,7 @@ class LoginFragment : BaseFragment(R.layout.fragment_login), LoginContract.View 
     }
 
     @Inject
-    lateinit var mPresenter: LoginContract.Presenter
+    lateinit var presenter: LoginContract.Presenter
 
     private val mHandler = Handler()
     private val mChangeActivityFlag: Runnable = Runnable {
@@ -61,10 +61,10 @@ class LoginFragment : BaseFragment(R.layout.fragment_login), LoginContract.View 
         super.onViewCreated(view, savedInstanceState)
         button_forgot_password.setOnClickListener {
             (parentFragment as AuthFragment).hideRegistrationButton()
-            mPresenter.onButtonForgotClick(edit_email.text?.toString() ?: "")
+            presenter.onButtonForgotClick(edit_email.text?.toString() ?: "")
         }
         button_sing_in.setOnClickListener {
-            mPresenter.onButtonSignInClick(
+            presenter.onButtonSignInClick(
                     edit_email.text?.toString() ?: "",
                     edit_password.text?.toString() ?: ""
             )
@@ -143,13 +143,13 @@ class LoginFragment : BaseFragment(R.layout.fragment_login), LoginContract.View 
 
     override fun onStart() {
         super.onStart()
-        mPresenter.attachView(this)
+        presenter.attachView(this)
     }
 
     override fun onStop() {
         super.onStop()
         mHandler.removeCallbacks(mChangeActivityFlag)
-        mPresenter.detachView()
+        presenter.detachView()
         activity?.currentFocus?.hideKeyboard()
         activity?.currentFocus?.clearFocus()
     }

@@ -31,7 +31,7 @@ class RegistrationFragment : BaseFragment(R.layout.fragment_registration), Regis
     }
 
     @Inject
-    lateinit var mPresenter: RegistrationContract.Presenter
+    lateinit var presenter: RegistrationContract.Presenter
 
     private val mHandler = Handler()
     private val mChangeActivityFlag: Runnable = Runnable {
@@ -51,9 +51,9 @@ class RegistrationFragment : BaseFragment(R.layout.fragment_registration), Regis
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        button_cancel.setOnClickListener { mPresenter.onButtonCancelClick() }
+        button_cancel.setOnClickListener { presenter.onButtonCancelClick() }
         button_sign_up.setOnClickListener {
-            mPresenter.onButtonSignUpClick(
+            presenter.onButtonSignUpClick(
                     edit_email.text.toString(),
                     edit_password.text.toString(),
                     edit_password_repeat.text.toString()
@@ -61,7 +61,7 @@ class RegistrationFragment : BaseFragment(R.layout.fragment_registration), Regis
         }
         edit_email.onFocusChangeListener = View.OnFocusChangeListener { v, hasFocus ->
             mOnEditFocusChangeListener.onFocusChange(v, hasFocus)
-            mPresenter.onEmailFocusChange(edit_email.text.toString(), hasFocus)
+            presenter.onEmailFocusChange(edit_email.text.toString(), hasFocus)
         }
         edit_password.onFocusChangeListener = mOnEditFocusChangeListener
         edit_password_repeat.onFocusChangeListener = mOnEditFocusChangeListener
@@ -175,13 +175,13 @@ class RegistrationFragment : BaseFragment(R.layout.fragment_registration), Regis
 
     override fun onStart() {
         super.onStart()
-        mPresenter.attachView(this)
+        presenter.attachView(this)
     }
 
     override fun onStop() {
         super.onStop()
         mHandler.removeCallbacks(mChangeActivityFlag)
-        mPresenter.detachView()
+        presenter.detachView()
     }
 
     override fun onDetach() {

@@ -36,7 +36,7 @@ class DeleteImageDialog : BaseDialog(), DeleteImageContract.View {
     }
 
     @Inject
-    lateinit var mPresenter: DeleteImageContract.Presenter
+    lateinit var presenter: DeleteImageContract.Presenter
 
     private var mListener: OnDeleteImageConfirmListener? = null
 
@@ -54,9 +54,9 @@ class DeleteImageDialog : BaseDialog(), DeleteImageContract.View {
 
         view.button_image_delete.setOnClickListener {
             mListener?.onButtonDeleteConfirmClick()
-            mPresenter.onButtonDeleteClick(mImageNames)
+            presenter.onButtonDeleteClick(mImageNames)
         }
-        view.button_image_delete_cancel.setOnClickListener { mPresenter.onButtonCancelClick() }
+        view.button_image_delete_cancel.setOnClickListener { presenter.onButtonCancelClick() }
         view.text_image_delete_title.text = resources.getQuantityString(
                 R.plurals.image_delete_confirmation,
                 mImageNames.size,
@@ -77,12 +77,12 @@ class DeleteImageDialog : BaseDialog(), DeleteImageContract.View {
 
     override fun onStart() {
         super.onStart()
-        mPresenter.attachView(this)
+        presenter.attachView(this)
     }
 
     override fun onStop() {
         super.onStop()
-        mPresenter.detachView()
+        presenter.detachView()
     }
 
     override fun onDismiss(dialog: DialogInterface) {

@@ -56,7 +56,7 @@ import com.furianrt.mydiary.presentation.screens.pin.fragments.backupemail.Backu
 import com.furianrt.mydiary.presentation.screens.pin.fragments.sendemail.SendEmailFragment
 import com.furianrt.mydiary.presentation.screens.settings.global.GlobalSettingsFragment
 import com.furianrt.mydiary.presentation.screens.settings.note.NoteSettingsFragment
-import com.furianrt.mydiary.presentation.services.sync.SyncService
+import com.furianrt.mydiary.services.SyncService
 import dagger.Subcomponent
 
 @PresenterScope

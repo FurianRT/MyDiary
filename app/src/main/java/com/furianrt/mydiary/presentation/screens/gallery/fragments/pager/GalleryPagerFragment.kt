@@ -52,7 +52,7 @@ class GalleryPagerFragment : BaseFragment(R.layout.fragment_gallery_pager), Gall
     }
 
     @Inject
-    lateinit var mPresenter: GalleryPagerContract.Presenter
+    lateinit var presenter: GalleryPagerContract.Presenter
 
     private val mPagerAdapter = GalleryPagerAdapter()
     private var mPagerPosition = 0
@@ -68,7 +68,7 @@ class GalleryPagerFragment : BaseFragment(R.layout.fragment_gallery_pager), Gall
         getPresenterComponent(requireContext()).inject(this)
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
-        mPresenter.init(requireArguments().getString(ARG_NOTE_ID)!!)
+        presenter.init(requireArguments().getString(ARG_NOTE_ID)!!)
         mPagerPosition = savedInstanceState?.getInt(ARG_POSITION)
                 ?: requireArguments().getInt(ARG_POSITION, 0)
     }
@@ -87,13 +87,13 @@ class GalleryPagerFragment : BaseFragment(R.layout.fragment_gallery_pager), Gall
     override fun onStart() {
         super.onStart()
         pager_gallery.registerOnPageChangeCallback(mOnPageChangeCallback)
-        mPresenter.attachView(this)
+        presenter.attachView(this)
     }
 
     override fun onStop() {
         super.onStop()
         pager_gallery.unregisterOnPageChangeCallback(mOnPageChangeCallback)
-        mPresenter.detachView()
+        presenter.detachView()
     }
 
     override fun showImages(images: List<MyImage>) {
@@ -113,16 +113,16 @@ class GalleryPagerFragment : BaseFragment(R.layout.fragment_gallery_pager), Gall
     override fun onOptionsItemSelected(item: MenuItem): Boolean = when (item.itemId) {
         R.id.menu_list_mode -> {
             analytics.sendEvent(MyAnalytics.EVENT_NOTE_IMAGE_LIST_OPENED)
-            mPresenter.onButtonListModeClick()
+            presenter.onButtonListModeClick()
             true
         }
         R.id.menu_delete -> {
             analytics.sendEvent(MyAnalytics.EVENT_NOTE_IMAGE_PAGER_IMAGE_DELETE)
-            mPresenter.onButtonDeleteClick(mPagerAdapter.getItem(mPagerPosition))
+            presenter.onButtonDeleteClick(mPagerAdapter.getItem(mPagerPosition))
             true
         }
         R.id.menu_edit -> {
-            mPresenter.onButtonEditClick(mPagerAdapter.getItem(mPagerPosition))
+            presenter.onButtonEditClick(mPagerAdapter.getItem(mPagerPosition))
             true
         }
         else -> super.onOptionsItemSelected(item)
@@ -158,7 +158,7 @@ class GalleryPagerFragment : BaseFragment(R.layout.fragment_gallery_pager), Gall
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == IMAGE_EDITOR_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
             analytics.sendEvent(MyAnalytics.EVENT_NOTE_IMAGE_PAGER_IMAGE_EDITED)
-            mPresenter.onImageEdited()
+            presenter.onImageEdited()
         }
     }
 

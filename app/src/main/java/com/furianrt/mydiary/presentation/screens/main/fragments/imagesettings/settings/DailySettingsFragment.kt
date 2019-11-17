@@ -31,7 +31,7 @@ class DailySettingsFragment : PreferenceFragmentCompat(), BaseView, DailySetting
     }
 
     @Inject
-    lateinit var mPresenter: DailySettingsContract.Presenter
+    lateinit var presenter: DailySettingsContract.Presenter
 
     @Inject
     lateinit var mAnalytics: MyAnalytics
@@ -86,13 +86,13 @@ class DailySettingsFragment : PreferenceFragmentCompat(), BaseView, DailySetting
 
     override fun onStart() {
         super.onStart()
-        mPresenter.attachView(this)
+        presenter.attachView(this)
         preferenceManager.sharedPreferences.registerOnSharedPreferenceChangeListener(this)
     }
 
     override fun onStop() {
         super.onStop()
-        mPresenter.detachView()
+        presenter.detachView()
         preferenceManager.sharedPreferences.unregisterOnSharedPreferenceChangeListener(this)
     }
 

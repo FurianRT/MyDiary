@@ -93,7 +93,7 @@ class NoteFragment : BaseFragment(R.layout.fragment_note), NoteFragmentContract.
     }
 
     @Inject
-    lateinit var mPresenter: NoteFragmentContract.Presenter
+    lateinit var presenter: NoteFragmentContract.Presenter
 
     private val mGyroscopeObserver = GyroscopeObserver()
     private var mListener: OnNoteFragmentInteractionListener? = null
@@ -119,11 +119,11 @@ class NoteFragment : BaseFragment(R.layout.fragment_note), NoteFragmentContract.
         val noteId = arguments?.getString(ARG_NOTE_ID)!!
         mIsNewNote = arguments?.getBoolean(ARG_IS_NEW_NOTE)!!
 
-        mPresenter.init(noteId, mIsNewNote)
+        presenter.init(noteId, mIsNewNote)
 
         savedInstanceState?.let {
             mImagePagerPosition = it.getInt(BUNDLE_IMAGE_PAGER_POSITION, 0)
-            mPresenter.setNoteTextBuffer(it.getParcelableArrayList(BUNDLE_NOTE_TEXT_BUFFER)
+            presenter.setNoteTextBuffer(it.getParcelableArrayList(BUNDLE_NOTE_TEXT_BUFFER)
                     ?: ArrayList())
         }
     }
@@ -135,31 +135,31 @@ class NoteFragment : BaseFragment(R.layout.fragment_note), NoteFragmentContract.
 
         layout_mood.setOnClickListener {
             removeEditFragment()
-            mPresenter.onMoodFieldClick()
+            presenter.onMoodFieldClick()
         }
         layout_category.setOnClickListener {
             removeEditFragment()
-            mPresenter.onCategoryFieldClick()
+            presenter.onCategoryFieldClick()
         }
         layout_tags.setOnClickListener {
             removeEditFragment()
-            mPresenter.onTagsFieldClick()
+            presenter.onTagsFieldClick()
         }
         layout_reminder.setOnClickListener {
-            //mPresenter.onReminderFieldClick()
+            //presenter.onReminderFieldClick()
         }
         text_date.setOnClickListener {
             removeEditFragment()
-            mPresenter.onDateFieldClick()
+            presenter.onDateFieldClick()
         }
         text_time.setOnClickListener {
             removeEditFragment()
-            mPresenter.onTimeFieldClick()
+            presenter.onTimeFieldClick()
         }
         fab_add_image.setOnClickListener {
             removeEditFragment()
             analytics.sendEvent(MyAnalytics.EVENT_NOTE_IMAGE_PAGER_OPENED)
-            mPresenter.onButtonAddImageClick()
+            presenter.onButtonAddImageClick()
         }
         button_text_bold.setOnClickListener {
             childFragmentManager.findFragmentByTag(NoteEditFragment.TAG)?.let {
@@ -193,11 +193,11 @@ class NoteFragment : BaseFragment(R.layout.fragment_note), NoteFragmentContract.
         }
         button_redo.setOnClickListener {
             analytics.sendEvent(MyAnalytics.EVENT_NOTE_REDO)
-            mPresenter.onButtonRedoClick()
+            presenter.onButtonRedoClick()
         }
         button_undo.setOnClickListener {
             analytics.sendEvent(MyAnalytics.EVENT_NOTE_UNDO)
-            mPresenter.onButtonUndoClick()
+            presenter.onButtonUndoClick()
         }
         layout_loading.setOnTouchListener { _, _ -> true }
 
@@ -242,13 +242,13 @@ class NoteFragment : BaseFragment(R.layout.fragment_note), NoteFragmentContract.
     override fun onStart() {
         super.onStart()
         pager_note_image.registerOnPageChangeCallback(mOnPageChangeCallback)
-        mPresenter.attachView(this)
+        presenter.attachView(this)
     }
 
     override fun onStop() {
         super.onStop()
         pager_note_image.unregisterOnPageChangeCallback(mOnPageChangeCallback)
-        mPresenter.detachView()
+        presenter.detachView()
     }
 
     override fun showNoteText(title: String, content: String, textSpans: List<MyTextSpan>) {
@@ -268,42 +268,42 @@ class NoteFragment : BaseFragment(R.layout.fragment_note), NoteFragmentContract.
             when (item.itemId) {
                 R.id.menu_image -> {
                     removeEditFragment()
-                    mPresenter.onButtonAddImageClick()
+                    presenter.onButtonAddImageClick()
                     true
                 }
                 R.id.menu_delete -> {
-                    mPresenter.onButtonDeleteClick()
+                    presenter.onButtonDeleteClick()
                     true
                 }
                 R.id.menu_appearance -> {
                     removeEditFragment()
                     analytics.sendEvent(MyAnalytics.EVENT_NOTE_SETTINGS)
-                    mPresenter.onButtonAppearanceClick()
+                    presenter.onButtonAppearanceClick()
                     true
                 }
                 R.id.menu_date -> {
                     removeEditFragment()
-                    mPresenter.onDateFieldClick()
+                    presenter.onDateFieldClick()
                     true
                 }
                 R.id.menu_time -> {
                     removeEditFragment()
-                    mPresenter.onTimeFieldClick()
+                    presenter.onTimeFieldClick()
                     true
                 }
                 R.id.menu_edit -> {
-                    mPresenter.onButtonEditClick()
+                    presenter.onButtonEditClick()
                     true
                 }
                 R.id.menu_mic -> {
                     analytics.sendEvent(MyAnalytics.EVENT_SPEECH_TO_TEXT)
-                    mPresenter.onButtonMicClick()
+                    presenter.onButtonMicClick()
                     true
                 }
                 R.id.menu_share -> {
                     removeEditFragment()
                     analytics.sendEvent(MyAnalytics.EVENT_SHARE_NOTE)
-                    mPresenter.onButtonShareClick()
+                    presenter.onButtonShareClick()
                     true
                 }
                 else -> super.onOptionsItemSelected(item)
@@ -344,7 +344,7 @@ class NoteFragment : BaseFragment(R.layout.fragment_note), NoteFragmentContract.
                     data?.data?.let { uriPaths.add(it.toString()) }
                 }
                 showLoading()
-                mPresenter.onNoteImagesPicked(uriPaths)
+                presenter.onNoteImagesPicked(uriPaths)
             }
         }
     }
@@ -352,7 +352,7 @@ class NoteFragment : BaseFragment(R.layout.fragment_note), NoteFragmentContract.
     private fun appendToCurrentText(text: String) {
         val editFragment = childFragmentManager.findFragmentByTag(NoteEditFragment.TAG) as? NoteEditFragment?
         if (editFragment != null) {
-            mPresenter.onSpeechRecorded(
+            presenter.onSpeechRecorded(
                     editFragment.getNoteTitleText(),
                     editFragment.getNoteContentText().toString(),
                     editFragment.getNoteContentText().getTextSpans(),
@@ -360,7 +360,7 @@ class NoteFragment : BaseFragment(R.layout.fragment_note), NoteFragmentContract.
             )
         } else {
             childFragmentManager.findFragmentByTag(NoteContentFragment.TAG)?.let {
-                mPresenter.onSpeechRecorded(
+                presenter.onSpeechRecorded(
                         (it as NoteContentFragment).getNoteTitleText(),
                         it.getNoteContentText().toString(),
                         it.getNoteContentText().getTextSpans(),
@@ -395,7 +395,7 @@ class NoteFragment : BaseFragment(R.layout.fragment_note), NoteFragmentContract.
 
     override fun onImageClick(image: MyImage) {
         analytics.sendEvent(MyAnalytics.EVENT_NOTE_IMAGE_PAGER_OPENED)
-        mPresenter.onToolbarImageClick(image)
+        presenter.onToolbarImageClick(image)
     }
 
     override fun showGalleryView(noteId: String, image: MyImage) {
@@ -535,7 +535,7 @@ class NoteFragment : BaseFragment(R.layout.fragment_note), NoteFragmentContract.
         val fineLocation = Manifest.permission.ACCESS_FINE_LOCATION
         val coarseLocation = Manifest.permission.ACCESS_COARSE_LOCATION
         if (EasyPermissions.hasPermissions(requireContext(), fineLocation, coarseLocation)) {
-            mPresenter.onLocationPermissionsGranted()
+            presenter.onLocationPermissionsGranted()
         } else {
             EasyPermissions.requestPermissions(this, getString(R.string.location_permission_request),
                     LOCATION_PERMISSIONS_REQUEST_CODE, fineLocation, coarseLocation)
@@ -545,14 +545,14 @@ class NoteFragment : BaseFragment(R.layout.fragment_note), NoteFragmentContract.
     override fun onPermissionsGranted(requestCode: Int, perms: MutableList<String>) = Unit
     override fun onPermissionsDenied(requestCode: Int, perms: MutableList<String>) {
         if (requestCode == LOCATION_PERMISSIONS_REQUEST_CODE) {
-            mPresenter.onLocationPermissionDenied()
+            presenter.onLocationPermissionDenied()
         }
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         outState.putInt(BUNDLE_IMAGE_PAGER_POSITION, pager_note_image.currentItem)
-        outState.putParcelableArrayList(BUNDLE_NOTE_TEXT_BUFFER, mPresenter.getNoteTextBuffer())
+        outState.putParcelableArrayList(BUNDLE_NOTE_TEXT_BUFFER, presenter.getNoteTextBuffer())
     }
 
     fun disableActionBarExpanding(animate: Boolean) {
@@ -613,7 +613,7 @@ class NoteFragment : BaseFragment(R.layout.fragment_note), NoteFragmentContract.
     override fun requestStoragePermissions() {
         val readExtStorage = Manifest.permission.READ_EXTERNAL_STORAGE
         if (EasyPermissions.hasPermissions(requireContext(), readExtStorage)) {
-            mPresenter.onStoragePermissionsGranted()
+            presenter.onStoragePermissionsGranted()
         } else {
             EasyPermissions.requestPermissions(this,
                     getString(R.string.storage_permission_request),
@@ -673,7 +673,7 @@ class NoteFragment : BaseFragment(R.layout.fragment_note), NoteFragmentContract.
     }
 
     fun onNoteTextChange(title: String, content: Spannable) {
-        mPresenter.onNoteTextChange(title, content.toString(), content.getTextSpans())
+        presenter.onNoteTextChange(title, content.toString(), content.getTextSpans())
         childFragmentManager.findFragmentByTag(NoteContentFragment.TAG)?.let {
             (it as NoteContentFragment).updateNoteText(title, content)
         }
@@ -691,7 +691,7 @@ class NoteFragment : BaseFragment(R.layout.fragment_note), NoteFragmentContract.
 
     override fun onDateSet(view: DatePickerDialog?, year: Int, monthOfYear: Int, dayOfMonth: Int) {
         analytics.sendEvent(MyAnalytics.EVENT_NOTE_DATE_CHANGED)
-        mPresenter.onDateSelected(year, monthOfYear, dayOfMonth)
+        presenter.onDateSelected(year, monthOfYear, dayOfMonth)
     }
 
     override fun showTimePicker(hourOfDay: Int, minute: Int, is24HourMode: Boolean) {
@@ -708,7 +708,7 @@ class NoteFragment : BaseFragment(R.layout.fragment_note), NoteFragmentContract.
 
     override fun onTimeSet(view: TimePickerDialog?, hourOfDay: Int, minute: Int, second: Int) {
         analytics.sendEvent(MyAnalytics.EVENT_NOTE_TIME_CHANGED)
-        mPresenter.onTimeSelected(hourOfDay, minute)
+        presenter.onTimeSelected(hourOfDay, minute)
     }
 
     override fun enableRedoButton(enable: Boolean) {
@@ -729,7 +729,7 @@ class NoteFragment : BaseFragment(R.layout.fragment_note), NoteFragmentContract.
 
     fun onNoteFragmentEditModeEnabled() {
         mListener?.onNoteFragmentEditModeEnabled()
-        mPresenter.onEditModeEnabled()
+        presenter.onEditModeEnabled()
     }
 
     fun onNoteFragmentEditModeDisabled(noteTitle: String, noteContent: Spannable) {
@@ -738,7 +738,7 @@ class NoteFragment : BaseFragment(R.layout.fragment_note), NoteFragmentContract.
                 childFragmentManager.findFragmentByTag(NoteContentFragment.TAG) as? NoteContentFragment
         noteContentFragment?.showNoteText(noteTitle, noteContent)
         mListener?.onNoteFragmentEditModeDisabled()
-        mPresenter.onEditModeDisabled(noteTitle, noteContent.toString(), noteContent.getTextSpans())
+        presenter.onEditModeDisabled(noteTitle, noteContent.toString(), noteContent.getTextSpans())
     }
 
     override fun showRichTextOptions() {

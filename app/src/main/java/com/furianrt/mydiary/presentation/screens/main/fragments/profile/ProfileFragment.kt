@@ -34,7 +34,7 @@ class ProfileFragment : BaseFragment(R.layout.fragment_profile), ProfileContract
     }
 
     @Inject
-    lateinit var mPresenter: ProfileContract.Presenter
+    lateinit var presenter: ProfileContract.Presenter
 
     private val mOnKeyboardToggleListener = object : KeyboardUtils.SoftKeyboardToggleListener {
         override fun onToggleSoftKeyboard(isVisible: Boolean) {
@@ -56,7 +56,7 @@ class ProfileFragment : BaseFragment(R.layout.fragment_profile), ProfileContract
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        button_profile_close.setOnClickListener { mPresenter.onButtonCloseClick() }
+        button_profile_close.setOnClickListener { presenter.onButtonCloseClick() }
 
         if (childFragmentManager.findFragmentByTag(MenuProfileFragment.TAG) == null) {
             childFragmentManager.inTransaction {
@@ -86,13 +86,13 @@ class ProfileFragment : BaseFragment(R.layout.fragment_profile), ProfileContract
     override fun onStart() {
         super.onStart()
         KeyboardUtils.addKeyboardToggleListener(requireActivity(), mOnKeyboardToggleListener)
-        mPresenter.attachView(this)
+        presenter.attachView(this)
     }
 
     override fun onStop() {
         super.onStop()
         KeyboardUtils.removeKeyboardToggleListener(mOnKeyboardToggleListener)
-        mPresenter.detachView()
+        presenter.detachView()
     }
 
     fun isBackStackEmpty() = childFragmentManager.backStackEntryCount == 0

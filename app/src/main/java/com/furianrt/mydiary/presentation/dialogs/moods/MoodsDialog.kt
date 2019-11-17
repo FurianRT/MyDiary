@@ -42,7 +42,7 @@ class MoodsDialog : BaseDialog(), MoodsDialogContract.View,
     }
 
     @Inject
-    lateinit var mPresenter: MoodsDialogContract.Presenter
+    lateinit var presenter: MoodsDialogContract.Presenter
 
     private lateinit var mAdapter: MoodsDialogListAdapter
     private lateinit var mNoteId: String
@@ -57,7 +57,7 @@ class MoodsDialog : BaseDialog(), MoodsDialogContract.View,
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val view = requireActivity().layoutInflater.inflate(R.layout.dialog_moods, null)
 
-        view.button_mood_close.setOnClickListener { mPresenter.onButtonCloseClick() }
+        view.button_mood_close.setOnClickListener { presenter.onButtonCloseClick() }
 
         mAdapter = MoodsDialogListAdapter(listener = this)
 
@@ -81,11 +81,11 @@ class MoodsDialog : BaseDialog(), MoodsDialogContract.View,
 
     override fun onMoodClicked(mood: MyMood) {
         analytics.sendEvent(MyAnalytics.EVENT_NOTE_MOOD_CHANGED)
-        mPresenter.onMoodPicked(mNoteId, mood)
+        presenter.onMoodPicked(mNoteId, mood)
     }
 
     override fun onNoMoodClicked() {
-        mPresenter.onButtonNoMoodClick(mNoteId)
+        presenter.onButtonNoMoodClick(mNoteId)
     }
 
     override fun closeView() {
@@ -94,11 +94,11 @@ class MoodsDialog : BaseDialog(), MoodsDialogContract.View,
 
     override fun onStart() {
         super.onStart()
-        mPresenter.attachView(this)
+        presenter.attachView(this)
     }
 
     override fun onStop() {
         super.onStop()
-        mPresenter.detachView()
+        presenter.detachView()
     }
 }

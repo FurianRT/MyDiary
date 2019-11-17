@@ -32,7 +32,7 @@ class NoteContentFragment : BaseFragment(R.layout.fragment_note_content), NoteCo
     private var mIsNewNote = true
 
     @Inject
-    lateinit var mPresenter: NoteContentContract.Presenter
+    lateinit var presenter: NoteContentContract.Presenter
 
     private var mTitle: String? = null
     private var mContent: Spannable? = null
@@ -51,14 +51,14 @@ class NoteContentFragment : BaseFragment(R.layout.fragment_note_content), NoteCo
             val y = motionEvent.y
             if (layout != null && motionEvent.action == MotionEvent.ACTION_UP) {
                 val line = layout.getLineForVertical(y.toInt())
-                mPresenter.onTouchPositionChange(layout.getOffsetForHorizontal(line, x))
+                presenter.onTouchPositionChange(layout.getOffsetForHorizontal(line, x))
             }
             return@OnTouchListener false
         }
         text_note_title.setOnTouchListener(onTouchListener)
-        text_note_title.setOnClickListener { mPresenter.onTitleClick() }
+        text_note_title.setOnClickListener { presenter.onTitleClick() }
         text_note_content.setOnTouchListener(onTouchListener)
-        text_note_content.setOnClickListener { mPresenter.onContentClick() }
+        text_note_content.setOnClickListener { presenter.onContentClick() }
 
         if (mIsNewNote && savedInstanceState == null) {
             (parentFragment as? NoteFragment)?.disableActionBarExpanding(false)
@@ -95,12 +95,12 @@ class NoteContentFragment : BaseFragment(R.layout.fragment_note_content), NoteCo
 
     override fun onStart() {
         super.onStart()
-        mPresenter.attachView(this)
+        presenter.attachView(this)
     }
 
     override fun onStop() {
         super.onStop()
-        mPresenter.detachView()
+        presenter.detachView()
     }
 
     override fun showNoteEditViewForTitle(touchPosition: Int) {

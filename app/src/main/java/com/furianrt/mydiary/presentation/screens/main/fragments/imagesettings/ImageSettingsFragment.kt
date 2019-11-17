@@ -27,7 +27,7 @@ class ImageSettingsFragment : BaseFragment(R.layout.fragment_image_settings), Im
     }
 
     @Inject
-    lateinit var mPresenter: ImageSettingsContract.Presenter
+    lateinit var presenter: ImageSettingsContract.Presenter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         getPresenterComponent(requireContext()).inject(this)
@@ -36,7 +36,7 @@ class ImageSettingsFragment : BaseFragment(R.layout.fragment_image_settings), Im
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        button_image_settings_close.setOnClickListener { mPresenter.onButtonCloseClick() }
+        button_image_settings_close.setOnClickListener { presenter.onButtonCloseClick() }
         if (childFragmentManager.findFragmentByTag(DailySettingsFragment.TAG) == null) {
             childFragmentManager.inTransaction {
                 add(R.id.container_image_settings, DailySettingsFragment(), DailySettingsFragment.TAG)
@@ -50,11 +50,11 @@ class ImageSettingsFragment : BaseFragment(R.layout.fragment_image_settings), Im
 
     override fun onStart() {
         super.onStart()
-        mPresenter.attachView(this)
+        presenter.attachView(this)
     }
 
     override fun onStop() {
         super.onStop()
-        mPresenter.detachView()
+        presenter.detachView()
     }
 }

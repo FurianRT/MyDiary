@@ -24,20 +24,20 @@ import javax.inject.Inject
 class TagAddFragment : BaseFragment(R.layout.fragment_tag_add), TagAddContract.View {
 
     @Inject
-    lateinit var mPresenter: TagAddContract.Presenter
+    lateinit var presenter: TagAddContract.Presenter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         getPresenterComponent(requireContext()).inject(this)
         super.onCreate(savedInstanceState)
-        mPresenter.init(requireArguments().getString(ARG_NOTE_ID)!!)
+        presenter.init(requireArguments().getString(ARG_NOTE_ID)!!)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         button_tag_add.setOnClickListener {
-            mPresenter.onButtonAddClick(edit_add_tag.text?.toString() ?: "")
+            presenter.onButtonAddClick(edit_add_tag.text?.toString() ?: "")
         }
-        button_tag_add_close.setOnClickListener { mPresenter.onButtonCloseClick() }
+        button_tag_add_close.setOnClickListener { presenter.onButtonCloseClick() }
     }
 
     override fun showErrorEmptyTagName() {
@@ -56,7 +56,7 @@ class TagAddFragment : BaseFragment(R.layout.fragment_tag_add), TagAddContract.V
 
     override fun onStart() {
         super.onStart()
-        mPresenter.attachView(this)
+        presenter.attachView(this)
         edit_add_tag.requestFocus()
         edit_add_tag.showKeyboard()
     }
@@ -65,7 +65,7 @@ class TagAddFragment : BaseFragment(R.layout.fragment_tag_add), TagAddContract.V
         super.onStop()
         edit_add_tag.clearFocus()
         edit_add_tag.hideKeyboard()
-        mPresenter.detachView()
+        presenter.detachView()
     }
 
     companion object {

@@ -19,7 +19,7 @@ abstract class BaseMvpPresenter<T : BaseMvpView> {
 
     private val mCompositeDisposable = CompositeDisposable()
 
-    fun addDisposable(disposable: Disposable) {
+    protected fun addDisposable(disposable: Disposable) {
         mCompositeDisposable.add(disposable)
     }
 

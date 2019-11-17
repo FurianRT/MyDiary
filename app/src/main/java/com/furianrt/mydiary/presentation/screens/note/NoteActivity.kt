@@ -50,7 +50,7 @@ class NoteActivity : BaseActivity(R.layout.activity_note), NoteActivityContract.
     }
 
     @Inject
-    lateinit var mPresenter: NoteActivityContract.Presenter
+    lateinit var presenter: NoteActivityContract.Presenter
 
     private lateinit var mPagerAdapter: NoteActivityPagerAdapter
 
@@ -89,7 +89,7 @@ class NoteActivity : BaseActivity(R.layout.activity_note), NoteActivityContract.
         supportActionBar?.setDisplayShowHomeEnabled(true)
         supportActionBar?.setDisplayShowTitleEnabled(false)
 
-        mPresenter.init(
+        presenter.init(
                 intent.getStringExtra(EXTRA_NOTE_ID)!!,
                 intent.getBooleanExtra(EXTRA_IS_NEW_NOTE, true)
         )
@@ -186,7 +186,7 @@ class NoteActivity : BaseActivity(R.layout.activity_note), NoteActivityContract.
 
     override fun onStart() {
         super.onStart()
-        mPresenter.attachView(this)
+        presenter.attachView(this)
         pager_note.addOnPageChangeListener(mOnPageChangeListener)
         KeyboardUtils.addKeyboardToggleListener(this, mKeyboardListener)
     }
@@ -195,7 +195,7 @@ class NoteActivity : BaseActivity(R.layout.activity_note), NoteActivityContract.
         super.onStop()
         pager_note.removeOnPageChangeListener(mOnPageChangeListener)
         KeyboardUtils.removeKeyboardToggleListener(mKeyboardListener)
-        mPresenter.detachView()
+        presenter.detachView()
     }
 
     override fun onNoteFragmentImagePickerOpen() {

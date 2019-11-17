@@ -38,7 +38,7 @@ class GlobalSettingsFragment : PreferenceFragmentCompat(), BaseView, GlobalSetti
     }
 
     @Inject
-    lateinit var mPresenter: GlobalSettingsContract.Presenter
+    lateinit var presenter: GlobalSettingsContract.Presenter
 
     @Inject
     lateinit var mAnalytics: MyAnalytics
@@ -50,23 +50,23 @@ class GlobalSettingsFragment : PreferenceFragmentCompat(), BaseView, GlobalSetti
         setPreferencesFromResource(R.xml.pref_global, rootKey)
         PreferenceManager.setDefaultValues(activity, R.xml.pref_global, false)
 
-        mPresenter.attachView(this)
+        presenter.attachView(this)
 
         findPreference<SwitchPreference>(PreferencesHelper.SECURITY_KEY)?.onPreferenceClickListener =
                 Preference.OnPreferenceClickListener {
-                    mPresenter.onPrefSecurityKeyClick()
+                    presenter.onPrefSecurityKeyClick()
                     return@OnPreferenceClickListener true
                 }
 
         findPreference<Preference>(PreferencesHelper.RATE_APP_PREF_BUTTON)?.onPreferenceClickListener =
                 Preference.OnPreferenceClickListener {
-                    mPresenter.onPrefRateAppClick()
+                    presenter.onPrefRateAppClick()
                     return@OnPreferenceClickListener true
                 }
 
         findPreference<Preference>(PreferencesHelper.REPORT_PROBLEM_PREF_BUTTON)?.onPreferenceClickListener =
                 Preference.OnPreferenceClickListener {
-                    mPresenter.onPrefReportProblemClick()
+                    presenter.onPrefReportProblemClick()
                     return@OnPreferenceClickListener true
                 }
 
@@ -102,7 +102,7 @@ class GlobalSettingsFragment : PreferenceFragmentCompat(), BaseView, GlobalSetti
             if (resultCode == Activity.RESULT_OK) {
                 mAnalytics.sendEvent(MyAnalytics.EVENT_PIN_CREATED)
                 keyPref?.isChecked = true
-                mPresenter.onPasswordCreated()
+                presenter.onPasswordCreated()
             } else {
                 keyPref?.isChecked = false
             }
@@ -111,7 +111,7 @@ class GlobalSettingsFragment : PreferenceFragmentCompat(), BaseView, GlobalSetti
             if (resultCode == Activity.RESULT_OK) {
                 mAnalytics.sendEvent(MyAnalytics.EVENT_PIN_REMOVED)
                 keyPref?.isChecked = false
-                mPresenter.onPasswordRemoved()
+                presenter.onPasswordRemoved()
             } else {
                 keyPref?.isChecked = true
             }
@@ -122,7 +122,7 @@ class GlobalSettingsFragment : PreferenceFragmentCompat(), BaseView, GlobalSetti
         AlertDialog.Builder(requireContext())
                 .setMessage(getString(R.string.fragment_global_settings_reset_appearance_confirmation))
                 .setPositiveButton(R.string.reset) { dialogInterface, _ ->
-                    mPresenter.onPrefResetNotesColorClick()
+                    presenter.onPrefResetNotesColorClick()
                     dialogInterface.dismiss()
                 }
                 .setNegativeButton(R.string.cancel) { dialogInterface, _ ->
@@ -184,6 +184,6 @@ class GlobalSettingsFragment : PreferenceFragmentCompat(), BaseView, GlobalSetti
 
     override fun onDestroy() {
         super.onDestroy()
-        mPresenter.detachView()
+        presenter.detachView()
     }
 }

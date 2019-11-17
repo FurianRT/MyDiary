@@ -26,7 +26,7 @@ import javax.inject.Inject
 class CategoriesDialog : BaseDialog(), CategoriesDialogContract.View {
 
     @Inject
-    lateinit var mPresenter: CategoriesDialogContract.Presenter
+    lateinit var presenter: CategoriesDialogContract.Presenter
 
     private lateinit var mNoteIds: List<String>
     private var mView: View? = null
@@ -102,12 +102,12 @@ class CategoriesDialog : BaseDialog(), CategoriesDialogContract.View {
         super.onStart()
         dialog?.window?.clearFlags(WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE
                 or WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM)
-        mPresenter.attachView(this)
+        presenter.attachView(this)
     }
 
     override fun onStop() {
         super.onStop()
-        mPresenter.detachView()
+        presenter.detachView()
     }
 
     interface OnCategorySelectedListener {
