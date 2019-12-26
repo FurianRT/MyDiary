@@ -82,7 +82,7 @@ interface NoteFragmentContract {
         abstract fun onButtonUndoClick()
         abstract fun onButtonRedoClick()
         abstract fun onEditModeEnabled()
-        abstract fun onEditModeDisabled(noteTitle: String, noteContent: String, textSpans: List<MyTextSpan>)
+        abstract fun onEditModeDisabled()
         abstract fun onButtonMicClick()
         abstract fun onSpeechRecorded(curTitle: String, curContent: String, textSpans: List<MyTextSpan>, recordedText: String)
         abstract fun onButtonShareClick()

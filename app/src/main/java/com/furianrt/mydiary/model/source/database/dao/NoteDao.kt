@@ -35,6 +35,9 @@ interface NoteDao {
     @Query("UPDATE ${MyNote.TABLE_NAME} SET ${MyNote.FIELD_TITLE} = :title, ${MyNote.FIELD_CONTENT} = :content, ${MyNote.FIELD_SYNC_WITH} = '[]' WHERE ${MyNote.FIELD_ID} = :noteId")
     fun updateNoteText(noteId: String, title: String, content: String): Completable
 
+    @Query("UPDATE ${MyNote.TABLE_NAME} SET ${MyNote.FIELD_TITLE} = :title, ${MyNote.FIELD_CONTENT} = :content, ${MyNote.FIELD_SYNC_WITH} = '[]' WHERE ${MyNote.FIELD_ID} = :noteId")
+    fun updateNoteTextBlocking(noteId: String, title: String, content: String)
+
     @Query("UPDATE ${MyNote.TABLE_NAME} SET ${MyNote.FIELD_IS_DELETED} = 1, ${MyNote.FIELD_SYNC_WITH} = '[]' WHERE ${MyNote.FIELD_ID} = :noteId")
     fun delete(noteId: String): Completable
 

@@ -10,6 +10,7 @@
 
 package com.furianrt.mydiary.presentation.screens.note.fragments.mainnote.edit
 
+import com.furianrt.mydiary.model.entity.MyTextSpan
 import com.furianrt.mydiary.presentation.base.BaseView
 import com.furianrt.mydiary.presentation.base.BasePresenter
 
@@ -33,5 +34,6 @@ interface NoteEditContract {
         abstract fun onButtonTextLargeClick(selectionStart: Int, selectionEnd: Int, text: String?)
         abstract fun onButtonTextColorClick(selectionStart: Int, selectionEnd: Int, text: String?, color: String?)
         abstract fun onButtonTextFillColorClick(selectionStart: Int, selectionEnd: Int, text: String?, color: String?)
+        abstract fun onViewStopped(noteId: String, title: String, content: String, textSpans: List<MyTextSpan>)
     }
 }

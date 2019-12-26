@@ -130,7 +130,12 @@ class NoteListAdapter(
                     throw IllegalArgumentException()
             }
 
-    override fun isHeader(itemPosition: Int) = mItems[itemPosition].type == NoteItemView.TYPE_HEADER
+    override fun isHeader(itemPosition: Int): Boolean =
+            if (itemPosition < 0) {
+                false
+            } else {
+                mItems[itemPosition].type == NoteItemView.TYPE_HEADER
+            }
 
     override fun getHeaderPositionForItem(itemPosition: Int): Int =
             (itemPosition downTo 0)

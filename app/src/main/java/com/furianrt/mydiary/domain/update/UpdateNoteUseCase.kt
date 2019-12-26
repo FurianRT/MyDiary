@@ -36,6 +36,10 @@ class UpdateNoteUseCase @Inject constructor(
                     .collectInto(mutableListOf<Boolean>()) { l, i -> l.add(i) }
                     .ignoreElement()
 
+    fun invokeTempSolution(noteId: String, title: String, content: String) {
+        noteGateway.updateNoteTextBlocking(noteId, title, content) //todo исправить это дерьмо
+    }
+
     fun invoke(noteId: String, title: String, content: String): Completable =
             noteGateway.updateNoteText(noteId, title, content)
             /*noteGateway.getNote(noteId)        //todo исправить это дерьмо

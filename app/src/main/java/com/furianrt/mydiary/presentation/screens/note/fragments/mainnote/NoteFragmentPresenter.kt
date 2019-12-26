@@ -50,7 +50,6 @@ class NoteFragmentPresenter @Inject constructor(
         private val isLocationEnabled: IsLocationEnabledUseCase,
         private val isForecastEnabled: IsForecastEnabledUseCase,
         private val findLocation: FindLocationUseCase,
-        private val updateNoteSpans: UpdateNoteSpansUseCase,
         private val isPanoramaEnabled: IsPanoramaEnabledUseCase,
         private val disableLocation: DisableLocationUseCase,
         private val scheduler: MyRxUtils.BaseSchedulerProvider
@@ -384,7 +383,14 @@ class NoteFragmentPresenter @Inject constructor(
     }
 
     override fun onNoteTextChange(title: String, content: String, textSpans: List<MyTextSpan>) {
-        val selectedIndex = mNoteTextBuffer.indexOfFirst { it.current }
+        val foundedIndex = mNoteTextBuffer.indexOfFirst { it.current }
+        val selectedIndex = if (foundedIndex == -1) {
+            mNoteTextBuffer.last().current = true
+            mNoteTextBuffer.size - 1
+        } else {
+            foundedIndex
+        }
+
         val selectedEntry = mNoteTextBuffer[selectedIndex]
 
         if (selectedEntry.title == title && selectedEntry.content == content && selectedEntry.textSpans == textSpans) {
@@ -432,12 +438,7 @@ class NoteFragmentPresenter @Inject constructor(
                 })
     }
 
-    override fun onEditModeDisabled(noteTitle: String, noteContent: String, textSpans: List<MyTextSpan>) {
+    override fun onEditModeDisabled() {
         view?.hideRichTextOptions()
-
-        addDisposable(updateNote.invoke(mNoteId, noteTitle, noteContent)
-                .subscribe())
-
-        updateNoteSpans.invoke(mNoteId, textSpans)
     }
 }

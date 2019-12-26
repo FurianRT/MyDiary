@@ -45,6 +45,10 @@ class NoteGatewayImp @Inject constructor(
             noteDao.updateNoteText(noteId, title, content)
                     .subscribeOn(scheduler.io())
 
+    override fun updateNoteTextBlocking(noteId: String, title: String, content: String) {
+        noteDao.updateNoteTextBlocking(noteId, title, content)
+    }
+
     override fun updateNotesSync(notes: List<MyNote>): Completable =
             noteDao.update(notes)
                     .subscribeOn(scheduler.io())

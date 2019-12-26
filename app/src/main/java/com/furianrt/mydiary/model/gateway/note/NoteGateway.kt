@@ -22,6 +22,7 @@ interface NoteGateway {
     fun insertNote(notes: List<MyNote>): Completable
     fun updateNote(note: MyNote): Completable
     fun updateNoteText(noteId: String, title: String, content: String): Completable
+    fun updateNoteTextBlocking(noteId: String, title: String, content: String)
     fun updateNotesSync(notes: List<MyNote>): Completable
     fun deleteNote(noteId: String): Completable
     fun deleteNotesFromCloud(notes: List<MyNote>): Completable

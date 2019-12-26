@@ -98,6 +98,7 @@ class NoteFragment : BaseFragment(R.layout.fragment_note), NoteFragmentContract.
     private val mGyroscopeObserver = GyroscopeObserver()
     private var mListener: OnNoteFragmentInteractionListener? = null
     private val mImagePagerAdapter = NoteImagePagerAdapter(listener = this, gyroscope = mGyroscopeObserver)
+    private var mNoteId: String? = null
     private var mIsNewNote = true
     private var mImagePagerPosition = 0
     private val mOnPageChangeCallback = object : ViewPager2.OnPageChangeCallback() {
@@ -116,10 +117,11 @@ class NoteFragment : BaseFragment(R.layout.fragment_note), NoteFragmentContract.
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
 
-        val noteId = arguments?.getString(ARG_NOTE_ID)!!
-        mIsNewNote = arguments?.getBoolean(ARG_IS_NEW_NOTE)!!
-
-        presenter.init(noteId, mIsNewNote)
+        with(requireArguments()) {
+            mNoteId = getString(ARG_NOTE_ID)
+            mIsNewNote = getBoolean(ARG_IS_NEW_NOTE)
+            presenter.init(mNoteId!!, mIsNewNote)
+        }
 
         savedInstanceState?.let {
             mImagePagerPosition = it.getInt(BUNDLE_IMAGE_PAGER_POSITION, 0)
@@ -204,9 +206,11 @@ class NoteFragment : BaseFragment(R.layout.fragment_note), NoteFragmentContract.
         button_undo.enableCustom(false)
         button_redo.enableCustom(false)
 
-        if (childFragmentManager.findFragmentByTag(NoteContentFragment.TAG) == null) {
-            childFragmentManager.inTransaction {
-                add(R.id.container_note_edit, NoteContentFragment.newInstance(mIsNewNote), NoteContentFragment.TAG)
+        mNoteId?.let { noteId ->
+            if (childFragmentManager.findFragmentByTag(NoteContentFragment.TAG) == null) {
+                childFragmentManager.inTransaction {
+                    add(R.id.container_note_edit, NoteContentFragment.newInstance(noteId, mIsNewNote), NoteContentFragment.TAG)
+                }
             }
         }
 
@@ -738,7 +742,7 @@ class NoteFragment : BaseFragment(R.layout.fragment_note), NoteFragmentContract.
                 childFragmentManager.findFragmentByTag(NoteContentFragment.TAG) as? NoteContentFragment
         noteContentFragment?.showNoteText(noteTitle, noteContent)
         mListener?.onNoteFragmentEditModeDisabled()
-        presenter.onEditModeDisabled(noteTitle, noteContent.toString(), noteContent.getTextSpans())
+        presenter.onEditModeDisabled()
     }
 
     override fun showRichTextOptions() {

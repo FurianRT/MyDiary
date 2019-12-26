@@ -28,19 +28,37 @@ import javax.inject.Inject
 
 class NoteContentFragment : BaseFragment(R.layout.fragment_note_content), NoteContentContract.View {
 
-    private var mAppearance: MyNoteAppearance? = null
-    private var mIsNewNote = true
+    companion object {
+        const val TAG = "NoteContentFragment"
+        private const val ARG_NOTE_ID = "noteId"
+        private const val ARG_IS_NEW_NOTE = "is_new_note"
+
+        @JvmStatic
+        fun newInstance(noteId: String, isNewNote: Boolean) =
+                NoteContentFragment().apply {
+                    arguments = Bundle().apply {
+                        putString(ARG_NOTE_ID, noteId)
+                        putBoolean(ARG_IS_NEW_NOTE, isNewNote)
+                    }
+                }
+    }
 
     @Inject
     lateinit var presenter: NoteContentContract.Presenter
 
+    private var mAppearance: MyNoteAppearance? = null
+    private var mIsNewNote = true
+    private var mNoteId: String? = null
     private var mTitle: String? = null
     private var mContent: Spannable? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         getPresenterComponent(requireContext()).inject(this)
         super.onCreate(savedInstanceState)
-        mIsNewNote = requireArguments().getBoolean(ARG_IS_NEW_NOTE)
+        with(requireArguments()) {
+            mNoteId = getString(ARG_NOTE_ID)
+            mIsNewNote = getBoolean(ARG_IS_NEW_NOTE)
+        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -125,17 +143,20 @@ class NoteContentFragment : BaseFragment(R.layout.fragment_note_content), NoteCo
                 setPrimaryNavigationFragment(parentFragment)
             }
             fragmentManager?.let { manager ->
-                val editFragment = NoteEditFragment.newInstance(
-                        mTitle ?: "",
-                        mContent ?: Spannable.Factory().newSpannable(""),
-                        clickedView,
-                        touchPosition,
-                        mAppearance
-                )
-                manager.inTransaction {
-                    hide(this@NoteContentFragment)
-                    add(R.id.container_note_edit, editFragment, NoteEditFragment.TAG)
-                    addToBackStack(null)
+                mNoteId?.let { noteId ->
+                    val editFragment = NoteEditFragment.newInstance(
+                            noteId,
+                            mTitle ?: "",
+                            mContent ?: Spannable.Factory().newSpannable(""),
+                            clickedView,
+                            touchPosition,
+                            mAppearance
+                    )
+                    manager.inTransaction {
+                        hide(this@NoteContentFragment)
+                        add(R.id.container_note_edit, editFragment, NoteEditFragment.TAG)
+                        addToBackStack(null)
+                    }
                 }
             }
         }
@@ -157,18 +178,5 @@ class NoteContentFragment : BaseFragment(R.layout.fragment_note_content), NoteCo
         mContent = content
         text_note_title.text = title
         text_note_content.setText(content, TextView.BufferType.SPANNABLE)
-    }
-
-    companion object {
-        const val TAG = "NoteContentFragment"
-        private const val ARG_IS_NEW_NOTE = "is_new_note"
-
-        @JvmStatic
-        fun newInstance(isNewNote: Boolean) =
-                NoteContentFragment().apply {
-                    arguments = Bundle().apply {
-                        putBoolean(ARG_IS_NEW_NOTE, isNewNote)
-                    }
-                }
     }
 }

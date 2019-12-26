@@ -25,12 +25,46 @@ import com.furianrt.mydiary.presentation.base.BaseFragment
 import com.furianrt.mydiary.model.entity.MyNoteAppearance
 import com.furianrt.mydiary.utils.hideKeyboard
 import com.furianrt.mydiary.presentation.screens.note.fragments.mainnote.NoteFragment
+import com.furianrt.mydiary.utils.getTextSpans
 import com.furianrt.mydiary.utils.showKeyboard
 import kotlinx.android.synthetic.main.fragment_note_edit.*
 import javax.inject.Inject
 
 class NoteEditFragment : BaseFragment(R.layout.fragment_note_edit), NoteEditContract.View {
 
+    companion object {
+        const val TAG = "NoteEditFragment"
+        private const val ARG_NOTE_ID = "noteId"
+        private const val ARG_CLICKED_VIEW = "clickedView"
+        private const val ARG_POSITION = "position"
+        private const val ARG_NOTE_TITLE = "noteTitle"
+        private const val ARG_NOTE_CONTENT = "noteContent"
+        private const val ARG_APPEARANCE = "noteAppearance"
+        private const val SPAN_LARGE_TEXT_SIZE = 1.2f
+        const val VIEW_TITLE = 0
+        const val VIEW_CONTENT = 1
+
+        @JvmStatic
+        fun newInstance(
+                noteId: String,
+                noteTitle: String,
+                noteContent: Spannable,
+                clickedView: Int,
+                clickPosition: Int,
+                appearance: MyNoteAppearance?
+        ) = NoteEditFragment().apply {
+            arguments = Bundle().apply {
+                putString(ARG_NOTE_ID, noteId)
+                putInt(ARG_CLICKED_VIEW, clickedView)
+                putInt(ARG_POSITION, clickPosition)
+                putString(ARG_NOTE_TITLE, noteTitle)
+                putCharSequence(ARG_NOTE_CONTENT, noteContent)
+                appearance?.let { putParcelable(ARG_APPEARANCE, it) }
+            }
+        }
+    }
+
+    private var mNoteId: String? = null
     private var mClickedView: Int? = null
     private var mClickPosition = 0
     private var mNoteTitle = ""
@@ -54,11 +88,15 @@ class NoteEditFragment : BaseFragment(R.layout.fragment_note_edit), NoteEditCont
         getPresenterComponent(requireContext()).inject(this)
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
-        mNoteTitle = requireArguments().getString(ARG_NOTE_TITLE, "")
-        mNoteContent = requireArguments().getCharSequence(ARG_NOTE_CONTENT, Spannable.Factory().newSpannable("")) as Spannable
-        mClickedView = requireArguments().getInt(ARG_CLICKED_VIEW)
-        mClickPosition = requireArguments().getInt(ARG_POSITION)
-        mAppearance = requireArguments().getParcelable(ARG_APPEARANCE) as? MyNoteAppearance?
+        with(requireArguments()) {
+            mNoteId = getString(ARG_NOTE_ID)
+            mNoteTitle = getString(ARG_NOTE_TITLE, "")
+            mNoteContent = getCharSequence(ARG_NOTE_CONTENT, Spannable.Factory().newSpannable("")) as Spannable
+            mClickedView = getInt(ARG_CLICKED_VIEW)
+            mClickPosition = getInt(ARG_POSITION)
+            mAppearance = getParcelable(ARG_APPEARANCE) as? MyNoteAppearance?
+        }
+
         if (savedInstanceState != null) {
             mClickedView = null
         }
@@ -146,10 +184,10 @@ class NoteEditFragment : BaseFragment(R.layout.fragment_note_edit), NoteEditCont
         super.onStop()
         edit_note_title.removeTextChangedListener(mTextChangeListener)
         edit_note_content.removeTextChangedListener(mTextChangeListener)
-        (parentFragment as? NoteFragment?)?.onNoteFragmentEditModeDisabled(
-                edit_note_title.text?.toString() ?: "",
-                edit_note_content.text ?: Spannable.Factory().newSpannable("")
-        )
+        val title = edit_note_title.text?.toString() ?: ""
+        val content = edit_note_content.text ?: Spannable.Factory().newSpannable("")
+        (parentFragment as? NoteFragment?)?.onNoteFragmentEditModeDisabled(title, content)
+        mNoteId?.let { presenter.onViewStopped(it, title, content.toString(), content.getTextSpans()) }
         presenter.detachView()
     }
 
@@ -802,30 +840,5 @@ class NoteEditFragment : BaseFragment(R.layout.fragment_note_edit), NoteEditCont
                 edit_note_content.text?.toString(),
                 color
         )
-    }
-
-    companion object {
-        const val TAG = "NoteEditFragment"
-        private const val ARG_CLICKED_VIEW = "clickedView"
-        private const val ARG_POSITION = "position"
-        private const val ARG_NOTE_TITLE = "noteTitle"
-        private const val ARG_NOTE_CONTENT = "noteContent"
-        private const val ARG_APPEARANCE = "noteAppearance"
-        private const val SPAN_LARGE_TEXT_SIZE = 1.2f
-        const val VIEW_TITLE = 0
-        const val VIEW_CONTENT = 1
-
-        @JvmStatic
-        fun newInstance(noteTitle: String, noteContent: Spannable, clickedView: Int,
-                        clickPosition: Int, appearance: MyNoteAppearance?) =
-                NoteEditFragment().apply {
-                    arguments = Bundle().apply {
-                        putInt(ARG_CLICKED_VIEW, clickedView)
-                        putInt(ARG_POSITION, clickPosition)
-                        putString(ARG_NOTE_TITLE, noteTitle)
-                        putCharSequence(ARG_NOTE_CONTENT, noteContent)
-                        appearance?.let { putParcelable(ARG_APPEARANCE, it) }
-                    }
-                }
     }
 }

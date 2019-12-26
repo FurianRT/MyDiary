@@ -185,7 +185,7 @@
             app:iconSpaceReserved="false" />
 
         <SwitchPreference
-            android:defaultValue="true"
+            android:defaultValue="false"
             android:key="panorama_activation"
             android:summaryOff="@string/panorama_activation_settings_off"
             android:summaryOn="@string/panorama_activation_settings_on"
