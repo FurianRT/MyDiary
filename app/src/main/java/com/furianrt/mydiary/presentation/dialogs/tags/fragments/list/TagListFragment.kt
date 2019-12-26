@@ -30,27 +30,27 @@ class TagListFragment : BaseFragment(R.layout.fragment_tag_list), TagListContrac
         TagListAdapter.OnTagListItemInteractionListener {
 
     @Inject
-    lateinit var mPresenter: TagListContract.Presenter
+    lateinit var presenter: TagListContract.Presenter
 
     private val mListAdapter = TagListAdapter(this)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         getPresenterComponent(requireContext()).inject(this)
         super.onCreate(savedInstanceState)
-        mPresenter.init(requireArguments().getString(ARG_NOTE_ID)!!)
+        presenter.init(requireArguments().getString(ARG_NOTE_ID)!!)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        button_tags_close.setOnClickListener { mPresenter.onButtonCloseClick() }
-        button_tags_add.setOnClickListener { mPresenter.onButtonAddClick() }
+        button_tags_close.setOnClickListener { presenter.onButtonCloseClick() }
+        button_tags_add.setOnClickListener { presenter.onButtonAddClick() }
         search_tags.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
                 return false
             }
 
             override fun onQueryTextChange(newText: String?): Boolean {
-                mPresenter.onSearchQueryChange(newText)
+                presenter.onSearchQueryChange(newText)
                 return true
             }
         })
@@ -66,15 +66,15 @@ class TagListFragment : BaseFragment(R.layout.fragment_tag_list), TagListContrac
     }
 
     override fun onItemCheckChange(item: TagListAdapter.ViewItem) {
-        mPresenter.onItemCheckChange(item)
+        presenter.onItemCheckChange(item)
     }
 
     override fun onItemEditClick(item: TagListAdapter.ViewItem) {
-        mPresenter.onButtonEditTagClick(item)
+        presenter.onButtonEditTagClick(item)
     }
 
     override fun onItemDeleteClick(item: TagListAdapter.ViewItem) {
-        mPresenter.onButtonDeleteTagClick(item)
+        presenter.onButtonDeleteTagClick(item)
     }
 
     override fun closeView() {
@@ -111,12 +111,12 @@ class TagListFragment : BaseFragment(R.layout.fragment_tag_list), TagListContrac
 
     override fun onStart() {
         super.onStart()
-        mPresenter.attachView(this)
+        presenter.attachView(this)
     }
 
     override fun onStop() {
         super.onStop()
-        mPresenter.detachView()
+        presenter.detachView()
     }
 
     companion object {

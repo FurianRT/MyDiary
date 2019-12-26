@@ -41,7 +41,7 @@ class GalleryActivity : BaseActivity(R.layout.activity_gallery), GalleryActivity
     }
 
     @Inject
-    lateinit var mPresenter: GalleryActivityContract.Presenter
+    lateinit var presenter: GalleryActivityContract.Presenter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         getPresenterComponent(this).inject(this)
@@ -94,12 +94,12 @@ class GalleryActivity : BaseActivity(R.layout.activity_gallery), GalleryActivity
 
     override fun onStart() {
         super.onStart()
-        mPresenter.attachView(this)
+        presenter.attachView(this)
     }
 
     override fun onStop() {
         super.onStop()
-        mPresenter.detachView()
+        presenter.detachView()
     }
 
     override fun onSupportNavigateUp(): Boolean {

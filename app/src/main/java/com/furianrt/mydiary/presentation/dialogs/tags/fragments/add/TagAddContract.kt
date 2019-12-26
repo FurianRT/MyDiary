@@ -10,18 +10,18 @@
 
 package com.furianrt.mydiary.presentation.dialogs.tags.fragments.add
 
-import com.furianrt.mydiary.presentation.base.mvp.BaseMvpView
-import com.furianrt.mydiary.presentation.base.mvp.BaseMvpPresenter
+import com.furianrt.mydiary.presentation.base.BaseView
+import com.furianrt.mydiary.presentation.base.BasePresenter
 
 interface TagAddContract {
 
-    interface View : BaseMvpView {
+    interface View : BaseView {
         fun closeView()
         fun showErrorEmptyTagName()
         fun showErrorExistingTagName()
     }
 
-    abstract class Presenter : BaseMvpPresenter<View>() {
+    abstract class Presenter : BasePresenter<View>() {
         abstract fun init(noteId: String)
         abstract fun onButtonAddClick(name: String)
         abstract fun onButtonCloseClick()

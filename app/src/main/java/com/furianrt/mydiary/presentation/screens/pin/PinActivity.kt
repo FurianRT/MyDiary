@@ -54,7 +54,7 @@ class PinActivity : BaseActivity(R.layout.activity_pin), PinContract.View,
     }
 
     @Inject
-    lateinit var mPresenter: PinContract.Presenter
+    lateinit var presenter: PinContract.Presenter
 
     private enum class Mode { MODE_CREATE, MODE_REMOVE, MODE_LOCK }
 
@@ -70,7 +70,7 @@ class PinActivity : BaseActivity(R.layout.activity_pin), PinContract.View,
                 override fun onAuthenticationSucceeded(result: BiometricPrompt.AuthenticationResult) {
                     super.onAuthenticationSucceeded(result)
                     analytics.sendEvent(MyAnalytics.EVENT_FINGERPRINT_SUCCESS)
-                    mPresenter.onFingerprintAccepted()
+                    presenter.onFingerprintAccepted()
                 }
             })
 
@@ -107,7 +107,7 @@ class PinActivity : BaseActivity(R.layout.activity_pin), PinContract.View,
 
         savedInstanceState?.let {
             mBottomSheet.state = it.getInt(BUNDLE_BOTTOM_SHEET_STATE, BottomSheetBehavior.STATE_COLLAPSED)
-            mPresenter.onRestoreInstanceState(it)
+            presenter.onRestoreInstanceState(it)
         }
 
         button_one.setOnClickListener { valueEntered(1) }
@@ -120,25 +120,25 @@ class PinActivity : BaseActivity(R.layout.activity_pin), PinContract.View,
         button_eight.setOnClickListener { valueEntered(8) }
         button_nine.setOnClickListener { valueEntered(9) }
         button_zero.setOnClickListener { valueEntered(0) }
-        button_backspace.setOnClickListener { mPresenter.onButtonBackspaceClick() }
-        button_forgot_pin.setOnClickListener { mPresenter.onButtonForgotPinClick() }
-        button_pin_close.setOnClickListener { mPresenter.onButtonCloseClick() }
-        button_fingerprint.setOnClickListener { mPresenter.onButtonFingerprintClick() }
+        button_backspace.setOnClickListener { presenter.onButtonBackspaceClick() }
+        button_forgot_pin.setOnClickListener { presenter.onButtonForgotPinClick() }
+        button_pin_close.setOnClickListener { presenter.onButtonCloseClick() }
+        button_fingerprint.setOnClickListener { presenter.onButtonFingerprintClick() }
     }
 
     private fun valueEntered(value: Int) {
         require(value in 0..9)
         when (mMode) {
-            MODE_CREATE -> mPresenter.onValueEnteredModeCreate(value)
-            MODE_REMOVE -> mPresenter.onValueEnteredModeRemove(value)
-            MODE_LOCK -> mPresenter.onValueEnteredModeLock(value)
+            MODE_CREATE -> presenter.onValueEnteredModeCreate(value)
+            MODE_REMOVE -> presenter.onValueEnteredModeRemove(value)
+            MODE_LOCK -> presenter.onValueEnteredModeLock(value)
         }
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         outState.putInt(BUNDLE_BOTTOM_SHEET_STATE, mBottomSheet.state)
-        mPresenter.onSaveInstanceState(outState)
+        presenter.onSaveInstanceState(outState)
     }
 
     override fun showPin(pin: String) {
@@ -210,7 +210,7 @@ class PinActivity : BaseActivity(R.layout.activity_pin), PinContract.View,
     }
 
     override fun onEmailEntered(email: String) {
-        mPresenter.onEmailEntered(email)
+        presenter.onEmailEntered(email)
     }
 
     override fun showFingerprintScanner() {
@@ -247,17 +247,17 @@ class PinActivity : BaseActivity(R.layout.activity_pin), PinContract.View,
     override fun onStart() {
         super.onStart()
         mBottomSheet.addBottomSheetCallback(mBottomSheetCallback)
-        mPresenter.attachView(this)
+        presenter.attachView(this)
         when (mMode) {
-            MODE_CREATE -> mPresenter.onViewStartedModeCreate()
-            MODE_REMOVE -> mPresenter.onViewStartedModeRemove()
-            MODE_LOCK -> mPresenter.onViewStartedModeLock()
+            MODE_CREATE -> presenter.onViewStartedModeCreate()
+            MODE_REMOVE -> presenter.onViewStartedModeRemove()
+            MODE_LOCK -> presenter.onViewStartedModeLock()
         }
     }
 
     override fun onStop() {
         super.onStop()
-        mPresenter.detachView()
+        presenter.detachView()
         mHandler.removeCallbacks(mBottomSheetOpenRunnable)
         mBottomSheet.removeBottomSheetCallback(mBottomSheetCallback)
     }

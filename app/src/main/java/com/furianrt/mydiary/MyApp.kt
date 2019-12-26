@@ -41,6 +41,8 @@ class MyApp : Application(), Application.ActivityLifecycleCallbacks {
         const val NOTIFICATION_SYNC_CHANNEL_NAME = "Synchronization"
         const val NOTIFICATION_FIREBASE_CHANNEL_ID = "firebase_channel"
         const val NOTIFICATION_FIREBASE_CHANNEL_NAME = "Info"
+        const val NOTIFICATION_REMINDER_CHANNEL_ID = "reminder_channel"
+        const val NOTIFICATION_REMINDER_CHANNEL_NAME = "Reminder"
     }
 
     val component: AppComponent by lazy {
@@ -91,8 +93,7 @@ class MyApp : Application(), Application.ActivityLifecycleCallbacks {
         JodaTimeAndroid.init(this)
         authorize.invoke(false)
         registerActivityLifecycleCallbacks(this)
-        createNotificationSyncChannel()
-        createNotificationFirebaseChannel()
+        createNotificationChannels()
         MobileAds.initialize(this, getString(R.string.BANNER_AD_APP_ID))
         AndroidThreeTen.init(this)
         incrementLaunchCount.invoke()
@@ -130,27 +131,29 @@ class MyApp : Application(), Application.ActivityLifecycleCallbacks {
         }
     }
 
-    private fun createNotificationSyncChannel() {
+    private fun createNotificationChannels() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            getSystemService(NotificationManager::class.java)
-                    ?.createNotificationChannel(NotificationChannel(
-                            NOTIFICATION_SYNC_CHANNEL_ID,
-                            NOTIFICATION_SYNC_CHANNEL_NAME,
-                            NotificationManager.IMPORTANCE_LOW
-                    ).apply {
-                        setSound(null, null)
-                    })
-        }
-    }
-
-    private fun createNotificationFirebaseChannel() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            getSystemService(NotificationManager::class.java)
-                    ?.createNotificationChannel(NotificationChannel(
-                            NOTIFICATION_FIREBASE_CHANNEL_ID,
-                            NOTIFICATION_FIREBASE_CHANNEL_NAME,
-                            NotificationManager.IMPORTANCE_DEFAULT
-                    ))
+            val notificationManager = getSystemService(NotificationManager::class.java)
+            //channel for sync notification
+            notificationManager?.createNotificationChannel(NotificationChannel(
+                    NOTIFICATION_SYNC_CHANNEL_ID,
+                    NOTIFICATION_SYNC_CHANNEL_NAME,
+                    NotificationManager.IMPORTANCE_LOW
+            ).apply {
+                setSound(null, null)
+            })
+            //channel for firebase notification
+            notificationManager?.createNotificationChannel(NotificationChannel(
+                    NOTIFICATION_FIREBASE_CHANNEL_ID,
+                    NOTIFICATION_FIREBASE_CHANNEL_NAME,
+                    NotificationManager.IMPORTANCE_DEFAULT
+            ))
+            //channel for reminder notification
+            notificationManager?.createNotificationChannel(NotificationChannel(
+                    NOTIFICATION_REMINDER_CHANNEL_ID,
+                    NOTIFICATION_REMINDER_CHANNEL_NAME,
+                    NotificationManager.IMPORTANCE_HIGH
+            ))
         }
     }
 }
@@ -184,10 +187,7 @@ class MyApp : Application(), Application.ActivityLifecycleCallbacks {
 *   добавить удаление заметок по свайпу
 *   сделать отмену удаления в списке
 *   добавить кнопку очистки фильтров
-*   изсправить баг с дефолтными настройками внешнего вида
-*   добавить включаемую автоматическу синхронизацию
-*   исправить shareNOte
-*   автоматически отключать локацию при отсутствии разрешений
+*   исправить баг с дефолтными настройками внешнего вида
 *
 * */
 

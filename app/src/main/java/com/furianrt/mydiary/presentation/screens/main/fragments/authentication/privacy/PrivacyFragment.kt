@@ -43,7 +43,7 @@ class PrivacyFragment : BaseFragment(R.layout.fragment_privacy), PrivacyContract
     }
 
     @Inject
-    lateinit var mPresenter: PrivacyContract.Presenter
+    lateinit var presenter: PrivacyContract.Presenter
 
     private lateinit var mEmail: String
     private lateinit var mPassword: String
@@ -57,9 +57,9 @@ class PrivacyFragment : BaseFragment(R.layout.fragment_privacy), PrivacyContract
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        button_privacy_accept.setOnClickListener { mPresenter.onButtonAcceptClick(mEmail, mPassword) }
-        button_privacy_cancel.setOnClickListener { mPresenter.onButtonCancelClick() }
-        text_privacy_title.setOnClickListener { mPresenter.onPrivacyLinkClick() }
+        button_privacy_accept.setOnClickListener { presenter.onButtonAcceptClick(mEmail, mPassword) }
+        button_privacy_cancel.setOnClickListener { presenter.onButtonCancelClick() }
+        text_privacy_title.setOnClickListener { presenter.onPrivacyLinkClick() }
         view_alpha.setOnTouchListener { _, _ -> true }
     }
 
@@ -95,11 +95,11 @@ class PrivacyFragment : BaseFragment(R.layout.fragment_privacy), PrivacyContract
 
     override fun onStart() {
         super.onStart()
-        mPresenter.attachView(this)
+        presenter.attachView(this)
     }
 
     override fun onStop() {
         super.onStop()
-        mPresenter.detachView()
+        presenter.detachView()
     }
 }

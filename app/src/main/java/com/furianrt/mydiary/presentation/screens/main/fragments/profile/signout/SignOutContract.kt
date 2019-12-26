@@ -10,17 +10,17 @@
 
 package com.furianrt.mydiary.presentation.screens.main.fragments.profile.signout
 
-import com.furianrt.mydiary.presentation.base.mvp.BaseMvpView
-import com.furianrt.mydiary.presentation.base.mvp.BaseMvpPresenter
+import com.furianrt.mydiary.presentation.base.BaseView
+import com.furianrt.mydiary.presentation.base.BasePresenter
 
 interface SignOutContract {
 
-    interface View : BaseMvpView {
+    interface View : BaseView {
         fun close()
         fun returnToMenuView()
     }
 
-    abstract class Presenter : BaseMvpPresenter<View>() {
+    abstract class Presenter : BasePresenter<View>() {
         abstract fun onButtonSignOutClick()
         abstract fun onButtonSignOutCancelClick()
     }

@@ -10,18 +10,18 @@
 
 package com.furianrt.mydiary.presentation.dialogs.categories.fragments.delete
 
-import com.furianrt.mydiary.presentation.base.mvp.BaseMvpView
-import com.furianrt.mydiary.presentation.base.mvp.BaseMvpPresenter
+import com.furianrt.mydiary.presentation.base.BaseView
+import com.furianrt.mydiary.presentation.base.BasePresenter
 import com.furianrt.mydiary.model.entity.MyCategory
 
 interface CategoryDeleteContract {
 
-    interface View : BaseMvpView {
+    interface View : BaseView {
         fun closeView()
         fun showDeleteMessage(name: String)
     }
 
-    abstract class Presenter : BaseMvpPresenter<View>() {
+    abstract class Presenter : BasePresenter<View>() {
         abstract fun init(category: MyCategory)
         abstract fun onButtonDeleteClick()
         abstract fun onButtonCancelClick()

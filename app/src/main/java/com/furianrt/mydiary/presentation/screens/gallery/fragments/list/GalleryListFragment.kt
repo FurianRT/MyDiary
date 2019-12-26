@@ -75,7 +75,7 @@ class GalleryListFragment : BaseFragment(R.layout.fragment_gallery_list), Galler
     }
 
     @Inject
-    lateinit var mPresenter: GalleryListContract.Presenter
+    lateinit var presenter: GalleryListContract.Presenter
 
     private lateinit var mAdapter: GalleryListAdapter
     private var mSelectionActive = false
@@ -88,12 +88,12 @@ class GalleryListFragment : BaseFragment(R.layout.fragment_gallery_list), Galler
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
 
-        mPresenter.init(requireArguments().getString(ARG_NOTE_ID)!!)
+        presenter.init(requireArguments().getString(ARG_NOTE_ID)!!)
 
         savedInstanceState?.let {
             mRecyclerViewState = it.getParcelable(BUNDLE_RECYCLER_VIEW_STATE)
             mSelectionActive = it.getBoolean(BUNDLE_SELECTION_ACTIVE, false)
-            mPresenter.onRestoreInstanceState(it.getStringArrayList(BUNDLE_SELECTED_IMAGE_NAMES)?.toSet())
+            presenter.onRestoreInstanceState(it.getStringArrayList(BUNDLE_SELECTED_IMAGE_NAMES)?.toSet())
         }
     }
 
@@ -133,19 +133,19 @@ class GalleryListFragment : BaseFragment(R.layout.fragment_gallery_list), Galler
             mActionMode = (activity as AppCompatActivity).startSupportActionMode(this)
         }
 
-        button_add_images.setOnClickListener { mPresenter.onButtonAddImageClick() }
+        button_add_images.setOnClickListener { presenter.onButtonAddImageClick() }
     }
 
     override fun onStart() {
         super.onStart()
-        mPresenter.attachView(this)
+        presenter.attachView(this)
         (activity?.supportFragmentManager?.findFragmentByTag(DeleteImageDialog.TAG) as? DeleteImageDialog?)
                 ?.setOnDeleteConfirmListener(this)
     }
 
     override fun onStop() {
         super.onStop()
-        mPresenter.detachView()
+        presenter.detachView()
     }
 
     override fun onAttach(context: Context) {
@@ -166,7 +166,7 @@ class GalleryListFragment : BaseFragment(R.layout.fragment_gallery_list), Galler
         super.onSaveInstanceState(outState)
         outState.putParcelable(BUNDLE_RECYCLER_VIEW_STATE,
                 list_gallery.layoutManager?.onSaveInstanceState())
-        outState.putStringArrayList(BUNDLE_SELECTED_IMAGE_NAMES, ArrayList(mPresenter.onSaveInstanceState()))
+        outState.putStringArrayList(BUNDLE_SELECTED_IMAGE_NAMES, ArrayList(presenter.onSaveInstanceState()))
         outState.putBoolean(BUNDLE_SELECTION_ACTIVE, mSelectionActive)
     }
 
@@ -208,12 +208,12 @@ class GalleryListFragment : BaseFragment(R.layout.fragment_gallery_list), Galler
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean = when (item.itemId) {
         R.id.menu_multi_select -> {
-            mPresenter.onButtonMultiSelectionClick()
+            presenter.onButtonMultiSelectionClick()
             true
         }
         R.id.menu_add_image -> {
             analytics.sendEvent(MyAnalytics.EVENT_NOTE_IMAGE_LIST_IMAGE_ADD)
-            mPresenter.onButtonAddImageClick()
+            presenter.onButtonAddImageClick()
             true
         }
         else -> super.onOptionsItemSelected(item)
@@ -229,19 +229,19 @@ class GalleryListFragment : BaseFragment(R.layout.fragment_gallery_list), Galler
     override fun onActionItemClicked(mode: ActionMode?, item: MenuItem?): Boolean = when (item?.itemId) {
         R.id.menu_delete -> {
             analytics.sendEvent(MyAnalytics.EVENT_NOTE_IMAGE_LIST_IMAGE_DELETE)
-            mPresenter.onButtonCabDeleteClick()
+            presenter.onButtonCabDeleteClick()
             true
         }
 
         R.id.menu_select_all -> {
-            mPresenter.onButtonCabSelectAllClick()
+            presenter.onButtonCabSelectAllClick()
             true
         }
         else -> false
     }
 
     override fun onDestroyActionMode(mode: ActionMode?) {
-        mPresenter.onCabCloseSelection()
+        presenter.onCabCloseSelection()
     }
 
     override fun activateSelection() {
@@ -261,7 +261,7 @@ class GalleryListFragment : BaseFragment(R.layout.fragment_gallery_list), Galler
     }
 
     override fun onButtonDeleteConfirmClick() {
-        mPresenter.onButtonDeleteConfirmClick()
+        presenter.onButtonDeleteConfirmClick()
     }
 
     override fun onDialogDeleteDismiss(imageNames: List<String>) {
@@ -285,11 +285,11 @@ class GalleryListFragment : BaseFragment(R.layout.fragment_gallery_list), Galler
     }
 
     override fun onListItemClick(image: MyImage, position: Int) {
-        mPresenter.onListItemClick(image, position, mSelectionActive)
+        presenter.onListItemClick(image, position, mSelectionActive)
     }
 
     override fun onImagesOrderChange(images: List<MyImage>) {
-        mPresenter.onImagesOrderChange(mAdapter.getImages())
+        presenter.onImagesOrderChange(mAdapter.getImages())
     }
 
     override fun onListItemStartDrag(item: View) {
@@ -318,7 +318,7 @@ class GalleryListFragment : BaseFragment(R.layout.fragment_gallery_list), Galler
     override fun onItemTrashed(image: MyImage) {
         hideTrash()
         analytics.sendEvent(MyAnalytics.EVENT_NOTE_IMAGE_LIST_DRAG_DELETE)
-        mPresenter.onImageTrashed(image)
+        presenter.onImageTrashed(image)
     }
 
     override fun showViewImagePager(noteId: String, position: Int) {
@@ -333,7 +333,7 @@ class GalleryListFragment : BaseFragment(R.layout.fragment_gallery_list), Galler
     override fun requestStoragePermissions() {
         val readExtStorage = Manifest.permission.READ_EXTERNAL_STORAGE
         if (EasyPermissions.hasPermissions(requireContext(), readExtStorage)) {
-            mPresenter.onStoragePermissionsGranted()
+            presenter.onStoragePermissionsGranted()
         } else {
             EasyPermissions.requestPermissions(this, getString(R.string.storage_permission_request),
                     STORAGE_PERMISSIONS_REQUEST_CODE, readExtStorage)
@@ -376,7 +376,7 @@ class GalleryListFragment : BaseFragment(R.layout.fragment_gallery_list), Galler
                 data?.data?.let { uris.add(it.toString()) }
             }
             showLoading()
-            mPresenter.onNoteImagesPicked(uris)
+            presenter.onNoteImagesPicked(uris)
         }
     }
 

@@ -8,6 +8,15 @@
  *
  ******************************************************************************/
 
-package com.furianrt.mydiary.presentation.base.mvp
+package com.furianrt.mydiary.receivers
 
-interface BaseMvpView
+import android.content.BroadcastReceiver
+import android.content.Context
+import android.content.Intent
+
+class ReminderReceiver : BroadcastReceiver() {
+
+    override fun onReceive(context: Context, intent: Intent) {
+
+    }
+}

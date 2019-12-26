@@ -27,7 +27,7 @@ class PremiumFragment : BaseFragment(R.layout.fragment_premium), PremiumContract
     }
 
     @Inject
-    lateinit var mPresenter: PremiumContract.Presenter
+    lateinit var presenter: PremiumContract.Presenter
 
     private var mListener: OnPremiumFragmentInteractionListener? = null
 
@@ -38,7 +38,7 @@ class PremiumFragment : BaseFragment(R.layout.fragment_premium), PremiumContract
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        button_premium_close.setOnClickListener { mPresenter.onButtonCloseClick() }
+        button_premium_close.setOnClickListener { presenter.onButtonCloseClick() }
         button_get_premium.setOnClickListener {
             mListener?.onButtonPurchaseClick(BuildConfig.ITEM_PREMIUM_SKU)
         }
@@ -60,12 +60,12 @@ class PremiumFragment : BaseFragment(R.layout.fragment_premium), PremiumContract
 
     override fun onStart() {
         super.onStart()
-        mPresenter.attachView(this)
+        presenter.attachView(this)
     }
 
     override fun onStop() {
         super.onStop()
-        mPresenter.detachView()
+        presenter.detachView()
     }
 
     override fun close() {

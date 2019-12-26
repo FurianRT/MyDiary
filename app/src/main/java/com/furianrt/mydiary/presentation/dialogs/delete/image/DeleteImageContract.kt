@@ -10,16 +10,16 @@
 
 package com.furianrt.mydiary.presentation.dialogs.delete.image
 
-import com.furianrt.mydiary.presentation.base.mvp.BaseMvpView
-import com.furianrt.mydiary.presentation.base.mvp.BaseMvpPresenter
+import com.furianrt.mydiary.presentation.base.BaseView
+import com.furianrt.mydiary.presentation.base.BasePresenter
 
 interface DeleteImageContract {
 
-    interface View : BaseMvpView {
+    interface View : BaseView {
         fun closeView()
     }
 
-    abstract class Presenter : BaseMvpPresenter<View>() {
+    abstract class Presenter : BasePresenter<View>() {
         abstract fun onButtonDeleteClick(imageNames: List<String>)
         abstract fun onButtonCancelClick()
     }

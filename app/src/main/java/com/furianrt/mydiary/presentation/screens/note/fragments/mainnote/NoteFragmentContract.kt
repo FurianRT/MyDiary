@@ -10,15 +10,15 @@
 
 package com.furianrt.mydiary.presentation.screens.note.fragments.mainnote
 
-import com.furianrt.mydiary.presentation.base.mvp.BaseMvpView
-import com.furianrt.mydiary.presentation.base.mvp.BaseMvpPresenter
+import com.furianrt.mydiary.presentation.base.BaseView
+import com.furianrt.mydiary.presentation.base.BasePresenter
 import com.furianrt.mydiary.model.entity.*
 import com.furianrt.mydiary.model.entity.pojo.TagsAndAppearance
 import java.util.*
 
 interface NoteFragmentContract {
 
-    interface MvpView : BaseMvpView {
+    interface View : BaseView {
         fun showForecast(temp: String, iconUri: String)
         fun showTagsView(noteId: String)
         fun showTags(tagsAndAppearance: TagsAndAppearance)
@@ -59,7 +59,7 @@ interface NoteFragmentContract {
         fun showReminderView(noteId: String)
     }
 
-    abstract class Presenter : BaseMvpPresenter<MvpView>() {
+    abstract class Presenter : BasePresenter<View>() {
         abstract fun onTagsFieldClick()
         abstract fun onLocationPermissionsGranted()
         abstract fun onButtonAddImageClick()
@@ -82,7 +82,7 @@ interface NoteFragmentContract {
         abstract fun onButtonUndoClick()
         abstract fun onButtonRedoClick()
         abstract fun onEditModeEnabled()
-        abstract fun onEditModeDisabled(noteTitle: String, noteContent: String, textSpans: List<MyTextSpan>)
+        abstract fun onEditModeDisabled()
         abstract fun onButtonMicClick()
         abstract fun onSpeechRecorded(curTitle: String, curContent: String, textSpans: List<MyTextSpan>, recordedText: String)
         abstract fun onButtonShareClick()

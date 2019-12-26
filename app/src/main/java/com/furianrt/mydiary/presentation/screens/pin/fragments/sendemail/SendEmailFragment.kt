@@ -31,7 +31,7 @@ class SendEmailFragment : BaseFragment(R.layout.fragment_send_email), SendEmailC
     }
 
     @Inject
-    lateinit var mPresenter: SendEmailContract.Presenter
+    lateinit var presenter: SendEmailContract.Presenter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         getPresenterComponent(requireContext()).inject(this)
@@ -40,8 +40,8 @@ class SendEmailFragment : BaseFragment(R.layout.fragment_send_email), SendEmailC
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        button_send_email.setOnClickListener { mPresenter.onButtonSendClick() }
-        button_send_email_cancel.setOnClickListener { mPresenter.onButtonCancelClick() }
+        button_send_email.setOnClickListener { presenter.onButtonSendClick() }
+        button_send_email_cancel.setOnClickListener { presenter.onButtonCancelClick() }
         layout_loading.setOnTouchListener { _, _ -> true }
     }
 
@@ -85,11 +85,11 @@ class SendEmailFragment : BaseFragment(R.layout.fragment_send_email), SendEmailC
 
     override fun onStart() {
         super.onStart()
-        mPresenter.attachView(this)
+        presenter.attachView(this)
     }
 
     override fun onStop() {
         super.onStop()
-        mPresenter.detachView()
+        presenter.detachView()
     }
 }

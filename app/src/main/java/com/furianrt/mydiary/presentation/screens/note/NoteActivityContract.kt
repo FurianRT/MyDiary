@@ -10,17 +10,17 @@
 
 package com.furianrt.mydiary.presentation.screens.note
 
-import com.furianrt.mydiary.presentation.base.mvp.BaseMvpView
-import com.furianrt.mydiary.presentation.base.mvp.BaseMvpPresenter
+import com.furianrt.mydiary.presentation.base.BaseView
+import com.furianrt.mydiary.presentation.base.BasePresenter
 
 interface NoteActivityContract {
 
-    interface View : BaseMvpView {
+    interface View : BaseView {
         fun showNotes(noteIds: List<String>)
         fun closeView()
     }
 
-    abstract class Presenter : BaseMvpPresenter<View>() {
+    abstract class Presenter : BasePresenter<View>() {
         abstract fun init(noteId: String, newNote: Boolean)
     }
 }

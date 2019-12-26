@@ -8,16 +8,6 @@
  *
  ******************************************************************************/
 
-/*******************************************************************************
- *  @author FurianRT
- *  Copyright 2019
- *
- *  All rights reserved.
- *  Distribution of the software in any form is only allowed with
- *  explicit, prior permission from the owner.
- *
- ******************************************************************************/
-
 package com.furianrt.mydiary.presentation.screens.main
 
 import android.content.Context
@@ -140,7 +130,12 @@ class NoteListAdapter(
                     throw IllegalArgumentException()
             }
 
-    override fun isHeader(itemPosition: Int) = mItems[itemPosition].type == NoteItemView.TYPE_HEADER
+    override fun isHeader(itemPosition: Int): Boolean =
+            if (itemPosition < 0) {
+                false
+            } else {
+                mItems[itemPosition].type == NoteItemView.TYPE_HEADER
+            }
 
     override fun getHeaderPositionForItem(itemPosition: Int): Int =
             (itemPosition downTo 0)

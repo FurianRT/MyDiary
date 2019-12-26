@@ -26,7 +26,7 @@ import javax.inject.Inject
 class TagEditFragment : BaseFragment(R.layout.fragment_tag_edit), TagEditContract.View {
 
     @Inject
-    lateinit var mPresenter: TagEditContract.Presenter
+    lateinit var presenter: TagEditContract.Presenter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         getPresenterComponent(requireContext()).inject(this)
@@ -35,16 +35,16 @@ class TagEditFragment : BaseFragment(R.layout.fragment_tag_edit), TagEditContrac
         savedInstanceState?.let { state ->
             tag!!.name = state.getString(BUNDLE_TAG_NAME, tag.name)
         }
-        mPresenter.init(tag!!)
+        presenter.init(tag!!)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         button_tag_edit_confirm.setOnClickListener {
             analytics.sendEvent(MyAnalytics.EVENT_NOTE_TAG_EDITED)
-            mPresenter.onButtonConfirmClick(edit_edit_tag.text?.toString() ?: "")
+            presenter.onButtonConfirmClick(edit_edit_tag.text?.toString() ?: "")
         }
-        button_tag_edit_close.setOnClickListener { mPresenter.onButtonCloseClick() }
+        button_tag_edit_close.setOnClickListener { presenter.onButtonCloseClick() }
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -74,14 +74,14 @@ class TagEditFragment : BaseFragment(R.layout.fragment_tag_edit), TagEditContrac
         super.onStart()
         edit_edit_tag.requestFocus()
         edit_edit_tag.showKeyboard()
-        mPresenter.attachView(this)
+        presenter.attachView(this)
     }
 
     override fun onStop() {
         super.onStop()
         edit_edit_tag.clearFocus()
         edit_edit_tag.hideKeyboard()
-        mPresenter.detachView()
+        presenter.detachView()
     }
 
     companion object {

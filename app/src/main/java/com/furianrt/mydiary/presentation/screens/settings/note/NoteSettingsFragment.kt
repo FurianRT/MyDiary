@@ -15,21 +15,17 @@ import android.os.Bundle
 import androidx.appcompat.app.AlertDialog
 import androidx.preference.ListPreference
 import androidx.preference.Preference
-import androidx.preference.PreferenceFragmentCompat
 import com.furianrt.mydiary.R
 import com.furianrt.mydiary.analytics.MyAnalytics
-import com.furianrt.mydiary.presentation.base.BaseView
 import com.furianrt.mydiary.model.entity.MyNoteAppearance
+import com.furianrt.mydiary.presentation.base.BasePreference
 import com.jaredrummler.android.colorpicker.ColorPreferenceCompat
 import javax.inject.Inject
 
-class NoteSettingsFragment : PreferenceFragmentCompat(), BaseView, NoteSettingsContract.View {
+class NoteSettingsFragment : BasePreference(), NoteSettingsContract.View {
 
     @Inject
     lateinit var presenter: NoteSettingsContract.Presenter
-
-    @Inject
-    lateinit var analytics: MyAnalytics
 
     private var mListener: OnNoteSettingsFragmentListener? = null
 

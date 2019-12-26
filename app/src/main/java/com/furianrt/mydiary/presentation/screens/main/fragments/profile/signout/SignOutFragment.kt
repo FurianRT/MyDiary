@@ -27,7 +27,7 @@ class SignOutFragment : BaseFragment(R.layout.fragment_sign_out), SignOutContrac
     }
 
     @Inject
-    lateinit var mPresenter: SignOutContract.Presenter
+    lateinit var presenter: SignOutContract.Presenter
 
     private val mHandler = Handler()
     private val mBottomSheetCloseRunnable: Runnable = Runnable {
@@ -41,8 +41,8 @@ class SignOutFragment : BaseFragment(R.layout.fragment_sign_out), SignOutContrac
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        button_sign_out.setOnClickListener { mPresenter.onButtonSignOutClick() }
-        button_sign_out_cancel.setOnClickListener { mPresenter.onButtonSignOutCancelClick() }
+        button_sign_out.setOnClickListener { presenter.onButtonSignOutClick() }
+        button_sign_out_cancel.setOnClickListener { presenter.onButtonSignOutCancelClick() }
     }
 
     override fun close() {
@@ -55,12 +55,12 @@ class SignOutFragment : BaseFragment(R.layout.fragment_sign_out), SignOutContrac
 
     override fun onStart() {
         super.onStart()
-        mPresenter.attachView(this)
+        presenter.attachView(this)
     }
 
     override fun onStop() {
         super.onStop()
         mHandler.removeCallbacks(mBottomSheetCloseRunnable)
-        mPresenter.detachView()
+        presenter.detachView()
     }
 }

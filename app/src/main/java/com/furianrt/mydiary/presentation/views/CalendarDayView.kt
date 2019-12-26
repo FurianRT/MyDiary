@@ -23,6 +23,10 @@ import kotlin.math.sin
 
 class CalendarDayView : AppCompatTextView {
 
+    constructor(context: Context) : this(context, null)
+    constructor(context: Context, attrs: AttributeSet?) : this(context, attrs, -1)
+    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
+
     companion object {
         private const val DEFAULT_PORTION_WIDTH = 11f
         private const val DEFAULT_PORTION_SPACING = 5f
@@ -30,7 +34,7 @@ class CalendarDayView : AppCompatTextView {
         private const val DEFAULT_COLOR = Color.GRAY
     }
 
-    inner class Portion(
+    private inner class Portion(
             val color: Int,
             val startAngle: Float,
             val sweepAngle: Float
@@ -64,10 +68,6 @@ class CalendarDayView : AppCompatTextView {
         mPortionPaint.isAntiAlias = true
         mPortionPaint.strokeWidth = mPortionWidth
     }
-
-    constructor(context: Context) : this(context, null)
-    constructor(context: Context, attrs: AttributeSet?) : this(context, attrs, -1)
-    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
 
     override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
         super.onSizeChanged(w, h, oldw, oldh)

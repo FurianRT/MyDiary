@@ -46,7 +46,7 @@ class CategoryListFragment : BaseFragment(R.layout.fragment_category_list),
     }
 
     @Inject
-    lateinit var mPresenter: CategoryListContract.Presenter
+    lateinit var presenter: CategoryListContract.Presenter
 
     private val mListAdapter = CategoriesListAdapter(this)
     private lateinit var mNoteIds: List<String>
@@ -59,8 +59,8 @@ class CategoryListFragment : BaseFragment(R.layout.fragment_category_list),
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        button_add_category.setOnClickListener { mPresenter.onButtonAddCategoryClick() }
-        button_categories_close.setOnClickListener { mPresenter.onButtonCloseClick() }
+        button_add_category.setOnClickListener { presenter.onButtonAddCategoryClick() }
+        button_categories_close.setOnClickListener { presenter.onButtonCloseClick() }
         val manager = LinearLayoutManager(context)
         list_categories.layoutManager = manager
         list_categories.adapter = mListAdapter
@@ -69,13 +69,13 @@ class CategoryListFragment : BaseFragment(R.layout.fragment_category_list),
 
     override fun onStart() {
         super.onStart()
-        mPresenter.attachView(this)
-        mPresenter.onViewStart()
+        presenter.attachView(this)
+        presenter.onViewStart()
     }
 
     override fun onStop() {
         super.onStop()
-        mPresenter.detachView()
+        presenter.detachView()
     }
 
     override fun showViewAddCategory() {
@@ -99,20 +99,20 @@ class CategoryListFragment : BaseFragment(R.layout.fragment_category_list),
 
     override fun onCategoryClick(category: MyCategory) {
         (parentFragment as? CategoriesDialog?)?.onCategorySelected()
-        mPresenter.onCategoryClick(category, mNoteIds)
+        presenter.onCategoryClick(category, mNoteIds)
     }
 
     override fun onNoCategoryClick() {
         (parentFragment as? CategoriesDialog?)?.onCategorySelected()
-        mPresenter.onButtonNoCategoryClick(mNoteIds)
+        presenter.onButtonNoCategoryClick(mNoteIds)
     }
 
     override fun onCategoryDelete(category: MyCategory) {
-        mPresenter.onButtonDeleteCategoryClick(category)
+        presenter.onButtonDeleteCategoryClick(category)
     }
 
     override fun onCategoryEdit(category: MyCategory) {
-        mPresenter.onButtonEditCategoryClick(category)
+        presenter.onButtonEditCategoryClick(category)
     }
 
     override fun showEditView(category: MyCategory) {

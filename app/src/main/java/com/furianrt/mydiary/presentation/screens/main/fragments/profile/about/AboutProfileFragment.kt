@@ -28,7 +28,7 @@ class AboutProfileFragment : BaseFragment(R.layout.fragment_about_profile), Abou
     }
 
     @Inject
-    lateinit var mPresenter: AboutProfileContract.Presenter
+    lateinit var presenter: AboutProfileContract.Presenter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         getPresenterComponent(requireContext()).inject(this)
@@ -37,7 +37,7 @@ class AboutProfileFragment : BaseFragment(R.layout.fragment_about_profile), Abou
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        button_about_back.setOnClickListener { mPresenter.onButtonBackClick() }
+        button_about_back.setOnClickListener { presenter.onButtonBackClick() }
     }
 
     override fun showProfileInfo(profile: MyProfile, is24TimeFormat: Boolean) {
@@ -59,12 +59,12 @@ class AboutProfileFragment : BaseFragment(R.layout.fragment_about_profile), Abou
 
     override fun onStart() {
         super.onStart()
-        mPresenter.attachView(this)
-        mPresenter.onViewStart()
+        presenter.attachView(this)
+        presenter.onViewStart()
     }
 
     override fun onStop() {
         super.onStop()
-        mPresenter.detachView()
+        presenter.detachView()
     }
 }

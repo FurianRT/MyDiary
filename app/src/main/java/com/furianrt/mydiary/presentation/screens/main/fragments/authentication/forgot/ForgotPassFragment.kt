@@ -45,7 +45,7 @@ class ForgotPassFragment : BaseFragment(R.layout.fragment_forgot_pass), ForgotPa
     }
 
     @Inject
-    lateinit var mPresenter: ForgotPassContract.Presenter
+    lateinit var presenter: ForgotPassContract.Presenter
 
     private val mHandler = Handler()
     private val mChangeActivityFlag: Runnable = Runnable {
@@ -67,9 +67,9 @@ class ForgotPassFragment : BaseFragment(R.layout.fragment_forgot_pass), ForgotPa
         super.onViewCreated(view, savedInstanceState)
         arguments?.let { edit_email.setText(it.getString(ARG_EMAIL, "")) }
 
-        button_forgot_cancel.setOnClickListener { mPresenter.onButtonCancelClick() }
+        button_forgot_cancel.setOnClickListener { presenter.onButtonCancelClick() }
         button_send.setOnClickListener {
-            mPresenter.onButtonSendClick(edit_email.text?.toString() ?: "")
+            presenter.onButtonSendClick(edit_email.text?.toString() ?: "")
         }
         edit_email.onFocusChangeListener = mOnEditFocusChangeListener
         edit_email.setOnClickListener { mOnEditFocusChangeListener.onFocusChange(it, true) }
@@ -128,12 +128,12 @@ class ForgotPassFragment : BaseFragment(R.layout.fragment_forgot_pass), ForgotPa
 
     override fun onStart() {
         super.onStart()
-        mPresenter.attachView(this)
+        presenter.attachView(this)
     }
 
     override fun onStop() {
         super.onStop()
         mHandler.removeCallbacks(mChangeActivityFlag)
-        mPresenter.detachView()
+        presenter.detachView()
     }
 }

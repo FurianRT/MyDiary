@@ -10,16 +10,16 @@
 
 package com.furianrt.mydiary.presentation.screens.note.fragments.mainnote.reminder
 
-import com.furianrt.mydiary.presentation.base.mvp.BaseMvpPresenter
-import com.furianrt.mydiary.presentation.base.mvp.BaseMvpView
+import com.furianrt.mydiary.presentation.base.BasePresenter
+import com.furianrt.mydiary.presentation.base.BaseView
 
 interface ReminderContract {
 
-    interface MvpView : BaseMvpView {
+    interface View : BaseView {
 
     }
 
-    abstract class Presenter : BaseMvpPresenter<MvpView>() {
+    abstract class Presenter : BasePresenter<View>() {
 
     }
 }

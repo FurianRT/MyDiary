@@ -10,20 +10,20 @@
 
 package com.furianrt.mydiary.presentation.dialogs.tags.fragments.edit
 
-import com.furianrt.mydiary.presentation.base.mvp.BaseMvpView
-import com.furianrt.mydiary.presentation.base.mvp.BaseMvpPresenter
+import com.furianrt.mydiary.presentation.base.BaseView
+import com.furianrt.mydiary.presentation.base.BasePresenter
 import com.furianrt.mydiary.model.entity.MyTag
 
 interface TagEditContract {
 
-    interface View : BaseMvpView {
+    interface View : BaseView {
         fun closeView()
         fun showErrorEmptyTagName()
         fun showErrorExistingTagName()
         fun showTagName(name: String)
     }
 
-    abstract class Presenter : BaseMvpPresenter<View>() {
+    abstract class Presenter : BasePresenter<View>() {
         abstract fun init(tag: MyTag)
         abstract fun onButtonConfirmClick(newTagName: String)
         abstract fun onButtonCloseClick()

@@ -30,7 +30,7 @@ class BackupEmailFragment : BaseFragment(R.layout.fragment_backup_email), Backup
     }
 
     @Inject
-    lateinit var mPresenter: BackupEmailContract.Presenter
+    lateinit var presenter: BackupEmailContract.Presenter
 
     private var mListener: OnBackupEmailFragmentListener? = null
 
@@ -56,13 +56,13 @@ class BackupEmailFragment : BaseFragment(R.layout.fragment_backup_email), Backup
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        mPresenter.attachView(this)
+        presenter.attachView(this)
 
         button_create_pin.setOnClickListener {
-            mPresenter.onButtonDoneClick(edit_backup_email.text?.toString() ?: "")
+            presenter.onButtonDoneClick(edit_backup_email.text?.toString() ?: "")
         }
 
-        mPresenter.onViewCreated(edit_backup_email.text?.toString() ?: "", savedInstanceState == null)
+        presenter.onViewCreated(edit_backup_email.text?.toString() ?: "", savedInstanceState == null)
     }
 
     override fun showEmail(email: String) {
@@ -83,14 +83,14 @@ class BackupEmailFragment : BaseFragment(R.layout.fragment_backup_email), Backup
         super.onStart()
         KeyboardUtils.addKeyboardToggleListener(requireActivity(), mOnKeyboardToggleListener)
         edit_backup_email.addTextChangedListener(mTextChangeListener)
-        mPresenter.attachView(this)
+        presenter.attachView(this)
     }
 
     override fun onStop() {
         super.onStop()
         KeyboardUtils.removeKeyboardToggleListener(mOnKeyboardToggleListener)
         edit_backup_email.removeTextChangedListener(mTextChangeListener)
-        mPresenter.detachView()
+        presenter.detachView()
     }
 
     override fun onAttach(context: Context) {

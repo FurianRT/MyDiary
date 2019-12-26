@@ -10,12 +10,12 @@
 
 package com.furianrt.mydiary.presentation.screens.pin.fragments.sendemail
 
-import com.furianrt.mydiary.presentation.base.mvp.BaseMvpView
-import com.furianrt.mydiary.presentation.base.mvp.BaseMvpPresenter
+import com.furianrt.mydiary.presentation.base.BaseView
+import com.furianrt.mydiary.presentation.base.BasePresenter
 
 interface SendEmailContract {
 
-    interface View : BaseMvpView {
+    interface View : BaseView {
         fun closeView()
         fun showLoading()
         fun hideLoading()
@@ -24,7 +24,7 @@ interface SendEmailContract {
         fun showErrorNetworkConnection()
     }
 
-    abstract class Presenter : BaseMvpPresenter<View>() {
+    abstract class Presenter : BasePresenter<View>() {
         abstract fun onButtonSendClick()
         abstract fun onButtonCancelClick()
     }

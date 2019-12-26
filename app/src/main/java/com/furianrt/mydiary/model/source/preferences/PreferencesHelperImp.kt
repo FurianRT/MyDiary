@@ -53,7 +53,7 @@ class PreferencesHelperImp @Inject constructor(
             mPrefs.getBoolean(PreferencesHelper.MOOD_AVAILABILITY, true)
 
     override fun isPanoramaEnabled(): Boolean =
-            mPrefs.getBoolean(PreferencesHelper.PANORAMA_AVAILABILITY, true)
+            mPrefs.getBoolean(PreferencesHelper.PANORAMA_AVAILABILITY, false)
 
     override fun getTextColor(): Int =
             mPrefs.getInt(PreferencesHelper.TEXT_COLOR, context.getColorSupport(R.color.black))

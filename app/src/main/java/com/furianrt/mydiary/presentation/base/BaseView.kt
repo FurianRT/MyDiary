@@ -16,7 +16,6 @@ import com.furianrt.mydiary.di.presenter.component.PresenterComponent
 import com.furianrt.mydiary.di.presenter.modules.presenter.PresenterContextModule
 
 interface BaseView {
-
     fun getPresenterComponent(context: Context): PresenterComponent =
             (context.applicationContext as MyApp)
                     .component

@@ -10,12 +10,12 @@
 
 package com.furianrt.mydiary.presentation.screens.gallery
 
-import com.furianrt.mydiary.presentation.base.mvp.BaseMvpView
-import com.furianrt.mydiary.presentation.base.mvp.BaseMvpPresenter
+import com.furianrt.mydiary.presentation.base.BaseView
+import com.furianrt.mydiary.presentation.base.BasePresenter
 
 interface GalleryActivityContract {
 
-    interface View : BaseMvpView
+    interface View : BaseView
 
-    abstract class Presenter : BaseMvpPresenter<View>()
+    abstract class Presenter : BasePresenter<View>()
 }

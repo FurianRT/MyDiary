@@ -22,12 +22,12 @@ import javax.inject.Inject
 class TagDeleteFragment : BaseFragment(R.layout.fragment_tag_delete), TagDeleteContract.View {
 
     @Inject
-    lateinit var mPresenter: TagDeleteContract.Presenter
+    lateinit var presenter: TagDeleteContract.Presenter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         getPresenterComponent(requireContext()).inject(this)
         super.onCreate(savedInstanceState)
-        mPresenter.init(requireArguments().getParcelable(ARG_TAG)!!)
+        presenter.init(requireArguments().getParcelable(ARG_TAG)!!)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -35,9 +35,9 @@ class TagDeleteFragment : BaseFragment(R.layout.fragment_tag_delete), TagDeleteC
         button_delete_tag.setOnClickListener {
             analytics.sendEvent(MyAnalytics.EVENT_NOTE_TAG_DELETED)
             button_delete_tag.isEnabled = false
-            mPresenter.onButtonDeleteClick()
+            presenter.onButtonDeleteClick()
         }
-        button_delete_tag_cancel.setOnClickListener { mPresenter.onButtonCancelClick() }
+        button_delete_tag_cancel.setOnClickListener { presenter.onButtonCancelClick() }
     }
 
     override fun showTagName(name: String) {
@@ -50,12 +50,12 @@ class TagDeleteFragment : BaseFragment(R.layout.fragment_tag_delete), TagDeleteC
 
     override fun onStart() {
         super.onStart()
-        mPresenter.attachView(this)
+        presenter.attachView(this)
     }
 
     override fun onStop() {
         super.onStop()
-        mPresenter.detachView()
+        presenter.detachView()
     }
 
     companion object {

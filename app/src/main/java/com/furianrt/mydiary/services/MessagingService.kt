@@ -8,7 +8,7 @@
  *
  ******************************************************************************/
 
-package com.furianrt.mydiary.presentation.services.firebase
+package com.furianrt.mydiary.services
 
 import android.app.NotificationManager
 import android.app.PendingIntent
@@ -18,12 +18,11 @@ import android.util.Log
 import androidx.core.app.NotificationCompat
 import com.furianrt.mydiary.MyApp
 import com.furianrt.mydiary.R
-import com.furianrt.mydiary.presentation.base.BaseView
 import com.furianrt.mydiary.presentation.screens.main.MainActivity
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 
-class MyFirebaseMessagingService : FirebaseMessagingService(), BaseView {
+class MessagingService : FirebaseMessagingService() {
 
     companion object {
         private const val TAG = "MessagingService"
@@ -36,18 +35,20 @@ class MyFirebaseMessagingService : FirebaseMessagingService(), BaseView {
     }
 
     private fun showNotification(notification: RemoteMessage.Notification) {
-        val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         val pendingIntent =
                 PendingIntent.getActivity(applicationContext, 0, newLauncherIntent(applicationContext), 0)
-        val notificationBuilder = NotificationCompat.Builder(applicationContext, MyApp.NOTIFICATION_FIREBASE_CHANNEL_ID)
-        notificationBuilder.setAutoCancel(true)
+        val notificationStyle = NotificationCompat.BigTextStyle()
+                .setBigContentTitle(notification.title)
+                .bigText(notification.body)
+        val resultNotification = NotificationCompat.Builder(applicationContext, MyApp.NOTIFICATION_FIREBASE_CHANNEL_ID)
+                .setAutoCancel(true)
                 .setWhen(System.currentTimeMillis())
                 .setSmallIcon(R.drawable.ic_notification_logo)
                 .setContentIntent(pendingIntent)
-                .setStyle(NotificationCompat.BigTextStyle()
-                        .setBigContentTitle(notification.title)
-                        .bigText(notification.body))
-        notificationManager.notify(NOTIFICATION_ID, notificationBuilder.build())
+                .setStyle(notificationStyle)
+                .build()
+        val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        notificationManager.notify(NOTIFICATION_ID, resultNotification)
     }
 
     private fun newLauncherIntent(context: Context): Intent =

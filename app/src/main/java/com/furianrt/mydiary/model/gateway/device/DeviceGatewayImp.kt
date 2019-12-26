@@ -64,6 +64,7 @@ class DeviceGatewayImp @Inject constructor(
         }
     }
 
+    @Synchronized
     private fun findAddress(latitude: Double, longitude: Double) {
         val addresses = try {
             geocoder.getFromLocation(latitude, longitude, 1)
@@ -165,6 +166,7 @@ class DeviceGatewayImp @Inject constructor(
 
     }
 
+    @Synchronized
     override fun getRealPathFromUri(uri: String, callback: OnUriConvertCallback) {
         val pickit = PickiT(context, object : PickiTCallbacks {
             override fun PickiTonProgressUpdate(progress: Int) {
@@ -190,6 +192,7 @@ class DeviceGatewayImp @Inject constructor(
         pickit.getPath(Uri.parse(uri), Build.VERSION.SDK_INT)
     }
 
+    @Synchronized
     override fun clearUriTempFiles() {
         val iterator = mPickits.iterator()
         while(iterator.hasNext()){

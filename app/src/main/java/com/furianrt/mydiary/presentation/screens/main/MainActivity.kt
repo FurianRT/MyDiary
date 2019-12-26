@@ -105,10 +105,18 @@ class MainActivity : BaseActivity(R.layout.activity_main), MainActivityContract.
         private const val ANIMATION_NO_SEARCH_RESULT_SIZE = 1.4f
         private const val ANIMATION_EMPTY_SATE_DURATION = 500L
         private val TOOLBAR_HEIGHT = dpToPx(56f)
+
+        @JvmStatic
+        fun getLauncherIntent(applicationContext: Context): Intent =
+                Intent(applicationContext, MainActivity::class.java).apply {
+                    flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                    action = Intent.ACTION_MAIN
+                    addCategory(Intent.CATEGORY_LAUNCHER)
+                }
     }
 
     @Inject
-    lateinit var mPresenter: MainActivityContract.Presenter
+    lateinit var presenter: MainActivityContract.Presenter
 
     private lateinit var mAdapter: NoteListAdapter
     private lateinit var mBottomSheet: BottomSheetBehavior<FrameLayout>
@@ -142,6 +150,7 @@ class MainActivity : BaseActivity(R.layout.activity_main), MainActivityContract.
             view_actionbar?.layoutParams?.height = (mStatusBarHeight * slideOffset).toInt()
             view_actionbar?.requestLayout()
         }
+
         override fun onStateChanged(bottomSheet: View, newState: Int) {
             if (newState == BottomSheetBehavior.STATE_COLLAPSED) {
                 supportFragmentManager.findFragmentByTag(AuthFragment.TAG)?.let {
@@ -156,7 +165,7 @@ class MainActivity : BaseActivity(R.layout.activity_main), MainActivityContract.
         super.onCreate(savedInstanceState)
         loadOwnedPurchasesFromGoogle()
 
-        mPresenter.onRestoreInstanceState(savedInstanceState)
+        presenter.onRestoreInstanceState(savedInstanceState)
 
         setSupportActionBar(toolbar_main)
         supportActionBar?.let { toolbar ->
@@ -197,16 +206,16 @@ class MainActivity : BaseActivity(R.layout.activity_main), MainActivityContract.
             }
         }
 
-        button_change_filters.setOnClickListener { mPresenter.onButtonChangeFiltersClick() }
+        button_change_filters.setOnClickListener { presenter.onButtonChangeFiltersClick() }
 
-        fab_menu.setOnClickListener { mPresenter.onFabMenuClick() }
-        fab_delete.setOnClickListener { mPresenter.onButtonDeleteClick() }
-        fab_folder.setOnClickListener { mPresenter.onButtonFolderClick() }
+        fab_menu.setOnClickListener { presenter.onFabMenuClick() }
+        fab_delete.setOnClickListener { presenter.onButtonDeleteClick() }
+        fab_folder.setOnClickListener { presenter.onButtonFolderClick() }
 
-        image_toolbar_main.setOnClickListener { mPresenter.onMainImageClick() }
+        image_toolbar_main.setOnClickListener { presenter.onMainImageClick() }
         button_main_image_settings.setOnClickListener {
             analytics.sendEvent(MyAnalytics.EVENT_HEADER_IMAGE_SETTINGS)
-            mPresenter.onButtonImageSettingsClick()
+            presenter.onButtonImageSettingsClick()
         }
 
         mAdapter = NoteListAdapter(this)
@@ -242,39 +251,39 @@ class MainActivity : BaseActivity(R.layout.activity_main), MainActivityContract.
     }
 
     override fun onTagCheckStateChange(tag: MyTag, checked: Boolean) {
-        mPresenter.onTagFilterChange(tag, checked)
+        presenter.onTagFilterChange(tag, checked)
     }
 
     override fun onCategoryCheckStateChange(category: MyCategory, checked: Boolean) {
-        mPresenter.onCategoryFilterChange(category, checked)
+        presenter.onCategoryFilterChange(category, checked)
     }
 
     override fun onLocationCheckStateChange(location: MyLocation, checked: Boolean) {
-        mPresenter.onLocationFilterChange(location, checked)
+        presenter.onLocationFilterChange(location, checked)
     }
 
     override fun onMoodCheckStateChange(mood: MyMood, checked: Boolean) {
-        mPresenter.onMoodFilterChange(mood, checked)
+        presenter.onMoodFilterChange(mood, checked)
     }
 
     override fun onNoTagsCheckStateChange(checked: Boolean) {
-        mPresenter.onNoTagsFilterChange(checked)
+        presenter.onNoTagsFilterChange(checked)
     }
 
     override fun onNoCategoryCheckStateChange(checked: Boolean) {
-        mPresenter.onNoCategoryFilterChange(checked)
+        presenter.onNoCategoryFilterChange(checked)
     }
 
     override fun onNoMoodCheckStateChange(checked: Boolean) {
-        mPresenter.onNoMoodFilterChange(checked)
+        presenter.onNoMoodFilterChange(checked)
     }
 
     override fun onNoLocationCheckStateChange(checked: Boolean) {
-        mPresenter.onNoLocationFilterChange(checked)
+        presenter.onNoLocationFilterChange(checked)
     }
 
     override fun onSearchDatesSelected(startDate: Long?, endDate: Long?) {
-        mPresenter.onDateFilterChange(startDate, endDate)
+        presenter.onDateFilterChange(startDate, endDate)
     }
 
     override fun onBillingInitialized() {
@@ -325,6 +334,7 @@ class MainActivity : BaseActivity(R.layout.activity_main), MainActivityContract.
                         disableActionBarExpanding(false)
                         return true
                     }
+
                     override fun onResourceReady(resource: Drawable?, model: Any?, target: Target<Drawable>?,
                                                  dataSource: DataSource?, isFirstResource: Boolean): Boolean {
                         if (!mIsAppBarExpandEnabled) {
@@ -383,25 +393,25 @@ class MainActivity : BaseActivity(R.layout.activity_main), MainActivityContract.
     override fun onOptionsItemSelected(item: MenuItem): Boolean =
             when (item.itemId) {
                 R.id.menu_all_notes -> {
-                    mPresenter.onMenuAllNotesClick()
+                    presenter.onMenuAllNotesClick()
                     true
                 }
                 /*R.id.menu_statistics -> {
-                    mPresenter.onButtonStatisticsClick()
+                    presenter.onButtonStatisticsClick()
                     true
                 }*/
                 R.id.menu_image -> {
                     analytics.sendEvent(MyAnalytics.EVENT_HEADER_IMAGE_SETTINGS)
-                    mPresenter.onButtonImageSettingsClick()
+                    presenter.onButtonImageSettingsClick()
                     true
                 }
                 R.id.menu_settings -> {
                     analytics.sendEvent(MyAnalytics.EVENT_MAIN_SETTINGS)
-                    mPresenter.onButtonSettingsClick()
+                    presenter.onButtonSettingsClick()
                     true
                 }
                 R.id.menu_sort -> {
-                    mPresenter.onButtonSortClick()
+                    presenter.onButtonSortClick()
                     true
                 }
                 else -> super.onOptionsItemSelected(item)
@@ -414,7 +424,7 @@ class MainActivity : BaseActivity(R.layout.activity_main), MainActivityContract.
     }
 
     override fun onDialogButtonDeleteClick() {
-        mPresenter.onButtonDeleteConfirmClick()
+        presenter.onButtonDeleteConfirmClick()
     }
 
     override fun showImageOptions() {
@@ -486,7 +496,7 @@ class MainActivity : BaseActivity(R.layout.activity_main), MainActivityContract.
 
             override fun onQueryTextChange(newText: String?): Boolean {
                 mSearchQuery = newText ?: ""
-                mPresenter.onSearchQueryChange(mSearchQuery)
+                presenter.onSearchQueryChange(mSearchQuery)
                 return true
             }
         })
@@ -501,7 +511,7 @@ class MainActivity : BaseActivity(R.layout.activity_main), MainActivityContract.
         outState.putInt(BUNDLE_BOTTOM_SHEET_STATE, mBottomSheet.state)
         outState.putString(BUNDLE_SEARCH_QUERY, mSearchQuery)
         outState.putInt(BUNDLE_STATUS_BAR_HEIGHT, mStatusBarHeight)
-        mPresenter.onSaveInstanceState(outState)
+        presenter.onSaveInstanceState(outState)
     }
 
     override fun showViewNewNote(noteId: String) {
@@ -635,7 +645,7 @@ class MainActivity : BaseActivity(R.layout.activity_main), MainActivityContract.
     }
 
     override fun onMainListItemClick(note: MyNoteWithProp) {
-        mPresenter.onMainListItemClick(note)
+        presenter.onMainListItemClick(note)
     }
 
     override fun onMainListItemLongClick(note: MyNoteWithProp) {
@@ -644,7 +654,7 @@ class MainActivity : BaseActivity(R.layout.activity_main), MainActivityContract.
             @Suppress("DEPRECATION")
             vibrator.vibrate(ITEM_LONG_CLICK_VIBRATION_DURATION)
         }
-        mPresenter.onMainListItemLongClick(note)
+        presenter.onMainListItemLongClick(note)
     }
 
     override fun showNotePager(position: Int, noteId: String) {
@@ -696,7 +706,7 @@ class MainActivity : BaseActivity(R.layout.activity_main), MainActivityContract.
             drawer.isDrawerOpen(GravityCompat.START) ->
                 drawer.closeDrawer(GravityCompat.START, true)
             fab_menu.isOpened -> {
-                mPresenter.onFabMenuClick()
+                presenter.onFabMenuClick()
             }
             ++mBackPressCount < 2 ->
                 Toast.makeText(this, getString(R.string.click_again_to_exit), Toast.LENGTH_SHORT).show()
@@ -711,11 +721,11 @@ class MainActivity : BaseActivity(R.layout.activity_main), MainActivityContract.
     }
 
     override fun onCategorySelected() {
-        mPresenter.onCategorySelected()
+        presenter.onCategorySelected()
     }
 
     override fun onClearFilters() {
-        mPresenter.onClearFilters()
+        presenter.onClearFilters()
     }
 
     override fun onButtonPurchaseClick(productId: String) {
@@ -731,7 +741,7 @@ class MainActivity : BaseActivity(R.layout.activity_main), MainActivityContract.
     }
 
     override fun onDailyImageLoadStateChange() {
-        mPresenter.onDailyImageLoadStateChange()
+        presenter.onDailyImageLoadStateChange()
     }
 
     override fun showRateProposal() {
@@ -753,12 +763,12 @@ class MainActivity : BaseActivity(R.layout.activity_main), MainActivityContract.
             (it as CategoriesDialog).setOnCategorySelectedListener(this)
         }
 
-        mPresenter.attachView(this)
+        presenter.attachView(this)
     }
 
     override fun onStop() {
         super.onStop()
-        mPresenter.detachView()
+        presenter.detachView()
         mBottomSheet.removeBottomSheetCallback(mBottomSheetCallback)
         mBackPressCount = 0
         mAdapter.listener = null

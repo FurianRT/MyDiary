@@ -42,7 +42,7 @@ class AuthFragment : BaseFragment(R.layout.fragment_auth), AuthContract.View {
     }
 
     @Inject
-    lateinit var mPresenter: AuthContract.Presenter
+    lateinit var presenter: AuthContract.Presenter
 
     private val mOnKeyboardToggleListener = object : KeyboardUtils.SoftKeyboardToggleListener {
         override fun onToggleSoftKeyboard(isVisible: Boolean) {
@@ -64,8 +64,8 @@ class AuthFragment : BaseFragment(R.layout.fragment_auth), AuthContract.View {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        button_auth_close.setOnClickListener { mPresenter.onButtonCloseClick() }
-        button_create_account.setOnClickListener { mPresenter.onButtonCreateAccountClick() }
+        button_auth_close.setOnClickListener { presenter.onButtonCloseClick() }
+        button_create_account.setOnClickListener { presenter.onButtonCreateAccountClick() }
 
         savedInstanceState?.let {
             card_create_account.translationY = it.getFloat(BUNDLE_CREATE_BUTTON_TRANSLATION_Y, 0f)
@@ -104,14 +104,14 @@ class AuthFragment : BaseFragment(R.layout.fragment_auth), AuthContract.View {
 
     override fun onStart() {
         super.onStart()
-        mPresenter.attachView(this)
+        presenter.attachView(this)
         KeyboardUtils.addKeyboardToggleListener(requireActivity(), mOnKeyboardToggleListener)
     }
 
     override fun onStop() {
         super.onStop()
         KeyboardUtils.removeKeyboardToggleListener(mOnKeyboardToggleListener)
-        mPresenter.detachView()
+        presenter.detachView()
     }
 
     override fun onAttach(context: Context) {

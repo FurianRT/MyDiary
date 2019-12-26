@@ -17,8 +17,9 @@ import com.furianrt.mydiary.R
 import com.furianrt.mydiary.presentation.base.BaseFragment
 import com.furianrt.mydiary.presentation.screens.note.fragments.mainnote.NoteFragment
 import kotlinx.android.synthetic.main.fragment_reminder.*
+import javax.inject.Inject
 
-class ReminderFragment : BaseFragment(R.layout.fragment_reminder), ReminderContract.MvpView {
+class ReminderFragment : BaseFragment(R.layout.fragment_reminder), ReminderContract.View {
 
     companion object {
         const val TAG = "ReminderFragment"
@@ -33,6 +34,9 @@ class ReminderFragment : BaseFragment(R.layout.fragment_reminder), ReminderContr
                 }
     }
 
+    @Inject
+    lateinit var presenter: ReminderContract.Presenter
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         button_reminder_close.setOnClickListener {
@@ -42,6 +46,12 @@ class ReminderFragment : BaseFragment(R.layout.fragment_reminder), ReminderContr
 
     override fun onStart() {
         super.onStart()
+        presenter.attachView(this)
         (parentFragment as? NoteFragment?)?.onReminderStart()
+    }
+
+    override fun onStop() {
+        super.onStop()
+        presenter.detachView()
     }
 }

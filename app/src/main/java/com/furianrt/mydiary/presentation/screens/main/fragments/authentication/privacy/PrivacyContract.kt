@@ -10,12 +10,12 @@
 
 package com.furianrt.mydiary.presentation.screens.main.fragments.authentication.privacy
 
-import com.furianrt.mydiary.presentation.base.mvp.BaseMvpView
-import com.furianrt.mydiary.presentation.base.mvp.BaseMvpPresenter
+import com.furianrt.mydiary.presentation.base.BaseView
+import com.furianrt.mydiary.presentation.base.BasePresenter
 
 interface PrivacyContract {
 
-    interface View : BaseMvpView {
+    interface View : BaseView {
         fun showLoading()
         fun hideLoading()
         fun showMessageSuccessRegistration()
@@ -24,7 +24,7 @@ interface PrivacyContract {
         fun openLink(link: String)
     }
 
-    abstract class Presenter : BaseMvpPresenter<View>() {
+    abstract class Presenter : BasePresenter<View>() {
         abstract fun onButtonAcceptClick(email: String, password: String)
         abstract fun onButtonCancelClick()
         abstract fun onPrivacyLinkClick()

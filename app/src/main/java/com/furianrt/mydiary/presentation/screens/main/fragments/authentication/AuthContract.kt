@@ -10,17 +10,17 @@
 
 package com.furianrt.mydiary.presentation.screens.main.fragments.authentication
 
-import com.furianrt.mydiary.presentation.base.mvp.BaseMvpView
-import com.furianrt.mydiary.presentation.base.mvp.BaseMvpPresenter
+import com.furianrt.mydiary.presentation.base.BaseView
+import com.furianrt.mydiary.presentation.base.BasePresenter
 
 interface AuthContract {
 
-    interface View : BaseMvpView {
+    interface View : BaseView {
         fun closeSheet()
         fun showRegistrationView()
     }
 
-    abstract class Presenter : BaseMvpPresenter<View>() {
+    abstract class Presenter : BasePresenter<View>() {
         abstract fun onButtonCloseClick()
         abstract fun onButtonCreateAccountClick()
     }

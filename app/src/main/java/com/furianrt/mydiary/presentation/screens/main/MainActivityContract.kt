@@ -11,13 +11,13 @@
 package com.furianrt.mydiary.presentation.screens.main
 
 import android.os.Bundle
-import com.furianrt.mydiary.presentation.base.mvp.BaseMvpView
-import com.furianrt.mydiary.presentation.base.mvp.BaseMvpPresenter
+import com.furianrt.mydiary.presentation.base.BaseView
+import com.furianrt.mydiary.presentation.base.BasePresenter
 import com.furianrt.mydiary.model.entity.*
 
 interface MainActivityContract {
 
-    interface View : BaseMvpView {
+    interface View : BaseView {
         fun showNotes(notes: List<MyNoteWithProp>, selectedNoteIds: Set<String>, scrollToTop: Boolean)
         fun showNotePager(position: Int, noteId: String)
         fun showHeaderImage(image: MyHeaderImage)
@@ -41,7 +41,7 @@ interface MainActivityContract {
         fun showStatisticsView()
     }
 
-    abstract class Presenter : BaseMvpPresenter<View>() {
+    abstract class Presenter : BasePresenter<View>() {
         abstract fun onMainListItemClick(note: MyNoteWithProp)
         abstract fun onMainImageClick()
         abstract fun onMainListItemLongClick(note: MyNoteWithProp)

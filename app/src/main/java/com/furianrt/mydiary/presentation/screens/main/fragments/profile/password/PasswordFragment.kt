@@ -36,7 +36,7 @@ class PasswordFragment : BaseFragment(R.layout.fragment_password), PasswordContr
     }
 
     @Inject
-    lateinit var mPresenter: PasswordContract.Presenter
+    lateinit var presenter: PasswordContract.Presenter
 
     private val mHandler = Handler()
     private val mChangeActivityFlag: Runnable = Runnable {
@@ -56,12 +56,12 @@ class PasswordFragment : BaseFragment(R.layout.fragment_password), PasswordContr
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        button_password_cancel.setOnClickListener { mPresenter.onButtonCancelClick() }
+        button_password_cancel.setOnClickListener { presenter.onButtonCancelClick() }
         button_password_save.setOnClickListener {
             val oldPassword = edit_old_password.text?.toString() ?: ""
             val newPassword = edit_new_password.text?.toString() ?: ""
             val repeatPassword = edit_password_repeat.text?.toString() ?: ""
-            mPresenter.onButtonSaveClick(oldPassword, newPassword, repeatPassword)
+            presenter.onButtonSaveClick(oldPassword, newPassword, repeatPassword)
         }
         edit_old_password.onFocusChangeListener = mOnEditFocusChangeListener
         edit_new_password.onFocusChangeListener = mOnEditFocusChangeListener
@@ -149,13 +149,13 @@ class PasswordFragment : BaseFragment(R.layout.fragment_password), PasswordContr
 
     override fun onStart() {
         super.onStart()
-        mPresenter.attachView(this)
+        presenter.attachView(this)
     }
 
     override fun onStop() {
         super.onStop()
         mHandler.removeCallbacks(mChangeActivityFlag)
-        mPresenter.detachView()
+        presenter.detachView()
     }
 
     override fun onDetach() {

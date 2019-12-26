@@ -64,7 +64,7 @@ import com.furianrt.mydiary.presentation.screens.main.fragments.imagesettings.Im
 import com.furianrt.mydiary.presentation.screens.main.fragments.imagesettings.settings.DailySettingsContract
 import com.furianrt.mydiary.presentation.screens.main.fragments.imagesettings.settings.DailySettingsPresenter
 import com.furianrt.mydiary.presentation.screens.main.fragments.premium.PremiumContract
-import com.furianrt.mydiary.presentation.screens.main.fragments.premium.PremiumPresenter
+import com.furianrt.mydiary.presentation.screens.main.fragments.premium.Premiupresenter
 import com.furianrt.mydiary.presentation.screens.main.fragments.profile.ProfileContract
 import com.furianrt.mydiary.presentation.screens.main.fragments.profile.ProfilePresenter
 import com.furianrt.mydiary.presentation.screens.main.fragments.profile.about.AboutProfileContract
@@ -95,8 +95,6 @@ import com.furianrt.mydiary.presentation.screens.settings.global.GlobalSettingsC
 import com.furianrt.mydiary.presentation.screens.settings.global.GlobalSettingsPresenter
 import com.furianrt.mydiary.presentation.screens.settings.note.NoteSettingsContract
 import com.furianrt.mydiary.presentation.screens.settings.note.NoteSettingsPresenter
-import com.furianrt.mydiary.presentation.services.sync.SyncContract
-import com.furianrt.mydiary.presentation.services.sync.SyncPresenter
 import dagger.Binds
 import dagger.Module
 
@@ -165,7 +163,7 @@ interface PresenterModule {
 
     @Binds
     @PresenterScope
-    fun premiumPresenter(presenter: PremiumPresenter): PremiumContract.Presenter
+    fun premiupresenter(presenter: Premiupresenter): PremiumContract.Presenter
 
     @Binds
     @PresenterScope
@@ -186,10 +184,6 @@ interface PresenterModule {
     @Binds
     @PresenterScope
     fun imageSettingsPresenter(presenter: ImageSettingsPresenter): ImageSettingsContract.Presenter
-
-    @Binds
-    @PresenterScope
-    fun syncPresenter(presenter: SyncPresenter): SyncContract.Presenter
 
     @Binds
     @PresenterScope
