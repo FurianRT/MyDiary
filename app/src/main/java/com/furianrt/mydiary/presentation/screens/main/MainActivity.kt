@@ -70,6 +70,10 @@ import com.google.android.gms.ads.AdListener
 import com.google.android.gms.ads.AdRequest
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.bottomsheet.BottomSheetBehavior
+import io.reactivex.Single
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.Disposable
+import io.reactivex.schedulers.Schedulers
 import jp.wasabeef.recyclerview.animators.LandingAnimator
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.activity_main_toolbar.*
@@ -128,6 +132,7 @@ class MainActivity : BaseActivity(R.layout.activity_main), MainActivityContract.
     private var mIsAppBarExpandEnabled = false
     private val mHandler = Handler()
     private var mStatusBarHeight = 0
+    private var mBillingDisposable: Disposable? = null
     private val mBottomSheetOpenRunnable: Runnable = Runnable {
         mBottomSheet.state = BottomSheetBehavior.STATE_EXPANDED
     }
@@ -163,7 +168,6 @@ class MainActivity : BaseActivity(R.layout.activity_main), MainActivityContract.
     override fun onCreate(savedInstanceState: Bundle?) {
         getPresenterComponent(this).inject(this)
         super.onCreate(savedInstanceState)
-        loadOwnedPurchasesFromGoogle()
 
         presenter.onRestoreInstanceState(savedInstanceState)
 
@@ -288,9 +292,18 @@ class MainActivity : BaseActivity(R.layout.activity_main), MainActivityContract.
 
     override fun onBillingInitialized() {
         super.onBillingInitialized()
-        if (!getIsItemPurchased(BuildConfig.ITEM_PREMIUM_SKU)) {
-            showAdView()
+        if (mBillingDisposable?.isDisposed == false) {
+            mBillingDisposable?.dispose()
         }
+        mBillingDisposable = Single.fromCallable { loadOwnedPurchasesFromGoogle() }
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .ignoreElement()
+                .subscribe {
+                    if (!getIsItemPurchased(BuildConfig.ITEM_PREMIUM_SKU)) {
+                        showAdView()
+                    }
+                }
     }
 
     override fun onProductPurchased(productId: String, details: TransactionDetails?) {
@@ -776,5 +789,12 @@ class MainActivity : BaseActivity(R.layout.activity_main), MainActivityContract.
         list_main.removeOnScrollListener(mAdapter.preloader)
         list_main.removeOnScrollListener(mQuickScrollListener)
         mHandler.removeCallbacks(mBottomSheetOpenRunnable)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        if (mBillingDisposable?.isDisposed == false) {
+            mBillingDisposable?.dispose()
+        }
     }
 }

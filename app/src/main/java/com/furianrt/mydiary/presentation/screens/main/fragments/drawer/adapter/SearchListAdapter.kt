@@ -284,7 +284,11 @@ class SearchListAdapter(
 
     override fun onChildCheckChanged(view: View?, checked: Boolean, flatPos: Int) {
         val listPos = expandableList.getUnflattenedPosition(flatPos)
-        val item = (expandableList.getExpandableGroup(listPos) as SearchGroup).groupItems[listPos.childPos]
+        val groupItems = (expandableList.getExpandableGroup(listPos) as SearchGroup).groupItems
+        if (listPos.childPos >= groupItems.size) {
+            return
+        }
+        val item = groupItems[listPos.childPos]
         when (item.type) {
             SearchItem.TYPE_TAG -> {
                 if (checked) {
