@@ -33,6 +33,8 @@ class StickyHeaderItemDecoration(
     private var mStickyHeaderHeight: Int = 0
     private var mCurrentHeader: View? = null
     private var mCurrentHeaderPosition = 0
+    private var mPrevMargin = -1
+    private var mPrevPosition = -1
 
     //todo Well, yeah...
     private var mTempFlag = false
@@ -137,33 +139,38 @@ class StickyHeaderItemDecoration(
     }
 
     private fun drawHeader(header: View, position: Int, parent: RecyclerView) {
-        val firstVisiblePosition = (parent.layoutManager as LinearLayoutManager).findFirstCompletelyVisibleItemPosition()
-        if (mTempFlag3 || firstVisiblePosition == 0) {
-            mHeaderContainer.layoutParams.height = mStickyHeaderHeight
-            setCurrentHeader(header, position)
+        if (mPrevPosition != position) {
+            mPrevPosition = position
+            val firstVisiblePosition = (parent.layoutManager as LinearLayoutManager).findFirstCompletelyVisibleItemPosition()
+            if (mTempFlag3 || firstVisiblePosition == 0) {
+                mHeaderContainer.layoutParams.height = mStickyHeaderHeight
+                setCurrentHeader(header, position)
+            }
+            mTempFlag2 = true
         }
-        mTempFlag2 = true
     }
 
     private fun moveHeader(currentHead: View, nextHead: View, currentPos: Int, nextPos: Int) {
-        if (mTempFlag) {
-            mHeaderContainer.removeAllViews()
-            mHeaderContainer.addView(mCurrentHeader)
-            mTempFlag = false
-        }
-
         val marginTop = nextHead.top - currentHead.height
+        if (mPrevMargin != marginTop) {
+            mPrevMargin = marginTop
+            if (mTempFlag) {
+                mHeaderContainer.removeAllViews()
+                mHeaderContainer.addView(mCurrentHeader)
+                mTempFlag = false
+            }
 
-        val params = mCurrentHeader?.layoutParams as? ViewGroup.MarginLayoutParams ?: return
-        params.setMargins(0, marginTop, 0, 0)
-        mCurrentHeader?.layoutParams = params
+            val params = mCurrentHeader?.layoutParams as? ViewGroup.MarginLayoutParams ?: return
+            params.setMargins(0, marginTop, 0, 0)
+            mCurrentHeader?.layoutParams = params
 
-        mHeaderContainer.layoutParams.height = mStickyHeaderHeight + marginTop
+            mHeaderContainer.layoutParams.height = mStickyHeaderHeight + marginTop
 
-        if (mCurrentHeaderPosition == nextPos && currentPos != nextPos) {
-            mCurrentHeader = currentHead
-            mCurrentHeaderPosition = currentPos
-            mTempFlag = true
+            if (mCurrentHeaderPosition == nextPos && currentPos != nextPos) {
+                mCurrentHeader = currentHead
+                mCurrentHeaderPosition = currentPos
+                mTempFlag = true
+            }
         }
     }
 

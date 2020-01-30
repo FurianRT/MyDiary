@@ -26,7 +26,7 @@ class RoomTypeConverter {
     }
 
     @TypeConverter
-    fun stringToList(list: List<String>): String {
+    fun listToString(list: List<String>): String {
         return Gson().toJson(list)
     }
 }
