@@ -114,12 +114,12 @@ class MyApp : Application(), Application.ActivityLifecycleCallbacks {
 
     override fun onActivityPaused(activity: Activity?) {
         authorize.invoke(true)
-        activity?.run {
-            if (isFinishing) {
-                if (this is PinActivity) {
-                    overridePendingTransition(R.anim.activity_stay_slide_bottom, R.anim.slide_bottom_down)
-                } else if (this !is MainActivity) {
-                    overridePendingTransition(R.anim.screen_left_in, R.anim.screen_right_out)
+        activity?.let {
+            if (it.isFinishing) {
+                if (it is PinActivity) {
+                    it.overridePendingTransition(R.anim.activity_stay_slide_bottom, R.anim.slide_bottom_down)
+                } else if (it !is MainActivity) {
+                    it.overridePendingTransition(R.anim.screen_left_in, R.anim.screen_right_out)
                 }
             }
         }
@@ -183,11 +183,11 @@ class MyApp : Application(), Application.ActivityLifecycleCallbacks {
 * добавить достижения с анимацией
 * добавить превью возможностей дневника
 * сделать пейджер на экране премиума
-* перенести аналитику в репозиторий
 *   добавить удаление заметок по свайпу
 *   сделать отмену удаления в списке
 *   добавить кнопку очистки фильтров
 *   исправить баг с дефолтными настройками внешнего вида
+*   подробнее описать условия оплаты
 *
 * */
 

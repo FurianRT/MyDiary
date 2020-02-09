@@ -29,14 +29,14 @@ class StorageHelperImp @Inject constructor(@AppContext context: Context) : Stora
     private val mCompressor = Compressor(context)
     private val mExternalDir = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES)
     private val mInternalDir = context.filesDir
-    private val mAvailableDir = if (isExternalStorageWritable()) {
-        mExternalDir!!
+    private val mAvailableDir = if (mExternalDir != null && isExternalStorageWritable()) {
+        mExternalDir
     } else {
         mInternalDir
     }
 
     override fun deleteFile(fileName: String): Boolean =
-            if (File(mExternalDir, fileName).delete()) {
+            if (mExternalDir != null && File(mExternalDir, fileName).delete()) {
                 true
             } else {
                 File(mInternalDir, fileName).delete()

@@ -12,7 +12,7 @@ package com.furianrt.mydiary.presentation.screens.main.fragments.premium
 
 import javax.inject.Inject
 
-class Premiupresenter @Inject constructor() : PremiumContract.Presenter() {
+class PremiumPresenter @Inject constructor() : PremiumContract.Presenter() {
 
     override fun onButtonCloseClick() {
         view?.close()

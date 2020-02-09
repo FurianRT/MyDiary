@@ -15,17 +15,17 @@ import com.google.gson.annotations.SerializedName
 import kotlinx.android.parcel.Parcelize
 
 @Parcelize
-data class Forecast(
-        @SerializedName("weather") val weather: List<Weather>,
-        @SerializedName("main") val main: Main,
-        @SerializedName("wind") val wind: Wind,
+data class ForecastResponse(
+        @SerializedName("weather") val weather: List<WeatherResponse>,
+        @SerializedName("main") val main: MainResponse,
+        @SerializedName("wind") val wind: WindResponse,
         @SerializedName("id") val id: Int,
         @SerializedName("name") val name: String,
         @SerializedName("cod") val cod: Int
 ) : Parcelable
 
 @Parcelize
-data class Main(
+data class MainResponse(
         @SerializedName("temp") val temp: Double,
         @SerializedName("humidity") val humidity: Int,
         @SerializedName("temp_min") val tempMin: Double,
@@ -33,13 +33,13 @@ data class Main(
 ) : Parcelable
 
 @Parcelize
-data class Weather(
+data class WeatherResponse(
         @SerializedName("id") val id: Int,
         @SerializedName("description") val description: String,
         @SerializedName("icon") val icon: String
 ) : Parcelable
 
 @Parcelize
-data class Wind(
+data class WindResponse(
         @SerializedName("speed") val speed: Double
 ) : Parcelable

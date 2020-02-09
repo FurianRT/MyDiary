@@ -12,12 +12,12 @@ package com.furianrt.mydiary.domain.get
 
 import com.furianrt.mydiary.model.entity.MyProfile
 import com.furianrt.mydiary.model.gateway.profile.ProfileGateway
-import io.reactivex.Observable
+import io.reactivex.Flowable
 import javax.inject.Inject
 
 class GetProfileUseCase @Inject constructor(
         private val profileGateway: ProfileGateway
 ) {
 
-    fun invoke(): Observable<MyProfile> = profileGateway.getDbProfile()
+    fun invoke(): Flowable<MyProfile> = profileGateway.getDbProfile()
 }

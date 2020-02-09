@@ -13,7 +13,7 @@ package com.furianrt.mydiary.model.gateway.image
 import android.graphics.Bitmap
 import com.furianrt.mydiary.model.entity.MyHeaderImage
 import com.furianrt.mydiary.model.entity.MyImage
-import com.furianrt.mydiary.model.source.api.images.ImageApiService
+import com.furianrt.mydiary.model.source.api.images.ImagesApiService
 import com.furianrt.mydiary.model.source.auth.AuthHelper
 import com.furianrt.mydiary.model.source.cloud.CloudHelper
 import com.furianrt.mydiary.model.source.database.dao.HeaderImageDao
@@ -30,7 +30,7 @@ class ImageGatewayImp @Inject constructor(
         private val headerImageDao: HeaderImageDao,
         private val prefs: PreferencesHelper,
         private val storage: StorageHelper,
-        private val imageApi: ImageApiService,
+        private val imagesApi: ImagesApiService,
         private val cloud: CloudHelper,
         private val auth: AuthHelper,
         private val scheduler: MyRxUtils.BaseSchedulerProvider
@@ -113,7 +113,7 @@ class ImageGatewayImp @Inject constructor(
                     .subscribeOn(scheduler.io())
 
     override fun loadHeaderImages(category: String, page: Int, perPage: Int): Single<List<MyHeaderImage>> =
-            imageApi.getImages(category, page, perPage)
+            imagesApi.getImages(category, page, perPage)
                     .map { response ->
                         response.images
                                 .map { MyHeaderImage(it.id, it.largeImageURL, DateTime.now().millis) }

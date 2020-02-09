@@ -15,14 +15,14 @@ import com.google.gson.annotations.SerializedName
 import kotlinx.android.parcel.Parcelize
 
 @Parcelize
-data class ImageResponse(
-        @SerializedName("hits") val images: List<Image>,
+data class ImagesResponse(
+        @SerializedName("hits") val images: List<ImageResponse>,
         @SerializedName("total") val total: Int,
         @SerializedName("totalHits") val totalImages: Int
 ) : Parcelable
 
 @Parcelize
-data class Image(
+data class ImageResponse(
         @SerializedName("comments") val comments: Int,
         @SerializedName("downloads") val downloads: Int,
         @SerializedName("favorites") val favorites: Int,

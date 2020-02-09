@@ -13,7 +13,7 @@ package com.furianrt.mydiary.di.application.modules.network
 import com.facebook.stetho.okhttp3.StethoInterceptor
 import com.furianrt.mydiary.BuildConfig
 import com.furianrt.mydiary.model.source.api.forecast.WeatherApiService
-import com.furianrt.mydiary.model.source.api.images.ImageApiService
+import com.furianrt.mydiary.model.source.api.images.ImagesApiService
 import com.furianrt.mydiary.di.application.component.AppScope
 import dagger.Module
 import dagger.Provides
@@ -138,6 +138,6 @@ object ApiModule {
     @JvmStatic
     @Provides
     @AppScope
-    fun provideImageApiService(@ImageApi retrofit: Retrofit): ImageApiService =
-            retrofit.create(ImageApiService::class.java)
+    fun provideImageApiService(@ImageApi retrofit: Retrofit): ImagesApiService =
+            retrofit.create(ImagesApiService::class.java)
 }

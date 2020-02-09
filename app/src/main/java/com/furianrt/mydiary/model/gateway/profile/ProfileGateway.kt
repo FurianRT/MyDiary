@@ -12,6 +12,7 @@ package com.furianrt.mydiary.model.gateway.profile
 
 import com.furianrt.mydiary.model.entity.MyProfile
 import io.reactivex.Completable
+import io.reactivex.Flowable
 import io.reactivex.Observable
 import io.reactivex.Single
 
@@ -25,7 +26,7 @@ interface ProfileGateway {
     fun insertProfile(profile: MyProfile): Completable
     fun updateDbProfile(profile: MyProfile): Completable
     fun clearDbProfile(): Completable
-    fun getDbProfile(): Observable<MyProfile>
+    fun getDbProfile(): Flowable<MyProfile>
     fun getDbProfileCount(): Single<Int>
     fun isProfileExists(email: String): Single<Boolean>
     fun updateProfile(profile: MyProfile): Completable

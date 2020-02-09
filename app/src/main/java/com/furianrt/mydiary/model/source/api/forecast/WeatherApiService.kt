@@ -20,5 +20,5 @@ interface WeatherApiService {
     fun getForecast(
             @Query("lat") lat: Double,
             @Query("lon") lon: Double
-    ): Single<Forecast>
+    ): Single<ForecastResponse>
 }

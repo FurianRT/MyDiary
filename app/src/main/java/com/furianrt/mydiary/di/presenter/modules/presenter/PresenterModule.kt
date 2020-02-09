@@ -64,7 +64,7 @@ import com.furianrt.mydiary.presentation.screens.main.fragments.imagesettings.Im
 import com.furianrt.mydiary.presentation.screens.main.fragments.imagesettings.settings.DailySettingsContract
 import com.furianrt.mydiary.presentation.screens.main.fragments.imagesettings.settings.DailySettingsPresenter
 import com.furianrt.mydiary.presentation.screens.main.fragments.premium.PremiumContract
-import com.furianrt.mydiary.presentation.screens.main.fragments.premium.Premiupresenter
+import com.furianrt.mydiary.presentation.screens.main.fragments.premium.PremiumPresenter
 import com.furianrt.mydiary.presentation.screens.main.fragments.profile.ProfileContract
 import com.furianrt.mydiary.presentation.screens.main.fragments.profile.ProfilePresenter
 import com.furianrt.mydiary.presentation.screens.main.fragments.profile.about.AboutProfileContract
@@ -163,7 +163,7 @@ interface PresenterModule {
 
     @Binds
     @PresenterScope
-    fun premiupresenter(presenter: Premiupresenter): PremiumContract.Presenter
+    fun premiupresenter(presenter: PremiumPresenter): PremiumContract.Presenter
 
     @Binds
     @PresenterScope
