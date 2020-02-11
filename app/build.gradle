@@ -50,8 +50,6 @@ android {
         it.buildConfigField 'String', 'LICENSE_KEY', licenseKey
         it.buildConfigField 'String', 'ITEM_PREMIUM_SKU', itemPremiumSku
         it.resValue("string", "GEO_API_KEY", geoApiKey)
-        it.resValue("string", "BANNER_AD_APP_ID", bannerAdAppId)
-        it.resValue("string", "BANNER_AD_UNIT_ID", bannerAdUnitId)
     }
 
     compileOptions {
@@ -160,7 +158,6 @@ dependencies {
     implementation 'com.google.firebase:firebase-firestore:21.4.0'
     implementation 'com.google.firebase:firebase-messaging:20.1.0'
     implementation 'com.google.firebase:firebase-auth:19.2.0'
-    implementation 'com.google.firebase:firebase-ads:18.3.0'
 
     //Rx for Firebase
     implementation 'com.github.FrangSierra:RxFirebase:1.5.6'

@@ -149,7 +149,6 @@
         <ImageView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginStart="80dp"
             android:src="@drawable/ic_done_big"
             tools:ignore="ContentDescription" />
 

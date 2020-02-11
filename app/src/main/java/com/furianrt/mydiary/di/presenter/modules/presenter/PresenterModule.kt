@@ -163,7 +163,7 @@ interface PresenterModule {
 
     @Binds
     @PresenterScope
-    fun premiupresenter(presenter: PremiumPresenter): PremiumContract.Presenter
+    fun premiumPresenter(presenter: PremiumPresenter): PremiumContract.Presenter
 
     @Binds
     @PresenterScope

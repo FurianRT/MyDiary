@@ -57,12 +57,14 @@ import com.furianrt.mydiary.presentation.screens.pin.fragments.backupemail.Backu
 import com.furianrt.mydiary.presentation.screens.pin.fragments.sendemail.SendEmailFragment
 import com.furianrt.mydiary.presentation.screens.settings.global.GlobalSettingsFragment
 import com.furianrt.mydiary.presentation.screens.settings.note.NoteSettingsFragment
+import com.furianrt.mydiary.services.MessagingService
 import com.furianrt.mydiary.services.SyncService
 import dagger.Subcomponent
 
 @PresenterScope
 @Subcomponent(modules = [PresenterContextModule::class, PresenterModule::class])
 interface PresenterComponent {
+    fun inject(service: MessagingService)
     fun inject(service: SyncService)
     fun inject(activity: BaseActivity)
     fun inject(activity: MainActivity)

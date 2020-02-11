@@ -23,6 +23,7 @@ import android.view.ViewGroup
 import android.view.WindowInsets
 import android.view.animation.AnticipateOvershootInterpolator
 import android.view.animation.OvershootInterpolator
+import android.widget.Toast
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -41,6 +42,9 @@ import com.furianrt.mydiary.presentation.screens.main.fragments.profile.ProfileF
 import com.furianrt.mydiary.services.SyncService
 import com.furianrt.mydiary.utils.*
 import com.google.android.material.bottomsheet.BottomSheetBehavior
+import io.reactivex.Single
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.bottom_sheet_main.*
 import kotlinx.android.synthetic.main.fragment_drawer_menu.*
@@ -132,12 +136,23 @@ class DrawerMenuFragment : BaseFragment(R.layout.fragment_drawer_menu), DrawerMe
         }
 
         button_sync.setOnClickListener {
-            mListener?.let {
-                if (it.getIsBillingInitialized()) {
-                    if (it.getIsItemPurchased(BuildConfig.ITEM_PREMIUM_SKU)) {
+            mListener?.let { listener ->
+                if (listener.getIsBillingInitialized()) {
+                    if (listener.getIsItemPurchased(BuildConfig.ITEM_PREMIUM_SKU)) {
                         presenter.onButtonSyncClick()
                     } else {
-                        presenter.onButtonPremiumClick()
+                        addDisposable(Single.fromCallable { listener.loadOwnedPurchases() }
+                                .subscribeOn(Schedulers.io())
+                                .observeOn(AndroidSchedulers.mainThread())
+                                .subscribe { loaded ->
+                                    if (!loaded) {
+                                        Toast.makeText(requireContext(), R.string.network_error, Toast.LENGTH_SHORT).show()
+                                    } else if (listener.getIsItemPurchased(BuildConfig.ITEM_PREMIUM_SKU)) {
+                                        presenter.onButtonSyncClick()
+                                    } else {
+                                        presenter.onButtonPremiumClick()
+                                    }
+                                })
                     }
                 }
             }
@@ -477,6 +492,7 @@ class DrawerMenuFragment : BaseFragment(R.layout.fragment_drawer_menu), DrawerMe
 
     interface OnDrawerMenuInteractionListener {
         fun getIsBillingInitialized(): Boolean
+        fun loadOwnedPurchases(): Boolean
         fun getIsItemPurchased(productId: String): Boolean
         fun onTagCheckStateChange(tag: MyTag, checked: Boolean)
         fun onCategoryCheckStateChange(category: MyCategory, checked: Boolean)

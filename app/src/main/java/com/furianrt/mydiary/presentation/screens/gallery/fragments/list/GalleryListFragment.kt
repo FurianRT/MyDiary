@@ -13,6 +13,7 @@ package com.furianrt.mydiary.presentation.screens.gallery.fragments.list
 import android.Manifest
 import android.animation.Animator
 import android.app.Activity
+import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
 import android.content.res.Configuration
@@ -357,7 +358,13 @@ class GalleryListFragment : BaseFragment(R.layout.fragment_gallery_list), Galler
                 type = "image/*"
                 putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true)
                 action = Intent.ACTION_GET_CONTENT
-                startActivityForResult(Intent.createChooser(this, ""), IMAGE_PICKER_REQUEST_CODE)
+                try {
+                    startActivityForResult(Intent.createChooser(this, ""), IMAGE_PICKER_REQUEST_CODE)
+                } catch (e: ActivityNotFoundException) {
+                    e.printStackTrace()
+                    analytics.sendEvent(MyAnalytics.EVENT_GALLERY_NOT_FOUND_ERROR)
+                    Toast.makeText(requireContext(), getString(R.string.phone_related_error), Toast.LENGTH_SHORT).show()
+                }
             }
         }
         mListener?.onGalleryListImagePickerOpen()

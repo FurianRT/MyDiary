@@ -13,7 +13,6 @@ package com.furianrt.mydiary.model.gateway.device
 import android.graphics.Bitmap
 import com.anjlab.android.iab.v3.BillingProcessor
 import com.furianrt.mydiary.model.entity.MyLocation
-import com.hbisoft.pickit.PickiTCallbacks
 
 interface DeviceGateway : BillingProcessor.IBillingHandler {
     fun isFingerprintEnabled(): Boolean

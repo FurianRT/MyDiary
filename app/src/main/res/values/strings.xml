@@ -279,8 +279,8 @@
     <string name="fragment_premium_advantages">Premium features:</string>
     <string name="fragment_premium_cloud_sync">Cloud sync</string>
     <string name="fragment_premium_cloud_sync_description">Afraid to lose your notes? This feature will allow you synchronize and save your notes in cloud for easy access!</string>
-    <string name="fragment_premium_no_ads">No more advertising</string>
-    <string name="fragment_premium_no_ads_description">Take notes without being distracted by anything!</string>
+    <string name="fragment_premium_life_time">One-time purchase</string>
+    <string name="fragment_premium_life_time_description">Works on all devices with the same Google account</string>
     <string name="fragment_premium_access_to_new_features">Access to future premium features</string>
     <string name="dialog_rate_continue">%1$d/%2$d\nContinue</string>
     <string name="dialog_rate_never_ask_again">Never ask again</string>
@@ -305,4 +305,5 @@
     <string name="panorama_activation_settings_on">Disable panoramic photos</string>
     <string name="panorama_activation_settings_off">Enable panoramic photos</string>
     <string name="panorama_activation_settings_title">Panoramic photos</string>
+    <string name="phone_related_error">For some reason, your smartphone cannot perform this operation</string>
 </resources>

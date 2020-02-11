@@ -66,21 +66,15 @@ import com.furianrt.mydiary.utils.getDisplayWidth
 import com.furianrt.mydiary.utils.inTransaction
 import com.furianrt.mydiary.presentation.general.StickyHeaderItemDecoration
 import com.furianrt.mydiary.presentation.screens.statistics.StatsActivity
-import com.google.android.gms.ads.AdListener
-import com.google.android.gms.ads.AdRequest
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.bottomsheet.BottomSheetBehavior
-import io.reactivex.Single
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.disposables.Disposable
-import io.reactivex.schedulers.Schedulers
 import jp.wasabeef.recyclerview.animators.LandingAnimator
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.activity_main_toolbar.*
 import kotlinx.android.synthetic.main.bottom_sheet_main.*
 import kotlinx.android.synthetic.main.empty_search_note_list.*
 import org.joda.time.DateTime
-import java.util.*
+import java.util.TreeMap
 import javax.inject.Inject
 import kotlin.Comparator
 import kotlin.collections.ArrayList
@@ -132,7 +126,6 @@ class MainActivity : BaseActivity(R.layout.activity_main), MainActivityContract.
     private var mIsAppBarExpandEnabled = false
     private val mHandler = Handler()
     private var mStatusBarHeight = 0
-    private var mBillingDisposable: Disposable? = null
     private val mBottomSheetOpenRunnable: Runnable = Runnable {
         mBottomSheet.state = BottomSheetBehavior.STATE_EXPANDED
     }
@@ -290,48 +283,18 @@ class MainActivity : BaseActivity(R.layout.activity_main), MainActivityContract.
         presenter.onDateFilterChange(startDate, endDate)
     }
 
-    override fun onBillingInitialized() {
-        super.onBillingInitialized()
-        if (mBillingDisposable?.isDisposed == false) {
-            mBillingDisposable?.dispose()
-        }
-        mBillingDisposable = Single.fromCallable { loadOwnedPurchasesFromGoogle() }
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .ignoreElement()
-                .subscribe {
-                    if (!getIsItemPurchased(BuildConfig.ITEM_PREMIUM_SKU)) {
-                        showAdView()
-                    }
-                }
-    }
-
     override fun onProductPurchased(productId: String, details: TransactionDetails?) {
         super.onProductPurchased(productId, details)
         if (productId == BuildConfig.ITEM_PREMIUM_SKU) {
             closeBottomSheet()
-            hideAdView()
         }
     }
 
     override fun getIsBillingInitialized(): Boolean = isBillingInitialized()
 
+    override fun loadOwnedPurchases(): Boolean = loadOwnedPurchasesFromGoogle()
+
     override fun getIsItemPurchased(productId: String): Boolean = isItemPurchased(productId)
-
-    private fun showAdView() {
-        view_ad?.adListener = object : AdListener() {
-            override fun onAdLoaded() {
-                super.onAdLoaded()
-                view_ad?.visibility = View.VISIBLE
-            }
-        }
-        view_ad?.loadAd(AdRequest.Builder().build())
-    }
-
-    private fun hideAdView() {
-        view_ad?.destroy()
-        view_ad?.visibility = View.GONE
-    }
 
     override fun showHeaderImage(image: MyHeaderImage) {
         Log.e(TAG, "showHeaderImage")
@@ -789,12 +752,5 @@ class MainActivity : BaseActivity(R.layout.activity_main), MainActivityContract.
         list_main.removeOnScrollListener(mAdapter.preloader)
         list_main.removeOnScrollListener(mQuickScrollListener)
         mHandler.removeCallbacks(mBottomSheetOpenRunnable)
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        if (mBillingDisposable?.isDisposed == false) {
-            mBillingDisposable?.dispose()
-        }
     }
 }

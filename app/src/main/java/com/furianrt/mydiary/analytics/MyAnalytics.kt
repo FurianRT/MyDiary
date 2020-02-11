@@ -94,6 +94,7 @@ interface MyAnalytics {
         const val EVENT_IMAGE_SAVE_ERROR = "image_save_error"
         const val EVENT_IMAGE_COPY_ERROR = "image_copy_error"
         const val EVENT_FORECAST_LOAD_ERROR = "forecast_load_error"
+        const val EVENT_GALLERY_NOT_FOUND_ERROR = "gallery_not_found_error"
 
         //Event parameters
         const val BUNDLE_TASK_INDEX = "task_index"

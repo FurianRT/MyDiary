@@ -159,22 +159,19 @@ class CalendarDayView : AppCompatTextView {
             }
 
             when {
-                showCircle -> {
-                    canvas?.drawCircle(
-                            mBorderRect.centerX(),
-                            mBorderRect.centerY(),
-                            mRadius - mPortionWidth,
-                            mPaint
-                    )
-                }
-                else -> {
-                    canvas?.drawCircle(
-                            mBorderRect.centerX(),
-                            mBorderRect.centerY(),
-                            min(mBorderRect.height() / 2.0f, mBorderRect.width() / 2.0f),
-                            mPaint
-                    )
-                }
+                showCircle -> canvas?.drawCircle(
+                        mBorderRect.centerX(),
+                        mBorderRect.centerY(),
+                        mRadius - mPortionWidth,
+                        mPaint
+                )
+
+                else -> canvas?.drawCircle(
+                        mBorderRect.centerX(),
+                        mBorderRect.centerY(),
+                        min(mBorderRect.height() / 2.0f, mBorderRect.width() / 2.0f),
+                        mPaint
+                )
             }
         }
     }
@@ -198,23 +195,13 @@ class CalendarDayView : AppCompatTextView {
 
     fun setColors(colors: List<Int>) {
         val result = mutableListOf<Portion>()
-        val groups = colors.groupingBy { it }
-                .eachCount()
-                .toList()
-                .sortedByDescending { it.second }
-                .toMap()
-        for (i in 0 until groups.size) {
-            val start = if (i == 0) {
-                START_DEGREE
-            } else {
-                result[i - 1].startAngle + result[i - 1].sweepAngle
-            }
-            val portion = Portion(
-                    groups.keys.toList()[i],
-                    start,
-                    (groups.getValue(groups.keys.toList()[i]).toFloat() / colors.size.toFloat() * 360f)
-            )
-            result.add(portion)
+        val portionSize = 360f / colors.size.toFloat()
+        colors.forEachIndexed { index, color ->
+            result.add(Portion(
+                    color,
+                    START_DEGREE + index * portionSize,
+                    portionSize
+            ))
         }
         mPortions.clear()
         mPortions.addAll(result)

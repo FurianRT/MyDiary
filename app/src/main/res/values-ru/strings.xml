@@ -272,8 +272,8 @@
     <string name="fragment_premium_advantages">Преимущества премиум версии:</string>
     <string name="fragment_premium_cloud_sync">Синхронизация с облаком</string>
     <string name="fragment_premium_cloud_sync_description">Можно не опасаться потери накопленных заметок!</string>
-    <string name="fragment_premium_no_ads">Больше никакой рекламы</string>
-    <string name="fragment_premium_no_ads_description">Делайте заметки не отвлекаясь ни на что!</string>
+    <string name="fragment_premium_life_time">Разовая покупка</string>
+    <string name="fragment_premium_life_time_description">Работает на всех устройствах с тем же Google-аккаунтом</string>
     <string name="fragment_premium_access_to_new_features">Доступ к будущим премиум функциям</string>
     <string name="dialog_rate_continue">%1$d/%2$d\nПродолжить</string>
     <string name="dialog_rate_never_ask_again">Не спрашивать</string>
@@ -298,4 +298,5 @@
     <string name="panorama_activation_settings_on">Отключить панорамные фото</string>
     <string name="panorama_activation_settings_off">Включить панорамные фото</string>
     <string name="panorama_activation_settings_title">Панорамные фото</string>
+    <string name="phone_related_error">По каким-то причинам, ваш смартфон не может произвести данную операцию</string>
 </resources>

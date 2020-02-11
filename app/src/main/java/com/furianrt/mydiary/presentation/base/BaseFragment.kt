@@ -16,12 +16,16 @@ import androidx.annotation.LayoutRes
 import androidx.fragment.app.Fragment
 import com.furianrt.mydiary.R
 import com.furianrt.mydiary.analytics.MyAnalytics
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.disposables.Disposable
 import javax.inject.Inject
 
 abstract class BaseFragment(@LayoutRes contentLayoutId: Int) : Fragment(contentLayoutId), BaseView {
 
     @Inject
     lateinit var analytics: MyAnalytics
+
+    private val mCompositeDisposable = CompositeDisposable()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         getPresenterComponent(requireContext()).inject(this)
@@ -36,5 +40,14 @@ abstract class BaseFragment(@LayoutRes contentLayoutId: Int) : Fragment(contentL
     override fun startActivityForResult(intent: Intent?, requestCode: Int) {
         super.startActivityForResult(intent, requestCode)
         requireActivity().overridePendingTransition(R.anim.screen_right_in, R.anim.screen_left_out)
+    }
+
+    protected fun addDisposable(disposable: Disposable) {
+        mCompositeDisposable.add(disposable)
+    }
+
+    override fun onStop() {
+        super.onStop()
+        mCompositeDisposable.clear()
     }
 }

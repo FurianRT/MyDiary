@@ -27,6 +27,8 @@ import com.furianrt.mydiary.domain.get.GetAppAccentColorUseCase
 import com.furianrt.mydiary.domain.get.GetAppPrimaryColorUseCase
 import com.furianrt.mydiary.utils.getColorSupport
 import com.furianrt.mydiary.presentation.screens.pin.PinActivity
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.disposables.Disposable
 import javax.inject.Inject
 
 abstract class BaseActivity(@LayoutRes contentLayoutId: Int) : AppCompatActivity(contentLayoutId),
@@ -55,9 +57,14 @@ abstract class BaseActivity(@LayoutRes contentLayoutId: Int) : AppCompatActivity
     lateinit var getAppAccentColor: GetAppAccentColorUseCase
 
     private lateinit var mBillingProcessor: BillingProcessor
+    private val mCompositeDisposable = CompositeDisposable()
 
     protected open var needLockScreen = true
     protected open var skipOneLock = false
+
+    protected fun addDisposable(disposable: Disposable) {
+        mCompositeDisposable.add(disposable)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         getPresenterComponent(this).inject(this)
@@ -85,13 +92,7 @@ abstract class BaseActivity(@LayoutRes contentLayoutId: Int) : AppCompatActivity
     protected fun isOneTimePurchaseSupported() =
             BillingProcessor.isIabServiceAvailable(this) && mBillingProcessor.isOneTimePurchaseSupported
 
-    protected fun loadOwnedPurchasesFromGoogle() {
-        if (mBillingProcessor.loadOwnedPurchasesFromGoogle()) {
-            Log.e(TAG, "loadOwnedPurchasesFromGoogle - success")
-        } else {
-            Log.e(TAG, "loadOwnedPurchasesFromGoogle - failure")
-        }
-    }
+    protected fun loadOwnedPurchasesFromGoogle(): Boolean = mBillingProcessor.loadOwnedPurchasesFromGoogle()
 
     protected fun purchaseItem(productId: String) = mBillingProcessor.purchase(this, productId)
 
@@ -124,6 +125,11 @@ abstract class BaseActivity(@LayoutRes contentLayoutId: Int) : AppCompatActivity
         } else if (needLockScreen) {
             openPinScreen()
         }
+    }
+
+    override fun onStop() {
+        super.onStop()
+        mCompositeDisposable.clear()
     }
 
     private fun openPinScreen() {
