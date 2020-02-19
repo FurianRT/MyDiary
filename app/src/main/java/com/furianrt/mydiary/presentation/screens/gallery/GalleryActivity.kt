@@ -13,16 +13,11 @@ package com.furianrt.mydiary.presentation.screens.gallery
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.view.View
-import com.anjlab.android.iab.v3.TransactionDetails
-import com.furianrt.mydiary.BuildConfig
 import com.furianrt.mydiary.R
 import com.furianrt.mydiary.presentation.base.BaseActivity
 import com.furianrt.mydiary.presentation.screens.gallery.fragments.list.GalleryListFragment
 import com.furianrt.mydiary.presentation.screens.gallery.fragments.pager.GalleryPagerFragment
 import com.furianrt.mydiary.utils.inTransaction
-import com.google.android.gms.ads.AdListener
-import com.google.android.gms.ads.AdRequest
 import kotlinx.android.synthetic.main.activity_gallery.*
 import javax.inject.Inject
 
@@ -61,35 +56,6 @@ class GalleryActivity : BaseActivity(R.layout.activity_gallery), GalleryActivity
                         GalleryPagerFragment.TAG)
             }
         }
-    }
-
-    override fun onBillingInitialized() {
-        super.onBillingInitialized()
-        if (!isItemPurchased(BuildConfig.ITEM_PREMIUM_SKU)) {
-            showAdView()
-        }
-    }
-
-    override fun onProductPurchased(productId: String, details: TransactionDetails?) {
-        super.onProductPurchased(productId, details)
-        if (productId == BuildConfig.ITEM_PREMIUM_SKU) {
-            hideAdView()
-        }
-    }
-
-    private fun showAdView() {
-        view_ad?.adListener = object : AdListener() {
-            override fun onAdLoaded() {
-                super.onAdLoaded()
-                view_ad?.visibility = View.VISIBLE
-            }
-        }
-        view_ad?.loadAd(AdRequest.Builder().build())
-    }
-
-    private fun hideAdView() {
-        view_ad?.destroy()
-        view_ad?.visibility = View.GONE
     }
 
     override fun onStart() {

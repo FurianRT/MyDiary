@@ -22,6 +22,7 @@
     <string name="send">Отправить</string>
     <string name="done">Готово</string>
     <string name="add">Добавить</string>
+    <string name="by_default">По умолчанию</string>
     <string name="network_error">Нет интернет соединения</string>
     <string name="change_password">Сменить пароль</string>
     <string name="wrong_password">Неверный пароль</string>
@@ -140,11 +141,12 @@
     <string name="accent_color_settings_summary">Цвет курсора и второстепенных элементов</string>
     <string name="all_notes_background_settings_summary">Применяется ко всем заметкам для которых не указан отдельно</string>
     <string name="all_notes_background_settings_title">Фон заметки</string>
-    <string name="settings_theme_title">Цвета приложения</string>
+    <string name="settings_theme_title">Настройки приложения</string>
     <string name="settings_note_title">Цвета заметок</string>
     <string name="all_notes_text_background_settings_summary">Применяется ко всем заметкам для которых не указан отдельно</string>
     <string name="all_notes_text_background_settings_title">Фон текста заметки</string>
     <string name="all_notes_text_size_settings_title">Размер шрифта</string>
+    <string name="all_notes_text_style_settings_title">Стиль шрифта</string>
     <string name="all_notes_text_color_settings_summary">Применяется ко всем заметкам для которых не указан отдельно</string>
     <string name="all_notes_text_color_settings_title">Цвет текста</string>
     <string name="time_format">Формат времени</string>
@@ -272,8 +274,8 @@
     <string name="fragment_premium_advantages">Преимущества премиум версии:</string>
     <string name="fragment_premium_cloud_sync">Синхронизация с облаком</string>
     <string name="fragment_premium_cloud_sync_description">Можно не опасаться потери накопленных заметок!</string>
-    <string name="fragment_premium_no_ads">Больше никакой рекламы</string>
-    <string name="fragment_premium_no_ads_description">Делайте заметки не отвлекаясь ни на что!</string>
+    <string name="fragment_premium_life_time">Разовая покупка</string>
+    <string name="fragment_premium_life_time_description">Работает на всех устройствах с тем же Google-аккаунтом</string>
     <string name="fragment_premium_access_to_new_features">Доступ к будущим премиум функциям</string>
     <string name="dialog_rate_continue">%1$d/%2$d\nПродолжить</string>
     <string name="dialog_rate_never_ask_again">Не спрашивать</string>
@@ -298,4 +300,5 @@
     <string name="panorama_activation_settings_on">Отключить панорамные фото</string>
     <string name="panorama_activation_settings_off">Включить панорамные фото</string>
     <string name="panorama_activation_settings_title">Панорамные фото</string>
+    <string name="phone_related_error">По каким-то причинам, ваш смартфон не может произвести данную операцию</string>
 </resources>

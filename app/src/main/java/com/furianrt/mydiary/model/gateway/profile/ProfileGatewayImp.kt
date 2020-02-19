@@ -16,6 +16,7 @@ import com.furianrt.mydiary.model.source.cloud.CloudHelper
 import com.furianrt.mydiary.model.source.database.dao.ProfileDao
 import com.furianrt.mydiary.utils.MyRxUtils
 import io.reactivex.Completable
+import io.reactivex.Flowable
 import io.reactivex.Observable
 import io.reactivex.Single
 import javax.inject.Inject
@@ -39,7 +40,7 @@ class ProfileGatewayImp @Inject constructor(
             profileDao.clearProfile()
                     .subscribeOn(scheduler.io())
 
-    override fun getDbProfile(): Observable<MyProfile> =
+    override fun getDbProfile(): Flowable<MyProfile> =
             profileDao.getProfile()
                     .subscribeOn(scheduler.io())
 

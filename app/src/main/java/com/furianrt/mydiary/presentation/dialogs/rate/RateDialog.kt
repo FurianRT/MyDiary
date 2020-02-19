@@ -12,10 +12,12 @@ package com.furianrt.mydiary.presentation.dialogs.rate
 
 import android.annotation.SuppressLint
 import android.app.Dialog
+import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.widget.RatingBar
+import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import com.furianrt.mydiary.R
 import com.furianrt.mydiary.presentation.base.BaseDialog
@@ -58,7 +60,11 @@ class RateDialog : BaseDialog(), RateDialogContract.View {
         val playMarketPage = "market://details?id=${requireContext().packageName}"
         val intent = Intent(Intent.ACTION_VIEW)
         intent.data = Uri.parse(playMarketPage)
-        startActivity(intent)
+        try {
+            startActivity(intent)
+        } catch (e: ActivityNotFoundException) {
+            Toast.makeText(requireContext(), getString(R.string.phone_related_error), Toast.LENGTH_SHORT).show()
+        }
     }
 
     override fun sendEmailToSupport(supportEmail: String) {

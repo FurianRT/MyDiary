@@ -10,56 +10,49 @@
 
 package com.furianrt.mydiary.presentation.screens.settings.global
 
+import android.app.Activity
 import android.os.Bundle
-import android.view.View
-import com.anjlab.android.iab.v3.TransactionDetails
-import com.furianrt.mydiary.BuildConfig
 import com.furianrt.mydiary.R
 import com.furianrt.mydiary.presentation.base.BaseActivity
-import com.google.android.gms.ads.AdListener
-import com.google.android.gms.ads.AdRequest
 import kotlinx.android.synthetic.main.activity_global_settings.*
 
-class GlobalSettingsActivity : BaseActivity(R.layout.activity_global_settings) {
+class GlobalSettingsActivity : BaseActivity(R.layout.activity_global_settings),
+        GlobalSettingsFragment.GlobalSettingsFragmentListener {
+
+    companion object {
+        private const val BUNDLE_THEME_CHANGED = "theme_changed"
+    }
+
+    private var mThemeChanged = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setSupportActionBar(toolbar_settings_global)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setDisplayShowHomeEnabled(true)
+        savedInstanceState?.let { mThemeChanged = it.getBoolean(BUNDLE_THEME_CHANGED, false) }
     }
 
-    override fun onBillingInitialized() {
-        super.onBillingInitialized()
-        if (!isItemPurchased(BuildConfig.ITEM_PREMIUM_SKU)) {
-            showAdView()
-        }
-    }
-
-    override fun onProductPurchased(productId: String, details: TransactionDetails?) {
-        super.onProductPurchased(productId, details)
-        if (productId == BuildConfig.ITEM_PREMIUM_SKU) {
-            hideAdView()
-        }
-    }
-
-    private fun showAdView() {
-        view_ad?.adListener = object : AdListener() {
-            override fun onAdLoaded() {
-                super.onAdLoaded()
-                view_ad?.visibility = View.VISIBLE
-            }
-        }
-        view_ad?.loadAd(AdRequest.Builder().build())
-    }
-
-    private fun hideAdView() {
-        view_ad?.destroy()
-        view_ad?.visibility = View.GONE
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putBoolean(BUNDLE_THEME_CHANGED, mThemeChanged)
     }
 
     override fun onSupportNavigateUp(): Boolean {
         onBackPressed()
         return true
+    }
+
+    override fun onBackPressed() {
+        if (mThemeChanged) {
+            setResult(Activity.RESULT_OK)
+            finish()
+        } else {
+            super.onBackPressed()
+        }
+    }
+
+    override fun onThemeAttributeChanged() {
+        mThemeChanged = true
     }
 }

@@ -76,8 +76,6 @@ interface NoteFragmentContract {
         abstract fun onTimeSelected(hourOfDay: Int, minute: Int)
         abstract fun onButtonEditClick()
         abstract fun init(noteId: String, newNote: Boolean)
-        abstract fun getNoteTextBuffer(): ArrayList<UndoRedoEntry>
-        abstract fun setNoteTextBuffer(buffer: ArrayList<UndoRedoEntry>)
         abstract fun onNoteTextChange(title: String, content: String, textSpans: List<MyTextSpan>)
         abstract fun onButtonUndoClick()
         abstract fun onButtonRedoClick()

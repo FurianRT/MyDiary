@@ -30,24 +30,24 @@ class NoteSettingsFragment : BasePreference(), NoteSettingsContract.View {
     private var mListener: OnNoteSettingsFragmentListener? = null
 
     private val mPreferenceListener = Preference.OnPreferenceChangeListener { preference, value ->
-        when {
-            preference.key == TEXT_SIZE -> {
+        when (preference.key) {
+            TEXT_SIZE -> {
                 analytics.sendEvent(MyAnalytics.EVENT_NOTE_TEXT_SIZE_CHANGED)
                 presenter.onTextSizeChange((value as String).toInt())
             }
-            preference.key == NOTE_TEXT_COLOR -> {
+            NOTE_TEXT_COLOR -> {
                 analytics.sendEvent(MyAnalytics.EVENT_NOTE_TEXT_COLOR_CHANGED)
                 presenter.onTextColorChange(value as Int)
             }
-            preference.key == SURFACE_TEXT_COLOR -> {
+            SURFACE_TEXT_COLOR -> {
                 analytics.sendEvent(MyAnalytics.EVENT_NOTE_SURFACE_TEXT_COLOR_CHANGED)
                 presenter.onSurfaceTextColorChange(value as Int)
             }
-            preference.key == BACKGROUND_COLOR -> {
+            BACKGROUND_COLOR -> {
                 analytics.sendEvent(MyAnalytics.EVENT_NOTE_BACKGROUND_CHANGED)
                 presenter.onBackgroundColorChange(value as Int)
             }
-            preference.key == TEXT_BACKGROUND_COLOR -> {
+            TEXT_BACKGROUND_COLOR -> {
                 analytics.sendEvent(MyAnalytics.EVENT_NOTE_TEXT_BACKGROUND_CHANGED)
                 presenter.onBackgroundTextColorChange(value as Int)
             }

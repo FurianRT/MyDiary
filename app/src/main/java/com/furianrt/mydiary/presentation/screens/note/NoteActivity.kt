@@ -16,14 +16,9 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.View
 import androidx.viewpager.widget.ViewPager
-import com.anjlab.android.iab.v3.TransactionDetails
-import com.furianrt.mydiary.BuildConfig
 import com.furianrt.mydiary.R
 import com.furianrt.mydiary.presentation.base.BaseActivity
-import com.furianrt.mydiary.utils.KeyboardUtils
 import com.furianrt.mydiary.presentation.screens.note.fragments.mainnote.NoteFragment
-import com.google.android.gms.ads.AdListener
-import com.google.android.gms.ads.AdRequest
 import kotlinx.android.synthetic.main.activity_note.*
 import javax.inject.Inject
 
@@ -67,20 +62,6 @@ class NoteActivity : BaseActivity(R.layout.activity_note), NoteActivityContract.
         }
     }
 
-    private val mKeyboardListener = object : KeyboardUtils.SoftKeyboardToggleListener {
-        override fun onToggleSoftKeyboard(isVisible: Boolean) {
-            if (isVisible) {
-                view_ad?.visibility = View.GONE
-            } else {
-                view_ad?.postDelayed({
-                    if (view_ad?.isLoading == false && !mIsEditModeEnabled) {
-                        view_ad?.visibility = View.VISIBLE
-                    }
-                }, 150L)
-            }
-        }
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         getPresenterComponent(this).inject(this)
         super.onCreate(savedInstanceState)
@@ -113,37 +94,6 @@ class NoteActivity : BaseActivity(R.layout.activity_note), NoteActivityContract.
         outState.putInt(EXTRA_POSITION, pager_note.currentItem)
     }
 
-    override fun onBillingInitialized() {
-        super.onBillingInitialized()
-        if (!isItemPurchased(BuildConfig.ITEM_PREMIUM_SKU)) {
-            showAdView()
-        }
-    }
-
-    override fun onProductPurchased(productId: String, details: TransactionDetails?) {
-        super.onProductPurchased(productId, details)
-        if (productId == BuildConfig.ITEM_PREMIUM_SKU) {
-            hideAdView()
-        }
-    }
-
-    private fun showAdView() {
-        view_ad?.adListener = object : AdListener() {
-            override fun onAdLoaded() {
-                super.onAdLoaded()
-                if (!KeyboardUtils.isKeyboardVisible()) {
-                    view_ad?.visibility = View.VISIBLE
-                }
-            }
-        }
-        view_ad?.loadAd(AdRequest.Builder().build())
-    }
-
-    private fun hideAdView() {
-        view_ad?.destroy()
-        view_ad?.visibility = View.GONE
-    }
-
     override fun showNotes(noteIds: List<String>) {
         if (mPagerPosition >= noteIds.size) {
             mPagerPosition = noteIds.size - 1
@@ -163,7 +113,6 @@ class NoteActivity : BaseActivity(R.layout.activity_note), NoteActivityContract.
     override fun onNoteFragmentEditModeEnabled() {
         pager_note.swipeEnabled = false
         text_toolbar_title.visibility = View.GONE
-        view_ad.visibility = View.GONE
         mIsEditModeEnabled = true
     }
 
@@ -188,13 +137,11 @@ class NoteActivity : BaseActivity(R.layout.activity_note), NoteActivityContract.
         super.onStart()
         presenter.attachView(this)
         pager_note.addOnPageChangeListener(mOnPageChangeListener)
-        KeyboardUtils.addKeyboardToggleListener(this, mKeyboardListener)
     }
 
     override fun onStop() {
         super.onStop()
         pager_note.removeOnPageChangeListener(mOnPageChangeListener)
-        KeyboardUtils.removeKeyboardToggleListener(mKeyboardListener)
         presenter.detachView()
     }
 

@@ -12,8 +12,8 @@ android {
         applicationId "com.furianrt.mydiary"
         minSdkVersion 21
         targetSdkVersion 29
-        versionCode 60
-        versionName "1.8.0"
+        versionCode 62
+        versionName "1.8.2"
 
         javaCompileOptions {
             annotationProcessorOptions {
@@ -50,8 +50,6 @@ android {
         it.buildConfigField 'String', 'LICENSE_KEY', licenseKey
         it.buildConfigField 'String', 'ITEM_PREMIUM_SKU', itemPremiumSku
         it.resValue("string", "GEO_API_KEY", geoApiKey)
-        it.resValue("string", "BANNER_AD_APP_ID", bannerAdAppId)
-        it.resValue("string", "BANNER_AD_UNIT_ID", bannerAdUnitId)
     }
 
     compileOptions {
@@ -84,6 +82,8 @@ dependencies {
     implementation 'androidx.constraintlayout:constraintlayout:2.0.0-beta4'
     implementation 'com.google.android.material:material:1.1.0-beta01'
     //todo пофиксть EditText в новой версии
+
+    implementation'com.github.bosphere.android-fadingedgelayout:fadingedgelayout:1.0.0'
 
     //Layout for tags
     implementation 'com.google.android:flexbox:1.1.0'
@@ -126,7 +126,7 @@ dependencies {
     //Image loading
     implementation "com.github.bumptech.glide:glide:$glide_version"
     kapt "com.github.bumptech.glide:compiler:$glide_version"
-    implementation('com.github.bumptech.glide:recyclerview-integration:4.10.0') {
+    implementation('com.github.bumptech.glide:recyclerview-integration:4.11.0') {
         // Excludes the support library because it's already included by Glide.
         transitive = false
     }
@@ -153,12 +153,11 @@ dependencies {
     implementation 'com.github.kizitonwose:CalendarView:0.1.2'
 
     //Firebase
-    implementation 'com.google.firebase:firebase-core:17.2.1'
-    implementation 'com.google.firebase:firebase-storage:19.1.0'
-    implementation 'com.google.firebase:firebase-firestore:21.3.1'
+    implementation 'com.google.firebase:firebase-core:17.2.2'
+    implementation 'com.google.firebase:firebase-storage:19.1.1'
+    implementation 'com.google.firebase:firebase-firestore:21.4.0'
     implementation 'com.google.firebase:firebase-messaging:20.1.0'
     implementation 'com.google.firebase:firebase-auth:19.2.0'
-    implementation 'com.google.firebase:firebase-ads:18.3.0'
 
     //Rx for Firebase
     implementation 'com.github.FrangSierra:RxFirebase:1.5.6'

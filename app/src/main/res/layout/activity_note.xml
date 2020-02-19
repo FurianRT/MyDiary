@@ -12,7 +12,7 @@
         android:id="@+id/pager_note"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        app:layout_constraintBottom_toTopOf="@id/view_ad"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -34,17 +34,5 @@
             tools:text="Title" />
 
     </androidx.appcompat.widget.Toolbar>
-
-    <com.google.android.gms.ads.AdView
-        android:id="@+id/view_ad"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:visibility="gone"
-        app:adSize="SMART_BANNER"
-        app:adUnitId="@string/BANNER_AD_UNIT_ID"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        tools:visibility="visible" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

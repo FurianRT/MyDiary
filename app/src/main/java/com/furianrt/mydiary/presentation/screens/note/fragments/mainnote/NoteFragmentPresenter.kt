@@ -22,7 +22,6 @@ import com.furianrt.mydiary.domain.get.*
 import com.furianrt.mydiary.domain.save.AddForecastUseCase
 import com.furianrt.mydiary.domain.save.SaveImagesUseCase
 import com.furianrt.mydiary.domain.save.SaveLocationUseCase
-import com.furianrt.mydiary.domain.update.UpdateNoteSpansUseCase
 import com.furianrt.mydiary.domain.update.UpdateNoteUseCase
 import com.furianrt.mydiary.utils.MyRxUtils
 import org.joda.time.DateTime
@@ -339,13 +338,6 @@ class NoteFragmentPresenter @Inject constructor(
         view?.shoNoteEditView()
     }
 
-    override fun getNoteTextBuffer(): ArrayList<UndoRedoEntry> = mNoteTextBuffer
-
-    override fun setNoteTextBuffer(buffer: ArrayList<UndoRedoEntry>) {
-        mNoteTextBuffer = buffer
-    }
-
-
     override fun onButtonUndoClick() {
         val selectedIndex = mNoteTextBuffer.indexOfFirst { it.current }
         if (selectedIndex > 0) {
@@ -385,6 +377,9 @@ class NoteFragmentPresenter @Inject constructor(
     override fun onNoteTextChange(title: String, content: String, textSpans: List<MyTextSpan>) {
         val foundedIndex = mNoteTextBuffer.indexOfFirst { it.current }
         val selectedIndex = if (foundedIndex == -1) {
+            if (mNoteTextBuffer.isEmpty()) {
+                mNoteTextBuffer.add(UndoRedoEntry(title, content, textSpans, true))
+            }
             mNoteTextBuffer.last().current = true
             mNoteTextBuffer.size - 1
         } else {

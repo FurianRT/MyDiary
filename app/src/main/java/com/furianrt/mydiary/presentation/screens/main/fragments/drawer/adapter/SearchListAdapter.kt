@@ -489,7 +489,7 @@ class SearchListAdapter(
 
                         item.dateColors!![day.date]?.let { colors ->
                             calendarDayView.showCircle = true
-                            calendarDayView.setColors(colors)
+                            calendarDayView.setColors(colors.sorted())
                         }
 
                         val select = mStartDate == day.date && mEndDate == null

@@ -32,13 +32,16 @@ import com.anjlab.android.iab.v3.TransactionDetails
 import com.furianrt.mydiary.BuildConfig
 import com.furianrt.mydiary.R
 import com.furianrt.mydiary.analytics.MyAnalytics
+import com.furianrt.mydiary.di.application.component.AppScope
 import com.furianrt.mydiary.model.gateway.device.DeviceGateway.*
 import com.furianrt.mydiary.utils.generateUniqueId
 import com.hbisoft.pickit.PickiT
 import com.hbisoft.pickit.PickiTCallbacks
+import io.reactivex.Maybe
+import io.reactivex.subjects.PublishSubject
 import java.io.IOException
 
-@AppContext
+@AppScope
 class DeviceGatewayImp @Inject constructor(
         @AppContext private val context: Context,
         private val fusedLocationClient: FusedLocationProviderClient,
@@ -51,9 +54,9 @@ class DeviceGatewayImp @Inject constructor(
         private const val LOCATION_INTERVAL = 1000L
     }
 
+    private val mLocationSubject = PublishSubject.create<MyLocation>()
     private val mBillingProcessor = BillingProcessor(context, BuildConfig.LICENSE_KEY, BuildConfig.MERCHANT_ID, this)
     private val mPickits = mutableListOf<PickiT>()
-    private val mLocationCallbacks = mutableSetOf<OnLocationFoundCallback>()
     private val mLocationCallback = object : LocationCallback() {
         override fun onLocationResult(result: LocationResult?) {
             super.onLocationResult(result)
@@ -64,7 +67,6 @@ class DeviceGatewayImp @Inject constructor(
         }
     }
 
-    @Synchronized
     private fun findAddress(latitude: Double, longitude: Double) {
         val addresses = try {
             geocoder.getFromLocation(latitude, longitude, 1)
@@ -76,11 +78,7 @@ class DeviceGatewayImp @Inject constructor(
         if (addresses.isNotEmpty()) {
             val address = addresses[0].getAddressLine(0)
             if (address != null) {
-                val location = MyLocation(generateUniqueId(), address, latitude, longitude)
-                val iterator = mLocationCallbacks.iterator()
-                while(iterator.hasNext()){
-                    iterator.next().onLocationFound(location)
-                }
+                mLocationSubject.onNext(MyLocation(generateUniqueId(), address, latitude, longitude))
             }
         }
     }
@@ -101,13 +99,13 @@ class DeviceGatewayImp @Inject constructor(
     @Suppress("DEPRECATION")
     override fun isNetworkAvailable(): Boolean {
         try {
-            val cm = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+            val cm = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager?
             return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                val an = cm.activeNetwork ?: return false
+                val an = cm?.activeNetwork ?: return false
                 val capabilities = cm.getNetworkCapabilities(an) ?: return false
                 capabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
             } else {
-                val a = cm.activeNetworkInfo ?: return false
+                val a = cm?.activeNetworkInfo ?: return false
                 a.isConnected && (a.type == ConnectivityManager.TYPE_WIFI || a.type == ConnectivityManager.TYPE_MOBILE)
             }
         } catch (e: Exception) {
@@ -125,18 +123,10 @@ class DeviceGatewayImp @Inject constructor(
         }
     }
 
-    @Synchronized
-    override fun findLocation(callback: OnLocationFoundCallback) {
-        mLocationCallbacks.add(callback)
+    override fun findLocation(): Maybe<MyLocation> {
         requestLocation()
-    }
-
-    @Synchronized
-    override fun removeLocationCallback(callback: OnLocationFoundCallback) {
-        mLocationCallbacks.remove(callback)
-        if (mLocationCallbacks.isEmpty()) {
-            fusedLocationClient.removeLocationUpdates(mLocationCallback)
-        }
+        return mLocationSubject
+                .firstElement()
     }
 
     override fun getTutorialNoteBitmap(): Bitmap =
@@ -150,21 +140,10 @@ class DeviceGatewayImp @Inject constructor(
 
     override fun isItemPurchased(productId: String): Boolean = mBillingProcessor.isPurchased(productId)
 
-    override fun onBillingInitialized() {
-
-    }
-
-    override fun onPurchaseHistoryRestored() {
-
-    }
-
-    override fun onProductPurchased(productId: String, details: TransactionDetails?) {
-
-    }
-
-    override fun onBillingError(errorCode: Int, error: Throwable?) {
-
-    }
+    override fun onBillingInitialized() = Unit
+    override fun onPurchaseHistoryRestored() = Unit
+    override fun onProductPurchased(productId: String, details: TransactionDetails?) = Unit
+    override fun onBillingError(errorCode: Int, error: Throwable?) = Unit
 
     @Synchronized
     override fun getRealPathFromUri(uri: String, callback: OnUriConvertCallback) {

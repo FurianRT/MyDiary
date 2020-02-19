@@ -14,108 +14,91 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <LinearLayout
+        <androidx.coordinatorlayout.widget.CoordinatorLayout
+            android:id="@+id/layout_main_root"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical">
+            android:layout_height="0dp"
+            android:layout_weight="1">
 
-            <androidx.coordinatorlayout.widget.CoordinatorLayout
-                android:id="@+id/layout_main_root"
+            <include layout="@layout/activity_main_toolbar" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/list_main"
                 android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1">
+                android:layout_height="match_parent"
+                android:clipToPadding="false"
+                android:overScrollMode="never"
+                android:scrollbarStyle="outsideOverlay"
+                android:scrollbars="vertical"
+                app:layout_behavior="@string/appbar_scrolling_view_behavior"
+                tools:listitem="@layout/activity_main_list_note_image" />
 
-                <include layout="@layout/activity_main_toolbar" />
+            <FrameLayout
+                android:layout_width="wrap_content"
+                android:layout_height="120dp"
+                android:alpha="0.5"
+                app:layout_anchor="@id/app_bar_layout"
+                app:layout_anchorGravity="bottom|start">
 
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/list_main"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:clipToPadding="false"
-                    android:overScrollMode="never"
-                    android:scrollbarStyle="outsideOverlay"
-                    android:scrollbars="vertical"
-                    app:layout_behavior="@string/appbar_scrolling_view_behavior"
-                    tools:listitem="@layout/activity_main_list_note_image" />
-
-                <FrameLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="120dp"
-                    android:alpha="0.5"
-                    app:layout_anchor="@id/app_bar_layout"
-                    app:layout_anchorGravity="bottom|start">
-
-                    <com.google.android.material.floatingactionbutton.FloatingActionButton
-                        android:id="@+id/fab_quick_scroll"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="bottom"
-                        android:layout_marginStart="16dp"
-                        android:layout_marginEnd="4dp"
-                        android:layout_marginBottom="4dp"
-                        android:src="@drawable/ic_arrow_up"
-                        android:textColor="@color/white"
-                        android:visibility="gone"
-                        app:backgroundTint="?colorPrimary"
-                        app:elevation="4dp"
-                        app:fabSize="mini" />
-
-                </FrameLayout>
-
-                <include
-                    android:id="@+id/empty_state"
-                    layout="@layout/empty_state_note_list"
-                    android:visibility="gone" />
-
-                <include
-                    android:id="@+id/empty_search"
-                    layout="@layout/empty_search_note_list"
-                    android:visibility="gone" />
-
-                <com.furian.fab.FloatingActionMenu
-                    android:id="@+id/fab_menu"
+                <com.google.android.material.floatingactionbutton.FloatingActionButton
+                    android:id="@+id/fab_quick_scroll"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="bottom|end"
-                    android:layout_marginEnd="16dp"
-                    android:layout_marginBottom="16dp"
-                    app:menu_colorNormal="?attr/colorAccent"
-                    app:menu_colorPressed="?attr/colorAccent"
-                    app:menu_colorRipple="@color/white">
+                    android:layout_gravity="bottom"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginEnd="4dp"
+                    android:layout_marginBottom="4dp"
+                    android:src="@drawable/ic_arrow_up"
+                    android:textColor="@color/white"
+                    android:visibility="gone"
+                    app:backgroundTint="?colorPrimary"
+                    app:elevation="4dp"
+                    app:fabSize="mini" />
 
-                    <com.furian.fab.FloatingActionButton
-                        android:id="@+id/fab_folder"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:src="@drawable/ic_fab_folder"
-                        app:fab_colorNormal="?attr/colorPrimary"
-                        app:fab_colorPressed="?attr/colorAccent"
-                        app:fab_colorRipple="@color/transparent" />
+            </FrameLayout>
 
-                    <com.furian.fab.FloatingActionButton
-                        android:id="@+id/fab_delete"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:src="@drawable/ic_fab_delete"
-                        app:fab_colorNormal="?attr/colorPrimary"
-                        app:fab_colorPressed="?attr/colorAccent"
-                        app:fab_colorRipple="@color/transparent" />
+            <include
+                android:id="@+id/empty_state"
+                layout="@layout/empty_state_note_list"
+                android:visibility="gone" />
 
-                </com.furian.fab.FloatingActionMenu>
+            <include
+                android:id="@+id/empty_search"
+                layout="@layout/empty_search_note_list"
+                android:visibility="gone" />
 
-            </androidx.coordinatorlayout.widget.CoordinatorLayout>
-
-            <com.google.android.gms.ads.AdView
-                android:id="@+id/view_ad"
-                android:layout_width="match_parent"
+            <com.furian.fab.FloatingActionMenu
+                android:id="@+id/fab_menu"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="0"
-                android:visibility="gone"
-                app:adSize="SMART_BANNER"
-                app:adUnitId="@string/BANNER_AD_UNIT_ID"
-                tools:visibility="visible" />
+                android:layout_gravity="bottom|end"
+                android:layout_marginEnd="16dp"
+                android:layout_marginBottom="16dp"
+                app:menu_colorNormal="?attr/colorAccent"
+                app:menu_colorPressed="?attr/colorAccent"
+                app:menu_colorRipple="@color/white">
 
-        </LinearLayout>
+                <com.furian.fab.FloatingActionButton
+                    android:id="@+id/fab_folder"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_fab_folder"
+                    app:fab_colorNormal="?attr/colorPrimary"
+                    app:fab_colorPressed="?attr/colorAccent"
+                    app:fab_colorRipple="@color/transparent" />
+
+                <com.furian.fab.FloatingActionButton
+                    android:id="@+id/fab_delete"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_fab_delete"
+                    app:fab_colorNormal="?attr/colorPrimary"
+                    app:fab_colorPressed="?attr/colorAccent"
+                    app:fab_colorRipple="@color/transparent" />
+
+            </com.furian.fab.FloatingActionMenu>
+
+        </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
         <FrameLayout
             android:id="@+id/container_main_drawer"

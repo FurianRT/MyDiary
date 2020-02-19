@@ -13,6 +13,7 @@ package com.furianrt.mydiary.presentation.screens.gallery.fragments.list
 import android.Manifest
 import android.animation.Animator
 import android.app.Activity
+import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
 import android.content.res.Configuration
@@ -340,8 +341,7 @@ class GalleryListFragment : BaseFragment(R.layout.fragment_gallery_list), Galler
         }
     }
 
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>,
-                                            grantResults: IntArray) {
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults, this)
     }
@@ -350,6 +350,7 @@ class GalleryListFragment : BaseFragment(R.layout.fragment_gallery_list), Galler
     override fun showImageExplorer() {
         val galleryIntent = Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
         galleryIntent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true)
+        galleryIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
         if (galleryIntent.resolveActivity(requireActivity().packageManager) != null) {
             startActivityForResult(galleryIntent, IMAGE_PICKER_REQUEST_CODE)
         } else {
@@ -357,7 +358,14 @@ class GalleryListFragment : BaseFragment(R.layout.fragment_gallery_list), Galler
                 type = "image/*"
                 putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true)
                 action = Intent.ACTION_GET_CONTENT
-                startActivityForResult(Intent.createChooser(this, ""), IMAGE_PICKER_REQUEST_CODE)
+                galleryIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+                try {
+                    startActivityForResult(Intent.createChooser(this, ""), IMAGE_PICKER_REQUEST_CODE)
+                } catch (e: ActivityNotFoundException) {
+                    e.printStackTrace()
+                    analytics.sendEvent(MyAnalytics.EVENT_GALLERY_NOT_FOUND_ERROR)
+                    Toast.makeText(requireContext(), getString(R.string.phone_related_error), Toast.LENGTH_SHORT).show()
+                }
             }
         }
         mListener?.onGalleryListImagePickerOpen()

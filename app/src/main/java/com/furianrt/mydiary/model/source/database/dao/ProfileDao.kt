@@ -16,7 +16,7 @@ import androidx.room.Query
 import androidx.room.Update
 import com.furianrt.mydiary.model.entity.MyProfile
 import io.reactivex.Completable
-import io.reactivex.Observable
+import io.reactivex.Flowable
 import io.reactivex.Single
 
 @Dao
@@ -32,7 +32,7 @@ interface ProfileDao {
     fun clearProfile(): Completable
 
     @Query("SELECT * FROM ${MyProfile.TABLE_NAME}")
-    fun getProfile(): Observable<MyProfile>
+    fun getProfile(): Flowable<MyProfile>
 
     @Query("SELECT COUNT(${MyProfile.FIELD_ID}) FROM ${MyProfile.TABLE_NAME}")
     fun getProfileCount(): Single<Int>

@@ -163,6 +163,7 @@ class NoteListAdapter(
             itemView.text_note_text_day_of_week.text = getDayOfWeek(note.note.time)
             itemView.text_note_text_day.text = getDay(note.note.time)
             itemView.text_note_content.setText(note.note.content.applyTextSpans(note.textSpans), TextView.BufferType.SPANNABLE)
+            setTags(note)
             setCategory(note)
             setSyncIcon(note)
             setTitle(note)
@@ -178,20 +179,33 @@ class NoteListAdapter(
             }
         }
 
+        private fun setTags(note: MyNoteWithProp) {
+            val tagsCount = note.tags.count()
+            if (tagsCount == 0) {
+                itemView.text_tags.visibility = View.GONE
+            } else {
+                itemView.text_tags.text = tagsCount.toString()
+                itemView.text_tags.visibility = View.VISIBLE
+            }
+        }
+
         private fun setCategory(note: MyNoteWithProp) {
-            val color = note.category?.color
-            if (color == null) {
+            val category = note.category
+            if (category == null) {
                 val noCategoryColor = itemView.context.getColorSupport(R.color.grey_dark)
                 itemView.text_note_text_day_of_week.setTextColor(noCategoryColor)
                 itemView.text_note_text_day.setTextColor(noCategoryColor)
                 itemView.image_note_text_sync.imageTintList = ColorStateList.valueOf(noCategoryColor)
                 itemView.view_note_text_category.setBackgroundColor(itemView.context.getColorSupport(R.color.white))
+                itemView.text_category.visibility = View.GONE
             } else {
                 val withCategoryColor = itemView.context.getColorSupport(R.color.white)
                 itemView.text_note_text_day_of_week.setTextColor(withCategoryColor)
                 itemView.text_note_text_day.setTextColor(withCategoryColor)
                 itemView.image_note_text_sync.imageTintList = ColorStateList.valueOf(withCategoryColor)
-                itemView.view_note_text_category.setBackgroundColor(color)
+                itemView.view_note_text_category.setBackgroundColor(category.color)
+                itemView.text_category.text = category.name
+                itemView.text_category.visibility = View.VISIBLE
             }
         }
 
@@ -228,6 +242,9 @@ class NoteListAdapter(
             }
             itemView.text_note_image_day_of_week.text = getDayOfWeek(note.note.time)
             itemView.text_note_image_day.text = getDay(note.note.time)
+            itemView.text_image_note_content.setText(note.note.content.applyTextSpans(note.textSpans), TextView.BufferType.SPANNABLE)
+            setTitle(note)
+            setTags(note)
             setCategory(note)
             setSyncIcon(note)
             selectItem(note.note.id)
@@ -241,20 +258,42 @@ class NoteListAdapter(
                     .into(itemView.image_main_list)
         }
 
+        private fun setTitle(note: MyNoteWithProp) {
+            if (note.note.title.isEmpty()) {
+                itemView.text_image_note_title.visibility = View.GONE
+            } else {
+                itemView.text_image_note_title.text = note.note.title
+                itemView.text_image_note_title.visibility = View.VISIBLE
+            }
+        }
+
+        private fun setTags(note: MyNoteWithProp) {
+            val tagsCount = note.tags.count()
+            if (tagsCount == 0) {
+                itemView.text_image_tags.visibility = View.GONE
+            } else {
+                itemView.text_image_tags.text = tagsCount.toString()
+                itemView.text_image_tags.visibility = View.VISIBLE
+            }
+        }
+
         private fun setCategory(note: MyNoteWithProp) {
-            val color = note.category?.color
-            if (color == null) {
+            val category = note.category
+            if (category == null) {
                 val noCategoryColor = itemView.context.getColorSupport(R.color.grey_dark)
                 itemView.text_note_image_day_of_week.setTextColor(noCategoryColor)
                 itemView.text_note_image_day.setTextColor(noCategoryColor)
                 itemView.image_note_image_sync.imageTintList = ColorStateList.valueOf(noCategoryColor)
                 itemView.view_note_image_category.setBackgroundColor(itemView.context.getColorSupport(R.color.white))
+                itemView.text_image_category.visibility = View.GONE
             } else {
                 val withCategoryColor = itemView.context.getColorSupport(R.color.white)
                 itemView.text_note_image_day_of_week.setTextColor(withCategoryColor)
                 itemView.text_note_image_day.setTextColor(withCategoryColor)
                 itemView.image_note_image_sync.imageTintList = ColorStateList.valueOf(withCategoryColor)
-                itemView.view_note_image_category.setBackgroundColor(color)
+                itemView.view_note_image_category.setBackgroundColor(category.color)
+                itemView.text_image_category.text = category.name
+                itemView.text_image_category.visibility = View.VISIBLE
             }
         }
 

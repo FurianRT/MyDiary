@@ -63,6 +63,16 @@
             app:cpv_showColorShades="false"
             app:iconSpaceReserved="false" />
 
+        <com.furianrt.mydiary.presentation.screens.settings.global.FontListPreference
+            android:defaultValue="0"
+            android:entries="@array/pref_font_style_titles"
+            android:entryValues="@array/pref_font_style_values"
+            android:key="all_notes_text_style"
+            android:positiveButtonText="@null"
+            android:summary="%s"
+            android:title="@string/all_notes_text_style_settings_title"
+            app:iconSpaceReserved="false" />
+
     </PreferenceCategory>
 
     <PreferenceCategory
@@ -90,17 +100,6 @@
             app:cpv_dialogType="custom"
             app:cpv_previewSize="large"
             app:cpv_showAlphaSlider="true"
-            app:iconSpaceReserved="false" />
-
-        <ListPreference
-            android:defaultValue="16"
-            android:entries="@array/pref_font_size_titles"
-            android:entryValues="@array/pref_font_size_values"
-            android:key="all_notes_text_size"
-            android:negativeButtonText="@null"
-            android:positiveButtonText="@null"
-            android:summary="%s"
-            android:title="@string/all_notes_text_size_settings_title"
             app:iconSpaceReserved="false" />
 
         <com.jaredrummler.android.colorpicker.ColorPreferenceCompat
@@ -135,6 +134,17 @@
         android:key="notes"
         android:title="@string/settings_title_notes"
         app:iconSpaceReserved="false">
+
+        <ListPreference
+            android:defaultValue="16"
+            android:entries="@array/pref_font_size_titles"
+            android:entryValues="@array/pref_font_size_values"
+            android:key="all_notes_text_size"
+            android:negativeButtonText="@null"
+            android:positiveButtonText="@null"
+            android:summary="%s"
+            android:title="@string/all_notes_text_size_settings_title"
+            app:iconSpaceReserved="false" />
 
         <SwitchPreference
             android:defaultValue="true"

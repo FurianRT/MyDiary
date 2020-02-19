@@ -25,6 +25,7 @@
     <string name="send">Send</string>
     <string name="done">Done</string>
     <string name="add">Add</string>
+    <string name="by_default">Default</string>
     <string name="network_error">No internet connection</string>
     <string name="change_password">Change password</string>
     <string name="wrong_password">Invalid password</string>
@@ -147,11 +148,12 @@
     <string name="accent_color_settings_summary">Color of cursor and secondary elements</string>
     <string name="all_notes_background_settings_summary">Default background of notes</string>
     <string name="all_notes_background_settings_title">Note background</string>
-    <string name="settings_theme_title">Application theme</string>
+    <string name="settings_theme_title">App settings</string>
     <string name="settings_note_title">Note theme</string>
     <string name="all_notes_text_background_settings_summary">Default text background of notes</string>
     <string name="all_notes_text_background_settings_title">Text background</string>
     <string name="all_notes_text_size_settings_title">Font size</string>
+    <string name="all_notes_text_style_settings_title">Font style</string>
     <string name="all_notes_text_color_settings_summary">Default background of notes</string>
     <string name="all_notes_text_color_settings_title">Font color</string>
     <string name="settings_title_notes">Note settings</string>
@@ -279,8 +281,8 @@
     <string name="fragment_premium_advantages">Premium features:</string>
     <string name="fragment_premium_cloud_sync">Cloud sync</string>
     <string name="fragment_premium_cloud_sync_description">Afraid to lose your notes? This feature will allow you synchronize and save your notes in cloud for easy access!</string>
-    <string name="fragment_premium_no_ads">No more advertising</string>
-    <string name="fragment_premium_no_ads_description">Take notes without being distracted by anything!</string>
+    <string name="fragment_premium_life_time">One-time purchase</string>
+    <string name="fragment_premium_life_time_description">Works on all devices with the same Google account</string>
     <string name="fragment_premium_access_to_new_features">Access to future premium features</string>
     <string name="dialog_rate_continue">%1$d/%2$d\nContinue</string>
     <string name="dialog_rate_never_ask_again">Never ask again</string>
@@ -305,4 +307,5 @@
     <string name="panorama_activation_settings_on">Disable panoramic photos</string>
     <string name="panorama_activation_settings_off">Enable panoramic photos</string>
     <string name="panorama_activation_settings_title">Panoramic photos</string>
+    <string name="phone_related_error">For some reason, your smartphone cannot perform this operation</string>
 </resources>

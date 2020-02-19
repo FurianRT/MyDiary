@@ -28,19 +28,20 @@ class SaveImagesUseCase @Inject constructor(
 
     fun invoke(noteId: String, imageUris: List<String>): Completable =
             Flowable.fromIterable(imageUris)
-                    .flatMapSingle { uriToRealPath.invoke(it).onErrorReturn { "" } }
-                    .collectInto(mutableListOf<String>()) { l, i -> l.add(i) }
-                    .map { it.filter { uri -> uri.isNotEmpty() } }
-                    .flatMapPublisher { Flowable.fromIterable(it) }
-                    .map { path ->
-                        val name = noteId + "_" + generateUniqueId()
-                        return@map MyImage(name, path, noteId)
+                    .flatMapSingle { uri ->
+                        uriToRealPath.invoke(uri)
+                                .map { path ->
+                                    val name = noteId + "_" + generateUniqueId()
+                                    MyImage(name, path, noteId)
+                                }
+                                .flatMap { image -> imageGateway.saveImageToStorage(image) }
+                                .flatMapCompletable { imageGateway.insertImage(it) }
+                                .andThen(
+                                        Completable.fromAction { deviceGateway.clearUriTempFiles() }
+                                                .toSingleDefault(true)
+                                )
+                                .onErrorReturn { false }
                     }
-                    .flatMapSingle { image -> imageGateway.saveImageToStorage(image) }
-                    .flatMapSingle { savedImage ->
-                        imageGateway.insertImage(savedImage).toSingleDefault(true)
-                    }
-                    .onErrorReturn { false }
                     .collectInto(mutableListOf<Boolean>()) { l, i -> l.add(i) }
                     .flatMapCompletable { Completable.fromAction { deviceGateway.clearUriTempFiles() } }
 

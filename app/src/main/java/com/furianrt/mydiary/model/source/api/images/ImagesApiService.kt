@@ -14,12 +14,12 @@ import io.reactivex.Single
 import retrofit2.http.GET
 import retrofit2.http.Query
 
-interface ImageApiService {
+interface ImagesApiService {
 
     @GET(".")
     fun getImages(
             @Query("category") category: String,
             @Query("page") page: Int = 1,
             @Query("per_page") perPage: Int = 20
-    ): Single<ImageResponse>
+    ): Single<ImagesResponse>
 }

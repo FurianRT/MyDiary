@@ -46,6 +46,46 @@
         <item>20</item>
     </string-array>
 
+    <string-array name="pref_font_style_titles">
+        <item>@string/by_default</item>
+        <item>Arima Madurai</item>
+        <item>Arimo</item>
+        <item>Bad Script</item>
+        <item>Caveat</item>
+        <item>Cuprum</item>
+        <item>Gabriela</item>
+        <item>Ibm Plex Mono</item>
+        <item>Noto Serif</item>
+        <item>Philosopher</item>
+        <item>Play Regular</item>
+        <item>Poppins</item>
+        <item>Product Sans</item>
+        <item>Roboto</item>
+        <item>Roboto Slab</item>
+        <item>Roboto Medium</item>
+        <item>Ubuntu</item>
+    </string-array>
+
+    <string-array name="pref_font_style_values">
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+        <item>6</item>
+        <item>7</item>
+        <item>8</item>
+        <item>9</item>
+        <item>10</item>
+        <item>11</item>
+        <item>12</item>
+        <item>13</item>
+        <item>14</item>
+        <item>15</item>
+        <item>16</item>
+    </string-array>
+
     <string-array name="pref_weather_units_titles">
         <item>°C</item>
         <item>°F</item>

@@ -27,16 +27,18 @@ import com.furianrt.mydiary.domain.get.GetPinRequestDelayUseCase
 import com.furianrt.mydiary.domain.save.ResetSyncProgressUseCase
 import com.furianrt.mydiary.presentation.screens.main.MainActivity
 import com.furianrt.mydiary.presentation.screens.pin.PinActivity
-import com.google.android.gms.ads.MobileAds
 import com.jakewharton.threetenabp.AndroidThreeTen
 import net.danlew.android.joda.JodaTimeAndroid
 import javax.inject.Inject
 import android.os.StrictMode.VmPolicy
 import android.os.StrictMode
+import android.util.Log
+import com.google.firebase.iid.FirebaseInstanceId
 
 class MyApp : Application(), Application.ActivityLifecycleCallbacks {
 
     companion object {
+        private const val TAG = "MyApp"
         const val NOTIFICATION_SYNC_CHANNEL_ID = "sync_channel"
         const val NOTIFICATION_SYNC_CHANNEL_NAME = "Synchronization"
         const val NOTIFICATION_FIREBASE_CHANNEL_ID = "firebase_channel"
@@ -89,12 +91,13 @@ class MyApp : Application(), Application.ActivityLifecycleCallbacks {
                     .detectLeakedRegistrationObjects()
                     .penaltyLog()
                     .build())
+
+            logFcmToken()
         }
         JodaTimeAndroid.init(this)
         authorize.invoke(false)
         registerActivityLifecycleCallbacks(this)
         createNotificationChannels()
-        MobileAds.initialize(this, getString(R.string.BANNER_AD_APP_ID))
         AndroidThreeTen.init(this)
         incrementLaunchCount.invoke()
         resetSyncProgress.invoke()
@@ -114,13 +117,11 @@ class MyApp : Application(), Application.ActivityLifecycleCallbacks {
 
     override fun onActivityPaused(activity: Activity?) {
         authorize.invoke(true)
-        activity?.run {
-            if (isFinishing) {
-                if (this is PinActivity) {
-                    overridePendingTransition(R.anim.activity_stay_slide_bottom, R.anim.slide_bottom_down)
-                } else if (this !is MainActivity) {
-                    overridePendingTransition(R.anim.screen_left_in, R.anim.screen_right_out)
-                }
+        if (activity != null && activity.isFinishing) {
+            if (activity is PinActivity) {
+                activity.overridePendingTransition(R.anim.activity_stay_slide_bottom, R.anim.slide_bottom_down)
+            } else if (activity !is MainActivity) {
+                activity.overridePendingTransition(R.anim.screen_left_in, R.anim.screen_right_out)
             }
         }
     }
@@ -128,6 +129,12 @@ class MyApp : Application(), Application.ActivityLifecycleCallbacks {
     override fun onActivityStopped(activity: Activity?) {
         if (isPinEnabled.invoke() && activity !is PinActivity) {
             mHandler.postDelayed(mLogoutRunnable, getPinRequestDelay.invoke())
+        }
+    }
+
+    private fun logFcmToken() {
+        FirebaseInstanceId.getInstance().instanceId.addOnSuccessListener { instanceId ->
+            Log.d(TAG, "FcmToken: ${instanceId.token}")
         }
     }
 
@@ -183,11 +190,11 @@ class MyApp : Application(), Application.ActivityLifecycleCallbacks {
 * добавить достижения с анимацией
 * добавить превью возможностей дневника
 * сделать пейджер на экране премиума
-* перенести аналитику в репозиторий
 *   добавить удаление заметок по свайпу
 *   сделать отмену удаления в списке
 *   добавить кнопку очистки фильтров
 *   исправить баг с дефолтными настройками внешнего вида
+*   подробнее описать условия оплаты
 *
 * */
 

@@ -63,6 +63,7 @@ interface MyAnalytics {
         const val EVENT_NOTE_TEXT_SIZE_CHANGED = "note_text_size_changed"
         const val EVENT_PRIMARY_COLOR_CHANGED = "primary_color_changed"
         const val EVENT_ACCENT_COLOR_CHANGED = "accent_color_changed"
+        const val EVENT_FONT_STYLE_CHANGED = "font_style_changed"
         const val EVENT_PIN_CREATED = "pin_created"
         const val EVENT_PIN_REMOVED = "pin_removed"
         const val EVENT_SEARCH_WORD_OPENED = "search_word_opened"
@@ -94,6 +95,7 @@ interface MyAnalytics {
         const val EVENT_IMAGE_SAVE_ERROR = "image_save_error"
         const val EVENT_IMAGE_COPY_ERROR = "image_copy_error"
         const val EVENT_FORECAST_LOAD_ERROR = "forecast_load_error"
+        const val EVENT_GALLERY_NOT_FOUND_ERROR = "gallery_not_found_error"
 
         //Event parameters
         const val BUNDLE_TASK_INDEX = "task_index"

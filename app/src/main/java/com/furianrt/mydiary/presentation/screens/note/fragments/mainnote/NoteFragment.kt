@@ -76,8 +76,6 @@ class NoteFragment : BaseFragment(R.layout.fragment_note), NoteFragmentContract.
         private const val PLAY_SERVICES_REQUEST_CODE = 3
         private const val SPEECH_TO_TEXT_REQUEST_CODE = 4
         private const val IMAGE_PICKER_REQUEST_CODE = 6
-        private const val BUNDLE_IMAGE_PAGER_POSITION = "imagePagerPosition"
-        private const val BUNDLE_NOTE_TEXT_BUFFER = "noteTextBuffer"
         private const val TIME_PICKER_TAG = "timePicker"
         private const val DATE_PICKER_TAG = "datePicker"
         private const val MAX_IMAGE_COUNT_TO_SHARE = 10
@@ -122,12 +120,11 @@ class NoteFragment : BaseFragment(R.layout.fragment_note), NoteFragmentContract.
             mIsNewNote = getBoolean(ARG_IS_NEW_NOTE)
             presenter.init(mNoteId!!, mIsNewNote)
         }
+    }
 
-        savedInstanceState?.let {
-            mImagePagerPosition = it.getInt(BUNDLE_IMAGE_PAGER_POSITION, 0)
-            presenter.setNoteTextBuffer(it.getParcelableArrayList(BUNDLE_NOTE_TEXT_BUFFER)
-                    ?: ArrayList())
-        }
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        retainInstance = true
+        return super.onCreateView(inflater, container, savedInstanceState)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -553,12 +550,6 @@ class NoteFragment : BaseFragment(R.layout.fragment_note), NoteFragmentContract.
         }
     }
 
-    override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
-        outState.putInt(BUNDLE_IMAGE_PAGER_POSITION, pager_note_image.currentItem)
-        outState.putParcelableArrayList(BUNDLE_NOTE_TEXT_BUFFER, presenter.getNoteTextBuffer())
-    }
-
     fun disableActionBarExpanding(animate: Boolean) {
         Log.e(TAG, "disableActionBarExpanding")
         app_bar_layout.setExpanded(false, animate)
@@ -629,6 +620,7 @@ class NoteFragment : BaseFragment(R.layout.fragment_note), NoteFragmentContract.
     override fun showImageExplorer() {
         val galleryIntent = Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
         galleryIntent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true)
+        galleryIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
         if (galleryIntent.resolveActivity(requireActivity().packageManager) != null) {
             startActivityForResult(galleryIntent, IMAGE_PICKER_REQUEST_CODE)
         } else {
@@ -636,7 +628,14 @@ class NoteFragment : BaseFragment(R.layout.fragment_note), NoteFragmentContract.
                 type = "image/*"
                 putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true)
                 action = Intent.ACTION_GET_CONTENT
-                startActivityForResult(Intent.createChooser(this, ""), IMAGE_PICKER_REQUEST_CODE)
+                galleryIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+                try {
+                    startActivityForResult(Intent.createChooser(this, ""), IMAGE_PICKER_REQUEST_CODE)
+                } catch (e: ActivityNotFoundException) {
+                    e.printStackTrace()
+                    analytics.sendEvent(MyAnalytics.EVENT_GALLERY_NOT_FOUND_ERROR)
+                    Toast.makeText(requireContext(), getString(R.string.phone_related_error), Toast.LENGTH_SHORT).show()
+                }
             }
         }
         mListener?.onNoteFragmentImagePickerOpen()
@@ -798,7 +797,7 @@ class NoteFragment : BaseFragment(R.layout.fragment_note), NoteFragmentContract.
         }
         intent.putExtra(Intent.EXTRA_SUBJECT, note.note.title)
         intent.putExtra(Intent.EXTRA_TEXT, note.note.content)
-        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION and Intent.FLAG_ACTIVITY_CLEAR_TOP)
         startActivity(Intent.createChooser(intent, getString(R.string.share)))
     }
 
