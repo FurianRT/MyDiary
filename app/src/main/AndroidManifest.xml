@@ -12,7 +12,7 @@
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="com.android.vending.BILLING" />
     <uses-permission android:name="android.permission.USE_BIOMETRIC" />
-    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 
     <application
         android:name=".MyApp"
@@ -55,6 +55,7 @@
         <!--TODO разлочить ориентацию, когда будут готовы лейауты-->
         <activity
             android:name=".presentation.screens.main.MainActivity"
+            android:launchMode="singleTask"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.TransparentActionBar"
             android:windowSoftInputMode="adjustNothing">
@@ -66,30 +67,38 @@
 
         <activity
             android:name=".presentation.screens.note.NoteActivity"
+            android:launchMode="singleTask"
             android:parentActivityName=".presentation.screens.main.MainActivity"
             android:windowSoftInputMode="adjustResize" />
 
         <activity
             android:name=".presentation.screens.gallery.GalleryActivity"
+            android:launchMode="singleTask"
             android:parentActivityName=".presentation.screens.note.NoteActivity" />
 
         <activity
             android:name=".presentation.screens.settings.global.GlobalSettingsActivity"
+            android:launchMode="singleTask"
             android:parentActivityName=".presentation.screens.main.MainActivity" />
 
         <activity
             android:name=".presentation.screens.settings.note.NoteSettingsActivity"
+            android:launchMode="singleTask"
             android:parentActivityName=".presentation.screens.note.NoteActivity" />
 
-        <activity android:name=".presentation.screens.pin.PinActivity" />
+        <activity
+            android:name=".presentation.screens.pin.PinActivity"
+            android:launchMode="singleTask" />
 
         <activity
             android:name=".presentation.screens.statistics.StatsActivity"
+            android:launchMode="singleTask"
             android:parentActivityName=".presentation.screens.main.MainActivity" />
 
         <!--Этого требует библиотека для редактирования картинок-->
         <activity
             android:name="com.yalantis.ucrop.UCropActivity"
+            android:launchMode="singleTask"
             android:parentActivityName=".presentation.screens.gallery.GalleryActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme" />

@@ -21,12 +21,9 @@ class RoomTypeConverter {
         if (value.isBlank()) {
             return emptyList()
         }
-        val type = object : TypeToken<List<String>>() {}.type
-        return Gson().fromJson(value, type)
+        return Gson().fromJson(value, object : TypeToken<List<String>>() {}.type)
     }
 
     @TypeConverter
-    fun listToString(list: List<String>): String {
-        return Gson().toJson(list)
-    }
+    fun listToString(list: List<String>): String = Gson().toJson(list)
 }

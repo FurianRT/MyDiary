@@ -56,6 +56,7 @@ interface PreferencesHelper {
     fun isRateOfferEnabled(): Boolean
     fun isNeedDefaultValues(): Boolean
     fun setNeedDefaultValues(need: Boolean)
+    fun getAppFontStyle(): Int
 
     companion object {
         const val COLOR_PRIMARY = "color_primary"
@@ -91,5 +92,6 @@ interface PreferencesHelper {
         const val REPORT_PROBLEM_PREF_BUTTON = "problem_report"
         const val RESET_NOTES_APPEARANCE_SETTINGS = "reset_notes_appearance"
         const val NEED_DEFAULT_VALUES = "need_default_values"
+        const val APP_FONT_STYLE = "all_notes_text_style"
     }
 }

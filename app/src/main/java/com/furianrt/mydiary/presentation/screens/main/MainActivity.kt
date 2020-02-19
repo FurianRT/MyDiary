@@ -10,6 +10,7 @@
 
 package com.furianrt.mydiary.presentation.screens.main
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.content.res.Configuration
@@ -645,7 +646,7 @@ class MainActivity : BaseActivity(R.layout.activity_main), MainActivityContract.
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == ACTIVITY_SETTING_REQUEST_CODE) {
+        if (requestCode == ACTIVITY_SETTING_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
             recreate()
         }
     }

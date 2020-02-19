@@ -24,6 +24,7 @@ import com.furianrt.mydiary.domain.auth.AuthorizeUseCase
 import com.furianrt.mydiary.domain.check.IsAuthorizedUseCase
 import com.furianrt.mydiary.domain.check.IsPinEnabledUseCase
 import com.furianrt.mydiary.domain.get.GetAppAccentColorUseCase
+import com.furianrt.mydiary.domain.get.GetAppFontStyleUseCase
 import com.furianrt.mydiary.domain.get.GetAppPrimaryColorUseCase
 import com.furianrt.mydiary.utils.getColorSupport
 import com.furianrt.mydiary.presentation.screens.pin.PinActivity
@@ -42,19 +43,22 @@ abstract class BaseActivity(@LayoutRes contentLayoutId: Int) : AppCompatActivity
     lateinit var analytics: MyAnalytics
 
     @Inject
-    lateinit var isPinEnabled: IsPinEnabledUseCase
+    lateinit var isPinEnabledUseCase: IsPinEnabledUseCase
 
     @Inject
-    lateinit var isAuthorized: IsAuthorizedUseCase
+    lateinit var isAuthorizedUseCase: IsAuthorizedUseCase
 
     @Inject
-    lateinit var authorize: AuthorizeUseCase
+    lateinit var authorizeUseCase: AuthorizeUseCase
 
     @Inject
-    lateinit var getAppPrimaryColor: GetAppPrimaryColorUseCase
+    lateinit var getAppPrimaryColorUseCase: GetAppPrimaryColorUseCase
 
     @Inject
-    lateinit var getAppAccentColor: GetAppAccentColorUseCase
+    lateinit var getAppAccentColorUseCase: GetAppAccentColorUseCase
+
+    @Inject
+    lateinit var getAppFontStyleUseCase: GetAppFontStyleUseCase
 
     private lateinit var mBillingProcessor: BillingProcessor
     private val mCompositeDisposable = CompositeDisposable()
@@ -120,7 +124,7 @@ abstract class BaseActivity(@LayoutRes contentLayoutId: Int) : AppCompatActivity
     override fun onStart() {
         super.onStart()
         if (skipOneLock) {
-            authorize.invoke(true)
+            authorizeUseCase.invoke(true)
             skipOneLock = false
         } else if (needLockScreen) {
             openPinScreen()
@@ -133,7 +137,7 @@ abstract class BaseActivity(@LayoutRes contentLayoutId: Int) : AppCompatActivity
     }
 
     private fun openPinScreen() {
-        if (isPinEnabled.invoke() && !isAuthorized.invoke()) {
+        if (isPinEnabledUseCase.invoke() && !isAuthorizedUseCase.invoke()) {
             startActivity(PinActivity.newIntentModeLock(this))
         }
     }
@@ -146,7 +150,9 @@ abstract class BaseActivity(@LayoutRes contentLayoutId: Int) : AppCompatActivity
     // Похоже, что динамическое создание стиля в андроиде не предусмотрено,
     // поэтому приходится хардкодить этот бред
     private fun applyStyleToTheme() {
-        when (getAppPrimaryColor.invoke()) {
+        theme.applyStyle(getAppFontStyleUseCase.invoke(), true)
+
+        when (getAppPrimaryColorUseCase.invoke()) {
             getColorSupport(R.color.r1) -> theme.applyStyle(R.style.OverlayPrimaryColorR1, true)
             getColorSupport(R.color.r4) -> theme.applyStyle(R.style.OverlayPrimaryColorR4, true)
             getColorSupport(R.color.r5) -> theme.applyStyle(R.style.OverlayPrimaryColorR5, true)
@@ -173,7 +179,7 @@ abstract class BaseActivity(@LayoutRes contentLayoutId: Int) : AppCompatActivity
             getColorSupport(R.color.black) -> theme.applyStyle(R.style.OverlayPrimaryColorBlack, true)
         }
 
-        when (getAppAccentColor.invoke()) {
+        when (getAppAccentColorUseCase.invoke()) {
             getColorSupport(R.color.r1) -> theme.applyStyle(R.style.OverlayAccentColorR1, true)
             getColorSupport(R.color.r4) -> theme.applyStyle(R.style.OverlayAccentColorR4, true)
             getColorSupport(R.color.r5) -> theme.applyStyle(R.style.OverlayAccentColorR5, true)

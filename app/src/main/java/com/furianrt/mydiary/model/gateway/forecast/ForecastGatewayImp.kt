@@ -60,8 +60,8 @@ class ForecastGatewayImp @Inject constructor(
                     .map {
                         MyForecast(
                                 noteId,
-                                it.main.temp,
-                                ForecastGateway.BASE_WEATHER_IMAGE_URL + it.weather[0].icon + ".png"
+                                it.main?.temp!!,
+                                ForecastGateway.BASE_WEATHER_IMAGE_URL + it.weather!![0].icon!! + ".png"
                         )
                     }
                     .subscribeOn(scheduler.io())

@@ -620,6 +620,7 @@ class NoteFragment : BaseFragment(R.layout.fragment_note), NoteFragmentContract.
     override fun showImageExplorer() {
         val galleryIntent = Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
         galleryIntent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true)
+        galleryIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
         if (galleryIntent.resolveActivity(requireActivity().packageManager) != null) {
             startActivityForResult(galleryIntent, IMAGE_PICKER_REQUEST_CODE)
         } else {
@@ -627,6 +628,7 @@ class NoteFragment : BaseFragment(R.layout.fragment_note), NoteFragmentContract.
                 type = "image/*"
                 putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true)
                 action = Intent.ACTION_GET_CONTENT
+                galleryIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
                 try {
                     startActivityForResult(Intent.createChooser(this, ""), IMAGE_PICKER_REQUEST_CODE)
                 } catch (e: ActivityNotFoundException) {
@@ -795,7 +797,7 @@ class NoteFragment : BaseFragment(R.layout.fragment_note), NoteFragmentContract.
         }
         intent.putExtra(Intent.EXTRA_SUBJECT, note.note.title)
         intent.putExtra(Intent.EXTRA_TEXT, note.note.content)
-        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION and Intent.FLAG_ACTIVITY_CLEAR_TOP)
         startActivity(Intent.createChooser(intent, getString(R.string.share)))
     }
 

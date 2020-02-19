@@ -16,30 +16,30 @@ import kotlinx.android.parcel.Parcelize
 
 @Parcelize
 data class ForecastResponse(
-        @SerializedName("weather") val weather: List<WeatherResponse>,
-        @SerializedName("main") val main: MainResponse,
-        @SerializedName("wind") val wind: WindResponse,
-        @SerializedName("id") val id: Int,
-        @SerializedName("name") val name: String,
-        @SerializedName("cod") val cod: Int
+        @SerializedName("weather") val weather: List<WeatherResponse>? = null,
+        @SerializedName("main") val main: MainResponse? = null,
+        @SerializedName("wind") val wind: WindResponse? = null,
+        @SerializedName("id") val id: Int? = null,
+        @SerializedName("name") val name: String? = null,
+        @SerializedName("cod") val cod: Int? = null
 ) : Parcelable
 
 @Parcelize
 data class MainResponse(
-        @SerializedName("temp") val temp: Double,
-        @SerializedName("humidity") val humidity: Int,
-        @SerializedName("temp_min") val tempMin: Double,
-        @SerializedName("temp_max") val tempMax: Double
+        @SerializedName("temp") val temp: Double? = null,
+        @SerializedName("humidity") val humidity: Int? = null,
+        @SerializedName("temp_min") val tempMin: Double? = null,
+        @SerializedName("temp_max") val tempMax: Double? = null
 ) : Parcelable
 
 @Parcelize
 data class WeatherResponse(
-        @SerializedName("id") val id: Int,
-        @SerializedName("description") val description: String,
-        @SerializedName("icon") val icon: String
+        @SerializedName("id") val id: Int? = null,
+        @SerializedName("description") val description: String? = null,
+        @SerializedName("icon") val icon: String? = null
 ) : Parcelable
 
 @Parcelize
 data class WindResponse(
-        @SerializedName("speed") val speed: Double
+        @SerializedName("speed") val speed: Double? = null
 ) : Parcelable

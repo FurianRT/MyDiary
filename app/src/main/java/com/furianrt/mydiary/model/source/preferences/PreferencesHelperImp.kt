@@ -176,4 +176,7 @@ class PreferencesHelperImp @Inject constructor(
     override fun setNeedDefaultValues(need: Boolean) {
         mPrefs.edit().putBoolean(PreferencesHelper.NEED_DEFAULT_VALUES, need).apply()
     }
+
+    override fun getAppFontStyle(): Int =
+            mPrefs.getString(PreferencesHelper.APP_FONT_STYLE, "0")?.toInt() ?: 0
 }

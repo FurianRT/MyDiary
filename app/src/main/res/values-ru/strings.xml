@@ -22,6 +22,7 @@
     <string name="send">Отправить</string>
     <string name="done">Готово</string>
     <string name="add">Добавить</string>
+    <string name="by_default">По умолчанию</string>
     <string name="network_error">Нет интернет соединения</string>
     <string name="change_password">Сменить пароль</string>
     <string name="wrong_password">Неверный пароль</string>
@@ -140,11 +141,12 @@
     <string name="accent_color_settings_summary">Цвет курсора и второстепенных элементов</string>
     <string name="all_notes_background_settings_summary">Применяется ко всем заметкам для которых не указан отдельно</string>
     <string name="all_notes_background_settings_title">Фон заметки</string>
-    <string name="settings_theme_title">Цвета приложения</string>
+    <string name="settings_theme_title">Настройки приложения</string>
     <string name="settings_note_title">Цвета заметок</string>
     <string name="all_notes_text_background_settings_summary">Применяется ко всем заметкам для которых не указан отдельно</string>
     <string name="all_notes_text_background_settings_title">Фон текста заметки</string>
     <string name="all_notes_text_size_settings_title">Размер шрифта</string>
+    <string name="all_notes_text_style_settings_title">Стиль шрифта</string>
     <string name="all_notes_text_color_settings_summary">Применяется ко всем заметкам для которых не указан отдельно</string>
     <string name="all_notes_text_color_settings_title">Цвет текста</string>
     <string name="time_format">Формат времени</string>

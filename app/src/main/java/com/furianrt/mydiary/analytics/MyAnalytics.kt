@@ -63,6 +63,7 @@ interface MyAnalytics {
         const val EVENT_NOTE_TEXT_SIZE_CHANGED = "note_text_size_changed"
         const val EVENT_PRIMARY_COLOR_CHANGED = "primary_color_changed"
         const val EVENT_ACCENT_COLOR_CHANGED = "accent_color_changed"
+        const val EVENT_FONT_STYLE_CHANGED = "font_style_changed"
         const val EVENT_PIN_CREATED = "pin_created"
         const val EVENT_PIN_REMOVED = "pin_removed"
         const val EVENT_SEARCH_WORD_OPENED = "search_word_opened"

@@ -10,6 +10,7 @@
 
 package com.furianrt.mydiary.model.gateway.general
 
+import com.furianrt.mydiary.R
 import com.furianrt.mydiary.model.entity.SyncProgressMessage
 import com.furianrt.mydiary.model.source.preferences.PreferencesHelper
 import com.google.gson.Gson
@@ -64,5 +65,22 @@ class GeneralGatewayImp @Inject constructor(
 
     override fun setNeedDefaultValues(need: Boolean) {
         prefs.setNeedDefaultValues(need)
+    }
+
+    override fun getAppFontStyle(): Int = when(prefs.getAppFontStyle()) {
+        1 -> R.style.ArimaMaduraiFontStyle
+        2 -> R.style.BadScriptFontStyle
+        3 -> R.style.CaveatFontStyle
+        4 -> R.style.GabrielaFontStyle
+        5 -> R.style.IbmPlexMonoFlowerFontStyle
+        6 -> R.style.NotoSerifFontStyle
+        7 -> R.style.PoorStoryfFontStyle
+        8 -> R.style.PoppinsLightFontStyle
+        9 -> R.style.ProductSansLightFontStyle
+        10 -> R.style.RobotoFontStyle
+        11 -> R.style.RobotoSlabFontStyle
+        12 -> R.style.RobotoMediumFontStyle
+        13 -> R.style.UbuntuFontStyle
+        else ->  R.style.DefaultFontStyle
     }
 }

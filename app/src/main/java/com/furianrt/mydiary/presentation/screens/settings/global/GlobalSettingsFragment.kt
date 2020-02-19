@@ -11,6 +11,7 @@
 package com.furianrt.mydiary.presentation.screens.settings.global
 
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.net.Uri
@@ -41,6 +42,7 @@ class GlobalSettingsFragment : BasePreference(), GlobalSettingsContract.View,
 
     private val mHandler = Handler()
     private val mRecreateRunnable = Runnable { activity?.recreate() }
+    private var mListener: GlobalSettingsFragmentListener? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         getPresenterComponent(requireActivity()).inject(this)
@@ -83,10 +85,17 @@ class GlobalSettingsFragment : BasePreference(), GlobalSettingsContract.View,
             PreferencesHelper.COLOR_PRIMARY -> {
                 analytics.sendEvent(MyAnalytics.EVENT_PRIMARY_COLOR_CHANGED)
                 mHandler.postDelayed(mRecreateRunnable, RECREATE_DELAY)
+                mListener?.onThemeAttributeChanged()
             }
             PreferencesHelper.COLOR_ACCENT -> {
                 analytics.sendEvent(MyAnalytics.EVENT_ACCENT_COLOR_CHANGED)
                 mHandler.postDelayed(mRecreateRunnable, RECREATE_DELAY)
+                mListener?.onThemeAttributeChanged()
+            }
+            PreferencesHelper.APP_FONT_STYLE -> {
+                analytics.sendEvent(MyAnalytics.EVENT_FONT_STYLE_CHANGED)
+                mHandler.postDelayed(mRecreateRunnable, RECREATE_DELAY)
+                mListener?.onThemeAttributeChanged()
             }
         }
     }
@@ -168,6 +177,21 @@ class GlobalSettingsFragment : BasePreference(), GlobalSettingsContract.View,
         mHandler.postDelayed(mRecreateRunnable, RECREATE_DELAY)
     }
 
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        if (context is GlobalSettingsFragmentListener) {
+            mListener = context
+        } else {
+            throw RuntimeException(context.toString()
+                    + " must implement GlobalSettingsFragmentListener")
+        }
+    }
+
+    override fun onDetach() {
+        super.onDetach()
+        mListener = null
+    }
+
     override fun onStart() {
         super.onStart()
         preferenceManager.sharedPreferences.registerOnSharedPreferenceChangeListener(this)
@@ -181,5 +205,9 @@ class GlobalSettingsFragment : BasePreference(), GlobalSettingsContract.View,
     override fun onDestroy() {
         super.onDestroy()
         presenter.detachView()
+    }
+
+    interface GlobalSettingsFragmentListener {
+        fun onThemeAttributeChanged()
     }
 }

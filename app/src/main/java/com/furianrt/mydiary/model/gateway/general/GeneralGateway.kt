@@ -26,4 +26,5 @@ interface GeneralGateway {
     fun getAccentColor(): Int
     fun isNeedDefaultValues(): Boolean
     fun setNeedDefaultValues(need: Boolean)
+    fun getAppFontStyle(): Int
 }

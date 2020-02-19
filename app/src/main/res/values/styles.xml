@@ -13,6 +13,76 @@
         <item name="android:windowBackground">@drawable/splash_screen</item>
     </style>
 
+    <style name="ArimaMaduraiFontStyle">
+        <item name="android:fontFamily">@font/arima_madurai</item>
+        <item name="fontFamily">@font/arima_madurai</item>
+    </style>
+
+    <style name="BadScriptFontStyle">
+        <item name="android:fontFamily">@font/bad_script</item>
+        <item name="fontFamily">@font/bad_script</item>
+    </style>
+
+    <style name="CaveatFontStyle">
+        <item name="android:fontFamily">@font/caveat</item>
+        <item name="fontFamily">@font/caveat</item>
+    </style>
+
+    <style name="GabrielaFontStyle">
+        <item name="android:fontFamily">@font/gabriela</item>
+        <item name="fontFamily">@font/gabriela</item>
+    </style>
+
+    <style name="IbmPlexMonoFlowerFontStyle">
+        <item name="android:fontFamily">@font/ibm_plex_mono</item>
+        <item name="fontFamily">@font/ibm_plex_mono</item>
+    </style>
+
+    <style name="NotoSerifFontStyle">
+        <item name="android:fontFamily">@font/noto_serif</item>
+        <item name="fontFamily">@font/noto_serif</item>
+    </style>
+
+    <style name="PoorStoryfFontStyle">
+        <item name="android:fontFamily">@font/poor_story</item>
+        <item name="fontFamily">@font/poor_story</item>
+    </style>
+
+    <style name="PoppinsLightFontStyle">
+        <item name="android:fontFamily">@font/poppins_light</item>
+        <item name="fontFamily">@font/poppins_light</item>
+    </style>
+
+    <style name="ProductSansLightFontStyle">
+        <item name="android:fontFamily">@font/product_sans</item>
+        <item name="fontFamily">@font/product_sans</item>
+    </style>
+
+    <style name="RobotoFontStyle">
+        <item name="android:fontFamily">@font/roboto</item>
+        <item name="fontFamily">@font/roboto</item>
+    </style>
+
+    <style name="RobotoSlabFontStyle">
+        <item name="android:fontFamily">@font/roboto_slab</item>
+        <item name="fontFamily">@font/roboto_slab</item>
+    </style>
+
+    <style name="RobotoMediumFontStyle">
+        <item name="android:fontFamily">@font/robotomedium</item>
+        <item name="fontFamily">@font/robotomedium</item>
+    </style>
+
+    <style name="UbuntuFontStyle">
+        <item name="android:fontFamily">@font/ubuntu</item>
+        <item name="fontFamily">@font/ubuntu</item>
+    </style>
+
+    <style name="DefaultFontStyle">
+        <item name="android:fontFamily">sans-serif</item>
+        <item name="fontFamily">sans-serif</item>
+    </style>
+
     <style name="AppTheme.TransparentActionBar">
         <item name="android:windowDrawsSystemBarBackgrounds">true</item>
         <item name="android:statusBarColor">@color/transparent_black</item>
