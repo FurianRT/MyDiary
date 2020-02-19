@@ -69,18 +69,21 @@ class GeneralGatewayImp @Inject constructor(
 
     override fun getAppFontStyle(): Int = when(prefs.getAppFontStyle()) {
         1 -> R.style.ArimaMaduraiFontStyle
-        2 -> R.style.BadScriptFontStyle
-        3 -> R.style.CaveatFontStyle
-        4 -> R.style.GabrielaFontStyle
-        5 -> R.style.IbmPlexMonoFlowerFontStyle
-        6 -> R.style.NotoSerifFontStyle
-        7 -> R.style.PoorStoryfFontStyle
-        8 -> R.style.PoppinsLightFontStyle
-        9 -> R.style.ProductSansLightFontStyle
-        10 -> R.style.RobotoFontStyle
-        11 -> R.style.RobotoSlabFontStyle
-        12 -> R.style.RobotoMediumFontStyle
-        13 -> R.style.UbuntuFontStyle
+        2 -> R.style.ArimoFontStyle
+        3 -> R.style.BadScriptFontStyle
+        4 -> R.style.CaveatFontStyle
+        5 -> R.style.CuprumFontStyle
+        6 -> R.style.GabrielaFontStyle
+        7 -> R.style.IbmPlexMonoFlowerFontStyle
+        8 -> R.style.NotoSerifFontStyle
+        9 -> R.style.PhilosopherFontStyle
+        10 -> R.style.PlayRegularFontStyle
+        11 -> R.style.PoppinsLightFontStyle
+        12 -> R.style.ProductSansLightFontStyle
+        13 -> R.style.RobotoFontStyle
+        14 -> R.style.RobotoSlabFontStyle
+        15 -> R.style.RobotoMediumFontStyle
+        16 -> R.style.UbuntuFontStyle
         else ->  R.style.DefaultFontStyle
     }
 }

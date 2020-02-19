@@ -19,21 +19,10 @@ class FindLocationUseCase @Inject constructor(
         private val deviceGateway: DeviceGateway
 ) {
 
-    private var mCallback: DeviceGateway.OnLocationFoundCallback? = null
-
-    fun invoke(): Maybe<MyLocation> = Maybe.create<MyLocation> { emitter ->
-        if (deviceGateway.isLocationAvailable()) {
-            mCallback = object : DeviceGateway.OnLocationFoundCallback {
-                override fun onLocationFound(location: MyLocation) {
-                    emitter.onSuccess(location)
-                    mCallback?.let { deviceGateway.removeLocationCallback(it) }
-                }
+    fun invoke(): Maybe<MyLocation> =
+            if (deviceGateway.isLocationAvailable()) {
+                deviceGateway.findLocation()
+            } else {
+                Maybe.empty()
             }
-            mCallback?.let { deviceGateway.findLocation(it) }
-        } else {
-            emitter.onComplete()
-        }
-    }.doOnDispose {
-        mCallback?.let { deviceGateway.removeLocationCallback(it) }
-    }
 }

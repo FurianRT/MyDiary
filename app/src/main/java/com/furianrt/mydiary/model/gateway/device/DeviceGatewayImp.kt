@@ -37,6 +37,8 @@ import com.furianrt.mydiary.model.gateway.device.DeviceGateway.*
 import com.furianrt.mydiary.utils.generateUniqueId
 import com.hbisoft.pickit.PickiT
 import com.hbisoft.pickit.PickiTCallbacks
+import io.reactivex.Maybe
+import io.reactivex.subjects.PublishSubject
 import java.io.IOException
 
 @AppScope
@@ -52,11 +54,10 @@ class DeviceGatewayImp @Inject constructor(
         private const val LOCATION_INTERVAL = 1000L
     }
 
+    private val mLocationSubject = PublishSubject.create<MyLocation>()
     private val mBillingProcessor = BillingProcessor(context, BuildConfig.LICENSE_KEY, BuildConfig.MERCHANT_ID, this)
     private val mPickits = mutableListOf<PickiT>()
-    private val mLocationCallbacks = mutableSetOf<OnLocationFoundCallback>()
     private val mLocationCallback = object : LocationCallback() {
-        @Synchronized
         override fun onLocationResult(result: LocationResult?) {
             super.onLocationResult(result)
             fusedLocationClient.removeLocationUpdates(this)
@@ -66,7 +67,6 @@ class DeviceGatewayImp @Inject constructor(
         }
     }
 
-    @Synchronized
     private fun findAddress(latitude: Double, longitude: Double) {
         val addresses = try {
             geocoder.getFromLocation(latitude, longitude, 1)
@@ -78,11 +78,7 @@ class DeviceGatewayImp @Inject constructor(
         if (addresses.isNotEmpty()) {
             val address = addresses[0].getAddressLine(0)
             if (address != null) {
-                val location = MyLocation(generateUniqueId(), address, latitude, longitude)
-                val iterator = mLocationCallbacks.iterator()
-                while(iterator.hasNext()){
-                    iterator.next().onLocationFound(location)
-                }
+                mLocationSubject.onNext(MyLocation(generateUniqueId(), address, latitude, longitude))
             }
         }
     }
@@ -127,18 +123,10 @@ class DeviceGatewayImp @Inject constructor(
         }
     }
 
-    @Synchronized
-    override fun findLocation(callback: OnLocationFoundCallback) {
-        mLocationCallbacks.add(callback)
+    override fun findLocation(): Maybe<MyLocation> {
         requestLocation()
-    }
-
-    @Synchronized
-    override fun removeLocationCallback(callback: OnLocationFoundCallback) {
-        mLocationCallbacks.remove(callback)
-        if (mLocationCallbacks.isEmpty()) {
-            fusedLocationClient.removeLocationUpdates(mLocationCallback)
-        }
+        return mLocationSubject
+                .firstElement()
     }
 
     override fun getTutorialNoteBitmap(): Bitmap =

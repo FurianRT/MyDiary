@@ -13,13 +13,13 @@ package com.furianrt.mydiary.model.gateway.device
 import android.graphics.Bitmap
 import com.anjlab.android.iab.v3.BillingProcessor
 import com.furianrt.mydiary.model.entity.MyLocation
+import io.reactivex.Maybe
 
 interface DeviceGateway : BillingProcessor.IBillingHandler {
     fun isFingerprintEnabled(): Boolean
     fun isNetworkAvailable(): Boolean
     fun isLocationAvailable(): Boolean
-    fun findLocation(callback: OnLocationFoundCallback)
-    fun removeLocationCallback(callback: OnLocationFoundCallback)
+    fun findLocation(): Maybe<MyLocation>
     fun isItemPurchased(productId: String): Boolean
     fun getTutorialNoteMoodId(): Int
     fun getTutorialNoteTitle(): String
@@ -27,10 +27,6 @@ interface DeviceGateway : BillingProcessor.IBillingHandler {
     fun getTutorialNoteBitmap(): Bitmap
     fun getRealPathFromUri(uri: String, callback: OnUriConvertCallback)
     fun clearUriTempFiles()
-
-    interface OnLocationFoundCallback {
-        fun onLocationFound(location: MyLocation)
-    }
 
     interface OnUriConvertCallback {
         fun onUriRealPathReceived(path: String)

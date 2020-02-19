@@ -49,12 +49,15 @@
     <string-array name="pref_font_style_titles">
         <item>@string/by_default</item>
         <item>Arima Madurai</item>
+        <item>Arimo</item>
         <item>Bad Script</item>
         <item>Caveat</item>
+        <item>Cuprum</item>
         <item>Gabriela</item>
         <item>Ibm Plex Mono</item>
         <item>Noto Serif</item>
-        <item>Poor Story</item>
+        <item>Philosopher</item>
+        <item>Play Regular</item>
         <item>Poppins</item>
         <item>Product Sans</item>
         <item>Roboto</item>
@@ -78,6 +81,9 @@
         <item>11</item>
         <item>12</item>
         <item>13</item>
+        <item>14</item>
+        <item>15</item>
+        <item>16</item>
     </string-array>
 
     <string-array name="pref_weather_units_titles">
