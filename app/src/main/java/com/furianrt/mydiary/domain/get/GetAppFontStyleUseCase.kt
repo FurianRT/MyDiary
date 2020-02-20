@@ -17,5 +17,5 @@ class GetAppFontStyleUseCase @Inject constructor(
         private val generalGateway: GeneralGateway
 ) {
 
-    fun invoke(): Int = generalGateway.getAppFontStyle()
+    fun invoke(): Int? = generalGateway.getAppFontStyle()
 }

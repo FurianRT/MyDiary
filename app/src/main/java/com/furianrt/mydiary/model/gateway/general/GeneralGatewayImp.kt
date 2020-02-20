@@ -67,7 +67,7 @@ class GeneralGatewayImp @Inject constructor(
         prefs.setNeedDefaultValues(need)
     }
 
-    override fun getAppFontStyle(): Int = when(prefs.getAppFontStyle()) {
+    override fun getAppFontStyle(): Int? = when(prefs.getAppFontStyle()) {
         1 -> R.style.ArimaMaduraiFontStyle
         2 -> R.style.ArimoFontStyle
         3 -> R.style.BadScriptFontStyle
@@ -84,6 +84,6 @@ class GeneralGatewayImp @Inject constructor(
         14 -> R.style.RobotoSlabFontStyle
         15 -> R.style.RobotoMediumFontStyle
         16 -> R.style.UbuntuFontStyle
-        else ->  R.style.DefaultFontStyle
+        else ->  null
     }
 }

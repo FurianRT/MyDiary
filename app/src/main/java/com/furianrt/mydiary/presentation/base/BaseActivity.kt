@@ -150,7 +150,7 @@ abstract class BaseActivity(@LayoutRes contentLayoutId: Int) : AppCompatActivity
     // Похоже, что динамическое создание стиля в андроиде не предусмотрено,
     // поэтому приходится хардкодить этот бред
     private fun applyStyleToTheme() {
-        theme.applyStyle(getAppFontStyleUseCase.invoke(), true)
+        getAppFontStyleUseCase.invoke()?.let { style -> theme.applyStyle(style, true) }
 
         when (getAppPrimaryColorUseCase.invoke()) {
             getColorCompat(R.color.r1) -> theme.applyStyle(R.style.OverlayPrimaryColorR1, true)
