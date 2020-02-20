@@ -12,12 +12,12 @@ package com.furianrt.mydiary.model.gateway.general
 
 import com.furianrt.mydiary.R
 import com.furianrt.mydiary.model.entity.SyncProgressMessage
-import com.furianrt.mydiary.model.source.preferences.PreferencesHelper
+import com.furianrt.mydiary.model.source.preferences.PreferencesSource
 import com.google.gson.Gson
 import javax.inject.Inject
 
 class GeneralGatewayImp @Inject constructor(
-        private val prefs: PreferencesHelper
+        private val prefs: PreferencesSource
 ) : GeneralGateway {
 
     override fun is24TimeFormat(): Boolean = prefs.is24TimeFormat()

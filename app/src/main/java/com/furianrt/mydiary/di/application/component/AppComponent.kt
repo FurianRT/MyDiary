@@ -14,7 +14,8 @@ import com.furianrt.mydiary.MyApp
 import com.furianrt.mydiary.di.application.modules.app.AnalyticsModule
 import com.furianrt.mydiary.di.application.modules.app.AppContextModule
 import com.furianrt.mydiary.di.application.modules.data.DatabaseModule
-import com.furianrt.mydiary.di.application.modules.data.HelperModule
+import com.furianrt.mydiary.di.application.modules.data.EncryptionModule
+import com.furianrt.mydiary.di.application.modules.data.SourceModule
 import com.furianrt.mydiary.di.application.modules.data.GatewayModule
 import com.furianrt.mydiary.di.application.modules.location.LocationModule
 import com.furianrt.mydiary.di.application.modules.network.ApiModule
@@ -25,10 +26,9 @@ import com.furianrt.mydiary.di.presenter.modules.presenter.PresenterContextModul
 import dagger.Component
 
 @AppScope
-@Component(modules = [AppContextModule::class, ApiModule::class, HelperModule::class,
+@Component(modules = [AppContextModule::class, ApiModule::class, SourceModule::class,
     GatewayModule::class, FirebaseModule::class, DatabaseModule::class, RxModule::class,
-    AnalyticsModule::class, LocationModule::class])
-
+    AnalyticsModule::class, LocationModule::class, EncryptionModule::class])
 interface AppComponent {
     fun newPresenterComponent(presenterContextModule: PresenterContextModule): PresenterComponent
     fun inject(application: MyApp)

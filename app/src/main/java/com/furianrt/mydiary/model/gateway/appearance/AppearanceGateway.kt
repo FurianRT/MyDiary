@@ -12,7 +12,7 @@ package com.furianrt.mydiary.model.gateway.appearance
 
 import android.graphics.Color
 import com.furianrt.mydiary.model.entity.MyNoteAppearance
-import com.furianrt.mydiary.model.source.preferences.PreferencesHelper
+import com.furianrt.mydiary.model.source.preferences.PreferencesSource
 import io.reactivex.Completable
 import io.reactivex.Flowable
 import io.reactivex.Single
@@ -46,7 +46,7 @@ interface AppearanceGateway {
     companion object {
         val DEFAULT_NOTE_BACKGROUND_COLOR = Color.parseColor("#f2f2f2")
         const val DEFAULT_NOTE_TEXT_BACKGROUND_COLOR = Color.WHITE
-        const val DEFAULT_NOTE_TEXT_SIZE = PreferencesHelper.DEFAULT_TEXT_SIZE
+        const val DEFAULT_NOTE_TEXT_SIZE = PreferencesSource.DEFAULT_TEXT_SIZE
         const val DEFAULT_NOTE_TEXT_COLOR = Color.BLACK
     }
 }

@@ -118,7 +118,7 @@ class RegistrationFragment : BaseFragment(R.layout.fragment_registration), Regis
 
     private fun showEmailError() {
         image_email.setImageResource(R.drawable.ic_error)
-        image_email.setColorFilter(requireContext().getColorSupport(R.color.red), PorterDuff.Mode.SRC_IN)
+        image_email.setColorFilter(requireContext().getColorCompat(R.color.red), PorterDuff.Mode.SRC_IN)
         hideLoadingEmail()
         image_email.visibility = View.VISIBLE
     }

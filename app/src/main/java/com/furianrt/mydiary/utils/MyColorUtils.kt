@@ -36,7 +36,7 @@ fun Context.getThemePrimaryDarkColor(): Int {
 }
 
 fun TextView.setTextColorResource(@ColorRes id: Int) {
-    setTextColor(ContextCompat.getColor(this.context, id))
+    setTextColor(context.getColorCompat(id))
 }
 
-fun Context.getColorSupport(@ColorRes id: Int): Int = ContextCompat.getColor(this, id)
+fun Context.getColorCompat(@ColorRes id: Int): Int = ContextCompat.getColor(this, id)

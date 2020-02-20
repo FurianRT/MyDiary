@@ -10,18 +10,18 @@
 
 package com.furianrt.mydiary.model.gateway.pin
 
-import com.furianrt.mydiary.model.encryption.EncryptionHelper
-import com.furianrt.mydiary.model.source.auth.AuthHelper
-import com.furianrt.mydiary.model.source.preferences.PreferencesHelper
+import com.furianrt.mydiary.model.encryption.Cipher
+import com.furianrt.mydiary.model.source.auth.AuthSource
+import com.furianrt.mydiary.model.source.preferences.PreferencesSource
 import com.furianrt.mydiary.utils.MyRxUtils
 import io.reactivex.Completable
 import io.reactivex.Single
 import javax.inject.Inject
 
 class PinGatewayImp @Inject constructor(
-        private val prefs: PreferencesHelper,
-        private val auth: AuthHelper,
-        private val encryption: EncryptionHelper,
+        private val prefs: PreferencesSource,
+        private val auth: AuthSource,
+        private val encryption: Cipher,
         private val scheduler: MyRxUtils.BaseSchedulerProvider
 ) : PinGateway {
 

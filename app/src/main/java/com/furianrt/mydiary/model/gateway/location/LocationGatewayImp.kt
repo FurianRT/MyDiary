@@ -12,11 +12,11 @@ package com.furianrt.mydiary.model.gateway.location
 
 import com.furianrt.mydiary.model.entity.MyLocation
 import com.furianrt.mydiary.model.entity.NoteLocation
-import com.furianrt.mydiary.model.source.auth.AuthHelper
-import com.furianrt.mydiary.model.source.cloud.CloudHelper
+import com.furianrt.mydiary.model.source.auth.AuthSource
+import com.furianrt.mydiary.model.source.cloud.CloudSource
 import com.furianrt.mydiary.model.source.database.dao.LocationDao
 import com.furianrt.mydiary.model.source.database.dao.NoteLocationDao
-import com.furianrt.mydiary.model.source.preferences.PreferencesHelper
+import com.furianrt.mydiary.model.source.preferences.PreferencesSource
 import com.furianrt.mydiary.utils.MyRxUtils
 import io.reactivex.Completable
 import io.reactivex.Flowable
@@ -26,9 +26,9 @@ import javax.inject.Inject
 class LocationGatewayImp @Inject constructor(
         private val locationDao: LocationDao,
         private val noteLocationDao: NoteLocationDao,
-        private val prefs: PreferencesHelper,
-        private val cloud: CloudHelper,
-        private val auth: AuthHelper,
+        private val prefs: PreferencesSource,
+        private val cloud: CloudSource,
+        private val auth: AuthSource,
         private val scheduler: MyRxUtils.BaseSchedulerProvider
 ) : LocationGateway {
 

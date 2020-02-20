@@ -83,19 +83,24 @@ dependencies {
     implementation 'com.google.android.material:material:1.1.0-beta01'
     //todo пофиксть EditText в новой версии
 
-    implementation'com.github.bosphere.android-fadingedgelayout:fadingedgelayout:1.0.0'
-
     //Layout for tags
     implementation 'com.google.android:flexbox:1.1.0'
 
     //Fingerprint
     implementation 'androidx.biometric:biometric:1.0.1'
 
-    //RecyclerView animators
-    implementation 'jp.wasabeef:recyclerview-animators:3.0.0'
+    //Firebase
+    implementation 'com.google.firebase:firebase-core:17.2.2'
+    implementation 'com.google.firebase:firebase-storage:19.1.1'
+    implementation 'com.google.firebase:firebase-firestore:21.4.0'
+    implementation 'com.google.firebase:firebase-messaging:20.1.0'
+    implementation 'com.google.firebase:firebase-auth:19.2.0'
 
-    //RecyclerView with expandable items
-    implementation 'com.thoughtbot:expandablecheckrecyclerview:1.4'
+    //Rx for Firebase
+    implementation 'com.github.FrangSierra:RxFirebase:1.5.6'
+
+    //Crash tracking
+    implementation 'com.crashlytics.sdk.android:crashlytics:2.10.1'
 
     //ORM
     implementation "androidx.room:room-rxjava2:$room_version"
@@ -122,6 +127,12 @@ dependencies {
     implementation "com.squareup.retrofit2:retrofit:$retrofit_version"
     implementation "com.squareup.retrofit2:adapter-rxjava2:$retrofit_version"
     implementation "com.squareup.retrofit2:converter-gson:$retrofit_version"
+
+    //RecyclerView animators
+    implementation 'jp.wasabeef:recyclerview-animators:3.0.0'
+
+    //RecyclerView with expandable items
+    implementation 'com.thoughtbot:expandablecheckrecyclerview:1.4'
 
     //Image loading
     implementation "com.github.bumptech.glide:glide:$glide_version"
@@ -152,23 +163,10 @@ dependencies {
     //Calendar
     implementation 'com.github.kizitonwose:CalendarView:0.1.2'
 
-    //Firebase
-    implementation 'com.google.firebase:firebase-core:17.2.2'
-    implementation 'com.google.firebase:firebase-storage:19.1.1'
-    implementation 'com.google.firebase:firebase-firestore:21.4.0'
-    implementation 'com.google.firebase:firebase-messaging:20.1.0'
-    implementation 'com.google.firebase:firebase-auth:19.2.0'
-
-    //Rx for Firebase
-    implementation 'com.github.FrangSierra:RxFirebase:1.5.6'
-
-    //Crash tracking
-    implementation 'com.crashlytics.sdk.android:crashlytics:2.10.1'
-
     //ImageView with zoom
     implementation 'com.jsibbold:zoomage:1.3.0'
 
-    //Sending email
+    //Sending emails
     implementation 'com.sun.mail:android-mail:1.6.4'
     implementation 'com.sun.mail:android-activation:1.6.4'
 
@@ -180,6 +178,9 @@ dependencies {
 
     //Panorama view for images
     implementation 'com.gjiazhe:PanoramaImageView:1.0'
+
+    //Fading edges for views
+    implementation'com.github.bosphere.android-fadingedgelayout:fadingedgelayout:1.0.0'
 
     //Debugging tool for network calls, database content, etc.
     implementation 'com.facebook.stetho:stetho:1.5.1'

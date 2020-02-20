@@ -12,14 +12,14 @@ package com.furianrt.mydiary.model.gateway.mood
 
 import com.furianrt.mydiary.model.entity.MyMood
 import com.furianrt.mydiary.model.source.database.dao.MoodDao
-import com.furianrt.mydiary.model.source.preferences.PreferencesHelper
+import com.furianrt.mydiary.model.source.preferences.PreferencesSource
 import com.furianrt.mydiary.utils.MyRxUtils
 import io.reactivex.Flowable
 import javax.inject.Inject
 
 class MoodGatewayImp @Inject constructor(
         private val moodDao: MoodDao,
-        private val prefs: PreferencesHelper,
+        private val prefs: PreferencesSource,
         private val scheduler: MyRxUtils.BaseSchedulerProvider
 ) : MoodGateway {
 

@@ -10,9 +10,9 @@
 
 package com.furianrt.mydiary.domain.delete
 
+import com.furianrt.mydiary.domain.get.GetImagesUseCase
 import com.furianrt.mydiary.model.gateway.appearance.AppearanceGateway
 import com.furianrt.mydiary.model.gateway.forecast.ForecastGateway
-import com.furianrt.mydiary.model.gateway.image.ImageGateway
 import com.furianrt.mydiary.model.gateway.location.LocationGateway
 import com.furianrt.mydiary.model.gateway.note.NoteGateway
 import com.furianrt.mydiary.model.gateway.span.SpanGateway
@@ -22,10 +22,11 @@ import io.reactivex.Observable
 import javax.inject.Inject
 
 class DeleteNotesUseCase @Inject constructor(
+        private val deleteImagesUseCase: DeleteImagesUseCase,
+        private val getImagesUseCase: GetImagesUseCase,
         private val noteGateway: NoteGateway,
         private val locationGateway: LocationGateway,
         private val appearanceGateway: AppearanceGateway,
-        private val imageGateway: ImageGateway,
         private val forecastGateway: ForecastGateway,
         private val tagGateway: TagGateway,
         private val spanGateway: SpanGateway
@@ -41,9 +42,9 @@ class DeleteNotesUseCase @Inject constructor(
                     .flatMapCompletable { locations -> locationGateway.deleteLocations(locations.map { it.id }) }
                     .andThen(appearanceGateway.deleteAppearance(noteId))
                     .andThen(tagGateway.deleteNoteTags(noteId))
-                    .andThen(imageGateway.getImagesForNote(noteId))
+                    .andThen(getImagesUseCase.invoke(noteId))
                     .first(emptyList())
-                    .flatMapCompletable { images -> imageGateway.deleteImage(images.map { it.name }) }
+                    .flatMapCompletable { images -> deleteImagesUseCase.invoke(images.map { it.name }) }
                     .andThen(forecastGateway.deleteForecast(noteId))
                     .andThen(spanGateway.deleteTextSpan(noteId))
                     .andThen(noteGateway.deleteNote(noteId))

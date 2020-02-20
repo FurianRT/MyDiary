@@ -23,7 +23,7 @@ import androidx.preference.PreferenceManager
 import androidx.preference.SwitchPreference
 import com.furianrt.mydiary.R
 import com.furianrt.mydiary.analytics.MyAnalytics
-import com.furianrt.mydiary.model.source.preferences.PreferencesHelper
+import com.furianrt.mydiary.model.source.preferences.PreferencesSource
 import com.furianrt.mydiary.presentation.base.BasePreference
 import com.furianrt.mydiary.presentation.screens.pin.PinActivity
 import javax.inject.Inject
@@ -55,25 +55,25 @@ class GlobalSettingsFragment : BasePreference(), GlobalSettingsContract.View,
 
         presenter.attachView(this)
 
-        findPreference<SwitchPreference>(PreferencesHelper.SECURITY_KEY)?.onPreferenceClickListener =
+        findPreference<SwitchPreference>(PreferencesSource.SECURITY_KEY)?.onPreferenceClickListener =
                 Preference.OnPreferenceClickListener {
                     presenter.onPrefSecurityKeyClick()
                     return@OnPreferenceClickListener true
                 }
 
-        findPreference<Preference>(PreferencesHelper.RATE_APP_PREF_BUTTON)?.onPreferenceClickListener =
+        findPreference<Preference>(PreferencesSource.RATE_APP_PREF_BUTTON)?.onPreferenceClickListener =
                 Preference.OnPreferenceClickListener {
                     presenter.onPrefRateAppClick()
                     return@OnPreferenceClickListener true
                 }
 
-        findPreference<Preference>(PreferencesHelper.REPORT_PROBLEM_PREF_BUTTON)?.onPreferenceClickListener =
+        findPreference<Preference>(PreferencesSource.REPORT_PROBLEM_PREF_BUTTON)?.onPreferenceClickListener =
                 Preference.OnPreferenceClickListener {
                     presenter.onPrefReportProblemClick()
                     return@OnPreferenceClickListener true
                 }
 
-        findPreference<Preference>(PreferencesHelper.RESET_NOTES_APPEARANCE_SETTINGS)?.onPreferenceClickListener =
+        findPreference<Preference>(PreferencesSource.RESET_NOTES_APPEARANCE_SETTINGS)?.onPreferenceClickListener =
                 Preference.OnPreferenceClickListener {
                     showResetNotesAppearanceDialog()
                     return@OnPreferenceClickListener true
@@ -82,17 +82,17 @@ class GlobalSettingsFragment : BasePreference(), GlobalSettingsContract.View,
 
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
         when (key) {
-            PreferencesHelper.COLOR_PRIMARY -> {
+            PreferencesSource.COLOR_PRIMARY -> {
                 analytics.sendEvent(MyAnalytics.EVENT_PRIMARY_COLOR_CHANGED)
                 mHandler.postDelayed(mRecreateRunnable, RECREATE_DELAY)
                 mListener?.onThemeAttributeChanged()
             }
-            PreferencesHelper.COLOR_ACCENT -> {
+            PreferencesSource.COLOR_ACCENT -> {
                 analytics.sendEvent(MyAnalytics.EVENT_ACCENT_COLOR_CHANGED)
                 mHandler.postDelayed(mRecreateRunnable, RECREATE_DELAY)
                 mListener?.onThemeAttributeChanged()
             }
-            PreferencesHelper.APP_FONT_STYLE -> {
+            PreferencesSource.APP_FONT_STYLE -> {
                 analytics.sendEvent(MyAnalytics.EVENT_FONT_STYLE_CHANGED)
                 mHandler.postDelayed(mRecreateRunnable, RECREATE_DELAY)
                 mListener?.onThemeAttributeChanged()
@@ -103,7 +103,7 @@ class GlobalSettingsFragment : BasePreference(), GlobalSettingsContract.View,
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == REQUEST_CODE_CREATE_PIN) {
-            val keyPref = findPreference<SwitchPreference>(PreferencesHelper.SECURITY_KEY)
+            val keyPref = findPreference<SwitchPreference>(PreferencesSource.SECURITY_KEY)
             if (resultCode == Activity.RESULT_OK) {
                 analytics.sendEvent(MyAnalytics.EVENT_PIN_CREATED)
                 keyPref?.isChecked = true
@@ -112,7 +112,7 @@ class GlobalSettingsFragment : BasePreference(), GlobalSettingsContract.View,
                 keyPref?.isChecked = false
             }
         } else if (requestCode == REQUEST_CODE_REMOVE_PIN) {
-            val keyPref = findPreference<SwitchPreference>(PreferencesHelper.SECURITY_KEY)
+            val keyPref = findPreference<SwitchPreference>(PreferencesSource.SECURITY_KEY)
             if (resultCode == Activity.RESULT_OK) {
                 analytics.sendEvent(MyAnalytics.EVENT_PIN_REMOVED)
                 keyPref?.isChecked = false
@@ -137,25 +137,25 @@ class GlobalSettingsFragment : BasePreference(), GlobalSettingsContract.View,
     }
 
     override fun showFingerprintOptions() {
-        findPreference<SwitchPreference>(PreferencesHelper.FINGERPRINT_STATUS)?.isVisible = true
+        findPreference<SwitchPreference>(PreferencesSource.FINGERPRINT_STATUS)?.isVisible = true
     }
 
     override fun hideFingerprintOptions() {
-        findPreference<SwitchPreference>(PreferencesHelper.FINGERPRINT_STATUS)?.isVisible = false
+        findPreference<SwitchPreference>(PreferencesSource.FINGERPRINT_STATUS)?.isVisible = false
     }
 
     override fun showBackupEmail(email: String) {
-        val keyPref = findPreference<SwitchPreference>(PreferencesHelper.SECURITY_KEY)
+        val keyPref = findPreference<SwitchPreference>(PreferencesSource.SECURITY_KEY)
         keyPref?.summaryOn = getString(R.string.global_settings_pin_on_summary, email)
     }
 
     override fun showCreatePasswordView() {
-        findPreference<SwitchPreference>(PreferencesHelper.SECURITY_KEY)?.isChecked = false
+        findPreference<SwitchPreference>(PreferencesSource.SECURITY_KEY)?.isChecked = false
         startActivityForResult(PinActivity.newIntentModeCreate(requireActivity()), REQUEST_CODE_CREATE_PIN)
     }
 
     override fun showRemovePasswordView() {
-        findPreference<SwitchPreference>(PreferencesHelper.SECURITY_KEY)?.isChecked = true
+        findPreference<SwitchPreference>(PreferencesSource.SECURITY_KEY)?.isChecked = true
         startActivityForResult(PinActivity.newIntentModeRemove(requireActivity()), REQUEST_CODE_REMOVE_PIN)
     }
 

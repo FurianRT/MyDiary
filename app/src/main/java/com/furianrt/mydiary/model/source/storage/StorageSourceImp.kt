@@ -19,7 +19,7 @@ import java.io.File
 import java.io.FileOutputStream
 import javax.inject.Inject
 
-class StorageHelperImp @Inject constructor(@AppContext context: Context) : StorageHelper {
+class StorageSourceImp @Inject constructor(@AppContext context: Context) : StorageSource {
 
     companion object {
         private const val COMPRESS_VALUE_BITMAP = 18

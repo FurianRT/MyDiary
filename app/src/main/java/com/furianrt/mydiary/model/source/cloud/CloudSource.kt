@@ -15,7 +15,7 @@ import io.reactivex.Completable
 import io.reactivex.Maybe
 import io.reactivex.Single
 
-interface CloudHelper {
+interface CloudSource {
     fun saveProfile(profile: MyProfile): Completable
     fun saveNotes(notes: List<MyNote>, userId: String): Completable
     fun saveCategories(categories: List<MyCategory>, userId: String): Completable

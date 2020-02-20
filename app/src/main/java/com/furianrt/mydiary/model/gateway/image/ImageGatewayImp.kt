@@ -14,12 +14,12 @@ import android.graphics.Bitmap
 import com.furianrt.mydiary.model.entity.MyHeaderImage
 import com.furianrt.mydiary.model.entity.MyImage
 import com.furianrt.mydiary.model.source.api.images.ImagesApiService
-import com.furianrt.mydiary.model.source.auth.AuthHelper
-import com.furianrt.mydiary.model.source.cloud.CloudHelper
+import com.furianrt.mydiary.model.source.auth.AuthSource
+import com.furianrt.mydiary.model.source.cloud.CloudSource
 import com.furianrt.mydiary.model.source.database.dao.HeaderImageDao
 import com.furianrt.mydiary.model.source.database.dao.ImageDao
-import com.furianrt.mydiary.model.source.preferences.PreferencesHelper
-import com.furianrt.mydiary.model.source.storage.StorageHelper
+import com.furianrt.mydiary.model.source.preferences.PreferencesSource
+import com.furianrt.mydiary.model.source.storage.StorageSource
 import com.furianrt.mydiary.utils.MyRxUtils
 import io.reactivex.*
 import org.joda.time.DateTime
@@ -28,11 +28,11 @@ import javax.inject.Inject
 class ImageGatewayImp @Inject constructor(
         private val imageDao: ImageDao,
         private val headerImageDao: HeaderImageDao,
-        private val prefs: PreferencesHelper,
-        private val storage: StorageHelper,
+        private val prefs: PreferencesSource,
+        private val storage: StorageSource,
         private val imagesApi: ImagesApiService,
-        private val cloud: CloudHelper,
-        private val auth: AuthHelper,
+        private val cloud: CloudSource,
+        private val auth: AuthSource,
         private val scheduler: MyRxUtils.BaseSchedulerProvider
 ) : ImageGateway {
 

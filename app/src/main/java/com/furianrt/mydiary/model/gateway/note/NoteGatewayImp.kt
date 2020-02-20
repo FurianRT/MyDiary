@@ -11,11 +11,11 @@
 package com.furianrt.mydiary.model.gateway.note
 
 import com.furianrt.mydiary.model.entity.*
-import com.furianrt.mydiary.model.source.auth.AuthHelper
-import com.furianrt.mydiary.model.source.cloud.CloudHelper
+import com.furianrt.mydiary.model.source.auth.AuthSource
+import com.furianrt.mydiary.model.source.cloud.CloudSource
 import com.furianrt.mydiary.model.source.database.dao.NoteDao
 import com.furianrt.mydiary.model.source.database.dao.NoteTagDao
-import com.furianrt.mydiary.model.source.preferences.PreferencesHelper
+import com.furianrt.mydiary.model.source.preferences.PreferencesSource
 import com.furianrt.mydiary.utils.MyRxUtils
 import io.reactivex.*
 import javax.inject.Inject
@@ -23,9 +23,9 @@ import javax.inject.Inject
 class NoteGatewayImp @Inject constructor(
         private val noteDao: NoteDao,
         private val noteTagDao: NoteTagDao,
-        private val prefs: PreferencesHelper,
-        private val cloud: CloudHelper,
-        private val auth: AuthHelper,
+        private val prefs: PreferencesSource,
+        private val cloud: CloudSource,
+        private val auth: AuthSource,
         private val scheduler: MyRxUtils.BaseSchedulerProvider
 ) : NoteGateway {
 
