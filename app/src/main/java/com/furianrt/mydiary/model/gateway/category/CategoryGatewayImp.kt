@@ -11,8 +11,8 @@
 package com.furianrt.mydiary.model.gateway.category
 
 import com.furianrt.mydiary.model.entity.MyCategory
-import com.furianrt.mydiary.model.source.auth.AuthHelper
-import com.furianrt.mydiary.model.source.cloud.CloudHelper
+import com.furianrt.mydiary.model.source.auth.AuthSource
+import com.furianrt.mydiary.model.source.cloud.CloudSource
 import com.furianrt.mydiary.model.source.database.dao.CategoryDao
 import com.furianrt.mydiary.utils.MyRxUtils
 import io.reactivex.*
@@ -20,8 +20,8 @@ import javax.inject.Inject
 
 class CategoryGatewayImp @Inject constructor(
         private val categoryDao: CategoryDao,
-        private val cloud: CloudHelper,
-        private val auth: AuthHelper,
+        private val cloud: CloudSource,
+        private val auth: AuthSource,
         private val scheduler: MyRxUtils.BaseSchedulerProvider
 ) : CategoryGateway {
 

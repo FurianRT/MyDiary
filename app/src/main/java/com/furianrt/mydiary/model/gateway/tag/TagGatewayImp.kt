@@ -12,8 +12,8 @@ package com.furianrt.mydiary.model.gateway.tag
 
 import com.furianrt.mydiary.model.entity.MyTag
 import com.furianrt.mydiary.model.entity.NoteTag
-import com.furianrt.mydiary.model.source.auth.AuthHelper
-import com.furianrt.mydiary.model.source.cloud.CloudHelper
+import com.furianrt.mydiary.model.source.auth.AuthSource
+import com.furianrt.mydiary.model.source.cloud.CloudSource
 import com.furianrt.mydiary.model.source.database.dao.NoteTagDao
 import com.furianrt.mydiary.model.source.database.dao.TagDao
 import com.furianrt.mydiary.utils.MyRxUtils
@@ -25,8 +25,8 @@ import javax.inject.Inject
 class TagGatewayImp @Inject constructor(
         private val tagDao: TagDao,
         private val noteTagDao: NoteTagDao,
-        private val cloud: CloudHelper,
-        private val auth: AuthHelper,
+        private val cloud: CloudSource,
+        private val auth: AuthSource,
         private val scheduler: MyRxUtils.BaseSchedulerProvider
 ) : TagGateway {
 

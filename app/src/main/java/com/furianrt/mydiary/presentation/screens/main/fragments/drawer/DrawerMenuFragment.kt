@@ -113,7 +113,7 @@ class DrawerMenuFragment : BaseFragment(R.layout.fragment_drawer_menu), DrawerMe
             }
             val category = note.category
             if (category == null) {
-                value.add(requireContext().getColorSupport(R.color.grey_dark))
+                value.add(requireContext().getColorCompat(R.color.grey_dark))
             } else {
                 value.add(category.color)
             }

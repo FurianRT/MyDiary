@@ -17,7 +17,7 @@ import androidx.preference.PreferenceManager
 
 import com.furianrt.mydiary.R
 import com.furianrt.mydiary.analytics.MyAnalytics
-import com.furianrt.mydiary.model.source.preferences.PreferencesHelper
+import com.furianrt.mydiary.model.source.preferences.PreferencesSource
 import com.furianrt.mydiary.presentation.base.BasePreference
 import javax.inject.Inject
 
@@ -45,19 +45,19 @@ class DailySettingsFragment : BasePreference(), DailySettingsContract.View,
 
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
         when (key) {
-            PreferencesHelper.LOAD_DAILY_IMAGE -> {
+            PreferencesSource.LOAD_DAILY_IMAGE -> {
                 mListener?.onDailyImageLoadStateChange()
 
-                val value = sharedPreferences?.getBoolean(PreferencesHelper.LOAD_DAILY_IMAGE, true) ?: true
+                val value = sharedPreferences?.getBoolean(PreferencesSource.LOAD_DAILY_IMAGE, true) ?: true
                 if (value) {
                     analytics.sendEvent(MyAnalytics.EVENT_DAILY_IMAGE_TURN_ON)
                 } else {
                     analytics.sendEvent(MyAnalytics.EVENT_DAILY_IMAGE_TURN_OFF)
                 }
             }
-            PreferencesHelper.DAILY_IMAGE_CATEGORY -> {
-                val value = sharedPreferences?.getString(PreferencesHelper.DAILY_IMAGE_CATEGORY, PreferencesHelper.DAILY_IMAGE_CATEGORY_DEFAULT)
-                        ?: PreferencesHelper.DAILY_IMAGE_CATEGORY_DEFAULT
+            PreferencesSource.DAILY_IMAGE_CATEGORY -> {
+                val value = sharedPreferences?.getString(PreferencesSource.DAILY_IMAGE_CATEGORY, PreferencesSource.DAILY_IMAGE_CATEGORY_DEFAULT)
+                        ?: PreferencesSource.DAILY_IMAGE_CATEGORY_DEFAULT
                 val bundle = Bundle()
                 bundle.putString(MyAnalytics.BUNDLE_CATEGORY, value)
                 analytics.sendEvent(MyAnalytics.EVENT_DAILY_IMAGE_CATEGORY_CHANGED, bundle)

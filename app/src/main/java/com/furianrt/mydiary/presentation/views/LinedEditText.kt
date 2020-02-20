@@ -18,7 +18,7 @@ import android.util.AttributeSet
 import androidx.appcompat.widget.AppCompatEditText
 import com.furianrt.mydiary.R
 import com.furianrt.mydiary.utils.dpToPx
-import com.furianrt.mydiary.utils.getColorSupport
+import com.furianrt.mydiary.utils.getColorCompat
 import kotlin.math.max
 
 class LinedEditText : AppCompatEditText {
@@ -33,7 +33,7 @@ class LinedEditText : AppCompatEditText {
     var enableLines = false
 
     init {
-        mLinePaint.color = context.getColorSupport(R.color.grey)
+        mLinePaint.color = context.getColorCompat(R.color.grey)
         mLinePaint.style = Paint.Style.STROKE
     }
 

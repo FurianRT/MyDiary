@@ -15,7 +15,7 @@ import io.reactivex.Completable
 import io.reactivex.Observable
 import io.reactivex.Single
 
-interface AuthHelper {
+interface AuthSource {
     companion object {
         const val STATE_SIGN_OUT = 0
         const val STATE_SIGN_IN = 1

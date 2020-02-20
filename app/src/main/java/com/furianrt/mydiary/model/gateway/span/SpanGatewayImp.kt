@@ -11,8 +11,8 @@
 package com.furianrt.mydiary.model.gateway.span
 
 import com.furianrt.mydiary.model.entity.MyTextSpan
-import com.furianrt.mydiary.model.source.auth.AuthHelper
-import com.furianrt.mydiary.model.source.cloud.CloudHelper
+import com.furianrt.mydiary.model.source.auth.AuthSource
+import com.furianrt.mydiary.model.source.cloud.CloudSource
 import com.furianrt.mydiary.model.source.database.dao.SpanDao
 import com.furianrt.mydiary.utils.MyRxUtils
 import io.reactivex.Completable
@@ -22,8 +22,8 @@ import javax.inject.Inject
 
 class SpanGatewayImp @Inject constructor(
         private val spanDao: SpanDao,
-        private val cloud: CloudHelper,
-        private val auth: AuthHelper,
+        private val cloud: CloudSource,
+        private val auth: AuthSource,
         private val scheduler: MyRxUtils.BaseSchedulerProvider
 ) : SpanGateway {
 

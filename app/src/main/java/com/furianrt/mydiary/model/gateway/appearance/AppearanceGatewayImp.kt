@@ -11,10 +11,10 @@
 package com.furianrt.mydiary.model.gateway.appearance
 
 import com.furianrt.mydiary.model.entity.MyNoteAppearance
-import com.furianrt.mydiary.model.source.auth.AuthHelper
-import com.furianrt.mydiary.model.source.cloud.CloudHelper
+import com.furianrt.mydiary.model.source.auth.AuthSource
+import com.furianrt.mydiary.model.source.cloud.CloudSource
 import com.furianrt.mydiary.model.source.database.dao.AppearanceDao
-import com.furianrt.mydiary.model.source.preferences.PreferencesHelper
+import com.furianrt.mydiary.model.source.preferences.PreferencesSource
 import com.furianrt.mydiary.utils.MyRxUtils
 import io.reactivex.Completable
 import io.reactivex.Flowable
@@ -23,9 +23,9 @@ import javax.inject.Inject
 
 class AppearanceGatewayImp @Inject constructor(
         private val appearanceDao: AppearanceDao,
-        private val prefs: PreferencesHelper,
-        private val cloud: CloudHelper,
-        private val auth: AuthHelper,
+        private val prefs: PreferencesSource,
+        private val cloud: CloudSource,
+        private val auth: AuthSource,
         private val scheduler: MyRxUtils.BaseSchedulerProvider
 ) : AppearanceGateway {
 

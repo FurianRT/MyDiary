@@ -30,7 +30,7 @@ import com.bumptech.glide.util.ViewPreloadSizeProvider
 import com.furianrt.mydiary.R
 import com.furianrt.mydiary.model.entity.MyNoteWithProp
 import com.furianrt.mydiary.utils.applyTextSpans
-import com.furianrt.mydiary.utils.getColorSupport
+import com.furianrt.mydiary.utils.getColorCompat
 import com.furianrt.mydiary.utils.getDay
 import com.furianrt.mydiary.utils.getDayOfWeek
 import com.furianrt.mydiary.presentation.general.GlideApp
@@ -192,14 +192,14 @@ class NoteListAdapter(
         private fun setCategory(note: MyNoteWithProp) {
             val category = note.category
             if (category == null) {
-                val noCategoryColor = itemView.context.getColorSupport(R.color.grey_dark)
+                val noCategoryColor = itemView.context.getColorCompat(R.color.grey_dark)
                 itemView.text_note_text_day_of_week.setTextColor(noCategoryColor)
                 itemView.text_note_text_day.setTextColor(noCategoryColor)
                 itemView.image_note_text_sync.imageTintList = ColorStateList.valueOf(noCategoryColor)
-                itemView.view_note_text_category.setBackgroundColor(itemView.context.getColorSupport(R.color.white))
+                itemView.view_note_text_category.setBackgroundColor(itemView.context.getColorCompat(R.color.white))
                 itemView.text_category.visibility = View.GONE
             } else {
-                val withCategoryColor = itemView.context.getColorSupport(R.color.white)
+                val withCategoryColor = itemView.context.getColorCompat(R.color.white)
                 itemView.text_note_text_day_of_week.setTextColor(withCategoryColor)
                 itemView.text_note_text_day.setTextColor(withCategoryColor)
                 itemView.image_note_text_sync.imageTintList = ColorStateList.valueOf(withCategoryColor)
@@ -280,14 +280,14 @@ class NoteListAdapter(
         private fun setCategory(note: MyNoteWithProp) {
             val category = note.category
             if (category == null) {
-                val noCategoryColor = itemView.context.getColorSupport(R.color.grey_dark)
+                val noCategoryColor = itemView.context.getColorCompat(R.color.grey_dark)
                 itemView.text_note_image_day_of_week.setTextColor(noCategoryColor)
                 itemView.text_note_image_day.setTextColor(noCategoryColor)
                 itemView.image_note_image_sync.imageTintList = ColorStateList.valueOf(noCategoryColor)
-                itemView.view_note_image_category.setBackgroundColor(itemView.context.getColorSupport(R.color.white))
+                itemView.view_note_image_category.setBackgroundColor(itemView.context.getColorCompat(R.color.white))
                 itemView.text_image_category.visibility = View.GONE
             } else {
-                val withCategoryColor = itemView.context.getColorSupport(R.color.white)
+                val withCategoryColor = itemView.context.getColorCompat(R.color.white)
                 itemView.text_note_image_day_of_week.setTextColor(withCategoryColor)
                 itemView.text_note_image_day.setTextColor(withCategoryColor)
                 itemView.image_note_image_sync.imageTintList = ColorStateList.valueOf(withCategoryColor)

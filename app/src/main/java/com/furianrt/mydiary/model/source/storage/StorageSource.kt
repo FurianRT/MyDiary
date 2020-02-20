@@ -13,7 +13,7 @@ package com.furianrt.mydiary.model.source.storage
 import android.graphics.Bitmap
 import java.io.File
 
-interface StorageHelper {
+interface StorageSource {
     fun copyImageToStorage(sourcePath: String, destFileName: String): File
     fun copyBitmapToStorage(bitmap: Bitmap, destFileName: String): File
     fun deleteFile(fileName: String): Boolean

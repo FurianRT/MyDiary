@@ -93,11 +93,6 @@
         <item name="fontFamily">@font/ubuntu</item>
     </style>
 
-    <style name="DefaultFontStyle">
-        <item name="android:fontFamily">sans-serif</item>
-        <item name="fontFamily">sans-serif</item>
-    </style>
-
     <style name="AppTheme.TransparentActionBar">
         <item name="android:windowDrawsSystemBarBackgrounds">true</item>
         <item name="android:statusBarColor">@color/transparent_black</item>

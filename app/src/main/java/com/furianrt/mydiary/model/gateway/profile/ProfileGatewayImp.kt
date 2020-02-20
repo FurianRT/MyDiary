@@ -11,8 +11,8 @@
 package com.furianrt.mydiary.model.gateway.profile
 
 import com.furianrt.mydiary.model.entity.MyProfile
-import com.furianrt.mydiary.model.source.auth.AuthHelper
-import com.furianrt.mydiary.model.source.cloud.CloudHelper
+import com.furianrt.mydiary.model.source.auth.AuthSource
+import com.furianrt.mydiary.model.source.cloud.CloudSource
 import com.furianrt.mydiary.model.source.database.dao.ProfileDao
 import com.furianrt.mydiary.utils.MyRxUtils
 import io.reactivex.Completable
@@ -23,8 +23,8 @@ import javax.inject.Inject
 
 class ProfileGatewayImp @Inject constructor(
         private val profileDao: ProfileDao,
-        private val cloud: CloudHelper,
-        private val auth: AuthHelper,
+        private val cloud: CloudSource,
+        private val auth: AuthSource,
         private val scheduler: MyRxUtils.BaseSchedulerProvider
 ) : ProfileGateway {
 
@@ -60,7 +60,7 @@ class ProfileGatewayImp @Inject constructor(
     override fun observeAuthState(): Observable<Int> =
             auth.observeAuthState()
                     .map {
-                        if (it == AuthHelper.STATE_SIGN_OUT) {
+                        if (it == AuthSource.STATE_SIGN_OUT) {
                             ProfileGateway.SIGN_STATE_SIGN_OUT
                         } else {
                             ProfileGateway.SIGN_STATE_SIGN_IN

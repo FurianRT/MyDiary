@@ -26,10 +26,10 @@ import io.reactivex.Single
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
-class CloudHelperImp @Inject constructor(
+class CloudSourceImp @Inject constructor(
         private val firestore: FirebaseFirestore,
         private val firebaseStorage: FirebaseStorage
-) : CloudHelper {
+) : CloudSource {
 
     companion object {
         private const val TAG = "CloudHelperImp"

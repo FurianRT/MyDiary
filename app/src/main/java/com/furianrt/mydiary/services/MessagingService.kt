@@ -72,8 +72,8 @@ class MessagingService : FirebaseMessagingService() {
                 .setContentIntent(pendingIntent)
                 .setStyle(notificationStyle)
                 .build()
-        val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-        notificationManager.notify(NOTIFICATION_ID, resultNotification)
+        val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager?
+        notificationManager?.notify(NOTIFICATION_ID, resultNotification)
     }
 
     private fun newLauncherIntent(context: Context): Intent =

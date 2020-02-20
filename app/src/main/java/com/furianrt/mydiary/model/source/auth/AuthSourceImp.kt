@@ -28,10 +28,10 @@ import javax.mail.*
 import javax.mail.internet.InternetAddress
 import javax.mail.internet.MimeMessage
 
-class AuthHelperImp @Inject constructor(
+class AuthSourceImp @Inject constructor(
         @AppContext private val context: Context,
         private val firebaseAuth: FirebaseAuth
-) : AuthHelper {
+) : AuthSource {
 
     private class UserSignedOutException : Throwable()
 
@@ -42,10 +42,7 @@ class AuthHelperImp @Inject constructor(
             RxFirebaseAuth.createUserWithEmailAndPassword(firebaseAuth, email, password)
                     .toSingle()
                     .map { it.user }
-                    .map {
-                        MyUser(it.uid, it.email
-                                ?: "", it.photoUrl?.toString())
-                    }
+                    .map { MyUser(it.uid, it.email ?: "", it.photoUrl?.toString()) }
 
     override fun signIn(email: String, password: String): Single<String> =
             RxFirebaseAuth.signInWithEmailAndPassword(firebaseAuth, email, password)
@@ -58,9 +55,9 @@ class AuthHelperImp @Inject constructor(
             RxFirebaseAuth.observeAuthState(firebaseAuth)
                     .map {
                         if (it.currentUser == null) {
-                            AuthHelper.STATE_SIGN_OUT
+                            AuthSource.STATE_SIGN_OUT
                         } else {
-                            AuthHelper.STATE_SIGN_IN
+                            AuthSource.STATE_SIGN_IN
                         }
                     }
 
@@ -90,9 +87,10 @@ class AuthHelperImp @Inject constructor(
         props["mail.smtp.port"] = "465"
 
         val session = Session.getDefaultInstance(props, object : Authenticator() {
-            override fun getPasswordAuthentication(): PasswordAuthentication {
-                return PasswordAuthentication(BuildConfig.SUPPORT_EMAIL, BuildConfig.SUPPORT_EMAIL_PASSWORD)
-            }
+            override fun getPasswordAuthentication() = PasswordAuthentication(
+                    BuildConfig.SUPPORT_EMAIL,
+                    BuildConfig.SUPPORT_EMAIL_PASSWORD
+            )
         })
 
         val message = MimeMessage(session)

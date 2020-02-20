@@ -10,7 +10,7 @@
 
 package com.furianrt.mydiary.model.source.preferences
 
-interface PreferencesHelper {
+interface PreferencesSource {
     fun getPrimaryColor(): Int
     fun getAccentColor(): Int
     fun isWeatherEnabled(): Boolean

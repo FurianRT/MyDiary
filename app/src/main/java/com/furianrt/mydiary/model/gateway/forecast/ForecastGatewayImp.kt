@@ -12,10 +12,10 @@ package com.furianrt.mydiary.model.gateway.forecast
 
 import com.furianrt.mydiary.model.entity.MyForecast
 import com.furianrt.mydiary.model.source.api.forecast.WeatherApiService
-import com.furianrt.mydiary.model.source.auth.AuthHelper
-import com.furianrt.mydiary.model.source.cloud.CloudHelper
+import com.furianrt.mydiary.model.source.auth.AuthSource
+import com.furianrt.mydiary.model.source.cloud.CloudSource
 import com.furianrt.mydiary.model.source.database.dao.ForecastDao
-import com.furianrt.mydiary.model.source.preferences.PreferencesHelper
+import com.furianrt.mydiary.model.source.preferences.PreferencesSource
 import com.furianrt.mydiary.utils.MyRxUtils
 import io.reactivex.Completable
 import io.reactivex.Flowable
@@ -24,10 +24,10 @@ import javax.inject.Inject
 
 class ForecastGatewayImp @Inject constructor(
         private val forecastDao: ForecastDao,
-        private val prefs: PreferencesHelper,
+        private val prefs: PreferencesSource,
         private val weatherApi: WeatherApiService,
-        private val cloud: CloudHelper,
-        private val auth: AuthHelper,
+        private val cloud: CloudSource,
+        private val auth: AuthSource,
         private val scheduler: MyRxUtils.BaseSchedulerProvider
 ) : ForecastGateway {
 

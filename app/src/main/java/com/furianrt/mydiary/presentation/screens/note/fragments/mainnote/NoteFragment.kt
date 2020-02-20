@@ -430,7 +430,7 @@ class NoteFragment : BaseFragment(R.layout.fragment_note), NoteFragmentContract.
         val image = layout_tags.getChildAt(0) as ImageView
         image.setColorFilter(
                 tagsAndAppearance.appearance.surfaceTextColor
-                        ?: requireContext().getColorSupport(R.color.black),
+                        ?: requireContext().getColorCompat(R.color.black),
                 PorterDuff.Mode.SRC_IN
         )
         image.alpha = 0.4f
@@ -468,7 +468,7 @@ class NoteFragment : BaseFragment(R.layout.fragment_note), NoteFragmentContract.
                 elevation = 5f
                 radius = 25f
                 setCardBackgroundColor(
-                        appearance.textBackground ?: requireContext().getColorSupport(R.color.white)
+                        appearance.textBackground ?: requireContext().getColorCompat(R.color.white)
                 )
                 val params = FrameLayout.LayoutParams(
                         FrameLayout.LayoutParams.WRAP_CONTENT,
@@ -480,7 +480,7 @@ class NoteFragment : BaseFragment(R.layout.fragment_note), NoteFragmentContract.
                 addView(TextView(context).apply {
                     this.text = text
                     setTextColor(
-                            appearance.textColor ?: requireContext().getColorSupport(R.color.black)
+                            appearance.textColor ?: requireContext().getColorCompat(R.color.black)
                     )
                     setPadding(20, 10, 20, 10)
                 })
