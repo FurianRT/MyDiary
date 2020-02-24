@@ -18,6 +18,6 @@ class CheckPinUseCase @Inject constructor(
         private val pinGateway: PinGateway
 ) {
 
-    fun invoke(newPin: String): Single<Boolean> =
+    operator fun invoke(newPin: String): Single<Boolean> =
             pinGateway.getPin().map { oldPin -> newPin == oldPin }
 }

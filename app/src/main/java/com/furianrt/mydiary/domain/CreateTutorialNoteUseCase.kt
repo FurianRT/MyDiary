@@ -27,40 +27,39 @@ import javax.inject.Inject
 class CreateTutorialNoteUseCase @Inject constructor(
         private val deviceGateway: DeviceGateway,
         private val generalGateway: GeneralGateway,
-        private val saveNotes: SaveNotesUseCase,
-        private val saveImages: SaveImagesUseCase,
-        private val addTagToNote: AddTagToNoteUseCase,
-        private val getCategories: GetCategoriesUseCase,
-        private val getTags: GetTagsUseCase
+        private val saveNotesUseCase: SaveNotesUseCase,
+        private val saveImagesUseCase: SaveImagesUseCase,
+        private val addTagToNoteUseCase: AddTagToNoteUseCase,
+        private val getCategoriesUseCase: GetCategoriesUseCase,
+        private val getTagsUseCase: GetTagsUseCase
 ) {
 
-    fun invoke(): Completable {
-        return if (generalGateway.isNeedDefaultValues()) {
-            generalGateway.setNeedDefaultValues(false)
-            val noteId = generateUniqueId()
-            saveImages.invoke(noteId, deviceGateway.getTutorialNoteBitmap())
-                    .andThen(getCategories.invoke().firstOrError())
-                    .map { it.first() }
-                    .flatMapCompletable { category ->
-                        val note = MyNote(
-                                id = noteId,
-                                title = deviceGateway.getTutorialNoteTitle(),
-                                content = deviceGateway.getTutorialNoteContent(),
-                                time = DateTime.now().millis,
-                                moodId = deviceGateway.getTutorialNoteMoodId(),
-                                categoryId = category.id,
-                                creationTime = DateTime.now().millis
-                        )
-                        saveNotes.invoke(note)
-                    }
-                    .andThen(getTags.invoke().firstOrError())
-                    .flatMapObservable { Observable.fromIterable(it) }
-                    .flatMapSingle { addTagToNote.invoke(noteId, it.id).toSingleDefault(true) }
-                    .collectInto(mutableListOf<Boolean>()) { l, i -> l.add(i) }
-                    .ignoreElement()
-                    .onErrorComplete()
-        } else {
-            Completable.complete()
-        }
-    }
+    operator fun invoke(): Completable =
+            if (generalGateway.isNeedDefaultValues()) {
+                generalGateway.setNeedDefaultValues(false)
+                val noteId = generateUniqueId()
+                saveImagesUseCase(noteId, deviceGateway.getTutorialNoteBitmap())
+                        .andThen(getCategoriesUseCase().firstOrError())
+                        .map { it.first() }
+                        .flatMapCompletable { category ->
+                            val note = MyNote(
+                                    id = noteId,
+                                    title = deviceGateway.getTutorialNoteTitle(),
+                                    content = deviceGateway.getTutorialNoteContent(),
+                                    time = DateTime.now().millis,
+                                    moodId = deviceGateway.getTutorialNoteMoodId(),
+                                    categoryId = category.id,
+                                    creationTime = DateTime.now().millis
+                            )
+                            saveNotesUseCase(note)
+                        }
+                        .andThen(getTagsUseCase().firstOrError())
+                        .flatMapObservable { Observable.fromIterable(it) }
+                        .flatMapSingle { addTagToNoteUseCase(noteId, it.id).toSingleDefault(true) }
+                        .collectInto(mutableListOf<Boolean>()) { l, i -> l.add(i) }
+                        .ignoreElement()
+                        .onErrorComplete()
+            } else {
+                Completable.complete()
+            }
 }

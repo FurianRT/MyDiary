@@ -33,7 +33,7 @@ class GetFullNotesUseCase @Inject constructor(
         private val scheduler: MyRxUtils.BaseSchedulerProvider
 ) {
 
-    fun invoke(): Flowable<List<MyNoteWithProp>> =
+    operator fun invoke(): Flowable<List<MyNoteWithProp>> =
             getAllNotes().map { notes ->
                 if (noteGateway.isSortDesc()) {
                     notes.sortedByDescending { it.note.time }
@@ -42,7 +42,7 @@ class GetFullNotesUseCase @Inject constructor(
                 }
             }
 
-    fun invoke(noteId: String): Flowable<Optional<MyNoteWithProp>> =
+    operator fun invoke(noteId: String): Flowable<Optional<MyNoteWithProp>> =
             getAllNotes().map { notes ->
                 Optional.fromNullable(notes.find { it.note.id == noteId })
             }

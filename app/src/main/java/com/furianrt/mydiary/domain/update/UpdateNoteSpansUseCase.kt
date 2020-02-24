@@ -41,7 +41,7 @@ class UpdateNoteSpansUseCase @Inject constructor(
         return isSpansEqual
     }
 
-    fun invoke(noteId: String, textSpans: List<MyTextSpan>) {
+    operator fun invoke(noteId: String, textSpans: List<MyTextSpan>) {
         spanGateway.getTextSpans(noteId)
                 .firstOrError()
                 .flatMapCompletable { existingSpans ->

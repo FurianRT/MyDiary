@@ -19,5 +19,5 @@ class DeleteTagUseCase @Inject constructor(
         private val tagGateway: TagGateway
 ) {
 
-    fun invoke(tag: MyTag): Completable = tagGateway.deleteTag(tag)
+    operator fun invoke(tag: MyTag): Completable = tagGateway.deleteTag(tag)
 }

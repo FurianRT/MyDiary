@@ -18,7 +18,7 @@ class ResetNotesAppearanceSettingsUseCase @Inject constructor(
         private val appearanceGateway: AppearanceGateway
 ) {
 
-    fun invoke(): Completable = Completable.fromAction {
+    operator fun invoke(): Completable = Completable.fromAction {
         appearanceGateway.setNoteBackgroundColor(AppearanceGateway.DEFAULT_NOTE_BACKGROUND_COLOR)
         appearanceGateway.setNoteTextBackgroundColor(AppearanceGateway.DEFAULT_NOTE_TEXT_BACKGROUND_COLOR)
         appearanceGateway.setTextSize(AppearanceGateway.DEFAULT_NOTE_TEXT_SIZE)

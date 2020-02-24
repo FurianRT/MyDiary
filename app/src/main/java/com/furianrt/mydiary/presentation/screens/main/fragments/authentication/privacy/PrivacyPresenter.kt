@@ -15,7 +15,7 @@ import com.furianrt.mydiary.utils.MyRxUtils
 import javax.inject.Inject
 
 class PrivacyPresenter @Inject constructor(
-        private val signUp: SignUpUseCase,
+        private val signUpUseCase: SignUpUseCase,
         private val scheduler: MyRxUtils.BaseSchedulerProvider
 ) : PrivacyContract.Presenter() {
 
@@ -25,7 +25,7 @@ class PrivacyPresenter @Inject constructor(
 
     override fun onButtonAcceptClick(email: String, password: String) {
         view?.showLoading()
-        addDisposable(signUp.invoke(email, password)
+        addDisposable(signUpUseCase(email, password)
                 .observeOn(scheduler.ui())
                 .subscribe({
                     view?.hideLoading()

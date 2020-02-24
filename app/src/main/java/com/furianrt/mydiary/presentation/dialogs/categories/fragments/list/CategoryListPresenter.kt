@@ -21,9 +21,9 @@ import io.reactivex.functions.BiFunction
 import javax.inject.Inject
 
 class CategoryListPresenter @Inject constructor(
-        private val updateNote: UpdateNoteUseCase,
-        private val getCategories: GetCategoriesUseCase,
-        private val getNotes: GetNotesUseCase,
+        private val updateNoteUseCase: UpdateNoteUseCase,
+        private val getCategoriesUseCase: GetCategoriesUseCase,
+        private val getNotesUseCase: GetNotesUseCase,
         private val scheduler: MyRxUtils.BaseSchedulerProvider
 ) : CategoryListContract.Presenter() {
 
@@ -46,8 +46,8 @@ class CategoryListPresenter @Inject constructor(
 
     override fun onViewStart() {
         addDisposable(Flowable.combineLatest(
-                getNotes.invoke().firstOrError().toFlowable(),
-                getCategories.invoke(),
+                getNotesUseCase().firstOrError().toFlowable(),
+                getCategoriesUseCase(),
                 BiFunction<List<MyNote>, List<MyCategory>, NotesAndCategories> { notes, categories ->
                     NotesAndCategories(notes, categories)
                 }
@@ -57,13 +57,13 @@ class CategoryListPresenter @Inject constructor(
     }
 
     override fun onCategoryClick(category: MyCategory, noteIds: List<String>) {
-        addDisposable(updateNote.invoke(noteIds, category.id)
+        addDisposable(updateNoteUseCase(noteIds, category.id)
                 .observeOn(scheduler.ui())
                 .subscribe { view?.close() })
     }
 
     override fun onButtonNoCategoryClick(noteIds: List<String>) {
-        addDisposable(updateNote.invoke(noteIds, "")
+        addDisposable(updateNoteUseCase(noteIds, "")
                 .observeOn(scheduler.ui())
                 .subscribe { view?.close() })
     }

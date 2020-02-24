@@ -25,19 +25,8 @@ class GetNotesWithSpansUseCase @Inject constructor(
         private val spanGateway: SpanGateway
 ) {
 
-    fun invoke(): Flowable<List<MyNoteWithSpans>> =
-            getAllNotes().map { notes ->
-                if (noteGateway.isSortDesc()) {
-                    notes.sortedByDescending { it.note.time }
-                } else {
-                    notes.sortedBy { it.note.time }
-                }
-            }
-
-    fun invoke(noteId: String): Flowable<Optional<MyNoteWithSpans>> =
-            getAllNotes().map { note ->
-                Optional.fromNullable(note.find { it.note.id == noteId })
-            }
+    operator fun invoke(noteId: String): Flowable<Optional<MyNoteWithSpans>> =
+            getAllNotes().map { note -> Optional.fromNullable(note.find { it.note.id == noteId }) }
 
     private fun getAllNotes(): Flowable<List<MyNoteWithSpans>> =
             Flowable.combineLatest(

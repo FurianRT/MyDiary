@@ -15,7 +15,7 @@ import com.furianrt.mydiary.domain.save.SetNeedRateOfferUseCase
 import javax.inject.Inject
 
 class RateDialogPresenter @Inject constructor(
-        private val setNeedRateOffer: SetNeedRateOfferUseCase
+        private val setNeedRateOfferUseCase: SetNeedRateOfferUseCase
 ) : RateDialogContract.Presenter() {
 
     override fun onButtonRateClick(rating: Int) {
@@ -24,17 +24,17 @@ class RateDialogPresenter @Inject constructor(
         } else {
             view?.sendEmailToSupport(BuildConfig.SUPPORT_EMAIL)
         }
-        setNeedRateOffer.invoke(false)
+        setNeedRateOfferUseCase(false)
         view?.close()
     }
 
     override fun onButtonLaterClick() {
-        setNeedRateOffer.invoke(true)
+        setNeedRateOfferUseCase(true)
         view?.close()
     }
 
     override fun onButtonNeverClick() {
-        setNeedRateOffer.invoke(false)
+        setNeedRateOfferUseCase(false)
         view?.close()
     }
 }

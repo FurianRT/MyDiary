@@ -16,14 +16,14 @@ import com.furianrt.mydiary.utils.MyRxUtils
 import javax.inject.Inject
 
 class BackupEmailPresenter @Inject constructor(
-        private val checkEmail: CheckEmailUseCase,
-        private val getProfile: GetProfileUseCase,
+        private val checkEmailUseCase: CheckEmailUseCase,
+        private val getProfileUseCase: GetProfileUseCase,
         private val scheduler: MyRxUtils.BaseSchedulerProvider
 ) : BackupEmailContract.Presenter() {
 
     override fun onViewCreated(email: String, firstLaunch: Boolean) {
         if (email.isEmpty() && firstLaunch) {
-            addDisposable(getProfile.invoke()
+            addDisposable(getProfileUseCase()
                     .firstElement()
                     .observeOn(scheduler.ui())
                     .subscribe { view?.showEmail(it.email) })
@@ -31,7 +31,7 @@ class BackupEmailPresenter @Inject constructor(
     }
 
     override fun onButtonDoneClick(email: String) {
-        if (checkEmail.invoke(email)) {
+        if (checkEmailUseCase(email)) {
             view?.showEmailIsCorrect(email)
         } else {
             view?.showErrorEmailFormat()

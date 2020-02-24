@@ -19,8 +19,8 @@ class GetLocationsUseCase @Inject constructor(
         private val locationGateway: LocationGateway
 ) {
 
-    fun invoke(): Flowable<List<MyLocation>> = locationGateway.getAllDbLocations()
+    operator fun invoke(): Flowable<List<MyLocation>> = locationGateway.getAllDbLocations()
 
-    fun invoke(noteId: String): Flowable<List<MyLocation>> =
+    operator fun invoke(noteId: String): Flowable<List<MyLocation>> =
             locationGateway.getLocationsForNote(noteId)
 }

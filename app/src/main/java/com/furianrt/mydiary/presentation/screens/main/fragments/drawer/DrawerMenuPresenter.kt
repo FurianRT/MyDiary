@@ -21,14 +21,14 @@ import org.joda.time.DateTime
 import javax.inject.Inject
 
 class DrawerMenuPresenter @Inject constructor(
-       private val getNotes: GetNotesUseCase,
-       private val getImageCount: GetImageCountUseCase,
-       private val getProfile: GetProfileUseCase,
-       private val isSignedIn: IsSignedInUseCase,
-       private val getLastSyncMessage: GetLastSyncMessageUseCase,
-       private val getAuthState: GetAuthStateUseCase,
-       private val checkLogOut: CheckLogOutUseCase,
-       private val getSearchEntries: GetSearchEntriesUseCase,
+       private val getNotesUseCase: GetNotesUseCase,
+       private val getImageCountUseCase: GetImageCountUseCase,
+       private val getProfileUseCase: GetProfileUseCase,
+       private val isSignedInUseCase: IsSignedInUseCase,
+       private val getLastSyncMessageUseCase: GetLastSyncMessageUseCase,
+       private val getAuthStateUseCase: GetAuthStateUseCase,
+       private val checkLogOutUseCase: CheckLogOutUseCase,
+       private val getSearchEntriesUseCase: GetSearchEntriesUseCase,
        private val scheduler: MyRxUtils.BaseSchedulerProvider
 ) : DrawerMenuContract.Presenter() {
 
@@ -42,7 +42,7 @@ class DrawerMenuPresenter @Inject constructor(
     }
 
     override fun onButtonSyncClick() {
-        if (!isSignedIn.invoke()) {
+        if (!isSignedInUseCase()) {
             view?.showLoginView()
         } else {
             view?.startSyncService()
@@ -50,7 +50,7 @@ class DrawerMenuPresenter @Inject constructor(
     }
 
     private fun updateSyncProgress() {
-        addDisposable(Single.fromCallable { getLastSyncMessage.invoke() }
+        addDisposable(Single.fromCallable { getLastSyncMessageUseCase() }
                 .subscribeOn(scheduler.io())
                 .observeOn(scheduler.ui())
                 .subscribe({ message ->
@@ -65,7 +65,7 @@ class DrawerMenuPresenter @Inject constructor(
     }
 
     private fun loadNotes() {
-        addDisposable(getNotes.invoke()
+        addDisposable(getNotesUseCase()
                 .observeOn(scheduler.ui())
                 .subscribe { notes ->
                     val todayCount = notes
@@ -77,23 +77,23 @@ class DrawerMenuPresenter @Inject constructor(
     }
 
     private fun loadImageCount() {
-        addDisposable(getImageCount.invoke()
+        addDisposable(getImageCountUseCase()
                 .observeOn(scheduler.ui())
                 .subscribe { view?.showImageCount(it) })
     }
 
     private fun loadSearchEntries() {
-        addDisposable(getSearchEntries.invoke()
+        addDisposable(getSearchEntriesUseCase()
                 .observeOn(scheduler.ui())
                 .subscribe { view?.showSearchEntries(it) })
     }
 
     private fun loadProfile() {
-        addDisposable(getProfile.invoke()
+        addDisposable(getProfileUseCase()
                 .observeOn(scheduler.ui())
                 .subscribe { view?.showProfile(it) })
 
-        addDisposable(getAuthState.invoke()
+        addDisposable(getAuthStateUseCase()
                 .filter { it == GetAuthStateUseCase.STATE_SIGN_OUT }
                 .observeOn(scheduler.ui())
                 .subscribe { view?.showAnonymousProfile() })
@@ -104,10 +104,10 @@ class DrawerMenuPresenter @Inject constructor(
     }
 
     override fun onButtonProfileClick() {
-        addDisposable(checkLogOut.invoke()
+        addDisposable(checkLogOutUseCase()
                 .observeOn(scheduler.ui())
                 .subscribe({
-                    if (isSignedIn.invoke()) {
+                    if (isSignedInUseCase()) {
                         view?.showProfileSettings()
                     } else {
                         view?.showLoginView()

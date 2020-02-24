@@ -17,5 +17,5 @@ class IsLocationEnabledUseCase @Inject constructor(
         private val locationGateway: LocationGateway
 ) {
 
-    fun invoke(): Boolean = locationGateway.isLocationEnabled()
+    operator fun invoke(): Boolean = locationGateway.isLocationEnabled()
 }

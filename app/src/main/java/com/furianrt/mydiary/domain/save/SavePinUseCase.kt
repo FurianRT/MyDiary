@@ -18,7 +18,7 @@ class SavePinUseCase @Inject constructor(
         private val pinGateway: PinGateway
 ) {
 
-    fun invoke(pin: String, email: String): Completable {
+    operator fun invoke(pin: String, email: String): Completable {
         pinGateway.setBackupEmail(email)
         return pinGateway.setPin(pin)
     }

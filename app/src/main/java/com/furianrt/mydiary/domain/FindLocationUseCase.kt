@@ -19,7 +19,7 @@ class FindLocationUseCase @Inject constructor(
         private val deviceGateway: DeviceGateway
 ) {
 
-    fun invoke(): Maybe<MyLocation> =
+    operator fun invoke(): Maybe<MyLocation> =
             if (deviceGateway.isLocationAvailable()) {
                 deviceGateway.findLocation()
             } else {

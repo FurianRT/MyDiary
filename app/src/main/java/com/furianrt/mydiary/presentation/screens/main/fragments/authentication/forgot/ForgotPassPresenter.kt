@@ -15,7 +15,7 @@ import com.furianrt.mydiary.utils.MyRxUtils
 import javax.inject.Inject
 
 class ForgotPassPresenter @Inject constructor(
-        private val sendPassResetEmail: SendPassResetEmailUseCase,
+        private val sendPassResetEmailUseCase: SendPassResetEmailUseCase,
         private val scheduler: MyRxUtils.BaseSchedulerProvider
 ) : ForgotPassContract.Presenter() {
 
@@ -25,7 +25,7 @@ class ForgotPassPresenter @Inject constructor(
 
     override fun onButtonSendClick(email: String) {
         view?.showLoading()
-        addDisposable(sendPassResetEmail.invoke(email)
+        addDisposable(sendPassResetEmailUseCase(email)
                 .observeOn(scheduler.ui())
                 .subscribe({
                     view?.hideLoading()

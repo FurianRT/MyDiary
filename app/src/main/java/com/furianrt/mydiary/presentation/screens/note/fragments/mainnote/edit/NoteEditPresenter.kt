@@ -16,7 +16,7 @@ import com.furianrt.mydiary.model.entity.MyTextSpan
 import javax.inject.Inject
 
 class NoteEditPresenter @Inject constructor(
-        private val updateNoteSpans: UpdateNoteSpansUseCase,
+        private val updateNoteSpansUseCase: UpdateNoteSpansUseCase,
         private val updateNote: UpdateNoteUseCase
 ) : NoteEditContract.Presenter() {
 
@@ -69,7 +69,7 @@ class NoteEditPresenter @Inject constructor(
     override fun onViewStopped(noteId: String, title: String, content: String, textSpans: List<MyTextSpan>) {
         Thread(Runnable {
             updateNote.invokeTempSolution(noteId, title, content)
-            updateNoteSpans.invoke(noteId, textSpans)
+            updateNoteSpansUseCase(noteId, textSpans)
         }).start()
     }
 

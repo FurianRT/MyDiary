@@ -16,7 +16,7 @@ import com.furianrt.mydiary.utils.MyRxUtils
 import javax.inject.Inject
 
 class CategoryDeletePresenter @Inject constructor(
-        private val deleteCategory: DeleteCategoryUseCase,
+        private val deleteCategoryUseCase: DeleteCategoryUseCase,
         private val scheduler: MyRxUtils.BaseSchedulerProvider
 ) : CategoryDeleteContract.Presenter() {
 
@@ -32,7 +32,7 @@ class CategoryDeletePresenter @Inject constructor(
     }
 
     override fun onButtonDeleteClick() {
-        addDisposable(deleteCategory.invoke(mCategory)
+        addDisposable(deleteCategoryUseCase(mCategory)
                .observeOn(scheduler.ui())
                .subscribe { view?.closeView() })
     }

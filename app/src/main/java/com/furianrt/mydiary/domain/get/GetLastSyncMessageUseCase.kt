@@ -18,5 +18,5 @@ class GetLastSyncMessageUseCase @Inject constructor(
         private val generalGateway: GeneralGateway
 ) {
 
-    fun invoke(): SyncProgressMessage? = generalGateway.getLastSyncMessage()
+    operator fun invoke(): SyncProgressMessage? = generalGateway.getLastSyncMessage()
 }

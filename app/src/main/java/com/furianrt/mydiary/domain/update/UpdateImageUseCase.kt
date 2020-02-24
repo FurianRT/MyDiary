@@ -19,7 +19,7 @@ class UpdateImageUseCase @Inject constructor(
         private val imageGateway: ImageGateway
 ) {
 
-    fun invoke(image: MyImage): Completable = imageGateway.updateImage(image)
+    operator fun invoke(image: MyImage): Completable = imageGateway.updateImage(image)
 
-    fun invoke(images: List<MyImage>): Completable = imageGateway.updateImage(images)
+    operator fun invoke(images: List<MyImage>): Completable = imageGateway.updateImage(images)
 }

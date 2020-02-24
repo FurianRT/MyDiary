@@ -17,7 +17,7 @@ class DisableLocationUseCase @Inject constructor(
         private val locationGateway: LocationGateway
 ) {
 
-    fun invoke() {
+    operator fun invoke() {
         locationGateway.setLocationEnabled(false)
     }
 }

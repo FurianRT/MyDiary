@@ -182,7 +182,7 @@ class MainActivity : BaseActivity(R.layout.activity_main), MainActivityContract.
         mOnDrawerListener = object : ActionBarDrawerToggle(this, drawer, toolbar_main, R.string.open, R.string.close) {
             override fun onDrawerSlide(drawerView: View, slideOffset: Float) {
                 super.onDrawerSlide(drawerView, slideOffset)
-                layout_main_root.translationX = slideOffset * drawerView.width * 0.3f
+                layout_main_root.translationX = slideOffset * drawerView.width * 0.2f
             }
         }
 

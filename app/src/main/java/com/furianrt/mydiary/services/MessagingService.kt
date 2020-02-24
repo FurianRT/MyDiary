@@ -51,9 +51,9 @@ class MessagingService : FirebaseMessagingService() {
             when {
                 forPremiumUsers == null ->
                     showNotification(notification)
-                forPremiumUsers == 1 && isPremiumPurchasedUseCase.invoke() ->
+                forPremiumUsers == 1 && isPremiumPurchasedUseCase() ->
                     showNotification(notification)
-                forPremiumUsers == 0 && !isPremiumPurchasedUseCase.invoke() ->
+                forPremiumUsers == 0 && !isPremiumPurchasedUseCase() ->
                     showNotification(notification)
             }
         }

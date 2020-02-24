@@ -15,7 +15,7 @@ import com.furianrt.mydiary.utils.MyRxUtils
 import javax.inject.Inject
 
 class LoginPresenter @Inject constructor(
-        private val signIn: SignInUseCase,
+        private val signInUseCase: SignInUseCase,
         private val scheduler: MyRxUtils.BaseSchedulerProvider
 ) : LoginContract.Presenter() {
 
@@ -29,7 +29,7 @@ class LoginPresenter @Inject constructor(
 
     private fun signIn(email: String, password: String) {
         view?.showLoading()
-        addDisposable(signIn.invoke(email, password)
+        addDisposable(signInUseCase(email, password)
                 .observeOn(scheduler.ui())
                 .subscribe({
                     view?.hideLoading()

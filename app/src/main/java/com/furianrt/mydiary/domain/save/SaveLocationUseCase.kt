@@ -20,7 +20,7 @@ class SaveLocationUseCase @Inject constructor(
         private val locationGateway: LocationGateway
 ) {
 
-    fun invoke(noteId: String, location: MyLocation): Completable =
+    operator fun invoke(noteId: String, location: MyLocation): Completable =
             locationGateway.insertLocation(location)
                     .andThen(locationGateway.insertNoteLocation(NoteLocation(noteId, location.id)))
 }

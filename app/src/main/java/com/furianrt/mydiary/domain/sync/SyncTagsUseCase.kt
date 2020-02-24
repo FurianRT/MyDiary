@@ -21,7 +21,7 @@ class SyncTagsUseCase @Inject constructor(
     class SyncTagsException : Throwable()
     class SyncNoteTagsException : Throwable()
 
-    fun invoke(email: String): Completable =
+    operator fun invoke(email: String): Completable =
             Completable.concat(listOf(syncTags(email), syncNoteTags(email)))
 
     private fun syncTags(email: String): Completable =

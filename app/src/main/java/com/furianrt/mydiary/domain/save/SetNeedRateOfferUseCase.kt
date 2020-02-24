@@ -17,7 +17,7 @@ class SetNeedRateOfferUseCase @Inject constructor(
         private val generalGateway: GeneralGateway
 ) {
 
-    fun invoke(need: Boolean) {
+    operator fun invoke(need: Boolean) {
         generalGateway.enableRateOffer(need)
     }
 }

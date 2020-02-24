@@ -20,10 +20,10 @@ import com.furianrt.mydiary.utils.MyRxUtils
 import javax.inject.Inject
 
 class PinPresenter @Inject constructor(
-        private val savePin: SavePinUseCase,
-        private val authorize: AuthorizeUseCase,
-        private val checkPin: CheckPinUseCase,
-        private val isFingerprintAvailable: IsFingerprintAvailableUseCase,
+        private val savePinUseCase: SavePinUseCase,
+        private val authorizeUseCase: AuthorizeUseCase,
+        private val checkPinUseCase: CheckPinUseCase,
+        private val isFingerprintAvailableUseCase: IsFingerprintAvailableUseCase,
         private val scheduler: MyRxUtils.BaseSchedulerProvider
 ) : PinContract.Presenter() {
 
@@ -67,7 +67,7 @@ class PinPresenter @Inject constructor(
     override fun onViewStartedModeLock() {
         view?.showPin(mPin)
         view?.showMessageEnterPin()
-        if (isFingerprintAvailable.invoke()) {
+        if (isFingerprintAvailableUseCase()) {
             view?.showFingerprintButton()
             view?.showFingerprintScanner()
         } else {
@@ -106,11 +106,11 @@ class PinPresenter @Inject constructor(
     }
 
     private fun checkPinLockMode() {
-        addDisposable(checkPin.invoke(mPin)
+        addDisposable(checkPinUseCase(mPin)
                 .observeOn(scheduler.ui())
                 .subscribe { validPin ->
                     if (validPin) {
-                        authorize.invoke(true)
+                        authorizeUseCase(true)
                         view?.showMessagePinCorrect()
                     } else {
                         mPin = ""
@@ -142,7 +142,7 @@ class PinPresenter @Inject constructor(
     }
 
     private fun checkPinRemoveMode() {
-        addDisposable(checkPin.invoke(mPin)
+        addDisposable(checkPinUseCase(mPin)
                 .observeOn(scheduler.ui())
                 .subscribe { validPin ->
                     if (validPin) {
@@ -156,10 +156,10 @@ class PinPresenter @Inject constructor(
     }
 
     override fun onEmailEntered(email: String) {
-        addDisposable(savePin.invoke(mPin, email)
+        addDisposable(savePinUseCase(mPin, email)
                 .observeOn(scheduler.ui())
                 .subscribe {
-                    authorize.invoke(true)
+                    authorizeUseCase(true)
                     view?.showMessagePinCreated()
                 })
     }
@@ -184,7 +184,7 @@ class PinPresenter @Inject constructor(
     }
 
     override fun onFingerprintAccepted() {
-        authorize.invoke(true)
+        authorizeUseCase(true)
         view?.showMessagePinCorrect()
     }
 

@@ -15,13 +15,13 @@ import com.furianrt.mydiary.utils.MyRxUtils
 import javax.inject.Inject
 
 class ProfilePresenter @Inject constructor(
-        private val getProfile: GetProfileUseCase,
+        private val getProfileUseCase: GetProfileUseCase,
         private val scheduler: MyRxUtils.BaseSchedulerProvider
 ) : ProfileContract.Presenter() {
 
     override fun attachView(view: ProfileContract.View) {
         super.attachView(view)
-        addDisposable(getProfile.invoke()
+        addDisposable(getProfileUseCase()
                 .observeOn(scheduler.ui())
                 .subscribe { view.showProfile(it) })
     }

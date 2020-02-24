@@ -18,5 +18,5 @@ class SignOutUseCase @Inject constructor(
         private val profileGateway: ProfileGateway
 ) {
 
-    fun invoke(): Completable = profileGateway.signOut()
+    operator fun invoke(): Completable = profileGateway.signOut()
 }

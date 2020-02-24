@@ -18,6 +18,6 @@ class RemoveTagFromNoteUseCase @Inject constructor(
         private val tagGateway: TagGateway
 ) {
 
-    fun invoke(noteId: String, tagId: String): Completable =
+    operator fun invoke(noteId: String, tagId: String): Completable =
             tagGateway.deleteNoteTag(noteId, tagId)
 }

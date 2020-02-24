@@ -18,11 +18,11 @@ import javax.inject.Inject
 
 class AddForecastUseCase @Inject constructor(
         private val forecastGateway: ForecastGateway,
-        private val getForecasts: GetForecastsUseCase
+        private val getForecastsUseCase: GetForecastsUseCase
 ) {
 
-    fun invoke(noteId: String, latitude: Double, longitude: Double): Maybe<MyForecast> =
+    operator fun invoke(noteId: String, latitude: Double, longitude: Double): Maybe<MyForecast> =
             forecastGateway.loadForecast(noteId, latitude, longitude)
                     .flatMapCompletable { forecastGateway.insertForecast(it) }
-                    .andThen(getForecasts.invoke(noteId))
+                    .andThen(getForecastsUseCase(noteId))
 }

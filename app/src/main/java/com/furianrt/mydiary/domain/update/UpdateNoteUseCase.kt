@@ -20,13 +20,13 @@ class UpdateNoteUseCase @Inject constructor(
         private val noteGateway: NoteGateway
 ) {
 
-    fun invoke(note: MyNote): Completable = noteGateway.updateNote(note)
+    operator fun invoke(note: MyNote): Completable = noteGateway.updateNote(note)
 
-    fun invoke(noteId: String, moodId: Int): Completable =
+    operator fun invoke(noteId: String, moodId: Int): Completable =
             noteGateway.getNote(noteId)
                     .flatMapCompletable { noteGateway.updateNote(it.apply { this.moodId = moodId }) }
 
-    fun invoke(noteIds: List<String>, categoryId: String): Completable =
+    operator fun invoke(noteIds: List<String>, categoryId: String): Completable =
             Observable.fromIterable(noteIds)
                     .flatMapSingle { noteGateway.getNote(it) }
                     .flatMapSingle { note ->
@@ -40,7 +40,7 @@ class UpdateNoteUseCase @Inject constructor(
         noteGateway.updateNoteTextBlocking(noteId, title, content) //todo исправить это дерьмо
     }
 
-    fun invoke(noteId: String, title: String, content: String): Completable =
+    operator fun invoke(noteId: String, title: String, content: String): Completable =
             noteGateway.updateNoteText(noteId, title, content)
             /*noteGateway.getNote(noteId)        //todo исправить это дерьмо
                     .flatMapCompletable { note ->

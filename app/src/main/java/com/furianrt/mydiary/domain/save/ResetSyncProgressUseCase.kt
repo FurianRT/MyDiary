@@ -22,7 +22,7 @@ class ResetSyncProgressUseCase @Inject constructor(
         private const val SYNC_PROGRESS_RESET_TIME = 1000 * 60
     }
 
-    fun invoke() {
+    operator fun invoke() {
         val currentTime = DateTime.now().millis
         val launchTimeDiff = currentTime - generalGateway.getLastAppLaunchTime()
         if (launchTimeDiff >= SYNC_PROGRESS_RESET_TIME) {

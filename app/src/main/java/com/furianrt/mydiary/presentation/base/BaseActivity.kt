@@ -124,7 +124,7 @@ abstract class BaseActivity(@LayoutRes contentLayoutId: Int) : AppCompatActivity
     override fun onStart() {
         super.onStart()
         if (skipOneLock) {
-            authorizeUseCase.invoke(true)
+            authorizeUseCase(true)
             skipOneLock = false
         } else if (needLockScreen) {
             openPinScreen()
@@ -137,7 +137,7 @@ abstract class BaseActivity(@LayoutRes contentLayoutId: Int) : AppCompatActivity
     }
 
     private fun openPinScreen() {
-        if (isPinEnabledUseCase.invoke() && !isAuthorizedUseCase.invoke()) {
+        if (isPinEnabledUseCase() && !isAuthorizedUseCase()) {
             startActivity(PinActivity.newIntentModeLock(this))
         }
     }
@@ -150,9 +150,9 @@ abstract class BaseActivity(@LayoutRes contentLayoutId: Int) : AppCompatActivity
     // Похоже, что динамическое создание стиля в андроиде не предусмотрено,
     // поэтому приходится хардкодить этот бред
     private fun applyStyleToTheme() {
-        getAppFontStyleUseCase.invoke()?.let { style -> theme.applyStyle(style, true) }
+        getAppFontStyleUseCase()?.let { style -> theme.applyStyle(style, true) }
 
-        when (getAppPrimaryColorUseCase.invoke()) {
+        when (getAppPrimaryColorUseCase()) {
             getColorCompat(R.color.r1) -> theme.applyStyle(R.style.OverlayPrimaryColorR1, true)
             getColorCompat(R.color.r4) -> theme.applyStyle(R.style.OverlayPrimaryColorR4, true)
             getColorCompat(R.color.r5) -> theme.applyStyle(R.style.OverlayPrimaryColorR5, true)
@@ -179,7 +179,7 @@ abstract class BaseActivity(@LayoutRes contentLayoutId: Int) : AppCompatActivity
             getColorCompat(R.color.black) -> theme.applyStyle(R.style.OverlayPrimaryColorBlack, true)
         }
 
-        when (getAppAccentColorUseCase.invoke()) {
+        when (getAppAccentColorUseCase()) {
             getColorCompat(R.color.r1) -> theme.applyStyle(R.style.OverlayAccentColorR1, true)
             getColorCompat(R.color.r4) -> theme.applyStyle(R.style.OverlayAccentColorR4, true)
             getColorCompat(R.color.r5) -> theme.applyStyle(R.style.OverlayAccentColorR5, true)

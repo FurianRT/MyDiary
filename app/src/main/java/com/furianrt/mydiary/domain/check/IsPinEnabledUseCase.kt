@@ -17,5 +17,5 @@ class IsPinEnabledUseCase @Inject constructor(
         private val pinGateway: PinGateway
 ) {
 
-    fun invoke(): Boolean = pinGateway.isPinEnabled()
+    operator fun invoke(): Boolean = pinGateway.isPinEnabled()
 }

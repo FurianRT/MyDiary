@@ -16,8 +16,8 @@ import com.furianrt.mydiary.utils.MyRxUtils
 import javax.inject.Inject
 
 class TagAddPresenter @Inject constructor(
-        private val saveTag: SaveTagUseCase,
-        private val addTagToNote: AddTagToNoteUseCase,
+        private val saveTagUseCase: SaveTagUseCase,
+        private val addTagToNoteUseCase: AddTagToNoteUseCase,
         private val scheduler: MyRxUtils.BaseSchedulerProvider
 ) : TagAddContract.Presenter() {
 
@@ -31,8 +31,8 @@ class TagAddPresenter @Inject constructor(
         if (name.isBlank()) {
             view?.showErrorEmptyTagName()
         } else {
-            addDisposable(saveTag.invoke(name)
-                    .flatMapCompletable { addTagToNote.invoke(mNoteId, it) }
+            addDisposable(saveTagUseCase(name)
+                    .flatMapCompletable { addTagToNoteUseCase(mNoteId, it) }
                     .observeOn(scheduler.ui())
                     .subscribe({
                         view?.closeView()

@@ -23,7 +23,7 @@ class SendPinResetEmailUseCase @Inject constructor(
 
     class NetworkNotAvailableException : Throwable()
 
-    fun invoke(): Completable =
+    operator fun invoke(): Completable =
             Single.fromCallable { deviceGateway.isNetworkAvailable() }
                     .flatMapCompletable { networkAvailable ->
                         if (networkAvailable) {

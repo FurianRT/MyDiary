@@ -17,5 +17,5 @@ class IsPanoramaEnabledUseCase @Inject constructor(
         private val imageGateway: ImageGateway
 ) {
 
-    fun invoke(): Boolean = imageGateway.isPanoramaEnabled()
+    operator fun invoke(): Boolean = imageGateway.isPanoramaEnabled()
 }

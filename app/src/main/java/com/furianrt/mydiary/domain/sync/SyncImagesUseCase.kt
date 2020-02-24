@@ -23,7 +23,7 @@ class SyncImagesUseCase @Inject constructor(
 
     class SyncImagesException : Throwable()
 
-    fun invoke(email: String): Completable =
+    operator fun invoke(email: String): Completable =
             imageGateway.getAllImages()
                     .first(emptyList())
                     .map { images -> images.filter { !it.isSync(email) } }

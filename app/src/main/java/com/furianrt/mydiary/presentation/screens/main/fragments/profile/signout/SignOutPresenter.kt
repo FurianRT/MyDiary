@@ -15,12 +15,12 @@ import com.furianrt.mydiary.utils.MyRxUtils
 import javax.inject.Inject
 
 class SignOutPresenter @Inject constructor(
-        private val signOut: SignOutUseCase,
+        private val signOutUseCase: SignOutUseCase,
         private val scheduler: MyRxUtils.BaseSchedulerProvider
 ) : SignOutContract.Presenter() {
 
     override fun onButtonSignOutClick() {
-        addDisposable(signOut.invoke()
+        addDisposable(signOutUseCase()
                 .observeOn(scheduler.ui())
                 .subscribe { view?.close() })
     }

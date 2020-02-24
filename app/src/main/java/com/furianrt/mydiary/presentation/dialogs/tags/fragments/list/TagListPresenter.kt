@@ -24,10 +24,10 @@ import java.util.Locale
 import javax.inject.Inject
 
 class TagListPresenter @Inject constructor(
-        private val getTags: GetTagsUseCase,
-        private val addTagToNote: AddTagToNoteUseCase,
-        private val removeTagFromNote: RemoveTagFromNoteUseCase,
-        private val getFullNotes: GetFullNotesUseCase,
+        private val getTagsUseCase: GetTagsUseCase,
+        private val addTagToNoteUseCase: AddTagToNoteUseCase,
+        private val removeTagFromNoteUseCase: RemoveTagFromNoteUseCase,
+        private val getFullNotesUseCase: GetFullNotesUseCase,
         private val scheduler: MyRxUtils.BaseSchedulerProvider
 ) : TagListContract.Presenter() {
 
@@ -42,9 +42,9 @@ class TagListPresenter @Inject constructor(
     override fun attachView(view: TagListContract.View) {
         super.attachView(view)
         addDisposable(Flowable.combineLatest(
-                getTags.invoke(),
-                getTags.invoke(mNoteId).firstOrError().toFlowable(),
-                getFullNotes.invoke().firstOrError().toFlowable(),
+                getTagsUseCase(),
+                getTagsUseCase(mNoteId).firstOrError().toFlowable(),
+                getFullNotesUseCase().firstOrError().toFlowable(),
                 Function3<List<MyTag>, List<MyTag>, List<MyNoteWithProp>, List<ViewItem>>
                 { allTags, selectedTags, notes ->
                     val items = allTags.map { ViewItem(it) }
@@ -66,9 +66,9 @@ class TagListPresenter @Inject constructor(
 
     override fun onItemCheckChange(item: ViewItem) {
         if (item.isChecked) {
-            addDisposable(addTagToNote.invoke(mNoteId, item.tag.id).subscribe())
+            addDisposable(addTagToNoteUseCase(mNoteId, item.tag.id).subscribe())
         } else {
-            addDisposable(removeTagFromNote.invoke(mNoteId, item.tag.id).subscribe())
+            addDisposable(removeTagFromNoteUseCase(mNoteId, item.tag.id).subscribe())
         }
     }
 

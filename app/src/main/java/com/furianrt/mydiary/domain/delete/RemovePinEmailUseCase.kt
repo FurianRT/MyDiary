@@ -17,7 +17,7 @@ class RemovePinEmailUseCase @Inject constructor(
         private val pinGateway: PinGateway
 ) {
 
-    fun invoke() {
+    operator fun invoke() {
         pinGateway.setBackupEmail("")
     }
 }

@@ -17,7 +17,7 @@ class IncrementLaunchCountUseCase @Inject constructor(
         private val generalGateway: GeneralGateway
 ) {
 
-    fun invoke() {
+    operator fun invoke() {
         generalGateway.setNumberOfLaunches(generalGateway.getNumberOfLaunches() + 1)
     }
 }

@@ -17,7 +17,7 @@ class AuthorizeUseCase @Inject constructor(
         private val pinGateway: PinGateway
 ) {
 
-    fun invoke(authorize: Boolean) {
+    operator fun invoke(authorize: Boolean) {
         pinGateway.setAuthorized(authorize)
     }
 }

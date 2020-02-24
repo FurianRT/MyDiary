@@ -19,7 +19,7 @@ import javax.inject.Inject
 
 class FilterNotesUseCase @Inject constructor() {
 
-    fun invoke(
+    operator fun invoke(
             notes: List<MyNoteWithProp>,
             tagIds: Set<String>,
             categoryIds: Set<String>,

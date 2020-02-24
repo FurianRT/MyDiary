@@ -17,5 +17,5 @@ class GetAppPrimaryColorUseCase @Inject constructor(
         private val generalGateway: GeneralGateway
 ) {
 
-    fun invoke(): Int = generalGateway.getPrimaryColor()
+    operator fun invoke(): Int = generalGateway.getPrimaryColor()
 }

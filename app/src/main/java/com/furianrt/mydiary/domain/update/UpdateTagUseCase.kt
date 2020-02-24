@@ -21,7 +21,7 @@ class UpdateTagUseCase @Inject constructor(
 
     class InvalidTagNameException : Throwable()
 
-    fun invoke(tag: MyTag): Completable =
+    operator fun invoke(tag: MyTag): Completable =
             tagGateway.getAllTags()
                     .first(emptyList())
                     .flatMapCompletable { tags ->

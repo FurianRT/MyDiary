@@ -22,7 +22,7 @@ class SaveNotesUseCase @Inject constructor(
         private val appearanceGateway: AppearanceGateway
 ) {
 
-    fun invoke(note: MyNote): Completable =
+    operator fun invoke(note: MyNote): Completable =
             noteGateway.insertNote(note)
                     .andThen(appearanceGateway.insertAppearance(MyNoteAppearance(note.id)))
 }

@@ -20,7 +20,7 @@ class SyncForecastUseCase @Inject constructor(
 
     class SyncForecastsException : Throwable()
 
-    fun invoke(email: String): Completable =
+    operator fun invoke(email: String): Completable =
             forecastGateway.getAllDbForecasts()
                     .map { forecasts -> forecasts.filter { !it.isSync(email) } }
                     .map { forecasts -> forecasts.apply { forEach { it.syncWith.add(email) } } }

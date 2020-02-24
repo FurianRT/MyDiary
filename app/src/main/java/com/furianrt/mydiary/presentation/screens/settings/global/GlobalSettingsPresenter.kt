@@ -19,17 +19,17 @@ import com.furianrt.mydiary.utils.MyRxUtils
 import javax.inject.Inject
 
 class GlobalSettingsPresenter @Inject constructor(
-        private val getPinEmail: GetPinEmailUseCase,
-        private val removePinEmail: RemovePinEmailUseCase,
-        private val isFingerprintAvailable: IsFingerprintAvailableUseCase,
-        private val resetNotesAppearanceSettings: ResetNotesAppearanceSettingsUseCase,
+        private val getPinEmailUseCase: GetPinEmailUseCase,
+        private val removePinEmailUseCase: RemovePinEmailUseCase,
+        private val isFingerprintAvailableUseCase: IsFingerprintAvailableUseCase,
+        private val resetNotesAppearanceSettingsUseCase: ResetNotesAppearanceSettingsUseCase,
         private val scheduler: MyRxUtils.BaseSchedulerProvider
 ) : GlobalSettingsContract.Presenter() {
 
     override fun attachView(view: GlobalSettingsContract.View) {
         super.attachView(view)
-        getPinEmail.invoke()?.let { view.showBackupEmail(it) }
-        if (isFingerprintAvailable.invoke()) {
+        getPinEmailUseCase()?.let { view.showBackupEmail(it) }
+        if (isFingerprintAvailableUseCase()) {
             view.showFingerprintOptions()
         } else {
             view.hideFingerprintOptions()
@@ -37,7 +37,7 @@ class GlobalSettingsPresenter @Inject constructor(
     }
 
     override fun onPrefSecurityKeyClick() {
-        if (getPinEmail.invoke() != null) {
+        if (getPinEmailUseCase() != null) {
             view?.showCreatePasswordView()
         } else {
             view?.showRemovePasswordView()
@@ -45,11 +45,11 @@ class GlobalSettingsPresenter @Inject constructor(
     }
 
     override fun onPasswordCreated() {
-        view?.showBackupEmail(getPinEmail.invoke()!!)
+        view?.showBackupEmail(getPinEmailUseCase()!!)
     }
 
     override fun onPasswordRemoved() {
-        removePinEmail.invoke()
+        removePinEmailUseCase()
     }
 
     override fun onPrefRateAppClick() {
@@ -61,7 +61,7 @@ class GlobalSettingsPresenter @Inject constructor(
     }
 
     override fun onPrefResetNotesColorClick() {
-        addDisposable(resetNotesAppearanceSettings.invoke()
+        addDisposable(resetNotesAppearanceSettingsUseCase()
                 .observeOn(scheduler.ui())
                 .subscribe { view?.onNotesAppearanceReset() })
     }

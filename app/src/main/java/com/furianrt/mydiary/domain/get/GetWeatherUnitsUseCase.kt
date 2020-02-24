@@ -22,7 +22,7 @@ class GetWeatherUnitsUseCase @Inject constructor(
         const val UNITS_FAHRENHEIT = 1
     }
 
-    fun invoke(): Int =
+    operator fun invoke(): Int =
             when (forecastGateway.getWeatherUnits()) {
                 ForecastGateway.WEATHER_UNITS_CELSIUS -> UNITS_CELSIUS
                 ForecastGateway.WEATHER_UNITS_FAHRENHEIT -> UNITS_FAHRENHEIT

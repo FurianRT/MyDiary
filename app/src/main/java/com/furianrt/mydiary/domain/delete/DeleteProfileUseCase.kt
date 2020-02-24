@@ -18,5 +18,5 @@ class DeleteProfileUseCase @Inject constructor(
         private val profileGateway: ProfileGateway
 ) {
 
-    fun invoke(): Completable = profileGateway.clearDbProfile()
+    operator fun invoke(): Completable = profileGateway.clearDbProfile()
 }

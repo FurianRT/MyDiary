@@ -20,7 +20,7 @@ class SaveCategoryUseCase @Inject constructor(
         private val categoryGateway: CategoryGateway
 ) {
 
-    fun invoke(name: String, color: Int): Single<String> =
+    operator fun invoke(name: String, color: Int): Single<String> =
             with(generateUniqueId()) {
                 categoryGateway.insertCategory(MyCategory(this, name, color))
                         .toSingleDefault(this)

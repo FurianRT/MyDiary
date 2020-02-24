@@ -32,17 +32,17 @@ import kotlin.collections.ArrayList
 import kotlin.collections.HashSet
 
 class MainActivityPresenter @Inject constructor(
-        private val getFullNotes: GetFullNotesUseCase,
-        private val getNotesSortType: GetNotesSortTypeUseCase,
-        private val swapNoteSortType: SwapNoteSortTypeUseCase,
-        private val getProfile: GetProfileUseCase,
-        private val isNeedRateOffer: IsNeedRateOfferUseCase,
-        private val isDailyImageEnabled: IsDailyImageEnabledUseCase,
-        private val getDailyImage: GetDailyImageUseCase,
-        private val getAuthState: GetAuthStateUseCase,
-        private val deleteProfile: DeleteProfileUseCase,
-        private val checkLogOut: CheckLogOutUseCase,
-        private val filterNotes: FilterNotesUseCase,
+        private val getFullNotesUseCase: GetFullNotesUseCase,
+        private val getNotesSortTypeUseCase: GetNotesSortTypeUseCase,
+        private val swapNoteSortTypeUseCase: SwapNoteSortTypeUseCase,
+        private val getProfileUseCase: GetProfileUseCase,
+        private val isNeedRateOfferUseCase: IsNeedRateOfferUseCase,
+        private val isDailyImageEnabledUseCase: IsDailyImageEnabledUseCase,
+        private val getDailyImageUseCase: GetDailyImageUseCase,
+        private val getAuthStateUseCase: GetAuthStateUseCase,
+        private val deleteProfileUseCase: DeleteProfileUseCase,
+        private val checkLogOutUseCase: CheckLogOutUseCase,
+        private val filterNotesUseCase: FilterNotesUseCase,
         private val scheduler: MyRxUtils.BaseSchedulerProvider
 ) : MainActivityContract.Presenter() {
 
@@ -87,7 +87,7 @@ class MainActivityPresenter @Inject constructor(
     }
 
     override fun onMenuAllNotesClick() {
-        addDisposable(getFullNotes.invoke()
+        addDisposable(getFullNotesUseCase()
                 .first(ArrayList())
                 .observeOn(scheduler.ui())
                 .subscribe { notes ->
@@ -104,7 +104,7 @@ class MainActivityPresenter @Inject constructor(
         loadNotes()
         loadProfile()
         loadHeaderImage()
-        addDisposable(checkLogOut.invoke().subscribe())
+        addDisposable(checkLogOutUseCase().subscribe())
         showRateProposal()
     }
 
@@ -116,17 +116,17 @@ class MainActivityPresenter @Inject constructor(
     }
 
     private fun showRateProposal() {
-        if (isNeedRateOffer.invoke()) {
+        if (isNeedRateOfferUseCase()) {
             view?.showRateProposal()
         }
     }
 
     private fun loadHeaderImage() {
-        if (!isDailyImageEnabled.invoke()) {
+        if (!isDailyImageEnabledUseCase()) {
             view?.showEmptyHeaderImage(false)
             return
         }
-        addDisposable(getDailyImage.invoke()
+        addDisposable(getDailyImageUseCase()
                 .observeOn(scheduler.ui())
                 .subscribe({ image ->
                     view?.showHeaderImage(image)
@@ -137,12 +137,12 @@ class MainActivityPresenter @Inject constructor(
     }
 
     private fun loadNotes() {
-        when (getNotesSortType.invoke()) {
+        when (getNotesSortTypeUseCase()) {
             GetNotesSortTypeUseCase.SORT_TYPE_ASC -> view?.setSortAsc()
             GetNotesSortTypeUseCase.SORT_TYPE_DESC -> view?.setSortDesc()
             else -> throw IllegalStateException()
         }
-        mFullNotesDisposable = getFullNotes.invoke()
+        mFullNotesDisposable = getFullNotesUseCase()
                 .debounce(300L, TimeUnit.MILLISECONDS, scheduler.computation())
                 .observeOn(scheduler.ui())
                 .subscribe { notes ->
@@ -168,8 +168,8 @@ class MainActivityPresenter @Inject constructor(
     }
 
     override fun onButtonSortClick() {
-        swapNoteSortType.invoke()
-        when (getNotesSortType.invoke()) {
+        swapNoteSortTypeUseCase()
+        when (getNotesSortTypeUseCase()) {
             GetNotesSortTypeUseCase.SORT_TYPE_ASC -> view?.setSortAsc()
             GetNotesSortTypeUseCase.SORT_TYPE_DESC -> view?.setSortDesc()
             else -> throw IllegalStateException()
@@ -187,7 +187,7 @@ class MainActivityPresenter @Inject constructor(
 
     override fun onMainListItemClick(note: MyNoteWithProp) {
         if (mSelectedNoteIds.isEmpty()) {
-            val position = when (getNotesSortType.invoke()) {
+            val position = when (getNotesSortTypeUseCase()) {
                 GetNotesSortTypeUseCase.SORT_TYPE_ASC -> mNoteList
                         .sortedBy { it.note.time }
                         .indexOfFirst { it.note.id == note.note.id }
@@ -266,15 +266,15 @@ class MainActivityPresenter @Inject constructor(
     }
 
     private fun loadProfile() {
-        addDisposable(getProfile.invoke()
+        addDisposable(getProfileUseCase()
                 .observeOn(scheduler.ui())
                 .subscribe { profile -> view?.showProfile(profile) })
 
-        addDisposable(getAuthState.invoke()
+        addDisposable(getAuthStateUseCase()
                 .filter { it == GetAuthStateUseCase.STATE_SIGN_OUT }
                 .observeOn(scheduler.ui())
                 .subscribe {
-                    addDisposable(deleteProfile.invoke()
+                    addDisposable(deleteProfileUseCase()
                             .observeOn(scheduler.ui())
                             .subscribe { view?.showAnonymousProfile() })
                 })
@@ -383,7 +383,7 @@ class MainActivityPresenter @Inject constructor(
     }
 
     private fun showNotes(notes: List<MyNoteWithProp>, scrollToTop: Boolean) {
-        val sortedNotes = when (getNotesSortType.invoke()) {
+        val sortedNotes = when (getNotesSortTypeUseCase()) {
             GetNotesSortTypeUseCase.SORT_TYPE_ASC -> notes.sortedBy { it.note.time }
             GetNotesSortTypeUseCase.SORT_TYPE_DESC -> notes.sortedByDescending { it.note.time }
             else -> throw IllegalArgumentException()
@@ -405,7 +405,7 @@ class MainActivityPresenter @Inject constructor(
 
     @SuppressLint("DefaultLocale")
     private fun applySearchFilter(notes: List<MyNoteWithProp>): List<MyNoteWithProp> =
-            filterNotes.invoke(notes, mFilteredTagIds, mFilteredCategoryIds, mFilteredMoodIds,
+            filterNotesUseCase(notes, mFilteredTagIds, mFilteredCategoryIds, mFilteredMoodIds,
                     mFilteredLocationNames, mFilteredStartDate, mFilteredEndDate, mSearchQuery)
 
     override fun onButtonChangeFiltersClick() {

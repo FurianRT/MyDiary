@@ -16,7 +16,7 @@ import com.furianrt.mydiary.utils.MyRxUtils
 import javax.inject.Inject
 
 class TagDeletePresenter @Inject constructor(
-        private val deleteTag: DeleteTagUseCase,
+        private val deleteTagUseCase: DeleteTagUseCase,
         private val scheduler: MyRxUtils.BaseSchedulerProvider
 ) : TagDeleteContract.Presenter() {
 
@@ -32,7 +32,7 @@ class TagDeletePresenter @Inject constructor(
     }
 
     override fun onButtonDeleteClick() {
-        addDisposable(deleteTag.invoke(mTag)
+        addDisposable(deleteTagUseCase(mTag)
                 .observeOn(scheduler.ui())
                 .subscribe { view?.closeView() })
     }

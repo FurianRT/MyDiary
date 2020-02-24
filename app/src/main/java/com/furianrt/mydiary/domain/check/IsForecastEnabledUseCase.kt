@@ -17,5 +17,5 @@ class IsForecastEnabledUseCase @Inject constructor(
         private val forecastGateway: ForecastGateway
 ) {
 
-    fun invoke(): Boolean = forecastGateway.isWeatherEnabled()
+    operator fun invoke(): Boolean = forecastGateway.isWeatherEnabled()
 }

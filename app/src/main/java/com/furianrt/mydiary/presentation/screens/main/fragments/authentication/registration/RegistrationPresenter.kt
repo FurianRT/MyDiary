@@ -15,7 +15,7 @@ import com.furianrt.mydiary.utils.MyRxUtils
 import javax.inject.Inject
 
 class RegistrationPresenter @Inject constructor(
-        private val checkCredentials: CheckCredentialsUseCase,
+        private val checkCredentialsUseCase: CheckCredentialsUseCase,
         private val scheduler: MyRxUtils.BaseSchedulerProvider
 ) : RegistrationContract.Presenter() {
 
@@ -28,7 +28,7 @@ class RegistrationPresenter @Inject constructor(
     override fun onButtonSignUpClick(email: String, password: String, passwordRepeat: String) {
         view?.clearEmailMessages()
         view?.showLoading()
-        addDisposable(checkCredentials.invoke(email, password, passwordRepeat)
+        addDisposable(checkCredentialsUseCase(email, password, passwordRepeat)
                 .observeOn(scheduler.ui())
                 .subscribe({
                     view?.hideLoading()
@@ -62,7 +62,7 @@ class RegistrationPresenter @Inject constructor(
         if (!hasFocus && mPrevEmail != email) {
             mPrevEmail = email
             view?.showLoadingEmail()
-            addDisposable(checkCredentials.invoke(email)
+            addDisposable(checkCredentialsUseCase(email)
                     .observeOn(scheduler.ui())
                     .subscribe({
                         view?.hideLoadingEmail()

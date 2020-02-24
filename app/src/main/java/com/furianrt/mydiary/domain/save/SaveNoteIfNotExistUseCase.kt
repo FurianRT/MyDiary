@@ -21,7 +21,8 @@ class SaveNoteIfNotExistUseCase @Inject constructor(
         private val noteGateway: NoteGateway,
         private val appearanceGateway: AppearanceGateway
 ) {
-    fun invoke(noteId: String): Completable =
+
+    operator fun invoke(noteId: String): Completable =
         noteGateway.insertNote(MyNote(noteId))
                 .andThen(appearanceGateway.insertAppearance(MyNoteAppearance(noteId)))
 }

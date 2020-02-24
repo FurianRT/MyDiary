@@ -16,8 +16,8 @@ import com.furianrt.mydiary.utils.MyRxUtils
 import javax.inject.Inject
 
 class NoteActivityPresenter @Inject constructor(
-        private val getNotes: GetNotesUseCase,
-        private val saveNoteIfNotExist: SaveNoteIfNotExistUseCase,
+        private val getNotesUseCase: GetNotesUseCase,
+        private val saveNoteIfNotExistUseCase: SaveNoteIfNotExistUseCase,
         private val scheduler: MyRxUtils.BaseSchedulerProvider
 ) : NoteActivityContract.Presenter() {
 
@@ -41,7 +41,7 @@ class NoteActivityPresenter @Inject constructor(
     }
 
     private fun loadNotes() {
-        addDisposable(getNotes.invoke()
+        addDisposable(getNotesUseCase()
                 .observeOn(scheduler.ui())
                 .subscribe { notes ->
                     if (notes.isEmpty()) {
@@ -53,8 +53,8 @@ class NoteActivityPresenter @Inject constructor(
     }
 
     private fun loadNote(noteId: String) {
-        addDisposable(saveNoteIfNotExist.invoke(noteId)
-                .andThen(getNotes.invoke(noteId))
+        addDisposable(saveNoteIfNotExistUseCase(noteId)
+                .andThen(getNotesUseCase(noteId))
                 .observeOn(scheduler.ui())
                 .subscribe { note ->
                     if (note.isPresent) {

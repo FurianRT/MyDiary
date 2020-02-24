@@ -55,29 +55,29 @@ class SyncService : Service() {
     }
 
     @Inject
-    lateinit var getProfile: GetProfileUseCase
+    lateinit var getProfileUseCase: GetProfileUseCase
     @Inject
-    lateinit var updateProfile: UpdateProfileUseCase
+    lateinit var updateProfileUseCase: UpdateProfileUseCase
     @Inject
-    lateinit var syncNotes: SyncNotesUseCase
+    lateinit var syncNotesUseCase: SyncNotesUseCase
     @Inject
-    lateinit var syncAppearance: SyncAppearanceUseCase
+    lateinit var syncAppearanceUseCase: SyncAppearanceUseCase
     @Inject
-    lateinit var syncCategories: SyncCategoriesUseCase
+    lateinit var syncCategoriesUseCase: SyncCategoriesUseCase
     @Inject
-    lateinit var syncTags: SyncTagsUseCase
+    lateinit var syncTagsUseCase: SyncTagsUseCase
     @Inject
-    lateinit var syncLocations: SyncLocationsUseCase
+    lateinit var syncLocationsUseCase: SyncLocationsUseCase
     @Inject
-    lateinit var syncForecast: SyncForecastUseCase
+    lateinit var syncForecastUseCase: SyncForecastUseCase
     @Inject
-    lateinit var syncImages: SyncImagesUseCase
+    lateinit var syncImagesUseCase: SyncImagesUseCase
     @Inject
-    lateinit var syncCleanup: SyncCleanupUseCase
+    lateinit var syncCleanupUseCase: SyncCleanupUseCase
     @Inject
-    lateinit var syncNoteSpans: SyncNoteSpansUseCase
+    lateinit var syncNoteSpansUseCase: SyncNoteSpansUseCase
     @Inject
-    lateinit var setLastSyncMessage: SetLastSyncMessageUseCase
+    lateinit var setLastSyncMessageUseCase: SetLastSyncMessageUseCase
 
     private val mCompositeDisposable = CompositeDisposable()
 
@@ -103,20 +103,20 @@ class SyncService : Service() {
 
     private fun startSync() {
         sendProgressUpdate(SyncProgressMessage.SYNC_STARTED, PROGRESS_STARTED)
-        mCompositeDisposable.add(getProfile.invoke()
+        mCompositeDisposable.add(getProfileUseCase()
                 .map { it.email }
                 .firstOrError()
                 .flatMapPublisher { email ->
                     Single.concat(listOf(
-                            syncCategories.invoke(email).toSingleDefault(SyncProgressMessage.SYNC_CATEGORIES),
-                            syncTags.invoke(email).toSingleDefault(SyncProgressMessage.SYNC_TAGS),
-                            syncLocations.invoke(email).toSingleDefault(SyncProgressMessage.SYNC_LOCATION),
-                            syncForecast.invoke(email).toSingleDefault(SyncProgressMessage.SYNC_FORECAST),
-                            syncImages.invoke(email).toSingleDefault(SyncProgressMessage.SYNC_IMAGES),
-                            syncAppearance.invoke(email).toSingleDefault(SyncProgressMessage.SYNC_APPEARANCE),
-                            syncNoteSpans.invoke(email).toSingleDefault(SyncProgressMessage.SYNC_SPANS),
-                            syncNotes.invoke(email).toSingleDefault(SyncProgressMessage.SYNC_NOTES),
-                            syncCleanup.invoke().toSingleDefault(SyncProgressMessage.CLEANUP)
+                            syncCategoriesUseCase(email).toSingleDefault(SyncProgressMessage.SYNC_CATEGORIES),
+                            syncTagsUseCase(email).toSingleDefault(SyncProgressMessage.SYNC_TAGS),
+                            syncLocationsUseCase(email).toSingleDefault(SyncProgressMessage.SYNC_LOCATION),
+                            syncForecastUseCase(email).toSingleDefault(SyncProgressMessage.SYNC_FORECAST),
+                            syncImagesUseCase(email).toSingleDefault(SyncProgressMessage.SYNC_IMAGES),
+                            syncAppearanceUseCase(email).toSingleDefault(SyncProgressMessage.SYNC_APPEARANCE),
+                            syncNoteSpansUseCase(email).toSingleDefault(SyncProgressMessage.SYNC_SPANS),
+                            syncNotesUseCase(email).toSingleDefault(SyncProgressMessage.SYNC_NOTES),
+                            syncCleanupUseCase().toSingleDefault(SyncProgressMessage.CLEANUP)
                     ))
                 }
                 .doOnComplete { handleSyncComplete() }
@@ -128,7 +128,7 @@ class SyncService : Service() {
     }
 
     private fun handleSyncComplete() {
-        mCompositeDisposable.add(updateProfile.invoke(DateTime.now().millis)
+        mCompositeDisposable.add(updateProfileUseCase(DateTime.now().millis)
                 .subscribe {
                     sendProgressUpdate(SyncProgressMessage.SYNC_FINISHED, PROGRESS_FINISHED)
                     close()
@@ -202,7 +202,7 @@ class SyncService : Service() {
     private fun sendProgressUpdate(taskIndex: Int, progress: Int) {
         val progressMessage = SyncProgressMessage(taskIndex, progress)
         sendProgressUpdate(progressMessage)
-        setLastSyncMessage.invoke(progressMessage)
+        setLastSyncMessageUseCase(progressMessage)
     }
 
     private fun getSyncErrorTextMessage(taskIndex: Int) = when (taskIndex) {
@@ -251,7 +251,7 @@ class SyncService : Service() {
 
     override fun onDestroy() {
         super.onDestroy()
-        setLastSyncMessage.invoke(SyncProgressMessage(SyncProgressMessage.SYNC_FINISHED))
+        setLastSyncMessageUseCase(SyncProgressMessage(SyncProgressMessage.SYNC_FINISHED))
     }
 
     override fun onBind(intent: Intent?): IBinder? {

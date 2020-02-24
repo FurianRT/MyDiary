@@ -24,7 +24,7 @@ class SendPassResetEmailUseCase @Inject constructor(
     class EmailFormatException : Throwable()
     class EmptyEmailException : Throwable()
 
-    fun invoke(email: String): Completable =
+    operator fun invoke(email: String): Completable =
             Single.fromCallable { validateEmail(email) }
                     .flatMapCompletable { profileGateway.sendPasswordResetEmail(email) }
                     .onErrorResumeNext { error ->

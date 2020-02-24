@@ -21,7 +21,7 @@ class UpdateAppearanceUseCase @Inject constructor(
         private val noteGateway: NoteGateway
 ) {
 
-    fun invoke(appearance: MyNoteAppearance): Completable =
+    operator fun invoke(appearance: MyNoteAppearance): Completable =
             appearanceGateway.updateAppearance(appearance.apply { syncWith.clear() })
                     .andThen(noteGateway.getNote(appearance.appearanceId))
                     .map { it.apply { it.syncWith.clear() } }

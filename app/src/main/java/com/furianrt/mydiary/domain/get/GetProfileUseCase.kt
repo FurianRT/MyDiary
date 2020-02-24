@@ -19,5 +19,5 @@ class GetProfileUseCase @Inject constructor(
         private val profileGateway: ProfileGateway
 ) {
 
-    fun invoke(): Flowable<MyProfile> = profileGateway.getDbProfile()
+    operator fun invoke(): Flowable<MyProfile> = profileGateway.getDbProfile()
 }
