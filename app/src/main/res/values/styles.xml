@@ -10,7 +10,16 @@
         <item name="autoCompleteTextViewStyle">@style/SearchAutoCompleteTextView</item>
         <item name="android:textAlignment">gravity</item>
         <item name="android:textDirection">locale</item>
+        <item name="android:windowBackground">@color/grey_light</item>
+    </style>
+
+    <style name="AppTheme.Splash">
         <item name="android:windowBackground">@drawable/splash_screen</item>
+    </style>
+
+    <style name="AppTheme.Splash.TransparentActionBar">
+        <item name="android:windowDrawsSystemBarBackgrounds">true</item>
+        <item name="android:statusBarColor">@color/transparent_black</item>
     </style>
 
     <style name="ArimaMaduraiFontStyle">
@@ -91,11 +100,6 @@
     <style name="UbuntuFontStyle">
         <item name="android:fontFamily">@font/ubuntu</item>
         <item name="fontFamily">@font/ubuntu</item>
-    </style>
-
-    <style name="AppTheme.TransparentActionBar">
-        <item name="android:windowDrawsSystemBarBackgrounds">true</item>
-        <item name="android:statusBarColor">@color/transparent_black</item>
     </style>
 
     <style name="MyOutlinedButton" parent="Widget.MaterialComponents.Button.OutlinedButton">

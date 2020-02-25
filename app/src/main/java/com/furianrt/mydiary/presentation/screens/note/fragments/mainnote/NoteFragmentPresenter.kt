@@ -242,12 +242,20 @@ class NoteFragmentPresenter @Inject constructor(
                 .subscribe { showLocation(location) })
     }
 
-    override fun onButtonAddImageClick() {
+    override fun onButtonSelectPhotoClick() {
         view?.requestStoragePermissions()
+    }
+
+    override fun onButtonTakePhotoClick() {
+        view?.requestCameraPermissions()
     }
 
     override fun onStoragePermissionsGranted() {
         view?.showImageExplorer()
+    }
+
+    override fun onCameraPermissionsGranted() {
+        view?.showCamera()
     }
 
     override fun onNoteImagesPicked(imageUrls: List<String>) {
@@ -258,6 +266,24 @@ class NoteFragmentPresenter @Inject constructor(
                 }, { error ->
                     error.printStackTrace()
                     view?.showErrorSaveImage()
+                    view?.hideLoading()
+                }))
+    }
+
+    override fun onNewPhotoTaken(photoPath: String?) {
+        if (photoPath == null) {
+            view?.showErrorSaveImage()
+            view?.hideLoading()
+            return
+        }
+        addDisposable(saveImagesUseCase(mNoteId, photoPath)
+                .observeOn(scheduler.ui())
+                .subscribe({
+                    view?.hideLoading()
+                }, { error ->
+                    error.printStackTrace()
+                    view?.showErrorSaveImage()
+                    view?.hideLoading()
                 }))
     }
 

@@ -41,10 +41,11 @@ fun View.animateAlpha(from: Float, to: Float, duration: Long = 400L) {
 }
 
 fun View.animateBackgroundColor(colorTo: Int, duration: Long = 250L) {
-    val colorFrom = (this.background as ColorDrawable).color
-    ObjectAnimator.ofArgb(this, "backgroundColor", colorFrom, colorTo)
-            .setDuration(duration)
-            .start()
+    (this.background as ColorDrawable?)?.color?.let {
+        ObjectAnimator.ofArgb(this, "backgroundColor", it, colorTo)
+                .setDuration(duration)
+                .start()
+    }
 }
 
 fun ImageButton.enableCustom(enable: Boolean) {

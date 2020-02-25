@@ -6,6 +6,9 @@
     <string name="storage_permission_request">
         Приложению требуется разрешение для доступа к картинкам на вашем устройве.
     </string>
+    <string name="camera_permission_request">
+        Приложению требуется разрешение для доступа к камере вашего устройва.
+    </string>
 
     <string name="yes">Да</string>
     <string name="no">Нет</string>
@@ -301,4 +304,6 @@
     <string name="panorama_activation_settings_off">Включить панорамные фото</string>
     <string name="panorama_activation_settings_title">Панорамные фото</string>
     <string name="phone_related_error">По каким-то причинам, ваш смартфон не может произвести данную операцию</string>
+    <string name="take_photo">Камера</string>
+    <string name="select_photo">Галерея</string>
 </resources>

@@ -14,7 +14,6 @@ import com.furianrt.mydiary.presentation.base.BaseView
 import com.furianrt.mydiary.presentation.base.BasePresenter
 import com.furianrt.mydiary.model.entity.*
 import com.furianrt.mydiary.model.entity.pojo.TagsAndAppearance
-import java.util.*
 
 interface NoteFragmentContract {
 
@@ -57,12 +56,14 @@ interface NoteFragmentContract {
         fun showRichTextOptions()
         fun hideRichTextOptions()
         fun showReminderView(noteId: String)
+        fun requestCameraPermissions()
+        fun showCamera()
     }
 
     abstract class Presenter : BasePresenter<View>() {
         abstract fun onTagsFieldClick()
         abstract fun onLocationPermissionsGranted()
-        abstract fun onButtonAddImageClick()
+        abstract fun onButtonSelectPhotoClick()
         abstract fun onStoragePermissionsGranted()
         abstract fun onNoteImagesPicked(imageUrls: List<String>)
         abstract fun onButtonDeleteClick()
@@ -86,5 +87,8 @@ interface NoteFragmentContract {
         abstract fun onButtonShareClick()
         abstract fun onReminderFieldClick()
         abstract fun onLocationPermissionDenied()
+        abstract fun onButtonTakePhotoClick()
+        abstract fun onCameraPermissionsGranted()
+        abstract fun onNewPhotoTaken(photoPath: String?)
     }
 }

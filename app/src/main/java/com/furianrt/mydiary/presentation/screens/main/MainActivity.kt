@@ -96,6 +96,7 @@ class MainActivity : BaseActivity(R.layout.activity_main), MainActivityContract.
         private const val BUNDLE_SEARCH_QUERY = "query"
         private const val BUNDLE_STATUS_BAR_HEIGHT = "status_bar_height"
         private const val ACTIVITY_SETTING_REQUEST_CODE = 2
+        private const val LIST_ITEM_CACHE_SIZE = 15
         private const val ITEM_LONG_CLICK_VIBRATION_DURATION = 30L
         private const val BOTTOM_SHEET_EXPAND_DELAY = 500L
         private const val ANIMATION_IMAGE_SETTINGS_FADE_OUT_DURATION = 350L
@@ -221,7 +222,7 @@ class MainActivity : BaseActivity(R.layout.activity_main), MainActivityContract.
         list_main.adapter = mAdapter
         list_main.setHasFixedSize(true)
         list_main.itemAnimator = LandingAnimator()
-        list_main.setItemViewCacheSize(15)
+        list_main.setItemViewCacheSize(LIST_ITEM_CACHE_SIZE)
         list_main.addItemDecoration(StickyHeaderItemDecoration(list_main, mAdapter))
 
         fab_quick_scroll.hide()

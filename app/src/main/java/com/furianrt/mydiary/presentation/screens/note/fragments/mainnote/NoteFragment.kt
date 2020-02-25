@@ -13,7 +13,6 @@ package com.furianrt.mydiary.presentation.screens.note.fragments.mainnote
 import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Activity
-import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
 import android.graphics.Color
@@ -21,6 +20,7 @@ import android.graphics.PorterDuff
 import android.graphics.Typeface
 import android.net.Uri
 import android.os.Bundle
+import android.provider.MediaStore
 import android.speech.RecognizerIntent
 import android.text.ParcelableSpan
 import android.text.Spannable
@@ -58,8 +58,9 @@ import kotlinx.android.synthetic.main.rich_text_menu.*
 import pub.devrel.easypermissions.AfterPermissionGranted
 import pub.devrel.easypermissions.EasyPermissions
 import java.io.File
-import java.util.Locale
-import java.util.Calendar
+import java.io.IOException
+import java.text.SimpleDateFormat
+import java.util.*
 import javax.inject.Inject
 import kotlin.collections.ArrayList
 
@@ -71,11 +72,14 @@ class NoteFragment : BaseFragment(R.layout.fragment_note), NoteFragmentContract.
         const val TAG = "NoteFragment"
         private const val ARG_NOTE_ID = "note_id"
         private const val ARG_IS_NEW_NOTE = "is_new_note"
+        private const val BUNDLE_PHOTO_PATH = "photo_path"
         private const val LOCATION_PERMISSIONS_REQUEST_CODE = 1
         private const val STORAGE_PERMISSIONS_REQUEST_CODE = 2
         private const val PLAY_SERVICES_REQUEST_CODE = 3
         private const val SPEECH_TO_TEXT_REQUEST_CODE = 4
         private const val IMAGE_PICKER_REQUEST_CODE = 6
+        private const val CAMERA_PERMISSIONS_REQUEST_CODE = 7
+        private const val CAMERA_REQUEST_CODE = 8
         private const val TIME_PICKER_TAG = "timePicker"
         private const val DATE_PICKER_TAG = "datePicker"
         private const val MAX_IMAGE_COUNT_TO_SHARE = 10
@@ -99,6 +103,7 @@ class NoteFragment : BaseFragment(R.layout.fragment_note), NoteFragmentContract.
     private var mNoteId: String? = null
     private var mIsNewNote = true
     private var mImagePagerPosition = 0
+    private var mPhotoPath: String? = null
     private val mOnPageChangeCallback = object : ViewPager2.OnPageChangeCallback() {
         override fun onPageSelected(position: Int) {
             mImagePagerPosition = pager_note_image.currentItem
@@ -120,6 +125,13 @@ class NoteFragment : BaseFragment(R.layout.fragment_note), NoteFragmentContract.
             mIsNewNote = getBoolean(ARG_IS_NEW_NOTE)
             presenter.init(mNoteId!!, mIsNewNote)
         }
+
+        mPhotoPath = savedInstanceState?.getString(BUNDLE_PHOTO_PATH)
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        mPhotoPath?.let { outState.putString(BUNDLE_PHOTO_PATH, it) }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -154,11 +166,6 @@ class NoteFragment : BaseFragment(R.layout.fragment_note), NoteFragmentContract.
         text_time.setOnClickListener {
             removeEditFragment()
             presenter.onTimeFieldClick()
-        }
-        fab_add_image.setOnClickListener {
-            removeEditFragment()
-            analytics.sendEvent(MyAnalytics.EVENT_NOTE_IMAGE_PAGER_OPENED)
-            presenter.onButtonAddImageClick()
         }
         button_text_bold.setOnClickListener {
             childFragmentManager.findFragmentByTag(NoteEditFragment.TAG)?.let {
@@ -267,9 +274,14 @@ class NoteFragment : BaseFragment(R.layout.fragment_note), NoteFragmentContract.
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean =
             when (item.itemId) {
-                R.id.menu_image -> {
+                R.id.menu_gallery -> {
                     removeEditFragment()
-                    presenter.onButtonAddImageClick()
+                    presenter.onButtonSelectPhotoClick()
+                    true
+                }
+                R.id.menu_take_photo -> {
+                    removeEditFragment()
+                    presenter.onButtonTakePhotoClick()
                     true
                 }
                 R.id.menu_delete -> {
@@ -316,9 +328,9 @@ class NoteFragment : BaseFragment(R.layout.fragment_note), NoteFragmentContract.
             intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM)
             intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.getDefault())
             intent.putExtra(RecognizerIntent.EXTRA_PROMPT, getString(R.string.speech_to_text_title))
-            try {
+            if (intent.resolveActivity(requireActivity().packageManager) != null) {
                 startActivityForResult(intent, SPEECH_TO_TEXT_REQUEST_CODE)
-            } catch (e: ActivityNotFoundException) {
+            } else {
                 Toast.makeText(requireContext(), getString(R.string.fragment_note_google_services_error), Toast.LENGTH_SHORT).show()
             }
         }
@@ -346,6 +358,10 @@ class NoteFragment : BaseFragment(R.layout.fragment_note), NoteFragmentContract.
                 }
                 showLoading()
                 presenter.onNoteImagesPicked(uriPaths)
+            }
+            CAMERA_REQUEST_CODE -> if (resultCode == Activity.RESULT_OK) {
+                showLoading()
+                presenter.onNewPhotoTaken(mPhotoPath)
             }
         }
     }
@@ -610,15 +626,18 @@ class NoteFragment : BaseFragment(R.layout.fragment_note), NoteFragmentContract.
         if (EasyPermissions.hasPermissions(requireContext(), readExtStorage)) {
             presenter.onStoragePermissionsGranted()
         } else {
-            EasyPermissions.requestPermissions(this,
+            EasyPermissions.requestPermissions(
+                    this,
                     getString(R.string.storage_permission_request),
-                    STORAGE_PERMISSIONS_REQUEST_CODE, readExtStorage)
+                    STORAGE_PERMISSIONS_REQUEST_CODE,
+                    readExtStorage
+            )
         }
     }
 
     @AfterPermissionGranted(STORAGE_PERMISSIONS_REQUEST_CODE)
     override fun showImageExplorer() {
-        val galleryIntent = Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
+        val galleryIntent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
         galleryIntent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true)
         galleryIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
         if (galleryIntent.resolveActivity(requireActivity().packageManager) != null) {
@@ -628,17 +647,62 @@ class NoteFragment : BaseFragment(R.layout.fragment_note), NoteFragmentContract.
                 type = "image/*"
                 putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true)
                 action = Intent.ACTION_GET_CONTENT
-                galleryIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-                try {
+                addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+                if (resolveActivity(requireActivity().packageManager) != null) {
                     startActivityForResult(Intent.createChooser(this, ""), IMAGE_PICKER_REQUEST_CODE)
-                } catch (e: ActivityNotFoundException) {
-                    e.printStackTrace()
+                } else {
                     analytics.sendEvent(MyAnalytics.EVENT_GALLERY_NOT_FOUND_ERROR)
                     Toast.makeText(requireContext(), getString(R.string.phone_related_error), Toast.LENGTH_SHORT).show()
                 }
             }
         }
         mListener?.onNoteFragmentImagePickerOpen()
+    }
+
+    override fun requestCameraPermissions() {
+        val cameraPermission = Manifest.permission.CAMERA
+        if (EasyPermissions.hasPermissions(requireContext(), cameraPermission)) {
+            presenter.onCameraPermissionsGranted()
+        } else {
+            EasyPermissions.requestPermissions(
+                    this,
+                    getString(R.string.camera_permission_request),
+                    CAMERA_PERMISSIONS_REQUEST_CODE,
+                    cameraPermission
+            )
+        }
+    }
+
+    @AfterPermissionGranted(CAMERA_REQUEST_CODE)
+    override fun showCamera() {
+        Intent(MediaStore.ACTION_IMAGE_CAPTURE).let { takePictureIntent ->
+            takePictureIntent.resolveActivity(requireContext().packageManager)?.also {
+                val photoFile: File? = try {
+                    createImageFile()
+                } catch (e: IOException) {
+                    e.printStackTrace()
+                    null
+                }
+                photoFile?.let {
+                    val photoURI: Uri = FileProvider.getUriForFile(
+                            requireContext(),
+                            "com.furianrt.mydiary.fileprovider",
+                            it
+                    )
+                    takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI)
+                    startActivityForResult(takePictureIntent, CAMERA_REQUEST_CODE)
+                    mListener?.onNoteFragmentImagePickerOpen()
+                }
+            }
+        }
+    }
+
+    @Throws(IOException::class)
+    private fun createImageFile(): File {
+        val timeStamp: String = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.ENGLISH).format(Date())
+        return File.createTempFile(timeStamp, ".jpg").apply {
+            mPhotoPath = absolutePath
+        }
     }
 
     override fun showLoading() {
@@ -774,8 +838,8 @@ class NoteFragment : BaseFragment(R.layout.fragment_note), NoteFragmentContract.
                 uris.add(FileProvider.getUriForFile(
                         requireContext(),
                         "com.furianrt.mydiary.fileprovider",
-                        File(path))
-                )
+                        File(path)
+                ))
             }
         }
         val intent: Intent

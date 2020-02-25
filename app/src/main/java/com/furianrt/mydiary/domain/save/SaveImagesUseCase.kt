@@ -51,4 +51,10 @@ class SaveImagesUseCase @Inject constructor(
                 .flatMapCompletable { imageGateway.insertImage(it) }
                 .onErrorComplete()
     }
+
+    operator fun invoke(noteId: String, path: String): Completable {
+        val image = MyImage(noteId + "_" + generateUniqueId(), path, noteId)
+        return imageGateway.saveImageToStorage(image)
+                .flatMapCompletable { imageGateway.insertImage(it) }
+    }
 }

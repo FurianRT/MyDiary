@@ -33,6 +33,8 @@ interface GalleryListContract {
         fun showSelectedImageCount(count: Int)
         fun showDeleteConfirmationDialog(imageNames: List<String>)
         fun showErrorSaveImage()
+        fun requestCameraPermissions()
+        fun showCamera()
     }
 
     abstract class Presenter : BasePresenter<View>() {
@@ -45,10 +47,13 @@ interface GalleryListContract {
         abstract fun onSaveInstanceState(): Set<String>
         abstract fun onRestoreInstanceState(selectedImageNames: Set<String>?)
         abstract fun onCabCloseSelection()
-        abstract fun onButtonAddImageClick()
+        abstract fun onButtonSelectImageClick()
         abstract fun onStoragePermissionsGranted()
         abstract fun onNoteImagesPicked(imageUrls: List<String>)
         abstract fun onImageTrashed(image: MyImage)
         abstract fun onButtonDeleteConfirmClick()
+        abstract fun onButtonTakePhotoClick()
+        abstract fun onCameraPermissionsGranted()
+        abstract fun onNewPhotoTaken(photoPath: String?)
     }
 }

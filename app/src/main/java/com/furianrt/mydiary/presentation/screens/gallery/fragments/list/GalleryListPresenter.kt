@@ -121,12 +121,16 @@ class GalleryListPresenter @Inject constructor(
 
     override fun onSaveInstanceState() = mSelectedImageNames
 
-    override fun onButtonAddImageClick() {
+    override fun onButtonSelectImageClick() {
         view?.requestStoragePermissions()
     }
 
     override fun onStoragePermissionsGranted() {
         view?.showImageExplorer()
+    }
+
+    override fun onCameraPermissionsGranted() {
+        view?.showCamera()
     }
 
     override fun onNoteImagesPicked(imageUrls: List<String>) {
@@ -143,5 +147,26 @@ class GalleryListPresenter @Inject constructor(
 
     override fun onImageTrashed(image: MyImage) {
         view?.showDeleteConfirmationDialog(listOf(image.name))
+    }
+
+    override fun onButtonTakePhotoClick() {
+        view?.requestCameraPermissions()
+    }
+
+    override fun onNewPhotoTaken(photoPath: String?) {
+        if (photoPath == null) {
+            view?.showErrorSaveImage()
+            view?.hideLoading()
+            return
+        }
+        addDisposable(saveImagesUseCase(mNoteId, photoPath)
+                .observeOn(scheduler.ui())
+                .subscribe({
+                    view?.hideLoading()
+                }, { error ->
+                    error.printStackTrace()
+                    view?.showErrorSaveImage()
+                    view?.hideLoading()
+                }))
     }
 }

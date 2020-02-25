@@ -56,6 +56,7 @@ interface MyAnalytics {
         const val EVENT_NOTE_IMAGE_LIST_DRAG_DELETE = "note_image_list_drag_delete"
         const val EVENT_NOTE_IMAGE_LIST_IMAGE_DELETE = "note_image_list_image_delete"
         const val EVENT_NOTE_IMAGE_LIST_IMAGE_ADD = "note_image_list_image_added"
+        const val EVENT_NOTE_IMAGE_LIST_TAKE_PHOTO = "note_image_list_take_photo"
         const val EVENT_NOTE_BACKGROUND_CHANGED = "note_background_changed"
         const val EVENT_NOTE_TEXT_BACKGROUND_CHANGED = "note_text_background_changed"
         const val EVENT_NOTE_TEXT_COLOR_CHANGED = "note_text_color_changed"
