@@ -25,7 +25,6 @@ import com.furianrt.mydiary.domain.IncrementLaunchCountUseCase
 import com.furianrt.mydiary.domain.check.IsPinEnabledUseCase
 import com.furianrt.mydiary.domain.get.GetPinRequestDelayUseCase
 import com.furianrt.mydiary.domain.save.ResetSyncProgressUseCase
-import com.furianrt.mydiary.presentation.screens.main.MainActivity
 import com.furianrt.mydiary.presentation.screens.pin.PinActivity
 import com.jakewharton.threetenabp.AndroidThreeTen
 import net.danlew.android.joda.JodaTimeAndroid
@@ -117,13 +116,6 @@ class MyApp : Application(), Application.ActivityLifecycleCallbacks {
 
     override fun onActivityPaused(activity: Activity?) {
         authorizeUseCase(true)
-        if (activity != null && activity.isFinishing) {
-            if (activity is PinActivity) {
-                activity.overridePendingTransition(R.anim.activity_stay_slide_bottom, R.anim.slide_bottom_down)
-            } else if (activity !is MainActivity) {
-                activity.overridePendingTransition(R.anim.screen_left_in, R.anim.screen_right_out)
-            }
-        }
     }
 
     override fun onActivityStopped(activity: Activity?) {

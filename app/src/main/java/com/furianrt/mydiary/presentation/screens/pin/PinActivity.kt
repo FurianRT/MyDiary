@@ -16,6 +16,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.view.View
+import android.view.WindowManager
 import android.widget.Toast
 import androidx.biometric.BiometricPrompt
 import com.furianrt.mydiary.R
@@ -260,5 +261,13 @@ class PinActivity : BaseActivity(R.layout.activity_pin), PinContract.View,
         presenter.detachView()
         mHandler.removeCallbacks(mBottomSheetOpenRunnable)
         mBottomSheet.removeBottomSheetCallback(mBottomSheetCallback)
+    }
+
+    override fun onPause() {
+        super.onPause()
+        window.clearFlags(WindowManager.LayoutParams.FLAG_SECURE)
+        if (isFinishing) {
+            overridePendingTransition(R.anim.activity_stay_slide_bottom, R.anim.slide_bottom_down)
+        }
     }
 }

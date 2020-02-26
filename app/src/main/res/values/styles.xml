@@ -11,6 +11,7 @@
         <item name="android:textAlignment">gravity</item>
         <item name="android:textDirection">locale</item>
         <item name="android:windowBackground">@color/grey_light</item>
+        <item name="android:windowAnimationStyle">@style/TransitionAnimationStyle</item>
     </style>
 
     <style name="AppTheme.Splash">
@@ -20,6 +21,13 @@
     <style name="AppTheme.Splash.TransparentActionBar">
         <item name="android:windowDrawsSystemBarBackgrounds">true</item>
         <item name="android:statusBarColor">@color/transparent_black</item>
+    </style>
+
+    <style name="TransitionAnimationStyle" parent="@android:style/Animation.Activity">
+        <item name="android:activityOpenEnterAnimation">@anim/screen_right_in</item>
+        <item name="android:activityOpenExitAnimation">@anim/screen_left_out</item>
+        <item name="android:activityCloseEnterAnimation">@anim/screen_left_in</item>
+        <item name="android:activityCloseExitAnimation">@anim/screen_right_out</item>
     </style>
 
     <style name="ArimaMaduraiFontStyle">

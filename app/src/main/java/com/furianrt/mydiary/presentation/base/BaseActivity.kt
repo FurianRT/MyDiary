@@ -13,6 +13,7 @@ package com.furianrt.mydiary.presentation.base
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.view.WindowManager
 import androidx.annotation.LayoutRes
 import androidx.appcompat.app.AppCompatActivity
 import com.anjlab.android.iab.v3.BillingProcessor
@@ -83,16 +84,6 @@ abstract class BaseActivity(@LayoutRes contentLayoutId: Int) : AppCompatActivity
         }
     }
 
-    override fun startActivity(intent: Intent?) {
-        super.startActivity(intent)
-        overridePendingTransition(R.anim.screen_right_in, R.anim.screen_left_out)
-    }
-
-    override fun startActivityForResult(intent: Intent?, requestCode: Int) {
-        super.startActivityForResult(intent, requestCode)
-        overridePendingTransition(R.anim.screen_right_in, R.anim.screen_left_out)
-    }
-
     protected fun isOneTimePurchaseSupported() =
             BillingProcessor.isIabServiceAvailable(this) && mBillingProcessor.isOneTimePurchaseSupported
 
@@ -119,6 +110,16 @@ abstract class BaseActivity(@LayoutRes contentLayoutId: Int) : AppCompatActivity
 
     override fun onBillingError(errorCode: Int, error: Throwable?) {
         Log.e(TAG, "onBillingError: ${error?.printStackTrace()}")
+    }
+
+    override fun onResume() {
+        super.onResume()
+        window.clearFlags(WindowManager.LayoutParams.FLAG_SECURE)
+    }
+
+    override fun onPause() {
+        window.addFlags(WindowManager.LayoutParams.FLAG_SECURE)
+        super.onPause()
     }
 
     override fun onStart() {
