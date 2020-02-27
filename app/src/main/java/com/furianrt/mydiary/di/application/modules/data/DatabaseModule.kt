@@ -99,8 +99,25 @@ object DatabaseModule {
             }
         }
 
+        val MIGRATION_4_5 = object : Migration(4, 5) {
+            override fun migrate(database: SupportSQLiteDatabase) {
+                val forecasts = database.query("SELECT * FROM Forecasts")
+                if (forecasts.moveToFirst()) {
+                    do {
+                        val oldIconUrl = forecasts.getString(forecasts.getColumnIndex("icon"))
+                        if (!oldIconUrl.startsWith("https") && oldIconUrl.startsWith("http")) {
+                            val newIconUrl = oldIconUrl.replaceFirst("http", "https")
+                            val noteId = forecasts.getString(forecasts.getColumnIndex("note_id"))
+                            database.execSQL("UPDATE Forecasts SET icon = '$newIconUrl' WHERE note_id = '$noteId'")
+                        }
+                    } while (forecasts.moveToNext())
+                }
+                database.execSQL("UPDATE Locations SET location_sync_with = '[]'")
+            }
+        }
+
         return Room.databaseBuilder(context, NoteDatabase::class.java, DATABASE_NAME)
-                .addMigrations(MIGRATION_1_2, MIGRATION_2_3, MIGRATION_3_4)
+                .addMigrations(MIGRATION_1_2, MIGRATION_2_3, MIGRATION_3_4, MIGRATION_4_5)
                 .addCallback(callback)
                 .build()
     }

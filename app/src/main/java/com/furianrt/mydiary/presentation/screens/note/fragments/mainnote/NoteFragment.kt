@@ -673,7 +673,7 @@ class NoteFragment : BaseFragment(R.layout.fragment_note), NoteFragmentContract.
         }
     }
 
-    @AfterPermissionGranted(CAMERA_REQUEST_CODE)
+    @AfterPermissionGranted(CAMERA_PERMISSIONS_REQUEST_CODE)
     override fun showCamera() {
         Intent(MediaStore.ACTION_IMAGE_CAPTURE).let { takePictureIntent ->
             takePictureIntent.resolveActivity(requireContext().packageManager)?.also {
