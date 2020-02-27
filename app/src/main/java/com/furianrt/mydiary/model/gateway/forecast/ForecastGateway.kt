@@ -20,7 +20,7 @@ interface ForecastGateway {
     companion object {
         const val WEATHER_UNITS_CELSIUS = 0
         const val WEATHER_UNITS_FAHRENHEIT = 1
-        const val BASE_WEATHER_IMAGE_URL = "http://openweathermap.org/img/w/"
+        const val BASE_WEATHER_IMAGE_URL = "https://openweathermap.org/img/w/"
     }
 
     fun insertForecast(forecasts: List<MyForecast>): Completable

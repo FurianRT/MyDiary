@@ -7,6 +7,14 @@
     android:layout_height="match_parent"
     tools:context=".presentation.screens.note.NoteActivity">
 
+    <View
+        android:id="@+id/toolbar_main"
+        style="@style/AppTheme.Toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="?colorPrimary"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <com.furianrt.mydiary.presentation.views.LockableViewPager
         android:id="@+id/pager_note"
         android:layout_width="0dp"

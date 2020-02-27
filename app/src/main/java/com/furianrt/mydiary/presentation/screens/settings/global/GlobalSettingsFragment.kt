@@ -34,7 +34,7 @@ class GlobalSettingsFragment : BasePreference(), GlobalSettingsContract.View,
     companion object {
         private const val REQUEST_CODE_CREATE_PIN = 1
         private const val REQUEST_CODE_REMOVE_PIN = 2
-        private const val RECREATE_DELAY = 100L
+        private const val RECREATE_DELAY = 300L
     }
 
     @Inject
