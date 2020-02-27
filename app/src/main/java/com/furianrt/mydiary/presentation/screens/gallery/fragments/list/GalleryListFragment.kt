@@ -17,7 +17,6 @@ import android.content.Context
 import android.content.Intent
 import android.content.res.Configuration
 import android.graphics.Color
-import android.net.Uri
 import android.os.Bundle
 import android.os.Parcelable
 import android.provider.MediaStore
@@ -45,7 +44,8 @@ import pub.devrel.easypermissions.EasyPermissions
 import java.io.File
 import java.io.IOException
 import java.text.SimpleDateFormat
-import java.util.*
+import java.util.Locale
+import java.util.Date
 import javax.inject.Inject
 import kotlin.collections.ArrayList
 
@@ -402,17 +402,17 @@ class GalleryListFragment : BaseFragment(R.layout.fragment_gallery_list), Galler
     override fun showCamera() {
         Intent(MediaStore.ACTION_IMAGE_CAPTURE).let { takePictureIntent ->
             takePictureIntent.resolveActivity(requireContext().packageManager)?.also {
-                val photoFile: File? = try {
+                val photoFile = try {
                     createImageFile()
                 } catch (e: IOException) {
                     e.printStackTrace()
                     null
                 }
-                photoFile?.let {
-                    val photoURI: Uri = FileProvider.getUriForFile(
+                photoFile?.let { photo ->
+                    val photoURI = FileProvider.getUriForFile(
                             requireContext(),
                             "com.furianrt.mydiary.fileprovider",
-                            it
+                            photo
                     )
                     takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI)
                     startActivityForResult(takePictureIntent, CAMERA_REQUEST_CODE)
@@ -424,10 +424,8 @@ class GalleryListFragment : BaseFragment(R.layout.fragment_gallery_list), Galler
 
     @Throws(IOException::class)
     private fun createImageFile(): File {
-        val timeStamp: String = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.ENGLISH).format(Date())
-        return File.createTempFile(timeStamp, ".jpg").apply {
-            mPhotoPath = absolutePath
-        }
+        val timeStamp = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.ENGLISH).format(Date())
+        return File.createTempFile(timeStamp, ".jpg").apply { mPhotoPath = absolutePath }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -437,15 +435,14 @@ class GalleryListFragment : BaseFragment(R.layout.fragment_gallery_list), Galler
             val uris = mutableListOf<String>()
             if (clipData != null && clipData.itemCount > 0) {
                 for (i in 0 until clipData.itemCount) {
-                    clipData.getItemAt(i)?.uri?.let {uris.add(it.toString()) }
+                    clipData.getItemAt(i)?.uri?.let { uris.add(it.toString()) }
                 }
             } else {
                 data?.data?.let { uris.add(it.toString()) }
             }
             showLoading()
             presenter.onNoteImagesPicked(uris)
-        }
-        else if (requestCode == CAMERA_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
+        } else if (requestCode == CAMERA_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
             showLoading()
             presenter.onNewPhotoTaken(mPhotoPath)
         }
