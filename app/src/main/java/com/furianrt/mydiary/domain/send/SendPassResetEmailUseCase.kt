@@ -13,6 +13,7 @@ package com.furianrt.mydiary.domain.send
 import android.util.Patterns
 import com.furianrt.mydiary.model.gateway.profile.ProfileGateway
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
+import com.google.firebase.auth.FirebaseAuthInvalidUserException
 import io.reactivex.Completable
 import io.reactivex.Single
 import javax.inject.Inject
@@ -23,15 +24,19 @@ class SendPassResetEmailUseCase @Inject constructor(
 
     class EmailFormatException : Throwable()
     class EmptyEmailException : Throwable()
+    class EmailDoNotExistException : Throwable()
 
     operator fun invoke(email: String): Completable =
             Single.fromCallable { validateEmail(email) }
                     .flatMapCompletable { profileGateway.sendPasswordResetEmail(email) }
                     .onErrorResumeNext { error ->
-                        if (error is FirebaseAuthInvalidCredentialsException) {
-                            Completable.error(EmailFormatException())
-                        } else {
-                            Completable.error(error)
+                        when (error) {
+                            is FirebaseAuthInvalidCredentialsException ->
+                                Completable.error(EmailFormatException())
+                            is FirebaseAuthInvalidUserException ->
+                                Completable.error(EmailDoNotExistException())
+                            else ->
+                                Completable.error(error)
                         }
                     }
 

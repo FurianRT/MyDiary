@@ -37,6 +37,8 @@ class ForgotPassPresenter @Inject constructor(
                             view?.showErrorEmptyEmail()
                         is SendPassResetEmailUseCase.EmailFormatException ->
                             view?.showErrorEmailFormat()
+                        is SendPassResetEmailUseCase.EmailDoNotExistException ->
+                            view?.showErrorEmailDoNotExist()
                         else -> {
                             error.printStackTrace()
                             view?.showErrorNetworkConnection()

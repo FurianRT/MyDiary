@@ -85,6 +85,11 @@ class ForgotPassFragment : BaseFragment(R.layout.fragment_forgot_pass), ForgotPa
         Toast.makeText(requireContext(), getString(R.string.empty_email), Toast.LENGTH_SHORT).show()
     }
 
+    override fun showErrorEmailDoNotExist() {
+        layout_email.animateShake()
+        Toast.makeText(requireContext(), getString(R.string.email_do_not_exist), Toast.LENGTH_SHORT).show()
+    }
+
     override fun showErrorNetworkConnection() {
         Toast.makeText(requireContext(), getString(R.string.network_error), Toast.LENGTH_SHORT).show()
     }
