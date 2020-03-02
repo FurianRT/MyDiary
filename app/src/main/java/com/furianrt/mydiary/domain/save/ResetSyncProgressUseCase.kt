@@ -11,7 +11,6 @@
 package com.furianrt.mydiary.domain.save
 
 import com.furianrt.mydiary.model.gateway.general.GeneralGateway
-import org.joda.time.DateTime
 import javax.inject.Inject
 
 class ResetSyncProgressUseCase @Inject constructor(

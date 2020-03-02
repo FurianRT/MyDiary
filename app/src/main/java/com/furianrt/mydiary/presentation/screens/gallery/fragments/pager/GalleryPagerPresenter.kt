@@ -14,7 +14,6 @@ import com.furianrt.mydiary.model.entity.MyImage
 import com.furianrt.mydiary.domain.get.GetImagesUseCase
 import com.furianrt.mydiary.domain.update.UpdateImageUseCase
 import com.furianrt.mydiary.utils.MyRxUtils
-import org.joda.time.DateTime
 import javax.inject.Inject
 
 class GalleryPagerPresenter @Inject constructor(

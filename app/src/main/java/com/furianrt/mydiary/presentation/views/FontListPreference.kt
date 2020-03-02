@@ -8,7 +8,7 @@
  *
  ******************************************************************************/
 
-package com.furianrt.mydiary.presentation.screens.settings.global
+package com.furianrt.mydiary.presentation.views
 
 import android.annotation.SuppressLint
 import android.content.Context

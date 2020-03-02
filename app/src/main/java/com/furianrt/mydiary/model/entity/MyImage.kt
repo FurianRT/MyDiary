@@ -15,7 +15,6 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import kotlinx.android.parcel.Parcelize
-import org.joda.time.DateTime
 
 /*@Entity(
         tableName = MyImage.TABLE_NAME,

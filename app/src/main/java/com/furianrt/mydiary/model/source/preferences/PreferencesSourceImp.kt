@@ -17,7 +17,6 @@ import com.furianrt.mydiary.di.application.modules.app.AppContext
 import com.furianrt.mydiary.utils.getColorCompat
 import com.furianrt.mydiary.utils.getThemeAccentColor
 import com.furianrt.mydiary.utils.getThemePrimaryColor
-import org.joda.time.DateTime
 import javax.inject.Inject
 
 class PreferencesSourceImp @Inject constructor(

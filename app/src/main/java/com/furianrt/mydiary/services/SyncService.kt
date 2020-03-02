@@ -28,7 +28,6 @@ import com.furianrt.mydiary.model.entity.SyncProgressMessage
 import com.furianrt.mydiary.presentation.screens.main.MainActivity
 import io.reactivex.Single
 import io.reactivex.disposables.CompositeDisposable
-import org.joda.time.DateTime
 import javax.inject.Inject
 
 class SyncService : Service() {

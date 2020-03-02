@@ -22,7 +22,6 @@ import com.furianrt.mydiary.model.source.preferences.PreferencesSource
 import com.furianrt.mydiary.model.source.storage.StorageSource
 import com.furianrt.mydiary.utils.MyRxUtils
 import io.reactivex.*
-import org.joda.time.DateTime
 import javax.inject.Inject
 
 class ImageGatewayImp @Inject constructor(
