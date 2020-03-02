@@ -10,6 +10,7 @@
 
 package com.furianrt.mydiary.presentation.screens.settings.global
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Typeface
 import android.util.AttributeSet
@@ -31,6 +32,7 @@ class FontListPreference : ListPreference {
     constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs)
     constructor(context: Context?) : super(context)
 
+    @SuppressLint("InflateParams")
     override fun onClick() {
         val inflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
         val view = inflater.inflate(R.layout.dialog_font, null)

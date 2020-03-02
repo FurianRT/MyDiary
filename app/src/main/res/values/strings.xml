@@ -36,6 +36,7 @@
     <string name="wrong_password">Invalid password</string>
     <string name="empty_password">Enter password</string>
     <string name="empty_email">Enter email</string>
+    <string name="email_do_not_exist">There is no such email in the system</string>
     <string name="wrong_email_format">Invalid email</string>
     <string name="choose_tags">Choose tags</string>
     <string name="choose_category">Category</string>
@@ -308,7 +309,6 @@
     <string name="fragment_note_settings_danger_zone">Danger zone</string>
     <string name="fragment_note_settings_reset_settings_confirm">Reset settings?</string>
     <string name="fragment_note_google_services_error">Google services not installed</string>
-    <string name="fragment_note_add_reminder">Add reminder</string>
     <string name="panorama_activation_settings_on">Disable panoramic photos</string>
     <string name="panorama_activation_settings_off">Enable panoramic photos</string>
     <string name="panorama_activation_settings_title">Panoramic photos</string>

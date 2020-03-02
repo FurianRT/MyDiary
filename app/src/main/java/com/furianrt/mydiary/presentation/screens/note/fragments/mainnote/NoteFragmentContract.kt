@@ -55,7 +55,6 @@ interface NoteFragmentContract {
         fun showErrorForecast()
         fun showRichTextOptions()
         fun hideRichTextOptions()
-        fun showReminderView(noteId: String)
         fun requestCameraPermissions()
         fun showCamera()
     }
@@ -85,7 +84,6 @@ interface NoteFragmentContract {
         abstract fun onButtonMicClick()
         abstract fun onSpeechRecorded(curTitle: String, curContent: String, textSpans: List<MyTextSpan>, recordedText: String)
         abstract fun onButtonShareClick()
-        abstract fun onReminderFieldClick()
         abstract fun onLocationPermissionDenied()
         abstract fun onButtonTakePhotoClick()
         abstract fun onCameraPermissionsGranted()

@@ -45,7 +45,6 @@ import com.furianrt.mydiary.presentation.general.GlideApp
 import com.furianrt.mydiary.presentation.screens.gallery.GalleryActivity
 import com.furianrt.mydiary.presentation.screens.note.fragments.mainnote.content.NoteContentFragment
 import com.furianrt.mydiary.presentation.screens.note.fragments.mainnote.edit.NoteEditFragment
-import com.furianrt.mydiary.presentation.screens.note.fragments.mainnote.reminder.ReminderFragment
 import com.furianrt.mydiary.presentation.screens.settings.note.NoteSettingsActivity
 import com.furianrt.mydiary.utils.*
 import com.gjiazhe.panoramaimageview.GyroscopeObserver
@@ -82,7 +81,7 @@ class NoteFragment : BaseFragment(R.layout.fragment_note), NoteFragmentContract.
         private const val CAMERA_REQUEST_CODE = 8
         private const val TIME_PICKER_TAG = "timePicker"
         private const val DATE_PICKER_TAG = "datePicker"
-        private const val MAX_IMAGE_COUNT_TO_SHARE = 10
+        private const val MAX_IMAGE_COUNT_TO_SHARE = 15
 
         @JvmStatic
         fun newInstance(noteId: String, isNewNote: Boolean) =
@@ -155,9 +154,6 @@ class NoteFragment : BaseFragment(R.layout.fragment_note), NoteFragmentContract.
         layout_tags.setOnClickListener {
             removeEditFragment()
             presenter.onTagsFieldClick()
-        }
-        layout_reminder.setOnClickListener {
-            //presenter.onReminderFieldClick()
         }
         text_date.setOnClickListener {
             removeEditFragment()
@@ -594,16 +590,6 @@ class NoteFragment : BaseFragment(R.layout.fragment_note), NoteFragmentContract.
         TagsDialog.newInstance(noteId).show(requireActivity().supportFragmentManager, TagsDialog.TAG)
     }
 
-    override fun showReminderView(noteId: String) {
-        if (childFragmentManager.findFragmentByTag(ReminderFragment.TAG) == null) {
-            childFragmentManager.inTransaction {
-                setCustomAnimations(R.anim.scale_up, R.anim.scale_up)
-                add(R.id.container_reminder, ReminderFragment.newInstance(noteId), ReminderFragment.TAG)
-                runOnCommit { layout_reminder.animateAlpha(1f, 0f) }
-            }
-        }
-    }
-
     override fun showForecast(temp: String, iconUri: String) {
         GlideApp.with(this)
                 .load(iconUri)
@@ -919,22 +905,6 @@ class NoteFragment : BaseFragment(R.layout.fragment_note), NoteFragmentContract.
             button_text_fill_color.clearColorFilter()
             spinner_text_fill_color.visibility = View.VISIBLE
         }
-    }
-
-    fun onReminderButtonCloseClick() {
-        childFragmentManager.findFragmentByTag(ReminderFragment.TAG)?.let {
-            childFragmentManager.inTransaction {
-                remove(it)
-                runOnCommit {
-                    layout_reminder.visibility = View.VISIBLE
-                    layout_reminder.animateAlpha(0f, 1f, 600L)
-                }
-            }
-        }
-    }
-
-    fun onReminderStart() {
-        layout_reminder.visibility = View.GONE
     }
 
     interface OnNoteFragmentInteractionListener {

@@ -92,10 +92,6 @@ class NoteFragmentPresenter @Inject constructor(
         view?.showCategoriesView(mNoteId)
     }
 
-    override fun onReminderFieldClick() {
-        view?.showReminderView(mNoteId)
-    }
-
     private fun loadImages() {
         addDisposable(getImagesUseCase(mNoteId)
                 .map { Pair(it, isPanoramaEnabledUseCase()) }
