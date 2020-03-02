@@ -64,7 +64,7 @@ class GalleryPagerPresenter @Inject constructor(
         mEditedImage?.let {
             val image = it.copy()
             image.fileSyncWith.clear()
-            image.editedTime = DateTime.now().millis
+            image.editedTime = System.currentTimeMillis()
             addDisposable(updateImageUseCase(image)
                     .subscribe())
         }

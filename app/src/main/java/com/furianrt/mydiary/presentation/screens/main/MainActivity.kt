@@ -627,7 +627,7 @@ class MainActivity : BaseActivity(R.layout.activity_main), MainActivityContract.
     }
 
     override fun onMainListItemLongClick(note: MyNoteWithProp) {
-        val vibrator = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator?
+        val vibrator = getSystemService(Context.VIBRATOR_SERVICE) as? Vibrator?
         if (vibrator?.hasVibrator() == true) {
             @Suppress("DEPRECATION")
             vibrator.vibrate(ITEM_LONG_CLICK_VIBRATION_DURATION)

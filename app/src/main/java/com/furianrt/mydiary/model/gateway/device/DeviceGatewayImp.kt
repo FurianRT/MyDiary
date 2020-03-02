@@ -99,7 +99,7 @@ class DeviceGatewayImp @Inject constructor(
     @Suppress("DEPRECATION")
     override fun isNetworkAvailable(): Boolean {
         try {
-            val cm = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager?
+            val cm = context.getSystemService(Context.CONNECTIVITY_SERVICE) as? ConnectivityManager?
             return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 val an = cm?.activeNetwork ?: return false
                 val capabilities = cm.getNetworkCapabilities(an) ?: return false
@@ -115,7 +115,7 @@ class DeviceGatewayImp @Inject constructor(
     }
 
     override fun isLocationAvailable(): Boolean {
-        val manager = context.getSystemService(Context.LOCATION_SERVICE) as LocationManager?
+        val manager = context.getSystemService(Context.LOCATION_SERVICE) as? LocationManager?
         return if (manager != null) {
             LocationManagerCompat.isLocationEnabled(manager)
         } else {

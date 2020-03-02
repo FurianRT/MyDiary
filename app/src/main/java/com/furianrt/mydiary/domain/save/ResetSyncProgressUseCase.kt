@@ -23,7 +23,7 @@ class ResetSyncProgressUseCase @Inject constructor(
     }
 
     operator fun invoke() {
-        val currentTime = DateTime.now().millis
+        val currentTime = System.currentTimeMillis()
         val launchTimeDiff = currentTime - generalGateway.getLastAppLaunchTime()
         if (launchTimeDiff >= SYNC_PROGRESS_RESET_TIME) {
             generalGateway.setLastSyncMessage(null)

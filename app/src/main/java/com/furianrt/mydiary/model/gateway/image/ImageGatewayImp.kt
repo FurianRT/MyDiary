@@ -116,7 +116,7 @@ class ImageGatewayImp @Inject constructor(
             imagesApi.getImages(category, page, perPage)
                     .map { response ->
                         response.images
-                                ?.map { MyHeaderImage(it.id!!, it.largeImageURL!!, DateTime.now().millis) }
+                                ?.map { MyHeaderImage(it.id!!, it.largeImageURL!!, System.currentTimeMillis()) }
                                 ?.sortedByDescending { it.addedTime }
                                 ?: emptyList()
                     }

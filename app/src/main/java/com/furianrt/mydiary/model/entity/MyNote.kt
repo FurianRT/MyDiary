@@ -23,10 +23,10 @@ data class MyNote(
         @ColumnInfo(name = FIELD_ID) @PrimaryKey(autoGenerate = false) var id: String = "",
         @ColumnInfo(name = FIELD_TITLE) var title: String = "",
         @ColumnInfo(name = FIELD_CONTENT) var content: String = "",
-        @ColumnInfo(name = FIELD_TIME) var time: Long = DateTime.now().millis,
+        @ColumnInfo(name = FIELD_TIME) var time: Long = System.currentTimeMillis(),
         @ColumnInfo(name = FIELD_MOOD) var moodId: Int = 0,
         @ColumnInfo(name = FIELD_CATEGORY) var categoryId: String = "",
-        @ColumnInfo(name = FIELD_CREATION_TIME) var creationTime: Long = DateTime.now().millis,
+        @ColumnInfo(name = FIELD_CREATION_TIME) var creationTime: Long = System.currentTimeMillis(),
         @ColumnInfo(name = FIELD_SYNC_WITH) var syncWith: MutableList<String> = mutableListOf(),
         @ColumnInfo(name = FIELD_IS_DELETED) var isDeleted: Boolean = false
 ) : Parcelable {

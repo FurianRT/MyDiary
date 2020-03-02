@@ -129,7 +129,7 @@ class SyncService : Service() {
     }
 
     private fun handleSyncComplete() {
-        mCompositeDisposable.add(updateProfileUseCase(DateTime.now().millis)
+        mCompositeDisposable.add(updateProfileUseCase(System.currentTimeMillis())
                 .subscribe {
                     sendProgressUpdate(SyncProgressMessage.SYNC_FINISHED, PROGRESS_FINISHED)
                     close()

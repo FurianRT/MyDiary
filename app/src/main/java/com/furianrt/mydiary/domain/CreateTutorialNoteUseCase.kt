@@ -21,7 +21,6 @@ import com.furianrt.mydiary.domain.save.SaveNotesUseCase
 import com.furianrt.mydiary.utils.generateUniqueId
 import io.reactivex.Completable
 import io.reactivex.Observable
-import org.joda.time.DateTime
 import javax.inject.Inject
 
 class CreateTutorialNoteUseCase @Inject constructor(
@@ -42,16 +41,15 @@ class CreateTutorialNoteUseCase @Inject constructor(
                         .andThen(getCategoriesUseCase().firstOrError())
                         .map { it.first() }
                         .flatMapCompletable { category ->
-                            val note = MyNote(
+                            saveNotesUseCase(MyNote(
                                     id = noteId,
                                     title = deviceGateway.getTutorialNoteTitle(),
                                     content = deviceGateway.getTutorialNoteContent(),
-                                    time = DateTime.now().millis,
+                                    time = System.currentTimeMillis(),
                                     moodId = deviceGateway.getTutorialNoteMoodId(),
                                     categoryId = category.id,
-                                    creationTime = DateTime.now().millis
-                            )
-                            saveNotesUseCase(note)
+                                    creationTime = System.currentTimeMillis()
+                            ))
                         }
                         .andThen(getTagsUseCase().firstOrError())
                         .flatMapObservable { Observable.fromIterable(it) }

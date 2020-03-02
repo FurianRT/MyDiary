@@ -146,7 +146,7 @@ class PreferencesSourceImp @Inject constructor(
     }
 
     override fun getLastAppLaunchTime(): Long =
-            mPrefs.getLong(PreferencesSource.LAST_APP_LAUNCH_TIME, DateTime.now().millis)
+            mPrefs.getLong(PreferencesSource.LAST_APP_LAUNCH_TIME, System.currentTimeMillis())
 
     override fun getDailyImageCategory(): String =
             mPrefs.getString(PreferencesSource.DAILY_IMAGE_CATEGORY, PreferencesSource.DAILY_IMAGE_CATEGORY_DEFAULT)

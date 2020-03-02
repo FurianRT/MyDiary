@@ -39,7 +39,6 @@ class TagsDialog : BaseDialog(), TagsDialogContract.View {
                 }
     }
 
-
     @Inject
     lateinit var presenter: TagsDialogContract.Presenter
 
