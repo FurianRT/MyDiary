@@ -38,10 +38,6 @@ class PreferencesSourceImp @Inject constructor(
     override fun isWeatherEnabled(): Boolean =
             mPrefs.getBoolean(PreferencesSource.WEATHER_AVAILABILITY, true)
 
-    override fun setWeatherEnabled(enabled: Boolean) {
-        mPrefs.edit().putBoolean(PreferencesSource.WEATHER_AVAILABILITY, enabled).apply()
-    }
-
     override fun isMapEnabled(): Boolean =
             mPrefs.getBoolean(PreferencesSource.MAP_AVAILABILITY, true)
 

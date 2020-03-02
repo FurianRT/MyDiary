@@ -119,11 +119,12 @@ class SyncService : Service() {
                             syncCleanupUseCase().toSingleDefault(SyncProgressMessage.CLEANUP)
                     ))
                 }
-                .doOnComplete { handleSyncComplete() }
                 .subscribe({ taskIndex ->
                     handleSyncProgress(taskIndex)
                 }, { error ->
                     handleSyncError(error)
+                }, {
+                    handleSyncComplete()
                 }))
     }
 
@@ -237,24 +238,21 @@ class SyncService : Service() {
 
     private fun sendBroadcast(progressMessage: SyncProgressMessage) {
         LocalBroadcastManager.getInstance(applicationContext)
-                .sendBroadcast(Intent().apply {
+                .sendBroadcast(Intent(Intent.ACTION_SYNC).apply {
                     putExtra(EXTRA_PROGRESS_MESSAGE, progressMessage)
-                    action = Intent.ACTION_SYNC
                 })
     }
 
     private fun close() {
-        mCompositeDisposable.clear()
         stopForeground(true)
         stopSelf()
     }
 
     override fun onDestroy() {
         super.onDestroy()
+        mCompositeDisposable.clear()
         setLastSyncMessageUseCase(SyncProgressMessage(SyncProgressMessage.SYNC_FINISHED))
     }
 
-    override fun onBind(intent: Intent?): IBinder? {
-        return null
-    }
+    override fun onBind(intent: Intent?): IBinder? = null
 }

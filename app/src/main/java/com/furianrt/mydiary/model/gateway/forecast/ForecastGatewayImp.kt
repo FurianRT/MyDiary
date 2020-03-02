@@ -85,8 +85,4 @@ class ForecastGatewayImp @Inject constructor(
     override fun getWeatherUnits(): Int = prefs.getWeatherUnits()
 
     override fun isWeatherEnabled(): Boolean = prefs.isWeatherEnabled()
-
-    override fun setWeatherEnabled(enabled: Boolean) {
-        prefs.setWeatherEnabled(enabled)
-    }
 }

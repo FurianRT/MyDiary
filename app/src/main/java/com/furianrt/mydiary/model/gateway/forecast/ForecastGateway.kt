@@ -36,5 +36,4 @@ interface ForecastGateway {
     fun saveForecastsInCloud(forecasts: List<MyForecast>): Completable
     fun getWeatherUnits(): Int
     fun isWeatherEnabled(): Boolean
-    fun setWeatherEnabled(enabled: Boolean)
 }
