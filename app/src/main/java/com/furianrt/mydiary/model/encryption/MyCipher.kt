@@ -10,7 +10,7 @@
 
 package com.furianrt.mydiary.model.encryption
 
-interface Cipher {
+interface MyCipher {
     fun encryptString(string: String): String
     fun decryptString(string: String): String
 }

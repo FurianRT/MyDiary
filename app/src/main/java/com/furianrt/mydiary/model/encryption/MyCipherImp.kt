@@ -17,7 +17,7 @@ import javax.crypto.Cipher
 import javax.crypto.spec.SecretKeySpec
 import javax.inject.Inject
 
-class CipherImp @Inject constructor() : com.furianrt.mydiary.model.encryption.Cipher {
+class MyCipherImp @Inject constructor() : MyCipher {
 
     @SuppressLint("GetInstance")
     override fun encryptString(string: String): String {
