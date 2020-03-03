@@ -19,7 +19,7 @@ import android.view.animation.OvershootInterpolator
 import com.furianrt.mydiary.R
 import com.furianrt.mydiary.presentation.base.BaseFragment
 import com.furianrt.mydiary.model.entity.MyProfile
-import com.furianrt.mydiary.presentation.screens.main.MainActivity
+import com.furianrt.mydiary.presentation.screens.main.MainBottomSheetHolder
 import com.furianrt.mydiary.presentation.screens.main.fragments.profile.menu.MenuProfileFragment
 import com.furianrt.mydiary.utils.KeyboardUtils
 import com.furianrt.mydiary.utils.inTransaction
@@ -35,6 +35,8 @@ class ProfileFragment : BaseFragment(R.layout.fragment_profile), ProfileContract
 
     @Inject
     lateinit var presenter: ProfileContract.Presenter
+
+    private var mListener: MainBottomSheetHolder? = null
 
     private val mOnKeyboardToggleListener = object : KeyboardUtils.SoftKeyboardToggleListener {
         override fun onToggleSoftKeyboard(isVisible: Boolean) {
@@ -70,17 +72,23 @@ class ProfileFragment : BaseFragment(R.layout.fragment_profile), ProfileContract
     }
 
     override fun close() {
-        (activity as? MainActivity?)?.closeBottomSheet()
+        mListener?.closeBottomSheet()
     }
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
+        if (context is MainBottomSheetHolder) {
+            mListener = context
+        } else {
+            throw IllegalStateException()
+        }
         activity?.window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING)
     }
 
     override fun onDetach() {
         super.onDetach()
         activity?.window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING)
+        mListener = null
     }
 
     override fun onStart() {
@@ -98,13 +106,13 @@ class ProfileFragment : BaseFragment(R.layout.fragment_profile), ProfileContract
     fun isBackStackEmpty() = childFragmentManager.backStackEntryCount == 0
 
     fun pushContainerUp() {
-        if (profile_container.translationY == 0f) {
+        if (profile_container?.translationY == 0f) {
             profile_container
-                    .animate()
-                    .translationY(-profile_container.y)
-                    .setDuration(ANIMATION_CONTAINER_DURATION)
-                    .setInterpolator(OvershootInterpolator())
-                    .setListener(object : Animator.AnimatorListener {
+                    ?.animate()
+                    ?.translationY(-profile_container.y)
+                    ?.setDuration(ANIMATION_CONTAINER_DURATION)
+                    ?.setInterpolator(OvershootInterpolator())
+                    ?.setListener(object : Animator.AnimatorListener {
                         override fun onAnimationRepeat(animation: Animator?) {}
                         override fun onAnimationCancel(animation: Animator?) {}
                         override fun onAnimationStart(animation: Animator?) {}

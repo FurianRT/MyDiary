@@ -10,6 +10,7 @@
 
 package com.furianrt.mydiary.presentation.screens.main.fragments.authentication.forgot
 
+import android.content.Context
 import android.os.Bundle
 import android.os.Handler
 import android.view.View
@@ -17,13 +18,12 @@ import android.view.WindowManager
 import android.widget.Toast
 import com.furianrt.mydiary.R
 import com.furianrt.mydiary.presentation.base.BaseFragment
+import com.furianrt.mydiary.presentation.screens.main.MainBottomSheetHolder
 import com.furianrt.mydiary.presentation.screens.main.fragments.authentication.AuthFragment
 import com.furianrt.mydiary.presentation.screens.main.fragments.authentication.done.DoneAuthFragment
 import com.furianrt.mydiary.utils.animateShake
 import com.furianrt.mydiary.utils.hideKeyboard
 import com.furianrt.mydiary.utils.inTransaction
-import com.google.android.material.bottomsheet.BottomSheetBehavior
-import kotlinx.android.synthetic.main.bottom_sheet_main.*
 import kotlinx.android.synthetic.main.fragment_forgot_pass.*
 import javax.inject.Inject
 
@@ -36,18 +36,19 @@ class ForgotPassFragment : BaseFragment(R.layout.fragment_forgot_pass), ForgotPa
         private const val CHANGE_ACTIVITY_FLAG_DELAY = 200L
 
         @JvmStatic
-        fun newInstance(email: String) =
-                ForgotPassFragment().apply {
-                    arguments = Bundle().apply {
-                        putString(ARG_EMAIL, email)
-                    }
-                }
+        fun newInstance(email: String) = ForgotPassFragment().apply {
+            arguments = Bundle().apply {
+                putString(ARG_EMAIL, email)
+            }
+        }
     }
 
     @Inject
     lateinit var presenter: ForgotPassContract.Presenter
 
+    private var mListener: MainBottomSheetHolder? = null
     private val mHandler = Handler()
+    private val mBottomSheetCloseRunnable: Runnable = Runnable { mListener?.closeBottomSheet() }
     private val mChangeActivityFlag: Runnable = Runnable {
         activity?.window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN)
     }
@@ -103,11 +104,7 @@ class ForgotPassFragment : BaseFragment(R.layout.fragment_forgot_pass), ForgotPa
             }
         }
 
-        activity?.main_sheet_container?.postDelayed({
-            activity?.let {
-                BottomSheetBehavior.from(it.main_sheet_container).state = BottomSheetBehavior.STATE_COLLAPSED
-            }
-        }, CLOSE_AFTER_DONE_DELAY)
+        mHandler.postDelayed(mBottomSheetCloseRunnable, CLOSE_AFTER_DONE_DELAY)
     }
 
     override fun showLoading() {
@@ -124,11 +121,21 @@ class ForgotPassFragment : BaseFragment(R.layout.fragment_forgot_pass), ForgotPa
         fragmentManager?.popBackStack()
     }
 
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        if (context is MainBottomSheetHolder) {
+            mListener = context
+        } else {
+            throw IllegalStateException()
+        }
+    }
+
     override fun onDetach() {
         super.onDetach()
         (parentFragment as? AuthFragment?)?.showRegistrationButton()
         activity?.currentFocus?.hideKeyboard()
         activity?.currentFocus?.clearFocus()
+        mListener = null
     }
 
     override fun onStart() {
@@ -139,6 +146,7 @@ class ForgotPassFragment : BaseFragment(R.layout.fragment_forgot_pass), ForgotPa
     override fun onStop() {
         super.onStop()
         mHandler.removeCallbacks(mChangeActivityFlag)
+        mHandler.removeCallbacks(mBottomSheetCloseRunnable)
         presenter.detachView()
     }
 }

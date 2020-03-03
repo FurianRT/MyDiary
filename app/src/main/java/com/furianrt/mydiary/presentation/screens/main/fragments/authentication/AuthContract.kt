@@ -16,7 +16,7 @@ import com.furianrt.mydiary.presentation.base.BasePresenter
 interface AuthContract {
 
     interface View : BaseView {
-        fun closeSheet()
+        fun close()
         fun showRegistrationView()
     }
 

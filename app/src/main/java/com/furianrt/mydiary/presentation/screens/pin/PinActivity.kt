@@ -37,7 +37,7 @@ import java.util.concurrent.Executors
 import javax.inject.Inject
 
 class PinActivity : BaseActivity(R.layout.activity_pin), PinContract.View,
-        BackupEmailFragment.OnBackupEmailFragmentListener {
+        BackupEmailFragment.OnBackupEmailFragmentListener, PinBottomSheetHolder {
 
     companion object {
         private const val BOTTOM_SHEET_EXPAND_DELAY = 200L
@@ -78,7 +78,7 @@ class PinActivity : BaseActivity(R.layout.activity_pin), PinContract.View,
     private val mBottomSheetCallback = object : BottomSheetBehavior.BottomSheetCallback() {
         override fun onSlide(bottomSheet: View, slideOffset: Float) {}
         override fun onStateChanged(bottomSheet: View, newState: Int) {
-            if (newState == BottomSheetBehavior.STATE_COLLAPSED) {
+            if (newState == BottomSheetBehavior.STATE_COLLAPSED || newState == BottomSheetBehavior.STATE_HIDDEN) {
                 supportFragmentManager.findFragmentByTag(SendEmailFragment.TAG)?.let {
                     supportFragmentManager.inTransaction { remove(it) }
                 }
@@ -237,12 +237,8 @@ class PinActivity : BaseActivity(R.layout.activity_pin), PinContract.View,
         }
     }
 
-    override fun onBackPressed() {
-        if (mBottomSheet.state == BottomSheetBehavior.STATE_EXPANDED) {
-            mBottomSheet.state = BottomSheetBehavior.STATE_COLLAPSED
-        } else {
-            close()
-        }
+    override fun closeBottomSheet() {
+        mBottomSheet.state = BottomSheetBehavior.STATE_COLLAPSED
     }
 
     override fun onStart() {

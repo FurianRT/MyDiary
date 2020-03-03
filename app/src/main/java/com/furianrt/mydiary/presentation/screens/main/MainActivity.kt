@@ -86,7 +86,8 @@ class MainActivity : BaseActivity(R.layout.activity_main), MainActivityContract.
         DailySettingsFragment.OnImageSettingsInteractionListener,
         DeleteNoteDialog.OnDeleteNoteConfirmListener, CategoriesDialog.OnCategorySelectedListener,
         PremiumFragment.OnPremiumFragmentInteractionListener,
-        DrawerMenuFragment.OnDrawerMenuInteractionListener {
+        DrawerMenuFragment.OnDrawerMenuInteractionListener,
+        MainBottomSheetHolder {
 
     companion object {
         private const val TAG = "MainActivity"
@@ -152,9 +153,12 @@ class MainActivity : BaseActivity(R.layout.activity_main), MainActivityContract.
         }
 
         override fun onStateChanged(bottomSheet: View, newState: Int) {
-            if (newState == BottomSheetBehavior.STATE_COLLAPSED) {
-                supportFragmentManager.findFragmentByTag(AuthFragment.TAG)?.let {
-                    (it as AuthFragment).clearFocus()
+            if (newState == BottomSheetBehavior.STATE_COLLAPSED || newState == BottomSheetBehavior.STATE_HIDDEN) {
+                supportFragmentManager.findFragmentByTag(AuthFragment.TAG)?.let { fragment ->
+                    supportFragmentManager.inTransaction { remove(fragment) }
+                }
+                supportFragmentManager.findFragmentByTag(ProfileFragment.TAG)?.let { fragment ->
+                    supportFragmentManager.inTransaction { remove(fragment) }
                 }
             }
         }
@@ -666,7 +670,7 @@ class MainActivity : BaseActivity(R.layout.activity_main), MainActivityContract.
         mAdapter.notifyDataSetChanged()
     }
 
-    fun closeBottomSheet() {
+    override fun closeBottomSheet() {
         mBottomSheet.state = BottomSheetBehavior.STATE_COLLAPSED
     }
 

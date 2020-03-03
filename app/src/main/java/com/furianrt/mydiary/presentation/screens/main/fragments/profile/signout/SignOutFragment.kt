@@ -10,12 +10,13 @@
 
 package com.furianrt.mydiary.presentation.screens.main.fragments.profile.signout
 
+import android.content.Context
 import android.os.Bundle
 import android.os.Handler
 import android.view.View
 import com.furianrt.mydiary.R
 import com.furianrt.mydiary.presentation.base.BaseFragment
-import com.furianrt.mydiary.presentation.screens.main.MainActivity
+import com.furianrt.mydiary.presentation.screens.main.MainBottomSheetHolder
 import kotlinx.android.synthetic.main.fragment_sign_out.*
 import javax.inject.Inject
 
@@ -29,10 +30,9 @@ class SignOutFragment : BaseFragment(R.layout.fragment_sign_out), SignOutContrac
     @Inject
     lateinit var presenter: SignOutContract.Presenter
 
+    private var mListener: MainBottomSheetHolder? = null
     private val mHandler = Handler()
-    private val mBottomSheetCloseRunnable: Runnable = Runnable {
-        (activity as? MainActivity?)?.closeBottomSheet()
-    }
+    private val mBottomSheetCloseRunnable: Runnable = Runnable { mListener?.closeBottomSheet() }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         getPresenterComponent(requireContext()).inject(this)
@@ -51,6 +51,20 @@ class SignOutFragment : BaseFragment(R.layout.fragment_sign_out), SignOutContrac
 
     override fun returnToMenuView() {
         fragmentManager?.popBackStack()
+    }
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        if (context is MainBottomSheetHolder) {
+            mListener = context
+        } else {
+            throw IllegalStateException()
+        }
+    }
+
+    override fun onDetach() {
+        super.onDetach()
+        mListener = null
     }
 
     override fun onStart() {

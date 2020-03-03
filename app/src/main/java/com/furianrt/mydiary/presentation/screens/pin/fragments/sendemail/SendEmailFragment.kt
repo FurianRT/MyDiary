@@ -10,16 +10,17 @@
 
 package com.furianrt.mydiary.presentation.screens.pin.fragments.sendemail
 
+import android.content.Context
 import android.os.Bundle
+import android.os.Handler
 import android.view.View
 import android.widget.Toast
 import com.furianrt.mydiary.R
 import com.furianrt.mydiary.presentation.base.BaseFragment
+import com.furianrt.mydiary.presentation.screens.pin.PinBottomSheetHolder
 import com.furianrt.mydiary.presentation.screens.pin.fragments.done.DoneEmailFragment
 import com.furianrt.mydiary.utils.animateShake
 import com.furianrt.mydiary.utils.inTransaction
-import com.google.android.material.bottomsheet.BottomSheetBehavior
-import kotlinx.android.synthetic.main.bottom_sheet_pin.*
 import kotlinx.android.synthetic.main.fragment_send_email.*
 import javax.inject.Inject
 
@@ -32,6 +33,10 @@ class SendEmailFragment : BaseFragment(R.layout.fragment_send_email), SendEmailC
 
     @Inject
     lateinit var presenter: SendEmailContract.Presenter
+
+    private var mListener: PinBottomSheetHolder? = null
+    private val mHandler = Handler()
+    private val mBottomSheetCloseRunnable: Runnable = Runnable { mListener?.closeBottomSheet() }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         getPresenterComponent(requireContext()).inject(this)
@@ -54,11 +59,7 @@ class SendEmailFragment : BaseFragment(R.layout.fragment_send_email), SendEmailC
             }
         }
 
-        activity?.pin_sheet_container?.postDelayed({
-            activity?.let {
-                BottomSheetBehavior.from(it.pin_sheet_container).state = BottomSheetBehavior.STATE_COLLAPSED
-            }
-        }, CLOSE_AFTER_DONE_DELAY)
+        mHandler.postDelayed(mBottomSheetCloseRunnable, CLOSE_AFTER_DONE_DELAY)
     }
 
     override fun showErrorMessageSend() {
@@ -79,8 +80,21 @@ class SendEmailFragment : BaseFragment(R.layout.fragment_send_email), SendEmailC
     }
 
     override fun closeView() {
-        BottomSheetBehavior.from(requireActivity().pin_sheet_container).state =
-                BottomSheetBehavior.STATE_COLLAPSED
+        mListener?.closeBottomSheet()
+    }
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        if (context is PinBottomSheetHolder) {
+            mListener = context
+        } else {
+            throw IllegalStateException()
+        }
+    }
+
+    override fun onDetach() {
+        super.onDetach()
+        mListener = null
     }
 
     override fun onStart() {
@@ -90,6 +104,7 @@ class SendEmailFragment : BaseFragment(R.layout.fragment_send_email), SendEmailC
 
     override fun onStop() {
         super.onStop()
+        mHandler.removeCallbacks(mBottomSheetCloseRunnable)
         presenter.detachView()
     }
 }

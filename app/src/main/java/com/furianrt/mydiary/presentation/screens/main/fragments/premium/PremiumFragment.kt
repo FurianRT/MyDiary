@@ -16,7 +16,7 @@ import android.view.View
 import com.furianrt.mydiary.BuildConfig
 import com.furianrt.mydiary.R
 import com.furianrt.mydiary.presentation.base.BaseFragment
-import com.furianrt.mydiary.presentation.screens.main.MainActivity
+import com.furianrt.mydiary.presentation.screens.main.MainBottomSheetHolder
 import kotlinx.android.synthetic.main.fragment_premium.*
 import javax.inject.Inject
 
@@ -30,6 +30,7 @@ class PremiumFragment : BaseFragment(R.layout.fragment_premium), PremiumContract
     lateinit var presenter: PremiumContract.Presenter
 
     private var mListener: OnPremiumFragmentInteractionListener? = null
+    private var mBottomSheetHolder: MainBottomSheetHolder? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         getPresenterComponent(requireContext()).inject(this)
@@ -46,8 +47,9 @@ class PremiumFragment : BaseFragment(R.layout.fragment_premium), PremiumContract
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        if (context is OnPremiumFragmentInteractionListener) {
+        if (context is OnPremiumFragmentInteractionListener && context is MainBottomSheetHolder) {
             mListener = context
+            mBottomSheetHolder = context
         } else {
             throw IllegalStateException()
         }
@@ -56,6 +58,7 @@ class PremiumFragment : BaseFragment(R.layout.fragment_premium), PremiumContract
     override fun onDetach() {
         super.onDetach()
         mListener = null
+        mBottomSheetHolder = null
     }
 
     override fun onStart() {
@@ -69,7 +72,7 @@ class PremiumFragment : BaseFragment(R.layout.fragment_premium), PremiumContract
     }
 
     override fun close() {
-        (activity as? MainActivity?)?.closeBottomSheet()
+        mBottomSheetHolder?.closeBottomSheet()
     }
 
     interface OnPremiumFragmentInteractionListener {

@@ -10,6 +10,7 @@
 
 package com.furianrt.mydiary.presentation.screens.main.fragments.authentication.login
 
+import android.content.Context
 import android.os.Bundle
 import android.os.Handler
 import android.view.View
@@ -18,14 +19,13 @@ import android.widget.Toast
 import com.furianrt.mydiary.R
 import com.furianrt.mydiary.analytics.MyAnalytics
 import com.furianrt.mydiary.presentation.base.BaseFragment
+import com.furianrt.mydiary.presentation.screens.main.MainBottomSheetHolder
 import com.furianrt.mydiary.presentation.screens.main.fragments.authentication.AuthFragment
 import com.furianrt.mydiary.presentation.screens.main.fragments.authentication.done.DoneAuthFragment
 import com.furianrt.mydiary.presentation.screens.main.fragments.authentication.forgot.ForgotPassFragment
 import com.furianrt.mydiary.utils.animateShake
 import com.furianrt.mydiary.utils.hideKeyboard
 import com.furianrt.mydiary.utils.inTransaction
-import com.google.android.material.bottomsheet.BottomSheetBehavior
-import kotlinx.android.synthetic.main.bottom_sheet_main.*
 import kotlinx.android.synthetic.main.fragment_login.*
 import javax.inject.Inject
 
@@ -40,7 +40,9 @@ class LoginFragment : BaseFragment(R.layout.fragment_login), LoginContract.View 
     @Inject
     lateinit var presenter: LoginContract.Presenter
 
+    private var mListener: MainBottomSheetHolder? = null
     private val mHandler = Handler()
+    private val mBottomSheetCloseRunnable: Runnable = Runnable { mListener?.closeBottomSheet() }
     private val mChangeActivityFlag: Runnable = Runnable {
         activity?.window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN)
     }
@@ -120,11 +122,7 @@ class LoginFragment : BaseFragment(R.layout.fragment_login), LoginContract.View 
             }
         }
 
-        activity?.main_sheet_container?.postDelayed({
-            activity?.let {
-                BottomSheetBehavior.from(it.main_sheet_container).state = BottomSheetBehavior.STATE_COLLAPSED
-            }
-        }, CLOSE_AFTER_DONE_DELAY)
+        mHandler.postDelayed(mBottomSheetCloseRunnable, CLOSE_AFTER_DONE_DELAY)
     }
 
     override fun showForgotPassView(email: String) {
@@ -141,6 +139,20 @@ class LoginFragment : BaseFragment(R.layout.fragment_login), LoginContract.View 
         }
     }
 
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        if (context is MainBottomSheetHolder) {
+            mListener = context
+        } else {
+            throw IllegalStateException()
+        }
+    }
+
+    override fun onDetach() {
+        super.onDetach()
+        mListener = null
+    }
+
     override fun onStart() {
         super.onStart()
         presenter.attachView(this)
@@ -149,6 +161,7 @@ class LoginFragment : BaseFragment(R.layout.fragment_login), LoginContract.View 
     override fun onStop() {
         super.onStop()
         mHandler.removeCallbacks(mChangeActivityFlag)
+        mHandler.removeCallbacks(mBottomSheetCloseRunnable)
         presenter.detachView()
         activity?.currentFocus?.hideKeyboard()
         activity?.currentFocus?.clearFocus()

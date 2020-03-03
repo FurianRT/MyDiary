@@ -90,10 +90,10 @@ dependencies {
     implementation 'androidx.biometric:biometric:1.0.1'
 
     //Firebase
-    implementation 'com.google.firebase:firebase-core:17.2.2'
+    implementation 'com.google.firebase:firebase-core:17.2.3'
     implementation 'com.google.firebase:firebase-storage:19.1.1'
-    implementation 'com.google.firebase:firebase-firestore:21.4.0'
-    implementation 'com.google.firebase:firebase-messaging:20.1.0'
+    implementation 'com.google.firebase:firebase-firestore:21.4.1'
+    implementation 'com.google.firebase:firebase-messaging:20.1.1'
     implementation 'com.google.firebase:firebase-auth:19.2.0'
 
     //Rx for Firebase

@@ -8,17 +8,8 @@
  *
  ******************************************************************************/
 
-package com.furianrt.mydiary.presentation.screens.main.fragments.authentication
+package com.furianrt.mydiary.presentation.screens.main
 
-import javax.inject.Inject
-
-class AuthPresenter @Inject constructor() : AuthContract.Presenter() {
-
-    override fun onButtonCloseClick() {
-        view?.close()
-    }
-
-    override fun onButtonCreateAccountClick() {
-        view?.showRegistrationView()
-    }
+interface MainBottomSheetHolder {
+    fun closeBottomSheet()
 }

@@ -10,6 +10,7 @@
 
 package com.furianrt.mydiary.presentation.screens.main.fragments.authentication.privacy
 
+import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -18,9 +19,8 @@ import android.widget.Toast
 import com.furianrt.mydiary.R
 import com.furianrt.mydiary.analytics.MyAnalytics
 import com.furianrt.mydiary.presentation.base.BaseFragment
+import com.furianrt.mydiary.presentation.screens.main.MainBottomSheetHolder
 import com.furianrt.mydiary.utils.animateShake
-import com.google.android.material.bottomsheet.BottomSheetBehavior
-import kotlinx.android.synthetic.main.bottom_sheet_main.*
 import kotlinx.android.synthetic.main.fragment_privacy.*
 import javax.inject.Inject
 
@@ -45,6 +45,7 @@ class PrivacyFragment : BaseFragment(R.layout.fragment_privacy), PrivacyContract
     @Inject
     lateinit var presenter: PrivacyContract.Presenter
 
+    private var mListener: MainBottomSheetHolder? = null
     private lateinit var mEmail: String
     private lateinit var mPassword: String
 
@@ -75,9 +76,7 @@ class PrivacyFragment : BaseFragment(R.layout.fragment_privacy), PrivacyContract
 
     override fun showMessageSuccessRegistration() {
         analytics.sendEvent(MyAnalytics.EVENT_SIGNED_UP)
-        activity?.let {
-            BottomSheetBehavior.from(it.main_sheet_container).state = BottomSheetBehavior.STATE_COLLAPSED
-        }
+        mListener?.closeBottomSheet()
     }
 
     override fun showErrorNetworkConnection() {
@@ -91,6 +90,20 @@ class PrivacyFragment : BaseFragment(R.layout.fragment_privacy), PrivacyContract
 
     override fun close() {
         fragmentManager?.popBackStack()
+    }
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        if (context is MainBottomSheetHolder) {
+            mListener = context
+        } else {
+            throw IllegalStateException()
+        }
+    }
+
+    override fun onDetach() {
+        super.onDetach()
+        mListener = null
     }
 
     override fun onStart() {
