@@ -20,7 +20,7 @@ class GetNotesUseCase @Inject constructor(
         private val noteGateway: NoteGateway
 ) {
 
-    fun invoke(): Flowable<List<MyNote>> =
+    operator fun invoke(): Flowable<List<MyNote>> =
             noteGateway.getAllNotes()
                     .map { notes ->
                         if (noteGateway.isSortDesc()) {
@@ -30,7 +30,7 @@ class GetNotesUseCase @Inject constructor(
                         }
                     }
 
-    fun invoke(noteId: String): Flowable<Optional<MyNote>> =
+    operator fun invoke(noteId: String): Flowable<Optional<MyNote>> =
             noteGateway.getNoteAsList(noteId)
                     .map { note -> Optional.fromNullable(note.find { it.id == noteId }) }
 }

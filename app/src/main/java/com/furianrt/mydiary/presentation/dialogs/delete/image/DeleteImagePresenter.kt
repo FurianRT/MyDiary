@@ -15,12 +15,12 @@ import com.furianrt.mydiary.utils.MyRxUtils
 import javax.inject.Inject
 
 class DeleteImagePresenter @Inject constructor(
-        private val deleteImages: DeleteImagesUseCase,
+        private val deleteImagesUseCase: DeleteImagesUseCase,
         private val scheduler: MyRxUtils.BaseSchedulerProvider
 ) : DeleteImageContract.Presenter() {
 
     override fun onButtonDeleteClick(imageNames: List<String>) {
-        addDisposable(deleteImages.invoke(imageNames)
+        addDisposable(deleteImagesUseCase(imageNames)
                 .observeOn(scheduler.ui())
                 .subscribe { view?.closeView() })
     }

@@ -6,6 +6,9 @@
     <string name="storage_permission_request">
         Приложению требуется разрешение для доступа к картинкам на вашем устройве.
     </string>
+    <string name="camera_permission_request">
+        Приложению требуется разрешение для доступа к камере вашего устройва.
+    </string>
 
     <string name="yes">Да</string>
     <string name="no">Нет</string>
@@ -28,6 +31,7 @@
     <string name="wrong_password">Неверный пароль</string>
     <string name="empty_password">Введите пароль</string>
     <string name="empty_email">Введите email</string>
+    <string name="email_do_not_exist">Такой email не зарегистрирован</string>
     <string name="wrong_email_format">Некорректный email</string>
     <string name="choose_tags">Выберите теги</string>
     <string name="choose_category">Категория</string>
@@ -296,9 +300,10 @@
     <string name="fragment_note_settings_danger_zone">Опасная зона</string>
     <string name="fragment_note_settings_reset_settings_confirm">Сбросить настройки?</string>
     <string name="fragment_note_google_services_error">Google services не установлены</string>
-    <string name="fragment_note_add_reminder">Добавить напоминание</string>
     <string name="panorama_activation_settings_on">Отключить панорамные фото</string>
     <string name="panorama_activation_settings_off">Включить панорамные фото</string>
     <string name="panorama_activation_settings_title">Панорамные фото</string>
     <string name="phone_related_error">По каким-то причинам, ваш смартфон не может произвести данную операцию</string>
+    <string name="take_photo">Камера</string>
+    <string name="select_photo">Галерея</string>
 </resources>

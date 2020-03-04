@@ -61,7 +61,7 @@ class RegistrationFragment : BaseFragment(R.layout.fragment_registration), Regis
         }
         edit_email.onFocusChangeListener = View.OnFocusChangeListener { v, hasFocus ->
             mOnEditFocusChangeListener.onFocusChange(v, hasFocus)
-            presenter.onEmailFocusChange(edit_email.text.toString(), hasFocus)
+            edit_email?.text?.toString()?.let { email -> presenter.onEmailFocusChange(email, hasFocus) }
         }
         edit_password.onFocusChangeListener = mOnEditFocusChangeListener
         edit_password_repeat.onFocusChangeListener = mOnEditFocusChangeListener

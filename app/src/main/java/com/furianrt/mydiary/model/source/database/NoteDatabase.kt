@@ -20,7 +20,7 @@ import com.furianrt.mydiary.model.source.database.dao.*
         entities = [MyNote::class, MyCategory::class, MyTag::class, MyLocation::class, MyMood::class,
             NoteTag::class, MyImage::class, MyHeaderImage::class, MyNoteAppearance::class,
             MyProfile::class, MyForecast::class, NoteLocation::class, MyTextSpan::class],
-        version = 4,
+        version = 5,
         exportSchema = false
 )
 @TypeConverters(RoomTypeConverter::class)

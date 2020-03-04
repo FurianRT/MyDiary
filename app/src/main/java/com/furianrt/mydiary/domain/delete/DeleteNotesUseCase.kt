@@ -32,7 +32,7 @@ class DeleteNotesUseCase @Inject constructor(
         private val spanGateway: SpanGateway
 ) {
 
-    fun invoke(notesIds: List<String>): Completable =
+    operator fun invoke(notesIds: List<String>): Completable =
             Observable.fromIterable(notesIds)
                     .flatMapCompletable { deleteNoteWithDependencies(it) }
 
@@ -42,9 +42,9 @@ class DeleteNotesUseCase @Inject constructor(
                     .flatMapCompletable { locations -> locationGateway.deleteLocations(locations.map { it.id }) }
                     .andThen(appearanceGateway.deleteAppearance(noteId))
                     .andThen(tagGateway.deleteNoteTags(noteId))
-                    .andThen(getImagesUseCase.invoke(noteId))
+                    .andThen(getImagesUseCase(noteId))
                     .first(emptyList())
-                    .flatMapCompletable { images -> deleteImagesUseCase.invoke(images.map { it.name }) }
+                    .flatMapCompletable { images -> deleteImagesUseCase(images.map { it.name }) }
                     .andThen(forecastGateway.deleteForecast(noteId))
                     .andThen(spanGateway.deleteTextSpan(noteId))
                     .andThen(noteGateway.deleteNote(noteId))

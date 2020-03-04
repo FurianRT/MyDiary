@@ -3,9 +3,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/layout_root_note"
+    android:background="@color/grey_light"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/grey_light"
     android:orientation="vertical">
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
@@ -14,16 +14,6 @@
         android:layout_weight="1">
 
         <include layout="@layout/fragment_note_toolbar" />
-
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/fab_add_image"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="24dp"
-            android:src="@drawable/ic_add_image"
-            app:fabSize="mini"
-            app:layout_anchor="@id/app_bar_layout"
-            app:layout_anchorGravity="bottom|end" />
 
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/layout_category_color"
@@ -66,26 +56,25 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
-                    android:layout_marginTop="12dp"
-                    android:layout_marginEnd="4dp"
                     android:alpha="0.7"
                     android:background="?android:selectableItemBackground"
                     android:padding="4dp"
                     android:textColor="@color/black"
                     android:textSize="15sp"
                     android:textStyle="italic"
+                    app:layout_constraintBottom_toBottomOf="@+id/text_date"
+                    app:layout_constraintEnd_toStartOf="@+id/image_weather"
                     app:layout_constraintStart_toEndOf="@id/text_date"
-                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintTop_toTopOf="@+id/text_date"
                     tools:text="20:15" />
 
                 <ImageView
                     android:id="@+id/image_weather"
                     android:layout_width="40dp"
                     android:layout_height="35dp"
-                    android:layout_marginStart="4dp"
-                    app:layout_constraintBottom_toTopOf="@id/card_note_edit"
-                    app:layout_constraintStart_toEndOf="@+id/text_time"
-                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="@+id/text_time"
+                    app:layout_constraintEnd_toStartOf="@+id/text_temp"
+                    app:layout_constraintTop_toTopOf="@+id/text_time"
                     tools:ignore="ContentDescription"
                     tools:src="@color/grey" />
 
@@ -93,13 +82,14 @@
                     android:id="@+id/text_temp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginEnd="32dp"
                     android:alpha="0.7"
                     android:textColor="@color/black"
                     android:textSize="15sp"
                     android:textStyle="italic"
-                    app:layout_constraintBottom_toTopOf="@id/card_note_edit"
-                    app:layout_constraintStart_toEndOf="@+id/image_weather"
-                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="@+id/image_weather"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="@+id/image_weather"
                     tools:text="24°C" />
 
                 <com.google.android.material.card.MaterialCardView
@@ -254,54 +244,6 @@
                         tools:text="Location text sample" />
 
                 </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/layout_reminder"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="12dp"
-                    android:layout_marginTop="8dp"
-                    android:layout_marginEnd="12dp"
-                    android:background="?android:selectableItemBackground"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal"
-                    android:padding="4dp"
-                    android:visibility="gone"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/layout_location"
-                    tools:ignore="UseCompoundDrawables">
-
-                    <ImageView
-                        android:id="@+id/image_reminder"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginEnd="4dp"
-                        android:alpha="0.4"
-                        android:src="@drawable/ic_reminder"
-                        android:tint="@color/black"
-                        tools:ignore="ContentDescription" />
-
-                    <TextView
-                        android:id="@+id/text_reminder"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:alpha="0.4"
-                        android:text="@string/fragment_note_add_reminder"
-                        android:textColor="@color/black" />
-
-                </LinearLayout>
-
-                <FrameLayout
-                    android:id="@+id/container_reminder"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="12dp"
-                    android:layout_marginTop="12dp"
-                    android:layout_marginEnd="12dp"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/layout_location" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 

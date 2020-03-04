@@ -86,7 +86,8 @@ class MainActivity : BaseActivity(R.layout.activity_main), MainActivityContract.
         DailySettingsFragment.OnImageSettingsInteractionListener,
         DeleteNoteDialog.OnDeleteNoteConfirmListener, CategoriesDialog.OnCategorySelectedListener,
         PremiumFragment.OnPremiumFragmentInteractionListener,
-        DrawerMenuFragment.OnDrawerMenuInteractionListener {
+        DrawerMenuFragment.OnDrawerMenuInteractionListener,
+        MainBottomSheetHolder {
 
     companion object {
         private const val TAG = "MainActivity"
@@ -96,6 +97,7 @@ class MainActivity : BaseActivity(R.layout.activity_main), MainActivityContract.
         private const val BUNDLE_SEARCH_QUERY = "query"
         private const val BUNDLE_STATUS_BAR_HEIGHT = "status_bar_height"
         private const val ACTIVITY_SETTING_REQUEST_CODE = 2
+        private const val LIST_ITEM_CACHE_SIZE = 15
         private const val ITEM_LONG_CLICK_VIBRATION_DURATION = 30L
         private const val BOTTOM_SHEET_EXPAND_DELAY = 500L
         private const val ANIMATION_IMAGE_SETTINGS_FADE_OUT_DURATION = 350L
@@ -151,9 +153,12 @@ class MainActivity : BaseActivity(R.layout.activity_main), MainActivityContract.
         }
 
         override fun onStateChanged(bottomSheet: View, newState: Int) {
-            if (newState == BottomSheetBehavior.STATE_COLLAPSED) {
-                supportFragmentManager.findFragmentByTag(AuthFragment.TAG)?.let {
-                    (it as AuthFragment).clearFocus()
+            if (newState == BottomSheetBehavior.STATE_COLLAPSED || newState == BottomSheetBehavior.STATE_HIDDEN) {
+                supportFragmentManager.findFragmentByTag(AuthFragment.TAG)?.let { fragment ->
+                    supportFragmentManager.inTransaction { remove(fragment) }
+                }
+                supportFragmentManager.findFragmentByTag(ProfileFragment.TAG)?.let { fragment ->
+                    supportFragmentManager.inTransaction { remove(fragment) }
                 }
             }
         }
@@ -182,7 +187,7 @@ class MainActivity : BaseActivity(R.layout.activity_main), MainActivityContract.
         mOnDrawerListener = object : ActionBarDrawerToggle(this, drawer, toolbar_main, R.string.open, R.string.close) {
             override fun onDrawerSlide(drawerView: View, slideOffset: Float) {
                 super.onDrawerSlide(drawerView, slideOffset)
-                layout_main_root.translationX = slideOffset * drawerView.width * 0.3f
+                layout_main_root.translationX = slideOffset * drawerView.width * 0.2f
             }
         }
 
@@ -221,7 +226,7 @@ class MainActivity : BaseActivity(R.layout.activity_main), MainActivityContract.
         list_main.adapter = mAdapter
         list_main.setHasFixedSize(true)
         list_main.itemAnimator = LandingAnimator()
-        list_main.setItemViewCacheSize(15)
+        list_main.setItemViewCacheSize(LIST_ITEM_CACHE_SIZE)
         list_main.addItemDecoration(StickyHeaderItemDecoration(list_main, mAdapter))
 
         fab_quick_scroll.hide()
@@ -626,7 +631,7 @@ class MainActivity : BaseActivity(R.layout.activity_main), MainActivityContract.
     }
 
     override fun onMainListItemLongClick(note: MyNoteWithProp) {
-        val vibrator = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator?
+        val vibrator = getSystemService(Context.VIBRATOR_SERVICE) as? Vibrator?
         if (vibrator?.hasVibrator() == true) {
             @Suppress("DEPRECATION")
             vibrator.vibrate(ITEM_LONG_CLICK_VIBRATION_DURATION)
@@ -665,15 +670,13 @@ class MainActivity : BaseActivity(R.layout.activity_main), MainActivityContract.
         mAdapter.notifyDataSetChanged()
     }
 
-    fun closeBottomSheet() {
+    override fun closeBottomSheet() {
         mBottomSheet.state = BottomSheetBehavior.STATE_COLLAPSED
     }
 
     override fun onBackPressed() {
-        val authFragment =
-                supportFragmentManager.findFragmentByTag(AuthFragment.TAG) as? AuthFragment
-        val profileFragment =
-                supportFragmentManager.findFragmentByTag(ProfileFragment.TAG) as? ProfileFragment
+        val authFragment = supportFragmentManager.findFragmentByTag(AuthFragment.TAG) as? AuthFragment?
+        val profileFragment = supportFragmentManager.findFragmentByTag(ProfileFragment.TAG) as? ProfileFragment?
         when {
             authFragment != null && !authFragment.isBackStackEmpty() -> super.onBackPressed()
             profileFragment != null && !profileFragment.isBackStackEmpty() -> super.onBackPressed()

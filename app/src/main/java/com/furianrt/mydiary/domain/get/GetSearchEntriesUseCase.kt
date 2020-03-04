@@ -24,20 +24,20 @@ class GetSearchEntriesUseCase @Inject constructor(
         private val getCategoriesUseCase: GetCategoriesUseCase,
         private val getLocationsUseCase: GetLocationsUseCase,
         private val getMoodsUseCase: GetMoodsUseCase,
-        private val isLocationEnabled: IsLocationEnabledUseCase,
-        private val isMoodEnabled: IsMoodEnabledUseCase
+        private val isLocationEnabledUseCase: IsLocationEnabledUseCase,
+        private val isMoodEnabledUseCase: IsMoodEnabledUseCase
 ) {
 
-    fun invoke(): Flowable<SearchEntries> =
-            Flowable.combineLatest(getFullNotesUseCase.invoke(),
-                    getTagsUseCase.invoke(),
-                    getCategoriesUseCase.invoke(),
-                    getLocationsUseCase.invoke().map { locations -> locations.distinctBy { it.name } },
-                    getMoodsUseCase.invoke(),
+    operator fun invoke(): Flowable<SearchEntries> =
+            Flowable.combineLatest(getFullNotesUseCase(),
+                    getTagsUseCase(),
+                    getCategoriesUseCase(),
+                    getLocationsUseCase().map { locations -> locations.distinctBy { it.name } },
+                    getMoodsUseCase(),
                     Function5<List<MyNoteWithProp>, List<MyTag>, List<MyCategory>, List<MyLocation>, List<MyMood>, SearchEntries>
                     { notes, tags, categories, locations, moods ->
-                        val locationList = if (isLocationEnabled.invoke()) locations else null
-                        val moodList = if (isMoodEnabled.invoke()) moods else null
+                        val locationList = if (isLocationEnabledUseCase()) locations else null
+                        val moodList = if (isMoodEnabledUseCase()) moods else null
                         SearchEntries(notes, tags, categories, locationList, moodList)
                     })
 }

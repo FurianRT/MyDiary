@@ -20,7 +20,7 @@ class SyncCategoriesUseCase @Inject constructor(
 
     class SyncCategoriesException : Throwable()
 
-    fun invoke(email: String): Completable =
+    operator fun invoke(email: String): Completable =
             categoryGateway.getAllCategories()
                     .first(emptyList())
                     .map { categories -> categories.filter { !it.isSync(email) } }

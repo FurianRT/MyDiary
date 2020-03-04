@@ -19,9 +19,9 @@ import com.furianrt.mydiary.utils.MyRxUtils
 import javax.inject.Inject
 
 class NoteSettingsPresenter @Inject constructor(
-        private val updateAppearance: UpdateAppearanceUseCase,
-        private val getAppearance: GetAppearanceUseCase,
-        private val resetNoteSettings: ResetNoteSettingsUseCase,
+        private val updateAppearanceUseCase: UpdateAppearanceUseCase,
+        private val getAppearanceUseCase: GetAppearanceUseCase,
+        private val resetNoteSettingsUseCase: ResetNoteSettingsUseCase,
         private val scheduler: MyRxUtils.BaseSchedulerProvider
 ) : NoteSettingsContract.Presenter() {
 
@@ -39,7 +39,7 @@ class NoteSettingsPresenter @Inject constructor(
     override fun attachView(view: NoteSettingsContract.View) {
         super.attachView(view)
         view.disableInput()
-        addDisposable(getAppearance.invoke(mNoteId)
+        addDisposable(getAppearanceUseCase(mNoteId)
                 .firstElement()
                 .observeOn(scheduler.ui())
                 .subscribe { appearance ->
@@ -76,13 +76,13 @@ class NoteSettingsPresenter @Inject constructor(
     }
 
     override fun onPrefResetSettingsClick() {
-        addDisposable(resetNoteSettings.invoke(mAppearance.appearanceId)
+        addDisposable(resetNoteSettingsUseCase(mAppearance.appearanceId)
                 .observeOn(scheduler.ui())
                 .subscribe { view?.onAppearanceReset() })
     }
 
     private fun updateAppearance(appearance: MyNoteAppearance) {
-        addDisposable(updateAppearance.invoke(appearance)
+        addDisposable(updateAppearanceUseCase(appearance)
                 .observeOn(scheduler.ui())
                 .subscribe())
     }

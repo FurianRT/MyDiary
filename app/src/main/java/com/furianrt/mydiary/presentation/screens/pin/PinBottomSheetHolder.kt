@@ -8,9 +8,8 @@
  *
  ******************************************************************************/
 
-package com.furianrt.mydiary.model.encryption
+package com.furianrt.mydiary.presentation.screens.pin
 
-interface Cipher {
-    fun encryptString(string: String): String
-    fun decryptString(string: String): String
+interface PinBottomSheetHolder {
+    fun closeBottomSheet()
 }

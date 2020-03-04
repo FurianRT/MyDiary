@@ -22,7 +22,7 @@ class GetTimeFormatUseCase @Inject constructor(
         const val TIME_FORMAT_24 = 1
     }
 
-    fun invoke(): Int = if (generalGateway.is24TimeFormat()) {
+    operator fun invoke(): Int = if (generalGateway.is24TimeFormat()) {
         TIME_FORMAT_24
     } else {
         TIME_FORMAT_12

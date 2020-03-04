@@ -14,12 +14,11 @@ import com.furianrt.mydiary.model.entity.MyImage
 import com.furianrt.mydiary.domain.get.GetImagesUseCase
 import com.furianrt.mydiary.domain.update.UpdateImageUseCase
 import com.furianrt.mydiary.utils.MyRxUtils
-import org.joda.time.DateTime
 import javax.inject.Inject
 
 class GalleryPagerPresenter @Inject constructor(
-        private val getImages: GetImagesUseCase,
-        private val updateImage: UpdateImageUseCase,
+        private val getImagesUseCase: GetImagesUseCase,
+        private val updateImageUseCase: UpdateImageUseCase,
         private val scheduler: MyRxUtils.BaseSchedulerProvider
 ) : GalleryPagerContract.Presenter() {
 
@@ -36,7 +35,7 @@ class GalleryPagerPresenter @Inject constructor(
     }
 
     private fun loadImages(noteId: String) {
-        addDisposable(getImages.invoke(noteId)
+        addDisposable(getImagesUseCase(noteId)
                 .observeOn(scheduler.ui())
                 .subscribe { images ->
                     if (images.isEmpty()) {
@@ -64,8 +63,8 @@ class GalleryPagerPresenter @Inject constructor(
         mEditedImage?.let {
             val image = it.copy()
             image.fileSyncWith.clear()
-            image.editedTime = DateTime.now().millis
-            addDisposable(updateImage.invoke(image)
+            image.editedTime = System.currentTimeMillis()
+            addDisposable(updateImageUseCase(image)
                     .subscribe())
         }
     }

@@ -20,7 +20,7 @@ class SyncAppearanceUseCase @Inject constructor(
 
     class SyncAppearanceException : Throwable()
 
-    fun invoke(email: String): Completable =
+    operator fun invoke(email: String): Completable =
             appearanceGateway.getAllNoteAppearances()
                     .first(emptyList())
                     .map { appearances -> appearances.filter { !it.isSync(email) } }

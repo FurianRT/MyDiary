@@ -22,7 +22,7 @@ class GetNotesSortTypeUseCase @Inject constructor(
         const val SORT_TYPE_ASC = 1
     }
 
-    fun invoke(): Int = if (noteGateway.isSortDesc()) {
+    operator fun invoke(): Int = if (noteGateway.isSortDesc()) {
         SORT_TYPE_DESC
     } else {
         SORT_TYPE_ASC

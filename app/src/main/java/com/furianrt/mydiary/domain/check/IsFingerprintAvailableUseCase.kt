@@ -19,5 +19,5 @@ class IsFingerprintAvailableUseCase @Inject constructor(
         private var deviceGateway: DeviceGateway
 ) {
 
-    fun invoke(): Boolean = deviceGateway.isFingerprintEnabled() && pinGateway.isFingerprintEnabled()
+    operator fun invoke(): Boolean = deviceGateway.isFingerprintEnabled() && pinGateway.isFingerprintEnabled()
 }

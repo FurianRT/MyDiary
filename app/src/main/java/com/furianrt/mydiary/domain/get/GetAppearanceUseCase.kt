@@ -19,7 +19,7 @@ class GetAppearanceUseCase @Inject constructor(
         private val appearanceGateway: AppearanceGateway
 ) {
 
-    fun invoke(noteId: String): Flowable<MyNoteAppearance> =
+    operator fun invoke(noteId: String): Flowable<MyNoteAppearance> =
             appearanceGateway.getNoteAppearance(noteId)
                     .map { appearance ->
                         appearance.textSize =

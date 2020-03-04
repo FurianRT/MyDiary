@@ -11,8 +11,8 @@
 package com.furianrt.mydiary.di.application.modules.data
 
 import com.furianrt.mydiary.di.application.component.AppScope
-import com.furianrt.mydiary.model.encryption.Cipher
-import com.furianrt.mydiary.model.encryption.CipherImp
+import com.furianrt.mydiary.model.encryption.MyCipher
+import com.furianrt.mydiary.model.encryption.MyCipherImp
 import dagger.Binds
 import dagger.Module
 
@@ -21,5 +21,5 @@ interface EncryptionModule {
 
     @Binds
     @AppScope
-    fun cipher(imp: CipherImp): Cipher
+    fun cipher(imp: MyCipherImp): MyCipher
 }

@@ -18,12 +18,29 @@
         app:showAsAction="always" />
 
     <item
-        android:id="@+id/menu_image"
         android:icon="@drawable/ic_image_white"
         android:orderInCategory="3"
         android:title="@string/image"
         app:showAsAction="always"
-        tools:ignore="AlwaysShowAction" />
+        tools:ignore="AlwaysShowAction">
+
+        <menu>
+            <item
+                android:id="@+id/menu_gallery"
+                android:icon="@drawable/ic_gallery"
+                android:orderInCategory="1"
+                android:title="@string/select_photo"
+                app:showAsAction="never" />
+
+            <item
+                android:id="@+id/menu_take_photo"
+                android:icon="@drawable/ic_add_photo"
+                android:orderInCategory="2"
+                android:title="@string/take_photo"
+                app:showAsAction="never" />
+        </menu>
+
+    </item>
 
     <item
         android:id="@+id/menu_appearance"

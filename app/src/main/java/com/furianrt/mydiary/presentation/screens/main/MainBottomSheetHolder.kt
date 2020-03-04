@@ -8,14 +8,8 @@
  *
  ******************************************************************************/
 
-package com.furianrt.mydiary.presentation.screens.note.fragments.mainnote.reminder
+package com.furianrt.mydiary.presentation.screens.main
 
-import com.furianrt.mydiary.utils.MyRxUtils
-import javax.inject.Inject
-
-class ReminderPresenter @Inject constructor(
-        private val scheduler: MyRxUtils.BaseSchedulerProvider
-) : ReminderContract.Presenter() {
-
-
+interface MainBottomSheetHolder {
+    fun closeBottomSheet()
 }

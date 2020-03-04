@@ -18,7 +18,7 @@ class UpdateProfileUseCase @Inject constructor(
         private val profileGateway: ProfileGateway
 ) {
 
-    fun invoke(syncTime: Long): Completable =
+    operator fun invoke(syncTime: Long): Completable =
             profileGateway.getDbProfile()
                     .firstOrError()
                     .flatMapCompletable { profileGateway.updateProfile(it.apply { lastSyncTime = syncTime }) }

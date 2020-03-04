@@ -19,7 +19,7 @@ class GetMoodsUseCase @Inject constructor(
         private val moodGateway: MoodGateway
 ) {
 
-    fun invoke(): Flowable<List<MyMood>> = moodGateway.getAllMoods()
+    operator fun invoke(): Flowable<List<MyMood>> = moodGateway.getAllMoods()
 
-    fun invoke(moodId: Int): Flowable<MyMood> = moodGateway.getMood(moodId)
+    operator fun invoke(moodId: Int): Flowable<MyMood> = moodGateway.getMood(moodId)
 }

@@ -19,6 +19,6 @@ class ResetNoteSettingsUseCase @Inject constructor(
         private val updateAppearanceUseCase: UpdateAppearanceUseCase
 ) {
 
-    fun invoke(appearanceId: String): Completable =
-            updateAppearanceUseCase.invoke(MyNoteAppearance(appearanceId))
+    operator fun invoke(appearanceId: String): Completable =
+            updateAppearanceUseCase(MyNoteAppearance(appearanceId))
 }

@@ -10,6 +10,7 @@
 
 package com.furianrt.mydiary.presentation.screens.main.fragments.profile.password
 
+import android.content.Context
 import android.os.Bundle
 import android.os.Handler
 import android.view.View
@@ -17,13 +18,12 @@ import android.view.WindowManager
 import com.furianrt.mydiary.R
 import com.furianrt.mydiary.analytics.MyAnalytics
 import com.furianrt.mydiary.presentation.base.BaseFragment
+import com.furianrt.mydiary.presentation.screens.main.MainBottomSheetHolder
 import com.furianrt.mydiary.presentation.screens.main.fragments.profile.ProfileFragment
 import com.furianrt.mydiary.presentation.screens.main.fragments.profile.password.success.PasswordSuccessFragment
 import com.furianrt.mydiary.utils.animateShake
 import com.furianrt.mydiary.utils.hideKeyboard
 import com.furianrt.mydiary.utils.inTransaction
-import com.google.android.material.bottomsheet.BottomSheetBehavior
-import kotlinx.android.synthetic.main.bottom_sheet_main.*
 import kotlinx.android.synthetic.main.fragment_password.*
 import javax.inject.Inject
 
@@ -38,7 +38,9 @@ class PasswordFragment : BaseFragment(R.layout.fragment_password), PasswordContr
     @Inject
     lateinit var presenter: PasswordContract.Presenter
 
+    private var mListener: MainBottomSheetHolder? = null
     private val mHandler = Handler()
+    private val mBottomSheetCloseRunnable: Runnable = Runnable { mListener?.closeBottomSheet() }
     private val mChangeActivityFlag: Runnable = Runnable {
         activity?.window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN)
     }
@@ -127,11 +129,8 @@ class PasswordFragment : BaseFragment(R.layout.fragment_password), PasswordContr
                 }
             }
         }
-        activity?.main_sheet_container?.postDelayed({
-            activity?.let {
-                BottomSheetBehavior.from(it.main_sheet_container).state = BottomSheetBehavior.STATE_COLLAPSED
-            }
-        }, CLOSE_AFTER_DONE_DELAY)
+
+        mHandler.postDelayed(mBottomSheetCloseRunnable, CLOSE_AFTER_DONE_DELAY)
     }
 
     override fun clearErrorMessage() {
@@ -143,8 +142,23 @@ class PasswordFragment : BaseFragment(R.layout.fragment_password), PasswordContr
     }
 
     override fun close() {
-        BottomSheetBehavior.from(requireActivity().main_sheet_container).state =
-                BottomSheetBehavior.STATE_COLLAPSED
+        mListener?.closeBottomSheet()
+    }
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        if (context is MainBottomSheetHolder) {
+            mListener = context
+        } else {
+            throw IllegalStateException()
+        }
+    }
+
+    override fun onDetach() {
+        super.onDetach()
+        mListener = null
+        activity?.currentFocus?.hideKeyboard()
+        activity?.currentFocus?.clearFocus()
     }
 
     override fun onStart() {
@@ -155,12 +169,7 @@ class PasswordFragment : BaseFragment(R.layout.fragment_password), PasswordContr
     override fun onStop() {
         super.onStop()
         mHandler.removeCallbacks(mChangeActivityFlag)
+        mHandler.removeCallbacks(mBottomSheetCloseRunnable)
         presenter.detachView()
-    }
-
-    override fun onDetach() {
-        super.onDetach()
-        activity?.currentFocus?.hideKeyboard()
-        activity?.currentFocus?.clearFocus()
     }
 }

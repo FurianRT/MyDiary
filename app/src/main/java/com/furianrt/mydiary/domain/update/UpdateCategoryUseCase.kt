@@ -22,7 +22,7 @@ class UpdateCategoryUseCase @Inject constructor(
         private val noteGateway: NoteGateway
 ) {
 
-    fun invoke(category: MyCategory): Completable =
+    operator fun invoke(category: MyCategory): Completable =
             categoryGateway.updateCategory(category.apply { syncWith.clear() })
                     .andThen(noteGateway.getAllNotes())
                     .first(emptyList())

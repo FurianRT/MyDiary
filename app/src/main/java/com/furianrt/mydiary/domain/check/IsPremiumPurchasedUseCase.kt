@@ -18,5 +18,5 @@ class IsPremiumPurchasedUseCase @Inject constructor(
         private val deviceGateway: DeviceGateway
 ) {
 
-    fun invoke(): Boolean = deviceGateway.isItemPurchased(BuildConfig.ITEM_PREMIUM_SKU)
+    operator fun invoke(): Boolean = deviceGateway.isItemPurchased(BuildConfig.ITEM_PREMIUM_SKU)
 }

@@ -41,15 +41,17 @@ class AboutProfileFragment : BaseFragment(R.layout.fragment_about_profile), Abou
     }
 
     override fun showProfileInfo(profile: MyProfile, is24TimeFormat: Boolean) {
-        text_registration_date.text =
-                DateTime(profile.creationTime).toString("dd.MM.yyyy", Locale.getDefault())
+        val datePattern = "dd.MM.yyyy"
+        text_registration_date.text = DateTime(profile.creationTime).toString(datePattern, Locale.getDefault())
         val lastSyncTime = profile.lastSyncTime
         if (lastSyncTime == null) {
             text_last_sync_date?.text = getString(R.string.fragment_about_profile_sync_non)
         } else {
-            val syncTimeString = DateTime(lastSyncTime).toString("dd.MM.yyyy", Locale.getDefault()) +
-                    " " + getTime(lastSyncTime, is24TimeFormat)
-            text_last_sync_date.text = syncTimeString
+            text_last_sync_date.text = getString(
+                    R.string.two_strings_pattern,
+                    DateTime(lastSyncTime).toString(datePattern, Locale.getDefault()),
+                    getTime(lastSyncTime, is24TimeFormat)
+            )
         }
     }
 
@@ -60,7 +62,6 @@ class AboutProfileFragment : BaseFragment(R.layout.fragment_about_profile), Abou
     override fun onStart() {
         super.onStart()
         presenter.attachView(this)
-        presenter.onViewStart()
     }
 
     override fun onStop() {

@@ -22,7 +22,7 @@ class SaveTagUseCase @Inject constructor(
 
     class InvalidTagNameException : Throwable()
 
-    fun invoke(name: String): Single<String> {
+    operator fun invoke(name: String): Single<String> {
         val id = generateUniqueId()
         return tagGateway.getAllTags()
                 .first(emptyList())

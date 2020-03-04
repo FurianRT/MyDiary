@@ -19,7 +19,7 @@ class GetTagsUseCase @Inject constructor(
         private val tagGateway: TagGateway
 ) {
 
-    fun invoke(noteId: String): Flowable<List<MyTag>> = tagGateway.getTagsForNote(noteId)
+    operator fun invoke(noteId: String): Flowable<List<MyTag>> = tagGateway.getTagsForNote(noteId)
 
-    fun invoke(): Flowable<List<MyTag>> = tagGateway.getAllTags()
+    operator fun invoke(): Flowable<List<MyTag>> = tagGateway.getAllTags()
 }

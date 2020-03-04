@@ -15,7 +15,7 @@ import javax.inject.Inject
 class AuthPresenter @Inject constructor() : AuthContract.Presenter() {
 
     override fun onButtonCloseClick() {
-        view?.closeSheet()
+        view?.close()
     }
 
     override fun onButtonCreateAccountClick() {

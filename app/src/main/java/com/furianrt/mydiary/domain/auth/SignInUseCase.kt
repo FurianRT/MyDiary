@@ -28,7 +28,7 @@ class SignInUseCase @Inject constructor(
     class InvalidCredentialsException : Throwable()
     class NetworkNotAvailableException : Throwable()
 
-    fun invoke(email: String, password: String): Completable =
+    operator fun invoke(email: String, password: String): Completable =
             Single.fromCallable { deviceGateway.isNetworkAvailable() }
                     .flatMap { networkAvailable ->
                         if (networkAvailable) {

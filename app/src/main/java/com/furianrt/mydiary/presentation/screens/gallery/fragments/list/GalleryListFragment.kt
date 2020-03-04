@@ -13,19 +13,20 @@ package com.furianrt.mydiary.presentation.screens.gallery.fragments.list
 import android.Manifest
 import android.animation.Animator
 import android.app.Activity
-import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
 import android.content.res.Configuration
 import android.graphics.Color
 import android.os.Bundle
 import android.os.Parcelable
+import android.provider.MediaStore
 import android.view.*
 import android.view.animation.AccelerateInterpolator
 import android.view.animation.DecelerateInterpolator
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.view.ActionMode
+import androidx.core.content.FileProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import com.furianrt.mydiary.R
 import com.furianrt.mydiary.analytics.MyAnalytics
@@ -40,7 +41,13 @@ import kotlinx.android.synthetic.main.empty_state_gallery_list.*
 import kotlinx.android.synthetic.main.fragment_gallery_list.*
 import pub.devrel.easypermissions.AfterPermissionGranted
 import pub.devrel.easypermissions.EasyPermissions
+import java.io.File
+import java.io.IOException
+import java.text.SimpleDateFormat
+import java.util.Locale
+import java.util.Date
 import javax.inject.Inject
+import kotlin.collections.ArrayList
 
 class GalleryListFragment : BaseFragment(R.layout.fragment_gallery_list), GalleryListAdapter.OnListItemInteractionListener,
         GalleryListContract.View, ActionMode.Callback, DeleteImageDialog.OnDeleteImageConfirmListener {
@@ -56,7 +63,10 @@ class GalleryListFragment : BaseFragment(R.layout.fragment_gallery_list), Galler
         private const val BUNDLE_SELECTION_ACTIVE = "selection_active"
         private const val BUNDLE_SELECTED_IMAGE_NAMES = "selected_image_names"
         private const val BUNDLE_RECYCLER_VIEW_STATE = "recycler_state"
+        private const val BUNDLE_PHOTO_PATH = "photo_path"
         private const val STORAGE_PERMISSIONS_REQUEST_CODE = 1
+        private const val CAMERA_PERMISSIONS_REQUEST_CODE = 6
+        private const val CAMERA_REQUEST_CODE = 7
         private const val IMAGE_PICKER_REQUEST_CODE = 5
         private const val ITEM_HIDING_ALPHA = 0.5f
         private const val ITEM_DEFAULT_ALPHA = 1f
@@ -83,6 +93,7 @@ class GalleryListFragment : BaseFragment(R.layout.fragment_gallery_list), Galler
     private var mRecyclerViewState: Parcelable? = null
     private var mActionMode: ActionMode? = null
     private var mListener: OnGalleryListInteractionListener? = null
+    private var mPhotoPath: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         getPresenterComponent(requireContext()).inject(this)
@@ -94,6 +105,7 @@ class GalleryListFragment : BaseFragment(R.layout.fragment_gallery_list), Galler
         savedInstanceState?.let {
             mRecyclerViewState = it.getParcelable(BUNDLE_RECYCLER_VIEW_STATE)
             mSelectionActive = it.getBoolean(BUNDLE_SELECTION_ACTIVE, false)
+            mPhotoPath = it.getString(BUNDLE_PHOTO_PATH)
             presenter.onRestoreInstanceState(it.getStringArrayList(BUNDLE_SELECTED_IMAGE_NAMES)?.toSet())
         }
     }
@@ -134,7 +146,7 @@ class GalleryListFragment : BaseFragment(R.layout.fragment_gallery_list), Galler
             mActionMode = (activity as AppCompatActivity).startSupportActionMode(this)
         }
 
-        button_add_images.setOnClickListener { presenter.onButtonAddImageClick() }
+        button_add_images.setOnClickListener { presenter.onButtonSelectImageClick() }
     }
 
     override fun onStart() {
@@ -169,6 +181,7 @@ class GalleryListFragment : BaseFragment(R.layout.fragment_gallery_list), Galler
                 list_gallery.layoutManager?.onSaveInstanceState())
         outState.putStringArrayList(BUNDLE_SELECTED_IMAGE_NAMES, ArrayList(presenter.onSaveInstanceState()))
         outState.putBoolean(BUNDLE_SELECTION_ACTIVE, mSelectionActive)
+        mPhotoPath?.let { outState.putString(BUNDLE_PHOTO_PATH, it) }
     }
 
     override fun showImages(images: List<MyImage>, selectedImageNames: Set<String>) {
@@ -212,9 +225,14 @@ class GalleryListFragment : BaseFragment(R.layout.fragment_gallery_list), Galler
             presenter.onButtonMultiSelectionClick()
             true
         }
-        R.id.menu_add_image -> {
+        R.id.menu_select_photo -> {
             analytics.sendEvent(MyAnalytics.EVENT_NOTE_IMAGE_LIST_IMAGE_ADD)
-            presenter.onButtonAddImageClick()
+            presenter.onButtonSelectImageClick()
+            true
+        }
+        R.id.menu_take_photo -> {
+            analytics.sendEvent(MyAnalytics.EVENT_NOTE_IMAGE_LIST_TAKE_PHOTO)
+            presenter.onButtonTakePhotoClick()
             true
         }
         else -> super.onOptionsItemSelected(item)
@@ -341,6 +359,16 @@ class GalleryListFragment : BaseFragment(R.layout.fragment_gallery_list), Galler
         }
     }
 
+    override fun requestCameraPermissions() {
+        val cameraPermission = Manifest.permission.CAMERA
+        if (EasyPermissions.hasPermissions(requireContext(), cameraPermission)) {
+            presenter.onCameraPermissionsGranted()
+        } else {
+            EasyPermissions.requestPermissions(this, getString(R.string.camera_permission_request),
+                    CAMERA_PERMISSIONS_REQUEST_CODE, cameraPermission)
+        }
+    }
+
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults, this)
@@ -348,7 +376,7 @@ class GalleryListFragment : BaseFragment(R.layout.fragment_gallery_list), Galler
 
     @AfterPermissionGranted(STORAGE_PERMISSIONS_REQUEST_CODE)
     override fun showImageExplorer() {
-        val galleryIntent = Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
+        val galleryIntent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
         galleryIntent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true)
         galleryIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
         if (galleryIntent.resolveActivity(requireActivity().packageManager) != null) {
@@ -358,17 +386,46 @@ class GalleryListFragment : BaseFragment(R.layout.fragment_gallery_list), Galler
                 type = "image/*"
                 putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true)
                 action = Intent.ACTION_GET_CONTENT
-                galleryIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-                try {
+                addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+                if (resolveActivity(requireActivity().packageManager) != null) {
                     startActivityForResult(Intent.createChooser(this, ""), IMAGE_PICKER_REQUEST_CODE)
-                } catch (e: ActivityNotFoundException) {
-                    e.printStackTrace()
+                } else {
                     analytics.sendEvent(MyAnalytics.EVENT_GALLERY_NOT_FOUND_ERROR)
                     Toast.makeText(requireContext(), getString(R.string.phone_related_error), Toast.LENGTH_SHORT).show()
                 }
             }
         }
         mListener?.onGalleryListImagePickerOpen()
+    }
+
+    @AfterPermissionGranted(CAMERA_PERMISSIONS_REQUEST_CODE)
+    override fun showCamera() {
+        Intent(MediaStore.ACTION_IMAGE_CAPTURE).let { takePictureIntent ->
+            takePictureIntent.resolveActivity(requireContext().packageManager)?.also {
+                val photoFile = try {
+                    createImageFile()
+                } catch (e: IOException) {
+                    e.printStackTrace()
+                    null
+                }
+                photoFile?.let { photo ->
+                    val photoURI = FileProvider.getUriForFile(
+                            requireContext(),
+                            "com.furianrt.mydiary.fileprovider",
+                            photo
+                    )
+                    takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI)
+                    startActivityForResult(takePictureIntent, CAMERA_REQUEST_CODE)
+                    mListener?.onGalleryListImagePickerOpen()
+                }
+            }
+        }
+    }
+
+    @Throws(IOException::class)
+    private fun createImageFile(): File {
+        val timeStamp = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.ENGLISH).format(Date())
+        return File.createTempFile(timeStamp, ".jpg").apply { mPhotoPath = absolutePath }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -378,13 +435,16 @@ class GalleryListFragment : BaseFragment(R.layout.fragment_gallery_list), Galler
             val uris = mutableListOf<String>()
             if (clipData != null && clipData.itemCount > 0) {
                 for (i in 0 until clipData.itemCount) {
-                    clipData.getItemAt(i)?.uri?.let {uris.add(it.toString()) }
+                    clipData.getItemAt(i)?.uri?.let { uris.add(it.toString()) }
                 }
             } else {
                 data?.data?.let { uris.add(it.toString()) }
             }
             showLoading()
             presenter.onNoteImagesPicked(uris)
+        } else if (requestCode == CAMERA_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
+            showLoading()
+            presenter.onNewPhotoTaken(mPhotoPath)
         }
     }
 

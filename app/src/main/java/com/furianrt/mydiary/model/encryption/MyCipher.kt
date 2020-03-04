@@ -8,18 +8,9 @@
  *
  ******************************************************************************/
 
-package com.furianrt.mydiary.presentation.screens.note.fragments.mainnote.reminder
+package com.furianrt.mydiary.model.encryption
 
-import com.furianrt.mydiary.presentation.base.BasePresenter
-import com.furianrt.mydiary.presentation.base.BaseView
-
-interface ReminderContract {
-
-    interface View : BaseView {
-
-    }
-
-    abstract class Presenter : BasePresenter<View>() {
-
-    }
+interface MyCipher {
+    fun encryptString(string: String): String
+    fun decryptString(string: String): String
 }

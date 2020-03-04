@@ -14,7 +14,6 @@ interface PreferencesSource {
     fun getPrimaryColor(): Int
     fun getAccentColor(): Int
     fun isWeatherEnabled(): Boolean
-    fun setWeatherEnabled(enabled: Boolean)
     fun getWeatherUnits(): Int
     fun isMapEnabled(): Boolean
     fun setMapEnabled(enabled: Boolean)

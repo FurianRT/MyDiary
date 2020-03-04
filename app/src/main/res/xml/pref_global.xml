@@ -63,7 +63,7 @@
             app:cpv_showColorShades="false"
             app:iconSpaceReserved="false" />
 
-        <com.furianrt.mydiary.presentation.screens.settings.global.FontListPreference
+        <com.furianrt.mydiary.presentation.views.FontListPreference
             android:defaultValue="0"
             android:entries="@array/pref_font_style_titles"
             android:entryValues="@array/pref_font_style_values"

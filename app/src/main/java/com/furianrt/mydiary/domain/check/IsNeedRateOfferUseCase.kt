@@ -21,7 +21,7 @@ class IsNeedRateOfferUseCase @Inject constructor(
 
     private var mIsAlreadyShown = false
 
-    fun invoke(): Boolean {
+    operator fun invoke(): Boolean {
         val need = generalGateway.isRateOfferEnabled()
                 && generalGateway.getNumberOfLaunches() % 5 == 0
                 && !mIsAlreadyShown

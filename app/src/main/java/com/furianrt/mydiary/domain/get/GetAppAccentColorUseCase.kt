@@ -17,5 +17,5 @@ class GetAppAccentColorUseCase @Inject constructor(
         private val generalGateway: GeneralGateway
 ) {
 
-    fun invoke(): Int = generalGateway.getAccentColor()
+    operator fun invoke(): Int = generalGateway.getAccentColor()
 }

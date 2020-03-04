@@ -18,7 +18,7 @@ class CheckLogOutUseCase @Inject constructor(
         private val profileGateway: ProfileGateway
 ) {
 
-    fun invoke(): Completable =
+    operator fun invoke(): Completable =
             profileGateway.getDbProfileCount()
                     .flatMapCompletable { count ->
                         if (profileGateway.isSignedIn() && count == 0) {

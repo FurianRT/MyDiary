@@ -19,7 +19,7 @@ class GetForecastsUseCase @Inject constructor(
         private val forecastGateway: ForecastGateway
 ) {
 
-    fun invoke(noteId: String): Maybe<MyForecast> {
+    operator fun invoke(noteId: String): Maybe<MyForecast> {
         return if (forecastGateway.isWeatherEnabled()) {
             forecastGateway.getAllDbForecasts()
                     .map { forecasts -> forecasts.filter { it.noteId == noteId } }

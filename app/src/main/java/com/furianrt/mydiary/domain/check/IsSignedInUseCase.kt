@@ -17,5 +17,5 @@ class IsSignedInUseCase @Inject constructor(
         private val profileGateway: ProfileGateway
 ) {
 
-    fun invoke(): Boolean = profileGateway.isSignedIn()
+    operator fun invoke(): Boolean = profileGateway.isSignedIn()
 }

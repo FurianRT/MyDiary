@@ -29,7 +29,8 @@ import com.furianrt.mydiary.utils.inTransaction
 import kotlinx.android.synthetic.main.fragment_menu_profile.*
 import javax.inject.Inject
 
-class MenuProfileFragment : BaseFragment(R.layout.fragment_menu_profile), MenuProfileContract.View, View.OnClickListener {
+class MenuProfileFragment : BaseFragment(R.layout.fragment_menu_profile), MenuProfileContract.View,
+        View.OnClickListener {
 
     companion object {
         const val TAG = "MenuProfileFragment"
@@ -42,7 +43,7 @@ class MenuProfileFragment : BaseFragment(R.layout.fragment_menu_profile), MenuPr
         override fun onReceive(context: Context?, intent: Intent?) {
             SyncService.getProgressMessage(intent)?.let {
                 if (it.hasError || it.task == SyncProgressMessage.SYNC_FINISHED) {
-                   button_sign_out?.isEnabled = true
+                    button_sign_out?.isEnabled = true
                 }
             }
         }

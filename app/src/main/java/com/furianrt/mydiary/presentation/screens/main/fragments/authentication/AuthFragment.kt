@@ -20,7 +20,7 @@ import android.view.animation.OvershootInterpolator
 import com.furianrt.mydiary.R
 import com.furianrt.mydiary.analytics.MyAnalytics
 import com.furianrt.mydiary.presentation.base.BaseFragment
-import com.furianrt.mydiary.presentation.screens.main.MainActivity
+import com.furianrt.mydiary.presentation.screens.main.MainBottomSheetHolder
 import com.furianrt.mydiary.presentation.screens.main.fragments.authentication.login.LoginFragment
 import com.furianrt.mydiary.presentation.screens.main.fragments.authentication.registration.RegistrationFragment
 import com.furianrt.mydiary.utils.KeyboardUtils
@@ -43,6 +43,8 @@ class AuthFragment : BaseFragment(R.layout.fragment_auth), AuthContract.View {
 
     @Inject
     lateinit var presenter: AuthContract.Presenter
+
+    private var mListener: MainBottomSheetHolder? = null
 
     private val mOnKeyboardToggleListener = object : KeyboardUtils.SoftKeyboardToggleListener {
         override fun onToggleSoftKeyboard(isVisible: Boolean) {
@@ -98,8 +100,26 @@ class AuthFragment : BaseFragment(R.layout.fragment_auth), AuthContract.View {
         hideRegistrationButton()
     }
 
-    override fun closeSheet() {
-        (activity as? MainActivity?)?.closeBottomSheet()
+    override fun close() {
+        mListener?.closeBottomSheet()
+    }
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        if (context is MainBottomSheetHolder) {
+            mListener = context
+        } else {
+            throw IllegalStateException()
+        }
+        activity?.window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING)
+    }
+
+    override fun onDetach() {
+        super.onDetach()
+        activity?.window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING)
+        activity?.currentFocus?.hideKeyboard()
+        activity?.currentFocus?.clearFocus()
+        mListener = null
     }
 
     override fun onStart() {
@@ -112,16 +132,6 @@ class AuthFragment : BaseFragment(R.layout.fragment_auth), AuthContract.View {
         super.onStop()
         KeyboardUtils.removeKeyboardToggleListener(mOnKeyboardToggleListener)
         presenter.detachView()
-    }
-
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-        activity?.window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING)
-    }
-
-    override fun onDetach() {
-        super.onDetach()
-        activity?.window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING)
     }
 
     fun showRegistrationButton() {
@@ -151,13 +161,13 @@ class AuthFragment : BaseFragment(R.layout.fragment_auth), AuthContract.View {
     fun isBackStackEmpty() = childFragmentManager.backStackEntryCount == 0
 
     fun pushContainerUp() {
-        if (auth_container.translationY == 0f) {
+        if (auth_container?.translationY == 0f) {
             auth_container
-                    .animate()
-                    .translationY(-auth_container.y)
-                    .setDuration(ANIMATION_CONTAINER_DURATION)
-                    .setInterpolator(OvershootInterpolator())
-                    .setListener(object : Animator.AnimatorListener {
+                    ?.animate()
+                    ?.translationY(-auth_container.y)
+                    ?.setDuration(ANIMATION_CONTAINER_DURATION)
+                    ?.setInterpolator(OvershootInterpolator())
+                    ?.setListener(object : Animator.AnimatorListener {
                         override fun onAnimationRepeat(animation: Animator?) {}
                         override fun onAnimationCancel(animation: Animator?) {}
                         override fun onAnimationStart(animation: Animator?) {}
@@ -167,11 +177,6 @@ class AuthFragment : BaseFragment(R.layout.fragment_auth), AuthContract.View {
                         }
                     })
         }
-    }
-
-    fun clearFocus() {
-        activity?.currentFocus?.hideKeyboard()
-        activity?.currentFocus?.clearFocus()
     }
 
     fun enableSignUpButton(enable: Boolean) {

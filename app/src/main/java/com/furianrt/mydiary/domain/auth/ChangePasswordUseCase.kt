@@ -36,7 +36,7 @@ class ChangePasswordUseCase @Inject constructor(
         private const val PASSWORD_MIN_LENGTH = 6
     }
 
-    fun invoke(oldPassword: String, newPassword: String, repeatPassword: String): Completable =
+    operator fun invoke(oldPassword: String, newPassword: String, repeatPassword: String): Completable =
             Single.fromCallable { deviceGateway.isNetworkAvailable() }
                     .flatMap { networkAvailable ->
                         if (networkAvailable) {

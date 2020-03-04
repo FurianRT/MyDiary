@@ -16,7 +16,7 @@ import com.furianrt.mydiary.utils.MyRxUtils
 import javax.inject.Inject
 
 class TagEditPresenter @Inject constructor(
-        private val updateTag: UpdateTagUseCase,
+        private val updateTagUseCase: UpdateTagUseCase,
         private val scheduler: MyRxUtils.BaseSchedulerProvider
 ) : TagEditContract.Presenter() {
 
@@ -39,7 +39,7 @@ class TagEditPresenter @Inject constructor(
         if (newTagName.isBlank()) {
             view?.showErrorEmptyTagName()
         } else {
-            addDisposable(updateTag.invoke(mTag.apply { name = newTagName })
+            addDisposable(updateTagUseCase(mTag.apply { name = newTagName })
                     .observeOn(scheduler.ui())
                     .subscribe({
                         view?.closeView()

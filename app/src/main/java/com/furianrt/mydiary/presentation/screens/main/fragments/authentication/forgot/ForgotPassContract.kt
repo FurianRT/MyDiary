@@ -23,6 +23,7 @@ interface ForgotPassContract {
         fun hideLoading()
         fun showEmailSent()
         fun showErrorNetworkConnection()
+        fun showErrorEmailDoNotExist()
     }
 
     abstract class Presenter : BasePresenter<View>() {

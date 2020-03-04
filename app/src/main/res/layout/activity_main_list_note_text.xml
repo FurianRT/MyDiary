@@ -90,7 +90,7 @@
             android:layout_width="70dp"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
-            android:paddingBottom="8dp"
+            android:paddingBottom="12dp"
             android:src="@drawable/ic_cloud_done"
             android:visibility="gone"
             tools:ignore="ContentDescription"

@@ -16,8 +16,8 @@ import com.furianrt.mydiary.utils.MyRxUtils
 import javax.inject.Inject
 
 class PasswordPresenter @Inject constructor(
-        private val changePassword: ChangePasswordUseCase,
-        private val signOut: SignOutUseCase,
+        private val changePasswordUseCase: ChangePasswordUseCase,
+        private val signOutUseCase: SignOutUseCase,
         private val scheduler: MyRxUtils.BaseSchedulerProvider
 ) : PasswordContract.Presenter() {
 
@@ -33,7 +33,7 @@ class PasswordPresenter @Inject constructor(
 
     private fun changePassword(oldPassword: String, newPassword: String, repeatPassword: String) {
         view?.showLoading()
-        addDisposable(changePassword.invoke(oldPassword, newPassword, repeatPassword)
+        addDisposable(changePasswordUseCase(oldPassword, newPassword, repeatPassword)
                 .observeOn(scheduler.ui())
                 .subscribe({
                     view?.hideLoading()
@@ -64,7 +64,7 @@ class PasswordPresenter @Inject constructor(
     }
 
     private fun signOut() {
-        addDisposable(signOut.invoke()
+        addDisposable(signOutUseCase()
                 .observeOn(scheduler.ui())
                 .subscribe {
                     view?.close()

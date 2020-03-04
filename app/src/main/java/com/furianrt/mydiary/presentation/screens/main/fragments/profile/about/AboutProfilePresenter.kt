@@ -16,16 +16,17 @@ import com.furianrt.mydiary.utils.MyRxUtils
 import javax.inject.Inject
 
 class AboutProfilePresenter @Inject constructor(
-        private val getProfile: GetProfileUseCase,
-        private val getTimeFormat: GetTimeFormatUseCase,
+        private val getProfileUseCase: GetProfileUseCase,
+        private val getTimeFormatUseCase: GetTimeFormatUseCase,
         private val scheduler: MyRxUtils.BaseSchedulerProvider
 ) : AboutProfileContract.Presenter() {
 
-    override fun onViewStart() {
-        addDisposable(getProfile.invoke()
+    override fun attachView(view: AboutProfileContract.View) {
+        super.attachView(view)
+        addDisposable(getProfileUseCase()
                 .observeOn(scheduler.ui())
                 .subscribe { profile ->
-                    view?.showProfileInfo(profile, getTimeFormat.invoke() == GetTimeFormatUseCase.TIME_FORMAT_24)
+                    view.showProfileInfo(profile, getTimeFormatUseCase() == GetTimeFormatUseCase.TIME_FORMAT_24)
                 })
     }
 

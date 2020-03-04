@@ -23,7 +23,7 @@ class GetDailyImageUseCase @Inject constructor(
         private val deviceGateway: DeviceGateway
 ) {
 
-    fun invoke(): Single<MyHeaderImage> {
+    operator fun invoke(): Single<MyHeaderImage> {
         val category = imageGateway.getDailyImageCategory()
         val networkAvailable = deviceGateway.isNetworkAvailable()
         return imageGateway.getHeaderImages()

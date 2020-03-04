@@ -17,5 +17,5 @@ class IsMoodEnabledUseCase @Inject constructor(
         private val moodGateway: MoodGateway
 ) {
 
-    fun invoke(): Boolean = moodGateway.isMoodEnabled()
+    operator fun invoke(): Boolean = moodGateway.isMoodEnabled()
 }

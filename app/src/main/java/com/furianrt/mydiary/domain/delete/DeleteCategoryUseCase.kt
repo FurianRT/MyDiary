@@ -19,6 +19,6 @@ class DeleteCategoryUseCase @Inject constructor(
         private val categoryGateway: CategoryGateway
 ) {
 
-    fun invoke(category: MyCategory): Completable =
+    operator fun invoke(category: MyCategory): Completable =
             categoryGateway.deleteCategory(category)
 }

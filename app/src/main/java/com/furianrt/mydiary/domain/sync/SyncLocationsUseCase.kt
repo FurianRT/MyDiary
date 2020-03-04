@@ -21,7 +21,7 @@ class SyncLocationsUseCase @Inject constructor(
     class SyncLocationsException : Throwable()
     class SyncNoteLocationsException : Throwable()
 
-    fun invoke(email: String): Completable =
+    operator fun invoke(email: String): Completable =
             Completable.concat(listOf(syncLocations(email), syncNoteLocations(email)))
 
     private fun syncLocations(email: String): Completable =

@@ -18,6 +18,6 @@ class SignUpUseCase @Inject constructor(
         private val profileGateway: ProfileGateway
 ) {
 
-    fun invoke(email: String, password: String): Completable =
+    operator fun invoke(email: String, password: String): Completable =
             profileGateway.signUp(email, password)
 }

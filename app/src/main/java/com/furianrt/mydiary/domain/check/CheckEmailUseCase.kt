@@ -15,6 +15,6 @@ import javax.inject.Inject
 
 class CheckEmailUseCase @Inject constructor() {
 
-    fun invoke(email: String): Boolean =
+    operator fun invoke(email: String): Boolean =
             email.isNotEmpty() && Patterns.EMAIL_ADDRESS.matcher(email).matches()
 }

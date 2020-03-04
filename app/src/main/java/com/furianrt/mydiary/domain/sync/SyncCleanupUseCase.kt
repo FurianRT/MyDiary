@@ -34,7 +34,7 @@ class SyncCleanupUseCase @Inject constructor(
 
     class SyncCleanupException : Throwable()
 
-    fun invoke(): Completable =
+    operator fun invoke(): Completable =
             noteGateway.cleanupNotes()
                     .andThen(appearanceGateway.cleanupAppearances())
                     .andThen(categoryGateway.cleanupCategories())

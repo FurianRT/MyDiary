@@ -20,7 +20,7 @@ class SyncNotesUseCase @Inject constructor(
 
     class SyncNotesException : Throwable()
 
-    fun invoke(email: String): Completable =
+    operator fun invoke(email: String): Completable =
             noteGateway.getAllNotes()
                     .first(emptyList())
                     .map { notes -> notes.filter { !it.isSync(email) } }

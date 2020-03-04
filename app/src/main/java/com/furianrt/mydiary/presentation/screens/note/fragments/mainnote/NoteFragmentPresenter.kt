@@ -29,28 +29,28 @@ import javax.inject.Inject
 import kotlin.collections.ArrayList
 
 class NoteFragmentPresenter @Inject constructor(
-        private val getImages: GetImagesUseCase,
-        private val getTagsWithAppearance: GetTagsWithAppearanceUseCase,
-        private val getNotes: GetNotesUseCase,
-        private val getNotesWithSpans: GetNotesWithSpansUseCase,
-        private val getTimeFormat: GetTimeFormatUseCase,
-        private val getAppearance: GetAppearanceUseCase,
-        private val getWeatherUnits: GetWeatherUnitsUseCase,
-        private val saveImages: SaveImagesUseCase,
-        private val updateNote: UpdateNoteUseCase,
-        private val getCategories: GetCategoriesUseCase,
-        private val saveLocation: SaveLocationUseCase,
-        private val isMoodEnabled: IsMoodEnabledUseCase,
-        private val getMoods: GetMoodsUseCase,
-        private val getFullNotes: GetFullNotesUseCase,
-        private val getLocations: GetLocationsUseCase,
-        private val getForecasts: GetForecastsUseCase,
-        private val addForecast: AddForecastUseCase,
-        private val isLocationEnabled: IsLocationEnabledUseCase,
-        private val isForecastEnabled: IsForecastEnabledUseCase,
-        private val findLocation: FindLocationUseCase,
-        private val isPanoramaEnabled: IsPanoramaEnabledUseCase,
-        private val disableLocation: DisableLocationUseCase,
+        private val getImagesUseCase: GetImagesUseCase,
+        private val getTagsWithAppearanceUseCase: GetTagsWithAppearanceUseCase,
+        private val getNotesUseCase: GetNotesUseCase,
+        private val getNotesWithSpansUseCase: GetNotesWithSpansUseCase,
+        private val getTimeFormatUseCase: GetTimeFormatUseCase,
+        private val getAppearanceUseCase: GetAppearanceUseCase,
+        private val getWeatherUnitsUseCase: GetWeatherUnitsUseCase,
+        private val saveImagesUseCase: SaveImagesUseCase,
+        private val updateNoteUseCase: UpdateNoteUseCase,
+        private val getCategoriesUseCase: GetCategoriesUseCase,
+        private val saveLocationUseCase: SaveLocationUseCase,
+        private val isMoodEnabledUseCase: IsMoodEnabledUseCase,
+        private val getMoodsUseCase: GetMoodsUseCase,
+        private val getFullNotesUseCase: GetFullNotesUseCase,
+        private val getLocationsUseCase: GetLocationsUseCase,
+        private val getForecastsUseCase: GetForecastsUseCase,
+        private val addForecastUseCase: AddForecastUseCase,
+        private val isLocationEnabledUseCase: IsLocationEnabledUseCase,
+        private val isForecastEnabledUseCase: IsForecastEnabledUseCase,
+        private val findLocationUseCase: FindLocationUseCase,
+        private val isPanoramaEnabledUseCase: IsPanoramaEnabledUseCase,
+        private val disableLocationUseCase: DisableLocationUseCase,
         private val scheduler: MyRxUtils.BaseSchedulerProvider
 ) : NoteFragmentContract.Presenter() {
 
@@ -92,13 +92,9 @@ class NoteFragmentPresenter @Inject constructor(
         view?.showCategoriesView(mNoteId)
     }
 
-    override fun onReminderFieldClick() {
-        view?.showReminderView(mNoteId)
-    }
-
     private fun loadImages() {
-        addDisposable(getImages.invoke(mNoteId)
-                .map { Pair(it, isPanoramaEnabled.invoke()) }
+        addDisposable(getImagesUseCase(mNoteId)
+                .map { Pair(it, isPanoramaEnabledUseCase()) }
                 .observeOn(scheduler.ui())
                 .subscribe { imagesAndPanorama ->
                     if (imagesAndPanorama.first.isEmpty()) {
@@ -110,7 +106,7 @@ class NoteFragmentPresenter @Inject constructor(
     }
 
     private fun loadTags() {
-        addDisposable(getTagsWithAppearance.invoke(mNoteId)
+        addDisposable(getTagsWithAppearanceUseCase(mNoteId)
                 .observeOn(scheduler.ui())
                 .subscribe { tagsAndAppearance ->
                     if (tagsAndAppearance.tags.isEmpty()) {
@@ -122,7 +118,7 @@ class NoteFragmentPresenter @Inject constructor(
     }
 
     private fun loadNote() {
-        addDisposable(getNotesWithSpans.invoke(mNoteId)
+        addDisposable(getNotesWithSpansUseCase(mNoteId)
                 .observeOn(scheduler.ui())
                 .subscribe { note ->
                     if (note.isPresent) {
@@ -132,7 +128,7 @@ class NoteFragmentPresenter @Inject constructor(
                         view?.showNoteText(note.get().note.title, note.get().note.content, note.get().textSpans)
                         view?.showDateAndTime(
                                 note.get().note.time,
-                                getTimeFormat.invoke() == GetTimeFormatUseCase.TIME_FORMAT_24
+                                getTimeFormatUseCase() == GetTimeFormatUseCase.TIME_FORMAT_24
                         )
                         showNoteMood(note.get().note.moodId)
                     }
@@ -140,7 +136,7 @@ class NoteFragmentPresenter @Inject constructor(
     }
 
     private fun loadNoteAppearance() {
-        addDisposable(getAppearance.invoke(mNoteId)
+        addDisposable(getAppearanceUseCase(mNoteId)
                 .observeOn(scheduler.ui())
                 .subscribe({ appearance ->
                     view?.updateNoteAppearance(appearance)
@@ -150,37 +146,37 @@ class NoteFragmentPresenter @Inject constructor(
     }
 
     private fun showForecast() {
-        addDisposable(getForecasts.invoke(mNoteId)
+        addDisposable(getForecastsUseCase(mNoteId)
                 .observeOn(scheduler.ui())
                 .subscribe { view?.showForecast(getWeatherTemp(it), it.icon) })
     }
 
     private fun showLocation(location: MyLocation) {
-        if (isLocationEnabled.invoke()) {
+        if (isLocationEnabledUseCase()) {
             view?.showLocation(location)
         }
     }
 
     private fun loadLocation() {
-        addDisposable(getLocations.invoke(mNoteId)
+        addDisposable(getLocationsUseCase(mNoteId)
                 .first(emptyList())
                 .observeOn(scheduler.ui())
                 .subscribe { locations ->
                     if (locations.isNotEmpty()) {
                         showLocation(locations.first())
                         showForecast()
-                    } else if (mIsNewNote && isLocationEnabled.invoke()) {
+                    } else if (mIsNewNote && isLocationEnabledUseCase()) {
                         view?.requestLocationPermissions()
                     }
                 })
     }
 
     override fun onLocationPermissionsGranted() {
-        addDisposable(findLocation.invoke()
+        addDisposable(findLocationUseCase()
                 .observeOn(scheduler.ui())
                 .subscribe({ location ->
                     addLocation(location)
-                    if (isForecastEnabled.invoke()) {
+                    if (isForecastEnabledUseCase()) {
                         addForecastToNote(location.lat, location.lon)
                     }
                 }, { error ->
@@ -189,15 +185,15 @@ class NoteFragmentPresenter @Inject constructor(
     }
 
     override fun onLocationPermissionDenied() {
-        disableLocation.invoke()
+        disableLocationUseCase()
     }
 
     private fun showNoteMood(moodId: Int) {
-        if (isMoodEnabled.invoke()) {
+        if (isMoodEnabledUseCase()) {
             if (moodId == 0) {
                 view?.showNoMoodMessage()
             } else {
-                addDisposable(getMoods.invoke(moodId)
+                addDisposable(getMoodsUseCase(moodId)
                         .firstOrError()
                         .observeOn(scheduler.ui())
                         .subscribe { mood -> view?.showMood(mood) })
@@ -206,7 +202,7 @@ class NoteFragmentPresenter @Inject constructor(
     }
 
     private fun loadNoteCategory() {
-        addDisposable(getCategories.invoke(mNoteId)
+        addDisposable(getCategoriesUseCase(mNoteId)
                 .observeOn(scheduler.ui())
                 .subscribe { category ->
                     if (category.isPresent) {
@@ -218,7 +214,7 @@ class NoteFragmentPresenter @Inject constructor(
     }
 
     private fun addForecastToNote(latitude: Double, longitude: Double) {
-        addDisposable(addForecast.invoke(mNoteId, latitude, longitude)
+        addDisposable(addForecastUseCase(mNoteId, latitude, longitude)
                 .observeOn(scheduler.ui())
                 .subscribe({ forecast ->
                     view?.showForecast(getWeatherTemp(forecast), forecast.icon)
@@ -229,7 +225,7 @@ class NoteFragmentPresenter @Inject constructor(
     }
 
     private fun getWeatherTemp(forecast: MyForecast): String =
-            when (getWeatherUnits.invoke()) {
+            when (getWeatherUnitsUseCase()) {
                 GetWeatherUnitsUseCase.UNITS_CELSIUS -> "${forecast.temp.toInt()} °C"
                 GetWeatherUnitsUseCase.UNITS_FAHRENHEIT -> "${(forecast.temp * 1.8 + 32).toInt()} °F"
                 else -> throw IllegalStateException()
@@ -237,27 +233,53 @@ class NoteFragmentPresenter @Inject constructor(
 
     private fun addLocation(location: MyLocation) {
         Log.e(TAG, "insertLocation")
-        addDisposable(saveLocation.invoke(mNoteId, location)
+        addDisposable(saveLocationUseCase(mNoteId, location)
                 .observeOn(scheduler.ui())
                 .subscribe { showLocation(location) })
     }
 
-    override fun onButtonAddImageClick() {
+    override fun onButtonSelectPhotoClick() {
         view?.requestStoragePermissions()
+    }
+
+    override fun onButtonTakePhotoClick() {
+        view?.requestCameraPermissions()
     }
 
     override fun onStoragePermissionsGranted() {
         view?.showImageExplorer()
     }
 
+    override fun onCameraPermissionsGranted() {
+        view?.showCamera()
+    }
+
     override fun onNoteImagesPicked(imageUrls: List<String>) {
-        addDisposable(saveImages.invoke(mNoteId, imageUrls)
+        addDisposable(saveImagesUseCase(mNoteId, imageUrls)
                 .observeOn(scheduler.ui())
                 .subscribe({
                     view?.hideLoading()
                 }, { error ->
                     error.printStackTrace()
                     view?.showErrorSaveImage()
+                    view?.hideLoading()
+                }))
+    }
+
+    override fun onNewPhotoTaken(photoPath: String?) {
+        if (photoPath == null) {
+            view?.showErrorSaveImage()
+            view?.hideLoading()
+            return
+        }
+        addDisposable(saveImagesUseCase(mNoteId, photoPath)
+                .observeOn(scheduler.ui())
+                .subscribe({
+                    view?.hideLoading()
+                }, { error ->
+                    error.printStackTrace()
+                    view?.showErrorSaveImage()
+                    view?.hideLoading()
                 }))
     }
 
@@ -274,7 +296,7 @@ class NoteFragmentPresenter @Inject constructor(
     }
 
     override fun onDateFieldClick() {
-        addDisposable(getNotes.invoke(mNoteId)
+        addDisposable(getNotesUseCase(mNoteId)
                 .map { it.get() }
                 .firstOrError()
                 .observeOn(scheduler.ui())
@@ -285,7 +307,7 @@ class NoteFragmentPresenter @Inject constructor(
     }
 
     override fun onDateSelected(year: Int, monthOfYear: Int, dayOfMonth: Int) {
-        addDisposable(getNotes.invoke(mNoteId)
+        addDisposable(getNotesUseCase(mNoteId)
                 .map { it.get() }
                 .firstOrError()
                 .flatMapCompletable { note ->
@@ -293,14 +315,14 @@ class NoteFragmentPresenter @Inject constructor(
                             .withYear(year)
                             .withMonthOfYear(monthOfYear + 1)
                             .withDayOfMonth(dayOfMonth)
-                    updateNote.invoke(note.apply { time = date.millis })
+                    updateNoteUseCase(note.apply { time = date.millis })
                 }
                 .observeOn(scheduler.ui())
                 .subscribe())
     }
 
     override fun onTimeFieldClick() {
-        addDisposable(getNotes.invoke(mNoteId)
+        addDisposable(getNotesUseCase(mNoteId)
                 .map { it.get() }
                 .firstOrError()
                 .observeOn(scheduler.ui())
@@ -309,13 +331,13 @@ class NoteFragmentPresenter @Inject constructor(
                     view?.showTimePicker(
                             date.hourOfDay,
                             date.minuteOfHour,
-                            getTimeFormat.invoke() == GetTimeFormatUseCase.TIME_FORMAT_24
+                            getTimeFormatUseCase() == GetTimeFormatUseCase.TIME_FORMAT_24
                     )
                 })
     }
 
     override fun onTimeSelected(hourOfDay: Int, minute: Int) {
-        addDisposable(getNotes.invoke(mNoteId)
+        addDisposable(getNotesUseCase(mNoteId)
                 .map { note ->
                     if (note.isPresent) {
                         note.get()
@@ -328,7 +350,7 @@ class NoteFragmentPresenter @Inject constructor(
                     val date = DateTime(note.time)
                             .withHourOfDay(hourOfDay)
                             .withMinuteOfHour(minute)
-                    updateNote.invoke(note.apply { time = date.millis })
+                    updateNoteUseCase(note.apply { time = date.millis })
                 }
                 .observeOn(scheduler.ui())
                 .subscribe())
@@ -417,13 +439,13 @@ class NoteFragmentPresenter @Inject constructor(
             else ->
                 "$curContent $recordedText"
         }
-        addDisposable(updateNote.invoke(mNoteId, curTitle, content)
+        addDisposable(updateNoteUseCase(mNoteId, curTitle, content)
                 .observeOn(scheduler.ui())
                 .subscribe { onNoteTextChange(curTitle, content, textSpans) })
     }
 
     override fun onButtonShareClick() {
-        addDisposable(getFullNotes.invoke(mNoteId)
+        addDisposable(getFullNotesUseCase(mNoteId)
                 .firstOrError()
                 .observeOn(scheduler.ui())
                 .subscribe { note ->

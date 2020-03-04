@@ -18,6 +18,6 @@ class DeleteImagesUseCase @Inject constructor(
         private val imageGateway: ImageGateway
 ) {
 
-    fun invoke(imageNames: List<String>): Completable =
+    operator fun invoke(imageNames: List<String>): Completable =
             imageGateway.deleteImage(imageNames)
 }

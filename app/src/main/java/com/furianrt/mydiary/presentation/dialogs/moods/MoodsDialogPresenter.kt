@@ -21,9 +21,9 @@ import io.reactivex.functions.BiFunction
 import javax.inject.Inject
 
 class MoodsDialogPresenter @Inject constructor(
-        private val getMoods: GetMoodsUseCase,
-        private val updateNote: UpdateNoteUseCase,
-        private val getNotes: GetNotesUseCase,
+        private val getMoodsUseCase: GetMoodsUseCase,
+        private val updateNoteUseCase: UpdateNoteUseCase,
+        private val getNotesUseCase: GetNotesUseCase,
         private val scheduler: MyRxUtils.BaseSchedulerProvider
 ) : MoodsDialogContract.Presenter() {
 
@@ -32,8 +32,8 @@ class MoodsDialogPresenter @Inject constructor(
     override fun attachView(view: MoodsDialogContract.View) {
         super.attachView(view)
         addDisposable(Flowable.combineLatest(
-                getMoods.invoke(),
-                getNotes.invoke().firstOrError().toFlowable(),
+                getMoodsUseCase(),
+                getNotesUseCase().firstOrError().toFlowable(),
                 BiFunction<List<MyMood>, List<MyNote>, MoodsAndNotes> { moods, notes ->
                     MoodsAndNotes(moods, notes)
                 }
@@ -43,13 +43,13 @@ class MoodsDialogPresenter @Inject constructor(
     }
 
     override fun onButtonNoMoodClick(noteId: String) {
-        addDisposable(updateNote.invoke(noteId, 0)
+        addDisposable(updateNoteUseCase(noteId, 0)
                 .observeOn(scheduler.ui())
                 .subscribe { view?.closeView() })
     }
 
     override fun onMoodPicked(noteId: String, mood: MyMood) {
-        addDisposable(updateNote.invoke(noteId, mood.id)
+        addDisposable(updateNoteUseCase(noteId, mood.id)
                 .observeOn(scheduler.ui())
                 .subscribe { view?.closeView() })
     }

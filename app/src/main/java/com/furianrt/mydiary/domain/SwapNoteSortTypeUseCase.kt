@@ -16,7 +16,7 @@ import javax.inject.Inject
 class SwapNoteSortTypeUseCase @Inject constructor(
         private val noteGateway: NoteGateway
 ) {
-    fun invoke() {
+    operator fun invoke() {
         noteGateway.setSortDesc(!noteGateway.isSortDesc())
     }
 }

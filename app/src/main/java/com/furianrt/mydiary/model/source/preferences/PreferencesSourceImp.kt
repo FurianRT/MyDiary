@@ -17,7 +17,6 @@ import com.furianrt.mydiary.di.application.modules.app.AppContext
 import com.furianrt.mydiary.utils.getColorCompat
 import com.furianrt.mydiary.utils.getThemeAccentColor
 import com.furianrt.mydiary.utils.getThemePrimaryColor
-import org.joda.time.DateTime
 import javax.inject.Inject
 
 class PreferencesSourceImp @Inject constructor(
@@ -37,10 +36,6 @@ class PreferencesSourceImp @Inject constructor(
 
     override fun isWeatherEnabled(): Boolean =
             mPrefs.getBoolean(PreferencesSource.WEATHER_AVAILABILITY, true)
-
-    override fun setWeatherEnabled(enabled: Boolean) {
-        mPrefs.edit().putBoolean(PreferencesSource.WEATHER_AVAILABILITY, enabled).apply()
-    }
 
     override fun isMapEnabled(): Boolean =
             mPrefs.getBoolean(PreferencesSource.MAP_AVAILABILITY, true)
@@ -150,7 +145,7 @@ class PreferencesSourceImp @Inject constructor(
     }
 
     override fun getLastAppLaunchTime(): Long =
-            mPrefs.getLong(PreferencesSource.LAST_APP_LAUNCH_TIME, DateTime.now().millis)
+            mPrefs.getLong(PreferencesSource.LAST_APP_LAUNCH_TIME, System.currentTimeMillis())
 
     override fun getDailyImageCategory(): String =
             mPrefs.getString(PreferencesSource.DAILY_IMAGE_CATEGORY, PreferencesSource.DAILY_IMAGE_CATEGORY_DEFAULT)

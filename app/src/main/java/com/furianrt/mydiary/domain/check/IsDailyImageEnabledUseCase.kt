@@ -17,5 +17,5 @@ class IsDailyImageEnabledUseCase @Inject constructor(
         private val imageGateway: ImageGateway
 ) {
 
-    fun invoke(): Boolean = imageGateway.isDailyImageEnabled()
+    operator fun invoke(): Boolean = imageGateway.isDailyImageEnabled()
 }

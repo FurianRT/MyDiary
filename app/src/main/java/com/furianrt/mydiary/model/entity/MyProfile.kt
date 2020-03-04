@@ -15,7 +15,6 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import kotlinx.android.parcel.Parcelize
-import org.joda.time.DateTime
 
 @Parcelize
 @Entity(tableName = MyProfile.TABLE_NAME)
@@ -23,7 +22,7 @@ data class MyProfile(
         @PrimaryKey(autoGenerate = false) @ColumnInfo(name = FIELD_ID) var id: String = "",
         @ColumnInfo(name = FIELD_EMAIL) var email: String = "",
         @ColumnInfo(name = FIELD_PHOTO_URL) var photoUrl: String? = null,
-        @ColumnInfo(name = FIELD_CREATION_TIME) var creationTime: Long = DateTime.now().millis,
+        @ColumnInfo(name = FIELD_CREATION_TIME) var creationTime: Long = System.currentTimeMillis(),
         @ColumnInfo(name = FIELD_LAST_SYNC_TIME) var lastSyncTime: Long? = null
 ) : Parcelable {
 

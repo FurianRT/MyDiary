@@ -24,7 +24,7 @@ class GetTagsWithAppearanceUseCase @Inject constructor(
         private val appearanceGateway: AppearanceGateway
 ) {
 
-    fun invoke(noteId: String): Flowable<TagsAndAppearance> =
+    operator fun invoke(noteId: String): Flowable<TagsAndAppearance> =
             Flowable.combineLatest(tagGateway.getTagsForNote(noteId),
                     appearanceGateway.getNoteAppearance(noteId),
                     BiFunction<List<MyTag>, MyNoteAppearance, TagsAndAppearance> { tags, appearance ->

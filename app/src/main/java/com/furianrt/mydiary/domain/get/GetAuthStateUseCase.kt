@@ -23,7 +23,7 @@ class GetAuthStateUseCase @Inject constructor(
         const val STATE_SIGN_IN = 1
     }
 
-    fun invoke(): Observable<Int> = profileGateway.observeAuthState()
+    operator fun invoke(): Observable<Int> = profileGateway.observeAuthState()
             .map { state ->
                 when (state) {
                     ProfileGateway.SIGN_STATE_SIGN_OUT -> STATE_SIGN_OUT

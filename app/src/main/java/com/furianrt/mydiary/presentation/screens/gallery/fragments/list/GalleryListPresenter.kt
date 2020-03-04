@@ -18,9 +18,9 @@ import com.furianrt.mydiary.utils.MyRxUtils
 import javax.inject.Inject
 
 class GalleryListPresenter @Inject constructor(
-        private val getImages: GetImagesUseCase,
-        private val updateImage: UpdateImageUseCase,
-        private val saveImages: SaveImagesUseCase,
+        private val getImagesUseCase: GetImagesUseCase,
+        private val updateImageUseCase: UpdateImageUseCase,
+        private val saveImagesUseCase: SaveImagesUseCase,
         private val scheduler: MyRxUtils.BaseSchedulerProvider
 ) : GalleryListContract.Presenter() {
 
@@ -56,7 +56,7 @@ class GalleryListPresenter @Inject constructor(
     }
 
     private fun loadImages(noteId: String) {
-        addDisposable(getImages.invoke(noteId)
+        addDisposable(getImagesUseCase(noteId)
                 .observeOn(scheduler.ui())
                 .subscribe { images ->
                     view?.showSelectedImageCount(mSelectedImageNames.size)
@@ -71,7 +71,7 @@ class GalleryListPresenter @Inject constructor(
     }
 
     override fun onImagesOrderChange(images: List<MyImage>) {
-        addDisposable(updateImage.invoke(images)
+        addDisposable(updateImageUseCase(images)
                 .observeOn(scheduler.ui())
                 .subscribe())
     }
@@ -95,7 +95,7 @@ class GalleryListPresenter @Inject constructor(
     }
 
     override fun onButtonCabSelectAllClick() {
-        addDisposable(getImages.invoke(mNoteId)
+        addDisposable(getImagesUseCase(mNoteId)
                 .first(emptyList())
                 .observeOn(scheduler.ui())
                 .subscribe { images ->
@@ -121,7 +121,7 @@ class GalleryListPresenter @Inject constructor(
 
     override fun onSaveInstanceState() = mSelectedImageNames
 
-    override fun onButtonAddImageClick() {
+    override fun onButtonSelectImageClick() {
         view?.requestStoragePermissions()
     }
 
@@ -129,8 +129,12 @@ class GalleryListPresenter @Inject constructor(
         view?.showImageExplorer()
     }
 
+    override fun onCameraPermissionsGranted() {
+        view?.showCamera()
+    }
+
     override fun onNoteImagesPicked(imageUrls: List<String>) {
-        addDisposable(saveImages.invoke(mNoteId, imageUrls)
+        addDisposable(saveImagesUseCase(mNoteId, imageUrls)
                 .observeOn(scheduler.ui())
                 .subscribe({
                     view?.hideLoading()
@@ -143,5 +147,26 @@ class GalleryListPresenter @Inject constructor(
 
     override fun onImageTrashed(image: MyImage) {
         view?.showDeleteConfirmationDialog(listOf(image.name))
+    }
+
+    override fun onButtonTakePhotoClick() {
+        view?.requestCameraPermissions()
+    }
+
+    override fun onNewPhotoTaken(photoPath: String?) {
+        if (photoPath == null) {
+            view?.showErrorSaveImage()
+            view?.hideLoading()
+            return
+        }
+        addDisposable(saveImagesUseCase(mNoteId, photoPath)
+                .observeOn(scheduler.ui())
+                .subscribe({
+                    view?.hideLoading()
+                }, { error ->
+                    error.printStackTrace()
+                    view?.showErrorSaveImage()
+                    view?.hideLoading()
+                }))
     }
 }

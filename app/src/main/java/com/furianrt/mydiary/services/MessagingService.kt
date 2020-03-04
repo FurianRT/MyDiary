@@ -10,11 +10,11 @@
 
 package com.furianrt.mydiary.services
 
+import android.annotation.SuppressLint
 import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
-import android.util.Log
 import androidx.core.app.NotificationCompat
 import com.furianrt.mydiary.MyApp
 import com.furianrt.mydiary.R
@@ -25,10 +25,10 @@ import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 import javax.inject.Inject
 
+@SuppressLint("MissingFirebaseInstanceTokenRefresh")
 class MessagingService : FirebaseMessagingService() {
 
     companion object {
-        private const val TAG = "MessagingService"
         private const val NOTIFICATION_ID = 23
         private const val ARG_FOR_PREMIUM_USERS = "for_premium_users"
     }
@@ -49,12 +49,9 @@ class MessagingService : FirebaseMessagingService() {
         remoteMessage.notification?.let { notification ->
             val forPremiumUsers = remoteMessage.data[ARG_FOR_PREMIUM_USERS]?.toIntOrNull()
             when {
-                forPremiumUsers == null ->
-                    showNotification(notification)
-                forPremiumUsers == 1 && isPremiumPurchasedUseCase.invoke() ->
-                    showNotification(notification)
-                forPremiumUsers == 0 && !isPremiumPurchasedUseCase.invoke() ->
-                    showNotification(notification)
+                forPremiumUsers == null -> showNotification(notification)
+                forPremiumUsers == 1 && isPremiumPurchasedUseCase() -> showNotification(notification)
+                forPremiumUsers == 0 && !isPremiumPurchasedUseCase() -> showNotification(notification)
             }
         }
     }
@@ -72,7 +69,7 @@ class MessagingService : FirebaseMessagingService() {
                 .setContentIntent(pendingIntent)
                 .setStyle(notificationStyle)
                 .build()
-        val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager?
+        val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as? NotificationManager?
         notificationManager?.notify(NOTIFICATION_ID, resultNotification)
     }
 
@@ -82,9 +79,4 @@ class MessagingService : FirebaseMessagingService() {
                 action = Intent.ACTION_MAIN
                 addCategory(Intent.CATEGORY_LAUNCHER)
             }
-
-    override fun onNewToken(token: String) {
-        super.onNewToken(token)
-        Log.e(TAG, "Token: $token")
-    }
 }

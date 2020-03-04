@@ -15,13 +15,13 @@ import com.furianrt.mydiary.utils.MyRxUtils
 import javax.inject.Inject
 
 class SendEmailPresenter @Inject constructor(
-        private val sendPinResetEmail: SendPinResetEmailUseCase,
+        private val sendPinResetEmailUseCase: SendPinResetEmailUseCase,
         private val scheduler: MyRxUtils.BaseSchedulerProvider
 ) : SendEmailContract.Presenter() {
 
     override fun onButtonSendClick() {
         view?.showLoading()
-        addDisposable(sendPinResetEmail.invoke()
+        addDisposable(sendPinResetEmailUseCase()
                 .observeOn(scheduler.ui())
                 .subscribe({
                     view?.hideLoading()

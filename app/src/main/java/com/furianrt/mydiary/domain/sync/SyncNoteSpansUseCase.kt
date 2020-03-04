@@ -20,7 +20,7 @@ class SyncNoteSpansUseCase @Inject constructor(
 
     class SyncSpanException : Throwable()
 
-    fun invoke(email: String): Completable =
+    operator fun invoke(email: String): Completable =
             spanGateway.getAllTextSpans()
                     .first(emptyList())
                     .map { spans -> spans.filter { !it.isSync(email) } }

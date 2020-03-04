@@ -83,8 +83,6 @@ import com.furianrt.mydiary.presentation.screens.note.fragments.mainnote.content
 import com.furianrt.mydiary.presentation.screens.note.fragments.mainnote.content.NoteContentPresenter
 import com.furianrt.mydiary.presentation.screens.note.fragments.mainnote.edit.NoteEditContract
 import com.furianrt.mydiary.presentation.screens.note.fragments.mainnote.edit.NoteEditPresenter
-import com.furianrt.mydiary.presentation.screens.note.fragments.mainnote.reminder.ReminderContract
-import com.furianrt.mydiary.presentation.screens.note.fragments.mainnote.reminder.ReminderPresenter
 import com.furianrt.mydiary.presentation.screens.pin.PinContract
 import com.furianrt.mydiary.presentation.screens.pin.PinPresenter
 import com.furianrt.mydiary.presentation.screens.pin.fragments.backupemail.BackupEmailContract
@@ -264,8 +262,4 @@ interface PresenterModule {
     @Binds
     @PresenterScope
     fun dailySettingsPresenter(presenter: DailySettingsPresenter): DailySettingsContract.Presenter
-
-    @Binds
-    @PresenterScope
-    fun reminderPresenter(presenter: ReminderPresenter): ReminderContract.Presenter
 }

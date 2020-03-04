@@ -10,11 +10,12 @@
 
 package com.furianrt.mydiary.presentation.screens.main.fragments.imagesettings
 
+import android.content.Context
 import android.os.Bundle
 import android.view.View
 import com.furianrt.mydiary.R
 import com.furianrt.mydiary.presentation.base.BaseFragment
-import com.furianrt.mydiary.presentation.screens.main.MainActivity
+import com.furianrt.mydiary.presentation.screens.main.MainBottomSheetHolder
 import com.furianrt.mydiary.presentation.screens.main.fragments.imagesettings.settings.DailySettingsFragment
 import com.furianrt.mydiary.utils.inTransaction
 import kotlinx.android.synthetic.main.fragment_image_settings.*
@@ -28,6 +29,8 @@ class ImageSettingsFragment : BaseFragment(R.layout.fragment_image_settings), Im
 
     @Inject
     lateinit var presenter: ImageSettingsContract.Presenter
+
+    private var mListener: MainBottomSheetHolder? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         getPresenterComponent(requireContext()).inject(this)
@@ -45,7 +48,21 @@ class ImageSettingsFragment : BaseFragment(R.layout.fragment_image_settings), Im
     }
 
     override fun close() {
-        (activity as? MainActivity?)?.closeBottomSheet()
+        mListener?.closeBottomSheet()
+    }
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        if (context is MainBottomSheetHolder) {
+            mListener = context
+        } else {
+            throw IllegalStateException()
+        }
+    }
+
+    override fun onDetach() {
+        super.onDetach()
+        mListener = null
     }
 
     override fun onStart() {

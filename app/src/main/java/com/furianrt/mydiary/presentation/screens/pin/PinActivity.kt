@@ -16,6 +16,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.view.View
+import android.view.WindowManager
 import android.widget.Toast
 import androidx.biometric.BiometricPrompt
 import com.furianrt.mydiary.R
@@ -36,7 +37,7 @@ import java.util.concurrent.Executors
 import javax.inject.Inject
 
 class PinActivity : BaseActivity(R.layout.activity_pin), PinContract.View,
-        BackupEmailFragment.OnBackupEmailFragmentListener {
+        BackupEmailFragment.OnBackupEmailFragmentListener, PinBottomSheetHolder {
 
     companion object {
         private const val BOTTOM_SHEET_EXPAND_DELAY = 200L
@@ -77,7 +78,7 @@ class PinActivity : BaseActivity(R.layout.activity_pin), PinContract.View,
     private val mBottomSheetCallback = object : BottomSheetBehavior.BottomSheetCallback() {
         override fun onSlide(bottomSheet: View, slideOffset: Float) {}
         override fun onStateChanged(bottomSheet: View, newState: Int) {
-            if (newState == BottomSheetBehavior.STATE_COLLAPSED) {
+            if (newState == BottomSheetBehavior.STATE_COLLAPSED || newState == BottomSheetBehavior.STATE_HIDDEN) {
                 supportFragmentManager.findFragmentByTag(SendEmailFragment.TAG)?.let {
                     supportFragmentManager.inTransaction { remove(it) }
                 }
@@ -236,12 +237,8 @@ class PinActivity : BaseActivity(R.layout.activity_pin), PinContract.View,
         }
     }
 
-    override fun onBackPressed() {
-        if (mBottomSheet.state == BottomSheetBehavior.STATE_EXPANDED) {
-            mBottomSheet.state = BottomSheetBehavior.STATE_COLLAPSED
-        } else {
-            close()
-        }
+    override fun closeBottomSheet() {
+        mBottomSheet.state = BottomSheetBehavior.STATE_COLLAPSED
     }
 
     override fun onStart() {
@@ -260,5 +257,13 @@ class PinActivity : BaseActivity(R.layout.activity_pin), PinContract.View,
         presenter.detachView()
         mHandler.removeCallbacks(mBottomSheetOpenRunnable)
         mBottomSheet.removeBottomSheetCallback(mBottomSheetCallback)
+    }
+
+    override fun onPause() {
+        super.onPause()
+        window.clearFlags(WindowManager.LayoutParams.FLAG_SECURE)
+        if (isFinishing) {
+            overridePendingTransition(R.anim.activity_stay_slide_bottom, R.anim.slide_bottom_down)
+        }
     }
 }

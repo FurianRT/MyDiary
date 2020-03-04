@@ -25,7 +25,6 @@ import com.furianrt.mydiary.domain.IncrementLaunchCountUseCase
 import com.furianrt.mydiary.domain.check.IsPinEnabledUseCase
 import com.furianrt.mydiary.domain.get.GetPinRequestDelayUseCase
 import com.furianrt.mydiary.domain.save.ResetSyncProgressUseCase
-import com.furianrt.mydiary.presentation.screens.main.MainActivity
 import com.furianrt.mydiary.presentation.screens.pin.PinActivity
 import com.jakewharton.threetenabp.AndroidThreeTen
 import net.danlew.android.joda.JodaTimeAndroid
@@ -54,25 +53,25 @@ class MyApp : Application(), Application.ActivityLifecycleCallbacks {
     }
 
     @Inject
-    lateinit var authorize: AuthorizeUseCase
+    lateinit var authorizeUseCase: AuthorizeUseCase
 
     @Inject
-    lateinit var isPinEnabled: IsPinEnabledUseCase
+    lateinit var isPinEnabledUseCase: IsPinEnabledUseCase
 
     @Inject
-    lateinit var getPinRequestDelay: GetPinRequestDelayUseCase
+    lateinit var getPinRequestDelayUseCase: GetPinRequestDelayUseCase
 
     @Inject
-    lateinit var incrementLaunchCount: IncrementLaunchCountUseCase
+    lateinit var incrementLaunchCountUseCase: IncrementLaunchCountUseCase
 
     @Inject
-    lateinit var resetSyncProgress: ResetSyncProgressUseCase
+    lateinit var resetSyncProgressUseCase: ResetSyncProgressUseCase
 
     @Inject
-    lateinit var createTutorialNote: CreateTutorialNoteUseCase
+    lateinit var createTutorialNoteUseCase: CreateTutorialNoteUseCase
 
     private val mHandler = Handler(Looper.getMainLooper())
-    private val mLogoutRunnable = Runnable { authorize.invoke(false) }
+    private val mLogoutRunnable = Runnable { authorizeUseCase(false) }
 
     override fun onCreate() {
         component.inject(this)
@@ -95,13 +94,13 @@ class MyApp : Application(), Application.ActivityLifecycleCallbacks {
             logFcmToken()
         }
         JodaTimeAndroid.init(this)
-        authorize.invoke(false)
+        authorizeUseCase(false)
         registerActivityLifecycleCallbacks(this)
         createNotificationChannels()
         AndroidThreeTen.init(this)
-        incrementLaunchCount.invoke()
-        resetSyncProgress.invoke()
-        createTutorialNote.invoke().subscribe()
+        incrementLaunchCountUseCase()
+        resetSyncProgressUseCase()
+        createTutorialNoteUseCase().subscribe()
     }
 
     override fun onActivityDestroyed(activity: Activity?) {}
@@ -116,19 +115,12 @@ class MyApp : Application(), Application.ActivityLifecycleCallbacks {
     }
 
     override fun onActivityPaused(activity: Activity?) {
-        authorize.invoke(true)
-        if (activity != null && activity.isFinishing) {
-            if (activity is PinActivity) {
-                activity.overridePendingTransition(R.anim.activity_stay_slide_bottom, R.anim.slide_bottom_down)
-            } else if (activity !is MainActivity) {
-                activity.overridePendingTransition(R.anim.screen_left_in, R.anim.screen_right_out)
-            }
-        }
+        authorizeUseCase(true)
     }
 
     override fun onActivityStopped(activity: Activity?) {
-        if (isPinEnabled.invoke() && activity !is PinActivity) {
-            mHandler.postDelayed(mLogoutRunnable, getPinRequestDelay.invoke())
+        if (isPinEnabledUseCase() && activity !is PinActivity) {
+            mHandler.postDelayed(mLogoutRunnable, getPinRequestDelayUseCase())
         }
     }
 

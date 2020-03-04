@@ -17,5 +17,5 @@ class GetPinRequestDelayUseCase @Inject constructor(
         private val pinGateway: PinGateway
 ) {
 
-    fun invoke(): Long = pinGateway.getPinRequestDelay()
+    operator fun invoke(): Long = pinGateway.getPinRequestDelay()
 }

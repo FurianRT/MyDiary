@@ -22,7 +22,6 @@ import com.furianrt.mydiary.model.source.preferences.PreferencesSource
 import com.furianrt.mydiary.model.source.storage.StorageSource
 import com.furianrt.mydiary.utils.MyRxUtils
 import io.reactivex.*
-import org.joda.time.DateTime
 import javax.inject.Inject
 
 class ImageGatewayImp @Inject constructor(
@@ -116,7 +115,7 @@ class ImageGatewayImp @Inject constructor(
             imagesApi.getImages(category, page, perPage)
                     .map { response ->
                         response.images
-                                ?.map { MyHeaderImage(it.id!!, it.largeImageURL!!, DateTime.now().millis) }
+                                ?.map { MyHeaderImage(it.id!!, it.largeImageURL!!, System.currentTimeMillis()) }
                                 ?.sortedByDescending { it.addedTime }
                                 ?: emptyList()
                     }

@@ -17,7 +17,7 @@ class GetPinEmailUseCase @Inject constructor(
         private val pinGateway: PinGateway
 ) {
 
-    fun invoke(): String? = if (pinGateway.isPinEnabled()) {
+    operator fun invoke(): String? = if (pinGateway.isPinEnabled()) {
         pinGateway.getBackupEmail()
     } else {
         null

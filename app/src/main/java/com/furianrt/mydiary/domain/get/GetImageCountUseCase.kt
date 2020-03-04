@@ -18,5 +18,5 @@ class GetImageCountUseCase @Inject constructor(
         private val imageGateway: ImageGateway
 ) {
 
-    fun invoke(): Flowable<Int> = imageGateway.getImageCount()
+    operator fun invoke(): Flowable<Int> = imageGateway.getImageCount()
 }

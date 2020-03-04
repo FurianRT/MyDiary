@@ -15,7 +15,7 @@ import com.furianrt.mydiary.utils.MyRxUtils
 import javax.inject.Inject
 
 class CategoryAddPresenter @Inject constructor(
-        private val saveCategory: SaveCategoryUseCase,
+        private val saveCategoryUseCase: SaveCategoryUseCase,
         private val scheduler: MyRxUtils.BaseSchedulerProvider
 ) : CategoryAddContract.Presenter() {
 
@@ -23,7 +23,7 @@ class CategoryAddPresenter @Inject constructor(
         if (categoryName.isBlank()) {
             view?.showErrorEmptyName()
         } else {
-            addDisposable(saveCategory.invoke(categoryName, categoryColor)
+            addDisposable(saveCategoryUseCase(categoryName, categoryColor)
                     .observeOn(scheduler.ui())
                     .ignoreElement()
                     .subscribe { view?.close() })

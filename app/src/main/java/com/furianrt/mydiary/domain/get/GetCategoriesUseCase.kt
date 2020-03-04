@@ -24,9 +24,9 @@ class GetCategoriesUseCase @Inject constructor(
         private val noteGateway: NoteGateway
 ) {
 
-    fun invoke(): Flowable<List<MyCategory>> = categoryGateway.getAllCategories()
+    operator fun invoke(): Flowable<List<MyCategory>> = categoryGateway.getAllCategories()
 
-    fun invoke(noteId: String): Flowable<Optional<MyCategory>> =
+    operator fun invoke(noteId: String): Flowable<Optional<MyCategory>> =
             Flowable.combineLatest(noteGateway.getNoteAsList(noteId),
                     categoryGateway.getAllCategories(),
                     BiFunction<List<MyNote>, List<MyCategory>, Optional<MyCategory>> { note, categories ->

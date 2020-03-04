@@ -23,13 +23,13 @@ import javax.inject.Inject
 class SaveImagesUseCase @Inject constructor(
         private val imageGateway: ImageGateway,
         private val deviceGateway: DeviceGateway,
-        private val uriToRealPath: UriToRealPathUseCase
+        private val uriToRealPathUseCase: UriToRealPathUseCase
 ) {
 
-    fun invoke(noteId: String, imageUris: List<String>): Completable =
+    operator fun invoke(noteId: String, imageUris: List<String>): Completable =
             Flowable.fromIterable(imageUris)
                     .flatMapSingle { uri ->
-                        uriToRealPath.invoke(uri)
+                        uriToRealPathUseCase(uri)
                                 .map { path ->
                                     val name = noteId + "_" + generateUniqueId()
                                     MyImage(name, path, noteId)
@@ -45,10 +45,16 @@ class SaveImagesUseCase @Inject constructor(
                     .collectInto(mutableListOf<Boolean>()) { l, i -> l.add(i) }
                     .flatMapCompletable { Completable.fromAction { deviceGateway.clearUriTempFiles() } }
 
-    fun invoke(noteId: String, bitmap: Bitmap): Completable {
+    operator fun invoke(noteId: String, bitmap: Bitmap): Completable {
         val image = MyImage(noteId + "_" + generateUniqueId(), "", noteId)
         return imageGateway.saveBitmapToStorage(bitmap, image)
                 .flatMapCompletable { imageGateway.insertImage(it) }
                 .onErrorComplete()
+    }
+
+    operator fun invoke(noteId: String, path: String): Completable {
+        val image = MyImage(noteId + "_" + generateUniqueId(), path, noteId)
+        return imageGateway.saveImageToStorage(image)
+                .flatMapCompletable { imageGateway.insertImage(it) }
     }
 }

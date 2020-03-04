@@ -10,7 +10,24 @@
         <item name="autoCompleteTextViewStyle">@style/SearchAutoCompleteTextView</item>
         <item name="android:textAlignment">gravity</item>
         <item name="android:textDirection">locale</item>
+        <item name="android:windowBackground">@color/grey_light</item>
+        <item name="android:windowAnimationStyle">@style/TransitionAnimationStyle</item>
+    </style>
+
+    <style name="AppTheme.Splash">
         <item name="android:windowBackground">@drawable/splash_screen</item>
+    </style>
+
+    <style name="AppTheme.Splash.TransparentActionBar">
+        <item name="android:windowDrawsSystemBarBackgrounds">true</item>
+        <item name="android:statusBarColor">@color/transparent_black</item>
+    </style>
+
+    <style name="TransitionAnimationStyle" parent="@android:style/Animation.Activity">
+        <item name="android:activityOpenEnterAnimation">@anim/screen_right_in</item>
+        <item name="android:activityOpenExitAnimation">@anim/screen_left_out</item>
+        <item name="android:activityCloseEnterAnimation">@anim/screen_left_in</item>
+        <item name="android:activityCloseExitAnimation">@anim/screen_right_out</item>
     </style>
 
     <style name="ArimaMaduraiFontStyle">
@@ -91,16 +108,6 @@
     <style name="UbuntuFontStyle">
         <item name="android:fontFamily">@font/ubuntu</item>
         <item name="fontFamily">@font/ubuntu</item>
-    </style>
-
-    <style name="AppTheme.TransparentActionBar">
-        <item name="android:windowDrawsSystemBarBackgrounds">true</item>
-        <item name="android:statusBarColor">@color/transparent_black</item>
-    </style>
-
-    <style name="MyOutlinedButton" parent="Widget.MaterialComponents.Button.OutlinedButton">
-        <item name="android:paddingLeft">4dp</item>
-        <item name="android:paddingRight">4dp</item>
     </style>
 
     <style name="SearchAutoCompleteTextView" parent="Widget.AppCompat.Light.AutoCompleteTextView">

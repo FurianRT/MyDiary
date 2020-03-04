@@ -35,7 +35,7 @@ class CheckCredentialsUseCase @Inject constructor(
         private const val PASSWORD_MIN_LENGTH = 6
     }
 
-    fun invoke(email: String, password: String, passwordRepeat: String): Completable =
+    operator fun invoke(email: String, password: String, passwordRepeat: String): Completable =
             Single.fromCallable { deviceGateway.isNetworkAvailable() }
                     .flatMap { networkAvailable ->
                         if (networkAvailable) {
@@ -54,7 +54,7 @@ class CheckCredentialsUseCase @Inject constructor(
                         }
                     }
 
-    fun invoke(email: String): Completable =
+    operator fun invoke(email: String): Completable =
             Single.fromCallable { validateEmail(email) }
                     .flatMap { profileGateway.isProfileExists(email) }
                     .flatMapCompletable { exist ->
