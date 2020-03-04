@@ -675,10 +675,8 @@ class MainActivity : BaseActivity(R.layout.activity_main), MainActivityContract.
     }
 
     override fun onBackPressed() {
-        val authFragment =
-                supportFragmentManager.findFragmentByTag(AuthFragment.TAG) as? AuthFragment
-        val profileFragment =
-                supportFragmentManager.findFragmentByTag(ProfileFragment.TAG) as? ProfileFragment
+        val authFragment = supportFragmentManager.findFragmentByTag(AuthFragment.TAG) as? AuthFragment?
+        val profileFragment = supportFragmentManager.findFragmentByTag(ProfileFragment.TAG) as? ProfileFragment?
         when {
             authFragment != null && !authFragment.isBackStackEmpty() -> super.onBackPressed()
             profileFragment != null && !profileFragment.isBackStackEmpty() -> super.onBackPressed()
