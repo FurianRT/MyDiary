@@ -20,7 +20,7 @@ class UriToRealPathUseCase @Inject constructor(
 
     class UriConvertException : Throwable()
 
-    operator fun invoke(uri: String): Single<String> = Single.create<String> { emitter ->
+    operator fun invoke(uri: String): Single<String> = Single.create { emitter ->
         val callback = object : DeviceGateway.OnUriConvertCallback {
             override fun onUriRealPathError() {
                 throw UriConvertException()

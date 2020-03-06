@@ -13,6 +13,7 @@ package com.furianrt.mydiary.services
 import android.app.Notification
 import android.app.PendingIntent
 import android.app.Service
+import android.content.Context
 import android.content.Intent
 import android.os.IBinder
 import androidx.core.app.NotificationCompat
@@ -51,6 +52,8 @@ class SyncService : Service() {
 
         fun getProgressMessage(intent: Intent?): SyncProgressMessage? =
                 intent?.getParcelableExtra(EXTRA_PROGRESS_MESSAGE)
+
+        fun getIntent(context: Context) = Intent(context, SyncService::class.java)
     }
 
     @Inject

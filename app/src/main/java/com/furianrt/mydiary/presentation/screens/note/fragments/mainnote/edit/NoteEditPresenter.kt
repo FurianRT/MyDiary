@@ -10,14 +10,13 @@
 
 package com.furianrt.mydiary.presentation.screens.note.fragments.mainnote.edit
 
-import com.furianrt.mydiary.domain.update.UpdateNoteSpansUseCase
-import com.furianrt.mydiary.domain.update.UpdateNoteUseCase
+import com.furianrt.mydiary.domain.SendNoteUpdateEventUseCase
 import com.furianrt.mydiary.model.entity.MyTextSpan
+import com.furianrt.mydiary.model.entity.NoteData
 import javax.inject.Inject
 
 class NoteEditPresenter @Inject constructor(
-        private val updateNoteSpansUseCase: UpdateNoteSpansUseCase,
-        private val updateNote: UpdateNoteUseCase
+        private val sendNoteUpdateEventUseCase: SendNoteUpdateEventUseCase
 ) : NoteEditContract.Presenter() {
 
     override fun onDoneButtonClick() {
@@ -67,10 +66,7 @@ class NoteEditPresenter @Inject constructor(
     }
 
     override fun onViewStopped(noteId: String, title: String, content: String, textSpans: List<MyTextSpan>) {
-        Thread(Runnable {
-            updateNote.invokeTempSolution(noteId, title, content)
-            updateNoteSpansUseCase(noteId, textSpans)
-        }).start()
+        sendNoteUpdateEventUseCase(NoteData(noteId, title, content, textSpans))
     }
 
     private fun getWordIndexes(selectionStart: Int, selectionEnd: Int, text: String): Pair<Int, Int> {

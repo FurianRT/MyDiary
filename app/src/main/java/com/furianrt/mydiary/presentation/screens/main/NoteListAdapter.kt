@@ -72,9 +72,7 @@ class NoteListAdapter(
     private val mSizeProvider = ViewPreloadSizeProvider<NoteItemView>()
     private val mGlideBuilder = GlideApp.with(context)
 
-    val preloader = RecyclerViewPreloader<NoteItemView>(
-            Glide.with(context), this, mSizeProvider, MAX_PRELOAD
-    )
+    val preloader = RecyclerViewPreloader(Glide.with(context), this, mSizeProvider, MAX_PRELOAD)
 
     fun submitList(items: List<NoteItemView>) {
         val diffResult = DiffUtil.calculateDiff(NoteListDiffCallback(mItems, items))

@@ -17,6 +17,7 @@ import android.view.Menu
 import android.view.View
 import androidx.viewpager.widget.ViewPager
 import com.furianrt.mydiary.R
+import com.furianrt.mydiary.model.entity.MyNoteWithImages
 import com.furianrt.mydiary.presentation.base.BaseActivity
 import com.furianrt.mydiary.presentation.screens.note.fragments.mainnote.NoteFragment
 import kotlinx.android.synthetic.main.activity_note.*
@@ -94,11 +95,11 @@ class NoteActivity : BaseActivity(R.layout.activity_note), NoteActivityContract.
         outState.putInt(EXTRA_POSITION, pager_note.currentItem)
     }
 
-    override fun showNotes(noteIds: List<String>) {
-        if (mPagerPosition >= noteIds.size) {
-            mPagerPosition = noteIds.size - 1
+    override fun showNotes(notes: List<MyNoteWithImages>) {
+        if (mPagerPosition >= notes.size) {
+            mPagerPosition = notes.size - 1
         }
-        mPagerAdapter.noteIds = noteIds
+        mPagerAdapter.notes = notes
         mPagerAdapter.notifyDataSetChanged()
         pager_note.setCurrentItem(mPagerPosition, false)
         showImageCounter(mPagerPosition + 1, mPagerAdapter.count)

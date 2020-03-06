@@ -26,6 +26,7 @@ import com.bumptech.glide.signature.ObjectKey
 import com.furianrt.mydiary.R
 import com.furianrt.mydiary.model.entity.MyImage
 import com.furianrt.mydiary.presentation.general.GlideApp
+import com.furianrt.mydiary.utils.animateAlpha
 import com.gjiazhe.panoramaimageview.GyroscopeObserver
 import kotlinx.android.synthetic.main.note_image_pager_item.view.*
 
@@ -59,6 +60,7 @@ class NoteImagePagerAdapter(
     inner class NoteImageViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         fun bind(image: MyImage) {
             itemView.setOnClickListener { listener?.onImageClick(image) }
+            itemView.image_note.alpha = 0f
             gyroscope?.let {
                 itemView.image_note.setGyroscopeObserver(it)
                 itemView.image_note.setEnablePanoramaMode(mPanoramaEnabled)
@@ -69,10 +71,14 @@ class NoteImagePagerAdapter(
                     .signature(ObjectKey(image.editedTime.toString() + image.name))
                     .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
                     .into(object : CustomViewTarget<ImageView, Bitmap>(itemView.image_note) {
-                        override fun onLoadFailed(errorDrawable: Drawable?) = Unit
                         override fun onResourceCleared(placeholder: Drawable?) = Unit
+                        override fun onLoadFailed(errorDrawable: Drawable?) {
+                            listener?.onImageLoadFailed()
+                        }
                         override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
+                            listener?.onImageLoaded()
                             itemView.image_note.setImageBitmap(resource)
+                            itemView.image_note.animateAlpha(0f, 1f)
                         }
                     })
         }
@@ -80,5 +86,7 @@ class NoteImagePagerAdapter(
 
     interface OnNoteImagePagerInteractionListener {
         fun onImageClick(image: MyImage)
+        fun onImageLoadFailed()
+        fun onImageLoaded()
     }
 }

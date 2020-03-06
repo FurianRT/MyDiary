@@ -10,13 +10,14 @@
 
 package com.furianrt.mydiary.presentation.screens.note
 
+import com.furianrt.mydiary.model.entity.MyNoteWithImages
 import com.furianrt.mydiary.presentation.base.BaseView
 import com.furianrt.mydiary.presentation.base.BasePresenter
 
 interface NoteActivityContract {
 
     interface View : BaseView {
-        fun showNotes(noteIds: List<String>)
+        fun showNotes(notes: List<MyNoteWithImages>)
         fun closeView()
     }
 

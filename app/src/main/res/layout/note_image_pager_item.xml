@@ -11,6 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:piv_enablePanoramaMode="false"
+        android:alpha="0.0"
         app:piv_show_scrollbar="false"
         tools:ignore="ContentDescription" />
 

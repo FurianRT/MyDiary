@@ -18,6 +18,7 @@ import com.furianrt.mydiary.model.source.database.dao.NoteTagDao
 import com.furianrt.mydiary.model.source.preferences.PreferencesSource
 import com.furianrt.mydiary.utils.MyRxUtils
 import io.reactivex.*
+import io.reactivex.subjects.PublishSubject
 import javax.inject.Inject
 
 class NoteGatewayImp @Inject constructor(
@@ -28,6 +29,8 @@ class NoteGatewayImp @Inject constructor(
         private val auth: AuthSource,
         private val scheduler: MyRxUtils.BaseSchedulerProvider
 ) : NoteGateway {
+
+    private val mSaveNoteDataSubject = PublishSubject.create<NoteData>()
 
     override fun insertNote(note: MyNote): Completable =
             noteDao.insert(note)
@@ -66,6 +69,10 @@ class NoteGatewayImp @Inject constructor(
             noteDao.getAllNotes()
                     .subscribeOn(scheduler.io())
 
+    override fun getAllNotesWithImages(): Flowable<List<MyNoteWithImages>> =
+            noteDao.getAllNotesWithImages()
+                    .subscribeOn(scheduler.io())
+
     override fun getDeletedNotes(): Flowable<List<MyNote>> =
             noteDao.getDeletedNotes()
                     .subscribeOn(scheduler.io())
@@ -76,6 +83,10 @@ class NoteGatewayImp @Inject constructor(
 
     override fun getNoteAsList(noteId: String): Flowable<List<MyNote>> =
             noteDao.getNoteAsList(noteId)
+                    .subscribeOn(scheduler.io())
+
+    override fun getNoteWithImagesAsList(noteId: String): Flowable<List<MyNoteWithImages>> =
+            noteDao.getNoteWithImagesAsList(noteId)
                     .subscribeOn(scheduler.io())
 
     override fun findNote(noteId: String): Maybe<MyNote> =
@@ -103,4 +114,12 @@ class NoteGatewayImp @Inject constructor(
     override fun setSortDesc(desc: Boolean) {
         prefs.setSortDesc(desc)
     }
+
+    override fun sendNoteUpdateEvent(data: NoteData) {
+        mSaveNoteDataSubject.onNext(data)
+    }
+
+    override fun observeNoteUpdateEvent(): Observable<NoteData> =
+            mSaveNoteDataSubject
+                    .subscribeOn(scheduler.io())
 }

@@ -96,6 +96,7 @@
             android:layout_toEndOf="@id/text_note_image_day"
             android:maxLines="2"
             android:paddingTop="8dp"
+            android:scrollbars="none"
             android:textColor="@color/black"
             android:textSize="14sp"
             tools:text="Test content test content test content test content test content test content test content test content test content test content test content test content test content test content" />

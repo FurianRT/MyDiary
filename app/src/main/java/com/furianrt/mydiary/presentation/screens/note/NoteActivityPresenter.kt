@@ -11,12 +11,12 @@
 package com.furianrt.mydiary.presentation.screens.note
 
 import com.furianrt.mydiary.domain.save.SaveNoteIfNotExistUseCase
-import com.furianrt.mydiary.domain.get.GetNotesUseCase
+import com.furianrt.mydiary.domain.get.GetNotesWithImagesUseCase
 import com.furianrt.mydiary.utils.MyRxUtils
 import javax.inject.Inject
 
 class NoteActivityPresenter @Inject constructor(
-        private val getNotesUseCase: GetNotesUseCase,
+        private val getNotesWithImagesUseCase: GetNotesWithImagesUseCase,
         private val saveNoteIfNotExistUseCase: SaveNoteIfNotExistUseCase,
         private val scheduler: MyRxUtils.BaseSchedulerProvider
 ) : NoteActivityContract.Presenter() {
@@ -41,24 +41,24 @@ class NoteActivityPresenter @Inject constructor(
     }
 
     private fun loadNotes() {
-        addDisposable(getNotesUseCase()
+        addDisposable(getNotesWithImagesUseCase()
                 .observeOn(scheduler.ui())
                 .subscribe { notes ->
                     if (notes.isEmpty()) {
                         view?.closeView()
                     } else {
-                        view?.showNotes(notes.map { it.id })
+                        view?.showNotes(notes)
                     }
                 })
     }
 
     private fun loadNote(noteId: String) {
         addDisposable(saveNoteIfNotExistUseCase(noteId)
-                .andThen(getNotesUseCase(noteId))
+                .andThen(getNotesWithImagesUseCase(noteId))
                 .observeOn(scheduler.ui())
                 .subscribe { note ->
                     if (note.isPresent) {
-                        view?.showNotes(listOf(note.get().id))
+                        view?.showNotes(listOf(note.get()))
                     } else {
                         view?.closeView()
                     }

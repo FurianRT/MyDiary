@@ -11,11 +11,10 @@
 package com.furianrt.mydiary.model.gateway.note
 
 import com.furianrt.mydiary.model.entity.MyNote
+import com.furianrt.mydiary.model.entity.MyNoteWithImages
 import com.furianrt.mydiary.model.entity.MyNoteWithProp
-import io.reactivex.Completable
-import io.reactivex.Flowable
-import io.reactivex.Maybe
-import io.reactivex.Single
+import com.furianrt.mydiary.model.entity.NoteData
+import io.reactivex.*
 
 interface NoteGateway {
     fun insertNote(note: MyNote): Completable
@@ -28,13 +27,17 @@ interface NoteGateway {
     fun deleteNotesFromCloud(notes: List<MyNote>): Completable
     fun cleanupNotes(): Completable
     fun getAllNotes(): Flowable<List<MyNote>>
+    fun getAllNotesWithImages(): Flowable<List<MyNoteWithImages>>
     fun getDeletedNotes(): Flowable<List<MyNote>>
     fun getNote(noteId: String): Single<MyNote>
     fun getNoteAsList(noteId: String): Flowable<List<MyNote>>
+    fun getNoteWithImagesAsList(noteId: String): Flowable<List<MyNoteWithImages>>
     fun getAllNotesWithProp(): Flowable<List<MyNoteWithProp>>
     fun getAllNotesFromCloud(): Single<List<MyNote>>
     fun findNote(noteId: String): Maybe<MyNote>
     fun saveNotesInCloud(notes: List<MyNote>): Completable
     fun isSortDesc(): Boolean
     fun setSortDesc(desc: Boolean)
+    fun sendNoteUpdateEvent(data: NoteData)
+    fun observeNoteUpdateEvent(): Observable<NoteData>
 }

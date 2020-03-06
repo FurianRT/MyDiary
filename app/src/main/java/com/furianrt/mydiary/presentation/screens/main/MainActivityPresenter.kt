@@ -14,12 +14,15 @@ import android.annotation.SuppressLint
 import android.os.Bundle
 import com.furianrt.mydiary.model.entity.*
 import com.furianrt.mydiary.domain.FilterNotesUseCase
+import com.furianrt.mydiary.domain.ObserveNoteUpdateEventUseCase
 import com.furianrt.mydiary.domain.SwapNoteSortTypeUseCase
 import com.furianrt.mydiary.domain.check.CheckLogOutUseCase
 import com.furianrt.mydiary.domain.check.IsDailyImageEnabledUseCase
 import com.furianrt.mydiary.domain.check.IsNeedRateOfferUseCase
 import com.furianrt.mydiary.domain.delete.DeleteProfileUseCase
 import com.furianrt.mydiary.domain.get.*
+import com.furianrt.mydiary.domain.update.UpdateNoteSpansUseCase
+import com.furianrt.mydiary.domain.update.UpdateNoteUseCase
 import com.furianrt.mydiary.utils.MyRxUtils
 import com.furianrt.mydiary.utils.generateUniqueId
 import io.reactivex.disposables.Disposable
@@ -43,6 +46,9 @@ class MainActivityPresenter @Inject constructor(
         private val deleteProfileUseCase: DeleteProfileUseCase,
         private val checkLogOutUseCase: CheckLogOutUseCase,
         private val filterNotesUseCase: FilterNotesUseCase,
+        private val observeNoteUpdateEventUseCase: ObserveNoteUpdateEventUseCase,
+        private val updateNoteSpansUseCase: UpdateNoteSpansUseCase,
+        private val updateNote: UpdateNoteUseCase,
         private val scheduler: MyRxUtils.BaseSchedulerProvider
 ) : MainActivityContract.Presenter() {
 
@@ -106,6 +112,7 @@ class MainActivityPresenter @Inject constructor(
         loadHeaderImage()
         addDisposable(checkLogOutUseCase().subscribe())
         showRateProposal()
+        observeNoteUpdate()
     }
 
     override fun detachView() {
@@ -113,6 +120,16 @@ class MainActivityPresenter @Inject constructor(
         if (mFullNotesDisposable?.isDisposed == false) {
             mFullNotesDisposable?.dispose()
         }
+    }
+
+    private fun observeNoteUpdate() {
+        addDisposable(observeNoteUpdateEventUseCase()
+                .flatMapCompletable {
+                    updateNote(it.noteId, it.title, it.content)
+                            .andThen(updateNoteSpansUseCase(it.noteId, it.textSpans))
+                }
+                .subscribe()
+        )
     }
 
     private fun showRateProposal() {

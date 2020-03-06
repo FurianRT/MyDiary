@@ -23,7 +23,6 @@ import io.reactivex.Completable
 import io.reactivex.Maybe
 import io.reactivex.Observable
 import io.reactivex.Single
-import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 class CloudSourceImp @Inject constructor(
@@ -50,7 +49,7 @@ class CloudSourceImp @Inject constructor(
             RxFirestore.setDocument(
                     firestore.collection(COLLECTION_USERS).document(profile.id),
                     profile
-            ).timeout(1, TimeUnit.MINUTES)
+            )
 
     override fun saveNotes(notes: List<MyNote>, userId: String): Completable =
             RxFirestore.runTransaction(firestore) { transaction ->
@@ -60,7 +59,7 @@ class CloudSourceImp @Inject constructor(
                             .collection(COLLECTION_NOTES)
                             .document(note.id), note)
                 }
-            }.timeout(1, TimeUnit.MINUTES)
+            }
 
     override fun saveCategories(categories: List<MyCategory>, userId: String): Completable =
             RxFirestore.runTransaction(firestore) { transaction ->
@@ -70,7 +69,7 @@ class CloudSourceImp @Inject constructor(
                             .collection(COLLECTION_CATEGORIES)
                             .document(category.id), category)
                 }
-            }.timeout(1, TimeUnit.MINUTES)
+            }
 
     override fun saveNoteTags(noteTags: List<NoteTag>, userId: String): Completable =
             RxFirestore.runTransaction(firestore) { transaction ->
@@ -81,7 +80,7 @@ class CloudSourceImp @Inject constructor(
                             .collection(COLLECTION_NOTE_TAGS)
                             .document(noteTag.noteId + noteTag.tagId), noteTag)
                 }
-            }.timeout(1, TimeUnit.MINUTES)
+            }
 
     override fun saveNoteLocations(noteLocations: List<NoteLocation>, userId: String): Completable =
             RxFirestore.runTransaction(firestore) { transaction ->
@@ -92,7 +91,7 @@ class CloudSourceImp @Inject constructor(
                             .collection(COLLECTION_NOTE_LOCATIONS)
                             .document(noteLocation.noteId + noteLocation.locationId), noteLocation)
                 }
-            }.timeout(1, TimeUnit.MINUTES)
+            }
 
     override fun saveTags(tags: List<MyTag>, userId: String): Completable =
             RxFirestore.runTransaction(firestore) { transaction ->
@@ -102,7 +101,7 @@ class CloudSourceImp @Inject constructor(
                             .collection(COLLECTION_TAGS)
                             .document(tag.id), tag)
                 }
-            }.timeout(1, TimeUnit.MINUTES)
+            }
 
     override fun saveAppearances(appearances: List<MyNoteAppearance>, userId: String): Completable =
             RxFirestore.runTransaction(firestore) { transaction ->
@@ -112,7 +111,7 @@ class CloudSourceImp @Inject constructor(
                             .collection(COLLECTION_APPEARANCES)
                             .document(appearance.appearanceId), appearance)
                 }
-            }.timeout(1, TimeUnit.MINUTES)
+            }
 
     override fun saveLocations(locations: List<MyLocation>, userId: String): Completable =
             RxFirestore.runTransaction(firestore) { transaction ->
@@ -122,7 +121,7 @@ class CloudSourceImp @Inject constructor(
                             .collection(COLLECTION_LOCATIONS)
                             .document(location.id), location)
                 }
-            }.timeout(1, TimeUnit.MINUTES)
+            }
 
     override fun saveForecasts(forecasts: List<MyForecast>, userId: String): Completable =
             RxFirestore.runTransaction(firestore) { transaction ->
@@ -132,7 +131,7 @@ class CloudSourceImp @Inject constructor(
                             .collection(COLLECTION_FORECASTS)
                             .document(forecast.noteId), forecast)
                 }
-            }.timeout(1, TimeUnit.MINUTES)
+            }
 
     override fun saveImages(images: List<MyImage>, userId: String): Completable =
             RxFirestore.runTransaction(firestore) { transaction ->
@@ -142,7 +141,7 @@ class CloudSourceImp @Inject constructor(
                             .collection(COLLECTION_IMAGES)
                             .document(image.name), image)
                 }
-            }.timeout(1, TimeUnit.MINUTES)
+            }
 
     override fun saveImagesFiles(images: List<MyImage>, userId: String): Completable =
             Observable.fromIterable(images)
@@ -154,7 +153,6 @@ class CloudSourceImp @Inject constructor(
                                 .child(image.noteId)
                                 .child(COLLECTION_IMAGES)
                                 .child(image.name), Uri.parse(image.path))
-                                .timeout(1, TimeUnit.MINUTES)
                     }
                     .collectInto(mutableListOf<UploadTask.TaskSnapshot>()) { l, i -> l.add(i) }
                     .ignoreElement()
@@ -167,7 +165,7 @@ class CloudSourceImp @Inject constructor(
                             .collection(COLLECTION_SPANS)
                             .document(textSpan.id), textSpan)
                 }
-            }.timeout(1, TimeUnit.MINUTES)
+            }
 
     override fun deleteNotes(notes: List<MyNote>, userId: String): Completable =
             RxFirestore.runTransaction(firestore) { transaction ->
@@ -178,7 +176,7 @@ class CloudSourceImp @Inject constructor(
                             .collection(COLLECTION_NOTES)
                             .document(note.id))
                 }
-            }.timeout(1, TimeUnit.MINUTES).onErrorComplete()
+            }
 
     override fun deleteCategories(categories: List<MyCategory>, userId: String): Completable =
             RxFirestore.runTransaction(firestore) { transaction ->
@@ -188,7 +186,7 @@ class CloudSourceImp @Inject constructor(
                             .collection(COLLECTION_CATEGORIES)
                             .document(category.id))
                 }
-            }.timeout(1, TimeUnit.MINUTES).onErrorComplete()
+            }
 
     override fun deleteNoteTags(noteTags: List<NoteTag>, userId: String): Completable =
             RxFirestore.runTransaction(firestore) { transaction ->
@@ -199,7 +197,7 @@ class CloudSourceImp @Inject constructor(
                             .collection(COLLECTION_NOTE_TAGS)
                             .document(noteTag.noteId + noteTag.tagId))
                 }
-            }.timeout(1, TimeUnit.MINUTES).onErrorComplete()
+            }
 
     override fun deleteNoteLocations(noteLocations: List<NoteLocation>, userId: String): Completable =
             RxFirestore.runTransaction(firestore) { transaction ->
@@ -210,7 +208,7 @@ class CloudSourceImp @Inject constructor(
                             .collection(COLLECTION_NOTE_LOCATIONS)
                             .document(noteLocation.noteId + noteLocation.locationId))
                 }
-            }.timeout(1, TimeUnit.MINUTES).onErrorComplete()
+            }
 
     override fun deleteLocations(locations: List<MyLocation>, userId: String): Completable =
             RxFirestore.runTransaction(firestore) { transaction ->
@@ -221,7 +219,7 @@ class CloudSourceImp @Inject constructor(
                             .collection(COLLECTION_LOCATIONS)
                             .document(location.id))
                 }
-            }.timeout(1, TimeUnit.MINUTES).onErrorComplete()
+            }
 
     override fun deleteForecasts(forecasts: List<MyForecast>, userId: String): Completable =
             RxFirestore.runTransaction(firestore) { transaction ->
@@ -232,7 +230,7 @@ class CloudSourceImp @Inject constructor(
                             .collection(COLLECTION_FORECASTS)
                             .document(forecast.noteId))
                 }
-            }.timeout(1, TimeUnit.MINUTES).onErrorComplete()
+            }
 
     override fun deleteTags(tags: List<MyTag>, userId: String): Completable =
             RxFirestore.runTransaction(firestore) { transaction ->
@@ -242,7 +240,7 @@ class CloudSourceImp @Inject constructor(
                             .collection(COLLECTION_TAGS)
                             .document(tag.id))
                 }
-            }.timeout(1, TimeUnit.MINUTES).onErrorComplete()
+            }
 
     override fun deleteAppearances(appearances: List<MyNoteAppearance>, userId: String): Completable =
             RxFirestore.runTransaction(firestore) { transaction ->
@@ -252,7 +250,7 @@ class CloudSourceImp @Inject constructor(
                             .collection(COLLECTION_APPEARANCES)
                             .document(appearance.appearanceId))
                 }
-            }.timeout(1, TimeUnit.MINUTES).onErrorComplete()
+            }
 
     override fun deleteImages(images: List<MyImage>, userId: String): Completable =
             RxFirestore.runTransaction(firestore) { transaction ->
@@ -263,7 +261,6 @@ class CloudSourceImp @Inject constructor(
                             .document(images.name))
                 }
             }
-                    .timeout(1, TimeUnit.MINUTES)
                     .onErrorComplete()
                     .andThen(Observable.fromIterable(images))
                     .flatMapSingle { image ->
@@ -274,7 +271,6 @@ class CloudSourceImp @Inject constructor(
                                 .child(image.noteId)
                                 .child(COLLECTION_IMAGES)
                                 .child(image.name))
-                                .timeout(1, TimeUnit.MINUTES)
                                 .toSingleDefault(true)
                                 .onErrorReturn { false }
                     }
@@ -289,60 +285,52 @@ class CloudSourceImp @Inject constructor(
                             .collection(COLLECTION_SPANS)
                             .document(textSpan.id))
                 }
-            }.timeout(1, TimeUnit.MINUTES).onErrorComplete()
+            }
 
     override fun getProfile(userId: String): Maybe<MyProfile> =
             RxFirestore.getDocument(firestore.collection(COLLECTION_USERS)
                     .document(userId), MyProfile::class.java)
-                    .timeout(1, TimeUnit.MINUTES)
 
     override fun getAllNotes(userId: String): Single<List<MyNote>> =
             RxFirestore.getCollection(firestore.collection(COLLECTION_USERS)
                     .document(userId)
                     .collection(COLLECTION_NOTES), MyNote::class.java)
-                    .timeout(1, TimeUnit.MINUTES)
                     .toSingle(emptyList())
 
     override fun getAllCategories(userId: String): Single<List<MyCategory>> =
             RxFirestore.getCollection(firestore.collection(COLLECTION_USERS)
                     .document(userId)
                     .collection(COLLECTION_CATEGORIES), MyCategory::class.java)
-                    .timeout(1, TimeUnit.MINUTES)
                     .toSingle(emptyList())
 
     override fun getAllTags(userId: String): Single<List<MyTag>> =
             RxFirestore.getCollection(firestore.collection(COLLECTION_USERS)
                     .document(userId)
                     .collection(COLLECTION_TAGS), MyTag::class.java)
-                    .timeout(1, TimeUnit.MINUTES)
                     .toSingle(emptyList())
 
     override fun getAllAppearances(userId: String): Single<List<MyNoteAppearance>> =
             RxFirestore.getCollection(firestore.collection(COLLECTION_USERS)
                     .document(userId)
                     .collection(COLLECTION_APPEARANCES), MyNoteAppearance::class.java)
-                    .timeout(1, TimeUnit.MINUTES)
                     .toSingle(emptyList())
 
     override fun getAllNoteTags(userId: String): Single<List<NoteTag>> =
             RxFirestore.getCollection(firestore.collection(COLLECTION_USERS)
                     .document(userId)
                     .collection(COLLECTION_NOTE_TAGS), NoteTag::class.java)
-                    .timeout(1, TimeUnit.MINUTES)
                     .toSingle(emptyList())
 
     override fun getAllNoteLocations(userId: String): Single<List<NoteLocation>> =
             RxFirestore.getCollection(firestore.collection(COLLECTION_USERS)
                     .document(userId)
                     .collection(COLLECTION_NOTE_LOCATIONS), NoteLocation::class.java)
-                    .timeout(1, TimeUnit.MINUTES)
                     .toSingle(emptyList())
 
     override fun getAllLocations(userId: String): Single<List<MyLocation>> =
             RxFirestore.getCollection(firestore.collection(COLLECTION_USERS)
                     .document(userId)
                     .collection(COLLECTION_LOCATIONS), MyLocation::class.java)
-                    .timeout(1, TimeUnit.MINUTES)
                     .map { locations -> locations.distinctBy { it.id } }
                     .toSingle(emptyList())
 
@@ -350,14 +338,12 @@ class CloudSourceImp @Inject constructor(
             RxFirestore.getCollection(firestore.collection(COLLECTION_USERS)
                     .document(userId)
                     .collection(COLLECTION_FORECASTS), MyForecast::class.java)
-                    .timeout(1, TimeUnit.MINUTES)
                     .toSingle(emptyList())
 
     override fun getAllImages(userId: String): Single<List<MyImage>> =
             RxFirestore.getCollection(firestore.collection(COLLECTION_USERS)
                     .document(userId)
                     .collection(COLLECTION_IMAGES), MyImage::class.java)
-                    .timeout(1, TimeUnit.MINUTES)
                     .toSingle(emptyList())
 
     override fun loadImageFiles(images: List<MyImage>, userId: String): Completable =
@@ -370,7 +356,6 @@ class CloudSourceImp @Inject constructor(
                                 .child(image.noteId)
                                 .child(COLLECTION_IMAGES)
                                 .child(image.name), Uri.parse(image.path))
-                                .timeout(1, TimeUnit.MINUTES)
                     }
                     .collectInto(mutableListOf<FileDownloadTask.TaskSnapshot>()) { l, i -> l.add(i) }
                     .ignoreElement()
@@ -379,6 +364,5 @@ class CloudSourceImp @Inject constructor(
             RxFirestore.getCollection(firestore.collection(COLLECTION_USERS)
                     .document(userId)
                     .collection(COLLECTION_SPANS), MyTextSpan::class.java)
-                    .timeout(1, TimeUnit.MINUTES)
                     .toSingle(emptyList())
 }

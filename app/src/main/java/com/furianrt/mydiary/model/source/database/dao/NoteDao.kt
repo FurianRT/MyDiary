@@ -61,10 +61,29 @@ interface NoteDao {
 
     @Transaction
     @Query("SELECT * FROM ${MyNote.TABLE_NAME} " +
-            "LEFT JOIN ${MyMood.TABLE_NAME} ON ${MyNote.FIELD_MOOD} = ${MyMood.FIELD_ID} AND ${MyNote.FIELD_IS_DELETED} = 0 " +
-            "LEFT JOIN ${MyNoteAppearance.TABLE_NAME} ON ${MyNote.FIELD_ID} = ${MyNoteAppearance.FIELD_ID} " +
-            "LEFT JOIN ${MyCategory.TABLE_NAME} ON ${MyNote.FIELD_CATEGORY} = ${MyCategory.FIELD_ID} AND ${MyCategory.FIELD_IS_DELETED} = 0 " +
+            "LEFT JOIN ${MyMood.TABLE_NAME} " +
+            "ON ${MyNote.FIELD_MOOD} = ${MyMood.FIELD_ID} " +
+            "LEFT JOIN ${MyCategory.TABLE_NAME} " +
+            "ON ${MyNote.FIELD_CATEGORY} = ${MyCategory.FIELD_ID} " +
+            "AND ${MyCategory.FIELD_IS_DELETED} = 0 " +
             "WHERE ${MyNote.FIELD_IS_DELETED} = 0 " +
             "ORDER BY time DESC")
     fun getAllNotesWithProp(): Flowable<List<MyNoteWithProp>>
+
+    @Transaction
+    @Query("SELECT * FROM ${MyNote.TABLE_NAME} " +
+            "LEFT JOIN ${MyNoteAppearance.TABLE_NAME} " +
+            "ON ${MyNote.FIELD_ID} = ${MyNoteAppearance.FIELD_ID} " +
+            "AND ${MyNoteAppearance.FIELD_IS_DELETED} = 0 " +
+            "WHERE ${MyNote.FIELD_IS_DELETED} = 0")
+    fun getAllNotesWithImages(): Flowable<List<MyNoteWithImages>>
+
+    @Transaction
+    @Query("SELECT * FROM ${MyNote.TABLE_NAME} " +
+            "LEFT JOIN ${MyNoteAppearance.TABLE_NAME} " +
+            "ON ${MyNote.FIELD_ID} = ${MyNoteAppearance.FIELD_ID} " +
+            "AND ${MyNoteAppearance.FIELD_IS_DELETED} = 0 " +
+            "WHERE ${MyNote.FIELD_IS_DELETED} = 0 " +
+            "AND ${MyNote.FIELD_ID} = :noteId")
+    fun getNoteWithImagesAsList(noteId: String): Flowable<List<MyNoteWithImages>>
 }

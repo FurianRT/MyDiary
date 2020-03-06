@@ -41,20 +41,20 @@ class AuthSourceImp @Inject constructor(
     override fun signUp(email: String, password: String): Single<MyUser> =
             RxFirebaseAuth.createUserWithEmailAndPassword(firebaseAuth, email, password)
                     .toSingle()
-                    .map { it.user }
-                    .map { MyUser(it.uid, it.email ?: "", it.photoUrl?.toString()) }
+                    .map { it.user!! }
+                    .map { MyUser(it.uid, it.email!!, it.photoUrl?.toString()) }
 
     override fun signIn(email: String, password: String): Single<String> =
             RxFirebaseAuth.signInWithEmailAndPassword(firebaseAuth, email, password)
                     .toSingle()
-                    .map { it.user?.uid }
+                    .map { it.user!!.uid }
 
     override fun signOut(): Completable = Completable.fromAction { firebaseAuth.signOut() }
 
     override fun observeAuthState(): Observable<Int> =
             RxFirebaseAuth.observeAuthState(firebaseAuth)
-                    .map {
-                        if (it.currentUser == null) {
+                    .map { auth ->
+                        if (auth.currentUser == null) {
                             AuthSource.STATE_SIGN_OUT
                         } else {
                             AuthSource.STATE_SIGN_IN
@@ -64,10 +64,14 @@ class AuthSourceImp @Inject constructor(
     override fun isSignedIn(): Boolean = firebaseAuth.currentUser != null
 
     override fun updatePassword(oldPassword: String, newPassword: String): Completable {
-        val currentUser = firebaseAuth.currentUser!!    //todo опасное место
-        val userCredential = EmailAuthProvider.getCredential(currentUser.email!!, oldPassword)
+        val currentUser = firebaseAuth.currentUser ?: throw UserSignedOutException()
+        val email = currentUser.email ?: throw UserSignedOutException()
+        val userCredential = EmailAuthProvider.getCredential(email, oldPassword)
         return RxFirebaseUser.reauthenticateAndRetrieveData(currentUser, userCredential)
-                .flatMapCompletable { RxFirebaseUser.updatePassword(it.user!!, newPassword) }
+                .flatMapCompletable { result ->
+                    val user = result.user ?: throw UserSignedOutException()
+                    RxFirebaseUser.updatePassword(user, newPassword)
+                }
     }
 
     override fun isProfileExists(email: String): Single<Boolean> =

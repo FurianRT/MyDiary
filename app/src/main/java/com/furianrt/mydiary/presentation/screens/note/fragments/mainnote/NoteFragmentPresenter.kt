@@ -61,12 +61,14 @@ class NoteFragmentPresenter @Inject constructor(
 
     private var mIsNewNote = true
     private lateinit var mNoteId: String
+    private var mNoteAppearance: MyNoteAppearance? = null
 
     private var mNoteTextBuffer = ArrayList<UndoRedoEntry>(UNDO_REDO_BUFFER_SIZE)
 
-    override fun init(noteId: String, newNote: Boolean) {
+    override fun init(noteId: String, newNote: Boolean, noteAppearance: MyNoteAppearance?) {
         mIsNewNote = newNote
         mNoteId = noteId
+        mNoteAppearance = noteAppearance
     }
 
     override fun attachView(view: NoteFragmentContract.View) {
@@ -136,9 +138,11 @@ class NoteFragmentPresenter @Inject constructor(
     }
 
     private fun loadNoteAppearance() {
+        mNoteAppearance?.let { view?.updateNoteAppearance(it) }
         addDisposable(getAppearanceUseCase(mNoteId)
                 .observeOn(scheduler.ui())
                 .subscribe({ appearance ->
+                    mNoteAppearance = appearance
                     view?.updateNoteAppearance(appearance)
                 }, { error ->
                     error.printStackTrace()
