@@ -86,13 +86,13 @@ class NoteFragment : BaseFragment(R.layout.fragment_note), NoteFragmentContract.
         private const val MAX_IMAGE_COUNT_TO_SHARE = 15
 
         @JvmStatic
-        fun newInstance(noteId: String, isNewNote: Boolean, withImage: Boolean, appearance: MyNoteAppearance) =
+        fun newInstance(noteId: String, isNewNote: Boolean, withImage: Boolean, appearance: MyNoteAppearance?) =
                 NoteFragment().apply {
                     arguments = Bundle().apply {
                         putString(ARG_NOTE_ID, noteId)
                         putBoolean(ARG_IS_NEW_NOTE, isNewNote)
                         putBoolean(ARG_NOTE_WITH_IMAGE, withImage)
-                        putParcelable(ARG_NOTE_APPEARANCE, appearance)
+                        appearance?.let { putParcelable(ARG_NOTE_APPEARANCE, it) }
                     }
                 }
     }
@@ -126,7 +126,7 @@ class NoteFragment : BaseFragment(R.layout.fragment_note), NoteFragmentContract.
         with(requireArguments()) {
             mNoteId = getString(ARG_NOTE_ID)
             mIsNewNote = getBoolean(ARG_IS_NEW_NOTE)
-            presenter.init(mNoteId!!, mIsNewNote, getParcelable(ARG_NOTE_APPEARANCE)!!)
+            presenter.init(mNoteId!!, mIsNewNote, getParcelable(ARG_NOTE_APPEARANCE))
         }
 
         mPhotoPath = savedInstanceState?.getString(BUNDLE_PHOTO_PATH)

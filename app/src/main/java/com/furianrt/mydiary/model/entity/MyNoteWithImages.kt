@@ -15,7 +15,7 @@ import androidx.room.Ignore
 
 data class MyNoteWithImages(
         @Embedded var note: MyNote = MyNote(),
-        @Embedded var appearance: MyNoteAppearance = MyNoteAppearance(),
+        @Embedded var appearance: MyNoteAppearance? = null,
         @Ignore var images: List<MyImage> = emptyList(),
         @Ignore var deletedImages: List<MyImage> = emptyList()
 ) {
