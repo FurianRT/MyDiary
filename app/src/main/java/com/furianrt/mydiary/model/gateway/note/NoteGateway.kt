@@ -13,7 +13,6 @@ package com.furianrt.mydiary.model.gateway.note
 import com.furianrt.mydiary.model.entity.MyNote
 import com.furianrt.mydiary.model.entity.MyNoteWithImages
 import com.furianrt.mydiary.model.entity.MyNoteWithProp
-import com.furianrt.mydiary.model.entity.NoteData
 import io.reactivex.*
 
 interface NoteGateway {
@@ -38,6 +37,4 @@ interface NoteGateway {
     fun saveNotesInCloud(notes: List<MyNote>): Completable
     fun isSortDesc(): Boolean
     fun setSortDesc(desc: Boolean)
-    fun sendNoteUpdateEvent(data: NoteData)
-    fun observeNoteUpdateEvent(): Observable<NoteData>
 }

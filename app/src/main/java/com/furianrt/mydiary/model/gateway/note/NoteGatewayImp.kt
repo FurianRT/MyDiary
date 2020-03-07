@@ -18,7 +18,6 @@ import com.furianrt.mydiary.model.source.database.dao.NoteTagDao
 import com.furianrt.mydiary.model.source.preferences.PreferencesSource
 import com.furianrt.mydiary.utils.MyRxUtils
 import io.reactivex.*
-import io.reactivex.subjects.PublishSubject
 import javax.inject.Inject
 
 class NoteGatewayImp @Inject constructor(
@@ -29,8 +28,6 @@ class NoteGatewayImp @Inject constructor(
         private val auth: AuthSource,
         private val scheduler: MyRxUtils.BaseSchedulerProvider
 ) : NoteGateway {
-
-    private val mSaveNoteDataSubject = PublishSubject.create<NoteData>()
 
     override fun insertNote(note: MyNote): Completable =
             noteDao.insert(note)
@@ -114,12 +111,4 @@ class NoteGatewayImp @Inject constructor(
     override fun setSortDesc(desc: Boolean) {
         prefs.setSortDesc(desc)
     }
-
-    override fun sendNoteUpdateEvent(data: NoteData) {
-        mSaveNoteDataSubject.onNext(data)
-    }
-
-    override fun observeNoteUpdateEvent(): Observable<NoteData> =
-            mSaveNoteDataSubject
-                    .subscribeOn(scheduler.io())
 }

@@ -25,11 +25,12 @@
 
         <TextView
             android:id="@+id/text_note_image_counter"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|start"
             android:layout_marginStart="8dp"
             android:layout_marginBottom="8dp"
+            android:gravity="start|center_vertical"
             android:textColor="@color/white"
             android:textSize="14sp"
             android:textStyle="bold"

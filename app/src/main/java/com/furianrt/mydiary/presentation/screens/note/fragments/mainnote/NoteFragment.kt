@@ -112,7 +112,7 @@ class NoteFragment : BaseFragment(R.layout.fragment_note), NoteFragmentContract.
             mImagePagerPosition = pager_note_image.currentItem
             text_note_image_counter.text = getString(
                     R.string.counter_format,
-                    position + 1,
+                    mImagePagerPosition + 1,
                     mImagePagerAdapter.itemCount
             )
         }
@@ -730,7 +730,7 @@ class NoteFragment : BaseFragment(R.layout.fragment_note), NoteFragmentContract.
         text_note_image_counter.text = getString(
                 R.string.counter_format,
                 mImagePagerPosition + 1,
-                mImagePagerAdapter.itemCount
+                images.count()
         )
         if (childFragmentManager.findFragmentByTag(NoteEditFragment.TAG) == null) {
             enableActionBarExpanding(expanded = true, animate = true)
