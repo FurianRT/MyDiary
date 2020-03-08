@@ -123,7 +123,13 @@ class PinActivity : BaseActivity(R.layout.activity_pin), PinContract.View,
         button_zero.setOnClickListener { valueEntered(0) }
         button_backspace.setOnClickListener { presenter.onButtonBackspaceClick() }
         button_forgot_pin.setOnClickListener { presenter.onButtonForgotPinClick() }
-        button_pin_close.setOnClickListener { presenter.onButtonCloseClick() }
+        button_pin_close.setOnClickListener {
+            when (mMode) {
+                MODE_CREATE -> presenter.onButtonCloseClickModeCreate()
+                MODE_REMOVE -> presenter.onButtonCloseClickModeRemove()
+                MODE_LOCK -> presenter.onButtonCloseClickModeLock()
+            }
+        }
         button_fingerprint.setOnClickListener { presenter.onButtonFingerprintClick() }
     }
 
@@ -229,16 +235,26 @@ class PinActivity : BaseActivity(R.layout.activity_pin), PinContract.View,
         button_fingerprint.visibility = View.VISIBLE
     }
 
-    override fun close() {
-        if (mMode == MODE_LOCK) {
-            moveTaskToBack(true)
-        } else {
-            finish()
-        }
+    override fun closeView() {
+        finish()
+    }
+
+    override fun closeApp() {
+        moveTaskToBack(true)
     }
 
     override fun closeBottomSheet() {
         mBottomSheet.state = BottomSheetBehavior.STATE_COLLAPSED
+    }
+
+    override fun onBackPressed() {
+        if (mMode == MODE_LOCK && mBottomSheet.state == BottomSheetBehavior.STATE_EXPANDED) {
+            closeBottomSheet()
+        } else if (mMode == MODE_LOCK) {
+            presenter.onButtonCloseClickModeLock()
+        } else {
+            super.onBackPressed()
+        }
     }
 
     override fun onStart() {

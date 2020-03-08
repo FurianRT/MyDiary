@@ -48,8 +48,8 @@ class ChangePasswordUseCase @Inject constructor(
                     .flatMapCompletable { profileGateway.updatePassword(oldPassword, newPassword) }
                     .onErrorResumeNext { error ->
                         when (error) {
-                            is FirebaseAuthInvalidCredentialsException -> throw WrongOldPasswordException()
-                            is FirebaseAuthInvalidUserException -> throw InvalidUserExceptionException()
+                            is FirebaseAuthInvalidCredentialsException -> Completable.error(WrongOldPasswordException())
+                            is FirebaseAuthInvalidUserException -> Completable.error(InvalidUserExceptionException())
                             else -> Completable.error(error)
                         }
                     }

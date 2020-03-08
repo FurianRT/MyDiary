@@ -115,7 +115,9 @@ class MyApp : Application(), Application.ActivityLifecycleCallbacks {
     }
 
     override fun onActivityPaused(activity: Activity?) {
-        authorizeUseCase(true)
+        if (activity !is PinActivity) {
+            authorizeUseCase(true)
+        }
     }
 
     override fun onActivityStopped(activity: Activity?) {
