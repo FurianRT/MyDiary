@@ -12,6 +12,7 @@ package com.furianrt.mydiary.domain.auth
 
 import com.furianrt.mydiary.model.gateway.device.DeviceGateway
 import com.furianrt.mydiary.model.gateway.profile.ProfileGateway
+import com.google.firebase.FirebaseTooManyRequestsException
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
 import com.google.firebase.auth.FirebaseAuthInvalidUserException
 import io.reactivex.Completable
@@ -31,6 +32,7 @@ class ChangePasswordUseCase @Inject constructor(
     class WrongOldPasswordException : Throwable()
     class InvalidUserExceptionException : Throwable()
     class NetworkNotAvailableException : Throwable()
+    class TooManyRequestsException : Throwable()
 
     companion object {
         private const val PASSWORD_MIN_LENGTH = 6
@@ -48,6 +50,7 @@ class ChangePasswordUseCase @Inject constructor(
                     .flatMapCompletable { profileGateway.updatePassword(oldPassword, newPassword) }
                     .onErrorResumeNext { error ->
                         when (error) {
+                            is FirebaseTooManyRequestsException -> Completable.error(TooManyRequestsException())
                             is FirebaseAuthInvalidCredentialsException -> Completable.error(WrongOldPasswordException())
                             is FirebaseAuthInvalidUserException -> Completable.error(InvalidUserExceptionException())
                             else -> Completable.error(error)

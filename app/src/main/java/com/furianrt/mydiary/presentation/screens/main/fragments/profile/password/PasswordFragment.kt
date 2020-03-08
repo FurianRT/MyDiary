@@ -119,6 +119,10 @@ class PasswordFragment : BaseFragment(R.layout.fragment_password), PasswordContr
         text_error.text = getString(R.string.fragment_registration_error_short_password)
     }
 
+    override fun showErrorTooManyRequests() {
+        text_error.text = getString(R.string.fragment_registration_error_too_many_requests)
+    }
+
     override fun showSuccessPasswordChange() {
         analytics.sendEvent(MyAnalytics.EVENT_PASSWORD_CHANGED)
         fragmentManager?.let {

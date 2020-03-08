@@ -183,6 +183,7 @@
     <string name="fragment_registration_password_error">Пароли не совпадают</string>
     <string name="fragment_registration_error_email_exists">Email уже зарегистрирован</string>
     <string name="fragment_registration_error_short_password">Пароль слишком короткий</string>
+    <string name="fragment_registration_error_too_many_requests">Слишком много запросов, попробуйте позже</string>
     <string name="fragment_done_auth_done">Добро пожаловать!</string>
     <string name="fragment_done_email_sent">Письмо отправлено!</string>
     <string name="nav_header_main_sign_in">Войти в аккаунт</string>
