@@ -23,7 +23,12 @@ class UpdateAppearanceUseCase @Inject constructor(
 
     operator fun invoke(appearance: MyNoteAppearance): Completable =
             appearanceGateway.updateAppearance(appearance.apply { syncWith.clear() })
-                    .andThen(noteGateway.getNote(appearance.appearanceId))
-                    .map { it.apply { it.syncWith.clear() } }
-                    .flatMapCompletable { noteGateway.updateNote(it) }
+                    .andThen(noteGateway.getNote(appearance.appearanceId).firstOrError())
+                    .flatMapCompletable { result ->
+                        if (result.isPresent) {
+                            noteGateway.updateNote(result.get().apply { syncWith.clear() })
+                        } else {
+                            Completable.complete()
+                        }
+                    }
 }

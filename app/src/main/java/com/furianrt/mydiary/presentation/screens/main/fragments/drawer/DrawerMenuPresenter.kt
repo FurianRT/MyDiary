@@ -18,6 +18,7 @@ import com.furianrt.mydiary.utils.MyRxUtils
 import io.reactivex.Single
 import net.danlew.android.joda.DateUtils
 import org.joda.time.DateTime
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 class DrawerMenuPresenter @Inject constructor(
@@ -84,6 +85,7 @@ class DrawerMenuPresenter @Inject constructor(
 
     private fun loadSearchEntries() {
         addDisposable(getSearchEntriesUseCase()
+                .debounce(100L, TimeUnit.MILLISECONDS, scheduler.computation())
                 .observeOn(scheduler.ui())
                 .subscribe { view?.showSearchEntries(it) })
     }
@@ -91,7 +93,11 @@ class DrawerMenuPresenter @Inject constructor(
     private fun loadProfile() {
         addDisposable(getProfileUseCase()
                 .observeOn(scheduler.ui())
-                .subscribe { view?.showProfile(it) })
+                .subscribe { result ->
+                    if (result.isPresent) {
+                        view?.showProfile(result.get())
+                    }
+                })
 
         addDisposable(getAuthStateUseCase()
                 .filter { it == GetAuthStateUseCase.STATE_SIGN_OUT }

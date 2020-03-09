@@ -42,9 +42,6 @@
             android:name=".services.SyncService"
             android:exported="false" />
         <service
-            android:name=".services.SaveNoteService"
-            android:exported="false" />
-        <service
             android:name=".services.MessagingService"
             tools:ignore="ExportedService">
             <intent-filter>

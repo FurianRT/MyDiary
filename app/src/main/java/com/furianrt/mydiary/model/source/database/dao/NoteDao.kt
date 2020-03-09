@@ -14,8 +14,6 @@ import androidx.room.*
 import com.furianrt.mydiary.model.entity.*
 import io.reactivex.Completable
 import io.reactivex.Flowable
-import io.reactivex.Maybe
-import io.reactivex.Single
 
 @Dao
 interface NoteDao {
@@ -35,9 +33,6 @@ interface NoteDao {
     @Query("UPDATE ${MyNote.TABLE_NAME} SET ${MyNote.FIELD_TITLE} = :title, ${MyNote.FIELD_CONTENT} = :content, ${MyNote.FIELD_SYNC_WITH} = '[]' WHERE ${MyNote.FIELD_ID} = :noteId")
     fun updateNoteText(noteId: String, title: String, content: String): Completable
 
-    @Query("UPDATE ${MyNote.TABLE_NAME} SET ${MyNote.FIELD_TITLE} = :title, ${MyNote.FIELD_CONTENT} = :content, ${MyNote.FIELD_SYNC_WITH} = '[]' WHERE ${MyNote.FIELD_ID} = :noteId")
-    fun updateNoteTextBlocking(noteId: String, title: String, content: String)
-
     @Query("UPDATE ${MyNote.TABLE_NAME} SET ${MyNote.FIELD_IS_DELETED} = 1, ${MyNote.FIELD_SYNC_WITH} = '[]' WHERE ${MyNote.FIELD_ID} = :noteId")
     fun delete(noteId: String): Completable
 
@@ -49,12 +44,6 @@ interface NoteDao {
 
     @Query("SELECT * FROM ${MyNote.TABLE_NAME} WHERE ${MyNote.FIELD_IS_DELETED} = 0")
     fun getAllNotes(): Flowable<List<MyNote>>
-
-    @Query("SELECT * FROM ${MyNote.TABLE_NAME} WHERE id_note =:noteId AND ${MyNote.FIELD_IS_DELETED} = 0")
-    fun findNote(noteId: String): Maybe<MyNote>
-
-    @Query("SELECT * FROM ${MyNote.TABLE_NAME} WHERE id_note =:noteId AND ${MyNote.FIELD_IS_DELETED} = 0")
-    fun getNote(noteId: String): Single<MyNote>
 
     @Query("SELECT * FROM ${MyNote.TABLE_NAME} WHERE id_note =:noteId AND ${MyNote.FIELD_IS_DELETED} = 0")
     fun getNoteAsList(noteId: String): Flowable<List<MyNote>>

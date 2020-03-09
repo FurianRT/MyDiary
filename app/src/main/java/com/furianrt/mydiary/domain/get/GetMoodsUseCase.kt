@@ -12,6 +12,7 @@ package com.furianrt.mydiary.domain.get
 
 import com.furianrt.mydiary.model.entity.MyMood
 import com.furianrt.mydiary.model.gateway.mood.MoodGateway
+import com.google.common.base.Optional
 import io.reactivex.Flowable
 import javax.inject.Inject
 
@@ -21,5 +22,5 @@ class GetMoodsUseCase @Inject constructor(
 
     operator fun invoke(): Flowable<List<MyMood>> = moodGateway.getAllMoods()
 
-    operator fun invoke(moodId: Int): Flowable<MyMood> = moodGateway.getMood(moodId)
+    operator fun invoke(moodId: Int): Flowable<Optional<MyMood>> = moodGateway.getMood(moodId)
 }

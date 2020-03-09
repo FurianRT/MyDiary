@@ -25,8 +25,10 @@ class AboutProfilePresenter @Inject constructor(
         super.attachView(view)
         addDisposable(getProfileUseCase()
                 .observeOn(scheduler.ui())
-                .subscribe { profile ->
-                    view.showProfileInfo(profile, getTimeFormatUseCase() == GetTimeFormatUseCase.TIME_FORMAT_24)
+                .subscribe { result ->
+                    if (result.isPresent) {
+                        view.showProfileInfo(result.get(), getTimeFormatUseCase() == GetTimeFormatUseCase.TIME_FORMAT_24)
+                    }
                 })
     }
 

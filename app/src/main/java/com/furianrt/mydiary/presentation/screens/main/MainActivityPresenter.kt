@@ -20,8 +20,6 @@ import com.furianrt.mydiary.domain.check.IsDailyImageEnabledUseCase
 import com.furianrt.mydiary.domain.check.IsNeedRateOfferUseCase
 import com.furianrt.mydiary.domain.delete.DeleteProfileUseCase
 import com.furianrt.mydiary.domain.get.*
-import com.furianrt.mydiary.domain.update.UpdateNoteSpansUseCase
-import com.furianrt.mydiary.domain.update.UpdateNoteUseCase
 import com.furianrt.mydiary.utils.MyRxUtils
 import com.furianrt.mydiary.utils.generateUniqueId
 import io.reactivex.disposables.Disposable
@@ -90,7 +88,7 @@ class MainActivityPresenter @Inject constructor(
 
     override fun onMenuAllNotesClick() {
         addDisposable(getFullNotesUseCase()
-                .first(ArrayList())
+                .firstOrError()
                 .observeOn(scheduler.ui())
                 .subscribe { notes ->
                     if (notes.isNotEmpty()) {
@@ -270,7 +268,11 @@ class MainActivityPresenter @Inject constructor(
     private fun loadProfile() {
         addDisposable(getProfileUseCase()
                 .observeOn(scheduler.ui())
-                .subscribe { profile -> view?.showProfile(profile) })
+                .subscribe { result ->
+                    if (result.isPresent) {
+                        view?.showProfile(result.get())
+                    }
+                })
 
         addDisposable(getAuthStateUseCase()
                 .filter { it == GetAuthStateUseCase.STATE_SIGN_OUT }

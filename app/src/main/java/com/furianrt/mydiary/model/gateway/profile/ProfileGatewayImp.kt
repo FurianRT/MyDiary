@@ -15,6 +15,7 @@ import com.furianrt.mydiary.model.source.auth.AuthSource
 import com.furianrt.mydiary.model.source.cloud.CloudSource
 import com.furianrt.mydiary.model.source.database.dao.ProfileDao
 import com.furianrt.mydiary.utils.MyRxUtils
+import com.google.common.base.Optional
 import io.reactivex.Completable
 import io.reactivex.Flowable
 import io.reactivex.Observable
@@ -40,8 +41,9 @@ class ProfileGatewayImp @Inject constructor(
             profileDao.clearProfile()
                     .subscribeOn(scheduler.io())
 
-    override fun getDbProfile(): Flowable<MyProfile> =
-            profileDao.getProfile()
+    override fun getDbProfile(): Flowable<Optional<MyProfile>> =
+            profileDao.getProfiles()
+                    .map { Optional.fromNullable(it.firstOrNull()) }
                     .subscribeOn(scheduler.io())
 
     override fun isProfileExists(email: String): Single<Boolean> =

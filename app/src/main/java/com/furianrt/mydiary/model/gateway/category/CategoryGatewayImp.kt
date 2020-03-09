@@ -15,6 +15,7 @@ import com.furianrt.mydiary.model.source.auth.AuthSource
 import com.furianrt.mydiary.model.source.cloud.CloudSource
 import com.furianrt.mydiary.model.source.database.dao.CategoryDao
 import com.furianrt.mydiary.utils.MyRxUtils
+import com.google.common.base.Optional
 import io.reactivex.*
 import javax.inject.Inject
 
@@ -53,8 +54,9 @@ class CategoryGatewayImp @Inject constructor(
             categoryDao.getAllCategories()
                     .subscribeOn(scheduler.io())
 
-    override fun getCategory(categoryId: String): Single<MyCategory> =
-            categoryDao.getCategory(categoryId)
+    override fun getCategory(noteId: String): Flowable<Optional<MyCategory>> =
+            categoryDao.getCategory(noteId)
+                    .map { Optional.fromNullable(it.firstOrNull()) }
                     .subscribeOn(scheduler.io())
 
     override fun getDeletedCategories(): Flowable<List<MyCategory>> =

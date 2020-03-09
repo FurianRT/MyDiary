@@ -455,14 +455,14 @@ class NoteFragment : BaseFragment(R.layout.fragment_note), NoteFragmentContract.
 
         val image = layout_tags.getChildAt(0) as ImageView
         image.setColorFilter(
-                tagsAndAppearance.appearance.surfaceTextColor
+                tagsAndAppearance.appearance?.surfaceTextColor
                         ?: requireContext().getColorCompat(R.color.black),
                 PorterDuff.Mode.SRC_IN
         )
         image.alpha = 0.4f
 
         val textNoTags = TextView(requireContext())
-        textNoTags.setTextColor(tagsAndAppearance.appearance.textColor ?: Color.BLACK)
+        textNoTags.setTextColor(tagsAndAppearance.appearance?.textColor ?: Color.BLACK)
         textNoTags.setText(R.string.choose_tags)
         textNoTags.alpha = 0.4f
 
@@ -480,12 +480,14 @@ class NoteFragment : BaseFragment(R.layout.fragment_note), NoteFragmentContract.
         layout_tags.removeViews(1, layout_tags.flexItemCount - 1)
         val image = layout_tags.getChildAt(0) as ImageView
         image.setColorFilter(
-                tagsAndAppearance.appearance.surfaceTextColor ?: Color.BLACK,
+                tagsAndAppearance.appearance?.surfaceTextColor ?: Color.BLACK,
                 PorterDuff.Mode.SRC_IN
         )
         image.alpha = 1.0f
         for (tag in tagsAndAppearance.tags) {
-            layout_tags.addView(wrapTextIntoCardView(tag.name, tagsAndAppearance.appearance))
+            tagsAndAppearance.appearance?.let { appearance ->
+                layout_tags.addView(wrapTextIntoCardView(tag.name, appearance))
+            }
         }
     }
 

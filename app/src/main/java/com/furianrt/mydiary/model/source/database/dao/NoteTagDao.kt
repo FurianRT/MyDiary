@@ -52,8 +52,8 @@ interface NoteTagDao {
     @Query("SELECT ${MyTag.TABLE_NAME}.* FROM ${MyTag.TABLE_NAME} " +
             "INNER JOIN ${NoteTag.TABLE_NAME} " +
             "ON ${MyTag.TABLE_NAME}.${MyTag.FIELD_ID} = ${NoteTag.TABLE_NAME}.${NoteTag.FIELD_TAG_ID} " +
-            "AND ${MyTag.TABLE_NAME}.${MyTag.FIELD_IS_DELETED} = 0 " +
-            "WHERE ${NoteTag.TABLE_NAME}.${NoteTag.FIELD_NOTE_ID} = :noteId " +
-            "AND ${NoteTag.TABLE_NAME}.${NoteTag.FIELD_IS_DELETED} = 0")
+            "AND ${NoteTag.TABLE_NAME}.${NoteTag.FIELD_IS_DELETED} = 0 " +
+            "AND ${NoteTag.TABLE_NAME}.${NoteTag.FIELD_NOTE_ID} = :noteId " +
+            "WHERE ${MyTag.TABLE_NAME}.${MyTag.FIELD_IS_DELETED} = 0")
     fun getTagsForNote(noteId: String): Flowable<List<MyTag>>
 }

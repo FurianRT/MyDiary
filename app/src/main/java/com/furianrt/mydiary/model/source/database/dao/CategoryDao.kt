@@ -12,9 +12,9 @@ package com.furianrt.mydiary.model.source.database.dao
 
 import androidx.room.*
 import com.furianrt.mydiary.model.entity.MyCategory
+import com.furianrt.mydiary.model.entity.MyNote
 import io.reactivex.Completable
 import io.reactivex.Flowable
-import io.reactivex.Single
 
 @Dao
 interface CategoryDao {
@@ -37,8 +37,13 @@ interface CategoryDao {
     @Query("DELETE FROM ${MyCategory.TABLE_NAME} WHERE ${MyCategory.FIELD_IS_DELETED} = 1")
     fun cleanup(): Completable
 
-    @Query("SELECT * FROM ${MyCategory.TABLE_NAME} WHERE ${MyCategory.FIELD_ID} = :categoryId AND ${MyCategory.FIELD_IS_DELETED} = 0")
-    fun getCategory(categoryId: String): Single<MyCategory>
+    @Query("SELECT ${MyCategory.TABLE_NAME}.* FROM ${MyCategory.TABLE_NAME} " +
+            "INNER JOIN ${MyNote.TABLE_NAME} " +
+            "ON ${MyCategory.TABLE_NAME}.${MyCategory.FIELD_ID} = ${MyNote.TABLE_NAME}.${MyNote.FIELD_CATEGORY} " +
+            "AND ${MyNote.TABLE_NAME}.${MyNote.FIELD_ID} = :noteId " +
+            "AND ${MyNote.TABLE_NAME}.${MyNote.FIELD_IS_DELETED} = 0 " +
+            "WHERE ${MyCategory.TABLE_NAME}.${MyCategory.FIELD_IS_DELETED} = 0")
+    fun getCategory(noteId: String): Flowable<List<MyCategory>>
 
     @Query("SELECT * FROM ${MyCategory.TABLE_NAME} WHERE ${MyCategory.FIELD_IS_DELETED} = 1")
     fun getDeletedCategories(): Flowable<List<MyCategory>>

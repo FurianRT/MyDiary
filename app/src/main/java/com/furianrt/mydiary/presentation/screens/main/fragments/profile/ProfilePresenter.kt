@@ -23,7 +23,11 @@ class ProfilePresenter @Inject constructor(
         super.attachView(view)
         addDisposable(getProfileUseCase()
                 .observeOn(scheduler.ui())
-                .subscribe { view.showProfile(it) })
+                .subscribe { result ->
+                    if (result.isPresent) {
+                        view.showProfile(result.get())
+                    }
+                })
     }
 
     override fun onButtonCloseClick() {

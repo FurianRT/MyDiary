@@ -58,7 +58,6 @@ import com.furianrt.mydiary.presentation.screens.pin.fragments.sendemail.SendEma
 import com.furianrt.mydiary.presentation.screens.settings.global.GlobalSettingsFragment
 import com.furianrt.mydiary.presentation.screens.settings.note.NoteSettingsFragment
 import com.furianrt.mydiary.services.MessagingService
-import com.furianrt.mydiary.services.SaveNoteService
 import com.furianrt.mydiary.services.SyncService
 import dagger.Subcomponent
 
@@ -66,7 +65,6 @@ import dagger.Subcomponent
 @Subcomponent(modules = [PresenterContextModule::class, PresenterModule::class])
 interface PresenterComponent {
     fun inject(service: MessagingService)
-    fun inject(service: SaveNoteService)
     fun inject(service: SyncService)
     fun inject(activity: PinActivity)
     fun inject(activity: BaseActivity)

@@ -30,7 +30,5 @@ class GetNotesUseCase @Inject constructor(
                         }
                     }
 
-    operator fun invoke(noteId: String): Flowable<Optional<MyNote>> =
-            noteGateway.getNoteAsList(noteId)
-                    .map { note -> Optional.fromNullable(note.find { it.id == noteId }) }
+    operator fun invoke(noteId: String): Flowable<Optional<MyNote>> = noteGateway.getNote(noteId)
 }

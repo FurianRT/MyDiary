@@ -25,7 +25,6 @@ import com.furianrt.mydiary.presentation.base.BaseFragment
 import com.furianrt.mydiary.model.entity.MyNoteAppearance
 import com.furianrt.mydiary.utils.hideKeyboard
 import com.furianrt.mydiary.presentation.screens.note.fragments.mainnote.NoteFragment
-import com.furianrt.mydiary.services.SaveNoteService
 import com.furianrt.mydiary.utils.getTextSpans
 import com.furianrt.mydiary.utils.showKeyboard
 import kotlinx.android.synthetic.main.fragment_note_edit.*
@@ -179,13 +178,6 @@ class NoteEditFragment : BaseFragment(R.layout.fragment_note_edit), NoteEditCont
             val content = edit_note_content.text ?: Spannable.Factory().newSpannable("")
             val spans = content.getTextSpans()
             presenter.onViewStopped(noteId, title, content.toString(), spans)
-            requireContext().startService(SaveNoteService.getIntent(
-                    requireContext(),
-                    noteId,
-                    title,
-                    content.toString(),
-                    spans
-            ))
         }
         super.onPause()
     }

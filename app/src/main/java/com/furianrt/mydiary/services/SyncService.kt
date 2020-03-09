@@ -58,26 +58,37 @@ class SyncService : Service() {
 
     @Inject
     lateinit var getProfileUseCase: GetProfileUseCase
+
     @Inject
     lateinit var updateProfileUseCase: UpdateProfileUseCase
+
     @Inject
     lateinit var syncNotesUseCase: SyncNotesUseCase
+
     @Inject
     lateinit var syncAppearanceUseCase: SyncAppearanceUseCase
+
     @Inject
     lateinit var syncCategoriesUseCase: SyncCategoriesUseCase
+
     @Inject
     lateinit var syncTagsUseCase: SyncTagsUseCase
+
     @Inject
     lateinit var syncLocationsUseCase: SyncLocationsUseCase
+
     @Inject
     lateinit var syncForecastUseCase: SyncForecastUseCase
+
     @Inject
     lateinit var syncImagesUseCase: SyncImagesUseCase
+
     @Inject
     lateinit var syncCleanupUseCase: SyncCleanupUseCase
+
     @Inject
     lateinit var syncNoteSpansUseCase: SyncNoteSpansUseCase
+
     @Inject
     lateinit var setLastSyncMessageUseCase: SetLastSyncMessageUseCase
 
@@ -106,8 +117,14 @@ class SyncService : Service() {
     private fun startSync() {
         sendProgressUpdate(SyncProgressMessage.SYNC_STARTED, PROGRESS_STARTED)
         mCompositeDisposable.add(getProfileUseCase()
-                .map { it.email }
                 .firstOrError()
+                .map { result ->
+                    if (result.isPresent) {
+                        result.get().email
+                    } else {
+                        throw IllegalStateException()
+                    }
+                }
                 .flatMapPublisher { email ->
                     Single.concat(listOf(
                             syncCategoriesUseCase(email).toSingleDefault(SyncProgressMessage.SYNC_CATEGORIES),

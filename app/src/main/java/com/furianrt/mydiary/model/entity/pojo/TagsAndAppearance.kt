@@ -13,4 +13,4 @@ package com.furianrt.mydiary.model.entity.pojo
 import com.furianrt.mydiary.model.entity.MyNoteAppearance
 import com.furianrt.mydiary.model.entity.MyTag
 
-class TagsAndAppearance(val tags: List<MyTag>, val appearance: MyNoteAppearance)
+class TagsAndAppearance(val tags: List<MyTag>, val appearance: MyNoteAppearance?)

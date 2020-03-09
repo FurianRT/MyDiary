@@ -10,16 +10,24 @@
 
 package com.furianrt.mydiary.domain.update
 
+import com.furianrt.mydiary.domain.get.GetProfileUseCase
 import com.furianrt.mydiary.model.gateway.profile.ProfileGateway
 import io.reactivex.Completable
 import javax.inject.Inject
 
 class UpdateProfileUseCase @Inject constructor(
-        private val profileGateway: ProfileGateway
+        private val profileGateway: ProfileGateway,
+        private val getProfileUseCase: GetProfileUseCase
 ) {
 
     operator fun invoke(syncTime: Long): Completable =
-            profileGateway.getDbProfile()
+            getProfileUseCase()
                     .firstOrError()
-                    .flatMapCompletable { profileGateway.updateProfile(it.apply { lastSyncTime = syncTime }) }
+                    .flatMapCompletable { result ->
+                        if (result.isPresent) {
+                            profileGateway.updateProfile(result.get().apply { lastSyncTime = syncTime })
+                        } else {
+                            Completable.complete()
+                        }
+                    }
 }

@@ -39,7 +39,7 @@ interface AppearanceDao {
     fun cleanup(): Completable
 
     @Query("SELECT * FROM ${MyNoteAppearance.TABLE_NAME} WHERE ${MyNoteAppearance.FIELD_ID} = :appearanceId")
-    fun getNoteAppearance(appearanceId: String): Flowable<MyNoteAppearance>
+    fun getNoteAppearance(appearanceId: String): Flowable<List<MyNoteAppearance>>
 
     @Query("SELECT * FROM ${MyNoteAppearance.TABLE_NAME} WHERE ${MyNoteAppearance.FIELD_IS_DELETED} = 1")
     fun getDeletedAppearances(): Flowable<List<MyNoteAppearance>>

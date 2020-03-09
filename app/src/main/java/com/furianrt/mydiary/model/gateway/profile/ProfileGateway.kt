@@ -11,6 +11,7 @@
 package com.furianrt.mydiary.model.gateway.profile
 
 import com.furianrt.mydiary.model.entity.MyProfile
+import com.google.common.base.Optional
 import io.reactivex.Completable
 import io.reactivex.Flowable
 import io.reactivex.Observable
@@ -26,7 +27,7 @@ interface ProfileGateway {
     fun insertProfile(profile: MyProfile): Completable
     fun updateDbProfile(profile: MyProfile): Completable
     fun clearDbProfile(): Completable
-    fun getDbProfile(): Flowable<MyProfile>
+    fun getDbProfile(): Flowable<Optional<MyProfile>>
     fun getDbProfileCount(): Single<Int>
     fun isProfileExists(email: String): Single<Boolean>
     fun updateProfile(profile: MyProfile): Completable

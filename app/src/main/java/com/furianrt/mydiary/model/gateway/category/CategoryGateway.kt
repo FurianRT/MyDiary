@@ -11,6 +11,7 @@
 package com.furianrt.mydiary.model.gateway.category
 
 import com.furianrt.mydiary.model.entity.MyCategory
+import com.google.common.base.Optional
 import io.reactivex.Completable
 import io.reactivex.Flowable
 import io.reactivex.Single
@@ -23,7 +24,7 @@ interface CategoryGateway {
     fun deleteCategory(category: MyCategory): Completable
     fun deleteCategoriesFromCloud(categories: List<MyCategory>): Completable
     fun cleanupCategories(): Completable
-    fun getCategory(categoryId: String): Single<MyCategory>
+    fun getCategory(noteId: String): Flowable<Optional<MyCategory>>
     fun getAllCategories(): Flowable<List<MyCategory>>
     fun getDeletedCategories(): Flowable<List<MyCategory>>
     fun getAllCategoriesFromCloud(): Single<List<MyCategory>>
