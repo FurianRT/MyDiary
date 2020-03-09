@@ -241,6 +241,7 @@ class NoteListAdapter(
             itemView.text_note_image_day_of_week.text = getDayOfWeek(note.note.time)
             itemView.text_note_image_day.text = getDay(note.note.time)
             itemView.text_image_note_content.setText(note.note.content.applyTextSpans(note.textSpans), TextView.BufferType.SPANNABLE)
+            itemView.text_images.text = note.images.count().toString()
             setTitle(note)
             setTags(note)
             setCategory(note)

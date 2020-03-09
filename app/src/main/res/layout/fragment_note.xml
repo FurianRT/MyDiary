@@ -166,7 +166,7 @@
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:layout_marginEnd="4dp"
-                                    android:src="@drawable/ic_folder_big"
+                                    android:src="@drawable/ic_folder"
                                     tools:ignore="ContentDescription" />
 
                                 <TextView
@@ -231,7 +231,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginEnd="4dp"
-                        android:src="@drawable/ic_place_big"
+                        android:src="@drawable/ic_place"
                         android:tint="@color/black"
                         tools:ignore="ContentDescription" />
 

@@ -61,9 +61,11 @@ class DeviceGatewayImp @Inject constructor(
         override fun onLocationResult(result: LocationResult?) {
             super.onLocationResult(result)
             fusedLocationClient.removeLocationUpdates(this)
-            Thread(Runnable { result?.let {
-                findAddress(it.lastLocation.latitude, it.lastLocation.longitude)
-            } }).start()
+            Thread(Runnable {
+                result?.let {
+                    findAddress(it.lastLocation.latitude, it.lastLocation.longitude)
+                }
+            }).start()
         }
     }
 
@@ -174,7 +176,7 @@ class DeviceGatewayImp @Inject constructor(
     @Synchronized
     override fun clearUriTempFiles() {
         val iterator = mPickits.iterator()
-        while(iterator.hasNext()){
+        while (iterator.hasNext()) {
             iterator.next().deleteTemporaryFile()
         }
         mPickits.clear()
