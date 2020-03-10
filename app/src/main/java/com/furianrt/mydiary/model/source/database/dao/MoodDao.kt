@@ -19,7 +19,7 @@ import io.reactivex.Flowable
 interface MoodDao {
 
     @Query("SELECT * FROM ${MyMood.TABLE_NAME} WHERE ${MyMood.FIELD_ID} = :moodId")
-    fun getMood(moodId: Int): Flowable<MyMood>
+    fun getMood(moodId: Int): Flowable<List<MyMood>>
 
     @Query("SELECT * FROM ${MyMood.TABLE_NAME} ORDER BY ${MyMood.FIELD_ID} DESC")
     fun getAllMoods(): Flowable<List<MyMood>>

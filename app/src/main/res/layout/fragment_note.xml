@@ -3,7 +3,6 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/layout_root_note"
-    android:background="@color/grey_light"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
@@ -19,7 +18,7 @@
             android:id="@+id/layout_category_color"
             android:layout_width="match_parent"
             android:layout_height="5dp"
-            android:visibility="invisible"
+            android:visibility="gone"
             app:cardCornerRadius="0dp"
             app:layout_behavior="@string/appbar_scrolling_view_behavior"
             tools:cardBackgroundColor="@color/blue" />
@@ -167,7 +166,7 @@
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:layout_marginEnd="4dp"
-                                    android:src="@drawable/ic_folder_big"
+                                    android:src="@drawable/ic_folder"
                                     tools:ignore="ContentDescription" />
 
                                 <TextView
@@ -232,7 +231,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginEnd="4dp"
-                        android:src="@drawable/ic_place_big"
+                        android:src="@drawable/ic_place"
                         android:tint="@color/black"
                         tools:ignore="ContentDescription" />
 

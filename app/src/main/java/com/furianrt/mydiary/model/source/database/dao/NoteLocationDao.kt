@@ -45,8 +45,8 @@ interface NoteLocationDao {
     @Query("SELECT ${MyLocation.TABLE_NAME}.* FROM ${MyLocation.TABLE_NAME} " +
             "INNER JOIN ${NoteLocation.TABLE_NAME} " +
             "ON ${MyLocation.TABLE_NAME}.${MyLocation.FIELD_ID} = ${NoteLocation.TABLE_NAME}.${NoteLocation.FIELD_LOCATION_ID} " +
-            "AND ${NoteLocation.FIELD_IS_DELETED} = 0 " +
-            "WHERE ${NoteLocation.FIELD_NOTE_ID} = :noteId AND ${MyLocation.FIELD_IS_DELETED} = 0")
+            "AND ${MyLocation.FIELD_IS_DELETED} = 0 " +
+            "WHERE ${NoteLocation.FIELD_NOTE_ID} = :noteId AND ${NoteLocation.FIELD_IS_DELETED} = 0")
     fun getLocationsForNote(noteId: String): Flowable<List<MyLocation>>
 
     @Query("DELETE FROM ${NoteLocation.TABLE_NAME} WHERE ${NoteLocation.FIELD_IS_DELETED} = 1")

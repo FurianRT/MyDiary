@@ -12,6 +12,7 @@ package com.furianrt.mydiary.domain.get
 
 import com.furianrt.mydiary.model.entity.MyNoteAppearance
 import com.furianrt.mydiary.model.gateway.appearance.AppearanceGateway
+import com.google.common.base.Optional
 import io.reactivex.Flowable
 import javax.inject.Inject
 
@@ -19,19 +20,16 @@ class GetAppearanceUseCase @Inject constructor(
         private val appearanceGateway: AppearanceGateway
 ) {
 
-    operator fun invoke(noteId: String): Flowable<MyNoteAppearance> =
+    operator fun invoke(noteId: String): Flowable<Optional<MyNoteAppearance>> =
             appearanceGateway.getNoteAppearance(noteId)
-                    .map { appearance ->
-                        appearance.textSize =
-                                appearance.textSize ?: appearanceGateway.getTextSize()
-                        appearance.textColor =
-                                appearance.textColor ?: appearanceGateway.getTextColor()
-                        appearance.surfaceTextColor =
-                                appearance.surfaceTextColor ?: appearanceGateway.getSurfaceTextColor()
-                        appearance.background =
-                                appearance.background ?: appearanceGateway.getNoteBackgroundColor()
-                        appearance.textBackground =
-                                appearance.textBackground ?: appearanceGateway.getNoteTextBackgroundColor()
-                        return@map appearance
+                    .map { result ->
+                        if (result.isPresent) {
+                            result.get().textSize = result.get().textSize ?: appearanceGateway.getTextSize()
+                            result.get().textColor = result.get().textColor ?: appearanceGateway.getTextColor()
+                            result.get().surfaceTextColor = result.get().surfaceTextColor ?: appearanceGateway.getSurfaceTextColor()
+                            result.get().background = result.get().background ?: appearanceGateway.getNoteBackgroundColor()
+                            result.get().textBackground = result.get().textBackground ?: appearanceGateway.getNoteTextBackgroundColor()
+                        }
+                        return@map result
                     }
 }

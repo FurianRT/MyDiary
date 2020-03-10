@@ -32,7 +32,7 @@ interface ProfileDao {
     fun clearProfile(): Completable
 
     @Query("SELECT * FROM ${MyProfile.TABLE_NAME}")
-    fun getProfile(): Flowable<MyProfile>
+    fun getProfiles(): Flowable<List<MyProfile>>
 
     @Query("SELECT COUNT(${MyProfile.FIELD_ID}) FROM ${MyProfile.TABLE_NAME}")
     fun getProfileCount(): Single<Int>

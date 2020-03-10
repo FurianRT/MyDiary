@@ -17,7 +17,6 @@ data class MyNoteWithProp(
         @Embedded var note: MyNote = MyNote(),
         @Embedded var mood: MyMood? = null,
         @Embedded var category: MyCategory? = null,
-        @Embedded var appearance: MyNoteAppearance? = null,
         //@Relation использовать не получится, с ним притянутся "удаленные" строки через "удаленные"
         //строки связующих таблиц
         @Ignore var tags: List<MyTag> = emptyList(),

@@ -24,6 +24,7 @@ import com.furianrt.mydiary.domain.save.SaveImagesUseCase
 import com.furianrt.mydiary.domain.save.SaveLocationUseCase
 import com.furianrt.mydiary.domain.update.UpdateNoteUseCase
 import com.furianrt.mydiary.utils.MyRxUtils
+import io.reactivex.Completable
 import org.joda.time.DateTime
 import javax.inject.Inject
 import kotlin.collections.ArrayList
@@ -61,12 +62,14 @@ class NoteFragmentPresenter @Inject constructor(
 
     private var mIsNewNote = true
     private lateinit var mNoteId: String
+    private var mNoteAppearance: MyNoteAppearance? = null
 
     private var mNoteTextBuffer = ArrayList<UndoRedoEntry>(UNDO_REDO_BUFFER_SIZE)
 
-    override fun init(noteId: String, newNote: Boolean) {
+    override fun init(noteId: String, newNote: Boolean, noteAppearance: MyNoteAppearance?) {
         mIsNewNote = newNote
         mNoteId = noteId
+        mNoteAppearance = noteAppearance
     }
 
     override fun attachView(view: NoteFragmentContract.View) {
@@ -136,10 +139,12 @@ class NoteFragmentPresenter @Inject constructor(
     }
 
     private fun loadNoteAppearance() {
+        mNoteAppearance?.let { view?.updateNoteAppearance(it) }
         addDisposable(getAppearanceUseCase(mNoteId)
                 .observeOn(scheduler.ui())
                 .subscribe({ appearance ->
-                    view?.updateNoteAppearance(appearance)
+                    mNoteAppearance = appearance.orNull()
+                    mNoteAppearance?.let { view?.updateNoteAppearance(it) }
                 }, { error ->
                     error.printStackTrace()
                 }))
@@ -196,7 +201,11 @@ class NoteFragmentPresenter @Inject constructor(
                 addDisposable(getMoodsUseCase(moodId)
                         .firstOrError()
                         .observeOn(scheduler.ui())
-                        .subscribe { mood -> view?.showMood(mood) })
+                        .subscribe { result ->
+                            if (result.isPresent) {
+                                view?.showMood(result.get())
+                            }
+                        })
             }
         }
     }
@@ -297,25 +306,32 @@ class NoteFragmentPresenter @Inject constructor(
 
     override fun onDateFieldClick() {
         addDisposable(getNotesUseCase(mNoteId)
-                .map { it.get() }
                 .firstOrError()
                 .observeOn(scheduler.ui())
-                .subscribe { note ->
-                    val date = DateTime(note.time)
-                    view?.showDatePicker(date.year, date.monthOfYear - 1, date.dayOfMonth)
+                .subscribe { result ->
+                    if (result.isPresent) {
+                        val date = DateTime(result.get().time)
+                        view?.showDatePicker(date.year, date.monthOfYear - 1, date.dayOfMonth)
+                    } else {
+                        Completable.complete()
+                    }
                 })
     }
 
     override fun onDateSelected(year: Int, monthOfYear: Int, dayOfMonth: Int) {
         addDisposable(getNotesUseCase(mNoteId)
-                .map { it.get() }
                 .firstOrError()
-                .flatMapCompletable { note ->
-                    val date = DateTime(note.time)
-                            .withYear(year)
-                            .withMonthOfYear(monthOfYear + 1)
-                            .withDayOfMonth(dayOfMonth)
-                    updateNoteUseCase(note.apply { time = date.millis })
+                .flatMapCompletable { result ->
+                    if (result.isPresent) {
+                        val newTime = DateTime(result.get().time)
+                                .withYear(year)
+                                .withMonthOfYear(monthOfYear + 1)
+                                .withDayOfMonth(dayOfMonth)
+                                .millis
+                        updateNoteUseCase(result.get().apply { time = newTime })
+                    } else {
+                        Completable.complete()
+                    }
                 }
                 .observeOn(scheduler.ui())
                 .subscribe())
@@ -323,34 +339,35 @@ class NoteFragmentPresenter @Inject constructor(
 
     override fun onTimeFieldClick() {
         addDisposable(getNotesUseCase(mNoteId)
-                .map { it.get() }
                 .firstOrError()
                 .observeOn(scheduler.ui())
-                .subscribe { note ->
-                    val date = DateTime(note.time)
-                    view?.showTimePicker(
-                            date.hourOfDay,
-                            date.minuteOfHour,
-                            getTimeFormatUseCase() == GetTimeFormatUseCase.TIME_FORMAT_24
-                    )
+                .subscribe { result ->
+                    if (result.isPresent) {
+                        val date = DateTime(result.get().time)
+                        view?.showTimePicker(
+                                date.hourOfDay,
+                                date.minuteOfHour,
+                                getTimeFormatUseCase() == GetTimeFormatUseCase.TIME_FORMAT_24
+                        )
+                    } else {
+                        Completable.complete()
+                    }
                 })
     }
 
     override fun onTimeSelected(hourOfDay: Int, minute: Int) {
         addDisposable(getNotesUseCase(mNoteId)
-                .map { note ->
-                    if (note.isPresent) {
-                        note.get()
-                    } else {
-                        throw IllegalStateException()
-                    }
-                }
                 .firstOrError()
-                .flatMapCompletable { note ->
-                    val date = DateTime(note.time)
-                            .withHourOfDay(hourOfDay)
-                            .withMinuteOfHour(minute)
-                    updateNoteUseCase(note.apply { time = date.millis })
+                .flatMapCompletable { result ->
+                    if (result.isPresent) {
+                        val newTime = DateTime(result.get().time)
+                                .withHourOfDay(hourOfDay)
+                                .withMinuteOfHour(minute)
+                                .millis
+                        updateNoteUseCase(result.get().apply { time = newTime })
+                    } else {
+                        Completable.complete()
+                    }
                 }
                 .observeOn(scheduler.ui())
                 .subscribe())

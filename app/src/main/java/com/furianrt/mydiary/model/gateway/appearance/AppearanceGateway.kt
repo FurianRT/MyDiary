@@ -13,6 +13,7 @@ package com.furianrt.mydiary.model.gateway.appearance
 import android.graphics.Color
 import com.furianrt.mydiary.model.entity.MyNoteAppearance
 import com.furianrt.mydiary.model.source.preferences.PreferencesSource
+import com.google.common.base.Optional
 import io.reactivex.Completable
 import io.reactivex.Flowable
 import io.reactivex.Single
@@ -25,7 +26,7 @@ interface AppearanceGateway {
     fun deleteAppearance(noteId: String): Completable
     fun deleteAppearancesFromCloud(appearances: List<MyNoteAppearance>): Completable
     fun cleanupAppearances(): Completable
-    fun getNoteAppearance(noteId: String): Flowable<MyNoteAppearance>
+    fun getNoteAppearance(noteId: String): Flowable<Optional<MyNoteAppearance>>
     fun getAllNoteAppearances(): Flowable<List<MyNoteAppearance>>
     fun getDeletedAppearances(): Flowable<List<MyNoteAppearance>>
     fun getAllAppearancesFromCloud(): Single<List<MyNoteAppearance>>

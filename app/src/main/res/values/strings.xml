@@ -194,6 +194,7 @@
     <string name="fragment_registration_password_error">Passwords do not match</string>
     <string name="fragment_registration_error_email_exists">Email is already registered</string>
     <string name="fragment_registration_error_short_password">Password is too short</string>
+    <string name="fragment_registration_error_too_many_requests">Please try again later</string>
     <string name="fragment_done_auth_done">Welcome!</string>
     <string name="fragment_done_email_sent">Email sent!</string>
     <string name="nav_header_main_sign_in">Sign in</string>

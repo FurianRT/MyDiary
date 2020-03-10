@@ -53,6 +53,8 @@ class PasswordPresenter @Inject constructor(
                             view?.showErrorWrongPasswordRepeat()
                         is ChangePasswordUseCase.WrongOldPasswordException ->
                             view?.showErrorWrongOldPassword()
+                        is ChangePasswordUseCase.TooManyRequestsException ->
+                            view?.showErrorTooManyRequests()
                         is ChangePasswordUseCase.InvalidUserExceptionException ->
                             signOut()
                         else -> {

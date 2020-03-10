@@ -10,44 +10,54 @@
 
 package com.furianrt.mydiary.domain.update
 
+import com.furianrt.mydiary.domain.get.GetNotesUseCase
 import com.furianrt.mydiary.model.entity.MyNote
 import com.furianrt.mydiary.model.gateway.note.NoteGateway
 import io.reactivex.Completable
 import io.reactivex.Observable
+import io.reactivex.Single
 import javax.inject.Inject
 
 class UpdateNoteUseCase @Inject constructor(
+        private val getNotesUseCase: GetNotesUseCase,
         private val noteGateway: NoteGateway
 ) {
 
     operator fun invoke(note: MyNote): Completable = noteGateway.updateNote(note)
 
     operator fun invoke(noteId: String, moodId: Int): Completable =
-            noteGateway.getNote(noteId)
-                    .flatMapCompletable { noteGateway.updateNote(it.apply { this.moodId = moodId }) }
+            getNotesUseCase(noteId)
+                    .firstOrError()
+                    .flatMapCompletable { result ->
+                        if (result.isPresent) {
+                            this(result.get().apply { this.moodId = moodId })
+                        } else {
+                            Completable.complete()
+                        }
+                    }
 
     operator fun invoke(noteIds: List<String>, categoryId: String): Completable =
             Observable.fromIterable(noteIds)
-                    .flatMapSingle { noteGateway.getNote(it) }
-                    .flatMapSingle { note ->
-                        noteGateway.updateNote(note.apply { this.categoryId = categoryId })
-                                .toSingleDefault(true)
+                    .flatMapSingle { getNotesUseCase(it).firstOrError() }
+                    .flatMapSingle { result ->
+                        if (result.isPresent) {
+                            this(result.get().apply { this.categoryId = categoryId })
+                                    .toSingleDefault(true)
+                        } else {
+                            Single.just(false)
+                        }
                     }
                     .collectInto(mutableListOf<Boolean>()) { l, i -> l.add(i) }
                     .ignoreElement()
 
-    fun invokeTempSolution(noteId: String, title: String, content: String) {
-        noteGateway.updateNoteTextBlocking(noteId, title, content) //todo исправить это дерьмо
-    }
-
     operator fun invoke(noteId: String, title: String, content: String): Completable =
-            noteGateway.updateNoteText(noteId, title, content)
-            /*noteGateway.getNote(noteId)        //todo исправить это дерьмо
+            getNotesUseCase(noteId)
+                    .firstOrError()
                     .flatMapCompletable { note ->
-                        if (note.title != title || note.content != content) {
+                        if (note.isPresent && (note.get().title != title || note.get().content != content)) {
                             noteGateway.updateNoteText(noteId, title, content)
                         } else {
                             Completable.complete()
                         }
-                    }*/
+                    }
 }

@@ -41,32 +41,30 @@ class UpdateNoteSpansUseCase @Inject constructor(
         return isSpansEqual
     }
 
-    operator fun invoke(noteId: String, textSpans: List<MyTextSpan>) {
-        spanGateway.getTextSpans(noteId)
-                .firstOrError()
-                .flatMapCompletable { existingSpans ->
-                    if (existingSpans.isEqualTo(textSpans)) {
-                        Completable.complete()
-                    } else {
-                        if (deviceGateway.isItemPurchased(BuildConfig.ITEM_PREMIUM_SKU)) {
-                            spanGateway.deleteTextSpan(noteId)
-                                    .andThen(spanGateway.insertTextSpan(textSpans.map { span ->
-                                        span.apply {
-                                            span.id = generateUniqueId()
-                                            span.noteId = noteId
-                                        }
-                                    }))
+    operator fun invoke(noteId: String, textSpans: List<MyTextSpan>): Completable =
+            spanGateway.getTextSpans(noteId)
+                    .firstOrError()
+                    .flatMapCompletable { existingSpans ->
+                        if (existingSpans.isEqualTo(textSpans)) {
+                            Completable.complete()
                         } else {
-                            spanGateway.deleteTextSpanPermanently(noteId)
-                                    .andThen(spanGateway.insertTextSpan(textSpans.map { span ->
-                                        span.apply {
-                                            span.id = generateUniqueId()
-                                            span.noteId = noteId
-                                        }
-                                    }))
+                            if (deviceGateway.isItemPurchased(BuildConfig.ITEM_PREMIUM_SKU)) {
+                                spanGateway.deleteTextSpan(noteId)
+                                        .andThen(spanGateway.insertTextSpan(textSpans.map { span ->
+                                            span.apply {
+                                                span.id = generateUniqueId()
+                                                span.noteId = noteId
+                                            }
+                                        }))
+                            } else {
+                                spanGateway.deleteTextSpanPermanently(noteId)
+                                        .andThen(spanGateway.insertTextSpan(textSpans.map { span ->
+                                            span.apply {
+                                                span.id = generateUniqueId()
+                                                span.noteId = noteId
+                                            }
+                                        }))
+                            }
                         }
                     }
-                }
-                .subscribe()
-    }
 }

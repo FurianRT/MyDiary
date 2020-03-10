@@ -172,6 +172,16 @@ class NoteEditFragment : BaseFragment(R.layout.fragment_note_edit), NoteEditCont
         }
     }
 
+    override fun onPause() {
+        mNoteId?.let { noteId ->
+            val title = edit_note_title.text?.toString() ?: ""
+            val content = edit_note_content.text ?: Spannable.Factory().newSpannable("")
+            val spans = content.getTextSpans()
+            presenter.onViewStopped(noteId, title, content.toString(), spans)
+        }
+        super.onPause()
+    }
+
     override fun onStart() {
         super.onStart()
         presenter.attachView(this)
@@ -187,7 +197,6 @@ class NoteEditFragment : BaseFragment(R.layout.fragment_note_edit), NoteEditCont
         val title = edit_note_title.text?.toString() ?: ""
         val content = edit_note_content.text ?: Spannable.Factory().newSpannable("")
         (parentFragment as? NoteFragment?)?.onNoteFragmentEditModeDisabled(title, content)
-        mNoteId?.let { presenter.onViewStopped(it, title, content.toString(), content.getTextSpans()) }
         presenter.detachView()
     }
 

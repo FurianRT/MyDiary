@@ -88,6 +88,10 @@ class ImageGatewayImp @Inject constructor(
             imageDao.getDeletedImages()
                     .subscribeOn(scheduler.io())
 
+    override fun getDeletedImages(noteId: String): Flowable<List<MyImage>> =
+            imageDao.getDeletedImages(noteId)
+                    .subscribeOn(scheduler.io())
+
     override fun saveImageToStorage(image: MyImage): Single<MyImage> =
             Single.fromCallable { storage.copyImageToStorage(image.path, image.name) }
                     .map { file -> MyImage(file.name, file.toURI().toString(), image.noteId, image.addedTime) }

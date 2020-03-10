@@ -26,6 +26,7 @@ interface PasswordContract {
         fun showErrorWrongPasswordRepeat()
         fun showErrorNetworkConnection()
         fun showErrorShortNewPassword()
+        fun showErrorTooManyRequests()
         fun showSuccessPasswordChange()
         fun clearErrorMessage()
         fun close()

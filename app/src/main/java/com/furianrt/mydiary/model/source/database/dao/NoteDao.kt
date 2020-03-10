@@ -14,8 +14,6 @@ import androidx.room.*
 import com.furianrt.mydiary.model.entity.*
 import io.reactivex.Completable
 import io.reactivex.Flowable
-import io.reactivex.Maybe
-import io.reactivex.Single
 
 @Dao
 interface NoteDao {
@@ -35,9 +33,6 @@ interface NoteDao {
     @Query("UPDATE ${MyNote.TABLE_NAME} SET ${MyNote.FIELD_TITLE} = :title, ${MyNote.FIELD_CONTENT} = :content, ${MyNote.FIELD_SYNC_WITH} = '[]' WHERE ${MyNote.FIELD_ID} = :noteId")
     fun updateNoteText(noteId: String, title: String, content: String): Completable
 
-    @Query("UPDATE ${MyNote.TABLE_NAME} SET ${MyNote.FIELD_TITLE} = :title, ${MyNote.FIELD_CONTENT} = :content, ${MyNote.FIELD_SYNC_WITH} = '[]' WHERE ${MyNote.FIELD_ID} = :noteId")
-    fun updateNoteTextBlocking(noteId: String, title: String, content: String)
-
     @Query("UPDATE ${MyNote.TABLE_NAME} SET ${MyNote.FIELD_IS_DELETED} = 1, ${MyNote.FIELD_SYNC_WITH} = '[]' WHERE ${MyNote.FIELD_ID} = :noteId")
     fun delete(noteId: String): Completable
 
@@ -51,20 +46,33 @@ interface NoteDao {
     fun getAllNotes(): Flowable<List<MyNote>>
 
     @Query("SELECT * FROM ${MyNote.TABLE_NAME} WHERE id_note =:noteId AND ${MyNote.FIELD_IS_DELETED} = 0")
-    fun findNote(noteId: String): Maybe<MyNote>
-
-    @Query("SELECT * FROM ${MyNote.TABLE_NAME} WHERE id_note =:noteId AND ${MyNote.FIELD_IS_DELETED} = 0")
-    fun getNote(noteId: String): Single<MyNote>
-
-    @Query("SELECT * FROM ${MyNote.TABLE_NAME} WHERE id_note =:noteId AND ${MyNote.FIELD_IS_DELETED} = 0")
     fun getNoteAsList(noteId: String): Flowable<List<MyNote>>
 
     @Transaction
     @Query("SELECT * FROM ${MyNote.TABLE_NAME} " +
-            "LEFT JOIN ${MyMood.TABLE_NAME} ON ${MyNote.FIELD_MOOD} = ${MyMood.FIELD_ID} AND ${MyNote.FIELD_IS_DELETED} = 0 " +
-            "LEFT JOIN ${MyNoteAppearance.TABLE_NAME} ON ${MyNote.FIELD_ID} = ${MyNoteAppearance.FIELD_ID} " +
-            "LEFT JOIN ${MyCategory.TABLE_NAME} ON ${MyNote.FIELD_CATEGORY} = ${MyCategory.FIELD_ID} AND ${MyCategory.FIELD_IS_DELETED} = 0 " +
+            "LEFT JOIN ${MyMood.TABLE_NAME} " +
+            "ON ${MyNote.FIELD_MOOD} = ${MyMood.FIELD_ID} " +
+            "LEFT JOIN ${MyCategory.TABLE_NAME} " +
+            "ON ${MyNote.FIELD_CATEGORY} = ${MyCategory.FIELD_ID} " +
+            "AND ${MyCategory.FIELD_IS_DELETED} = 0 " +
             "WHERE ${MyNote.FIELD_IS_DELETED} = 0 " +
             "ORDER BY time DESC")
     fun getAllNotesWithProp(): Flowable<List<MyNoteWithProp>>
+
+    @Transaction
+    @Query("SELECT * FROM ${MyNote.TABLE_NAME} " +
+            "LEFT JOIN ${MyNoteAppearance.TABLE_NAME} " +
+            "ON ${MyNote.FIELD_ID} = ${MyNoteAppearance.FIELD_ID} " +
+            "AND ${MyNoteAppearance.FIELD_IS_DELETED} = 0 " +
+            "WHERE ${MyNote.FIELD_IS_DELETED} = 0")
+    fun getAllNotesWithImages(): Flowable<List<MyNoteWithImages>>
+
+    @Transaction
+    @Query("SELECT * FROM ${MyNote.TABLE_NAME} " +
+            "LEFT JOIN ${MyNoteAppearance.TABLE_NAME} " +
+            "ON ${MyNote.FIELD_ID} = ${MyNoteAppearance.FIELD_ID} " +
+            "AND ${MyNoteAppearance.FIELD_IS_DELETED} = 0 " +
+            "WHERE ${MyNote.FIELD_IS_DELETED} = 0 " +
+            "AND ${MyNote.FIELD_ID} = :noteId")
+    fun getNoteWithImagesAsList(noteId: String): Flowable<List<MyNoteWithImages>>
 }

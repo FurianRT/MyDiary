@@ -16,11 +16,9 @@ import com.furianrt.mydiary.model.gateway.location.LocationGateway
 import com.furianrt.mydiary.model.gateway.note.NoteGateway
 import com.furianrt.mydiary.model.gateway.span.SpanGateway
 import com.furianrt.mydiary.model.gateway.tag.TagGateway
-import com.furianrt.mydiary.utils.MyRxUtils
 import com.google.common.base.Optional
 import io.reactivex.Flowable
 import io.reactivex.functions.Function9
-import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 //Следит почти за всеми таблицами. Использовать только когда дейстительно необходимо!
@@ -29,8 +27,7 @@ class GetFullNotesUseCase @Inject constructor(
         private val tagGateway: TagGateway,
         private val imageGateway: ImageGateway,
         private val locationGateway: LocationGateway,
-        private val spanGateway: SpanGateway,
-        private val scheduler: MyRxUtils.BaseSchedulerProvider
+        private val spanGateway: SpanGateway
 ) {
 
     operator fun invoke(): Flowable<List<MyNoteWithProp>> =
@@ -82,5 +79,5 @@ class GetFullNotesUseCase @Inject constructor(
                             return@map note
                         }
                     }
-            ).debounce(100L, TimeUnit.MILLISECONDS, scheduler.computation())
+            )
 }

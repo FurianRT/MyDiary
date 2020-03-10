@@ -71,6 +71,8 @@ class NoteFragment : BaseFragment(R.layout.fragment_note), NoteFragmentContract.
         const val TAG = "NoteFragment"
         private const val ARG_NOTE_ID = "note_id"
         private const val ARG_IS_NEW_NOTE = "is_new_note"
+        private const val ARG_NOTE_WITH_IMAGE = "note_with_image"
+        private const val ARG_NOTE_APPEARANCE = "note_appearance"
         private const val BUNDLE_PHOTO_PATH = "photo_path"
         private const val LOCATION_PERMISSIONS_REQUEST_CODE = 1
         private const val STORAGE_PERMISSIONS_REQUEST_CODE = 2
@@ -84,11 +86,13 @@ class NoteFragment : BaseFragment(R.layout.fragment_note), NoteFragmentContract.
         private const val MAX_IMAGE_COUNT_TO_SHARE = 15
 
         @JvmStatic
-        fun newInstance(noteId: String, isNewNote: Boolean) =
+        fun newInstance(noteId: String, isNewNote: Boolean, withImage: Boolean, appearance: MyNoteAppearance?) =
                 NoteFragment().apply {
                     arguments = Bundle().apply {
                         putString(ARG_NOTE_ID, noteId)
                         putBoolean(ARG_IS_NEW_NOTE, isNewNote)
+                        putBoolean(ARG_NOTE_WITH_IMAGE, withImage)
+                        appearance?.let { putParcelable(ARG_NOTE_APPEARANCE, it) }
                     }
                 }
     }
@@ -108,7 +112,7 @@ class NoteFragment : BaseFragment(R.layout.fragment_note), NoteFragmentContract.
             mImagePagerPosition = pager_note_image.currentItem
             text_note_image_counter.text = getString(
                     R.string.counter_format,
-                    position + 1,
+                    mImagePagerPosition + 1,
                     mImagePagerAdapter.itemCount
             )
         }
@@ -122,7 +126,7 @@ class NoteFragment : BaseFragment(R.layout.fragment_note), NoteFragmentContract.
         with(requireArguments()) {
             mNoteId = getString(ARG_NOTE_ID)
             mIsNewNote = getBoolean(ARG_IS_NEW_NOTE)
-            presenter.init(mNoteId!!, mIsNewNote)
+            presenter.init(mNoteId!!, mIsNewNote, getParcelable(ARG_NOTE_APPEARANCE))
         }
 
         mPhotoPath = savedInstanceState?.getString(BUNDLE_PHOTO_PATH)
@@ -142,6 +146,12 @@ class NoteFragment : BaseFragment(R.layout.fragment_note), NoteFragmentContract.
         super.onViewCreated(view, savedInstanceState)
         pager_note_image.adapter = mImagePagerAdapter
         pager_note_image.isSaveEnabled = false
+
+        if (requireArguments().getBoolean(ARG_NOTE_WITH_IMAGE, false)
+                && childFragmentManager.findFragmentByTag(NoteEditFragment.TAG) == null) {
+            showLoading()
+            enableActionBarExpanding(expanded = true, animate = false)
+        }
 
         layout_mood.setOnClickListener {
             removeEditFragment()
@@ -315,6 +325,10 @@ class NoteFragment : BaseFragment(R.layout.fragment_note), NoteFragmentContract.
                     presenter.onButtonShareClick()
                     true
                 }
+                android.R.id.home -> {
+                    removeEditFragment()
+                    super.onOptionsItemSelected(item)
+                }
                 else -> super.onOptionsItemSelected(item)
             }
 
@@ -416,7 +430,7 @@ class NoteFragment : BaseFragment(R.layout.fragment_note), NoteFragmentContract.
     }
 
     override fun updateNoteAppearance(appearance: MyNoteAppearance) {
-        appearance.background?.let { layout_root_note.animateBackgroundColor(it) }
+        appearance.background?.let { layout_root_note.setBackgroundColor(it) }
         appearance.textBackground?.let { card_note_edit.setCardBackgroundColor(it) }
         appearance.textColor?.let { color ->
             text_mood.setTextColor(color)
@@ -441,14 +455,14 @@ class NoteFragment : BaseFragment(R.layout.fragment_note), NoteFragmentContract.
 
         val image = layout_tags.getChildAt(0) as ImageView
         image.setColorFilter(
-                tagsAndAppearance.appearance.surfaceTextColor
+                tagsAndAppearance.appearance?.surfaceTextColor
                         ?: requireContext().getColorCompat(R.color.black),
                 PorterDuff.Mode.SRC_IN
         )
         image.alpha = 0.4f
 
         val textNoTags = TextView(requireContext())
-        textNoTags.setTextColor(tagsAndAppearance.appearance.textColor ?: Color.BLACK)
+        textNoTags.setTextColor(tagsAndAppearance.appearance?.textColor ?: Color.BLACK)
         textNoTags.setText(R.string.choose_tags)
         textNoTags.alpha = 0.4f
 
@@ -466,12 +480,14 @@ class NoteFragment : BaseFragment(R.layout.fragment_note), NoteFragmentContract.
         layout_tags.removeViews(1, layout_tags.flexItemCount - 1)
         val image = layout_tags.getChildAt(0) as ImageView
         image.setColorFilter(
-                tagsAndAppearance.appearance.surfaceTextColor ?: Color.BLACK,
+                tagsAndAppearance.appearance?.surfaceTextColor ?: Color.BLACK,
                 PorterDuff.Mode.SRC_IN
         )
         image.alpha = 1.0f
         for (tag in tagsAndAppearance.tags) {
-            layout_tags.addView(wrapTextIntoCardView(tag.name, tagsAndAppearance.appearance))
+            tagsAndAppearance.appearance?.let { appearance ->
+                layout_tags.addView(wrapTextIntoCardView(tag.name, appearance))
+            }
         }
     }
 
@@ -572,9 +588,6 @@ class NoteFragment : BaseFragment(R.layout.fragment_note), NoteFragmentContract.
 
     fun enableActionBarExpanding(expanded: Boolean, animate: Boolean) {
         Log.e(TAG, "enableActionBarExpanding")
-        if (mImagePagerAdapter.itemCount == 0) {
-            return
-        }
         app_bar_layout.setExpanded(expanded, animate)
 
         val params = app_bar_layout.layoutParams as CoordinatorLayout.LayoutParams
@@ -692,11 +705,24 @@ class NoteFragment : BaseFragment(R.layout.fragment_note), NoteFragmentContract.
     }
 
     override fun showLoading() {
+        layout_loading?.alpha = 1f
         layout_loading?.visibility = View.VISIBLE
     }
 
     override fun hideLoading() {
-        layout_loading?.visibility = View.GONE
+        if (layout_loading?.alpha == 1f && layout_loading?.visibility != View.GONE) {
+            layout_loading?.animateAlpha(from = 1f, to = 0f) {
+                layout_loading?.visibility = View.GONE
+            }
+        }
+    }
+
+    override fun onImageLoadFailed() {
+        hideLoading()
+    }
+
+    override fun onImageLoaded() {
+        hideLoading()
     }
 
     override fun showImages(images: List<MyImage>, panorama: Boolean) {
@@ -706,7 +732,7 @@ class NoteFragment : BaseFragment(R.layout.fragment_note), NoteFragmentContract.
         text_note_image_counter.text = getString(
                 R.string.counter_format,
                 mImagePagerPosition + 1,
-                mImagePagerAdapter.itemCount
+                images.count()
         )
         if (childFragmentManager.findFragmentByTag(NoteEditFragment.TAG) == null) {
             enableActionBarExpanding(expanded = true, animate = true)

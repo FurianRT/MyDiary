@@ -417,10 +417,10 @@ class SearchListAdapter(
 
             when (group.type) {
                 SearchGroup.TYPE_DATE -> itemView.image_group.setImageResource(R.drawable.ic_date_range)
-                SearchGroup.TYPE_TAG -> itemView.image_group.setImageResource(R.drawable.ic_tag_big)
-                SearchGroup.TYPE_CATEGORY -> itemView.image_group.setImageResource(R.drawable.ic_folder_big)
+                SearchGroup.TYPE_TAG -> itemView.image_group.setImageResource(R.drawable.ic_tag)
+                SearchGroup.TYPE_CATEGORY -> itemView.image_group.setImageResource(R.drawable.ic_folder)
                 SearchGroup.TYPE_MOOD -> itemView.image_group.setImageResource(R.drawable.ic_smile_bold)
-                SearchGroup.TYPE_LOCATION -> itemView.image_group.setImageResource(R.drawable.ic_place_big)
+                SearchGroup.TYPE_LOCATION -> itemView.image_group.setImageResource(R.drawable.ic_place)
             }
         }
 

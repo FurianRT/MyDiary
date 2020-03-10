@@ -16,6 +16,7 @@ import com.furianrt.mydiary.model.source.cloud.CloudSource
 import com.furianrt.mydiary.model.source.database.dao.AppearanceDao
 import com.furianrt.mydiary.model.source.preferences.PreferencesSource
 import com.furianrt.mydiary.utils.MyRxUtils
+import com.google.common.base.Optional
 import io.reactivex.Completable
 import io.reactivex.Flowable
 import io.reactivex.Single
@@ -53,8 +54,9 @@ class AppearanceGatewayImp @Inject constructor(
             appearanceDao.cleanup()
                     .subscribeOn(scheduler.io())
 
-    override fun getNoteAppearance(noteId: String): Flowable<MyNoteAppearance> =
+    override fun getNoteAppearance(noteId: String): Flowable<Optional<MyNoteAppearance>> =
             appearanceDao.getNoteAppearance(noteId)
+                    .map { Optional.fromNullable(it.firstOrNull()) }
                     .subscribeOn(scheduler.io())
 
     override fun getDeletedAppearances(): Flowable<List<MyNoteAppearance>> =

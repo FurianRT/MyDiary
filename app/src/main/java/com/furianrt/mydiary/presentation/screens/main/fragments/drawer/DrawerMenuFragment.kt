@@ -430,7 +430,7 @@ class DrawerMenuFragment : BaseFragment(R.layout.fragment_drawer_menu), DrawerMe
     }
 
     override fun startSyncService() {
-        requireContext().startService(Intent(requireContext(), SyncService::class.java))
+        requireContext().startService(SyncService.getIntent(requireContext()))
     }
 
     override fun onFirstCheck() {

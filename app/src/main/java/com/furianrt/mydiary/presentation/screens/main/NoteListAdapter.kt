@@ -72,9 +72,7 @@ class NoteListAdapter(
     private val mSizeProvider = ViewPreloadSizeProvider<NoteItemView>()
     private val mGlideBuilder = GlideApp.with(context)
 
-    val preloader = RecyclerViewPreloader<NoteItemView>(
-            Glide.with(context), this, mSizeProvider, MAX_PRELOAD
-    )
+    val preloader = RecyclerViewPreloader(Glide.with(context), this, mSizeProvider, MAX_PRELOAD)
 
     fun submitList(items: List<NoteItemView>) {
         val diffResult = DiffUtil.calculateDiff(NoteListDiffCallback(mItems, items))
@@ -243,6 +241,7 @@ class NoteListAdapter(
             itemView.text_note_image_day_of_week.text = getDayOfWeek(note.note.time)
             itemView.text_note_image_day.text = getDay(note.note.time)
             itemView.text_image_note_content.setText(note.note.content.applyTextSpans(note.textSpans), TextView.BufferType.SPANNABLE)
+            itemView.text_images.text = note.images.count().toString()
             setTitle(note)
             setTags(note)
             setCategory(note)

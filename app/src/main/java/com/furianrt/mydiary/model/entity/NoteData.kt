@@ -8,9 +8,11 @@
  *
  ******************************************************************************/
 
-package com.furianrt.mydiary.model.entity.pojo
+package com.furianrt.mydiary.model.entity
 
-import com.furianrt.mydiary.model.entity.MyNoteAppearance
-import com.furianrt.mydiary.model.entity.MyTag
-
-class TagsAndAppearance(val tags: List<MyTag>, val appearance: MyNoteAppearance?)
+data class NoteData(
+        val noteId: String,
+        val title: String,
+        val content: String,
+        val textSpans: List<MyTextSpan>
+)

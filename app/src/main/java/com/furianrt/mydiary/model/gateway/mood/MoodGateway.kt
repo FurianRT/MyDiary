@@ -11,10 +11,11 @@
 package com.furianrt.mydiary.model.gateway.mood
 
 import com.furianrt.mydiary.model.entity.MyMood
+import com.google.common.base.Optional
 import io.reactivex.Flowable
 
 interface MoodGateway {
-    fun getMood(moodId: Int): Flowable<MyMood>
+    fun getMood(moodId: Int): Flowable<Optional<MyMood>>
     fun getAllMoods(): Flowable<List<MyMood>>
     fun isMoodEnabled(): Boolean
 }

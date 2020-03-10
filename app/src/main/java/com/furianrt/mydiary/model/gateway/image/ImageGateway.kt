@@ -31,6 +31,7 @@ interface ImageGateway {
     fun cleanupImages(): Completable
     fun getAllImages(): Flowable<List<MyImage>>
     fun getDeletedImages(): Flowable<List<MyImage>>
+    fun getDeletedImages(noteId: String): Flowable<List<MyImage>>
     fun getImagesForNote(noteId: String): Flowable<List<MyImage>>
     fun getImageCount(): Flowable<Int>
     fun getHeaderImages(): Flowable<List<MyHeaderImage>>

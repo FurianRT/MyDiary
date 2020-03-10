@@ -164,8 +164,17 @@ class PinPresenter @Inject constructor(
                 })
     }
 
-    override fun onButtonCloseClick() {
-        view?.close()
+    override fun onButtonCloseClickModeCreate() {
+        view?.closeView()
+    }
+
+    override fun onButtonCloseClickModeRemove() {
+        view?.closeView()
+    }
+
+    override fun onButtonCloseClickModeLock() {
+        authorizeUseCase(false)
+        view?.closeApp()
     }
 
     override fun onButtonBackspaceClick() {

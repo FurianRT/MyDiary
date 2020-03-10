@@ -45,6 +45,9 @@ interface ImageDao {
     @Query("SELECT * FROM ${MyImage.TABLE_NAME} WHERE ${MyImage.FIELD_IS_DELETED} = 1")
     fun getDeletedImages(): Flowable<List<MyImage>>
 
+    @Query("SELECT * FROM ${MyImage.TABLE_NAME} WHERE ${MyImage.FIELD_IS_DELETED} = 1 AND ${MyImage.FIELD_ID_NOTE} = :noteId")
+    fun getDeletedImages(noteId: String): Flowable<List<MyImage>>
+
     @Query("SELECT * FROM ${MyImage.TABLE_NAME} " +
             "WHERE ${MyImage.FIELD_ID_NOTE} = :noteId AND ${MyImage.FIELD_IS_DELETED} = 0 " +
             "ORDER BY ${MyImage.FIELD_ORDER} ASC, ${MyImage.FIELD_ADDED_TIME} ASC")

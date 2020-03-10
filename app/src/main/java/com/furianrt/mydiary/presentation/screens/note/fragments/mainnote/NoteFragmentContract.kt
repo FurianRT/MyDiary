@@ -75,7 +75,7 @@ interface NoteFragmentContract {
         abstract fun onDateSelected(year: Int, monthOfYear: Int, dayOfMonth: Int)
         abstract fun onTimeSelected(hourOfDay: Int, minute: Int)
         abstract fun onButtonEditClick()
-        abstract fun init(noteId: String, newNote: Boolean)
+        abstract fun init(noteId: String, newNote: Boolean, noteAppearance: MyNoteAppearance?)
         abstract fun onNoteTextChange(title: String, content: String, textSpans: List<MyTextSpan>)
         abstract fun onButtonUndoClick()
         abstract fun onButtonRedoClick()

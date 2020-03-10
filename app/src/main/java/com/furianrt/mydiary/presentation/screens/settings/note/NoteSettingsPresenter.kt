@@ -29,7 +29,7 @@ class NoteSettingsPresenter @Inject constructor(
         private const val TAG = "NoteSettingsPresenter"
     }
 
-    private lateinit var mAppearance: MyNoteAppearance
+    private var mAppearance: MyNoteAppearance? = null
     private lateinit var mNoteId: String
 
     override fun init(noteId: String) {
@@ -40,50 +40,56 @@ class NoteSettingsPresenter @Inject constructor(
         super.attachView(view)
         view.disableInput()
         addDisposable(getAppearanceUseCase(mNoteId)
-                .firstElement()
+                .firstOrError()
                 .observeOn(scheduler.ui())
-                .subscribe { appearance ->
-                    mAppearance = appearance
+                .subscribe { result ->
                     Log.e(TAG, "getNoteAppearance")
-                    view.updateSettings(mAppearance)
-                    view.enableInput()
+                    mAppearance = result.get()
+                    mAppearance?.let { appearance ->
+                        view.updateSettings(appearance)
+                        view.enableInput()
+                    }
                 })
     }
 
     override fun onTextSizeChange(size: Int) {
-        mAppearance.textSize = size
+        mAppearance?.textSize = size
         updateAppearance(mAppearance)
     }
 
     override fun onTextColorChange(color: Int) {
-        mAppearance.textColor = color
+        mAppearance?.textColor = color
         updateAppearance(mAppearance)
     }
 
     override fun onSurfaceTextColorChange(color: Int) {
-        mAppearance.surfaceTextColor = color
+        mAppearance?.surfaceTextColor = color
         updateAppearance(mAppearance)
     }
 
     override fun onBackgroundColorChange(color: Int) {
-        mAppearance.background = color
+        mAppearance?.background = color
         updateAppearance(mAppearance)
     }
 
     override fun onBackgroundTextColorChange(color: Int) {
-        mAppearance.textBackground = color
+        mAppearance?.textBackground = color
         updateAppearance(mAppearance)
     }
 
     override fun onPrefResetSettingsClick() {
-        addDisposable(resetNoteSettingsUseCase(mAppearance.appearanceId)
-                .observeOn(scheduler.ui())
-                .subscribe { view?.onAppearanceReset() })
+        mAppearance?.let { appearance ->
+            addDisposable(resetNoteSettingsUseCase(appearance.appearanceId)
+                    .observeOn(scheduler.ui())
+                    .subscribe { view?.onAppearanceReset() })
+        }
     }
 
-    private fun updateAppearance(appearance: MyNoteAppearance) {
-        addDisposable(updateAppearanceUseCase(appearance)
-                .observeOn(scheduler.ui())
-                .subscribe())
+    private fun updateAppearance(appearance: MyNoteAppearance?) {
+        appearance?.let {
+            addDisposable(updateAppearanceUseCase(it)
+                    .observeOn(scheduler.ui())
+                    .subscribe())
+        }
     }
 }

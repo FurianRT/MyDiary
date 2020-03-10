@@ -10,9 +10,9 @@
 
 package com.furianrt.mydiary.utils
 
+import android.animation.Animator
 import android.animation.ObjectAnimator
 import android.animation.PropertyValuesHolder
-import android.graphics.drawable.ColorDrawable
 import android.view.View
 import android.view.animation.OvershootInterpolator
 import android.widget.ImageButton
@@ -34,18 +34,20 @@ fun View.animateShake(duration: Long = 400L) {
             .start()
 }
 
-fun View.animateAlpha(from: Float, to: Float, duration: Long = 400L) {
+fun View.animateAlpha(from: Float, to: Float, duration: Long = 400L, endCallback: () -> Unit = {}) {
     ObjectAnimator.ofPropertyValuesHolder(this, PropertyValuesHolder.ofFloat(View.ALPHA, from, to))
-            .apply { this.duration = duration }
+            .apply {
+                this.duration = duration
+                addListener(object : Animator.AnimatorListener {
+                    override fun onAnimationRepeat(animation: Animator?) = Unit
+                    override fun onAnimationCancel(animation: Animator?) = Unit
+                    override fun onAnimationStart(animation: Animator?) = Unit
+                    override fun onAnimationEnd(animation: Animator?) {
+                        endCallback.invoke()
+                    }
+                })
+            }
             .start()
-}
-
-fun View.animateBackgroundColor(colorTo: Int, duration: Long = 250L) {
-    (this.background as ColorDrawable?)?.color?.let {
-        ObjectAnimator.ofArgb(this, "backgroundColor", it, colorTo)
-                .setDuration(duration)
-                .start()
-    }
 }
 
 fun ImageButton.enableCustom(enable: Boolean) {

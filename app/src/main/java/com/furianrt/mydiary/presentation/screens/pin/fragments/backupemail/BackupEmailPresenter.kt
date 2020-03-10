@@ -24,9 +24,13 @@ class BackupEmailPresenter @Inject constructor(
     override fun onViewCreated(email: String, firstLaunch: Boolean) {
         if (email.isEmpty() && firstLaunch) {
             addDisposable(getProfileUseCase()
-                    .firstElement()
+                    .firstOrError()
                     .observeOn(scheduler.ui())
-                    .subscribe { view?.showEmail(it.email) })
+                    .subscribe { result ->
+                        if (result.isPresent) {
+                            view?.showEmail(result.get().email)
+                        }
+                    })
         }
     }
 

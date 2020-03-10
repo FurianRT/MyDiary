@@ -13,6 +13,7 @@ package com.furianrt.mydiary.services
 import android.app.Notification
 import android.app.PendingIntent
 import android.app.Service
+import android.content.Context
 import android.content.Intent
 import android.os.IBinder
 import androidx.core.app.NotificationCompat
@@ -51,30 +52,43 @@ class SyncService : Service() {
 
         fun getProgressMessage(intent: Intent?): SyncProgressMessage? =
                 intent?.getParcelableExtra(EXTRA_PROGRESS_MESSAGE)
+
+        fun getIntent(context: Context) = Intent(context, SyncService::class.java)
     }
 
     @Inject
     lateinit var getProfileUseCase: GetProfileUseCase
+
     @Inject
     lateinit var updateProfileUseCase: UpdateProfileUseCase
+
     @Inject
     lateinit var syncNotesUseCase: SyncNotesUseCase
+
     @Inject
     lateinit var syncAppearanceUseCase: SyncAppearanceUseCase
+
     @Inject
     lateinit var syncCategoriesUseCase: SyncCategoriesUseCase
+
     @Inject
     lateinit var syncTagsUseCase: SyncTagsUseCase
+
     @Inject
     lateinit var syncLocationsUseCase: SyncLocationsUseCase
+
     @Inject
     lateinit var syncForecastUseCase: SyncForecastUseCase
+
     @Inject
     lateinit var syncImagesUseCase: SyncImagesUseCase
+
     @Inject
     lateinit var syncCleanupUseCase: SyncCleanupUseCase
+
     @Inject
     lateinit var syncNoteSpansUseCase: SyncNoteSpansUseCase
+
     @Inject
     lateinit var setLastSyncMessageUseCase: SetLastSyncMessageUseCase
 
@@ -103,8 +117,14 @@ class SyncService : Service() {
     private fun startSync() {
         sendProgressUpdate(SyncProgressMessage.SYNC_STARTED, PROGRESS_STARTED)
         mCompositeDisposable.add(getProfileUseCase()
-                .map { it.email }
                 .firstOrError()
+                .map { result ->
+                    if (result.isPresent) {
+                        result.get().email
+                    } else {
+                        throw IllegalStateException()
+                    }
+                }
                 .flatMapPublisher { email ->
                     Single.concat(listOf(
                             syncCategoriesUseCase(email).toSingleDefault(SyncProgressMessage.SYNC_CATEGORIES),

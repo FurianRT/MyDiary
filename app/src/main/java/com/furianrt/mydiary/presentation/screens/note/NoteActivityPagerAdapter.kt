@@ -13,6 +13,7 @@ package com.furianrt.mydiary.presentation.screens.note
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentStatePagerAdapter
 import androidx.viewpager.widget.PagerAdapter
+import com.furianrt.mydiary.model.entity.MyNoteWithImages
 import com.furianrt.mydiary.presentation.screens.note.fragments.mainnote.NoteFragment
 
 class NoteActivityPagerAdapter(
@@ -22,15 +23,20 @@ class NoteActivityPagerAdapter(
 
     private var mIsSizeChanged = false
 
-    var noteIds = emptyList<String>()
+    var notes = emptyList<MyNoteWithImages>()
         set(value) {
             mIsSizeChanged = field.size != value.size
             field = value
         }
 
-    override fun getItem(position: Int) = NoteFragment.newInstance(noteIds[position], isNewNote)
+    override fun getItem(position: Int) = NoteFragment.newInstance(
+            notes[position].note.id,
+            isNewNote,
+            notes[position].images.isNotEmpty(),
+            notes[position].appearance
+    )
 
-    override fun getCount(): Int = noteIds.size
+    override fun getCount(): Int = notes.size
 
     override fun getItemPosition(`object`: Any): Int =
             if (mIsSizeChanged) {

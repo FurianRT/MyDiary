@@ -17,6 +17,7 @@ import com.furianrt.mydiary.model.source.database.dao.NoteDao
 import com.furianrt.mydiary.model.source.database.dao.NoteTagDao
 import com.furianrt.mydiary.model.source.preferences.PreferencesSource
 import com.furianrt.mydiary.utils.MyRxUtils
+import com.google.common.base.Optional
 import io.reactivex.*
 import javax.inject.Inject
 
@@ -45,10 +46,6 @@ class NoteGatewayImp @Inject constructor(
             noteDao.updateNoteText(noteId, title, content)
                     .subscribeOn(scheduler.io())
 
-    override fun updateNoteTextBlocking(noteId: String, title: String, content: String) {
-        noteDao.updateNoteTextBlocking(noteId, title, content)
-    }
-
     override fun updateNotesSync(notes: List<MyNote>): Completable =
             noteDao.update(notes)
                     .subscribeOn(scheduler.io())
@@ -66,20 +63,21 @@ class NoteGatewayImp @Inject constructor(
             noteDao.getAllNotes()
                     .subscribeOn(scheduler.io())
 
+    override fun getAllNotesWithImages(): Flowable<List<MyNoteWithImages>> =
+            noteDao.getAllNotesWithImages()
+                    .subscribeOn(scheduler.io())
+
     override fun getDeletedNotes(): Flowable<List<MyNote>> =
             noteDao.getDeletedNotes()
                     .subscribeOn(scheduler.io())
 
-    override fun getNote(noteId: String): Single<MyNote> =
-            noteDao.getNote(noteId)
-                    .subscribeOn(scheduler.io())
-
-    override fun getNoteAsList(noteId: String): Flowable<List<MyNote>> =
+    override fun getNote(noteId: String): Flowable<Optional<MyNote>> =
             noteDao.getNoteAsList(noteId)
+                    .map { Optional.fromNullable(it.firstOrNull()) }
                     .subscribeOn(scheduler.io())
 
-    override fun findNote(noteId: String): Maybe<MyNote> =
-            noteDao.findNote(noteId)
+    override fun getNoteWithImagesAsList(noteId: String): Flowable<List<MyNoteWithImages>> =
+            noteDao.getNoteWithImagesAsList(noteId)
                     .subscribeOn(scheduler.io())
 
     override fun getAllNotesWithProp(): Flowable<List<MyNoteWithProp>> =
