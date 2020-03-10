@@ -63,10 +63,6 @@ class NoteGatewayImp @Inject constructor(
             noteDao.getAllNotes()
                     .subscribeOn(scheduler.io())
 
-    override fun getAllNotesWithImages(): Flowable<List<MyNoteWithImages>> =
-            noteDao.getAllNotesWithImages()
-                    .subscribeOn(scheduler.io())
-
     override fun getDeletedNotes(): Flowable<List<MyNote>> =
             noteDao.getDeletedNotes()
                     .subscribeOn(scheduler.io())
@@ -74,10 +70,6 @@ class NoteGatewayImp @Inject constructor(
     override fun getNote(noteId: String): Flowable<Optional<MyNote>> =
             noteDao.getNoteAsList(noteId)
                     .map { Optional.fromNullable(it.firstOrNull()) }
-                    .subscribeOn(scheduler.io())
-
-    override fun getNoteWithImagesAsList(noteId: String): Flowable<List<MyNoteWithImages>> =
-            noteDao.getNoteWithImagesAsList(noteId)
                     .subscribeOn(scheduler.io())
 
     override fun getAllNotesWithProp(): Flowable<List<MyNoteWithProp>> =

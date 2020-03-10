@@ -26,10 +26,8 @@ interface NoteGateway {
     fun deleteNotesFromCloud(notes: List<MyNote>): Completable
     fun cleanupNotes(): Completable
     fun getAllNotes(): Flowable<List<MyNote>>
-    fun getAllNotesWithImages(): Flowable<List<MyNoteWithImages>>
     fun getDeletedNotes(): Flowable<List<MyNote>>
     fun getNote(noteId: String): Flowable<Optional<MyNote>>
-    fun getNoteWithImagesAsList(noteId: String): Flowable<List<MyNoteWithImages>>
     fun getAllNotesWithProp(): Flowable<List<MyNoteWithProp>>
     fun getAllNotesFromCloud(): Single<List<MyNote>>
     fun saveNotesInCloud(notes: List<MyNote>): Completable
