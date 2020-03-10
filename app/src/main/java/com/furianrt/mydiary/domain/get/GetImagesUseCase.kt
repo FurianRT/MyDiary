@@ -21,4 +21,6 @@ class GetImagesUseCase @Inject constructor(
 
     operator fun invoke(noteId: String): Flowable<List<MyImage>> =
             imageGateway.getImagesForNote(noteId)
+
+    operator fun invoke(): Flowable<List<MyImage>> = imageGateway.getAllImages()
 }

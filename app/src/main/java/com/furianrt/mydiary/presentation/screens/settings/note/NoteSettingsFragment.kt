@@ -29,7 +29,12 @@ class NoteSettingsFragment : BasePreference(), NoteSettingsContract.View {
 
     private var mListener: OnNoteSettingsFragmentListener? = null
 
+    private var mDeactivateListeners = false
+
     private val mPreferenceListener = Preference.OnPreferenceChangeListener { preference, value ->
+        if (mDeactivateListeners) {
+            return@OnPreferenceChangeListener true
+        }
         when (preference.key) {
             TEXT_SIZE -> {
                 analytics.sendEvent(MyAnalytics.EVENT_NOTE_TEXT_SIZE_CHANGED)
@@ -105,6 +110,7 @@ class NoteSettingsFragment : BasePreference(), NoteSettingsContract.View {
     }
 
     override fun updateSettings(appearance: MyNoteAppearance) {
+        mDeactivateListeners = true
         findPreference<ListPreference>(TEXT_SIZE)?.apply {
             setValueIndex(findIndexOfValue(appearance.textSize.toString()))
         }
@@ -112,6 +118,7 @@ class NoteSettingsFragment : BasePreference(), NoteSettingsContract.View {
         findPreference<ColorPreferenceCompat>(SURFACE_TEXT_COLOR)?.saveValue(appearance.surfaceTextColor!!)
         findPreference<ColorPreferenceCompat>(BACKGROUND_COLOR)?.saveValue(appearance.background!!)
         findPreference<ColorPreferenceCompat>(TEXT_BACKGROUND_COLOR)?.saveValue(appearance.textBackground!!)
+        mDeactivateListeners = false
     }
 
     override fun onAppearanceReset() {

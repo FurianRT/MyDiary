@@ -11,54 +11,59 @@
 package com.furianrt.mydiary.domain.get
 
 import com.furianrt.mydiary.model.entity.MyImage
+import com.furianrt.mydiary.model.entity.MyNote
+import com.furianrt.mydiary.model.entity.MyNoteAppearance
 import com.furianrt.mydiary.model.entity.MyNoteWithImages
 import com.furianrt.mydiary.model.gateway.image.ImageGateway
-import com.furianrt.mydiary.model.gateway.note.NoteGateway
 import com.google.common.base.Optional
 import io.reactivex.Flowable
-import io.reactivex.functions.Function3
+import io.reactivex.functions.Function4
 import javax.inject.Inject
 
 class GetNotesWithImagesUseCase @Inject constructor(
-        private val noteGateway: NoteGateway,
-        private val imageGateway: ImageGateway
+        private val getNotesUseCase: GetNotesUseCase,
+        private val imageGateway: ImageGateway,
+        private val getAppearanceUseCase: GetAppearanceUseCase,
+        private val getImagesUseCase: GetImagesUseCase
 ) {
 
     operator fun invoke(): Flowable<List<MyNoteWithImages>> =
             Flowable.combineLatest(
-                    noteGateway.getAllNotesWithImages(),
-                    imageGateway.getAllImages(),
+                    getNotesUseCase(),
+                    getImagesUseCase(),
                     imageGateway.getDeletedImages(),
-                    Function3<List<MyNoteWithImages>, List<MyImage>, List<MyImage>, List<MyNoteWithImages>>
-                    { notes, images, deletedImages ->
+                    getAppearanceUseCase(),
+                    Function4<List<MyNote>, List<MyImage>, List<MyImage>, List<MyNoteAppearance>, List<MyNoteWithImages>>
+                    { notes, images, deletedImages, appearances ->
                         notes.map { note ->
-                            note.images = images.filter { it.noteId == note.note.id }
-                            note.deletedImages = deletedImages.filter { it.noteId == note.note.id }
-                            return@map note
+                            MyNoteWithImages(
+                                    note,
+                                    appearances.find { it.appearanceId == note.id },
+                                    images.filter { it.noteId == note.id },
+                                    deletedImages.filter { it.noteId == note.id }
+                            )
                         }
                     }
-            ).map { notes ->
-                if (noteGateway.isSortDesc()) {
-                    notes.sortedByDescending { it.note.time }
-                } else {
-                    notes.sortedBy { it.note.time }
-                }
-            }
+            )
 
     operator fun invoke(noteId: String): Flowable<Optional<MyNoteWithImages>> =
             Flowable.combineLatest(
-                    noteGateway.getNoteWithImagesAsList(noteId),
-                    imageGateway.getImagesForNote(noteId),
+                    getNotesUseCase(noteId),
+                    getImagesUseCase(noteId),
                     imageGateway.getDeletedImages(noteId),
-                    Function3<List<MyNoteWithImages>, List<MyImage>, List<MyImage>, Optional<MyNoteWithImages>>
-                    { notes, images, deletedImages ->
-                        Optional.fromNullable(notes
-                                .map { note ->
-                                    note.images = images
-                                    note.deletedImages = deletedImages
-                                    return@map note
-                                }
-                                .find { it.note.id == noteId })
+                    getAppearanceUseCase(noteId),
+                    Function4<Optional<MyNote>, List<MyImage>, List<MyImage>, Optional<MyNoteAppearance>, Optional<MyNoteWithImages>>
+                    { note, images, deletedImages, appearance ->
+                        if (note.isPresent) {
+                            Optional.of(MyNoteWithImages(
+                                    note.get(),
+                                    appearance.orNull(),
+                                    images,
+                                    deletedImages
+                            ))
+                        } else {
+                            Optional.absent()
+                        }
                     }
             )
 }
