@@ -101,6 +101,7 @@ class NoteActivity : BaseActivity(R.layout.activity_note), NoteActivityContract.
         }
         mPagerAdapter.notes = notes
         mPagerAdapter.notifyDataSetChanged()
+        progress_notes.visibility = View.GONE
         pager_note.setCurrentItem(mPagerPosition, false)
         showImageCounter(mPagerPosition + 1, mPagerAdapter.count)
     }
