@@ -78,19 +78,7 @@ class MyApp : Application(), Application.ActivityLifecycleCallbacks {
         super.onCreate()
         if (BuildConfig.DEBUG) {
             Stetho.initializeWithDefaults(this)
-            StrictMode.setThreadPolicy(StrictMode.ThreadPolicy.Builder()
-                    .detectNetwork()
-                    .penaltyLog()
-                    .build())
-            StrictMode.setVmPolicy(VmPolicy.Builder()
-                    .detectLeakedSqlLiteObjects()
-                    .detectLeakedClosableObjects()
-                    .detectFileUriExposure()
-                    .detectActivityLeaks()
-                    .detectLeakedRegistrationObjects()
-                    .penaltyLog()
-                    .build())
-
+            initStrictMode()
             logFcmToken()
         }
         JodaTimeAndroid.init(this)
@@ -124,6 +112,21 @@ class MyApp : Application(), Application.ActivityLifecycleCallbacks {
         if (isPinEnabledUseCase() && activity !is PinActivity) {
             mHandler.postDelayed(mLogoutRunnable, getPinRequestDelayUseCase())
         }
+    }
+
+    private fun initStrictMode() {
+        StrictMode.setThreadPolicy(StrictMode.ThreadPolicy.Builder()
+                .detectNetwork()
+                .penaltyLog()
+                .build())
+        StrictMode.setVmPolicy(VmPolicy.Builder()
+                .detectLeakedSqlLiteObjects()
+                .detectLeakedClosableObjects()
+                .detectFileUriExposure()
+                .detectActivityLeaks()
+                .detectLeakedRegistrationObjects()
+                .penaltyLog()
+                .build())
     }
 
     private fun logFcmToken() {
@@ -169,14 +172,13 @@ class MyApp : Application(), Application.ActivityLifecycleCallbacks {
 * поддержать планшеты
 * добавить ссылки на используемые библиотеки
 * добавить отправку картинок или текста из других приложений
-* сделать ежедневный локальный бэкап
 * добавить выбор локации
 * добавить выбор типа защиты
 * поддержка темной темы
 * добавить ссылку на гугл таблицы
 * добавить поддержку ссылок внутри текста
 * разбить экран настроек на категории
-* добавить иконци в настройках
+* добавить иконки в настройках
 * сделать определение локации опциональным
 * сделать дефолтную дейли-картинку
 * добавить таймер к паролю
@@ -195,6 +197,7 @@ class MyApp : Application(), Application.ActivityLifecycleCallbacks {
 * статистика по записям
 * вывод в pdf
 * шифрование выбраной заметки
+* ежедневный локальный бэкап
 *
 * */
 

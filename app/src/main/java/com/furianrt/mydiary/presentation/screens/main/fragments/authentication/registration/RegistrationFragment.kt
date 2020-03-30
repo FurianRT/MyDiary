@@ -11,6 +11,7 @@
 package com.furianrt.mydiary.presentation.screens.main.fragments.authentication.registration
 
 import android.graphics.PorterDuff
+import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.view.View
@@ -68,6 +69,9 @@ class RegistrationFragment : BaseFragment(R.layout.fragment_registration), Regis
         edit_email.setOnClickListener { mOnEditFocusChangeListener.onFocusChange(it, true) }
         edit_password.setOnClickListener { mOnEditFocusChangeListener.onFocusChange(it, true) }
         edit_password_repeat.setOnClickListener { mOnEditFocusChangeListener.onFocusChange(it, true) }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && Build.VERSION.SDK_INT <= Build.VERSION_CODES.O_MR1) {
+            edit_email.importantForAutofill = View.IMPORTANT_FOR_AUTOFILL_NO
+        }
         view_alpha.setOnTouchListener { _, _ -> true }
     }
 

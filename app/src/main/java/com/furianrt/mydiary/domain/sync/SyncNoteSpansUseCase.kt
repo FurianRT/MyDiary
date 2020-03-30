@@ -22,7 +22,7 @@ class SyncNoteSpansUseCase @Inject constructor(
 
     operator fun invoke(email: String): Completable =
             spanGateway.getAllTextSpans()
-                    .first(emptyList())
+                    .firstOrError()
                     .map { spans -> spans.filter { !it.isSync(email) } }
                     .map { spans -> spans.apply { forEach { it.syncWith.add(email) } } }
                     .flatMapCompletable { spans ->
@@ -31,8 +31,8 @@ class SyncNoteSpansUseCase @Inject constructor(
                                 spanGateway.updateTextSpansSync(spans)
                         ))
                     }
-                    .andThen(spanGateway.getDeletedTextSpans().first(emptyList()))
-                    .flatMapCompletable { spanGateway.deleteTextSpansFromCloud(it) }
+                    .andThen(spanGateway.getDeletedTextSpans().firstOrError())
+                    .flatMapCompletable { spanGateway.deleteTextSpansFromCloud(it).onErrorComplete() }
                     .andThen(spanGateway.getAllTextSpansFromCloud())
                     .flatMapCompletable { spanGateway.insertTextSpan(it) }
                     .onErrorResumeNext { error ->

@@ -487,7 +487,7 @@ class GalleryListFragment : BaseFragment(R.layout.fragment_gallery_list), Galler
                         override fun onAnimationCancel(animation: Animator?) {}
                         override fun onAnimationStart(animation: Animator?) {}
                         override fun onAnimationEnd(animation: Animator?) {
-                            empty_state.visibility = View.INVISIBLE
+                            empty_state?.visibility = View.INVISIBLE
                         }
                     })
         }

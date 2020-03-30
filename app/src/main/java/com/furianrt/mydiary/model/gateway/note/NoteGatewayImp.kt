@@ -13,17 +13,24 @@ package com.furianrt.mydiary.model.gateway.note
 import com.furianrt.mydiary.model.entity.*
 import com.furianrt.mydiary.model.source.auth.AuthSource
 import com.furianrt.mydiary.model.source.cloud.CloudSource
-import com.furianrt.mydiary.model.source.database.dao.NoteDao
-import com.furianrt.mydiary.model.source.database.dao.NoteTagDao
+import com.furianrt.mydiary.model.source.database.dao.*
 import com.furianrt.mydiary.model.source.preferences.PreferencesSource
 import com.furianrt.mydiary.utils.MyRxUtils
 import com.google.common.base.Optional
 import io.reactivex.*
+import io.reactivex.functions.Function3
+import io.reactivex.functions.Function7
+import io.reactivex.functions.Function9
 import javax.inject.Inject
 
 class NoteGatewayImp @Inject constructor(
         private val noteDao: NoteDao,
+        private val tagDao: TagDao,
+        private val imageDao: ImageDao,
         private val noteTagDao: NoteTagDao,
+        private val locationDao: LocationDao,
+        private val noteLocationDao: NoteLocationDao,
+        private val spanDao: SpanDao,
         private val prefs: PreferencesSource,
         private val cloud: CloudSource,
         private val auth: AuthSource,
@@ -73,7 +80,104 @@ class NoteGatewayImp @Inject constructor(
                     .subscribeOn(scheduler.io())
 
     override fun getAllNotesWithProp(): Flowable<List<MyNoteWithProp>> =
-            noteDao.getAllNotesWithProp()
+            Flowable.combineLatest(
+                            noteDao.getAllNotesWithProp(),
+                            noteTagDao.getAllNoteTags(),
+                            tagDao.getAllTags(),
+                            imageDao.getAllImages(),
+                            noteLocationDao.getAllNoteLocations(),
+                            locationDao.getAllLocations(),
+                            spanDao.getAllTextSpans(),
+                            spanDao.getDeletedTextSpans(),
+                            imageDao.getDeletedImages(),
+                            Function9<List<MyNoteWithProp>, List<NoteTag>, List<MyTag>, List<MyImage>,
+                                    List<NoteLocation>, List<MyLocation>, List<MyTextSpan>, List<MyTextSpan>,
+                                    List<MyImage>, List<MyNoteWithProp>>
+                            { notes, noteTags, tags, images, noteLocations, locations, spans, deletedSpans, deletedImages ->
+                                notes.map { note ->
+                                    val noteTagsForNote = noteTags.filter { it.noteId == note.note.id }
+                                    note.tags = tags.filter { tag ->
+                                        noteTagsForNote.find { it.tagId == tag.id } != null
+                                    }
+
+                                    note.images = images.filter { it.noteId == note.note.id }
+                                    note.deletedImages = deletedImages.filter { it.noteId == note.note.id }
+
+                                    val noteLocationsForNote = noteLocations.filter { it.noteId == note.note.id }
+                                    note.locations = locations.filter { location ->
+                                        noteLocationsForNote.find { it.locationId == location.id } != null
+                                    }
+
+                                    note.textSpans = spans.filter { it.noteId == note.note.id }
+                                    note.deletedTextSpans = deletedSpans.filter { it.noteId == note.note.id }
+
+                                    return@map note
+                                }
+                            }
+                    )
+                    .subscribeOn(scheduler.io())
+
+    override fun getNoteWithProp(noteId: String): Flowable<Optional<MyNoteWithProp>> =
+            Flowable.combineLatest(
+                            noteDao.getNoteWithProp(noteId),
+                            noteTagDao.getTagsForNote(noteId),
+                            imageDao.getImagesForNote(noteId),
+                            noteLocationDao.getLocationsForNote(noteId),
+                            spanDao.getTextSpans(noteId),
+                            spanDao.getDeletedTextSpans(noteId),
+                            imageDao.getDeletedImages(noteId),
+                            Function7<List<MyNoteWithProp>, List<MyTag>, List<MyImage>, List<MyLocation>,
+                                    List<MyTextSpan>, List<MyTextSpan>, List<MyImage>, Optional<MyNoteWithProp>>
+                            { notes, tags, images, locations, spans, deletedSpans, deletedImages ->
+                                val note = notes.firstOrNull()
+                                if (note != null) {
+                                    note.tags = tags
+                                    note.images = images
+                                    note.deletedImages = deletedImages
+                                    note.locations = locations
+                                    note.textSpans = spans
+                                    note.deletedTextSpans = deletedSpans
+                                    Optional.of(note)
+                                } else {
+                                    Optional.absent()
+                                }
+                            }
+                    )
+                    .subscribeOn(scheduler.io())
+
+    override fun getNotesWithSpans(): Flowable<List<MyNoteWithSpans>> =
+            Flowable.combineLatest(
+                            noteDao.getAllNotes(),
+                            spanDao.getAllTextSpans(),
+                            spanDao.getDeletedTextSpans(),
+                            Function3<List<MyNote>, List<MyTextSpan>, List<MyTextSpan>, List<MyNoteWithSpans>>
+                            { notes, spans, deletedSpans ->
+                                notes.map { note ->
+                                    MyNoteWithSpans(
+                                            note,
+                                            spans.filter { it.noteId == note.id },
+                                            deletedSpans.filter { it.noteId == note.id }
+                                    )
+                                }
+                            }
+                    )
+                    .subscribeOn(scheduler.io())
+
+    override fun getNoteWithSpans(noteId: String): Flowable<Optional<MyNoteWithSpans>> =
+            Flowable.combineLatest(
+                            noteDao.getNoteAsList(noteId),
+                            spanDao.getTextSpans(noteId),
+                            spanDao.getDeletedTextSpans(noteId),
+                            Function3<List<MyNote>, List<MyTextSpan>, List<MyTextSpan>, Optional<MyNoteWithSpans>>
+                            { notes, spans, deletedSpans ->
+                                val note = notes.firstOrNull()
+                                if (note != null) {
+                                    Optional.of(MyNoteWithSpans(note, spans, deletedSpans))
+                                } else {
+                                    Optional.absent()
+                                }
+                            }
+                    )
                     .subscribeOn(scheduler.io())
 
     override fun saveNotesInCloud(notes: List<MyNote>): Completable =

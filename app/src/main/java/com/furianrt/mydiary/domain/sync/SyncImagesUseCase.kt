@@ -25,7 +25,7 @@ class SyncImagesUseCase @Inject constructor(
 
     operator fun invoke(email: String): Completable =
             imageGateway.getAllImages()
-                    .first(emptyList())
+                    .firstOrError()
                     .map { images -> images.filter { !it.isSync(email) } }
                     .map { notSyncImages -> notSyncImages.apply { forEach { it.syncWith.add(email) } } }
                     .flatMapCompletable { images ->
@@ -37,8 +37,8 @@ class SyncImagesUseCase @Inject constructor(
                                 imageGateway.updateImageSync(images)
                         ))
                     }
-                    .andThen(imageGateway.getDeletedImages().first(emptyList()))
-                    .flatMapCompletable { imageGateway.deleteImagesFromCloud(it) }
+                    .andThen(imageGateway.getDeletedImages().firstOrError())
+                    .flatMapCompletable { imageGateway.deleteImagesFromCloud(it).onErrorComplete() }
                     .andThen(Single.zip(
                             imageGateway.getAllImagesFromCloud(),
                             imageGateway.getAllImages().firstOrError(),

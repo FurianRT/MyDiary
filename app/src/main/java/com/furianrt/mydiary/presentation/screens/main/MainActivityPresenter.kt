@@ -57,7 +57,7 @@ class MainActivityPresenter @Inject constructor(
         private const val BUNDLE_SEARCH_QUERY = "search_query"
     }
 
-    private lateinit var mNoteList: List<MyNoteWithProp>
+    private var mNoteList = listOf<MyNoteWithProp>()
     private var mSelectedNoteIds = HashSet<String>()
     private val mFilteredTagIds = HashSet<String>()
     private val mFilteredCategoryIds = HashSet<String>()

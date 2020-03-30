@@ -26,7 +26,7 @@ class SyncLocationsUseCase @Inject constructor(
 
     private fun syncLocations(email: String): Completable =
             locationGateway.getAllDbLocations()
-                    .first(emptyList())
+                    .firstOrError()
                     .map { locations -> locations.filter { !it.isSync(email) } }
                     .map { locations -> locations.apply { forEach { it.syncWith.add(email) } } }
                     .flatMapCompletable { locations ->
@@ -35,8 +35,8 @@ class SyncLocationsUseCase @Inject constructor(
                                 locationGateway.updateLocationsSync(locations)
                         ))
                     }
-                    .andThen(locationGateway.getDeletedLocations().first(emptyList()))
-                    .flatMapCompletable { locationGateway.deleteLocationsFromCloud(it) }
+                    .andThen(locationGateway.getDeletedLocations().firstOrError())
+                    .flatMapCompletable { locationGateway.deleteLocationsFromCloud(it).onErrorComplete() }
                     .andThen(locationGateway.getAllLocationsFromCloud())
                     .flatMapCompletable { locationGateway.insertLocation(it) }
                     .onErrorResumeNext { error ->
@@ -46,7 +46,7 @@ class SyncLocationsUseCase @Inject constructor(
 
     private fun syncNoteLocations(email: String): Completable =
             locationGateway.getAllNoteLocations()
-                    .first(emptyList())
+                    .firstOrError()
                     .map { noteLocations -> noteLocations.filter { !it.isSync(email) } }
                     .map { noteLocations -> noteLocations.apply { forEach { it.syncWith.add(email) } } }
                     .flatMapCompletable { noteLocations ->
@@ -55,8 +55,8 @@ class SyncLocationsUseCase @Inject constructor(
                                 locationGateway.updateNoteLocationsSync(noteLocations)
                         ))
                     }
-                    .andThen(locationGateway.getDeletedNoteLocations().first(emptyList()))
-                    .flatMapCompletable { locationGateway.deleteNoteLocationsFromCloud(it) }
+                    .andThen(locationGateway.getDeletedNoteLocations().firstOrError())
+                    .flatMapCompletable { locationGateway.deleteNoteLocationsFromCloud(it).onErrorComplete() }
                     .andThen(locationGateway.getAllNoteLocationsFromCloud())
                     .flatMapCompletable { locationGateway.insertNoteLocation(it) }
                     .onErrorResumeNext { error ->

@@ -10,13 +10,13 @@
 
 package com.furianrt.mydiary.presentation.screens.note
 
+import com.furianrt.mydiary.domain.get.GetFullNotesUseCase
 import com.furianrt.mydiary.domain.save.SaveNoteIfNotExistUseCase
-import com.furianrt.mydiary.domain.get.GetNotesWithImagesUseCase
 import com.furianrt.mydiary.utils.MyRxUtils
 import javax.inject.Inject
 
 class NoteActivityPresenter @Inject constructor(
-        private val getNotesWithImagesUseCase: GetNotesWithImagesUseCase,
+        private val getFullNotesUseCase: GetFullNotesUseCase,
         private val saveNoteIfNotExistUseCase: SaveNoteIfNotExistUseCase,
         private val scheduler: MyRxUtils.BaseSchedulerProvider
 ) : NoteActivityContract.Presenter() {
@@ -41,7 +41,7 @@ class NoteActivityPresenter @Inject constructor(
     }
 
     private fun loadNotes() {
-        addDisposable(getNotesWithImagesUseCase()
+        addDisposable(getFullNotesUseCase()
                 .observeOn(scheduler.ui())
                 .subscribe { notes ->
                     if (notes.isEmpty()) {
@@ -54,7 +54,7 @@ class NoteActivityPresenter @Inject constructor(
 
     private fun loadNote(noteId: String) {
         addDisposable(saveNoteIfNotExistUseCase(noteId)
-                .andThen(getNotesWithImagesUseCase(noteId))
+                .andThen(getFullNotesUseCase(noteId))
                 .observeOn(scheduler.ui())
                 .subscribe { note ->
                     if (note.isPresent) {

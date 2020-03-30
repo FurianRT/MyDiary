@@ -11,6 +11,7 @@
 package com.furianrt.mydiary.presentation.screens.pin.fragments.backupemail
 
 import android.content.Context
+import android.os.Build
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -60,6 +61,10 @@ class BackupEmailFragment : BaseFragment(R.layout.fragment_backup_email), Backup
 
         button_create_pin.setOnClickListener {
             presenter.onButtonDoneClick(edit_backup_email.text?.toString() ?: "")
+        }
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && Build.VERSION.SDK_INT <= Build.VERSION_CODES.O_MR1) {
+            edit_backup_email.importantForAutofill = View.IMPORTANT_FOR_AUTOFILL_NO
         }
 
         presenter.onViewCreated(edit_backup_email.text?.toString() ?: "", savedInstanceState == null)

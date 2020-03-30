@@ -43,6 +43,9 @@ abstract class SpanDao {
     @Query("SELECT * FROM ${MyTextSpan.TABLE_NAME} WHERE ${MyTextSpan.FIELD_IS_DELETED} = 1")
     abstract fun getDeletedTextSpans(): Flowable<List<MyTextSpan>>
 
+    @Query("SELECT * FROM ${MyTextSpan.TABLE_NAME} WHERE ${MyTextSpan.FIELD_IS_DELETED} = 1 AND ${MyTextSpan.FIELD_NOTE_ID} = :noteId")
+    abstract fun getDeletedTextSpans(noteId: String): Flowable<List<MyTextSpan>>
+
     @Query("DELETE FROM ${MyTextSpan.TABLE_NAME} WHERE ${MyTextSpan.FIELD_IS_DELETED} = 1")
     abstract fun cleanup(): Completable
 }
