@@ -12,6 +12,8 @@ package com.furianrt.mydiary.presentation.screens.note
 
 import com.furianrt.mydiary.domain.get.GetFullNotesUseCase
 import com.furianrt.mydiary.domain.save.SaveNoteIfNotExistUseCase
+import com.furianrt.mydiary.model.entity.MyNote
+import com.furianrt.mydiary.model.entity.MyNoteWithProp
 import com.furianrt.mydiary.utils.MyRxUtils
 import javax.inject.Inject
 
@@ -53,6 +55,7 @@ class NoteActivityPresenter @Inject constructor(
     }
 
     private fun loadNote(noteId: String) {
+        view?.showNotes(listOf(MyNoteWithProp(MyNote(noteId))))
         addDisposable(saveNoteIfNotExistUseCase(noteId)
                 .andThen(getFullNotesUseCase(noteId))
                 .observeOn(scheduler.ui())
