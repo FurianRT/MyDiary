@@ -15,6 +15,7 @@ import androidx.room.Ignore
 
 data class MyNoteWithProp(
         @Embedded var note: MyNote = MyNote(),
+        @Embedded var appearance: MyNoteAppearance? = null,
         @Embedded var mood: MyMood? = null,
         @Embedded var category: MyCategory? = null,
         //@Relation использовать не получится, с ним притянутся "удаленные" строки через "удаленные"
@@ -29,6 +30,7 @@ data class MyNoteWithProp(
 
     fun isSync(email: String): Boolean =
             note.isSync(email)
+                    && (appearance?.isSync(email) ?: true)
                     && images.all { it.isSync(email) }
                     && deletedImages.isEmpty()
                     && tags.all { it.isSync(email) }

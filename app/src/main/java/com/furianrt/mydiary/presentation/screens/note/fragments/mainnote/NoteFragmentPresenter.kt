@@ -23,6 +23,7 @@ import com.furianrt.mydiary.domain.save.AddForecastUseCase
 import com.furianrt.mydiary.domain.save.SaveImagesUseCase
 import com.furianrt.mydiary.domain.save.SaveLocationUseCase
 import com.furianrt.mydiary.domain.update.UpdateNoteUseCase
+import com.furianrt.mydiary.model.entity.pojo.TagsAndAppearance
 import com.furianrt.mydiary.utils.MyRxUtils
 import io.reactivex.Completable
 import org.joda.time.DateTime
@@ -62,14 +63,32 @@ class NoteFragmentPresenter @Inject constructor(
 
     private var mIsNewNote = true
     private lateinit var mNoteId: String
-    private var mNoteAppearance: MyNoteAppearance? = null
-
+    private var mTime = 0L
+    private var mAppearance: MyNoteAppearance? = null
+    private var mMood: MyMood? = null
+    private var mCategory: MyCategory? = null
+    private var mTags: List<MyTag> = emptyList()
+    private var mLocations: List<MyLocation> = emptyList()
     private var mNoteTextBuffer = ArrayList<UndoRedoEntry>(UNDO_REDO_BUFFER_SIZE)
 
-    override fun init(noteId: String, newNote: Boolean, noteAppearance: MyNoteAppearance?) {
+    override fun init(
+            noteId: String,
+            noteTime: Long,
+            newNote: Boolean,
+            noteAppearance: MyNoteAppearance?,
+            mood: MyMood?,
+            category: MyCategory?,
+            tags: List<MyTag>,
+            locations: List<MyLocation>
+    ) {
         mIsNewNote = newNote
         mNoteId = noteId
-        mNoteAppearance = noteAppearance
+        mTime = noteTime
+        mAppearance = noteAppearance
+        mMood = mood
+        mCategory = category
+        mTags = tags
+        mLocations = locations
     }
 
     override fun attachView(view: NoteFragmentContract.View) {
@@ -109,15 +128,21 @@ class NoteFragmentPresenter @Inject constructor(
     }
 
     private fun loadTags() {
+        showTags(TagsAndAppearance(mTags, mAppearance))
         addDisposable(getTagsWithAppearanceUseCase(mNoteId)
                 .observeOn(scheduler.ui())
                 .subscribe { tagsAndAppearance ->
-                    if (tagsAndAppearance.tags.isEmpty()) {
-                        view?.showNoTagsMessage(tagsAndAppearance)
-                    } else {
-                        view?.showTags(tagsAndAppearance)
-                    }
+                    mTags = tagsAndAppearance.tags
+                    showTags(tagsAndAppearance)
                 })
+    }
+
+    private fun showTags(tagsAndAppearance: TagsAndAppearance) {
+        if (tagsAndAppearance.tags.isEmpty()) {
+            view?.showNoTagsMessage(tagsAndAppearance)
+        } else {
+            view?.showTags(tagsAndAppearance)
+        }
     }
 
     private fun loadNote() {
@@ -128,23 +153,30 @@ class NoteFragmentPresenter @Inject constructor(
                         if (mNoteTextBuffer.isEmpty()) {
                             mNoteTextBuffer.add(UndoRedoEntry(note.get().note.title, note.get().note.content, note.get().textSpans, true))
                         }
+                        mTime = note.get().note.time
                         view?.showNoteText(note.get().note.title, note.get().note.content, note.get().textSpans)
                         view?.showDateAndTime(
-                                note.get().note.time,
+                                mTime,
                                 getTimeFormatUseCase() == GetTimeFormatUseCase.TIME_FORMAT_24
                         )
                         showNoteMood(note.get().note.moodId)
                     }
                 })
+
+        showNoteMood(mMood?.id ?: 0)
+        view?.showDateAndTime(
+                mTime,
+                getTimeFormatUseCase() == GetTimeFormatUseCase.TIME_FORMAT_24
+        )
     }
 
     private fun loadNoteAppearance() {
-        mNoteAppearance?.let { view?.updateNoteAppearance(it) }
+        mAppearance?.let { view?.updateNoteAppearance(it) }
         addDisposable(getAppearanceUseCase(mNoteId)
                 .observeOn(scheduler.ui())
                 .subscribe({ appearance ->
-                    mNoteAppearance = appearance.orNull()
-                    mNoteAppearance?.let { view?.updateNoteAppearance(it) }
+                    mAppearance = appearance.orNull()
+                    mAppearance?.let { view?.updateNoteAppearance(it) }
                 }, { error ->
                     error.printStackTrace()
                 }))
@@ -163,10 +195,15 @@ class NoteFragmentPresenter @Inject constructor(
     }
 
     private fun loadLocation() {
+        mLocations.firstOrNull()?.let { location ->
+            showLocation(location)
+            showForecast()
+        }
         addDisposable(getLocationsUseCase(mNoteId)
                 .first(emptyList())
                 .observeOn(scheduler.ui())
                 .subscribe { locations ->
+                    mLocations = locations
                     if (locations.isNotEmpty()) {
                         showLocation(locations.first())
                         showForecast()
@@ -198,10 +235,12 @@ class NoteFragmentPresenter @Inject constructor(
             if (moodId == 0) {
                 view?.showNoMoodMessage()
             } else {
+                mMood?.let { view?.showMood(it) }
                 addDisposable(getMoodsUseCase(moodId)
                         .firstOrError()
                         .observeOn(scheduler.ui())
                         .subscribe { result ->
+                            mMood = result.orNull()
                             if (result.isPresent) {
                                 view?.showMood(result.get())
                             }
@@ -211,15 +250,21 @@ class NoteFragmentPresenter @Inject constructor(
     }
 
     private fun loadNoteCategory() {
+        showCategory(mCategory)
         addDisposable(getCategoriesUseCase(mNoteId)
                 .observeOn(scheduler.ui())
                 .subscribe { category ->
-                    if (category.isPresent) {
-                        view?.showCategory(category.get())
-                    } else {
-                        view?.showNoCategoryMessage()
-                    }
+                    mCategory = category.orNull()
+                    showCategory(mCategory)
                 })
+    }
+
+    private fun showCategory(category: MyCategory?) {
+        if (category != null) {
+            view?.showCategory(category)
+        } else {
+            view?.showNoCategoryMessage()
+        }
     }
 
     private fun addForecastToNote(latitude: Double, longitude: Double) {

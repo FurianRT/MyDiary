@@ -26,7 +26,7 @@ class SyncTagsUseCase @Inject constructor(
 
     private fun syncTags(email: String): Completable =
             tagGateway.getAllTags()
-                    .first(emptyList())
+                    .firstOrError()
                     .map { tags -> tags.filter { !it.isSync(email) } }
                     .map { tags -> tags.apply { forEach { it.syncWith.add(email) } } }
                     .flatMapCompletable { tags ->
@@ -35,8 +35,8 @@ class SyncTagsUseCase @Inject constructor(
                                 tagGateway.updateTagsSync(tags)
                         ))
                     }
-                    .andThen(tagGateway.getDeletedTags().first(emptyList()))
-                    .flatMapCompletable { tagGateway.deleteTagsFromCloud(it) }
+                    .andThen(tagGateway.getDeletedTags().firstOrError())
+                    .flatMapCompletable { tagGateway.deleteTagsFromCloud(it).onErrorComplete() }
                     .andThen(tagGateway.getAllTagsFromCloud())
                     .flatMapCompletable { tagGateway.insertTag(it) }
                     .onErrorResumeNext { error ->
@@ -46,7 +46,7 @@ class SyncTagsUseCase @Inject constructor(
 
     private fun syncNoteTags(email: String): Completable =
             tagGateway.getAllNoteTags()
-                    .first(emptyList())
+                    .firstOrError()
                     .map { noteTags -> noteTags.filter { !it.isSync(email) } }
                     .map { noteTags -> noteTags.apply { forEach { it.syncWith.add(email) } } }
                     .flatMapCompletable { noteTags ->
@@ -55,8 +55,8 @@ class SyncTagsUseCase @Inject constructor(
                                 tagGateway.updateNoteTagsSync(noteTags)
                         ))
                     }
-                    .andThen(tagGateway.getDeletedNoteTags().first(emptyList()))
-                    .flatMapCompletable { tagGateway.deleteNoteTagsFromCloud(it) }
+                    .andThen(tagGateway.getDeletedNoteTags().firstOrError())
+                    .flatMapCompletable { tagGateway.deleteNoteTagsFromCloud(it).onErrorComplete() }
                     .andThen(tagGateway.getAllNoteTagsFromCloud())
                     .flatMapCompletable { tagGateway.insertNoteTag(it) }
                     .onErrorResumeNext { error ->

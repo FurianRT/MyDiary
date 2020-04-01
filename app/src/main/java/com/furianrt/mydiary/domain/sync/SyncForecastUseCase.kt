@@ -30,8 +30,8 @@ class SyncForecastUseCase @Inject constructor(
                                 forecastGateway.updateForecastsSync(forecasts)
                         ))
                     }
-                    .andThen(forecastGateway.getDeletedForecasts().first(emptyList()))
-                    .flatMapCompletable { forecastGateway.deleteForecastsFromCloud(it) }
+                    .andThen(forecastGateway.getDeletedForecasts().firstOrError())
+                    .flatMapCompletable { forecastGateway.deleteForecastsFromCloud(it).onErrorComplete() }
                     .andThen(forecastGateway.getAllForecastsFromCloud())
                     .flatMapCompletable { forecastGateway.insertForecast(it) }
                     .onErrorResumeNext { error ->

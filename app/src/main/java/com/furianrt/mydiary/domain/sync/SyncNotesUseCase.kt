@@ -22,7 +22,7 @@ class SyncNotesUseCase @Inject constructor(
 
     operator fun invoke(email: String): Completable =
             noteGateway.getAllNotes()
-                    .first(emptyList())
+                    .firstOrError()
                     .map { notes -> notes.filter { !it.isSync(email) } }
                     .map { notes -> notes.apply { forEach { it.syncWith.add(email) } } }
                     .flatMapCompletable { notes ->
@@ -31,8 +31,8 @@ class SyncNotesUseCase @Inject constructor(
                                 noteGateway.updateNotesSync(notes)
                         ))
                     }
-                    .andThen(noteGateway.getDeletedNotes().first(emptyList()))
-                    .flatMapCompletable { noteGateway.deleteNotesFromCloud(it) }
+                    .andThen(noteGateway.getDeletedNotes().firstOrError())
+                    .flatMapCompletable { noteGateway.deleteNotesFromCloud(it).onErrorComplete() }
                     .andThen(noteGateway.getAllNotesFromCloud())
                     .flatMapCompletable { noteGateway.insertNote(it) }
                     .onErrorResumeNext { error ->

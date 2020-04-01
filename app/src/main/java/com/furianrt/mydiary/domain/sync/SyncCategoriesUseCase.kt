@@ -22,7 +22,7 @@ class SyncCategoriesUseCase @Inject constructor(
 
     operator fun invoke(email: String): Completable =
             categoryGateway.getAllCategories()
-                    .first(emptyList())
+                    .firstOrError()
                     .map { categories -> categories.filter { !it.isSync(email) } }
                     .map { categories -> categories.apply { forEach { it.syncWith.add(email) } } }
                     .flatMapCompletable { categories ->
@@ -31,8 +31,8 @@ class SyncCategoriesUseCase @Inject constructor(
                                 categoryGateway.updateCategoriesSync(categories)
                         ))
                     }
-                    .andThen(categoryGateway.getDeletedCategories().first(emptyList()))
-                    .flatMapCompletable { categoryGateway.deleteCategoriesFromCloud(it) }
+                    .andThen(categoryGateway.getDeletedCategories().firstOrError())
+                    .flatMapCompletable { categoryGateway.deleteCategoriesFromCloud(it).onErrorComplete() }
                     .andThen(categoryGateway.getAllCategoriesFromCloud())
                     .flatMapCompletable { categoryGateway.insertCategory(it) }
                     .onErrorResumeNext { error ->

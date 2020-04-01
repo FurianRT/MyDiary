@@ -40,6 +40,6 @@ interface TagDao {
     @Query("DELETE FROM ${MyTag.TABLE_NAME} WHERE ${MyTag.FIELD_IS_DELETED} = 1")
     fun cleanup(): Completable
 
-    @Query("SELECT * FROM ${MyTag.TABLE_NAME} WHERE ${MyTag.FIELD_IS_DELETED} = 0")
+    @Query("SELECT * FROM ${MyTag.TABLE_NAME} WHERE ${MyTag.FIELD_IS_DELETED} = 0 ORDER BY ${MyTag.FIELD_NAME}")
     fun getAllTags(): Flowable<List<MyTag>>
 }

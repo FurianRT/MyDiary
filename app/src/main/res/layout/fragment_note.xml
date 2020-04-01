@@ -54,7 +54,7 @@
                     android:id="@+id/text_time"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
+                    android:layout_marginStart="24dp"
                     android:alpha="0.7"
                     android:background="?android:selectableItemBackground"
                     android:padding="4dp"
@@ -62,7 +62,6 @@
                     android:textSize="15sp"
                     android:textStyle="italic"
                     app:layout_constraintBottom_toBottomOf="@+id/text_date"
-                    app:layout_constraintEnd_toStartOf="@+id/image_weather"
                     app:layout_constraintStart_toEndOf="@id/text_date"
                     app:layout_constraintTop_toTopOf="@+id/text_date"
                     tools:text="20:15" />

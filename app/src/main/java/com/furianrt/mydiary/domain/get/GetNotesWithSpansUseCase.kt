@@ -10,38 +10,16 @@
 
 package com.furianrt.mydiary.domain.get
 
-import com.furianrt.mydiary.model.entity.MyNote
 import com.furianrt.mydiary.model.entity.MyNoteWithSpans
-import com.furianrt.mydiary.model.entity.MyTextSpan
 import com.furianrt.mydiary.model.gateway.note.NoteGateway
-import com.furianrt.mydiary.model.gateway.span.SpanGateway
 import com.google.common.base.Optional
 import io.reactivex.Flowable
-import io.reactivex.functions.Function3
 import javax.inject.Inject
 
 class GetNotesWithSpansUseCase @Inject constructor(
-        private val noteGateway: NoteGateway,
-        private val spanGateway: SpanGateway
+        private val noteGateway: NoteGateway
 ) {
 
     operator fun invoke(noteId: String): Flowable<Optional<MyNoteWithSpans>> =
-            getAllNotes().map { note -> Optional.fromNullable(note.find { it.note.id == noteId }) }
-
-    private fun getAllNotes(): Flowable<List<MyNoteWithSpans>> =
-            Flowable.combineLatest(
-                    noteGateway.getAllNotes(),
-                    spanGateway.getAllTextSpans(),
-                    spanGateway.getDeletedTextSpans(),
-                    Function3<List<MyNote>, List<MyTextSpan>, List<MyTextSpan>, List<MyNoteWithSpans>>
-                    { notes, spans, deletedSpans ->
-                        notes.map { note ->
-                            MyNoteWithSpans(
-                                    note,
-                                    spans.filter { it.noteId == note.id },
-                                    deletedSpans.filter { it.noteId == note.id }
-                            )
-                        }
-                    }
-            )
+            noteGateway.getNoteWithSpans(noteId)
 }

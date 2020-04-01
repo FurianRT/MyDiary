@@ -70,9 +70,14 @@ class NoteFragment : BaseFragment(R.layout.fragment_note), NoteFragmentContract.
     companion object {
         const val TAG = "NoteFragment"
         private const val ARG_NOTE_ID = "note_id"
+        private const val ARG_NOTE_TIME = "note_time"
         private const val ARG_IS_NEW_NOTE = "is_new_note"
         private const val ARG_NOTE_WITH_IMAGE = "note_with_image"
         private const val ARG_NOTE_APPEARANCE = "note_appearance"
+        private const val ARG_NOTE_CATEGORY = "note_categiry"
+        private const val ARG_NOTE_MOOD = "note_mood"
+        private const val ARG_NOTE_TAGS = "note_tags"
+        private const val ARG_NOTE_LOCATIONS = "note_locations"
         private const val BUNDLE_PHOTO_PATH = "photo_path"
         private const val LOCATION_PERMISSIONS_REQUEST_CODE = 1
         private const val STORAGE_PERMISSIONS_REQUEST_CODE = 2
@@ -86,13 +91,28 @@ class NoteFragment : BaseFragment(R.layout.fragment_note), NoteFragmentContract.
         private const val MAX_IMAGE_COUNT_TO_SHARE = 15
 
         @JvmStatic
-        fun newInstance(noteId: String, isNewNote: Boolean, withImage: Boolean, appearance: MyNoteAppearance?) =
+        fun newInstance(
+                noteId: String,
+                noteTime: Long,
+                isNewNote: Boolean,
+                withImage: Boolean,
+                appearance: MyNoteAppearance?,
+                mood: MyMood?,
+                category: MyCategory?,
+                tags: List<MyTag>,
+                locations: List<MyLocation>
+        ) =
                 NoteFragment().apply {
                     arguments = Bundle().apply {
                         putString(ARG_NOTE_ID, noteId)
+                        putLong(ARG_NOTE_TIME, noteTime)
                         putBoolean(ARG_IS_NEW_NOTE, isNewNote)
                         putBoolean(ARG_NOTE_WITH_IMAGE, withImage)
                         appearance?.let { putParcelable(ARG_NOTE_APPEARANCE, it) }
+                        mood?.let { putParcelable(ARG_NOTE_MOOD, it) }
+                        category?.let { putParcelable(ARG_NOTE_CATEGORY, it) }
+                        putParcelableArrayList(ARG_NOTE_TAGS, ArrayList(tags))
+                        putParcelableArrayList(ARG_NOTE_LOCATIONS, ArrayList(locations))
                     }
                 }
     }
@@ -126,7 +146,16 @@ class NoteFragment : BaseFragment(R.layout.fragment_note), NoteFragmentContract.
         with(requireArguments()) {
             mNoteId = getString(ARG_NOTE_ID)
             mIsNewNote = getBoolean(ARG_IS_NEW_NOTE)
-            presenter.init(mNoteId!!, mIsNewNote, getParcelable(ARG_NOTE_APPEARANCE))
+            presenter.init(
+                    mNoteId!!,
+                    getLong(ARG_NOTE_TIME, 0L),
+                    mIsNewNote,
+                    getParcelable(ARG_NOTE_APPEARANCE),
+                    getParcelable(ARG_NOTE_MOOD),
+                    getParcelable(ARG_NOTE_CATEGORY),
+                    getParcelableArrayList(ARG_NOTE_TAGS) ?: emptyList(),
+                    getParcelableArrayList(ARG_NOTE_LOCATIONS) ?: emptyList()
+            )
         }
 
         mPhotoPath = savedInstanceState?.getString(BUNDLE_PHOTO_PATH)

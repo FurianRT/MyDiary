@@ -11,6 +11,7 @@
 package com.furianrt.mydiary.presentation.screens.main.fragments.authentication.login
 
 import android.content.Context
+import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.view.View
@@ -75,6 +76,9 @@ class LoginFragment : BaseFragment(R.layout.fragment_login), LoginContract.View 
         edit_password.onFocusChangeListener = mOnEditFocusChangeListener
         edit_email.setOnClickListener { mOnEditFocusChangeListener.onFocusChange(it, true) }
         edit_password.setOnClickListener { mOnEditFocusChangeListener.onFocusChange(it, true) }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && Build.VERSION.SDK_INT <= Build.VERSION_CODES.O_MR1) {
+            edit_email.importantForAutofill = View.IMPORTANT_FOR_AUTOFILL_NO
+        }
         view_alpha.setOnTouchListener { _, _ -> true }
     }
 

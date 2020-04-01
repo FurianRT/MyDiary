@@ -22,7 +22,7 @@ class SyncAppearanceUseCase @Inject constructor(
 
     operator fun invoke(email: String): Completable =
             appearanceGateway.getAllNoteAppearances()
-                    .first(emptyList())
+                    .firstOrError()
                     .map { appearances -> appearances.filter { !it.isSync(email) } }
                     .map { appearances -> appearances.apply { forEach { it.syncWith.add(email) } } }
                     .flatMapCompletable { appearances ->
@@ -31,8 +31,8 @@ class SyncAppearanceUseCase @Inject constructor(
                                 appearanceGateway.updateAppearancesSync(appearances)
                         ))
                     }
-                    .andThen(appearanceGateway.getDeletedAppearances().first(emptyList()))
-                    .flatMapCompletable { appearanceGateway.deleteAppearancesFromCloud(it) }
+                    .andThen(appearanceGateway.getDeletedAppearances().firstOrError())
+                    .flatMapCompletable { appearanceGateway.deleteAppearancesFromCloud(it).onErrorComplete() }
                     .andThen(appearanceGateway.getAllAppearancesFromCloud())
                     .flatMapCompletable { appearanceGateway.insertAppearance(it) }
                     .onErrorResumeNext { error ->
