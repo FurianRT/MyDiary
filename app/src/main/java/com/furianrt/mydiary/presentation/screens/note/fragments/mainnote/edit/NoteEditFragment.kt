@@ -125,13 +125,17 @@ class NoteEditFragment : BaseFragment(R.layout.fragment_note_edit), NoteEditCont
             when (mClickedView) {
                 VIEW_TITLE -> {
                     edit_note_title.requestFocus()
-                    edit_note_title.setSelection(mClickPosition)
+                    if ((edit_note_title.text?.length ?: 0) >= mClickPosition) {
+                        edit_note_title.setSelection(mClickPosition)
+                    }
                     edit_note_title.showKeyboard()
 
                 }
                 VIEW_CONTENT -> {
                     edit_note_content.requestFocus()
-                    edit_note_content.setSelection(mClickPosition)
+                    if ((edit_note_content.text?.length ?: 0) >= mClickPosition) {
+                        edit_note_content.setSelection(mClickPosition)
+                    }
                     edit_note_content.showKeyboard()
                 }
             }

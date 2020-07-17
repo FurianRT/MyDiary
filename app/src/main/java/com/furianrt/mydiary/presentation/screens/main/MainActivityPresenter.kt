@@ -10,7 +10,6 @@
 
 package com.furianrt.mydiary.presentation.screens.main
 
-import android.annotation.SuppressLint
 import android.os.Bundle
 import com.furianrt.mydiary.model.entity.*
 import com.furianrt.mydiary.domain.FilterNotesUseCase
@@ -407,7 +406,6 @@ class MainActivityPresenter @Inject constructor(
         }
     }
 
-    @SuppressLint("DefaultLocale")
     private fun applySearchFilter(notes: List<MyNoteWithProp>): List<MyNoteWithProp> =
             filterNotesUseCase(notes, mFilteredTagIds, mFilteredCategoryIds, mFilteredMoodIds,
                     mFilteredLocationNames, mFilteredStartDate, mFilteredEndDate, mSearchQuery)

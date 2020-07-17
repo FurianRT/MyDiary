@@ -15,6 +15,7 @@ import com.furianrt.mydiary.model.entity.MyLocation
 import com.furianrt.mydiary.model.entity.MyNoteWithProp
 import com.furianrt.mydiary.model.entity.MyTag
 import org.joda.time.LocalDate
+import java.util.*
 import javax.inject.Inject
 
 class FilterNotesUseCase @Inject constructor() {
@@ -30,8 +31,8 @@ class FilterNotesUseCase @Inject constructor() {
             query: String
     ): List<MyNoteWithProp> = notes.asSequence()
             .filter {
-                it.note.title.toLowerCase().contains(query)
-                        || it.note.content.toLowerCase().contains(query)
+                it.note.title.toLowerCase(Locale.getDefault()).contains(query)
+                        || it.note.content.toLowerCase(Locale.getDefault()).contains(query)
             }
             .filter { note ->
                 if (tagIds.isEmpty()) {

@@ -13,6 +13,7 @@ package com.furianrt.mydiary.presentation.screens.gallery.fragments.list
 import android.Manifest
 import android.animation.Animator
 import android.app.Activity
+import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
 import android.content.res.Configuration
@@ -376,26 +377,27 @@ class GalleryListFragment : BaseFragment(R.layout.fragment_gallery_list), Galler
 
     @AfterPermissionGranted(STORAGE_PERMISSIONS_REQUEST_CODE)
     override fun showImageExplorer() {
-        val galleryIntent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
-        galleryIntent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true)
-        galleryIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-        if (galleryIntent.resolveActivity(requireActivity().packageManager) != null) {
+        try {
+            val galleryIntent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
+            galleryIntent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true)
+            galleryIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
             startActivityForResult(galleryIntent, IMAGE_PICKER_REQUEST_CODE)
-        } else {
-            with(Intent()) {
-                type = "image/*"
-                putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true)
-                action = Intent.ACTION_GET_CONTENT
-                addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-                if (resolveActivity(requireActivity().packageManager) != null) {
+            mListener?.onGalleryListImagePickerOpen()
+        } catch (e: ActivityNotFoundException) {
+            try {
+                with(Intent()) {
+                    type = "image/*"
+                    putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true)
+                    action = Intent.ACTION_GET_CONTENT
+                    addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
                     startActivityForResult(Intent.createChooser(this, ""), IMAGE_PICKER_REQUEST_CODE)
-                } else {
-                    analytics.sendEvent(MyAnalytics.EVENT_GALLERY_NOT_FOUND_ERROR)
-                    Toast.makeText(requireContext(), getString(R.string.phone_related_error), Toast.LENGTH_SHORT).show()
+                    mListener?.onGalleryListImagePickerOpen()
                 }
+            } catch (e: ActivityNotFoundException) {
+                analytics.sendEvent(MyAnalytics.EVENT_GALLERY_NOT_FOUND_ERROR)
+                Toast.makeText(requireContext(), getString(R.string.phone_related_error), Toast.LENGTH_SHORT).show()
             }
         }
-        mListener?.onGalleryListImagePickerOpen()
     }
 
     @AfterPermissionGranted(CAMERA_PERMISSIONS_REQUEST_CODE)
