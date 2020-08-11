@@ -11,7 +11,7 @@
 package com.furianrt.mydiary.domain.get
 
 import com.furianrt.mydiary.model.gateway.profile.ProfileGateway
-import io.reactivex.Observable
+import io.reactivex.rxjava3.core.Observable
 import javax.inject.Inject
 
 class GetAuthStateUseCase @Inject constructor(

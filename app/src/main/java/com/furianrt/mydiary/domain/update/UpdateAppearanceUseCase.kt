@@ -13,7 +13,7 @@ package com.furianrt.mydiary.domain.update
 import com.furianrt.mydiary.model.entity.MyNoteAppearance
 import com.furianrt.mydiary.model.gateway.appearance.AppearanceGateway
 import com.furianrt.mydiary.model.gateway.note.NoteGateway
-import io.reactivex.Completable
+import io.reactivex.rxjava3.core.Completable
 import javax.inject.Inject
 
 class UpdateAppearanceUseCase @Inject constructor(

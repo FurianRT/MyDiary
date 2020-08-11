@@ -13,7 +13,7 @@ package com.furianrt.mydiary.domain.get
 import com.furianrt.mydiary.model.entity.MyNoteAppearance
 import com.furianrt.mydiary.model.gateway.appearance.AppearanceGateway
 import com.google.common.base.Optional
-import io.reactivex.Flowable
+import io.reactivex.rxjava3.core.Flowable
 import javax.inject.Inject
 
 class GetAppearanceUseCase @Inject constructor(

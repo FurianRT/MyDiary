@@ -12,8 +12,8 @@ package com.furianrt.mydiary.model.source.database.dao
 
 import androidx.room.*
 import com.furianrt.mydiary.model.entity.MyNoteAppearance
-import io.reactivex.Completable
-import io.reactivex.Flowable
+import io.reactivex.rxjava3.core.Flowable
+import io.reactivex.rxjava3.core.Completable
 
 @Dao
 interface AppearanceDao {

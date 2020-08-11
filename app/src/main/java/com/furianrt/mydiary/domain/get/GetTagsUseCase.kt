@@ -12,7 +12,7 @@ package com.furianrt.mydiary.domain.get
 
 import com.furianrt.mydiary.model.entity.MyTag
 import com.furianrt.mydiary.model.gateway.tag.TagGateway
-import io.reactivex.Flowable
+import io.reactivex.rxjava3.core.Flowable
 import javax.inject.Inject
 
 class GetTagsUseCase @Inject constructor(

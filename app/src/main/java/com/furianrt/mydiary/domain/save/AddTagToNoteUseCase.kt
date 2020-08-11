@@ -12,7 +12,7 @@ package com.furianrt.mydiary.domain.save
 
 import com.furianrt.mydiary.model.entity.NoteTag
 import com.furianrt.mydiary.model.gateway.tag.TagGateway
-import io.reactivex.Completable
+import io.reactivex.rxjava3.core.Completable
 import javax.inject.Inject
 
 class AddTagToNoteUseCase @Inject constructor(

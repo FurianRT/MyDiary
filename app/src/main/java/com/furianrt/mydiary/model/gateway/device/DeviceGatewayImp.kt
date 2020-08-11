@@ -37,8 +37,8 @@ import com.furianrt.mydiary.model.gateway.device.DeviceGateway.*
 import com.furianrt.mydiary.utils.generateUniqueId
 import com.hbisoft.pickit.PickiT
 import com.hbisoft.pickit.PickiTCallbacks
-import io.reactivex.Maybe
-import io.reactivex.subjects.PublishSubject
+import io.reactivex.rxjava3.core.Maybe
+import io.reactivex.rxjava3.subjects.PublishSubject
 import java.io.IOException
 
 @AppScope
@@ -102,14 +102,9 @@ class DeviceGatewayImp @Inject constructor(
     override fun isNetworkAvailable(): Boolean {
         try {
             val cm = context.getSystemService(Context.CONNECTIVITY_SERVICE) as? ConnectivityManager?
-            return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                val an = cm?.activeNetwork ?: return false
-                val capabilities = cm.getNetworkCapabilities(an) ?: return false
-                capabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
-            } else {
-                val a = cm?.activeNetworkInfo ?: return false
-                a.isConnected && (a.type == ConnectivityManager.TYPE_WIFI || a.type == ConnectivityManager.TYPE_MOBILE)
-            }
+            val an = cm?.activeNetwork ?: return false
+            val capabilities = cm.getNetworkCapabilities(an) ?: return false
+            return capabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
         } catch (e: Exception) {
             e.printStackTrace()
         }

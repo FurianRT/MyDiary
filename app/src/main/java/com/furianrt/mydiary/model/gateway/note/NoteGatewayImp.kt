@@ -17,10 +17,10 @@ import com.furianrt.mydiary.model.source.database.dao.*
 import com.furianrt.mydiary.model.source.preferences.PreferencesSource
 import com.furianrt.mydiary.utils.MyRxUtils
 import com.google.common.base.Optional
-import io.reactivex.*
-import io.reactivex.functions.Function3
-import io.reactivex.functions.Function7
-import io.reactivex.functions.Function9
+import io.reactivex.rxjava3.core.*
+import io.reactivex.rxjava3.functions.Function3
+import io.reactivex.rxjava3.functions.Function7
+import io.reactivex.rxjava3.functions.Function9
 import javax.inject.Inject
 
 class NoteGatewayImp @Inject constructor(

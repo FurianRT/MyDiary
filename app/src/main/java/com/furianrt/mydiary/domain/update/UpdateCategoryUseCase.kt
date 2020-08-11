@@ -13,8 +13,8 @@ package com.furianrt.mydiary.domain.update
 import com.furianrt.mydiary.model.entity.MyCategory
 import com.furianrt.mydiary.model.gateway.category.CategoryGateway
 import com.furianrt.mydiary.model.gateway.note.NoteGateway
-import io.reactivex.Completable
-import io.reactivex.Observable
+import io.reactivex.rxjava3.core.Completable
+import io.reactivex.rxjava3.core.Observable
 import javax.inject.Inject
 
 class UpdateCategoryUseCase @Inject constructor(

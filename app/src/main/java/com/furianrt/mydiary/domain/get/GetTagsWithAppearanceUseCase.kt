@@ -15,8 +15,8 @@ import com.furianrt.mydiary.model.entity.MyTag
 import com.furianrt.mydiary.model.entity.pojo.TagsAndAppearance
 import com.furianrt.mydiary.model.gateway.tag.TagGateway
 import com.google.common.base.Optional
-import io.reactivex.Flowable
-import io.reactivex.functions.BiFunction
+import io.reactivex.rxjava3.core.Flowable
+import io.reactivex.rxjava3.functions.BiFunction
 import javax.inject.Inject
 
 class GetTagsWithAppearanceUseCase @Inject constructor(

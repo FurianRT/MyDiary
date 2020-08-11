@@ -19,10 +19,11 @@ import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.UploadTask
 import durdinapps.rxfirebase2.RxFirebaseStorage
 import durdinapps.rxfirebase2.RxFirestore
-import io.reactivex.Completable
-import io.reactivex.Maybe
-import io.reactivex.Observable
-import io.reactivex.Single
+import hu.akarnokd.rxjava3.bridge.RxJavaBridge
+import io.reactivex.rxjava3.core.Completable
+import io.reactivex.rxjava3.core.Maybe
+import io.reactivex.rxjava3.core.Observable
+import io.reactivex.rxjava3.core.Single
 import javax.inject.Inject
 
 class CloudSourceImp @Inject constructor(
@@ -50,6 +51,7 @@ class CloudSourceImp @Inject constructor(
                     firestore.collection(COLLECTION_USERS).document(profile.id),
                     profile
             )
+                    .`as` { RxJavaBridge.toV3Completable(it) }
 
     override fun saveNotes(notes: List<MyNote>, userId: String): Completable =
             RxFirestore.runTransaction(firestore) { transaction ->
@@ -60,6 +62,7 @@ class CloudSourceImp @Inject constructor(
                             .document(note.id), note)
                 }
             }
+                    .`as` { RxJavaBridge.toV3Completable(it) }
 
     override fun saveCategories(categories: List<MyCategory>, userId: String): Completable =
             RxFirestore.runTransaction(firestore) { transaction ->
@@ -70,6 +73,7 @@ class CloudSourceImp @Inject constructor(
                             .document(category.id), category)
                 }
             }
+                    .`as` { RxJavaBridge.toV3Completable(it) }
 
     override fun saveNoteTags(noteTags: List<NoteTag>, userId: String): Completable =
             RxFirestore.runTransaction(firestore) { transaction ->
@@ -81,6 +85,7 @@ class CloudSourceImp @Inject constructor(
                             .document(noteTag.noteId + noteTag.tagId), noteTag)
                 }
             }
+                    .`as` { RxJavaBridge.toV3Completable(it) }
 
     override fun saveNoteLocations(noteLocations: List<NoteLocation>, userId: String): Completable =
             RxFirestore.runTransaction(firestore) { transaction ->
@@ -92,6 +97,7 @@ class CloudSourceImp @Inject constructor(
                             .document(noteLocation.noteId + noteLocation.locationId), noteLocation)
                 }
             }
+                    .`as` { RxJavaBridge.toV3Completable(it) }
 
     override fun saveTags(tags: List<MyTag>, userId: String): Completable =
             RxFirestore.runTransaction(firestore) { transaction ->
@@ -102,6 +108,7 @@ class CloudSourceImp @Inject constructor(
                             .document(tag.id), tag)
                 }
             }
+                    .`as` { RxJavaBridge.toV3Completable(it) }
 
     override fun saveAppearances(appearances: List<MyNoteAppearance>, userId: String): Completable =
             RxFirestore.runTransaction(firestore) { transaction ->
@@ -112,6 +119,7 @@ class CloudSourceImp @Inject constructor(
                             .document(appearance.appearanceId), appearance)
                 }
             }
+                    .`as` { RxJavaBridge.toV3Completable(it) }
 
     override fun saveLocations(locations: List<MyLocation>, userId: String): Completable =
             RxFirestore.runTransaction(firestore) { transaction ->
@@ -122,6 +130,7 @@ class CloudSourceImp @Inject constructor(
                             .document(location.id), location)
                 }
             }
+                    .`as` { RxJavaBridge.toV3Completable(it) }
 
     override fun saveForecasts(forecasts: List<MyForecast>, userId: String): Completable =
             RxFirestore.runTransaction(firestore) { transaction ->
@@ -132,6 +141,7 @@ class CloudSourceImp @Inject constructor(
                             .document(forecast.noteId), forecast)
                 }
             }
+                    .`as` { RxJavaBridge.toV3Completable(it) }
 
     override fun saveImages(images: List<MyImage>, userId: String): Completable =
             RxFirestore.runTransaction(firestore) { transaction ->
@@ -142,6 +152,7 @@ class CloudSourceImp @Inject constructor(
                             .document(image.name), image)
                 }
             }
+                    .`as` { RxJavaBridge.toV3Completable(it) }
 
     override fun saveImagesFiles(images: List<MyImage>, userId: String): Completable =
             Observable.fromIterable(images)
@@ -153,6 +164,7 @@ class CloudSourceImp @Inject constructor(
                                 .child(image.noteId)
                                 .child(COLLECTION_IMAGES)
                                 .child(image.name), Uri.parse(image.path))
+                                .`as` { RxJavaBridge.toV3Single(it) }
                     }
                     .collectInto(mutableListOf<UploadTask.TaskSnapshot>()) { l, i -> l.add(i) }
                     .ignoreElement()
@@ -166,6 +178,7 @@ class CloudSourceImp @Inject constructor(
                             .document(textSpan.id), textSpan)
                 }
             }
+                    .`as` { RxJavaBridge.toV3Completable(it) }
 
     override fun deleteNotes(notes: List<MyNote>, userId: String): Completable =
             RxFirestore.runTransaction(firestore) { transaction ->
@@ -177,6 +190,7 @@ class CloudSourceImp @Inject constructor(
                             .document(note.id))
                 }
             }
+                    .`as` { RxJavaBridge.toV3Completable(it) }
 
     override fun deleteCategories(categories: List<MyCategory>, userId: String): Completable =
             RxFirestore.runTransaction(firestore) { transaction ->
@@ -187,6 +201,7 @@ class CloudSourceImp @Inject constructor(
                             .document(category.id))
                 }
             }
+                    .`as` { RxJavaBridge.toV3Completable(it) }
 
     override fun deleteNoteTags(noteTags: List<NoteTag>, userId: String): Completable =
             RxFirestore.runTransaction(firestore) { transaction ->
@@ -198,6 +213,7 @@ class CloudSourceImp @Inject constructor(
                             .document(noteTag.noteId + noteTag.tagId))
                 }
             }
+                    .`as` { RxJavaBridge.toV3Completable(it) }
 
     override fun deleteNoteLocations(noteLocations: List<NoteLocation>, userId: String): Completable =
             RxFirestore.runTransaction(firestore) { transaction ->
@@ -209,6 +225,7 @@ class CloudSourceImp @Inject constructor(
                             .document(noteLocation.noteId + noteLocation.locationId))
                 }
             }
+                    .`as` { RxJavaBridge.toV3Completable(it) }
 
     override fun deleteLocations(locations: List<MyLocation>, userId: String): Completable =
             RxFirestore.runTransaction(firestore) { transaction ->
@@ -220,6 +237,7 @@ class CloudSourceImp @Inject constructor(
                             .document(location.id))
                 }
             }
+                    .`as` { RxJavaBridge.toV3Completable(it) }
 
     override fun deleteForecasts(forecasts: List<MyForecast>, userId: String): Completable =
             RxFirestore.runTransaction(firestore) { transaction ->
@@ -231,6 +249,7 @@ class CloudSourceImp @Inject constructor(
                             .document(forecast.noteId))
                 }
             }
+                    .`as` { RxJavaBridge.toV3Completable(it) }
 
     override fun deleteTags(tags: List<MyTag>, userId: String): Completable =
             RxFirestore.runTransaction(firestore) { transaction ->
@@ -241,6 +260,7 @@ class CloudSourceImp @Inject constructor(
                             .document(tag.id))
                 }
             }
+                    .`as` { RxJavaBridge.toV3Completable(it) }
 
     override fun deleteAppearances(appearances: List<MyNoteAppearance>, userId: String): Completable =
             RxFirestore.runTransaction(firestore) { transaction ->
@@ -251,6 +271,7 @@ class CloudSourceImp @Inject constructor(
                             .document(appearance.appearanceId))
                 }
             }
+                    .`as` { RxJavaBridge.toV3Completable(it) }
 
     override fun deleteImages(images: List<MyImage>, userId: String): Completable =
             RxFirestore.runTransaction(firestore) { transaction ->
@@ -262,6 +283,7 @@ class CloudSourceImp @Inject constructor(
                 }
             }
                     .onErrorComplete()
+                    .`as` { RxJavaBridge.toV3Completable(it) }
                     .andThen(Observable.fromIterable(images))
                     .flatMapSingle { image ->
                         RxFirebaseStorage.delete(firebaseStorage.reference
@@ -271,6 +293,7 @@ class CloudSourceImp @Inject constructor(
                                 .child(image.noteId)
                                 .child(COLLECTION_IMAGES)
                                 .child(image.name))
+                                .`as` { RxJavaBridge.toV3Completable(it) }
                                 .toSingleDefault(true)
                                 .onErrorReturn { false }
                     }
@@ -286,65 +309,76 @@ class CloudSourceImp @Inject constructor(
                             .document(textSpan.id))
                 }
             }
+                    .`as` { RxJavaBridge.toV3Completable(it) }
 
     override fun getProfile(userId: String): Maybe<MyProfile> =
             RxFirestore.getDocument(firestore.collection(COLLECTION_USERS)
                     .document(userId), MyProfile::class.java)
+                    .`as` { RxJavaBridge.toV3Maybe(it) }
 
     override fun getAllNotes(userId: String): Single<List<MyNote>> =
             RxFirestore.getCollection(firestore.collection(COLLECTION_USERS)
                     .document(userId)
                     .collection(COLLECTION_NOTES), MyNote::class.java)
-                    .toSingle(emptyList())
+                    .`as` { RxJavaBridge.toV3Maybe(it) }
+                    .defaultIfEmpty(emptyList())
 
     override fun getAllCategories(userId: String): Single<List<MyCategory>> =
             RxFirestore.getCollection(firestore.collection(COLLECTION_USERS)
                     .document(userId)
                     .collection(COLLECTION_CATEGORIES), MyCategory::class.java)
-                    .toSingle(emptyList())
+                    .`as` { RxJavaBridge.toV3Maybe(it) }
+                    .defaultIfEmpty(emptyList())
 
     override fun getAllTags(userId: String): Single<List<MyTag>> =
             RxFirestore.getCollection(firestore.collection(COLLECTION_USERS)
                     .document(userId)
                     .collection(COLLECTION_TAGS), MyTag::class.java)
-                    .toSingle(emptyList())
+                    .`as` { RxJavaBridge.toV3Maybe(it) }
+                    .defaultIfEmpty(emptyList())
 
     override fun getAllAppearances(userId: String): Single<List<MyNoteAppearance>> =
             RxFirestore.getCollection(firestore.collection(COLLECTION_USERS)
                     .document(userId)
                     .collection(COLLECTION_APPEARANCES), MyNoteAppearance::class.java)
-                    .toSingle(emptyList())
+                    .`as` { RxJavaBridge.toV3Maybe(it) }
+                    .defaultIfEmpty(emptyList())
 
     override fun getAllNoteTags(userId: String): Single<List<NoteTag>> =
             RxFirestore.getCollection(firestore.collection(COLLECTION_USERS)
                     .document(userId)
                     .collection(COLLECTION_NOTE_TAGS), NoteTag::class.java)
-                    .toSingle(emptyList())
+                    .`as` { RxJavaBridge.toV3Maybe(it) }
+                    .defaultIfEmpty(emptyList())
 
     override fun getAllNoteLocations(userId: String): Single<List<NoteLocation>> =
             RxFirestore.getCollection(firestore.collection(COLLECTION_USERS)
                     .document(userId)
                     .collection(COLLECTION_NOTE_LOCATIONS), NoteLocation::class.java)
-                    .toSingle(emptyList())
+                    .`as` { RxJavaBridge.toV3Maybe(it) }
+                    .defaultIfEmpty(emptyList())
 
     override fun getAllLocations(userId: String): Single<List<MyLocation>> =
             RxFirestore.getCollection(firestore.collection(COLLECTION_USERS)
                     .document(userId)
                     .collection(COLLECTION_LOCATIONS), MyLocation::class.java)
                     .map { locations -> locations.distinctBy { it.id } }
-                    .toSingle(emptyList())
+                    .`as` { RxJavaBridge.toV3Maybe(it) }
+                    .defaultIfEmpty(emptyList())
 
     override fun getAllForecasts(userId: String): Single<List<MyForecast>> =
             RxFirestore.getCollection(firestore.collection(COLLECTION_USERS)
                     .document(userId)
                     .collection(COLLECTION_FORECASTS), MyForecast::class.java)
-                    .toSingle(emptyList())
+                    .`as` { RxJavaBridge.toV3Maybe(it) }
+                    .defaultIfEmpty(emptyList())
 
     override fun getAllImages(userId: String): Single<List<MyImage>> =
             RxFirestore.getCollection(firestore.collection(COLLECTION_USERS)
                     .document(userId)
                     .collection(COLLECTION_IMAGES), MyImage::class.java)
-                    .toSingle(emptyList())
+                    .`as` { RxJavaBridge.toV3Maybe(it) }
+                    .defaultIfEmpty(emptyList())
 
     override fun loadImageFiles(images: List<MyImage>, userId: String): Completable =
             Observable.fromIterable(images)
@@ -356,6 +390,7 @@ class CloudSourceImp @Inject constructor(
                                 .child(image.noteId)
                                 .child(COLLECTION_IMAGES)
                                 .child(image.name), Uri.parse(image.path))
+                                .`as` { RxJavaBridge.toV3Single(it) }
                     }
                     .collectInto(mutableListOf<FileDownloadTask.TaskSnapshot>()) { l, i -> l.add(i) }
                     .ignoreElement()
@@ -364,5 +399,6 @@ class CloudSourceImp @Inject constructor(
             RxFirestore.getCollection(firestore.collection(COLLECTION_USERS)
                     .document(userId)
                     .collection(COLLECTION_SPANS), MyTextSpan::class.java)
-                    .toSingle(emptyList())
+                    .`as` { RxJavaBridge.toV3Maybe(it) }
+                    .defaultIfEmpty(emptyList())
 }

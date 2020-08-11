@@ -27,8 +27,8 @@ import com.furianrt.mydiary.domain.sync.*
 import com.furianrt.mydiary.domain.update.UpdateProfileUseCase
 import com.furianrt.mydiary.model.entity.SyncProgressMessage
 import com.furianrt.mydiary.presentation.screens.main.MainActivity
-import io.reactivex.Single
-import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.rxjava3.core.Single
+import io.reactivex.rxjava3.disposables.CompositeDisposable
 import javax.inject.Inject
 
 class SyncService : Service() {

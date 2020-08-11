@@ -11,7 +11,7 @@
 package com.furianrt.mydiary.domain
 
 import com.furianrt.mydiary.model.gateway.device.DeviceGateway
-import io.reactivex.Single
+import io.reactivex.rxjava3.core.Single
 import javax.inject.Inject
 
 class UriToRealPathUseCase @Inject constructor(

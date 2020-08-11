@@ -12,9 +12,9 @@ package com.furianrt.mydiary.model.gateway.location
 
 import com.furianrt.mydiary.model.entity.MyLocation
 import com.furianrt.mydiary.model.entity.NoteLocation
-import io.reactivex.Completable
-import io.reactivex.Flowable
-import io.reactivex.Single
+import io.reactivex.rxjava3.core.Completable
+import io.reactivex.rxjava3.core.Flowable
+import io.reactivex.rxjava3.core.Single
 
 interface LocationGateway {
     fun insertNoteLocation(noteLocation: NoteLocation): Completable

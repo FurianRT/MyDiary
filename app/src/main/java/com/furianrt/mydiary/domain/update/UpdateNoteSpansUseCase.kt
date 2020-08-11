@@ -16,7 +16,7 @@ import com.furianrt.mydiary.model.gateway.device.DeviceGateway
 import com.furianrt.mydiary.model.gateway.span.SpanGateway
 import com.furianrt.mydiary.di.application.component.AppScope
 import com.furianrt.mydiary.utils.generateUniqueId
-import io.reactivex.Completable
+import io.reactivex.rxjava3.core.Completable
 import javax.inject.Inject
 
 @AppScope

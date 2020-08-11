@@ -13,8 +13,8 @@ package com.furianrt.mydiary.domain.check
 import android.util.Patterns
 import com.furianrt.mydiary.model.gateway.device.DeviceGateway
 import com.furianrt.mydiary.model.gateway.profile.ProfileGateway
-import io.reactivex.Completable
-import io.reactivex.Single
+import io.reactivex.rxjava3.core.Completable
+import io.reactivex.rxjava3.core.Single
 import javax.inject.Inject
 
 class CheckCredentialsUseCase @Inject constructor(

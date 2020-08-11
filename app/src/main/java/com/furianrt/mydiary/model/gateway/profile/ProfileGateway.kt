@@ -12,10 +12,10 @@ package com.furianrt.mydiary.model.gateway.profile
 
 import com.furianrt.mydiary.model.entity.MyProfile
 import com.google.common.base.Optional
-import io.reactivex.Completable
-import io.reactivex.Flowable
-import io.reactivex.Observable
-import io.reactivex.Single
+import io.reactivex.rxjava3.core.Completable
+import io.reactivex.rxjava3.core.Flowable
+import io.reactivex.rxjava3.core.Observable
+import io.reactivex.rxjava3.core.Single
 
 interface ProfileGateway {
 

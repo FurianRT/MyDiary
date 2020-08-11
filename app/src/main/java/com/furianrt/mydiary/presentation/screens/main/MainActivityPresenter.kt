@@ -21,7 +21,7 @@ import com.furianrt.mydiary.domain.delete.DeleteProfileUseCase
 import com.furianrt.mydiary.domain.get.*
 import com.furianrt.mydiary.utils.MyRxUtils
 import com.furianrt.mydiary.utils.generateUniqueId
-import io.reactivex.disposables.Disposable
+import io.reactivex.rxjava3.disposables.Disposable
 import org.joda.time.LocalDate
 import java.lang.IllegalArgumentException
 import java.util.Locale

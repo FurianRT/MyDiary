@@ -14,8 +14,8 @@ import com.furianrt.mydiary.model.entity.*
 import com.furianrt.mydiary.model.entity.pojo.SearchEntries
 import com.furianrt.mydiary.domain.check.IsLocationEnabledUseCase
 import com.furianrt.mydiary.domain.check.IsMoodEnabledUseCase
-import io.reactivex.Flowable
-import io.reactivex.functions.Function5
+import io.reactivex.rxjava3.core.Flowable
+import io.reactivex.rxjava3.functions.Function5
 import javax.inject.Inject
 
 class GetSearchEntriesUseCase @Inject constructor(

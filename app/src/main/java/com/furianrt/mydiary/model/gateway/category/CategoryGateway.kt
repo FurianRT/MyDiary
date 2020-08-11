@@ -12,9 +12,9 @@ package com.furianrt.mydiary.model.gateway.category
 
 import com.furianrt.mydiary.model.entity.MyCategory
 import com.google.common.base.Optional
-import io.reactivex.Completable
-import io.reactivex.Flowable
-import io.reactivex.Single
+import io.reactivex.rxjava3.core.Completable
+import io.reactivex.rxjava3.core.Flowable
+import io.reactivex.rxjava3.core.Single
 
 interface CategoryGateway {
     fun insertCategory(category: MyCategory): Completable

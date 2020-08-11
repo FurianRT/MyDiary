@@ -18,8 +18,8 @@ import com.furianrt.mydiary.domain.delete.RemoveTagFromNoteUseCase
 import com.furianrt.mydiary.domain.get.GetFullNotesUseCase
 import com.furianrt.mydiary.utils.MyRxUtils
 import com.furianrt.mydiary.presentation.dialogs.tags.fragments.list.TagListAdapter.*
-import io.reactivex.Flowable
-import io.reactivex.functions.Function3
+import io.reactivex.rxjava3.core.Flowable
+import io.reactivex.rxjava3.functions.Function3
 import java.util.Locale
 import javax.inject.Inject
 

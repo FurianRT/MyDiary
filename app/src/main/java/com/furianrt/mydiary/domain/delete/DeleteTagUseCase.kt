@@ -12,7 +12,7 @@ package com.furianrt.mydiary.domain.delete
 
 import com.furianrt.mydiary.model.entity.MyTag
 import com.furianrt.mydiary.model.gateway.tag.TagGateway
-import io.reactivex.Completable
+import io.reactivex.rxjava3.core.Completable
 import javax.inject.Inject
 
 class DeleteTagUseCase @Inject constructor(

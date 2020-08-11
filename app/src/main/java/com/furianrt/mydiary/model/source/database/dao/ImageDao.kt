@@ -12,8 +12,8 @@ package com.furianrt.mydiary.model.source.database.dao
 
 import androidx.room.*
 import com.furianrt.mydiary.model.entity.MyImage
-import io.reactivex.Completable
-import io.reactivex.Flowable
+import io.reactivex.rxjava3.core.Completable
+import io.reactivex.rxjava3.core.Flowable
 
 @Dao
 interface ImageDao {

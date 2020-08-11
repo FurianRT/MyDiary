@@ -13,7 +13,7 @@ package com.furianrt.mydiary.domain.save
 import com.furianrt.mydiary.model.entity.MyCategory
 import com.furianrt.mydiary.model.gateway.category.CategoryGateway
 import com.furianrt.mydiary.utils.generateUniqueId
-import io.reactivex.Single
+import io.reactivex.rxjava3.core.Single
 import javax.inject.Inject
 
 class SaveCategoryUseCase @Inject constructor(

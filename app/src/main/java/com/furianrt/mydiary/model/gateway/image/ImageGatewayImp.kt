@@ -21,7 +21,7 @@ import com.furianrt.mydiary.model.source.database.dao.ImageDao
 import com.furianrt.mydiary.model.source.preferences.PreferencesSource
 import com.furianrt.mydiary.model.source.storage.StorageSource
 import com.furianrt.mydiary.utils.MyRxUtils
-import io.reactivex.*
+import io.reactivex.rxjava3.core.*
 import javax.inject.Inject
 
 class ImageGatewayImp @Inject constructor(

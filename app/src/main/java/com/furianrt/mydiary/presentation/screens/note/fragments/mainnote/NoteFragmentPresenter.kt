@@ -25,8 +25,9 @@ import com.furianrt.mydiary.domain.save.SaveLocationUseCase
 import com.furianrt.mydiary.domain.update.UpdateNoteUseCase
 import com.furianrt.mydiary.model.entity.pojo.TagsAndAppearance
 import com.furianrt.mydiary.utils.MyRxUtils
-import io.reactivex.Completable
+import io.reactivex.rxjava3.core.Completable
 import org.joda.time.DateTime
+import java.util.*
 import javax.inject.Inject
 import kotlin.collections.ArrayList
 
@@ -492,12 +493,13 @@ class NoteFragmentPresenter @Inject constructor(
         view?.recordSpeech()
     }
 
+    @ExperimentalStdlibApi
     override fun onSpeechRecorded(curTitle: String, curContent: String, textSpans: List<MyTextSpan>, recordedText: String) {
         val content = when {
             curContent.isBlank() ->
-                recordedText.capitalize()
+                recordedText.capitalize(Locale.getDefault())
             curContent.replace(Regex("[ \n]"), "").last() == '.' ->
-                "$curContent ${recordedText.capitalize()}"
+                "$curContent ${recordedText.capitalize(Locale.getDefault())}"
             else ->
                 "$curContent $recordedText"
         }

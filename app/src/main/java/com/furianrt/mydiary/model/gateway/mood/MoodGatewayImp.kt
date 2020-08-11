@@ -15,7 +15,7 @@ import com.furianrt.mydiary.model.source.database.dao.MoodDao
 import com.furianrt.mydiary.model.source.preferences.PreferencesSource
 import com.furianrt.mydiary.utils.MyRxUtils
 import com.google.common.base.Optional
-import io.reactivex.Flowable
+import io.reactivex.rxjava3.core.Flowable
 import javax.inject.Inject
 
 class MoodGatewayImp @Inject constructor(

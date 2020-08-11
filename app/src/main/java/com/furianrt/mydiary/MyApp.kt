@@ -91,24 +91,24 @@ class MyApp : Application(), Application.ActivityLifecycleCallbacks {
         createTutorialNoteUseCase().subscribe()
     }
 
-    override fun onActivityDestroyed(activity: Activity?) {}
-    override fun onActivitySaveInstanceState(activity: Activity?, outState: Bundle?) {}
-    override fun onActivityResumed(activity: Activity?) {}
-    override fun onActivityCreated(activity: Activity?, savedInstanceState: Bundle?) {
+    override fun onActivityDestroyed(activity: Activity) {}
+    override fun onActivitySaveInstanceState(activity: Activity, outState: Bundle) {}
+    override fun onActivityResumed(activity: Activity) {}
+    override fun onActivityCreated(activity: Activity, savedInstanceState: Bundle?) {
         mHandler.removeCallbacks(mLogoutRunnable)
     }
 
-    override fun onActivityStarted(activity: Activity?) {
+    override fun onActivityStarted(activity: Activity) {
         mHandler.removeCallbacks(mLogoutRunnable)
     }
 
-    override fun onActivityPaused(activity: Activity?) {
+    override fun onActivityPaused(activity: Activity) {
         if (activity !is PinActivity) {
             authorizeUseCase(true)
         }
     }
 
-    override fun onActivityStopped(activity: Activity?) {
+    override fun onActivityStopped(activity: Activity) {
         if (isPinEnabledUseCase() && activity !is PinActivity) {
             mHandler.postDelayed(mLogoutRunnable, getPinRequestDelayUseCase())
         }

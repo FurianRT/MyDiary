@@ -15,9 +15,9 @@ import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Update
 import com.furianrt.mydiary.model.entity.MyProfile
-import io.reactivex.Completable
-import io.reactivex.Flowable
-import io.reactivex.Single
+import io.reactivex.rxjava3.core.Completable
+import io.reactivex.rxjava3.core.Flowable
+import io.reactivex.rxjava3.core.Single
 
 @Dao
 interface ProfileDao {

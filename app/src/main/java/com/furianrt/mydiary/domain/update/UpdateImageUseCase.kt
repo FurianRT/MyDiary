@@ -12,7 +12,7 @@ package com.furianrt.mydiary.domain.update
 
 import com.furianrt.mydiary.model.entity.MyImage
 import com.furianrt.mydiary.model.gateway.image.ImageGateway
-import io.reactivex.Completable
+import io.reactivex.rxjava3.core.Completable
 import javax.inject.Inject
 
 class UpdateImageUseCase @Inject constructor(

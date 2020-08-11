@@ -13,7 +13,7 @@ package com.furianrt.mydiary.model.source.database.dao
 import androidx.room.Dao
 import androidx.room.Query
 import com.furianrt.mydiary.model.entity.MyMood
-import io.reactivex.Flowable
+import io.reactivex.rxjava3.core.Flowable
 
 @Dao
 interface MoodDao {

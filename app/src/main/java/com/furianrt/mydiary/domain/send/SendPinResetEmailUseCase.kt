@@ -12,8 +12,8 @@ package com.furianrt.mydiary.domain.send
 
 import com.furianrt.mydiary.model.gateway.device.DeviceGateway
 import com.furianrt.mydiary.model.gateway.pin.PinGateway
-import io.reactivex.Completable
-import io.reactivex.Single
+import io.reactivex.rxjava3.core.Completable
+import io.reactivex.rxjava3.core.Single
 import javax.inject.Inject
 
 class SendPinResetEmailUseCase @Inject constructor(

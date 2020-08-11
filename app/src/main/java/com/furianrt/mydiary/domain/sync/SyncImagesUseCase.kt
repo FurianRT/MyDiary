@@ -12,9 +12,9 @@ package com.furianrt.mydiary.domain.sync
 
 import com.furianrt.mydiary.model.entity.MyImage
 import com.furianrt.mydiary.model.gateway.image.ImageGateway
-import io.reactivex.Completable
-import io.reactivex.Single
-import io.reactivex.functions.BiFunction
+import io.reactivex.rxjava3.core.Completable
+import io.reactivex.rxjava3.core.Single
+import io.reactivex.rxjava3.functions.BiFunction
 import javax.inject.Inject
 
 class SyncImagesUseCase @Inject constructor(

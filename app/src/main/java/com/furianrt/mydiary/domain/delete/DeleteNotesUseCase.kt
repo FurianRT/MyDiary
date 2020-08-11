@@ -17,8 +17,8 @@ import com.furianrt.mydiary.model.gateway.location.LocationGateway
 import com.furianrt.mydiary.model.gateway.note.NoteGateway
 import com.furianrt.mydiary.model.gateway.span.SpanGateway
 import com.furianrt.mydiary.model.gateway.tag.TagGateway
-import io.reactivex.Completable
-import io.reactivex.Observable
+import io.reactivex.rxjava3.core.Completable
+import io.reactivex.rxjava3.core.Observable
 import javax.inject.Inject
 
 class DeleteNotesUseCase @Inject constructor(

@@ -12,7 +12,7 @@ package com.furianrt.mydiary.domain.update
 
 import com.furianrt.mydiary.domain.get.GetProfileUseCase
 import com.furianrt.mydiary.model.gateway.profile.ProfileGateway
-import io.reactivex.Completable
+import io.reactivex.rxjava3.core.Completable
 import javax.inject.Inject
 
 class UpdateProfileUseCase @Inject constructor(

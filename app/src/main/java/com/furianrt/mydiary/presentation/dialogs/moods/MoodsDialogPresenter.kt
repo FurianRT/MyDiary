@@ -16,8 +16,8 @@ import com.furianrt.mydiary.domain.get.GetMoodsUseCase
 import com.furianrt.mydiary.domain.get.GetNotesUseCase
 import com.furianrt.mydiary.domain.update.UpdateNoteUseCase
 import com.furianrt.mydiary.utils.MyRxUtils
-import io.reactivex.Flowable
-import io.reactivex.functions.BiFunction
+import io.reactivex.rxjava3.core.Flowable
+import io.reactivex.rxjava3.functions.BiFunction
 import javax.inject.Inject
 
 class MoodsDialogPresenter @Inject constructor(
