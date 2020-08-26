@@ -18,7 +18,6 @@ import android.content.Intent
 import androidx.core.app.NotificationCompat
 import com.furianrt.mydiary.MyApp
 import com.furianrt.mydiary.R
-import com.furianrt.mydiary.di.presenter.modules.presenter.PresenterContextModule
 import com.furianrt.mydiary.domain.check.IsPremiumPurchasedUseCase
 import com.furianrt.mydiary.presentation.screens.main.MainActivity
 import com.google.firebase.messaging.FirebaseMessagingService
@@ -38,8 +37,9 @@ class MessagingService : FirebaseMessagingService() {
 
     override fun onCreate() {
         (applicationContext as MyApp)
-                .component
-                .newPresenterComponent(PresenterContextModule(baseContext))
+                .appComponent
+                .presenterComponent()
+                .create()
                 .inject(this)
         super.onCreate()
     }
@@ -62,7 +62,7 @@ class MessagingService : FirebaseMessagingService() {
         val notificationStyle = NotificationCompat.BigTextStyle()
                 .setBigContentTitle(notification.title)
                 .bigText(notification.body)
-        val resultNotification = NotificationCompat.Builder(applicationContext, MyApp.NOTIFICATION_FIREBASE_CHANNEL_ID)
+        val resultNotification = NotificationCompat.Builder(applicationContext, getString(R.string.cloud_notification_channel_id))
                 .setAutoCancel(true)
                 .setWhen(System.currentTimeMillis())
                 .setSmallIcon(R.drawable.ic_notification_logo)

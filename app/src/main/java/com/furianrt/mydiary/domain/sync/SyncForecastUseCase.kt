@@ -18,7 +18,7 @@ class SyncForecastUseCase @Inject constructor(
         private val forecastGateway: ForecastGateway
 ) {
 
-    class SyncForecastsException : Throwable()
+    class SyncForecastsException(message: String?, cause: Throwable?) : Throwable(message, cause)
 
     operator fun invoke(email: String): Completable =
             forecastGateway.getAllDbForecasts()
@@ -36,6 +36,6 @@ class SyncForecastUseCase @Inject constructor(
                     .flatMapCompletable { forecastGateway.insertForecast(it) }
                     .onErrorResumeNext { error ->
                         error.printStackTrace()
-                        Completable.error(SyncForecastsException())
+                        Completable.error(SyncForecastsException(error.message, error))
                     }
 }

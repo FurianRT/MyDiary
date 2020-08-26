@@ -11,6 +11,7 @@
 package com.furianrt.mydiary.presentation.screens.note.fragments.mainnote
 
 import android.util.Log
+import com.furianrt.mydiary.analytics.MyAnalytics
 import com.furianrt.mydiary.domain.DisableLocationUseCase
 import com.furianrt.mydiary.model.entity.*
 import com.furianrt.mydiary.domain.FindLocationUseCase
@@ -54,6 +55,7 @@ class NoteFragmentPresenter @Inject constructor(
         private val findLocationUseCase: FindLocationUseCase,
         private val isPanoramaEnabledUseCase: IsPanoramaEnabledUseCase,
         private val disableLocationUseCase: DisableLocationUseCase,
+        private val analytics: MyAnalytics,
         private val scheduler: MyRxUtils.BaseSchedulerProvider
 ) : NoteFragmentContract.Presenter() {
 
@@ -224,6 +226,7 @@ class NoteFragmentPresenter @Inject constructor(
                     }
                 }, { error ->
                     error.printStackTrace()
+                    analytics.logExceptionEvent(error)
                 }))
     }
 

@@ -35,9 +35,13 @@ import com.furianrt.mydiary.analytics.MyAnalytics
 import com.furianrt.mydiary.di.application.component.AppScope
 import com.furianrt.mydiary.model.gateway.device.DeviceGateway.*
 import com.furianrt.mydiary.utils.generateUniqueId
+import com.google.android.play.core.appupdate.AppUpdateManagerFactory
+import com.google.android.play.core.install.model.AppUpdateType
+import com.google.android.play.core.install.model.UpdateAvailability
 import com.hbisoft.pickit.PickiT
 import com.hbisoft.pickit.PickiTCallbacks
 import io.reactivex.rxjava3.core.Maybe
+import io.reactivex.rxjava3.core.Single
 import io.reactivex.rxjava3.subjects.PublishSubject
 import java.io.IOException
 
@@ -61,11 +65,7 @@ class DeviceGatewayImp @Inject constructor(
         override fun onLocationResult(result: LocationResult?) {
             super.onLocationResult(result)
             fusedLocationClient.removeLocationUpdates(this)
-            Thread(Runnable {
-                result?.let {
-                    findAddress(it.lastLocation.latitude, it.lastLocation.longitude)
-                }
-            }).start()
+            Thread { result?.let { findAddress(it.lastLocation.latitude, it.lastLocation.longitude) } }.start()
         }
     }
 
@@ -122,8 +122,7 @@ class DeviceGatewayImp @Inject constructor(
 
     override fun findLocation(): Maybe<MyLocation> {
         requestLocation()
-        return mLocationSubject
-                .firstElement()
+        return mLocationSubject.firstElement()
     }
 
     override fun getTutorialNoteBitmap(): Bitmap =
@@ -175,5 +174,20 @@ class DeviceGatewayImp @Inject constructor(
             iterator.next().deleteTemporaryFile()
         }
         mPickits.clear()
+    }
+
+    override fun isUpdateAvailable(): Single<Boolean> = Single.create { emitter ->
+        val appUpdateInfoTask = AppUpdateManagerFactory.create(context).appUpdateInfo
+        appUpdateInfoTask.addOnFailureListener { error ->
+            if (!emitter.isDisposed) {
+                emitter.onError(error)
+            }
+        }
+        appUpdateInfoTask.addOnSuccessListener { result ->
+            if (!emitter.isDisposed) {
+                emitter.onSuccess(result.updateAvailability() == UpdateAvailability.UPDATE_AVAILABLE
+                        && result.isUpdateTypeAllowed(AppUpdateType.IMMEDIATE))
+            }
+        }
     }
 }

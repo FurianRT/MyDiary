@@ -18,7 +18,7 @@ class SyncNoteSpansUseCase @Inject constructor(
         private val spanGateway: SpanGateway
 ) {
 
-    class SyncSpanException : Throwable()
+    class SyncSpanException(message: String?, cause: Throwable?) : Throwable(message, cause)
 
     operator fun invoke(email: String): Completable =
             spanGateway.getAllTextSpans()
@@ -37,6 +37,6 @@ class SyncNoteSpansUseCase @Inject constructor(
                     .flatMapCompletable { spanGateway.insertTextSpan(it) }
                     .onErrorResumeNext { error ->
                         error.printStackTrace()
-                        Completable.error(SyncSpanException())
+                        Completable.error(SyncSpanException(error.message, error))
                     }
 }

@@ -14,6 +14,7 @@ import android.graphics.Bitmap
 import com.anjlab.android.iab.v3.BillingProcessor
 import com.furianrt.mydiary.model.entity.MyLocation
 import io.reactivex.rxjava3.core.Maybe
+import io.reactivex.rxjava3.core.Single
 
 interface DeviceGateway : BillingProcessor.IBillingHandler {
     fun isFingerprintEnabled(): Boolean
@@ -27,6 +28,7 @@ interface DeviceGateway : BillingProcessor.IBillingHandler {
     fun getTutorialNoteBitmap(): Bitmap
     fun getRealPathFromUri(uri: String, callback: OnUriConvertCallback)
     fun clearUriTempFiles()
+    fun isUpdateAvailable(): Single<Boolean>
 
     interface OnUriConvertCallback {
         fun onUriRealPathReceived(path: String)

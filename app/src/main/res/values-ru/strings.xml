@@ -282,11 +282,6 @@
     <string name="fragment_premium_life_time">Разовая покупка</string>
     <string name="fragment_premium_life_time_description">Работает на всех устройствах с тем же Google-аккаунтом</string>
     <string name="fragment_premium_access_to_new_features">Доступ к будущим премиум функциям</string>
-    <string name="dialog_rate_continue">%1$d/%2$d\nПродолжить</string>
-    <string name="dialog_rate_never_ask_again">Не спрашивать</string>
-    <string name="dialog_rate_ask_me_later">Может позже</string>
-    <string name="dialog_rate_rate_us">Оцените нас</string>
-    <string name="dialog_rate_message">Расскажите что вы думаете о Serenity</string>
     <string name="low_rate_email_title">Скажите что не понравилось</string>
     <string name="low_rate_email_text">Что вам не понравилось в приложении? Мы исправимся, честно.</string>
     <string name="low_rate_email_subject">Serenity отзыв</string>

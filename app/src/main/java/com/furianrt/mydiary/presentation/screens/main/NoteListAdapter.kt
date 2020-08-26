@@ -105,7 +105,7 @@ class NoteListAdapter(
         }
         header.text_header_date.text = SimpleDateFormat("LLLL yyyy", Locale.getDefault())
                 .format(mItems[headerPosition].time)
-                .capitalize()
+                .capitalize(Locale.getDefault())
     }
 
     override fun getItemCount(): Int = mItems.size
@@ -319,12 +319,12 @@ class NoteListAdapter(
         }
     }
 
-    inner class NoteHeaderViewHolder(view: View) : BaseNoteViewHolder(view) {
+    class NoteHeaderViewHolder(view: View) : BaseNoteViewHolder(view) {
 
         fun bind(time: Long) {
             itemView.text_header_date.text = SimpleDateFormat("LLLL yyyy", Locale.getDefault())
                     .format(time)
-                    .capitalize()
+                    .capitalize(Locale.getDefault())
         }
     }
 

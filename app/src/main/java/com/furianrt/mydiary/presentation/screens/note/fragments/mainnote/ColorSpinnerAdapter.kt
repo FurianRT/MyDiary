@@ -51,7 +51,5 @@ class ColorSpinnerAdapter(
         }
     }
 
-    inner class ViewHolder(
-            var color: View? = null
-    )
+    class ViewHolder(var color: View? = null)
 }

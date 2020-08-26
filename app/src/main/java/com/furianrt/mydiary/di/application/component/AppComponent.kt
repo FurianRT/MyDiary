@@ -10,9 +10,10 @@
 
 package com.furianrt.mydiary.di.application.component
 
+import android.content.Context
 import com.furianrt.mydiary.MyApp
 import com.furianrt.mydiary.di.application.modules.app.AnalyticsModule
-import com.furianrt.mydiary.di.application.modules.app.AppContextModule
+import com.furianrt.mydiary.di.application.modules.app.AppContext
 import com.furianrt.mydiary.di.application.modules.data.DatabaseModule
 import com.furianrt.mydiary.di.application.modules.data.EncryptionModule
 import com.furianrt.mydiary.di.application.modules.data.SourceModule
@@ -22,14 +23,21 @@ import com.furianrt.mydiary.di.application.modules.network.ApiModule
 import com.furianrt.mydiary.di.application.modules.network.FirebaseModule
 import com.furianrt.mydiary.di.application.modules.rx.RxModule
 import com.furianrt.mydiary.di.presenter.component.PresenterComponent
-import com.furianrt.mydiary.di.presenter.modules.presenter.PresenterContextModule
+import dagger.BindsInstance
 import dagger.Component
 
 @AppScope
-@Component(modules = [AppContextModule::class, ApiModule::class, SourceModule::class,
+@Component(modules = [ApiModule::class, SourceModule::class,
     GatewayModule::class, FirebaseModule::class, DatabaseModule::class, RxModule::class,
     AnalyticsModule::class, LocationModule::class, EncryptionModule::class])
 interface AppComponent {
-    fun newPresenterComponent(presenterContextModule: PresenterContextModule): PresenterComponent
+
+    @Component.Factory
+    interface Factory {
+        fun create(@BindsInstance @AppContext context: Context): AppComponent
+    }
+
+    fun presenterComponent(): PresenterComponent.Factory
+
     fun inject(application: MyApp)
 }

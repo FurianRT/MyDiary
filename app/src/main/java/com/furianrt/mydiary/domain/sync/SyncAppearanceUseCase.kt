@@ -18,7 +18,7 @@ class SyncAppearanceUseCase @Inject constructor(
         private val appearanceGateway: AppearanceGateway
 ) {
 
-    class SyncAppearanceException : Throwable()
+    class SyncAppearanceException(message: String?, cause: Throwable?) : Throwable(message, cause)
 
     operator fun invoke(email: String): Completable =
             appearanceGateway.getAllNoteAppearances()
@@ -37,6 +37,6 @@ class SyncAppearanceUseCase @Inject constructor(
                     .flatMapCompletable { appearanceGateway.insertAppearance(it) }
                     .onErrorResumeNext { error ->
                         error.printStackTrace()
-                        Completable.error(SyncAppearanceException())
+                        Completable.error(SyncAppearanceException(error.message, error))
                     }
 }

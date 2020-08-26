@@ -27,8 +27,6 @@ import com.furianrt.mydiary.presentation.dialogs.delete.note.DeleteNoteContract
 import com.furianrt.mydiary.presentation.dialogs.delete.note.DeleteNotePresenter
 import com.furianrt.mydiary.presentation.dialogs.moods.MoodsDialogContract
 import com.furianrt.mydiary.presentation.dialogs.moods.MoodsDialogPresenter
-import com.furianrt.mydiary.presentation.dialogs.rate.RateDialogContract
-import com.furianrt.mydiary.presentation.dialogs.rate.RateDialogPresenter
 import com.furianrt.mydiary.presentation.dialogs.tags.TagsDialogContract
 import com.furianrt.mydiary.presentation.dialogs.tags.TagsDialogPresenter
 import com.furianrt.mydiary.presentation.dialogs.tags.fragments.add.TagAddContract
@@ -254,10 +252,6 @@ interface PresenterModule {
     @Binds
     @PresenterScope
     fun drawerMenuPresenter(presenter: DrawerMenuPresenter): DrawerMenuContract.Presenter
-
-    @Binds
-    @PresenterScope
-    fun rateDialogPresenter(presenter: RateDialogPresenter): RateDialogContract.Presenter
 
     @Binds
     @PresenterScope

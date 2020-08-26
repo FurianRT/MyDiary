@@ -13,15 +13,27 @@ package com.furianrt.mydiary.analytics
 import android.os.Bundle
 import com.furianrt.mydiary.BuildConfig
 import com.google.firebase.analytics.FirebaseAnalytics
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import javax.inject.Inject
 
 class MyAnalyticsImp @Inject constructor(
-        private val firebaseAnalytics: FirebaseAnalytics
+        private val firebaseAnalytics: FirebaseAnalytics,
+        private val firebaseCrashlytics: FirebaseCrashlytics
 ) : MyAnalytics {
+
+    override fun init() {
+        //FirebaseCrashlytics.getInstance().setCrashlyticsCollectionEnabled(!BuildConfig.DEBUG)
+    }
 
     override fun sendEvent(event: String, bundle: Bundle?) {
         if (!BuildConfig.DEBUG) {
             firebaseAnalytics.logEvent(event, bundle)
+        }
+    }
+
+    override fun logExceptionEvent(error: Throwable) {
+        if (!BuildConfig.DEBUG) {
+            firebaseCrashlytics.recordException(error)
         }
     }
 }

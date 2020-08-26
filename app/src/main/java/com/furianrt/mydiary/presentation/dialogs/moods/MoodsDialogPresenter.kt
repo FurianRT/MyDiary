@@ -17,7 +17,6 @@ import com.furianrt.mydiary.domain.get.GetNotesUseCase
 import com.furianrt.mydiary.domain.update.UpdateNoteUseCase
 import com.furianrt.mydiary.utils.MyRxUtils
 import io.reactivex.rxjava3.core.Flowable
-import io.reactivex.rxjava3.functions.BiFunction
 import javax.inject.Inject
 
 class MoodsDialogPresenter @Inject constructor(
@@ -34,9 +33,7 @@ class MoodsDialogPresenter @Inject constructor(
         addDisposable(Flowable.combineLatest(
                 getMoodsUseCase(),
                 getNotesUseCase().firstOrError().toFlowable(),
-                BiFunction<List<MyMood>, List<MyNote>, MoodsAndNotes> { moods, notes ->
-                    MoodsAndNotes(moods, notes)
-                }
+                { moods, notes -> MoodsAndNotes(moods, notes) }
         )
                 .observeOn(scheduler.ui())
                 .subscribe { view.showMoods(it.moods, it.notes) })

@@ -15,6 +15,7 @@ import com.furianrt.mydiary.di.application.component.AppScope
 import com.furianrt.mydiary.di.application.modules.app.AppContext
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.FirebaseFirestoreSettings
 import com.google.firebase.storage.FirebaseStorage
@@ -49,4 +50,9 @@ object FirebaseModule {
     @AppScope
     fun provideFirebaseAnalytics(@AppContext context: Context): FirebaseAnalytics =
             FirebaseAnalytics.getInstance(context)
+
+    @JvmStatic
+    @Provides
+    @AppScope
+    fun provideFirebaseCrashlytics(): FirebaseCrashlytics = FirebaseCrashlytics.getInstance()
 }

@@ -20,7 +20,7 @@ import androidx.core.app.NotificationCompat
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.furianrt.mydiary.MyApp
 import com.furianrt.mydiary.R
-import com.furianrt.mydiary.di.presenter.modules.presenter.PresenterContextModule
+import com.furianrt.mydiary.analytics.MyAnalytics
 import com.furianrt.mydiary.domain.get.GetProfileUseCase
 import com.furianrt.mydiary.domain.save.SetLastSyncMessageUseCase
 import com.furianrt.mydiary.domain.sync.*
@@ -92,12 +92,16 @@ class SyncService : Service() {
     @Inject
     lateinit var setLastSyncMessageUseCase: SetLastSyncMessageUseCase
 
+    @Inject
+    lateinit var analytics: MyAnalytics
+
     private val mCompositeDisposable = CompositeDisposable()
 
     override fun onCreate() {
         (applicationContext as MyApp)
-                .component
-                .newPresenterComponent(PresenterContextModule(baseContext))
+                .appComponent
+                .presenterComponent()
+                .create()
                 .inject(this)
         super.onCreate()
     }
@@ -173,6 +177,7 @@ class SyncService : Service() {
 
     private fun handleSyncError(error: Throwable) {
         error.printStackTrace()
+        analytics.logExceptionEvent(error.cause ?: error)
         val progressMessage = when (error) {
             is SyncNotesUseCase.SyncNotesException ->
                 SyncProgressMessage(task = SyncProgressMessage.SYNC_NOTES, hasError = true)

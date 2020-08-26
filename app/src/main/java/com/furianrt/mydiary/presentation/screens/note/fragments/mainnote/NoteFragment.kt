@@ -75,7 +75,7 @@ class NoteFragment : BaseFragment(R.layout.fragment_note), NoteFragmentContract.
         private const val ARG_IS_NEW_NOTE = "is_new_note"
         private const val ARG_NOTE_WITH_IMAGE = "note_with_image"
         private const val ARG_NOTE_APPEARANCE = "note_appearance"
-        private const val ARG_NOTE_CATEGORY = "note_categiry"
+        private const val ARG_NOTE_CATEGORY = "note_category"
         private const val ARG_NOTE_MOOD = "note_mood"
         private const val ARG_NOTE_TAGS = "note_tags"
         private const val ARG_NOTE_LOCATIONS = "note_locations"
@@ -172,6 +172,7 @@ class NoteFragment : BaseFragment(R.layout.fragment_note), NoteFragmentContract.
         return super.onCreateView(inflater, container, savedInstanceState)
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         pager_note_image.adapter = mImagePagerAdapter

@@ -14,8 +14,6 @@ import androidx.annotation.IdRes
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
-import com.furianrt.mydiary.R
-import com.furianrt.mydiary.presentation.screens.main.fragments.profile.ProfileFragment
 
 inline fun FragmentManager.inTransaction(func: FragmentTransaction.() -> Unit) {
     with(beginTransaction()) {

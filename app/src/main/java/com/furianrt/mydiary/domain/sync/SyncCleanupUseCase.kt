@@ -32,7 +32,7 @@ class SyncCleanupUseCase @Inject constructor(
         private val spanGateway: SpanGateway
 ) {
 
-    class SyncCleanupException : Throwable()
+    class SyncCleanupException(message: String?, cause: Throwable?) : Throwable(message, cause)
 
     operator fun invoke(): Completable =
             noteGateway.cleanupNotes()
@@ -47,6 +47,6 @@ class SyncCleanupUseCase @Inject constructor(
                     .andThen(spanGateway.cleanupTextSpans())
                     .onErrorResumeNext { error ->
                         error.printStackTrace()
-                        Completable.error(SyncCleanupException())
+                        Completable.error(SyncCleanupException(error.message, error))
                     }
 }

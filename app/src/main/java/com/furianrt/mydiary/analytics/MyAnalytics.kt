@@ -14,7 +14,9 @@ import android.os.Bundle
 
 interface MyAnalytics {
 
+    fun init()
     fun sendEvent(event: String, bundle: Bundle? = null)
+    fun logExceptionEvent(error: Throwable)
 
     companion object {
         //Events

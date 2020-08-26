@@ -1,10 +1,11 @@
-apply plugin: 'com.android.application'
-apply plugin: 'kotlin-android'
-apply plugin: 'kotlin-android-extensions'
-apply plugin: 'kotlin-kapt'
-apply plugin: 'com.google.gms.google-services'
-apply plugin: 'org.jetbrains.kotlin.android.extensions'
-apply plugin: 'io.fabric'
+plugins {
+    id 'com.android.application'
+    id 'kotlin-android'
+    id 'kotlin-android-extensions'
+    id 'kotlin-kapt'
+    id 'com.google.gms.google-services'
+    id 'com.google.firebase.crashlytics'
+}
 
 android {
     compileSdkVersion 30
@@ -13,8 +14,8 @@ android {
         applicationId "com.furianrt.mydiary"
         minSdkVersion 24
         targetSdkVersion 30
-        versionCode 72
-        versionName "1.9.2"
+        versionCode 74
+        versionName "1.9.3"
 
         javaCompileOptions {
             annotationProcessorOptions {
@@ -80,7 +81,7 @@ dependencies {
     implementation "androidx.appcompat:appcompat:$support_version"
     implementation "androidx.recyclerview:recyclerview:1.1.0"
     implementation "androidx.preference:preference:1.1.1"
-    implementation 'androidx.constraintlayout:constraintlayout:2.0.0-rc1'
+    implementation 'androidx.constraintlayout:constraintlayout:2.0.0'
     implementation 'com.google.android.material:material:1.2.0'
 
     //Layout for tags
@@ -90,22 +91,21 @@ dependencies {
     implementation 'androidx.biometric:biometric:1.0.1'
 
     //Firebase
-    implementation 'com.google.firebase:firebase-core:17.4.4'
-    implementation 'com.google.firebase:firebase-storage:19.1.1'
-    implementation 'com.google.firebase:firebase-firestore:21.5.0'
     implementation 'com.google.firebase:firebase-messaging:20.2.4'
-    implementation 'com.google.firebase:firebase-auth:19.3.2'
+    implementation 'com.google.firebase:firebase-storage-ktx:19.1.1'
+    implementation 'com.google.firebase:firebase-firestore-ktx:21.5.0'
+    implementation 'com.google.firebase:firebase-auth-ktx:19.3.2'
+    implementation 'com.google.firebase:firebase-analytics-ktx:17.5.0'
+    implementation 'com.google.firebase:firebase-crashlytics-ktx:17.2.1'
 
     //Rx for Firebase
     implementation 'com.github.FrangSierra:RxFirebase:1.5.6'
 
-    //Crash tracking
-    implementation 'com.crashlytics.sdk.android:crashlytics:2.10.1'
-
     //ORM
     implementation "androidx.room:room-rxjava3:$room_version"
-    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     kapt "androidx.room:room-compiler:$room_version"
+
+    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
 
     //JSON
     implementation 'com.google.code.gson:gson:2.8.6'
@@ -120,7 +120,7 @@ dependencies {
     implementation "com.google.dagger:dagger:$dagger_version"
     kapt "com.google.dagger:dagger-compiler:$dagger_version"
 
-    //Play services
+    //Location
     implementation 'com.google.android.gms:play-services-location:17.0.0'
 
     //Permissions
@@ -183,9 +183,13 @@ dependencies {
     implementation 'com.gjiazhe:PanoramaImageView:1.0'
 
     //Fading edges for views
-    implementation'com.github.bosphere.android-fadingedgelayout:fadingedgelayout:1.0.0'
+    implementation 'com.github.bosphere.android-fadingedgelayout:fadingedgelayout:1.0.0'
 
     //Debugging tool for network calls, database content, etc.
     implementation 'com.facebook.stetho:stetho:1.5.1'
     implementation 'com.facebook.stetho:stetho-okhttp3:1.5.1'
+
+    //In-app review, update, etc.
+    implementation 'com.google.android.play:core:1.8.0'
+    implementation 'com.google.android.play:core-ktx:1.8.1'
 }

@@ -15,10 +15,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.res.Configuration
 import android.graphics.drawable.Drawable
-import android.os.Bundle
-import android.os.Handler
-import android.os.Parcelable
-import android.os.Vibrator
+import android.os.*
 import android.util.Log
 import android.view.*
 import android.view.animation.AccelerateInterpolator
@@ -50,7 +47,6 @@ import com.furianrt.mydiary.presentation.base.BaseActivity
 import com.furianrt.mydiary.model.entity.*
 import com.furianrt.mydiary.presentation.dialogs.categories.CategoriesDialog
 import com.furianrt.mydiary.presentation.dialogs.delete.note.DeleteNoteDialog
-import com.furianrt.mydiary.presentation.dialogs.rate.RateDialog
 import com.furianrt.mydiary.presentation.general.AppBarLayoutBehavior
 import com.furianrt.mydiary.presentation.general.GlideApp
 import com.furianrt.mydiary.presentation.screens.main.NoteListAdapter.NoteItemView
@@ -69,6 +65,7 @@ import com.furianrt.mydiary.presentation.general.StickyHeaderItemDecoration
 import com.furianrt.mydiary.presentation.screens.statistics.StatsActivity
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.android.play.core.review.ReviewManagerFactory
 import jp.wasabeef.recyclerview.animators.LandingAnimator
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.activity_main_toolbar.*
@@ -77,7 +74,6 @@ import kotlinx.android.synthetic.main.empty_search_note_list.*
 import org.joda.time.DateTime
 import java.util.TreeMap
 import javax.inject.Inject
-import kotlin.Comparator
 import kotlin.collections.ArrayList
 import kotlin.math.min
 
@@ -105,6 +101,7 @@ class MainActivity : BaseActivity(R.layout.activity_main), MainActivityContract.
         private const val ANIMATION_NO_SEARCH_RESULT_DURATION = 200L
         private const val ANIMATION_NO_SEARCH_RESULT_SIZE = 1.4f
         private const val ANIMATION_EMPTY_SATE_DURATION = 500L
+        private const val REQUEST_CODE_NOTE_ACTIVITY = 23
         private val TOOLBAR_HEIGHT = dpToPx(56f)
 
         @JvmStatic
@@ -127,7 +124,7 @@ class MainActivity : BaseActivity(R.layout.activity_main), MainActivityContract.
     private var mBackPressCount = 0
     private var mMenu: Menu? = null
     private var mIsAppBarExpandEnabled = false
-    private val mHandler = Handler()
+    private val mHandler = Handler(Looper.getMainLooper())
     private var mStatusBarHeight = 0
     private val mBottomSheetOpenRunnable: Runnable = Runnable {
         mBottomSheet.state = BottomSheetBehavior.STATE_EXPANDED
@@ -177,7 +174,11 @@ class MainActivity : BaseActivity(R.layout.activity_main), MainActivityContract.
             toolbar.setHomeAsUpIndicator(R.drawable.ic_menu)
         }
 
-        layout_main.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_STABLE or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+        /*  if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+              window.setDecorFitsSystemWindows(false)
+          } else {
+              layout_main.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_STABLE or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+          }*/
 
         val drawerWidth = min(getDisplayWidth() - TOOLBAR_HEIGHT, TOOLBAR_HEIGHT * 5)
         container_main_drawer.layoutParams.width = drawerWidth
@@ -238,6 +239,12 @@ class MainActivity : BaseActivity(R.layout.activity_main), MainActivityContract.
         }
 
         layout_main.setOnApplyWindowInsetsListener { _, insets ->
+            /* mStatusBarHeight = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                 insets.getInsets(WindowInsets.Type.systemBars()).top
+             } else {
+                 insets.systemWindowInsetTop
+             }*/
+
             mStatusBarHeight = insets.systemWindowInsetTop
 
             val toolbarParams = toolbar_main.layoutParams as ViewGroup.MarginLayoutParams
@@ -498,7 +505,10 @@ class MainActivity : BaseActivity(R.layout.activity_main), MainActivityContract.
 
     override fun showViewNewNote(noteId: String) {
         analytics.sendEvent(MyAnalytics.EVENT_NOTE_ADDED)
-        startActivity(NoteActivity.newIntentModeAdd(this, noteId))
+        startActivityForResult(
+                NoteActivity.newIntentModeAdd(this, noteId),
+                REQUEST_CODE_NOTE_ACTIVITY
+        )
     }
 
     override fun showNotes(notes: List<MyNoteWithProp>, selectedNoteIds: Set<String>, scrollToTop: Boolean) {
@@ -530,13 +540,13 @@ class MainActivity : BaseActivity(R.layout.activity_main), MainActivityContract.
 
     private fun toNoteViewItem(notes: List<MyNoteWithProp>): ArrayList<NoteItemView> {
         val sortAsc = notes.size > 1 && notes[0].note.time < notes[1].note.time
-        val map = TreeMap<Long, ArrayList<MyNoteWithProp>>(Comparator<Long> { p0, p1 ->
+        val map = TreeMap<Long, ArrayList<MyNoteWithProp>> { p0, p1 ->
             if (sortAsc) {
                 p0.compareTo(p1)
             } else {
                 p1.compareTo(p0)
             }
-        })
+        }
         for (note in notes) {
             val dateTime = DateTime(note.note.time).dayOfMonth()
                     .withMinimumValue()
@@ -725,8 +735,13 @@ class MainActivity : BaseActivity(R.layout.activity_main), MainActivityContract.
     }
 
     override fun showRateProposal() {
-        if (supportFragmentManager.findFragmentByTag(RateDialog.TAG) == null) {
-            RateDialog().show(supportFragmentManager, RateDialog.TAG)
+        val manager = ReviewManagerFactory.create(this)
+        manager.requestReviewFlow().addOnCompleteListener { reviewFlow ->
+            if (reviewFlow.isSuccessful) {
+                manager.launchReviewFlow(this, reviewFlow.result).addOnCompleteListener {
+                    presenter.onUserReviewComplete()
+                }
+            }
         }
     }
 

@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/grey_light"
     tools:context=".presentation.screens.settings.note.NoteSettingsActivity">
 
     <androidx.appcompat.widget.Toolbar
@@ -17,7 +18,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:title="@string/appearance" />
 
-    <FrameLayout
+    <androidx.fragment.app.FragmentContainerView
         android:id="@+id/container_settings_note"
         android:layout_width="match_parent"
         android:layout_height="0dp"
