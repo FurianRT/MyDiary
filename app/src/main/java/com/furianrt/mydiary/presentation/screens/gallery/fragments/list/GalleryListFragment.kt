@@ -34,6 +34,7 @@ import com.furianrt.mydiary.analytics.MyAnalytics
 import com.furianrt.mydiary.presentation.base.BaseFragment
 import com.furianrt.mydiary.model.entity.MyImage
 import com.furianrt.mydiary.presentation.dialogs.delete.image.DeleteImageDialog
+import com.furianrt.mydiary.presentation.screens.gallery.fragments.list.adapter.GalleryListAdapter
 import com.furianrt.mydiary.presentation.screens.gallery.fragments.pager.GalleryPagerFragment
 import com.furianrt.mydiary.utils.*
 import jp.wasabeef.recyclerview.animators.FadeInUpAnimator
@@ -121,7 +122,7 @@ class GalleryListFragment : BaseFragment(R.layout.fragment_gallery_list), Galler
                 spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
                     override fun getSpanSize(position: Int): Int =
                             when (mAdapter.getItemViewType(position)) {
-                                GalleryListAdapter.ViewItem.TYPE_FOOTER -> HORIZONTAL_LIST_SPAN_COUNT
+                                GalleryListAdapter.TYPE_FOOTER -> HORIZONTAL_LIST_SPAN_COUNT
                                 else -> IMAGE_SPAN
                             }
                 }
@@ -131,7 +132,7 @@ class GalleryListFragment : BaseFragment(R.layout.fragment_gallery_list), Galler
                 spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
                     override fun getSpanSize(position: Int): Int =
                             when (mAdapter.getItemViewType(position)) {
-                                GalleryListAdapter.ViewItem.TYPE_FOOTER -> VERTICAL_LIST_SPAN_COUNT
+                                GalleryListAdapter.TYPE_FOOTER -> VERTICAL_LIST_SPAN_COUNT
                                 else -> IMAGE_SPAN
                             }
                 }
@@ -342,8 +343,8 @@ class GalleryListFragment : BaseFragment(R.layout.fragment_gallery_list), Galler
     }
 
     override fun showViewImagePager(noteId: String, position: Int) {
-        if (fragmentManager?.findFragmentByTag(GalleryPagerFragment.TAG) == null) {
-            fragmentManager?.inTransaction {
+        if (parentFragmentManager.findFragmentByTag(GalleryPagerFragment.TAG) == null) {
+            parentFragmentManager.inTransaction {
                 replace(R.id.container_gallery,
                         GalleryPagerFragment.newInstance(noteId, position), GalleryPagerFragment.TAG)
             }

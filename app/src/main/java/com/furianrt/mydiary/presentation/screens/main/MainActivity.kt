@@ -49,7 +49,6 @@ import com.furianrt.mydiary.presentation.dialogs.categories.CategoriesDialog
 import com.furianrt.mydiary.presentation.dialogs.delete.note.DeleteNoteDialog
 import com.furianrt.mydiary.presentation.general.AppBarLayoutBehavior
 import com.furianrt.mydiary.presentation.general.GlideApp
-import com.furianrt.mydiary.presentation.screens.main.NoteListAdapter.NoteItemView
 import com.furianrt.mydiary.presentation.screens.main.fragments.authentication.AuthFragment
 import com.furianrt.mydiary.presentation.screens.main.fragments.drawer.DrawerMenuFragment
 import com.furianrt.mydiary.presentation.screens.main.fragments.imagesettings.ImageSettingsFragment
@@ -62,6 +61,11 @@ import com.furianrt.mydiary.utils.dpToPx
 import com.furianrt.mydiary.utils.getDisplayWidth
 import com.furianrt.mydiary.utils.inTransaction
 import com.furianrt.mydiary.presentation.general.StickyHeaderItemDecoration
+import com.furianrt.mydiary.presentation.screens.main.adapter.NoteListAdapter
+import com.furianrt.mydiary.presentation.screens.main.adapter.entity.BaseNoteListItem
+import com.furianrt.mydiary.presentation.screens.main.adapter.entity.NoteItemDate
+import com.furianrt.mydiary.presentation.screens.main.adapter.entity.NoteItemWithImage
+import com.furianrt.mydiary.presentation.screens.main.adapter.entity.NoteItemWithText
 import com.furianrt.mydiary.presentation.screens.statistics.StatsActivity
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.bottomsheet.BottomSheetBehavior
@@ -513,12 +517,15 @@ class MainActivity : BaseActivity(R.layout.activity_main), MainActivityContract.
 
     override fun showNotes(notes: List<MyNoteWithProp>, selectedNoteIds: Set<String>, scrollToTop: Boolean) {
         Log.e(TAG, "showNotes")
-        mAdapter.selectedNoteIds.clear()
-        mAdapter.selectedNoteIds.addAll(selectedNoteIds)
-        mAdapter.submitList(toNoteViewItem(notes.map { it.copy() }))
-        mRecyclerViewState?.let {
-            list_main.layoutManager?.onRestoreInstanceState(it)
-            mRecyclerViewState = null
+        mAdapter.submitList(toNoteViewItem(notes.map { it.copy() }, selectedNoteIds)) {
+            mRecyclerViewState?.let {
+                list_main.layoutManager?.onRestoreInstanceState(it)
+                mRecyclerViewState = null
+            }
+
+            if (scrollToTop) {
+                list_main.scrollToPosition(0)
+            }
         }
 
         if (selectedNoteIds.isEmpty()) {
@@ -532,13 +539,9 @@ class MainActivity : BaseActivity(R.layout.activity_main), MainActivityContract.
         } else {
             ""
         }
-
-        if (scrollToTop) {
-            list_main.scrollToPosition(0)
-        }
     }
 
-    private fun toNoteViewItem(notes: List<MyNoteWithProp>): ArrayList<NoteItemView> {
+    private fun toNoteViewItem(notes: List<MyNoteWithProp>, selectedIds: Set<String>): List<BaseNoteListItem> {
         val sortAsc = notes.size > 1 && notes[0].note.time < notes[1].note.time
         val map = TreeMap<Long, ArrayList<MyNoteWithProp>> { p0, p1 ->
             if (sortAsc) {
@@ -560,10 +563,10 @@ class MainActivity : BaseActivity(R.layout.activity_main), MainActivityContract.
             value.add(note)
         }
 
-        val list = ArrayList<NoteItemView>()
+        val result = mutableListOf<BaseNoteListItem>()
         for (date in map.keys) {
-            val header = NoteItemView(type = NoteItemView.TYPE_HEADER, time = date)
-            list.add(header)
+            val header = NoteItemDate(date)
+            result.add(header)
             val values = if (sortAsc) {
                 map.getValue(date).sortedBy { it.note.time }
             } else {
@@ -572,13 +575,13 @@ class MainActivity : BaseActivity(R.layout.activity_main), MainActivityContract.
 
             for (note in values) {
                 if (note.images.isEmpty()) {
-                    list.add(NoteItemView(NoteItemView.TYPE_NOTE_WITH_TEXT, note))
+                    result.add(NoteItemWithText(note, selectedIds.contains(note.note.id)))
                 } else {
-                    list.add(NoteItemView(NoteItemView.TYPE_NOTE_WITH_IMAGE, note))
+                    result.add(NoteItemWithImage(note, selectedIds.contains(note.note.id)))
                 }
             }
         }
-        return list
+        return result
     }
 
     override fun showEmptyNoteList() {

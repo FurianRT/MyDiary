@@ -8,7 +8,17 @@
  *
  ******************************************************************************/
 
-package com.furianrt.mydiary.presentation.screens.main
+/*******************************************************************************
+ *  @author FurianRT
+ *  Copyright 2019
+ *
+ *  All rights reserved.
+ *  Distribution of the software in any form is only allowed with
+ *  explicit, prior permission from the owner.
+ *
+ ******************************************************************************/
+
+package com.furianrt.mydiary.presentation.screens.main.adapter
 
 import android.content.Context
 import android.content.res.ColorStateList
@@ -17,7 +27,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.AsyncDifferConfig
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.ListPreloader
@@ -35,58 +46,42 @@ import com.furianrt.mydiary.utils.getDay
 import com.furianrt.mydiary.utils.getDayOfWeek
 import com.furianrt.mydiary.presentation.general.GlideApp
 import com.furianrt.mydiary.presentation.general.StickyHeaderItemDecoration
+import com.furianrt.mydiary.presentation.screens.main.adapter.entity.BaseNoteListItem
+import com.furianrt.mydiary.presentation.screens.main.adapter.entity.NoteItemDate
+import com.furianrt.mydiary.presentation.screens.main.adapter.entity.NoteItemWithImage
+import com.furianrt.mydiary.presentation.screens.main.adapter.entity.NoteItemWithText
 import kotlinx.android.synthetic.main.activity_main_list_header.view.*
 import kotlinx.android.synthetic.main.activity_main_list_note_image.view.*
 import kotlinx.android.synthetic.main.activity_main_list_note_text.view.*
-import java.lang.IllegalArgumentException
 import java.text.SimpleDateFormat
 import java.util.*
 
-class NoteListAdapter(
-        context: Context,
-        var selectedNoteIds: HashSet<String> = HashSet()
-) : RecyclerView.Adapter<NoteListAdapter.BaseNoteViewHolder>(),
-        ListPreloader.PreloadModelProvider<NoteListAdapter.NoteItemView>,
+class NoteListAdapter(context: Context) : ListAdapter<BaseNoteListItem,
+        NoteListAdapter.BaseNoteViewHolder>(AsyncDifferConfig.Builder(NoteListDiffCallback()).build()),
+        ListPreloader.PreloadModelProvider<BaseNoteListItem>,
         StickyHeaderItemDecoration.StickyHeaderInterface {
 
     companion object {
         private const val MAX_PRELOAD = 20
-    }
 
-    class NoteItemView(
-            val type: Int,
-            val note: MyNoteWithProp? = null,
-            val time: Long? = null
-    ) {
-        companion object {
-            const val TYPE_NOTE_WITH_IMAGE = 0
-            const val TYPE_NOTE_WITH_TEXT = 1
-            const val TYPE_HEADER = 2
-        }
+        private const val TYPE_NOTE_WITH_TEXT = 0
+        private const val TYPE_NOTE_WITH_IMAGE = 1
+        private const val TYPE_NOTE_DATE = 2
     }
 
     var listener: OnMainListItemInteractionListener? = null
     var syncEmail: String? = null
 
-    private val mItems = mutableListOf<NoteItemView>()
-    private val mSizeProvider = ViewPreloadSizeProvider<NoteItemView>()
+    private val mSizeProvider = ViewPreloadSizeProvider<BaseNoteListItem>()
     private val mGlideBuilder = GlideApp.with(context)
 
     val preloader = RecyclerViewPreloader(Glide.with(context), this, mSizeProvider, MAX_PRELOAD)
 
-    fun submitList(items: List<NoteItemView>) {
-        val diffResult = DiffUtil.calculateDiff(NoteListDiffCallback(mItems, items))
-        mItems.clear()
-        mItems.addAll(items)
-        diffResult.dispatchUpdatesTo(this)
-    }
+    override fun getPreloadItems(position: Int): List<BaseNoteListItem> = listOf(getItem(position))
 
-    override fun getPreloadItems(position: Int): MutableList<NoteItemView> =
-            mItems.subList(position, position + 1)
-
-    override fun getPreloadRequestBuilder(item: NoteItemView): RequestBuilder<*>? =
-            if (item.type == NoteItemView.TYPE_NOTE_WITH_IMAGE) {
-                val image = item.note!!.images.first()
+    override fun getPreloadRequestBuilder(item: BaseNoteListItem): RequestBuilder<*>? =
+            if (item is NoteItemWithImage) {
+                val image = item.note.images.first()
                 mGlideBuilder
                         .load(Uri.parse(image.path))
                         .transition(DrawableTransitionOptions.withCrossFade())
@@ -103,37 +98,41 @@ class NoteListAdapter(
         if (headerPosition == RecyclerView.NO_POSITION) {
             header.layoutParams.height = 0
         }
+
+        val item = getItem(headerPosition)
+
+        if (item !is NoteItemDate) return
+
         header.text_header_date.text = SimpleDateFormat("LLLL yyyy", Locale.getDefault())
-                .format(mItems[headerPosition].time)
+                .format(item.time)
                 .capitalize(Locale.getDefault())
     }
 
-    override fun getItemCount(): Int = mItems.size
-
-    override fun getItemViewType(position: Int): Int = mItems[position].type
+    override fun getItemViewType(position: Int): Int = when (getItem(position)) {
+        is NoteItemWithText -> TYPE_NOTE_WITH_TEXT
+        is NoteItemWithImage -> TYPE_NOTE_WITH_IMAGE
+        is NoteItemDate -> TYPE_NOTE_DATE
+        else -> throw IllegalStateException("Unsupported view type")
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BaseNoteViewHolder =
             when (viewType) {
-                NoteItemView.TYPE_NOTE_WITH_TEXT ->
-                    NoteTextViewHolder(LayoutInflater.from(parent.context)
-                            .inflate(R.layout.activity_main_list_note_text, parent, false))
-                NoteItemView.TYPE_NOTE_WITH_IMAGE ->
-                    NoteImageViewHolder(LayoutInflater.from(parent.context)
-                            .inflate(R.layout.activity_main_list_note_image, parent, false)
-                            .apply { mSizeProvider.setView(image_main_list) })
-                NoteItemView.TYPE_HEADER ->
-                    NoteHeaderViewHolder(LayoutInflater.from(parent.context)
-                            .inflate(R.layout.activity_main_list_header, parent, false))
+                TYPE_NOTE_WITH_TEXT -> NoteTextViewHolder(LayoutInflater.from(parent.context)
+                        .inflate(R.layout.activity_main_list_note_text, parent, false))
+                TYPE_NOTE_WITH_IMAGE -> NoteImageViewHolder(LayoutInflater.from(parent.context)
+                        .inflate(R.layout.activity_main_list_note_image, parent, false)
+                        .apply { mSizeProvider.setView(image_main_list) })
+                TYPE_NOTE_DATE -> NoteHeaderViewHolder(LayoutInflater.from(parent.context)
+                        .inflate(R.layout.activity_main_list_header, parent, false))
                 else ->
-                    throw IllegalArgumentException()
+                    throw IllegalStateException("Unsupported view type")
             }
 
-    override fun isHeader(itemPosition: Int): Boolean =
-            if (itemPosition < 0) {
-                false
-            } else {
-                mItems[itemPosition].type == NoteItemView.TYPE_HEADER
-            }
+    override fun isHeader(itemPosition: Int): Boolean = if (itemPosition < 0) {
+        false
+    } else {
+        getItem(itemPosition) is NoteItemDate
+    }
 
     override fun getHeaderPositionForItem(itemPosition: Int): Int =
             (itemPosition downTo 0)
@@ -141,31 +140,32 @@ class NoteListAdapter(
                     .firstOrNull { it.first }?.second ?: RecyclerView.NO_POSITION
 
     override fun onBindViewHolder(holder: BaseNoteViewHolder, position: Int) {
-        when (holder) {
-            is NoteTextViewHolder -> mItems[position].note?.let { holder.bind(it) }
-            is NoteImageViewHolder -> mItems[position].note?.let { holder.bind(it) }
-            is NoteHeaderViewHolder -> mItems[position].time?.let { holder.bind(it) }
-        }
+        holder.bind(getItem(position))
     }
 
-    abstract class BaseNoteViewHolder(view: View) : RecyclerView.ViewHolder(view)
+    abstract class BaseNoteViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+
+        abstract fun bind(item: BaseNoteListItem)
+    }
 
     inner class NoteTextViewHolder(view: View) : BaseNoteViewHolder(view) {
 
-        fun bind(note: MyNoteWithProp) {
-            itemView.setOnClickListener { listener?.onMainListItemClick(note) }
-            itemView.setOnLongClickListener {
-                listener?.onMainListItemLongClick(note)
-                return@setOnLongClickListener true
+        override fun bind(item: BaseNoteListItem) {
+            with((item as NoteItemWithText)) {
+                itemView.setOnClickListener { listener?.onMainListItemClick(this.note) }
+                itemView.setOnLongClickListener {
+                    listener?.onMainListItemLongClick(this.note)
+                    return@setOnLongClickListener true
+                }
+                itemView.text_note_text_day_of_week.text = getDayOfWeek(this.note.note.time)
+                itemView.text_note_text_day.text = getDay(this.note.note.time)
+                itemView.text_note_content.setText(this.note.note.content.applyTextSpans(this.note.textSpans), TextView.BufferType.SPANNABLE)
+                setTags(this.note)
+                setCategory(this.note)
+                setSyncIcon(this.note)
+                setTitle(this.note)
+                selectItem(this)
             }
-            itemView.text_note_text_day_of_week.text = getDayOfWeek(note.note.time)
-            itemView.text_note_text_day.text = getDay(note.note.time)
-            itemView.text_note_content.setText(note.note.content.applyTextSpans(note.textSpans), TextView.BufferType.SPANNABLE)
-            setTags(note)
-            setCategory(note)
-            setSyncIcon(note)
-            setTitle(note)
-            selectItem(note.note.id)
         }
 
         private fun setTitle(note: MyNoteWithProp) {
@@ -221,8 +221,8 @@ class NoteListAdapter(
             }
         }
 
-        private fun selectItem(noteId: String) {
-            itemView.layout_note_text_selected.visibility = if (selectedNoteIds.contains(noteId)) {
+        private fun selectItem(item: NoteItemWithText) {
+            itemView.layout_note_text_selected.visibility = if (item.selected) {
                 View.VISIBLE
             } else {
                 View.GONE
@@ -232,29 +232,31 @@ class NoteListAdapter(
 
     inner class NoteImageViewHolder(view: View) : BaseNoteViewHolder(view) {
 
-        fun bind(note: MyNoteWithProp) {
-            itemView.setOnClickListener { listener?.onMainListItemClick(note) }
-            itemView.setOnLongClickListener {
-                listener?.onMainListItemLongClick(note)
-                return@setOnLongClickListener true
+        override fun bind(item: BaseNoteListItem) {
+            with((item as NoteItemWithImage)) {
+                itemView.setOnClickListener { listener?.onMainListItemClick(this.note) }
+                itemView.setOnLongClickListener {
+                    listener?.onMainListItemLongClick(this.note)
+                    return@setOnLongClickListener true
+                }
+                itemView.text_note_image_day_of_week.text = getDayOfWeek(this.note.note.time)
+                itemView.text_note_image_day.text = getDay(this.note.note.time)
+                itemView.text_image_note_content.setText(this.note.note.content.applyTextSpans(this.note.textSpans), TextView.BufferType.SPANNABLE)
+                itemView.text_images.text = this.note.images.count().toString()
+                setTitle(this.note)
+                setTags(this.note)
+                setCategory(this.note)
+                setSyncIcon(this.note)
+                selectItem(this)
+                val image = this.note.images.first()
+                mGlideBuilder
+                        .load(Uri.parse(image.path))
+                        .transition(DrawableTransitionOptions.withCrossFade())
+                        .signature(ObjectKey(image.editedTime.toString() + image.name))
+                        .centerCrop()
+                        .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
+                        .into(itemView.image_main_list)
             }
-            itemView.text_note_image_day_of_week.text = getDayOfWeek(note.note.time)
-            itemView.text_note_image_day.text = getDay(note.note.time)
-            itemView.text_image_note_content.setText(note.note.content.applyTextSpans(note.textSpans), TextView.BufferType.SPANNABLE)
-            itemView.text_images.text = note.images.count().toString()
-            setTitle(note)
-            setTags(note)
-            setCategory(note)
-            setSyncIcon(note)
-            selectItem(note.note.id)
-            val image = note.images.first()
-            mGlideBuilder
-                    .load(Uri.parse(image.path))
-                    .transition(DrawableTransitionOptions.withCrossFade())
-                    .signature(ObjectKey(image.editedTime.toString() + image.name))
-                    .centerCrop()
-                    .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
-                    .into(itemView.image_main_list)
         }
 
         private fun setTitle(note: MyNoteWithProp) {
@@ -310,8 +312,8 @@ class NoteListAdapter(
             }
         }
 
-        private fun selectItem(noteId: String) {
-            itemView.layout_note_image_selected.visibility = if (selectedNoteIds.contains(noteId)) {
+        private fun selectItem(item: NoteItemWithImage) {
+            itemView.layout_note_image_selected.visibility = if (item.selected) {
                 View.VISIBLE
             } else {
                 View.GONE
@@ -321,10 +323,12 @@ class NoteListAdapter(
 
     class NoteHeaderViewHolder(view: View) : BaseNoteViewHolder(view) {
 
-        fun bind(time: Long) {
-            itemView.text_header_date.text = SimpleDateFormat("LLLL yyyy", Locale.getDefault())
-                    .format(time)
-                    .capitalize(Locale.getDefault())
+        override fun bind(item: BaseNoteListItem) {
+            with((item as NoteItemDate).time) {
+                itemView.text_header_date.text = SimpleDateFormat("LLLL yyyy", Locale.getDefault())
+                        .format(this)
+                        .capitalize(Locale.getDefault())
+            }
         }
     }
 
