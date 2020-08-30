@@ -50,7 +50,7 @@ class SignOutFragment : BaseFragment(R.layout.fragment_sign_out), SignOutContrac
     }
 
     override fun returnToMenuView() {
-        fragmentManager?.popBackStack()
+        parentFragmentManager.popBackStack()
     }
 
     override fun onAttach(context: Context) {

@@ -45,7 +45,7 @@ class TagDeleteFragment : BaseFragment(R.layout.fragment_tag_delete), TagDeleteC
     }
 
     override fun closeView() {
-        fragmentManager?.popBackStack()
+        parentFragmentManager.popBackStack()
     }
 
     override fun onStart() {

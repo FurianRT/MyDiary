@@ -44,7 +44,7 @@ class CategoryDeleteFragment : BaseFragment(R.layout.fragment_category_delete), 
     }
 
     override fun closeView() {
-        fragmentManager?.popBackStack()
+        parentFragmentManager.popBackStack()
     }
 
     override fun onStart() {

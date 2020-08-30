@@ -46,7 +46,7 @@ class CategoryAddFragment : BaseFragment(R.layout.fragment_category_add), Catego
     }
 
     override fun close() {
-        fragmentManager?.popBackStack()
+        parentFragmentManager.popBackStack()
     }
 
     override fun showErrorEmptyName() {

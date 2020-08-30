@@ -71,7 +71,7 @@ class CategoryEditFragment : BaseFragment(R.layout.fragment_category_edit), Cate
     }
 
     override fun close() {
-        fragmentManager?.popBackStack()
+        parentFragmentManager.popBackStack()
     }
 
     override fun onStart() {

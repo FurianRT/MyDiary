@@ -10,6 +10,7 @@
 
 package com.furianrt.mydiary.presentation.screens.main.fragments.profile.password
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Bundle
 import android.os.Handler
@@ -56,6 +57,7 @@ class PasswordFragment : BaseFragment(R.layout.fragment_password), PasswordContr
         super.onCreate(savedInstanceState)
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         button_password_cancel.setOnClickListener { presenter.onButtonCancelClick() }
@@ -125,12 +127,10 @@ class PasswordFragment : BaseFragment(R.layout.fragment_password), PasswordContr
 
     override fun showSuccessPasswordChange() {
         analytics.sendEvent(MyAnalytics.EVENT_PASSWORD_CHANGED)
-        fragmentManager?.let {
-            if (it.findFragmentByTag(PasswordSuccessFragment.TAG) == null) {
-                it.inTransaction {
-                    setCustomAnimations(R.anim.scale_up, R.anim.scale_up)
-                    add(R.id.profile_container, PasswordSuccessFragment(), PasswordSuccessFragment.TAG)
-                }
+        if (parentFragmentManager.findFragmentByTag(PasswordSuccessFragment.TAG) == null) {
+            parentFragmentManager.inTransaction {
+                setCustomAnimations(R.anim.scale_up, R.anim.scale_up)
+                add(R.id.profile_container, PasswordSuccessFragment(), PasswordSuccessFragment.TAG)
             }
         }
 
@@ -142,7 +142,7 @@ class PasswordFragment : BaseFragment(R.layout.fragment_password), PasswordContr
     }
 
     override fun returnToMenuView() {
-        fragmentManager?.popBackStack()
+        parentFragmentManager.popBackStack()
     }
 
     override fun close() {

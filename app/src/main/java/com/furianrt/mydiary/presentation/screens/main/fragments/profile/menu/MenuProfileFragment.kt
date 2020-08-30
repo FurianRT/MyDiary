@@ -82,7 +82,7 @@ class MenuProfileFragment : BaseFragment(R.layout.fragment_menu_profile), MenuPr
     }
 
     override fun showAboutView() {
-        fragmentManager?.inTransaction {
+        parentFragmentManager.inTransaction {
             setCustomAnimations(R.anim.from_right, R.anim.to_left, R.anim.from_left, R.anim.to_right)
             replace(R.id.profile_container, AboutProfileFragment(), AboutProfileFragment.TAG)
                     .addToBackStack(null)
@@ -90,7 +90,7 @@ class MenuProfileFragment : BaseFragment(R.layout.fragment_menu_profile), MenuPr
     }
 
     override fun showPasswordView() {
-        fragmentManager?.inTransaction {
+        parentFragmentManager.inTransaction {
             setCustomAnimations(R.anim.from_right, R.anim.to_left, R.anim.from_left, R.anim.to_right)
             replace(R.id.profile_container, PasswordFragment(), PasswordFragment.TAG)
                     .addToBackStack(null)
@@ -98,7 +98,7 @@ class MenuProfileFragment : BaseFragment(R.layout.fragment_menu_profile), MenuPr
     }
 
     override fun showSignOutView() {
-        fragmentManager?.inTransaction {
+        parentFragmentManager.inTransaction {
             setCustomAnimations(R.anim.from_right, R.anim.to_left, R.anim.from_left, R.anim.to_right)
             replace(R.id.profile_container, SignOutFragment(), SignOutFragment.TAG)
                     .addToBackStack(null)

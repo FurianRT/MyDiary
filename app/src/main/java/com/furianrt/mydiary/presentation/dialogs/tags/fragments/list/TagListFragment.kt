@@ -91,8 +91,8 @@ class TagListFragment : BaseFragment(R.layout.fragment_tag_list), TagListContrac
     }
 
     override fun showDeleteTagView(tag: MyTag) {
-        if (fragmentManager?.findFragmentByTag(TagDeleteFragment.TAG) == null) {
-            fragmentManager?.inTransaction {
+        if (parentFragmentManager.findFragmentByTag(TagDeleteFragment.TAG) == null) {
+            parentFragmentManager.inTransaction {
                 setCustomAnimations(R.anim.scale_up, R.anim.scale_up, R.anim.scale_down, R.anim.scale_down)
                 add(R.id.container_tags, TagDeleteFragment.newInstance(tag), TagDeleteFragment.TAG)
                 addToBackStack(null)

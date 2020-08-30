@@ -164,8 +164,8 @@ class RegistrationFragment : BaseFragment(R.layout.fragment_registration), Regis
     override fun showPrivacyView(email: String, password: String) {
         activity?.currentFocus?.hideKeyboard()
         activity?.currentFocus?.clearFocus()
-        if (fragmentManager?.findFragmentByTag(PrivacyFragment.TAG) == null) {
-            fragmentManager?.inTransaction {
+        if (parentFragmentManager.findFragmentByTag(PrivacyFragment.TAG) == null) {
+            parentFragmentManager.inTransaction {
                 setCustomAnimations(R.anim.from_right, R.anim.to_left, R.anim.from_left, R.anim.to_right)
                 replace(R.id.auth_container, PrivacyFragment.newInstance(email, password), PrivacyFragment.TAG)
                 addToBackStack(null)
@@ -174,7 +174,7 @@ class RegistrationFragment : BaseFragment(R.layout.fragment_registration), Regis
     }
 
     override fun close() {
-        fragmentManager?.popBackStack()
+        parentFragmentManager.popBackStack()
     }
 
     override fun onStart() {
