@@ -11,15 +11,15 @@
 package com.furianrt.mydiary.domain.sync
 
 import com.furianrt.mydiary.model.gateway.location.LocationGateway
-import io.reactivex.Completable
+import io.reactivex.rxjava3.core.Completable
 import javax.inject.Inject
 
 class SyncLocationsUseCase @Inject constructor(
         private val locationGateway: LocationGateway
 ) {
 
-    class SyncLocationsException : Throwable()
-    class SyncNoteLocationsException : Throwable()
+    class SyncLocationsException(message: String?, cause: Throwable?) : Throwable(message, cause)
+    class SyncNoteLocationsException(message: String?, cause: Throwable?) : Throwable(message, cause)
 
     operator fun invoke(email: String): Completable =
             Completable.concat(listOf(syncLocations(email), syncNoteLocations(email)))
@@ -41,7 +41,7 @@ class SyncLocationsUseCase @Inject constructor(
                     .flatMapCompletable { locationGateway.insertLocation(it) }
                     .onErrorResumeNext { error ->
                         error.printStackTrace()
-                        Completable.error(SyncLocationsException())
+                        Completable.error(SyncLocationsException(error.message, error))
                     }
 
     private fun syncNoteLocations(email: String): Completable =
@@ -61,7 +61,7 @@ class SyncLocationsUseCase @Inject constructor(
                     .flatMapCompletable { locationGateway.insertNoteLocation(it) }
                     .onErrorResumeNext { error ->
                         error.printStackTrace()
-                        Completable.error(SyncNoteLocationsException())
+                        Completable.error(SyncNoteLocationsException(error.message, error))
                     }
 
 }

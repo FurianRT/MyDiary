@@ -51,7 +51,7 @@ class TagAddFragment : BaseFragment(R.layout.fragment_tag_add), TagAddContract.V
     }
 
     override fun closeView() {
-        fragmentManager?.popBackStack()
+        parentFragmentManager.popBackStack()
     }
 
     override fun onStart() {

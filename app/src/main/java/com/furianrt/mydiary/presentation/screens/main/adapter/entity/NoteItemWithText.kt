@@ -8,18 +8,11 @@
  *
  ******************************************************************************/
 
-package com.furianrt.mydiary.di.application.modules.app
+package com.furianrt.mydiary.presentation.screens.main.adapter.entity
 
-import android.content.Context
-import com.furianrt.mydiary.di.application.component.AppScope
-import dagger.Module
-import dagger.Provides
+import com.furianrt.mydiary.model.entity.MyNoteWithProp
 
-@Module
-class AppContextModule(private val context: Context) {
-
-    @Provides
-    @AppScope
-    @AppContext
-    fun provideContext(): Context = context
-}
+data class NoteItemWithText(
+        val note: MyNoteWithProp,
+        override val selected: Boolean
+) : BaseNoteListItem(selected)

@@ -231,7 +231,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginEnd="4dp"
                         android:src="@drawable/ic_place"
-                        android:tint="@color/black"
+                        app:tint="@color/black"
                         tools:ignore="ContentDescription" />
 
                     <TextView

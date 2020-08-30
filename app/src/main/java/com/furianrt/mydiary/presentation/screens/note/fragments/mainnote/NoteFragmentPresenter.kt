@@ -11,6 +11,7 @@
 package com.furianrt.mydiary.presentation.screens.note.fragments.mainnote
 
 import android.util.Log
+import com.furianrt.mydiary.analytics.MyAnalytics
 import com.furianrt.mydiary.domain.DisableLocationUseCase
 import com.furianrt.mydiary.model.entity.*
 import com.furianrt.mydiary.domain.FindLocationUseCase
@@ -25,8 +26,9 @@ import com.furianrt.mydiary.domain.save.SaveLocationUseCase
 import com.furianrt.mydiary.domain.update.UpdateNoteUseCase
 import com.furianrt.mydiary.model.entity.pojo.TagsAndAppearance
 import com.furianrt.mydiary.utils.MyRxUtils
-import io.reactivex.Completable
+import io.reactivex.rxjava3.core.Completable
 import org.joda.time.DateTime
+import java.util.*
 import javax.inject.Inject
 import kotlin.collections.ArrayList
 
@@ -53,6 +55,7 @@ class NoteFragmentPresenter @Inject constructor(
         private val findLocationUseCase: FindLocationUseCase,
         private val isPanoramaEnabledUseCase: IsPanoramaEnabledUseCase,
         private val disableLocationUseCase: DisableLocationUseCase,
+        private val analytics: MyAnalytics,
         private val scheduler: MyRxUtils.BaseSchedulerProvider
 ) : NoteFragmentContract.Presenter() {
 
@@ -223,6 +226,7 @@ class NoteFragmentPresenter @Inject constructor(
                     }
                 }, { error ->
                     error.printStackTrace()
+                    analytics.logExceptionEvent(error)
                 }))
     }
 
@@ -492,12 +496,13 @@ class NoteFragmentPresenter @Inject constructor(
         view?.recordSpeech()
     }
 
+    @ExperimentalStdlibApi
     override fun onSpeechRecorded(curTitle: String, curContent: String, textSpans: List<MyTextSpan>, recordedText: String) {
         val content = when {
             curContent.isBlank() ->
-                recordedText.capitalize()
+                recordedText.capitalize(Locale.getDefault())
             curContent.replace(Regex("[ \n]"), "").last() == '.' ->
-                "$curContent ${recordedText.capitalize()}"
+                "$curContent ${recordedText.capitalize(Locale.getDefault())}"
             else ->
                 "$curContent $recordedText"
         }

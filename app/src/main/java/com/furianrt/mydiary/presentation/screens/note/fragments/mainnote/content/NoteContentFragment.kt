@@ -10,6 +10,7 @@
 
 package com.furianrt.mydiary.presentation.screens.note.fragments.mainnote.content
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.text.Spannable
 import android.util.Log
@@ -61,6 +62,7 @@ class NoteContentFragment : BaseFragment(R.layout.fragment_note_content), NoteCo
         }
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val onTouchListener = View.OnTouchListener { v, motionEvent ->
@@ -104,10 +106,8 @@ class NoteContentFragment : BaseFragment(R.layout.fragment_note_content), NoteCo
         appearance.textColor?.let { text_note_content.setTextColor(it) }
         appearance.textSize?.let { text_note_content.textSize = it.toFloat() }
         appearance.textBackground?.let { layout_note_content_root.setBackgroundColor(it) }
-        fragmentManager?.let { manager ->
-            manager.findFragmentByTag(NoteEditFragment.TAG)?.let {
-                (it as NoteEditFragment).setAppearance(appearance)
-            }
+        parentFragmentManager.findFragmentByTag(NoteEditFragment.TAG)?.let {
+            (it as NoteEditFragment).setAppearance(appearance)
         }
     }
 
@@ -138,25 +138,23 @@ class NoteContentFragment : BaseFragment(R.layout.fragment_note_content), NoteCo
 
     private fun showNoteEditView(clickedView: Int, touchPosition: Int) {
         (activity as NoteActivity).savePagerPosition()
-        if (fragmentManager?.findFragmentByTag(NoteEditFragment.TAG) == null) {
+        if (parentFragmentManager.findFragmentByTag(NoteEditFragment.TAG) == null) {
             activity?.supportFragmentManager?.inTransaction {
                 setPrimaryNavigationFragment(parentFragment)
             }
-            fragmentManager?.let { manager ->
-                mNoteId?.let { noteId ->
-                    val editFragment = NoteEditFragment.newInstance(
-                            noteId,
-                            mTitle ?: "",
-                            mContent ?: Spannable.Factory().newSpannable(""),
-                            clickedView,
-                            touchPosition,
-                            mAppearance
-                    )
-                    manager.inTransaction {
-                        hide(this@NoteContentFragment)
-                        add(R.id.container_note_edit, editFragment, NoteEditFragment.TAG)
-                        addToBackStack(null)
-                    }
+            mNoteId?.let { noteId ->
+                val editFragment = NoteEditFragment.newInstance(
+                        noteId,
+                        mTitle ?: "",
+                        mContent ?: Spannable.Factory().newSpannable(""),
+                        clickedView,
+                        touchPosition,
+                        mAppearance
+                )
+                parentFragmentManager.inTransaction {
+                    hide(this@NoteContentFragment)
+                    add(R.id.container_note_edit, editFragment, NoteEditFragment.TAG)
+                    addToBackStack(null)
                 }
             }
         }
@@ -167,9 +165,9 @@ class NoteContentFragment : BaseFragment(R.layout.fragment_note_content), NoteCo
     fun getNoteContentText(): Spannable = mContent ?: Spannable.Factory().newSpannable("")
 
     fun removeEditFragment() {
-        fragmentManager?.findFragmentByTag(NoteEditFragment.TAG)?.let {
+        parentFragmentManager.findFragmentByTag(NoteEditFragment.TAG)?.let {
             Log.e(TAG, "removeEditFragment")
-            fragmentManager?.popBackStack()
+            parentFragmentManager.popBackStack()
         }
     }
 

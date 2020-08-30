@@ -10,9 +10,11 @@
 
 package com.furianrt.mydiary.utils
 
-import io.reactivex.Scheduler
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.schedulers.Schedulers
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
+import io.reactivex.rxjava3.core.Scheduler
+import io.reactivex.rxjava3.disposables.Disposable
+import io.reactivex.rxjava3.schedulers.Schedulers
+
 
 object MyRxUtils {
 
@@ -32,5 +34,11 @@ object MyRxUtils {
         override fun computation(): Scheduler = Schedulers.trampoline()
         override fun ui(): Scheduler = Schedulers.trampoline()
         override fun io(): Scheduler = Schedulers.trampoline()
+    }
+}
+
+fun Disposable.disposeIfNot() {
+    if (!isDisposed) {
+        dispose()
     }
 }

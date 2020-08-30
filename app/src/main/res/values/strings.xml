@@ -17,6 +17,8 @@
 
     <string name="two_strings_pattern" translatable="false">%s %s</string>
 
+    <string name="cloud_notification_channel_id" translatable="false">firebase_channel</string>
+
     <string name="yes">Yes</string>
     <string name="no">No</string>
     <string name="exit">Exit</string>
@@ -293,11 +295,6 @@
     <string name="fragment_premium_life_time">One-time purchase</string>
     <string name="fragment_premium_life_time_description">Works on all devices with the same Google account</string>
     <string name="fragment_premium_access_to_new_features">Access to future premium features</string>
-    <string name="dialog_rate_continue">%1$d/%2$d\nContinue</string>
-    <string name="dialog_rate_never_ask_again">Never ask again</string>
-    <string name="dialog_rate_ask_me_later">Ask me later</string>
-    <string name="dialog_rate_rate_us">Rate Us</string>
-    <string name="dialog_rate_message">Tell others what you think about Serenity</string>
     <string name="low_rate_email_title">Tell us what is wrong</string>
     <string name="low_rate_email_text">What you did not like in our app?</string>
     <string name="low_rate_email_subject">Serenity review</string>

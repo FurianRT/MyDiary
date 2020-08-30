@@ -96,8 +96,8 @@ class ForgotPassFragment : BaseFragment(R.layout.fragment_forgot_pass), ForgotPa
     }
 
     override fun showEmailSent() {
-        if (fragmentManager?.findFragmentByTag(DoneAuthFragment.TAG) == null) {
-            fragmentManager?.inTransaction {
+        if (parentFragmentManager.findFragmentByTag(DoneAuthFragment.TAG) == null) {
+            parentFragmentManager.inTransaction {
                 val message = getString(R.string.fragment_done_email_sent)
                 setCustomAnimations(R.anim.scale_up, R.anim.scale_up)
                 add(R.id.auth_container, DoneAuthFragment.newInstance(message), DoneAuthFragment.TAG)
@@ -118,7 +118,7 @@ class ForgotPassFragment : BaseFragment(R.layout.fragment_forgot_pass), ForgotPa
     }
 
     override fun close() {
-        fragmentManager?.popBackStack()
+        parentFragmentManager.popBackStack()
     }
 
     override fun onAttach(context: Context) {

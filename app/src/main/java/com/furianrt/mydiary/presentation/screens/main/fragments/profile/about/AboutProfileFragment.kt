@@ -56,7 +56,7 @@ class AboutProfileFragment : BaseFragment(R.layout.fragment_about_profile), Abou
     }
 
     override fun returnToMenuView() {
-        fragmentManager?.popBackStack()
+        parentFragmentManager.popBackStack()
     }
 
     override fun onStart() {

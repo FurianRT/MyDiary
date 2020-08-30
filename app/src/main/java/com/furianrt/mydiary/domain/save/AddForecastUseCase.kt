@@ -13,7 +13,7 @@ package com.furianrt.mydiary.domain.save
 import com.furianrt.mydiary.model.entity.MyForecast
 import com.furianrt.mydiary.model.gateway.forecast.ForecastGateway
 import com.furianrt.mydiary.domain.get.GetForecastsUseCase
-import io.reactivex.Maybe
+import io.reactivex.rxjava3.core.Maybe
 import javax.inject.Inject
 
 class AddForecastUseCase @Inject constructor(

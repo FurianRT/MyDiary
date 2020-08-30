@@ -118,8 +118,8 @@ class LoginFragment : BaseFragment(R.layout.fragment_login), LoginContract.View 
 
     override fun showLoginSuccess() {
         analytics.sendEvent(MyAnalytics.EVENT_SIGNED_IN)
-        if (fragmentManager?.findFragmentByTag(DoneAuthFragment.TAG) == null) {
-            fragmentManager?.inTransaction {
+        if (parentFragmentManager.findFragmentByTag(DoneAuthFragment.TAG) == null) {
+            parentFragmentManager.inTransaction {
                 val message = getString(R.string.fragment_done_auth_done)
                 setCustomAnimations(R.anim.scale_up, R.anim.scale_up)
                 add(R.id.auth_container, DoneAuthFragment.newInstance(message), DoneAuthFragment.TAG)
@@ -131,11 +131,11 @@ class LoginFragment : BaseFragment(R.layout.fragment_login), LoginContract.View 
 
     override fun showForgotPassView(email: String) {
         analytics.sendEvent(MyAnalytics.EVENT_FORGOT_PASSWORD)
-        if (fragmentManager?.findFragmentByTag(ForgotPassFragment.TAG) == null) {
+        if (parentFragmentManager.findFragmentByTag(ForgotPassFragment.TAG) == null) {
             activity?.supportFragmentManager?.inTransaction {
                 setPrimaryNavigationFragment(parentFragment)
             }
-            fragmentManager?.inTransaction {
+            parentFragmentManager.inTransaction {
                 setCustomAnimations(R.anim.from_right, R.anim.to_left, R.anim.from_left, R.anim.to_right)
                 replace(R.id.auth_container, ForgotPassFragment.newInstance(email), ForgotPassFragment.TAG)
                 addToBackStack(null)

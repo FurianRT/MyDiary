@@ -16,8 +16,8 @@ import com.furianrt.mydiary.model.gateway.device.DeviceGateway
 import com.furianrt.mydiary.model.gateway.image.ImageGateway
 import com.furianrt.mydiary.domain.UriToRealPathUseCase
 import com.furianrt.mydiary.utils.generateUniqueId
-import io.reactivex.Completable
-import io.reactivex.Flowable
+import io.reactivex.rxjava3.core.Completable
+import io.reactivex.rxjava3.core.Flowable
 import javax.inject.Inject
 
 class SaveImagesUseCase @Inject constructor(

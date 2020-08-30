@@ -278,8 +278,5 @@ class PinActivity : BaseActivity(R.layout.activity_pin), PinContract.View,
     override fun onPause() {
         super.onPause()
         window.clearFlags(WindowManager.LayoutParams.FLAG_SECURE)
-        if (isFinishing) {
-            overridePendingTransition(R.anim.activity_stay_slide_bottom, R.anim.slide_bottom_down)
-        }
     }
 }

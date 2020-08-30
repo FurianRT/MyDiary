@@ -18,7 +18,6 @@ import android.os.*
 import com.facebook.stetho.Stetho
 import com.furianrt.mydiary.di.application.component.AppComponent
 import com.furianrt.mydiary.di.application.component.DaggerAppComponent
-import com.furianrt.mydiary.di.application.modules.app.AppContextModule
 import com.furianrt.mydiary.domain.CreateTutorialNoteUseCase
 import com.furianrt.mydiary.domain.auth.AuthorizeUseCase
 import com.furianrt.mydiary.domain.IncrementLaunchCountUseCase
@@ -32,6 +31,7 @@ import javax.inject.Inject
 import android.os.StrictMode.VmPolicy
 import android.os.StrictMode
 import android.util.Log
+import com.furianrt.mydiary.analytics.MyAnalytics
 import com.google.firebase.iid.FirebaseInstanceId
 
 class MyApp : Application(), Application.ActivityLifecycleCallbacks {
@@ -40,17 +40,12 @@ class MyApp : Application(), Application.ActivityLifecycleCallbacks {
         private const val TAG = "MyApp"
         const val NOTIFICATION_SYNC_CHANNEL_ID = "sync_channel"
         const val NOTIFICATION_SYNC_CHANNEL_NAME = "Synchronization"
-        const val NOTIFICATION_FIREBASE_CHANNEL_ID = "firebase_channel"
         const val NOTIFICATION_FIREBASE_CHANNEL_NAME = "Info"
         const val NOTIFICATION_REMINDER_CHANNEL_ID = "reminder_channel"
         const val NOTIFICATION_REMINDER_CHANNEL_NAME = "Reminder"
     }
 
-    val component: AppComponent by lazy {
-        DaggerAppComponent.builder()
-                .appContextModule(AppContextModule(applicationContext))
-                .build()
-    }
+    val appComponent: AppComponent by lazy { DaggerAppComponent.factory().create(applicationContext) }
 
     @Inject
     lateinit var authorizeUseCase: AuthorizeUseCase
@@ -70,11 +65,14 @@ class MyApp : Application(), Application.ActivityLifecycleCallbacks {
     @Inject
     lateinit var createTutorialNoteUseCase: CreateTutorialNoteUseCase
 
+    @Inject
+    lateinit var analytics: MyAnalytics
+
     private val mHandler = Handler(Looper.getMainLooper())
     private val mLogoutRunnable = Runnable { authorizeUseCase(false) }
 
     override fun onCreate() {
-        component.inject(this)
+        appComponent.inject(this)
         super.onCreate()
         if (BuildConfig.DEBUG) {
             Stetho.initializeWithDefaults(this)
@@ -89,26 +87,27 @@ class MyApp : Application(), Application.ActivityLifecycleCallbacks {
         incrementLaunchCountUseCase()
         resetSyncProgressUseCase()
         createTutorialNoteUseCase().subscribe()
+        analytics.init()
     }
 
-    override fun onActivityDestroyed(activity: Activity?) {}
-    override fun onActivitySaveInstanceState(activity: Activity?, outState: Bundle?) {}
-    override fun onActivityResumed(activity: Activity?) {}
-    override fun onActivityCreated(activity: Activity?, savedInstanceState: Bundle?) {
+    override fun onActivityDestroyed(activity: Activity) {}
+    override fun onActivitySaveInstanceState(activity: Activity, outState: Bundle) {}
+    override fun onActivityResumed(activity: Activity) {}
+    override fun onActivityCreated(activity: Activity, savedInstanceState: Bundle?) {
         mHandler.removeCallbacks(mLogoutRunnable)
     }
 
-    override fun onActivityStarted(activity: Activity?) {
+    override fun onActivityStarted(activity: Activity) {
         mHandler.removeCallbacks(mLogoutRunnable)
     }
 
-    override fun onActivityPaused(activity: Activity?) {
+    override fun onActivityPaused(activity: Activity) {
         if (activity !is PinActivity) {
             authorizeUseCase(true)
         }
     }
 
-    override fun onActivityStopped(activity: Activity?) {
+    override fun onActivityStopped(activity: Activity) {
         if (isPinEnabledUseCase() && activity !is PinActivity) {
             mHandler.postDelayed(mLogoutRunnable, getPinRequestDelayUseCase())
         }
@@ -148,7 +147,7 @@ class MyApp : Application(), Application.ActivityLifecycleCallbacks {
             })
             //channel for firebase notification
             notificationManager?.createNotificationChannel(NotificationChannel(
-                    NOTIFICATION_FIREBASE_CHANNEL_ID,
+                    getString(R.string.cloud_notification_channel_id),
                     NOTIFICATION_FIREBASE_CHANNEL_NAME,
                     NotificationManager.IMPORTANCE_DEFAULT
             ))

@@ -128,24 +128,20 @@ class CategoryListFragment : BaseFragment(R.layout.fragment_category_list),
     }
 
     private fun replaceFragment(fragment: Fragment, tag: String) {
-        fragmentManager?.let {
-            if (it.findFragmentByTag(tag) == null) {
-                it.inTransaction {
-                    replace(R.id.container_categories, fragment, tag)
-                    addToBackStack(null)
-                }
+        if (parentFragmentManager.findFragmentByTag(tag) == null) {
+            parentFragmentManager.inTransaction {
+                replace(R.id.container_categories, fragment, tag)
+                addToBackStack(null)
             }
         }
     }
 
     private fun addFragment(fragment: Fragment, tag: String) {
-        fragmentManager?.let {
-            if (it.findFragmentByTag(tag) == null) {
-                it.inTransaction {
-                    setCustomAnimations(R.anim.scale_up, R.anim.scale_up, R.anim.scale_down, R.anim.scale_down)
-                    add(R.id.container_categories, fragment, tag)
-                    addToBackStack(null)
-                }
+        if (parentFragmentManager.findFragmentByTag(tag) == null) {
+            parentFragmentManager.inTransaction {
+                setCustomAnimations(R.anim.scale_up, R.anim.scale_up, R.anim.scale_down, R.anim.scale_down)
+                add(R.id.container_categories, fragment, tag)
+                addToBackStack(null)
             }
         }
     }

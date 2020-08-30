@@ -10,6 +10,7 @@
 
 package com.furianrt.mydiary.presentation.screens.pin.fragments.sendemail
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Bundle
 import android.os.Handler
@@ -43,6 +44,7 @@ class SendEmailFragment : BaseFragment(R.layout.fragment_send_email), SendEmailC
         super.onCreate(savedInstanceState)
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         button_send_email.setOnClickListener { presenter.onButtonSendClick() }
@@ -51,8 +53,8 @@ class SendEmailFragment : BaseFragment(R.layout.fragment_send_email), SendEmailC
     }
 
     override fun showDoneView() {
-        if (fragmentManager?.findFragmentByTag(DoneEmailFragment.TAG) == null) {
-            fragmentManager?.inTransaction {
+        if (parentFragmentManager.findFragmentByTag(DoneEmailFragment.TAG) == null) {
+            parentFragmentManager.inTransaction {
                 val message = getString(R.string.fragment_send_email_done)
                 setCustomAnimations(R.anim.scale_up, R.anim.scale_up)
                 add(R.id.pin_sheet_container, DoneEmailFragment.newInstance(message), DoneEmailFragment.TAG)

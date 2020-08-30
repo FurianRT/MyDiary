@@ -10,12 +10,14 @@
 
 package com.furianrt.mydiary.presentation.screens.pin.fragments.sendemail
 
+import com.furianrt.mydiary.analytics.MyAnalytics
 import com.furianrt.mydiary.domain.send.SendPinResetEmailUseCase
 import com.furianrt.mydiary.utils.MyRxUtils
 import javax.inject.Inject
 
 class SendEmailPresenter @Inject constructor(
         private val sendPinResetEmailUseCase: SendPinResetEmailUseCase,
+        private val analytics: MyAnalytics,
         private val scheduler: MyRxUtils.BaseSchedulerProvider
 ) : SendEmailContract.Presenter() {
 
@@ -32,6 +34,7 @@ class SendEmailPresenter @Inject constructor(
                         view?.showErrorNetworkConnection()
                     } else {
                         error.printStackTrace()
+                        analytics.logExceptionEvent(error)
                         view?.showErrorMessageSend()
                     }
                 }))

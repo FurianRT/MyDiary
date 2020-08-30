@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/grey_light"
     tools:context=".presentation.screens.settings.global.GlobalSettingsActivity">
 
     <androidx.appcompat.widget.Toolbar
@@ -17,7 +18,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:title="@string/settings" />
 
-    <fragment
+    <androidx.fragment.app.FragmentContainerView
         android:id="@+id/fragment_settings_global"
         android:name="com.furianrt.mydiary.presentation.screens.settings.global.GlobalSettingsFragment"
         android:layout_width="match_parent"

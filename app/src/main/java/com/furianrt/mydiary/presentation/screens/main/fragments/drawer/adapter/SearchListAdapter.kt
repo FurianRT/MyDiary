@@ -109,7 +109,6 @@ class SearchListAdapter(
             mStartDate?.let { state.putSerializable(BUNDLE_START_DATE, it) }
             mEndDate?.let { state.putSerializable(BUNDLE_END_DATE, it) }
             mCalendarScrollDate?.let { state.putSerializable(BUNDLE_CALENDAR_SCROLL_DATE, it) }
-
         }
     }
 
@@ -201,14 +200,12 @@ class SearchListAdapter(
         }
     }
 
-    override fun onCreateGroupViewHolder(parent: ViewGroup?, viewType: Int): SearchGroupViewHolder {
-        val view = LayoutInflater.from(parent?.context)
-                .inflate(R.layout.nav_search_group, parent, false)
-        return SearchGroupViewHolder(view)
-    }
+    override fun onCreateGroupViewHolder(parent: ViewGroup?, viewType: Int): SearchGroupViewHolder =
+            SearchGroupViewHolder(LayoutInflater.from(parent?.context)
+                    .inflate(R.layout.nav_search_group, parent, false))
 
-    override fun onCreateChildViewHolder(parent: ViewGroup?, viewType: Int): SearchChildViewHolder {
-        val inflater = LayoutInflater.from(parent?.context)
+    override fun onCreateChildViewHolder(parent: ViewGroup, viewType: Int): SearchChildViewHolder {
+        val inflater = LayoutInflater.from(parent.context)
         return when (viewType) {
             SearchItem.TYPE_DATE -> {
                 val view = inflater.inflate(R.layout.nav_search_item_date, parent, false)
@@ -285,7 +282,7 @@ class SearchListAdapter(
     override fun onChildCheckChanged(view: View?, checked: Boolean, flatPos: Int) {
         val listPos = expandableList.getUnflattenedPosition(flatPos)
         val groupItems = (expandableList.getExpandableGroup(listPos) as SearchGroup).groupItems
-        if (listPos.childPos >= groupItems.size) {
+        if (listPos.childPos < 0 || listPos.childPos >= groupItems.size) {
             return
         }
         val item = groupItems[listPos.childPos]

@@ -34,7 +34,7 @@ class CalendarDayView : AppCompatTextView {
         private const val DEFAULT_COLOR = Color.GRAY
     }
 
-    private inner class Portion(
+    private class Portion(
             val color: Int,
             val startAngle: Float,
             val sweepAngle: Float

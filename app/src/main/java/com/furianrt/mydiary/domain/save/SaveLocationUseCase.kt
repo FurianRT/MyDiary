@@ -13,7 +13,7 @@ package com.furianrt.mydiary.domain.save
 import com.furianrt.mydiary.model.entity.MyLocation
 import com.furianrt.mydiary.model.entity.NoteLocation
 import com.furianrt.mydiary.model.gateway.location.LocationGateway
-import io.reactivex.Completable
+import io.reactivex.rxjava3.core.Completable
 import javax.inject.Inject
 
 class SaveLocationUseCase @Inject constructor(

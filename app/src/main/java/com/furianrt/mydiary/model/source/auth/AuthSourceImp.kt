@@ -19,9 +19,10 @@ import com.google.firebase.auth.EmailAuthProvider
 import com.google.firebase.auth.FirebaseAuth
 import durdinapps.rxfirebase2.RxFirebaseAuth
 import durdinapps.rxfirebase2.RxFirebaseUser
-import io.reactivex.Completable
-import io.reactivex.Observable
-import io.reactivex.Single
+import hu.akarnokd.rxjava3.bridge.RxJavaBridge
+import io.reactivex.rxjava3.core.Completable
+import io.reactivex.rxjava3.core.Observable
+import io.reactivex.rxjava3.core.Single
 import java.util.*
 import javax.inject.Inject
 import javax.mail.*
@@ -40,12 +41,14 @@ class AuthSourceImp @Inject constructor(
 
     override fun signUp(email: String, password: String): Single<MyUser> =
             RxFirebaseAuth.createUserWithEmailAndPassword(firebaseAuth, email, password)
+                    .`as` { RxJavaBridge.toV3Maybe(it) }
                     .toSingle()
                     .map { it.user!! }
                     .map { MyUser(it.uid, it.email!!, it.photoUrl?.toString()) }
 
     override fun signIn(email: String, password: String): Single<String> =
             RxFirebaseAuth.signInWithEmailAndPassword(firebaseAuth, email, password)
+                    .`as` { RxJavaBridge.toV3Maybe(it) }
                     .toSingle()
                     .map { it.user!!.uid }
 
@@ -53,6 +56,7 @@ class AuthSourceImp @Inject constructor(
 
     override fun observeAuthState(): Observable<Int> =
             RxFirebaseAuth.observeAuthState(firebaseAuth)
+                    .`as` { RxJavaBridge.toV3Observable(it) }
                     .map { auth ->
                         if (auth.currentUser == null) {
                             AuthSource.STATE_SIGN_OUT
@@ -68,19 +72,23 @@ class AuthSourceImp @Inject constructor(
         val email = currentUser.email ?: throw UserSignedOutException()
         val userCredential = EmailAuthProvider.getCredential(email, oldPassword)
         return RxFirebaseUser.reauthenticateAndRetrieveData(currentUser, userCredential)
+                .`as` { RxJavaBridge.toV3Maybe(it) }
                 .flatMapCompletable { result ->
                     val user = result.user ?: throw UserSignedOutException()
                     RxFirebaseUser.updatePassword(user, newPassword)
+                            .`as` { RxJavaBridge.toV3Completable(it) }
                 }
     }
 
     override fun isProfileExists(email: String): Single<Boolean> =
             RxFirebaseAuth.fetchSignInMethodsForEmail(firebaseAuth, email)
+                    .`as` { RxJavaBridge.toV3Maybe(it) }
                     .toSingle()
                     .map { !it.signInMethods.isNullOrEmpty() }
 
     override fun sendPasswordResetEmail(email: String): Completable =
             RxFirebaseAuth.sendPasswordResetEmail(firebaseAuth, email)
+                    .`as` { RxJavaBridge.toV3Completable(it) }
 
     override fun sendPinResetEmail(email: String, pin: String) {
         val props = Properties()

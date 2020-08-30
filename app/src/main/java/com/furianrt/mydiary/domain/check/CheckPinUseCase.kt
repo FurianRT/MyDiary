@@ -11,7 +11,7 @@
 package com.furianrt.mydiary.domain.check
 
 import com.furianrt.mydiary.model.gateway.pin.PinGateway
-import io.reactivex.Single
+import io.reactivex.rxjava3.core.Single
 import javax.inject.Inject
 
 class CheckPinUseCase @Inject constructor(

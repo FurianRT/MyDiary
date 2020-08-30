@@ -12,7 +12,7 @@ package com.furianrt.mydiary.domain.reset
 
 import com.furianrt.mydiary.model.entity.MyNoteAppearance
 import com.furianrt.mydiary.domain.update.UpdateAppearanceUseCase
-import io.reactivex.Completable
+import io.reactivex.rxjava3.core.Completable
 import javax.inject.Inject
 
 class ResetNoteSettingsUseCase @Inject constructor(

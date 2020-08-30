@@ -10,18 +10,16 @@
 
 package com.furianrt.mydiary.domain.sync
 
-import com.furianrt.mydiary.model.entity.MyImage
 import com.furianrt.mydiary.model.gateway.image.ImageGateway
-import io.reactivex.Completable
-import io.reactivex.Single
-import io.reactivex.functions.BiFunction
+import io.reactivex.rxjava3.core.Completable
+import io.reactivex.rxjava3.core.Single
 import javax.inject.Inject
 
 class SyncImagesUseCase @Inject constructor(
         private val imageGateway: ImageGateway
 ) {
 
-    class SyncImagesException : Throwable()
+    class SyncImagesException(message: String?, cause: Throwable?) : Throwable(message, cause)
 
     operator fun invoke(email: String): Completable =
             imageGateway.getAllImages()
@@ -42,7 +40,7 @@ class SyncImagesUseCase @Inject constructor(
                     .andThen(Single.zip(
                             imageGateway.getAllImagesFromCloud(),
                             imageGateway.getAllImages().firstOrError(),
-                            BiFunction<List<MyImage>, List<MyImage>, List<MyImage>> { cloudImages, dbImages ->
+                            { cloudImages, dbImages ->
                                 cloudImages.toMutableList().apply {
                                     dbImages.forEach { image -> removeAll { it.name == image.name } }
                                 }
@@ -58,6 +56,6 @@ class SyncImagesUseCase @Inject constructor(
                     }
                     .onErrorResumeNext { error ->
                         error.printStackTrace()
-                        Completable.error(SyncImagesException())
+                        Completable.error(SyncImagesException(error.message, error))
                     }
 }

@@ -19,8 +19,8 @@ import com.furianrt.mydiary.domain.save.AddTagToNoteUseCase
 import com.furianrt.mydiary.domain.save.SaveImagesUseCase
 import com.furianrt.mydiary.domain.save.SaveNotesUseCase
 import com.furianrt.mydiary.utils.generateUniqueId
-import io.reactivex.Completable
-import io.reactivex.Observable
+import io.reactivex.rxjava3.core.Completable
+import io.reactivex.rxjava3.core.Observable
 import javax.inject.Inject
 
 class CreateTutorialNoteUseCase @Inject constructor(

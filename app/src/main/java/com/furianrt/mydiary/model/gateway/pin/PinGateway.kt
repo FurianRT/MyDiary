@@ -10,8 +10,8 @@
 
 package com.furianrt.mydiary.model.gateway.pin
 
-import io.reactivex.Completable
-import io.reactivex.Single
+import io.reactivex.rxjava3.core.Completable
+import io.reactivex.rxjava3.core.Single
 
 interface PinGateway {
     fun getPin(): Single<String>

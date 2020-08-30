@@ -18,7 +18,7 @@ import com.furianrt.mydiary.model.gateway.location.LocationGateway
 import com.furianrt.mydiary.model.gateway.note.NoteGateway
 import com.furianrt.mydiary.model.gateway.span.SpanGateway
 import com.furianrt.mydiary.model.gateway.tag.TagGateway
-import io.reactivex.Completable
+import io.reactivex.rxjava3.core.Completable
 import javax.inject.Inject
 
 class SyncCleanupUseCase @Inject constructor(
@@ -32,7 +32,7 @@ class SyncCleanupUseCase @Inject constructor(
         private val spanGateway: SpanGateway
 ) {
 
-    class SyncCleanupException : Throwable()
+    class SyncCleanupException(message: String?, cause: Throwable?) : Throwable(message, cause)
 
     operator fun invoke(): Completable =
             noteGateway.cleanupNotes()
@@ -47,6 +47,6 @@ class SyncCleanupUseCase @Inject constructor(
                     .andThen(spanGateway.cleanupTextSpans())
                     .onErrorResumeNext { error ->
                         error.printStackTrace()
-                        Completable.error(SyncCleanupException())
+                        Completable.error(SyncCleanupException(error.message, error))
                     }
 }

@@ -11,9 +11,9 @@
 package com.furianrt.mydiary.model.source.cloud
 
 import com.furianrt.mydiary.model.entity.*
-import io.reactivex.Completable
-import io.reactivex.Maybe
-import io.reactivex.Single
+import io.reactivex.rxjava3.core.Completable
+import io.reactivex.rxjava3.core.Maybe
+import io.reactivex.rxjava3.core.Single
 
 interface CloudSource {
     fun saveProfile(profile: MyProfile): Completable

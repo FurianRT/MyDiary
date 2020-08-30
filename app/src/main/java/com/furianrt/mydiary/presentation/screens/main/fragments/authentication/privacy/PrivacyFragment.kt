@@ -89,7 +89,7 @@ class PrivacyFragment : BaseFragment(R.layout.fragment_privacy), PrivacyContract
     }
 
     override fun close() {
-        fragmentManager?.popBackStack()
+        parentFragmentManager.popBackStack()
     }
 
     override fun onAttach(context: Context) {

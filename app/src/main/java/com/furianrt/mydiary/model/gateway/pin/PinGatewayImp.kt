@@ -14,8 +14,8 @@ import com.furianrt.mydiary.model.encryption.MyCipher
 import com.furianrt.mydiary.model.source.auth.AuthSource
 import com.furianrt.mydiary.model.source.preferences.PreferencesSource
 import com.furianrt.mydiary.utils.MyRxUtils
-import io.reactivex.Completable
-import io.reactivex.Single
+import io.reactivex.rxjava3.core.Completable
+import io.reactivex.rxjava3.core.Single
 import javax.inject.Inject
 
 class PinGatewayImp @Inject constructor(

@@ -44,7 +44,7 @@ class NoteSettingsPresenter @Inject constructor(
                 .observeOn(scheduler.ui())
                 .subscribe { result ->
                     Log.e(TAG, "getNoteAppearance")
-                    mAppearance = result.get()
+                    mAppearance = result.orNull()
                     mAppearance?.let { appearance ->
                         view.updateSettings(appearance)
                         view.enableInput()

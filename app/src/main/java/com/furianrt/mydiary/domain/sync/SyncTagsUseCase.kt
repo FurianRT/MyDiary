@@ -11,15 +11,15 @@
 package com.furianrt.mydiary.domain.sync
 
 import com.furianrt.mydiary.model.gateway.tag.TagGateway
-import io.reactivex.Completable
+import io.reactivex.rxjava3.core.Completable
 import javax.inject.Inject
 
 class SyncTagsUseCase @Inject constructor(
         private val tagGateway: TagGateway
 ) {
 
-    class SyncTagsException : Throwable()
-    class SyncNoteTagsException : Throwable()
+    class SyncTagsException(message: String?, cause: Throwable?) : Throwable(message, cause)
+    class SyncNoteTagsException(message: String?, cause: Throwable?) : Throwable(message, cause)
 
     operator fun invoke(email: String): Completable =
             Completable.concat(listOf(syncTags(email), syncNoteTags(email)))
@@ -41,7 +41,7 @@ class SyncTagsUseCase @Inject constructor(
                     .flatMapCompletable { tagGateway.insertTag(it) }
                     .onErrorResumeNext { error ->
                         error.printStackTrace()
-                        Completable.error(SyncTagsException())
+                        Completable.error(SyncTagsException(error.message, error.cause))
                     }
 
     private fun syncNoteTags(email: String): Completable =
@@ -61,6 +61,6 @@ class SyncTagsUseCase @Inject constructor(
                     .flatMapCompletable { tagGateway.insertNoteTag(it) }
                     .onErrorResumeNext { error ->
                         error.printStackTrace()
-                        Completable.error(SyncNoteTagsException())
+                        Completable.error(SyncNoteTagsException(error.message, error.cause))
                     }
 }

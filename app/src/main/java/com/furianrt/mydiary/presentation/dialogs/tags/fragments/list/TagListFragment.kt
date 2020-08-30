@@ -23,6 +23,7 @@ import com.furianrt.mydiary.presentation.dialogs.tags.fragments.add.TagAddFragme
 import com.furianrt.mydiary.presentation.dialogs.tags.fragments.delete.TagDeleteFragment
 import com.furianrt.mydiary.presentation.dialogs.tags.fragments.edit.TagEditFragment
 import com.furianrt.mydiary.utils.inTransaction
+import com.furianrt.mydiary.utils.replaceFragmentIfNot
 import kotlinx.android.synthetic.main.fragment_tag_list.*
 import javax.inject.Inject
 
@@ -82,26 +83,16 @@ class TagListFragment : BaseFragment(R.layout.fragment_tag_list), TagListContrac
     }
 
     override fun showAddTagView(noteId: String) {
-        if (fragmentManager?.findFragmentByTag(TagAddFragment.TAG) == null) {
-            fragmentManager?.inTransaction {
-                replace(R.id.container_tags, TagAddFragment.newInstance(noteId), TagAddFragment.TAG)
-                addToBackStack(null)
-            }
-        }
+        replaceFragmentIfNot(R.id.container_tags, TagAddFragment.newInstance(noteId), TagAddFragment.TAG, true)
     }
 
     override fun showEditTagView(tag: MyTag) {
-        if (fragmentManager?.findFragmentByTag(TagEditFragment.TAG) == null) {
-            fragmentManager?.inTransaction {
-                replace(R.id.container_tags, TagEditFragment.newInstance(tag), TagEditFragment.TAG)
-                addToBackStack(null)
-            }
-        }
+        replaceFragmentIfNot(R.id.container_tags, TagEditFragment.newInstance(tag), TagEditFragment.TAG, true)
     }
 
     override fun showDeleteTagView(tag: MyTag) {
-        if (fragmentManager?.findFragmentByTag(TagDeleteFragment.TAG) == null) {
-            fragmentManager?.inTransaction {
+        if (parentFragmentManager.findFragmentByTag(TagDeleteFragment.TAG) == null) {
+            parentFragmentManager.inTransaction {
                 setCustomAnimations(R.anim.scale_up, R.anim.scale_up, R.anim.scale_down, R.anim.scale_down)
                 add(R.id.container_tags, TagDeleteFragment.newInstance(tag), TagDeleteFragment.TAG)
                 addToBackStack(null)

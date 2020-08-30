@@ -11,7 +11,7 @@
 package com.furianrt.mydiary.domain.save
 
 import com.furianrt.mydiary.model.gateway.pin.PinGateway
-import io.reactivex.Completable
+import io.reactivex.rxjava3.core.Completable
 import javax.inject.Inject
 
 class SavePinUseCase @Inject constructor(

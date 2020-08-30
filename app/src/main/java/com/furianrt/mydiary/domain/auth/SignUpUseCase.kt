@@ -11,7 +11,7 @@
 package com.furianrt.mydiary.domain.auth
 
 import com.furianrt.mydiary.model.gateway.profile.ProfileGateway
-import io.reactivex.Completable
+import io.reactivex.rxjava3.core.Completable
 import javax.inject.Inject
 
 class SignUpUseCase @Inject constructor(

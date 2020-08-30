@@ -42,9 +42,9 @@ import com.furianrt.mydiary.presentation.screens.main.fragments.profile.ProfileF
 import com.furianrt.mydiary.services.SyncService
 import com.furianrt.mydiary.utils.*
 import com.google.android.material.bottomsheet.BottomSheetBehavior
-import io.reactivex.Single
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.schedulers.Schedulers
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
+import io.reactivex.rxjava3.core.Single
+import io.reactivex.rxjava3.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.bottom_sheet_main.*
 import kotlinx.android.synthetic.main.fragment_drawer_menu.*
@@ -402,30 +402,18 @@ class DrawerMenuFragment : BaseFragment(R.layout.fragment_drawer_menu), DrawerMe
 
     override fun showProfileSettings() {
         analytics.sendEvent(MyAnalytics.EVENT_PROFILE_SETTINGS)
-        if (fragmentManager?.findFragmentByTag(ProfileFragment.TAG) == null) {
-            fragmentManager?.inTransaction {
-                replace(R.id.main_sheet_container, ProfileFragment(), ProfileFragment.TAG)
-            }
-        }
+        replaceFragmentIfNot(R.id.main_sheet_container, ProfileFragment(), ProfileFragment.TAG)
         mHandler.postDelayed(mBottomSheetOpenRunnable, BOTTOM_SHEET_EXPAND_DELAY)
     }
 
     override fun showLoginView() {
         analytics.sendEvent(MyAnalytics.EVENT_SIGN_IN)
-        if (fragmentManager?.findFragmentByTag(AuthFragment.TAG) == null) {
-            fragmentManager?.inTransaction {
-                replace(R.id.main_sheet_container, AuthFragment(), AuthFragment.TAG)
-            }
-        }
+        replaceFragmentIfNot(R.id.main_sheet_container, AuthFragment(), AuthFragment.TAG)
         mHandler.postDelayed(mBottomSheetOpenRunnable, BOTTOM_SHEET_EXPAND_DELAY)
     }
 
     override fun showPremiumView() {
-        if (fragmentManager?.findFragmentByTag(PremiumFragment.TAG) == null) {
-            fragmentManager?.inTransaction {
-                replace(R.id.main_sheet_container, PremiumFragment(), PremiumFragment.TAG)
-            }
-        }
+        replaceFragmentIfNot(R.id.main_sheet_container, PremiumFragment(), PremiumFragment.TAG)
         mHandler.postDelayed(mBottomSheetOpenRunnable, BOTTOM_SHEET_EXPAND_DELAY)
     }
 

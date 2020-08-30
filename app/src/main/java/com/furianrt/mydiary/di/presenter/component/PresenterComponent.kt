@@ -13,7 +13,6 @@ package com.furianrt.mydiary.di.presenter.component
 import com.furianrt.mydiary.presentation.base.BaseActivity
 import com.furianrt.mydiary.presentation.base.BaseDialog
 import com.furianrt.mydiary.presentation.base.BaseFragment
-import com.furianrt.mydiary.di.presenter.modules.presenter.PresenterContextModule
 import com.furianrt.mydiary.di.presenter.modules.presenter.PresenterModule
 import com.furianrt.mydiary.presentation.base.BasePreference
 import com.furianrt.mydiary.presentation.dialogs.categories.CategoriesDialog
@@ -24,7 +23,6 @@ import com.furianrt.mydiary.presentation.dialogs.categories.fragments.list.Categ
 import com.furianrt.mydiary.presentation.dialogs.delete.image.DeleteImageDialog
 import com.furianrt.mydiary.presentation.dialogs.delete.note.DeleteNoteDialog
 import com.furianrt.mydiary.presentation.dialogs.moods.MoodsDialog
-import com.furianrt.mydiary.presentation.dialogs.rate.RateDialog
 import com.furianrt.mydiary.presentation.dialogs.tags.TagsDialog
 import com.furianrt.mydiary.presentation.dialogs.tags.fragments.add.TagAddFragment
 import com.furianrt.mydiary.presentation.dialogs.tags.fragments.delete.TagDeleteFragment
@@ -62,8 +60,14 @@ import com.furianrt.mydiary.services.SyncService
 import dagger.Subcomponent
 
 @PresenterScope
-@Subcomponent(modules = [PresenterContextModule::class, PresenterModule::class])
+@Subcomponent(modules = [PresenterModule::class])
 interface PresenterComponent {
+
+    @Subcomponent.Factory
+    interface Factory {
+        fun create(): PresenterComponent
+    }
+
     fun inject(service: MessagingService)
     fun inject(service: SyncService)
     fun inject(activity: PinActivity)
@@ -77,7 +81,6 @@ interface PresenterComponent {
     fun inject(dialog: MoodsDialog)
     fun inject(dialog: BaseDialog)
     fun inject(dialog: TagsDialog)
-    fun inject(dialog: RateDialog)
     fun inject(fragment: BaseFragment)
     fun inject(fragment: NoteFragment)
     fun inject(fragment: AuthFragment)

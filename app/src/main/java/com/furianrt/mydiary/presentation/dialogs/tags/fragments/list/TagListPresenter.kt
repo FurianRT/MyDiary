@@ -10,16 +10,14 @@
 
 package com.furianrt.mydiary.presentation.dialogs.tags.fragments.list
 
-import com.furianrt.mydiary.model.entity.MyNoteWithProp
-import com.furianrt.mydiary.model.entity.MyTag
 import com.furianrt.mydiary.domain.save.AddTagToNoteUseCase
 import com.furianrt.mydiary.domain.get.GetTagsUseCase
 import com.furianrt.mydiary.domain.delete.RemoveTagFromNoteUseCase
 import com.furianrt.mydiary.domain.get.GetFullNotesUseCase
 import com.furianrt.mydiary.utils.MyRxUtils
 import com.furianrt.mydiary.presentation.dialogs.tags.fragments.list.TagListAdapter.*
-import io.reactivex.Flowable
-import io.reactivex.functions.Function3
+import io.reactivex.rxjava3.core.Flowable
+import io.reactivex.rxjava3.functions.Function3
 import java.util.Locale
 import javax.inject.Inject
 
@@ -45,8 +43,7 @@ class TagListPresenter @Inject constructor(
                 getTagsUseCase(),
                 getTagsUseCase(mNoteId).firstOrError().toFlowable(),
                 getFullNotesUseCase().firstOrError().toFlowable(),
-                Function3<List<MyTag>, List<MyTag>, List<MyNoteWithProp>, List<ViewItem>>
-                { allTags, selectedTags, notes ->
+                Function3 { allTags, selectedTags, notes ->
                     val items = allTags.map { ViewItem(it) }
                     items.forEach { item ->
                         item.isChecked = selectedTags.find { it.id == item.tag.id } != null
@@ -58,8 +55,12 @@ class TagListPresenter @Inject constructor(
                 .subscribe { items ->
                     mItems = items
                     val matchingTags = mItems
-                            .filter { item -> item.tag.name.toLowerCase().contains(mQuery.toLowerCase()) }
-                            .sortedWith(Comparator { b, a -> compareValuesBy(a, b, { it.isChecked }, { it.count }) })
+                            .filter { item ->
+                                item.tag.name
+                                        .toLowerCase(Locale.getDefault())
+                                        .contains(mQuery.toLowerCase(Locale.getDefault()))
+                            }
+                            .sortedWith { b, a -> compareValuesBy(a, b, { it.isChecked }, { it.count }) }
                     view.showItems(matchingTags)
                 })
     }

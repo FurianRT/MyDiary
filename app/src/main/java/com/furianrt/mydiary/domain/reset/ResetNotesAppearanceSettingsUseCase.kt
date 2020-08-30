@@ -11,7 +11,7 @@
 package com.furianrt.mydiary.domain.reset
 
 import com.furianrt.mydiary.model.gateway.appearance.AppearanceGateway
-import io.reactivex.Completable
+import io.reactivex.rxjava3.core.Completable
 import javax.inject.Inject
 
 class ResetNotesAppearanceSettingsUseCase @Inject constructor(

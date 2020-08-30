@@ -11,7 +11,7 @@
 package com.furianrt.mydiary.domain.get
 
 import com.furianrt.mydiary.model.gateway.image.ImageGateway
-import io.reactivex.Flowable
+import io.reactivex.rxjava3.core.Flowable
 import javax.inject.Inject
 
 class GetImageCountUseCase @Inject constructor(

@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/grey_light"
-    android:fitsSystemWindows="false"
+    android:fitsSystemWindows="true"
     tools:context=".presentation.screens.main.MainActivity">
 
     <com.furianrt.mydiary.presentation.views.MyDrawerLayout
@@ -17,8 +17,7 @@
         <androidx.coordinatorlayout.widget.CoordinatorLayout
             android:id="@+id/layout_main_root"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1">
+            android:layout_height="match_parent">
 
             <include layout="@layout/activity_main_toolbar" />
 

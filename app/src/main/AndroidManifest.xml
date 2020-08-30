@@ -24,7 +24,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
-        tools:ignore="AllowBackup,GoogleAppIndexingWarning">
+        tools:ignore="AllowBackup,GoogleAppIndexingWarning"
+        tools:targetApi="q">
 
         <provider
             android:name="androidx.core.content.FileProvider"
@@ -87,7 +88,8 @@
         <activity
             android:name=".presentation.screens.statistics.StatsActivity"
             android:launchMode="singleTask"
-            android:parentActivityName=".presentation.screens.main.MainActivity" /> <!-- Этого требует библиотека для редактирования картинок -->
+            android:parentActivityName=".presentation.screens.main.MainActivity" />
+        <!-- Этого требует библиотека для редактирования картинок -->
         <activity
             android:name="com.yalantis.ucrop.UCropActivity"
             android:launchMode="singleTask"
@@ -99,6 +101,12 @@
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_icon"
             android:resource="@drawable/ic_notification_logo" />
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_color"
+            android:resource="@color/colorPrimary" />
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_channel_id"
+            android:value="@string/cloud_notification_channel_id" />
         <meta-data
             android:name="firebase_analytics_collection_deactivated"
             android:value="@bool/FIREBASE_ANALYTICS_DEACTIVATED" />

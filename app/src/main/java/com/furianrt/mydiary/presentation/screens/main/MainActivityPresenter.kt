@@ -10,8 +10,8 @@
 
 package com.furianrt.mydiary.presentation.screens.main
 
-import android.annotation.SuppressLint
 import android.os.Bundle
+import com.furianrt.mydiary.analytics.MyAnalytics
 import com.furianrt.mydiary.model.entity.*
 import com.furianrt.mydiary.domain.FilterNotesUseCase
 import com.furianrt.mydiary.domain.SwapNoteSortTypeUseCase
@@ -20,9 +20,11 @@ import com.furianrt.mydiary.domain.check.IsDailyImageEnabledUseCase
 import com.furianrt.mydiary.domain.check.IsNeedRateOfferUseCase
 import com.furianrt.mydiary.domain.delete.DeleteProfileUseCase
 import com.furianrt.mydiary.domain.get.*
+import com.furianrt.mydiary.domain.save.SetNeedRateOfferUseCase
 import com.furianrt.mydiary.utils.MyRxUtils
+import com.furianrt.mydiary.utils.disposeIfNot
 import com.furianrt.mydiary.utils.generateUniqueId
-import io.reactivex.disposables.Disposable
+import io.reactivex.rxjava3.disposables.Disposable
 import org.joda.time.LocalDate
 import java.lang.IllegalArgumentException
 import java.util.Locale
@@ -43,6 +45,8 @@ class MainActivityPresenter @Inject constructor(
         private val deleteProfileUseCase: DeleteProfileUseCase,
         private val checkLogOutUseCase: CheckLogOutUseCase,
         private val filterNotesUseCase: FilterNotesUseCase,
+        private val setNeedRateOfferUseCase: SetNeedRateOfferUseCase,
+        private val analytics: MyAnalytics,
         private val scheduler: MyRxUtils.BaseSchedulerProvider
 ) : MainActivityContract.Presenter() {
 
@@ -110,9 +114,7 @@ class MainActivityPresenter @Inject constructor(
 
     override fun detachView() {
         super.detachView()
-        if (mFullNotesDisposable?.isDisposed == false) {
-            mFullNotesDisposable?.dispose()
-        }
+        mFullNotesDisposable?.disposeIfNot()
     }
 
     private fun showRateProposal() {
@@ -132,6 +134,7 @@ class MainActivityPresenter @Inject constructor(
                     view?.showHeaderImage(image)
                 }, { error ->
                     error.printStackTrace()
+                    analytics.logExceptionEvent(error)
                     view?.showEmptyHeaderImage(true)
                 }))
     }
@@ -142,6 +145,7 @@ class MainActivityPresenter @Inject constructor(
             GetNotesSortTypeUseCase.SORT_TYPE_DESC -> view?.setSortDesc()
             else -> throw IllegalStateException()
         }
+        mFullNotesDisposable?.disposeIfNot()
         mFullNotesDisposable = getFullNotesUseCase()
                 .debounce(300L, TimeUnit.MILLISECONDS, scheduler.computation())
                 .observeOn(scheduler.ui())
@@ -157,9 +161,7 @@ class MainActivityPresenter @Inject constructor(
 
     override fun onFabMenuClick() {
         if (mSelectedNoteIds.isEmpty()) {
-            if (mFullNotesDisposable?.isDisposed == false) {
-                mFullNotesDisposable?.dispose()
-            }
+            mFullNotesDisposable?.disposeIfNot()
             view?.showViewNewNote(generateUniqueId())
         } else {
             mSelectedNoteIds.clear()
@@ -407,12 +409,15 @@ class MainActivityPresenter @Inject constructor(
         }
     }
 
-    @SuppressLint("DefaultLocale")
     private fun applySearchFilter(notes: List<MyNoteWithProp>): List<MyNoteWithProp> =
             filterNotesUseCase(notes, mFilteredTagIds, mFilteredCategoryIds, mFilteredMoodIds,
                     mFilteredLocationNames, mFilteredStartDate, mFilteredEndDate, mSearchQuery)
 
     override fun onButtonChangeFiltersClick() {
         view?.showChangeFilters()
+    }
+
+    override fun onUserReviewComplete() {
+        setNeedRateOfferUseCase(true)
     }
 }

@@ -10,12 +10,10 @@
 
 package com.furianrt.mydiary.domain.get
 
-import com.furianrt.mydiary.model.entity.*
 import com.furianrt.mydiary.model.entity.pojo.SearchEntries
 import com.furianrt.mydiary.domain.check.IsLocationEnabledUseCase
 import com.furianrt.mydiary.domain.check.IsMoodEnabledUseCase
-import io.reactivex.Flowable
-import io.reactivex.functions.Function5
+import io.reactivex.rxjava3.core.Flowable
 import javax.inject.Inject
 
 class GetSearchEntriesUseCase @Inject constructor(
@@ -34,7 +32,6 @@ class GetSearchEntriesUseCase @Inject constructor(
                     getCategoriesUseCase(),
                     getLocationsUseCase().map { locations -> locations.distinctBy { it.name } },
                     getMoodsUseCase(),
-                    Function5<List<MyNoteWithProp>, List<MyTag>, List<MyCategory>, List<MyLocation>, List<MyMood>, SearchEntries>
                     { notes, tags, categories, locations, moods ->
                         val locationList = if (isLocationEnabledUseCase()) locations else null
                         val moodList = if (isMoodEnabledUseCase()) moods else null

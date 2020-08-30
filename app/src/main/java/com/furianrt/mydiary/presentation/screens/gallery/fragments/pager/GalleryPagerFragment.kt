@@ -134,8 +134,10 @@ class GalleryPagerFragment : BaseFragment(R.layout.fragment_gallery_pager), Gall
     }
 
     override fun showListImagesView(noteId: String) {
-        fragmentManager?.inTransaction {
-            replace(R.id.container_gallery, GalleryListFragment.newInstance(noteId), GalleryListFragment.TAG)
+        if (isAdded) {
+            parentFragmentManager.inTransaction {
+                replace(R.id.container_gallery, GalleryListFragment.newInstance(noteId), GalleryListFragment.TAG)
+            }
         }
     }
 

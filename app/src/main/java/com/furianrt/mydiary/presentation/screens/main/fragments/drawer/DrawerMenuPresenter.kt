@@ -15,7 +15,7 @@ import com.furianrt.mydiary.domain.check.CheckLogOutUseCase
 import com.furianrt.mydiary.domain.check.IsSignedInUseCase
 import com.furianrt.mydiary.domain.get.*
 import com.furianrt.mydiary.utils.MyRxUtils
-import io.reactivex.Single
+import io.reactivex.rxjava3.core.Single
 import net.danlew.android.joda.DateUtils
 import org.joda.time.DateTime
 import java.util.concurrent.TimeUnit

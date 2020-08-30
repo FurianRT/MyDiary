@@ -11,14 +11,14 @@
 package com.furianrt.mydiary.domain.sync
 
 import com.furianrt.mydiary.model.gateway.category.CategoryGateway
-import io.reactivex.Completable
+import io.reactivex.rxjava3.core.Completable
 import javax.inject.Inject
 
 class SyncCategoriesUseCase @Inject constructor(
         private val categoryGateway: CategoryGateway
 ) {
 
-    class SyncCategoriesException : Throwable()
+    class SyncCategoriesException(message: String?, cause: Throwable?) : Throwable(message, cause)
 
     operator fun invoke(email: String): Completable =
             categoryGateway.getAllCategories()
@@ -37,6 +37,6 @@ class SyncCategoriesUseCase @Inject constructor(
                     .flatMapCompletable { categoryGateway.insertCategory(it) }
                     .onErrorResumeNext { error ->
                         error.printStackTrace()
-                        Completable.error(SyncCategoriesException())
+                        Completable.error(SyncCategoriesException(error.message, error))
                     }
 }

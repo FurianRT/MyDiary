@@ -11,14 +11,14 @@
 package com.furianrt.mydiary.domain.sync
 
 import com.furianrt.mydiary.model.gateway.appearance.AppearanceGateway
-import io.reactivex.Completable
+import io.reactivex.rxjava3.core.Completable
 import javax.inject.Inject
 
 class SyncAppearanceUseCase @Inject constructor(
         private val appearanceGateway: AppearanceGateway
 ) {
 
-    class SyncAppearanceException : Throwable()
+    class SyncAppearanceException(message: String?, cause: Throwable?) : Throwable(message, cause)
 
     operator fun invoke(email: String): Completable =
             appearanceGateway.getAllNoteAppearances()
@@ -37,6 +37,6 @@ class SyncAppearanceUseCase @Inject constructor(
                     .flatMapCompletable { appearanceGateway.insertAppearance(it) }
                     .onErrorResumeNext { error ->
                         error.printStackTrace()
-                        Completable.error(SyncAppearanceException())
+                        Completable.error(SyncAppearanceException(error.message, error))
                     }
 }

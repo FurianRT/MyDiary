@@ -125,13 +125,17 @@ class NoteEditFragment : BaseFragment(R.layout.fragment_note_edit), NoteEditCont
             when (mClickedView) {
                 VIEW_TITLE -> {
                     edit_note_title.requestFocus()
-                    edit_note_title.setSelection(mClickPosition)
+                    if ((edit_note_title.text?.length ?: 0) >= mClickPosition) {
+                        edit_note_title.setSelection(mClickPosition)
+                    }
                     edit_note_title.showKeyboard()
 
                 }
                 VIEW_CONTENT -> {
                     edit_note_content.requestFocus()
-                    edit_note_content.setSelection(mClickPosition)
+                    if ((edit_note_content.text?.length ?: 0) >= mClickPosition) {
+                        edit_note_content.setSelection(mClickPosition)
+                    }
                     edit_note_content.showKeyboard()
                 }
             }
@@ -160,7 +164,7 @@ class NoteEditFragment : BaseFragment(R.layout.fragment_note_edit), NoteEditCont
             focus.hideKeyboard()
             focus.clearFocus()
         }
-        fragmentManager?.popBackStack()
+        parentFragmentManager.popBackStack()
     }
 
     override fun onResume() {
@@ -409,13 +413,13 @@ class NoteEditFragment : BaseFragment(R.layout.fragment_note_edit), NoteEditCont
                 .filter { it.style == Typeface.BOLD }
                 .map { text.getSpanEnd(it) }
                 .filter { it < edit_note_content.selectionStart }
-                .max()
+                .maxOrNull()
 
         val nextSpanPosition = text.getSpans(indexStart, indexEnd, StyleSpan::class.java)
                 .filter { it.style == Typeface.BOLD }
                 .map { text.getSpanStart(it) }
                 .filter { it > edit_note_content.selectionEnd }
-                .min()
+                .minOrNull()
 
         if (prevSpanPosition != null && prevSpanPosition != indexStart) {
             indexStart = prevSpanPosition
@@ -466,13 +470,13 @@ class NoteEditFragment : BaseFragment(R.layout.fragment_note_edit), NoteEditCont
                 .filter { it.style == Typeface.ITALIC }
                 .map { text.getSpanEnd(it) }
                 .filter { it < edit_note_content.selectionStart }
-                .max()
+                .maxOrNull()
 
         val nextSpanPosition = text.getSpans(indexStart, indexEnd, StyleSpan::class.java)
                 .filter { it.style == Typeface.ITALIC }
                 .map { text.getSpanStart(it) }
                 .filter { it > edit_note_content.selectionEnd }
-                .min()
+                .minOrNull()
 
         if (prevSpanPosition != null && prevSpanPosition != indexStart) {
             indexStart = prevSpanPosition
@@ -522,12 +526,12 @@ class NoteEditFragment : BaseFragment(R.layout.fragment_note_edit), NoteEditCont
         val prevSpanPosition = text.getSpans(indexStart, indexEnd, StrikethroughSpan::class.java)
                 .map { text.getSpanEnd(it) }
                 .filter { it < edit_note_content.selectionStart }
-                .max()
+                .maxOrNull()
 
         val nextSpanPosition = text.getSpans(indexStart, indexEnd, StrikethroughSpan::class.java)
                 .map { text.getSpanStart(it) }
                 .filter { it > edit_note_content.selectionEnd }
-                .min()
+                .minOrNull()
 
         if (prevSpanPosition != null && prevSpanPosition != indexStart) {
             indexStart = prevSpanPosition
@@ -577,12 +581,12 @@ class NoteEditFragment : BaseFragment(R.layout.fragment_note_edit), NoteEditCont
         val prevSpanPosition = text.getSpans(indexStart, indexEnd, RelativeSizeSpan::class.java)
                 .map { text.getSpanEnd(it) }
                 .filter { it < edit_note_content.selectionStart }
-                .max()
+                .maxOrNull()
 
         val nextSpanPosition = text.getSpans(indexStart, indexEnd, RelativeSizeSpan::class.java)
                 .map { text.getSpanStart(it) }
                 .filter { it > edit_note_content.selectionEnd }
-                .min()
+                .minOrNull()
 
         if (prevSpanPosition != null && prevSpanPosition != indexStart) {
             indexStart = prevSpanPosition
@@ -652,12 +656,12 @@ class NoteEditFragment : BaseFragment(R.layout.fragment_note_edit), NoteEditCont
         val prevSpanPosition = text.getSpans(indexStart, indexEnd, ForegroundColorSpan::class.java)
                 .map { text.getSpanEnd(it) }
                 .filter { it < edit_note_content.selectionStart }
-                .max()
+                .maxOrNull()
 
         val nextSpanPosition = text.getSpans(indexStart, indexEnd, ForegroundColorSpan::class.java)
                 .map { text.getSpanStart(it) }
                 .filter { it > edit_note_content.selectionEnd }
-                .min()
+                .minOrNull()
 
         if (prevSpanPosition != null && prevSpanPosition != indexStart) {
             indexStart = prevSpanPosition
@@ -727,12 +731,12 @@ class NoteEditFragment : BaseFragment(R.layout.fragment_note_edit), NoteEditCont
         val prevSpanPosition = text.getSpans(indexStart, indexEnd, BackgroundColorSpan::class.java)
                 .map { text.getSpanEnd(it) }
                 .filter { it < edit_note_content.selectionStart }
-                .max()
+                .maxOrNull()
 
         val nextSpanPosition = text.getSpans(indexStart, indexEnd, BackgroundColorSpan::class.java)
                 .map { text.getSpanStart(it) }
                 .filter { it > edit_note_content.selectionEnd }
-                .min()
+                .minOrNull()
 
         if (prevSpanPosition != null && prevSpanPosition != indexStart) {
             indexStart = prevSpanPosition

@@ -16,7 +16,9 @@ import com.furianrt.mydiary.model.source.cloud.CloudSource
 import com.furianrt.mydiary.model.source.database.dao.CategoryDao
 import com.furianrt.mydiary.utils.MyRxUtils
 import com.google.common.base.Optional
-import io.reactivex.*
+import io.reactivex.rxjava3.core.Completable
+import io.reactivex.rxjava3.core.Flowable
+import io.reactivex.rxjava3.core.Single
 import javax.inject.Inject
 
 class CategoryGatewayImp @Inject constructor(

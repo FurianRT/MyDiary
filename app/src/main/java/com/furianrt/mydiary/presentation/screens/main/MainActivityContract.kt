@@ -70,5 +70,6 @@ interface MainActivityContract {
         abstract fun onButtonChangeFiltersClick()
         abstract fun onDailyImageLoadStateChange()
         abstract fun onButtonStatisticsClick()
+        abstract fun onUserReviewComplete()
     }
 }

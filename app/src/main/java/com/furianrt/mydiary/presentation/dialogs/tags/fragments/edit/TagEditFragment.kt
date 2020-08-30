@@ -67,7 +67,7 @@ class TagEditFragment : BaseFragment(R.layout.fragment_tag_edit), TagEditContrac
     }
 
     override fun closeView() {
-        fragmentManager?.popBackStack()
+        parentFragmentManager.popBackStack()
     }
 
     override fun onStart() {

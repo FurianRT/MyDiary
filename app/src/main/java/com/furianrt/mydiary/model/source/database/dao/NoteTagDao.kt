@@ -13,8 +13,8 @@ package com.furianrt.mydiary.model.source.database.dao
 import androidx.room.*
 import com.furianrt.mydiary.model.entity.MyTag
 import com.furianrt.mydiary.model.entity.NoteTag
-import io.reactivex.Completable
-import io.reactivex.Flowable
+import io.reactivex.rxjava3.core.Completable
+import io.reactivex.rxjava3.core.Flowable
 
 @Dao
 interface NoteTagDao {

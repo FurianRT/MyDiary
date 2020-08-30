@@ -12,9 +12,9 @@ package com.furianrt.mydiary.model.gateway.tag
 
 import com.furianrt.mydiary.model.entity.MyTag
 import com.furianrt.mydiary.model.entity.NoteTag
-import io.reactivex.Completable
-import io.reactivex.Flowable
-import io.reactivex.Single
+import io.reactivex.rxjava3.core.Completable
+import io.reactivex.rxjava3.core.Flowable
+import io.reactivex.rxjava3.core.Single
 
 interface TagGateway {
     fun insertTag(tag: MyTag): Completable

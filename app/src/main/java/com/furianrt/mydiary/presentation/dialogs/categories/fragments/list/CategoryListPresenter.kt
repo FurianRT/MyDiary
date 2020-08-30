@@ -16,8 +16,7 @@ import com.furianrt.mydiary.domain.get.GetCategoriesUseCase
 import com.furianrt.mydiary.domain.get.GetNotesUseCase
 import com.furianrt.mydiary.domain.update.UpdateNoteUseCase
 import com.furianrt.mydiary.utils.MyRxUtils
-import io.reactivex.Flowable
-import io.reactivex.functions.BiFunction
+import io.reactivex.rxjava3.core.Flowable
 import javax.inject.Inject
 
 class CategoryListPresenter @Inject constructor(
@@ -48,9 +47,7 @@ class CategoryListPresenter @Inject constructor(
         addDisposable(Flowable.combineLatest(
                 getNotesUseCase().firstOrError().toFlowable(),
                 getCategoriesUseCase(),
-                BiFunction<List<MyNote>, List<MyCategory>, NotesAndCategories> { notes, categories ->
-                    NotesAndCategories(notes, categories)
-                }
+                { notes, categories -> NotesAndCategories(notes, categories) }
         )
                 .observeOn(scheduler.ui())
                 .subscribe { view?.showCategories(it.notes, it.categories) })

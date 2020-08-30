@@ -13,9 +13,9 @@ package com.furianrt.mydiary.model.gateway.image
 import android.graphics.Bitmap
 import com.furianrt.mydiary.model.entity.MyHeaderImage
 import com.furianrt.mydiary.model.entity.MyImage
-import io.reactivex.Completable
-import io.reactivex.Flowable
-import io.reactivex.Single
+import io.reactivex.rxjava3.core.Completable
+import io.reactivex.rxjava3.core.Flowable
+import io.reactivex.rxjava3.core.Single
 
 interface ImageGateway {
     fun insertImage(image: MyImage): Completable

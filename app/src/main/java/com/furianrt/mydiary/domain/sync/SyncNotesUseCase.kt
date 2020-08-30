@@ -11,14 +11,14 @@
 package com.furianrt.mydiary.domain.sync
 
 import com.furianrt.mydiary.model.gateway.note.NoteGateway
-import io.reactivex.Completable
+import io.reactivex.rxjava3.core.Completable
 import javax.inject.Inject
 
 class SyncNotesUseCase @Inject constructor(
         private val noteGateway: NoteGateway
 ) {
 
-    class SyncNotesException : Throwable()
+    class SyncNotesException(message: String?, cause: Throwable?) : Throwable(message, cause)
 
     operator fun invoke(email: String): Completable =
             noteGateway.getAllNotes()
@@ -37,6 +37,6 @@ class SyncNotesUseCase @Inject constructor(
                     .flatMapCompletable { noteGateway.insertNote(it) }
                     .onErrorResumeNext { error ->
                         error.printStackTrace()
-                        Completable.error(SyncNotesException())
+                        Completable.error(SyncNotesException(error.message, error))
                     }
 }

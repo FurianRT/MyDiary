@@ -12,7 +12,7 @@ package com.furianrt.mydiary.domain
 
 import com.furianrt.mydiary.model.entity.MyLocation
 import com.furianrt.mydiary.model.gateway.device.DeviceGateway
-import io.reactivex.Maybe
+import io.reactivex.rxjava3.core.Maybe
 import javax.inject.Inject
 
 class FindLocationUseCase @Inject constructor(
