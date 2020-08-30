@@ -18,7 +18,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:title="@string/appearance" />
 
-    <androidx.fragment.app.FragmentContainerView
+    <FrameLayout
         android:id="@+id/container_settings_note"
         android:layout_width="match_parent"
         android:layout_height="0dp"
