@@ -32,6 +32,7 @@ class GlobalSettingsFragment : BasePreference(), GlobalSettingsContract.View,
         SharedPreferences.OnSharedPreferenceChangeListener {
 
     companion object {
+        const val TAG = "GlobalSettingsFragment"
         private const val REQUEST_CODE_CREATE_PIN = 1
         private const val REQUEST_CODE_REMOVE_PIN = 2
         private const val RECREATE_DELAY = 300L

@@ -19,8 +19,7 @@
         app:title="@string/settings" />
 
     <FrameLayout
-        android:id="@+id/fragment_settings_global"
-        android:name="com.furianrt.mydiary.presentation.screens.settings.global.GlobalSettingsFragment"
+        android:id="@+id/container_settings_global"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
