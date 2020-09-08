@@ -8,7 +8,7 @@
  *
  ******************************************************************************/
 
-package com.furianrt.mydiary.presentation.general
+package com.furianrt.mydiary.presentation.screens.gallery.fragments.list
 
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.ItemTouchHelper

@@ -36,7 +36,7 @@ import com.bumptech.glide.signature.ObjectKey
 import com.furianrt.mydiary.R
 import com.furianrt.mydiary.model.entity.MyImage
 import com.furianrt.mydiary.presentation.general.GlideApp
-import com.furianrt.mydiary.presentation.general.ItemTouchHelperCallback
+import com.furianrt.mydiary.presentation.screens.gallery.fragments.list.ItemTouchHelperCallback
 import com.furianrt.mydiary.presentation.screens.gallery.fragments.list.adapter.entity.BaseImageListItem
 import com.furianrt.mydiary.presentation.screens.gallery.fragments.list.adapter.entity.ImageListFooter
 import com.furianrt.mydiary.presentation.screens.gallery.fragments.list.adapter.entity.ImageListItem
