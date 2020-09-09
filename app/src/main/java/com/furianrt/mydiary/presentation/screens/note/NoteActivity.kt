@@ -20,6 +20,7 @@ import com.furianrt.mydiary.R
 import com.furianrt.mydiary.model.entity.MyNoteWithProp
 import com.furianrt.mydiary.presentation.base.BaseActivity
 import com.furianrt.mydiary.presentation.screens.note.fragments.mainnote.NoteFragment
+import com.furianrt.mydiary.utils.animateAlpha
 import kotlinx.android.synthetic.main.activity_note.*
 import javax.inject.Inject
 
@@ -99,6 +100,11 @@ class NoteActivity : BaseActivity(R.layout.activity_note), NoteActivityContract.
         if (mPagerPosition >= notes.size) {
             mPagerPosition = notes.size - 1
         }
+
+        if (mPagerAdapter.count == 0 && notes.isNotEmpty()) {
+            pager_note.animateAlpha(0f, 1f)
+        }
+
         mPagerAdapter.notes = notes
         mPagerAdapter.notifyDataSetChanged()
         progress_notes.visibility = View.GONE

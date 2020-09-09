@@ -62,10 +62,7 @@ import com.furianrt.mydiary.utils.getDisplayWidth
 import com.furianrt.mydiary.utils.inTransaction
 import com.furianrt.mydiary.presentation.general.StickyHeaderItemDecoration
 import com.furianrt.mydiary.presentation.screens.main.adapter.NoteListAdapter
-import com.furianrt.mydiary.presentation.screens.main.adapter.entity.BaseNoteListItem
-import com.furianrt.mydiary.presentation.screens.main.adapter.entity.NoteItemDate
-import com.furianrt.mydiary.presentation.screens.main.adapter.entity.NoteItemWithImage
-import com.furianrt.mydiary.presentation.screens.main.adapter.entity.NoteItemWithText
+import com.furianrt.mydiary.presentation.screens.main.adapter.NoteListItem
 import com.furianrt.mydiary.presentation.screens.statistics.StatsActivity
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.bottomsheet.BottomSheetBehavior
@@ -541,7 +538,7 @@ class MainActivity : BaseActivity(R.layout.activity_main), MainActivityContract.
         }
     }
 
-    private fun toNoteViewItem(notes: List<MyNoteWithProp>, selectedIds: Set<String>): List<BaseNoteListItem> {
+    private fun toNoteViewItem(notes: List<MyNoteWithProp>, selectedIds: Set<String>): List<NoteListItem> {
         val sortAsc = notes.size > 1 && notes[0].note.time < notes[1].note.time
         val map = TreeMap<Long, ArrayList<MyNoteWithProp>> { p0, p1 ->
             if (sortAsc) {
@@ -563,9 +560,9 @@ class MainActivity : BaseActivity(R.layout.activity_main), MainActivityContract.
             value.add(note)
         }
 
-        val result = mutableListOf<BaseNoteListItem>()
+        val result = mutableListOf<NoteListItem>()
         for (date in map.keys) {
-            val header = NoteItemDate(date)
+            val header = NoteListItem.Date(date)
             result.add(header)
             val values = if (sortAsc) {
                 map.getValue(date).sortedBy { it.note.time }
@@ -575,9 +572,9 @@ class MainActivity : BaseActivity(R.layout.activity_main), MainActivityContract.
 
             for (note in values) {
                 if (note.images.isEmpty()) {
-                    result.add(NoteItemWithText(note, selectedIds.contains(note.note.id)))
+                    result.add(NoteListItem.WithText(note, selectedIds.contains(note.note.id)))
                 } else {
-                    result.add(NoteItemWithImage(note, selectedIds.contains(note.note.id)))
+                    result.add(NoteListItem.WithImage(note, selectedIds.contains(note.note.id)))
                 }
             }
         }
