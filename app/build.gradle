@@ -14,8 +14,8 @@ android {
         applicationId "com.furianrt.mydiary"
         minSdkVersion 24
         targetSdkVersion 30
-        versionCode 76
-        versionName "1.9.5"
+        versionCode 77
+        versionName "1.9.6"
 
         javaCompileOptions {
             annotationProcessorOptions {
