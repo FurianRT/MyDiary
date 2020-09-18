@@ -191,4 +191,7 @@ dependencies {
 
     //In-app review, update, etc.
     implementation 'com.google.android.play:core-ktx:1.8.1'
+
+    //Animated images
+    implementation 'com.airbnb.android:lottie:3.4.2'
 }

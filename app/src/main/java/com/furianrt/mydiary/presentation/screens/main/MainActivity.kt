@@ -13,6 +13,7 @@ package com.furianrt.mydiary.presentation.screens.main
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.content.pm.ActivityInfo
 import android.content.res.Configuration
 import android.graphics.drawable.Drawable
 import android.os.*
@@ -72,6 +73,7 @@ import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.activity_main_toolbar.*
 import kotlinx.android.synthetic.main.bottom_sheet_main.*
 import kotlinx.android.synthetic.main.empty_search_note_list.*
+import kotlinx.android.synthetic.main.empty_state_note_list.*
 import org.joda.time.DateTime
 import java.util.TreeMap
 import javax.inject.Inject
@@ -166,6 +168,10 @@ class MainActivity : BaseActivity(R.layout.activity_main), MainActivityContract.
         getPresenterComponent(this).inject(this)
         super.onCreate(savedInstanceState)
 
+        if(resources.getBoolean(R.bool.portrait_only)){
+            requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+        }
+
         presenter.onRestoreInstanceState(savedInstanceState)
 
         setSupportActionBar(toolbar_main)
@@ -212,11 +218,10 @@ class MainActivity : BaseActivity(R.layout.activity_main), MainActivityContract.
         }
 
         button_change_filters.setOnClickListener { presenter.onButtonChangeFiltersClick() }
-
+        button_first_note.setOnClickListener { presenter.onFabMenuClick() }
         fab_menu.setOnClickListener { presenter.onFabMenuClick() }
         fab_delete.setOnClickListener { presenter.onButtonDeleteClick() }
         fab_folder.setOnClickListener { presenter.onButtonFolderClick() }
-
         image_toolbar_main.setOnClickListener { presenter.onMainImageClick() }
         button_main_image_settings.setOnClickListener {
             analytics.sendEvent(MyAnalytics.EVENT_HEADER_IMAGE_SETTINGS)
@@ -584,6 +589,7 @@ class MainActivity : BaseActivity(R.layout.activity_main), MainActivityContract.
     override fun showEmptyNoteList() {
         mAdapter.submitList(emptyList())
         if (empty_state.visibility != View.VISIBLE && (empty_state.animation == null || empty_state.animation.hasEnded())) {
+            anim_image_empty_note_list.playAnimation()
             empty_state.visibility = View.VISIBLE
             app_bar_layout.setExpanded(false, true)
             empty_state.translationY = empty_state.height.toFloat()
@@ -596,6 +602,7 @@ class MainActivity : BaseActivity(R.layout.activity_main), MainActivityContract.
 
     override fun hideEmptyNoteList() {
         if (empty_state.visibility != View.GONE) {
+            anim_image_empty_note_list.cancelAnimation()
             empty_state.visibility = View.GONE
         }
     }
@@ -603,6 +610,7 @@ class MainActivity : BaseActivity(R.layout.activity_main), MainActivityContract.
     override fun showNoSearchResults() {
         if (empty_search.visibility != View.VISIBLE) {
             empty_search.visibility = View.VISIBLE
+            anim_image_empty_search.playAnimation()
             ViewCompat.animate(empty_search)
                     .alpha(1f)
                     .scaleX(1f)
@@ -616,6 +624,7 @@ class MainActivity : BaseActivity(R.layout.activity_main), MainActivityContract.
 
     override fun hideNoSearchResults() {
         if (empty_search.visibility != View.GONE) {
+            anim_image_empty_search.cancelAnimation()
             ViewCompat.animate(empty_search)
                     .alpha(0f)
                     .scaleX(ANIMATION_NO_SEARCH_RESULT_SIZE)

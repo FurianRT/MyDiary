@@ -45,16 +45,18 @@
         app:layout_constraintTop_toBottomOf="@+id/textView"
         app:rippleColor="?attr/colorPrimary" />
 
-    <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@drawable/email_image"
-        android:tint="?attr/colorPrimary"
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/imageView6"
+        android:layout_width="160dp"
+        android:layout_height="160dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintVertical_bias="0.4"
         app:layout_constraintTop_toBottomOf="@+id/button_send_email_cancel"
-        tools:ignore="ContentDescription" />
+        app:lottie_autoPlay="true"
+        app:lottie_loop="true"
+        app:lottie_rawRes="@raw/email_animated" />
 
     <FrameLayout
         android:id="@+id/layout_loading"
