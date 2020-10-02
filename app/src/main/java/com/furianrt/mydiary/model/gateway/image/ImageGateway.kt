@@ -45,5 +45,4 @@ interface ImageGateway {
     fun isDailyImageEnabled(): Boolean
     fun getDailyImageCategory(): String
     fun getAvailableImageDirectory(): String
-    fun isPanoramaEnabled(): Boolean
 }

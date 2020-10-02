@@ -150,6 +150,4 @@ class ImageGatewayImp @Inject constructor(
     override fun getDailyImageCategory(): String = prefs.getDailyImageCategory()
 
     override fun getAvailableImageDirectory(): String = storage.getAvailablePictureDirectory()
-
-    override fun isPanoramaEnabled(): Boolean = prefs.isPanoramaEnabled()
 }

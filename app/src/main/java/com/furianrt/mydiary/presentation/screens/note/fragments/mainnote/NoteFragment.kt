@@ -48,7 +48,6 @@ import com.furianrt.mydiary.presentation.screens.note.fragments.mainnote.content
 import com.furianrt.mydiary.presentation.screens.note.fragments.mainnote.edit.NoteEditFragment
 import com.furianrt.mydiary.presentation.screens.settings.note.NoteSettingsActivity
 import com.furianrt.mydiary.utils.*
-import com.gjiazhe.panoramaimageview.GyroscopeObserver
 import com.google.android.material.card.MaterialCardView
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog
 import com.wdullaer.materialdatetimepicker.time.TimePickerDialog
@@ -121,9 +120,8 @@ class NoteFragment : BaseFragment(R.layout.fragment_note), NoteFragmentContract.
     @Inject
     lateinit var presenter: NoteFragmentContract.Presenter
 
-    private val mGyroscopeObserver = GyroscopeObserver()
     private var mListener: OnNoteFragmentInteractionListener? = null
-    private val mImagePagerAdapter = NoteImagePagerAdapter(listener = this, gyroscope = mGyroscopeObserver)
+    private val mImagePagerAdapter = NoteImagePagerAdapter(listener = this)
     private var mNoteId: String? = null
     private var mIsNewNote = true
     private var mImagePagerPosition = 0
@@ -272,16 +270,6 @@ class NoteFragment : BaseFragment(R.layout.fragment_note), NoteFragmentContract.
                 (it as NoteEditFragment).onButtonTextFillColorClick(color as String)
             }
         }
-    }
-
-    override fun onResume() {
-        super.onResume()
-        mGyroscopeObserver.register(requireContext())
-    }
-
-    override fun onPause() {
-        super.onPause()
-        mGyroscopeObserver.unregister()
     }
 
     override fun onStart() {
@@ -757,9 +745,9 @@ class NoteFragment : BaseFragment(R.layout.fragment_note), NoteFragmentContract.
         hideLoading()
     }
 
-    override fun showImages(images: List<MyImage>, panorama: Boolean) {
+    override fun showImages(images: List<MyImage>) {
         Log.e(TAG, "showImages")
-        mImagePagerAdapter.submitImages(images.toMutableList(), panorama)
+        mImagePagerAdapter.submitImages(images.toMutableList())
         pager_note_image.setCurrentItem(mImagePagerPosition, false)
         text_note_image_counter.text = getString(
                 R.string.counter_format,

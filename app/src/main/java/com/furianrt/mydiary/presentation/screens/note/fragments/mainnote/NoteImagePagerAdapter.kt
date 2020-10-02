@@ -10,36 +10,25 @@
 
 package com.furianrt.mydiary.presentation.screens.note.fragments.mainnote
 
-import android.graphics.Bitmap
-import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.load.engine.DiskCacheStrategy
-import com.bumptech.glide.request.target.CustomViewTarget
-import com.bumptech.glide.request.transition.Transition
 import com.bumptech.glide.signature.ObjectKey
 import com.furianrt.mydiary.R
 import com.furianrt.mydiary.model.entity.MyImage
 import com.furianrt.mydiary.presentation.general.GlideApp
-import com.furianrt.mydiary.utils.animateAlpha
-import com.gjiazhe.panoramaimageview.GyroscopeObserver
 import kotlinx.android.synthetic.main.note_image_pager_item.view.*
 
 class NoteImagePagerAdapter(
         private var images: ArrayList<MyImage> = ArrayList(),
-        private val gyroscope: GyroscopeObserver? = null,
         var listener: OnNoteImagePagerInteractionListener? = null
 ) : RecyclerView.Adapter<NoteImagePagerAdapter.NoteImageViewHolder>() {
 
-    private var mPanoramaEnabled = false
-
-    fun submitImages(images: List<MyImage>, panorama: Boolean = false) {
-        mPanoramaEnabled = panorama
+    fun submitImages(images: List<MyImage>) {
         val diffCallback = NoteImagePagerDiffCallback(this.images, images)
         val diffResult = DiffUtil.calculateDiff(diffCallback)
         this.images.clear()
@@ -60,27 +49,12 @@ class NoteImagePagerAdapter(
     inner class NoteImageViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         fun bind(image: MyImage) {
             itemView.setOnClickListener { listener?.onImageClick(image) }
-            itemView.image_note.alpha = 0f
-            gyroscope?.let {
-                itemView.image_note.setGyroscopeObserver(it)
-                itemView.image_note.setEnablePanoramaMode(mPanoramaEnabled)
-            }
             GlideApp.with(itemView)
-                    .asBitmap()
                     .load(Uri.parse(image.path))
                     .signature(ObjectKey(image.editedTime.toString() + image.name))
+                    .centerCrop()
                     .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
-                    .into(object : CustomViewTarget<ImageView, Bitmap>(itemView.image_note) {
-                        override fun onResourceCleared(placeholder: Drawable?) = Unit
-                        override fun onLoadFailed(errorDrawable: Drawable?) {
-                            listener?.onImageLoadFailed()
-                        }
-                        override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
-                            listener?.onImageLoaded()
-                            itemView.image_note.setImageBitmap(resource)
-                            itemView.image_note.animateAlpha(0f, 1f)
-                        }
-                    })
+                    .into(itemView.image_note)
         }
     }
 

@@ -30,7 +30,7 @@ interface NoteFragmentContract {
         fun showLocation(location: MyLocation)
         fun requestStoragePermissions()
         fun showImageExplorer()
-        fun showImages(images: List<MyImage>, panorama: Boolean)
+        fun showImages(images: List<MyImage>)
         fun showNoImages()
         fun showGalleryView(noteId: String, image: MyImage)
         fun showMoodsView(noteId: String)
