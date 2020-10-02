@@ -179,9 +179,6 @@ dependencies {
     //Uri to real path converter
     implementation 'com.github.HBiSoft:PickiT:0.1.7'
 
-    //Panorama view for images
-    implementation 'com.gjiazhe:PanoramaImageView:1.0'
-
     //Fading edges for views
     implementation 'com.github.bosphere.android-fadingedgelayout:fadingedgelayout:1.0.0'
 
