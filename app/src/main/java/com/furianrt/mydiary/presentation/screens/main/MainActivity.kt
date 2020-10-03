@@ -155,6 +155,9 @@ class MainActivity : BaseActivity(R.layout.activity_main), MainActivityContract.
 
         override fun onStateChanged(bottomSheet: View, newState: Int) {
             if (newState == BottomSheetBehavior.STATE_COLLAPSED || newState == BottomSheetBehavior.STATE_HIDDEN) {
+                if (newState == BottomSheetBehavior.STATE_COLLAPSED) {
+                    closeBottomSheet()
+                }
                 supportFragmentManager.findFragmentByTag(AuthFragment.TAG)?.let { fragment ->
                     supportFragmentManager.inTransaction { remove(fragment) }
                 }

@@ -4,7 +4,7 @@ buildscript {
     ext.kotlin_version = '1.4.10'
     ext.support_version = '1.2.0'
     ext.room_version = '2.3.0-alpha02'
-    ext.dagger_version = '2.28.3'
+    ext.dagger_version = '2.29.1'
     ext.retrofit_version = '2.9.0'
     ext.glide_version = '4.11.0'
 
@@ -16,7 +16,7 @@ buildscript {
     dependencies {
         classpath 'com.android.tools.build:gradle:4.0.1'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
-        classpath 'com.google.gms:google-services:4.3.3'
+        classpath 'com.google.gms:google-services:4.3.4'
         classpath 'com.google.firebase:firebase-crashlytics-gradle:2.3.0'
     }
 }
