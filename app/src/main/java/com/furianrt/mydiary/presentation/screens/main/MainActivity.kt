@@ -65,6 +65,7 @@ import com.furianrt.mydiary.presentation.general.StickyHeaderItemDecoration
 import com.furianrt.mydiary.presentation.screens.main.adapter.NoteListAdapter
 import com.furianrt.mydiary.presentation.screens.main.adapter.NoteListItem
 import com.furianrt.mydiary.presentation.screens.statistics.StatsActivity
+import com.furianrt.mydiary.utils.getWindowInsetTop
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.play.core.review.ReviewManagerFactory
@@ -168,7 +169,7 @@ class MainActivity : BaseActivity(R.layout.activity_main), MainActivityContract.
         getPresenterComponent(this).inject(this)
         super.onCreate(savedInstanceState)
 
-        if(resources.getBoolean(R.bool.portrait_only)){
+        if (resources.getBoolean(R.bool.portrait_only)) {
             requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
         }
 
@@ -206,12 +207,13 @@ class MainActivity : BaseActivity(R.layout.activity_main), MainActivityContract.
         }
 
         mBottomSheet = BottomSheetBehavior.from(main_sheet_container)
+        closeBottomSheet()
 
         savedInstanceState?.let { state ->
             mRecyclerViewState = state.getParcelable(BUNDLE_RECYCLER_VIEW_STATE)
             layout_main_root.translationX = state.getFloat(BUNDLE_ROOT_LAYOUT_OFFSET, 0f)
             mSearchQuery = state.getString(BUNDLE_SEARCH_QUERY, "")
-            mBottomSheet.state = state.getInt(BUNDLE_BOTTOM_SHEET_STATE, BottomSheetBehavior.STATE_COLLAPSED)
+            mBottomSheet.state = state.getInt(BUNDLE_BOTTOM_SHEET_STATE, BottomSheetBehavior.STATE_HIDDEN)
             if (mBottomSheet.state == BottomSheetBehavior.STATE_EXPANDED) {
                 view_actionbar.layoutParams.height = state.getInt(BUNDLE_STATUS_BAR_HEIGHT, 0)
             }
@@ -245,13 +247,7 @@ class MainActivity : BaseActivity(R.layout.activity_main), MainActivityContract.
         }
 
         layout_main.setOnApplyWindowInsetsListener { _, insets ->
-            /* mStatusBarHeight = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                 insets.getInsets(WindowInsets.Type.systemBars()).top
-             } else {
-                 insets.systemWindowInsetTop
-             }*/
-
-            mStatusBarHeight = insets.systemWindowInsetTop
+            mStatusBarHeight = insets.getWindowInsetTop()
 
             val toolbarParams = toolbar_main.layoutParams as ViewGroup.MarginLayoutParams
             toolbarParams.topMargin = mStatusBarHeight
@@ -690,7 +686,7 @@ class MainActivity : BaseActivity(R.layout.activity_main), MainActivityContract.
     }
 
     override fun closeBottomSheet() {
-        mBottomSheet.state = BottomSheetBehavior.STATE_COLLAPSED
+        mBottomSheet.state = BottomSheetBehavior.STATE_HIDDEN
     }
 
     override fun onBackPressed() {
@@ -701,7 +697,7 @@ class MainActivity : BaseActivity(R.layout.activity_main), MainActivityContract.
             profileFragment != null && !profileFragment.isBackStackEmpty() -> super.onBackPressed()
             supportFragmentManager.backStackEntryCount > 0 -> super.onBackPressed()
             mBottomSheet.state == BottomSheetBehavior.STATE_EXPANDED ->
-                mBottomSheet.state = BottomSheetBehavior.STATE_COLLAPSED
+                mBottomSheet.state = BottomSheetBehavior.STATE_HIDDEN
             drawer.isDrawerOpen(GravityCompat.START) ->
                 drawer.closeDrawer(GravityCompat.START, true)
             fab_menu.isOpened -> {
