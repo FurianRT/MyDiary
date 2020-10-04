@@ -190,5 +190,5 @@ dependencies {
     implementation 'com.google.android.play:core-ktx:1.8.1'
 
     //Animated images
-    implementation 'com.airbnb.android:lottie:3.4.3'
+    implementation 'com.airbnb.android:lottie:3.4.2' //в версии 3.4.3 некорректно работает анимация премиума
 }
