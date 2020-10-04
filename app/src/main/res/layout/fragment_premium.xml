@@ -68,10 +68,10 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="32dp"
         android:src="@drawable/cloud_sync"
-        android:tint="?colorPrimary"
         app:layout_constraintBottom_toBottomOf="@+id/textView3"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/textView2"
+        app:tint="?colorPrimary"
         tools:ignore="ContentDescription" />
 
     <TextView
@@ -107,10 +107,10 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="32dp"
         android:src="@drawable/image_life_time"
-        android:tint="?colorPrimary"
         app:layout_constraintBottom_toBottomOf="@+id/textView5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/textView4"
+        app:tint="?colorPrimary"
         tools:ignore="ContentDescription" />
 
     <TextView
@@ -146,9 +146,9 @@
         android:layout_marginStart="32dp"
         android:layout_marginTop="32dp"
         android:src="@drawable/image_check_mark"
-        android:tint="?colorPrimary"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView5"
+        app:tint="?colorPrimary"
         tools:ignore="ContentDescription" />
 
     <TextView

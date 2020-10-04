@@ -61,8 +61,8 @@
             android:layout_alignParentBottom="true"
             android:paddingBottom="8dp"
             android:src="@drawable/ic_cloud_off"
-            android:tint="@color/white"
             android:visibility="gone"
+            app:tint="@color/white"
             tools:ignore="ContentDescription"
             tools:visibility="visible" />
 
@@ -109,13 +109,13 @@
             android:layout_marginStart="12dp"
             android:layout_marginBottom="8dp"
             android:layout_toEndOf="@id/text_note_image_day"
-            android:drawableStart="@drawable/ic_tag_small"
             android:drawablePadding="2dp"
             android:gravity="center_vertical"
             android:maxLines="1"
             android:textColor="@color/grey_dark"
             android:textSize="12sp"
             android:visibility="gone"
+            app:drawableStartCompat="@drawable/ic_tag_small"
             tools:text="3"
             tools:visibility="visible" />
 
@@ -127,12 +127,12 @@
             android:layout_marginStart="8dp"
             android:layout_marginBottom="8dp"
             android:layout_toEndOf="@id/text_image_tags"
-            android:drawableStart="@drawable/ic_image_small"
             android:drawablePadding="2dp"
             android:gravity="center_vertical"
             android:maxLines="1"
             android:textColor="@color/grey_dark"
             android:textSize="12sp"
+            app:drawableStartCompat="@drawable/ic_image_small"
             tools:text="3" />
 
         <TextView
@@ -145,7 +145,6 @@
             android:layout_marginBottom="8dp"
             android:layout_toStartOf="@+id/layout_image_fade"
             android:layout_toEndOf="@id/text_images"
-            android:drawableStart="@drawable/ic_folder_small"
             android:drawablePadding="2dp"
             android:ellipsize="end"
             android:gravity="center_vertical"
@@ -153,6 +152,7 @@
             android:textColor="@color/grey_dark"
             android:textSize="12sp"
             android:visibility="gone"
+            app:drawableStartCompat="@drawable/ic_folder_small"
             tools:text="Conversation"
             tools:visibility="visible" />
 

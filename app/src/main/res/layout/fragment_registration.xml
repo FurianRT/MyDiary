@@ -86,8 +86,8 @@
                 android:layout_marginEnd="6dp"
                 android:layout_weight="0"
                 android:src="@drawable/ic_done"
-                android:tint="?attr/colorPrimary"
                 android:visibility="gone"
+                app:tint="?attr/colorPrimary"
                 tools:ignore="ContentDescription"
                 tools:visibility="visible" />
 

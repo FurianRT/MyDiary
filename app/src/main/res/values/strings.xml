@@ -291,7 +291,7 @@
     <string name="fragment_premium_get_premium">Get premium version</string>
     <string name="fragment_premium_advantages">Premium features:</string>
     <string name="fragment_premium_cloud_sync">Cloud sync</string>
-    <string name="fragment_premium_cloud_sync_description">Afraid to lose your notes? This feature will allow you synchronize and save your notes in cloud for easy access!</string>
+    <string name="fragment_premium_cloud_sync_description">Afraid to lose your notes? This feature will allow you to synchronize and save your notes in cloud for easy access!</string>
     <string name="fragment_premium_life_time">One-time purchase</string>
     <string name="fragment_premium_life_time_description">Works on all devices with the same Google account</string>
     <string name="fragment_premium_access_to_new_features">Access to future premium features</string>
