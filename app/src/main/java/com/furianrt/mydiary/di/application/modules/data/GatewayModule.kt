@@ -37,6 +37,8 @@ import com.furianrt.mydiary.model.gateway.span.SpanGatewayImp
 import com.furianrt.mydiary.model.gateway.tag.TagGateway
 import com.furianrt.mydiary.model.gateway.tag.TagGatewayImp
 import com.furianrt.mydiary.di.application.component.AppScope
+import com.furianrt.mydiary.model.gateway.biling.BillingGateway
+import com.furianrt.mydiary.model.gateway.biling.BillingGatewayImp
 import dagger.Binds
 import dagger.Module
 
@@ -94,4 +96,8 @@ interface GatewayModule {
     @Binds
     @AppScope
     fun spanGateway(imp: SpanGatewayImp): SpanGateway
+
+    @Binds
+    @AppScope
+    fun billingGateway(imp: BillingGatewayImp): BillingGateway
 }

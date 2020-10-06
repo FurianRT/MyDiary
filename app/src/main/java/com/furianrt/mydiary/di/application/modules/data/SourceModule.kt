@@ -19,6 +19,8 @@ import com.furianrt.mydiary.model.source.preferences.PreferencesSourceImp
 import com.furianrt.mydiary.model.source.storage.StorageSource
 import com.furianrt.mydiary.model.source.storage.StorageSourceImp
 import com.furianrt.mydiary.di.application.component.AppScope
+import com.furianrt.mydiary.model.source.billing.inapp.InAppBillingSource
+import com.furianrt.mydiary.model.source.billing.inapp.InAppBillingSourceImp
 import dagger.Binds
 import dagger.Module
 
@@ -40,4 +42,8 @@ interface SourceModule {
     @Binds
     @AppScope
     fun preferencesSource(imp: PreferencesSourceImp): PreferencesSource
+
+    @Binds
+    @AppScope
+    fun billingSource(imp: InAppBillingSourceImp): InAppBillingSource
 }
