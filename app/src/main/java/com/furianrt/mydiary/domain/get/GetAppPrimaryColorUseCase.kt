@@ -10,12 +10,12 @@
 
 package com.furianrt.mydiary.domain.get
 
-import com.furianrt.mydiary.model.gateway.general.GeneralGateway
+import com.furianrt.mydiary.model.gateway.appearance.AppearanceGateway
 import javax.inject.Inject
 
 class GetAppPrimaryColorUseCase @Inject constructor(
-        private val generalGateway: GeneralGateway
+        private val appearanceGateway: AppearanceGateway
 ) {
 
-    operator fun invoke(): Int = generalGateway.getPrimaryColor()
+    operator fun invoke(): Int = appearanceGateway.getPrimaryColor()
 }

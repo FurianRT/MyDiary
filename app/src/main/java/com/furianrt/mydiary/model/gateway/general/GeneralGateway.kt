@@ -13,7 +13,6 @@ package com.furianrt.mydiary.model.gateway.general
 import com.furianrt.mydiary.model.entity.SyncProgressMessage
 
 interface GeneralGateway {
-    fun is24TimeFormat(): Boolean
     fun setLastAppLaunchTime(time: Long)
     fun getLastAppLaunchTime(): Long
     fun getNumberOfLaunches(): Int
@@ -22,9 +21,6 @@ interface GeneralGateway {
     fun getLastSyncMessage(): SyncProgressMessage?
     fun enableRateOffer(enable: Boolean)
     fun isRateOfferEnabled(): Boolean
-    fun getPrimaryColor(): Int
-    fun getAccentColor(): Int
     fun isNeedDefaultValues(): Boolean
     fun setNeedDefaultValues(need: Boolean)
-    fun getAppFontStyle(): Int?
 }
