@@ -360,7 +360,7 @@ class NoteFragment : BaseFragment(R.layout.fragment_note), NoteFragmentContract.
             if (intent.resolveActivity(requireActivity().packageManager) != null) {
                 startActivityForResult(intent, SPEECH_TO_TEXT_REQUEST_CODE)
             } else {
-                Toast.makeText(requireContext(), getString(R.string.fragment_note_google_services_error), Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), getString(R.string.phone_related_error), Toast.LENGTH_SHORT).show()
             }
         }
     }
@@ -374,6 +374,8 @@ class NoteFragment : BaseFragment(R.layout.fragment_note), NoteFragmentContract.
             }
             PLAY_SERVICES_REQUEST_CODE -> if (resultCode == Activity.RESULT_OK) {
                 recordSpeech()
+            } else {
+                Toast.makeText(requireContext(), getString(R.string.fragment_note_google_services_error), Toast.LENGTH_SHORT).show()
             }
             IMAGE_PICKER_REQUEST_CODE -> if (resultCode == Activity.RESULT_OK) {
                 val clipData = data?.clipData
