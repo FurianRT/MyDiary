@@ -107,7 +107,7 @@ class PinActivity : BaseActivity(R.layout.activity_pin), PinContract.View,
         }
 
         savedInstanceState?.let {
-            mBottomSheet.state = it.getInt(BUNDLE_BOTTOM_SHEET_STATE, BottomSheetBehavior.STATE_COLLAPSED)
+            mBottomSheet.state = it.getInt(BUNDLE_BOTTOM_SHEET_STATE, BottomSheetBehavior.STATE_HIDDEN)
             presenter.onRestoreInstanceState(it)
         }
 
@@ -244,7 +244,7 @@ class PinActivity : BaseActivity(R.layout.activity_pin), PinContract.View,
     }
 
     override fun closeBottomSheet() {
-        mBottomSheet.state = BottomSheetBehavior.STATE_COLLAPSED
+        mBottomSheet.state = BottomSheetBehavior.STATE_HIDDEN
     }
 
     override fun onBackPressed() {
