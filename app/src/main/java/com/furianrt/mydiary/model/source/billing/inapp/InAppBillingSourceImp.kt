@@ -1,12 +1,7 @@
 package com.furianrt.mydiary.model.source.billing.inapp
 
 import android.content.Context
-import com.android.billingclient.api.BillingClient
-import com.android.billingclient.api.BillingClient.BillingResponseCode
-import com.android.billingclient.api.BillingClientStateListener
-import com.android.billingclient.api.BillingResult
 import com.furianrt.mydiary.di.application.modules.app.AppContext
-import com.furianrt.mydiary.model.source.billing.entity.ConnectionState
 import io.reactivex.rxjava3.core.Observable
 import javax.inject.Inject
 
@@ -16,7 +11,7 @@ class InAppBillingSourceImp @Inject constructor(@AppContext context: Context): I
         private var sIsConnected = false
     }
 
-    private val billingClient = BillingClient.newBuilder(context)
+   /* private val billingClient = BillingClient.newBuilder(context)
             .setListener { billingResult, purchases ->
                 if (billingResult.responseCode == BillingResponseCode.OK && purchases != null) {
 
@@ -26,10 +21,10 @@ class InAppBillingSourceImp @Inject constructor(@AppContext context: Context): I
 
                 }
             }
-            .build()
+            .build()*/
 
-    override fun connectToBillingServices(): Observable<ConnectionState> = Observable.create { emitter ->
-        billingClient.startConnection(object : BillingClientStateListener {
+   //override fun connectToBillingServices(): Observable<ConnectionState> = Observable.create { emitter ->
+       /* billingClient.startConnection(object : BillingClientStateListener {
             override fun onBillingSetupFinished(result: BillingResult) {
                 if (result.responseCode == BillingResponseCode.OK) {
                     sIsConnected = true
@@ -44,6 +39,6 @@ class InAppBillingSourceImp @Inject constructor(@AppContext context: Context): I
                 sIsConnected = false
                 emitter.onNext(ConnectionState.Disconnected)
             }
-        })
-    }
+        })*/
+  //  }
 }
