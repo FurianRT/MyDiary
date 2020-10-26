@@ -296,9 +296,6 @@
     <string name="fragment_note_settings_danger_zone">Опасная зона</string>
     <string name="fragment_note_settings_reset_settings_confirm">Сбросить настройки?</string>
     <string name="fragment_note_google_services_error">Google services не установлены</string>
-    <string name="panorama_activation_settings_on">Отключить панорамные фото</string>
-    <string name="panorama_activation_settings_off">Включить панорамные фото</string>
-    <string name="panorama_activation_settings_title">Панорамные фото</string>
     <string name="phone_related_error">По каким-то причинам, ваш смартфон не может произвести данную операцию</string>
     <string name="take_photo">Камера</string>
     <string name="select_photo">Галерея</string>

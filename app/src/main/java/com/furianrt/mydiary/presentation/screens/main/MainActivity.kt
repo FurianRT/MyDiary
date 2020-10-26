@@ -13,6 +13,7 @@ package com.furianrt.mydiary.presentation.screens.main
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.content.pm.ActivityInfo
 import android.content.res.Configuration
 import android.graphics.drawable.Drawable
 import android.os.*
@@ -62,11 +63,9 @@ import com.furianrt.mydiary.utils.getDisplayWidth
 import com.furianrt.mydiary.utils.inTransaction
 import com.furianrt.mydiary.presentation.general.StickyHeaderItemDecoration
 import com.furianrt.mydiary.presentation.screens.main.adapter.NoteListAdapter
-import com.furianrt.mydiary.presentation.screens.main.adapter.entity.BaseNoteListItem
-import com.furianrt.mydiary.presentation.screens.main.adapter.entity.NoteItemDate
-import com.furianrt.mydiary.presentation.screens.main.adapter.entity.NoteItemWithImage
-import com.furianrt.mydiary.presentation.screens.main.adapter.entity.NoteItemWithText
+import com.furianrt.mydiary.presentation.screens.main.adapter.NoteListItem
 import com.furianrt.mydiary.presentation.screens.statistics.StatsActivity
+import com.furianrt.mydiary.utils.getWindowInsetTop
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.play.core.review.ReviewManagerFactory
@@ -75,6 +74,7 @@ import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.activity_main_toolbar.*
 import kotlinx.android.synthetic.main.bottom_sheet_main.*
 import kotlinx.android.synthetic.main.empty_search_note_list.*
+import kotlinx.android.synthetic.main.empty_state_note_list.*
 import org.joda.time.DateTime
 import java.util.TreeMap
 import javax.inject.Inject
@@ -169,6 +169,10 @@ class MainActivity : BaseActivity(R.layout.activity_main), MainActivityContract.
         getPresenterComponent(this).inject(this)
         super.onCreate(savedInstanceState)
 
+        if (resources.getBoolean(R.bool.portrait_only)) {
+            requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+        }
+
         presenter.onRestoreInstanceState(savedInstanceState)
 
         setSupportActionBar(toolbar_main)
@@ -203,23 +207,23 @@ class MainActivity : BaseActivity(R.layout.activity_main), MainActivityContract.
         }
 
         mBottomSheet = BottomSheetBehavior.from(main_sheet_container)
+        closeBottomSheet()
 
         savedInstanceState?.let { state ->
             mRecyclerViewState = state.getParcelable(BUNDLE_RECYCLER_VIEW_STATE)
             layout_main_root.translationX = state.getFloat(BUNDLE_ROOT_LAYOUT_OFFSET, 0f)
             mSearchQuery = state.getString(BUNDLE_SEARCH_QUERY, "")
-            mBottomSheet.state = state.getInt(BUNDLE_BOTTOM_SHEET_STATE, BottomSheetBehavior.STATE_COLLAPSED)
+            mBottomSheet.state = state.getInt(BUNDLE_BOTTOM_SHEET_STATE, BottomSheetBehavior.STATE_HIDDEN)
             if (mBottomSheet.state == BottomSheetBehavior.STATE_EXPANDED) {
                 view_actionbar.layoutParams.height = state.getInt(BUNDLE_STATUS_BAR_HEIGHT, 0)
             }
         }
 
         button_change_filters.setOnClickListener { presenter.onButtonChangeFiltersClick() }
-
+        button_first_note.setOnClickListener { presenter.onFabMenuClick() }
         fab_menu.setOnClickListener { presenter.onFabMenuClick() }
         fab_delete.setOnClickListener { presenter.onButtonDeleteClick() }
         fab_folder.setOnClickListener { presenter.onButtonFolderClick() }
-
         image_toolbar_main.setOnClickListener { presenter.onMainImageClick() }
         button_main_image_settings.setOnClickListener {
             analytics.sendEvent(MyAnalytics.EVENT_HEADER_IMAGE_SETTINGS)
@@ -243,13 +247,7 @@ class MainActivity : BaseActivity(R.layout.activity_main), MainActivityContract.
         }
 
         layout_main.setOnApplyWindowInsetsListener { _, insets ->
-            /* mStatusBarHeight = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                 insets.getInsets(WindowInsets.Type.systemBars()).top
-             } else {
-                 insets.systemWindowInsetTop
-             }*/
-
-            mStatusBarHeight = insets.systemWindowInsetTop
+            mStatusBarHeight = insets.getWindowInsetTop()
 
             val toolbarParams = toolbar_main.layoutParams as ViewGroup.MarginLayoutParams
             toolbarParams.topMargin = mStatusBarHeight
@@ -541,7 +539,7 @@ class MainActivity : BaseActivity(R.layout.activity_main), MainActivityContract.
         }
     }
 
-    private fun toNoteViewItem(notes: List<MyNoteWithProp>, selectedIds: Set<String>): List<BaseNoteListItem> {
+    private fun toNoteViewItem(notes: List<MyNoteWithProp>, selectedIds: Set<String>): List<NoteListItem> {
         val sortAsc = notes.size > 1 && notes[0].note.time < notes[1].note.time
         val map = TreeMap<Long, ArrayList<MyNoteWithProp>> { p0, p1 ->
             if (sortAsc) {
@@ -563,9 +561,9 @@ class MainActivity : BaseActivity(R.layout.activity_main), MainActivityContract.
             value.add(note)
         }
 
-        val result = mutableListOf<BaseNoteListItem>()
+        val result = mutableListOf<NoteListItem>()
         for (date in map.keys) {
-            val header = NoteItemDate(date)
+            val header = NoteListItem.Date(date)
             result.add(header)
             val values = if (sortAsc) {
                 map.getValue(date).sortedBy { it.note.time }
@@ -575,9 +573,9 @@ class MainActivity : BaseActivity(R.layout.activity_main), MainActivityContract.
 
             for (note in values) {
                 if (note.images.isEmpty()) {
-                    result.add(NoteItemWithText(note, selectedIds.contains(note.note.id)))
+                    result.add(NoteListItem.WithText(note, selectedIds.contains(note.note.id)))
                 } else {
-                    result.add(NoteItemWithImage(note, selectedIds.contains(note.note.id)))
+                    result.add(NoteListItem.WithImage(note, selectedIds.contains(note.note.id)))
                 }
             }
         }
@@ -587,6 +585,7 @@ class MainActivity : BaseActivity(R.layout.activity_main), MainActivityContract.
     override fun showEmptyNoteList() {
         mAdapter.submitList(emptyList())
         if (empty_state.visibility != View.VISIBLE && (empty_state.animation == null || empty_state.animation.hasEnded())) {
+            anim_image_empty_note_list.playAnimation()
             empty_state.visibility = View.VISIBLE
             app_bar_layout.setExpanded(false, true)
             empty_state.translationY = empty_state.height.toFloat()
@@ -599,6 +598,7 @@ class MainActivity : BaseActivity(R.layout.activity_main), MainActivityContract.
 
     override fun hideEmptyNoteList() {
         if (empty_state.visibility != View.GONE) {
+            anim_image_empty_note_list.cancelAnimation()
             empty_state.visibility = View.GONE
         }
     }
@@ -606,6 +606,7 @@ class MainActivity : BaseActivity(R.layout.activity_main), MainActivityContract.
     override fun showNoSearchResults() {
         if (empty_search.visibility != View.VISIBLE) {
             empty_search.visibility = View.VISIBLE
+            anim_image_empty_search.playAnimation()
             ViewCompat.animate(empty_search)
                     .alpha(1f)
                     .scaleX(1f)
@@ -619,6 +620,7 @@ class MainActivity : BaseActivity(R.layout.activity_main), MainActivityContract.
 
     override fun hideNoSearchResults() {
         if (empty_search.visibility != View.GONE) {
+            anim_image_empty_search.cancelAnimation()
             ViewCompat.animate(empty_search)
                     .alpha(0f)
                     .scaleX(ANIMATION_NO_SEARCH_RESULT_SIZE)
@@ -684,7 +686,7 @@ class MainActivity : BaseActivity(R.layout.activity_main), MainActivityContract.
     }
 
     override fun closeBottomSheet() {
-        mBottomSheet.state = BottomSheetBehavior.STATE_COLLAPSED
+        mBottomSheet.state = BottomSheetBehavior.STATE_HIDDEN
     }
 
     override fun onBackPressed() {
@@ -695,7 +697,7 @@ class MainActivity : BaseActivity(R.layout.activity_main), MainActivityContract.
             profileFragment != null && !profileFragment.isBackStackEmpty() -> super.onBackPressed()
             supportFragmentManager.backStackEntryCount > 0 -> super.onBackPressed()
             mBottomSheet.state == BottomSheetBehavior.STATE_EXPANDED ->
-                mBottomSheet.state = BottomSheetBehavior.STATE_COLLAPSED
+                mBottomSheet.state = BottomSheetBehavior.STATE_HIDDEN
             drawer.isDrawerOpen(GravityCompat.START) ->
                 drawer.closeDrawer(GravityCompat.START, true)
             fab_menu.isOpened -> {

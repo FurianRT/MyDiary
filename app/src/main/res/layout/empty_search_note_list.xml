@@ -11,6 +11,14 @@
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:background="@color/white">
 
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/anim_image_empty_search"
+        android:layout_width="200dp"
+        android:layout_height="180dp"
+        app:lottie_autoPlay="false"
+        app:lottie_loop="true"
+        app:lottie_rawRes="@raw/empty_search" />
+
     <TextView
         android:id="@+id/textView51"
         android:layout_width="match_parent"
@@ -18,8 +26,6 @@
         android:layout_gravity="center"
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
-        android:drawableTop="@drawable/image_search"
-        android:drawablePadding="16dp"
         android:gravity="center"
         android:text="@string/empty_search_note_list_empty"
         android:textColor="@color/grey_dark"
@@ -32,6 +38,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
         android:gravity="center"
         android:letterSpacing="0.0"
         android:text="@string/empty_search_note_list_hint"

@@ -27,19 +27,14 @@ import com.furianrt.mydiary.R
 import com.furianrt.mydiary.model.entity.MyImage
 import com.furianrt.mydiary.presentation.general.GlideApp
 import com.furianrt.mydiary.utils.animateAlpha
-import com.gjiazhe.panoramaimageview.GyroscopeObserver
 import kotlinx.android.synthetic.main.note_image_pager_item.view.*
 
 class NoteImagePagerAdapter(
         private var images: ArrayList<MyImage> = ArrayList(),
-        private val gyroscope: GyroscopeObserver? = null,
         var listener: OnNoteImagePagerInteractionListener? = null
 ) : RecyclerView.Adapter<NoteImagePagerAdapter.NoteImageViewHolder>() {
 
-    private var mPanoramaEnabled = false
-
-    fun submitImages(images: List<MyImage>, panorama: Boolean = false) {
-        mPanoramaEnabled = panorama
+    fun submitImages(images: List<MyImage>) {
         val diffCallback = NoteImagePagerDiffCallback(this.images, images)
         val diffResult = DiffUtil.calculateDiff(diffCallback)
         this.images.clear()
@@ -61,13 +56,10 @@ class NoteImagePagerAdapter(
         fun bind(image: MyImage) {
             itemView.setOnClickListener { listener?.onImageClick(image) }
             itemView.image_note.alpha = 0f
-            gyroscope?.let {
-                itemView.image_note.setGyroscopeObserver(it)
-                itemView.image_note.setEnablePanoramaMode(mPanoramaEnabled)
-            }
             GlideApp.with(itemView)
                     .asBitmap()
                     .load(Uri.parse(image.path))
+                    .centerCrop()
                     .signature(ObjectKey(image.editedTime.toString() + image.name))
                     .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
                     .into(object : CustomViewTarget<ImageView, Bitmap>(itemView.image_note) {
@@ -75,6 +67,7 @@ class NoteImagePagerAdapter(
                         override fun onLoadFailed(errorDrawable: Drawable?) {
                             listener?.onImageLoadFailed()
                         }
+
                         override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
                             listener?.onImageLoaded()
                             itemView.image_note.setImageBitmap(resource)

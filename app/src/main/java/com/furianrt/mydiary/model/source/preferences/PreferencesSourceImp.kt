@@ -47,9 +47,6 @@ class PreferencesSourceImp @Inject constructor(
     override fun isMoodEnabled(): Boolean =
             mPrefs.getBoolean(PreferencesSource.MOOD_AVAILABILITY, true)
 
-    override fun isPanoramaEnabled(): Boolean =
-            mPrefs.getBoolean(PreferencesSource.PANORAMA_AVAILABILITY, false)
-
     override fun getTextColor(): Int =
             mPrefs.getInt(PreferencesSource.TEXT_COLOR, context.getColorCompat(R.color.black))
 

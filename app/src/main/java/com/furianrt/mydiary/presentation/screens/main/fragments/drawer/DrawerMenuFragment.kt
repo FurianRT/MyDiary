@@ -194,8 +194,8 @@ class DrawerMenuFragment : BaseFragment(R.layout.fragment_drawer_menu), DrawerMe
             image_profile?.let { profile ->
                 val profileMarginParams = profile.layoutParams as ViewGroup.MarginLayoutParams
                 val headerParams = header.layoutParams as ViewGroup.LayoutParams
-                headerParams.height = dpToPx(130f) + insets.systemWindowInsetTop
-                profileMarginParams.topMargin = dpToPx(16f) + insets.systemWindowInsetTop
+                headerParams.height = dpToPx(130f) + insets.getWindowInsetTop()
+                profileMarginParams.topMargin = dpToPx(16f) + insets.getWindowInsetTop()
             }
         }
     }

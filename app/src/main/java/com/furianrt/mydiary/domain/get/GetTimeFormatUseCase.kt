@@ -10,11 +10,11 @@
 
 package com.furianrt.mydiary.domain.get
 
-import com.furianrt.mydiary.model.gateway.general.GeneralGateway
+import com.furianrt.mydiary.model.gateway.appearance.AppearanceGateway
 import javax.inject.Inject
 
 class GetTimeFormatUseCase @Inject constructor(
-        private val generalGateway: GeneralGateway
+        private val appearanceGateway: AppearanceGateway
 ) {
 
     companion object {
@@ -22,7 +22,7 @@ class GetTimeFormatUseCase @Inject constructor(
         const val TIME_FORMAT_24 = 1
     }
 
-    operator fun invoke(): Int = if (generalGateway.is24TimeFormat()) {
+    operator fun invoke(): Int = if (appearanceGateway.is24TimeFormat()) {
         TIME_FORMAT_24
     } else {
         TIME_FORMAT_12

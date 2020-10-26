@@ -14,6 +14,7 @@ import android.app.Activity
 import android.os.Bundle
 import com.furianrt.mydiary.R
 import com.furianrt.mydiary.presentation.base.BaseActivity
+import com.furianrt.mydiary.utils.inTransaction
 import kotlinx.android.synthetic.main.activity_global_settings.*
 
 class GlobalSettingsActivity : BaseActivity(R.layout.activity_global_settings),
@@ -30,7 +31,16 @@ class GlobalSettingsActivity : BaseActivity(R.layout.activity_global_settings),
         setSupportActionBar(toolbar_settings_global)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setDisplayShowHomeEnabled(true)
+        addSettingsFragment()
         savedInstanceState?.let { mThemeChanged = it.getBoolean(BUNDLE_THEME_CHANGED, false) }
+    }
+
+    private fun addSettingsFragment() {
+        if (supportFragmentManager.findFragmentByTag(GlobalSettingsFragment.TAG) == null) {
+            supportFragmentManager.inTransaction {
+                add(R.id.container_settings_global, GlobalSettingsFragment(), GlobalSettingsFragment.TAG)
+            }
+        }
     }
 
     override fun onSaveInstanceState(outState: Bundle) {

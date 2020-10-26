@@ -43,6 +43,8 @@ interface AppearanceGateway {
     fun setNoteBackgroundColor(color: Int)
     fun getNoteTextBackgroundColor(): Int
     fun setNoteTextBackgroundColor(color: Int)
+    fun is24TimeFormat(): Boolean
+    fun getAppFontStyle(): Int?
 
     companion object {
         val DEFAULT_NOTE_BACKGROUND_COLOR = Color.parseColor("#f2f2f2")

@@ -14,6 +14,7 @@ import android.os.Bundle
 import android.view.View
 import com.furianrt.mydiary.R
 import com.furianrt.mydiary.presentation.base.BaseActivity
+import com.furianrt.mydiary.utils.inTransaction
 import kotlinx.android.synthetic.main.activity_note_settings.*
 
 class NoteSettingsActivity : BaseActivity(R.layout.activity_note_settings),
@@ -37,10 +38,9 @@ class NoteSettingsActivity : BaseActivity(R.layout.activity_note_settings),
 
     private fun addSettingsFragment(noteId: String) {
         if (supportFragmentManager.findFragmentByTag(NoteSettingsFragment.TAG) == null) {
-            supportFragmentManager.beginTransaction()
-                    .add(R.id.container_settings_note, NoteSettingsFragment.newInstance(noteId),
-                            NoteSettingsFragment.TAG)
-                    .commit()
+            supportFragmentManager.inTransaction {
+                add(R.id.container_settings_note, NoteSettingsFragment.newInstance(noteId), NoteSettingsFragment.TAG)
+            }
         }
     }
 

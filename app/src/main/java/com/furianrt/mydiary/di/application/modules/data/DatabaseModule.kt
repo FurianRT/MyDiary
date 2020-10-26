@@ -116,8 +116,20 @@ object DatabaseModule {
             }
         }
 
+        val MIGRATION_5_6 = object : Migration(5, 6) {
+            override fun migrate(database: SupportSQLiteDatabase) {
+                database.execSQL("CREATE TABLE Purchases (" +
+                        "purchase_token TEXT NOT NULL PRIMARY KEY, " +
+                        "order_id TEXT NOT NULL, " +
+                        "sku TEXT NOT NULL, " +
+                        "signature TEXT NOT NULL, " +
+                        "original_json TEXT NOT NULL, " +
+                        "is_acknowledged INTEGER NOT NULL)")
+            }
+        }
+
         return Room.databaseBuilder(context, NoteDatabase::class.java, DATABASE_NAME)
-                .addMigrations(MIGRATION_1_2, MIGRATION_2_3, MIGRATION_3_4, MIGRATION_4_5)
+                .addMigrations(MIGRATION_1_2, MIGRATION_2_3, MIGRATION_3_4, MIGRATION_4_5, MIGRATION_5_6)
                 .addCallback(callback)
                 .build()
     }
@@ -186,6 +198,11 @@ object DatabaseModule {
     @Provides
     @AppScope
     fun provideSpanDao(database: NoteDatabase): SpanDao = database.spanDao()
+
+    @JvmStatic
+    @Provides
+    @AppScope
+    fun providePurchaseDao(database: NoteDatabase): PurchaseDao = database.purchaseDao()
 
     //todo убрать это отсюда, когда будут свои entity у каждого слоя
     private fun createDefaultProperties(db: SupportSQLiteDatabase, context: Context) {

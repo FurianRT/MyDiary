@@ -20,10 +20,10 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="24dp"
             android:src="@drawable/diary_logo"
-            android:tint="?attr/colorPrimary"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
+            app:tint="?attr/colorPrimary"
             tools:ignore="ContentDescription" />
 
         <TextView
@@ -58,9 +58,9 @@
                 android:inputType="textEmailAddress"
                 android:paddingStart="8dp"
                 android:paddingEnd="8dp"
-                tools:text="exampleemail@gmail.com"
                 android:textColor="@color/black"
-                android:textSize="15sp" />
+                android:textSize="15sp"
+                tools:text="exampleemail@gmail.com" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -97,9 +97,9 @@
                 android:inputType="textPassword"
                 android:paddingStart="8dp"
                 android:paddingEnd="8dp"
-                tools:text="password"
                 android:textColor="@color/black"
-                android:textSize="15sp" />
+                android:textSize="15sp"
+                tools:text="password" />
 
         </com.google.android.material.textfield.TextInputLayout>
 

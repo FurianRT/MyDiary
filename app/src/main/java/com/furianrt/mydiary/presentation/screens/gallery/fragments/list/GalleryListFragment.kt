@@ -469,6 +469,7 @@ class GalleryListFragment : BaseFragment(R.layout.fragment_gallery_list), Galler
 
     private fun showEmptyState() {
         if (empty_state.visibility == View.INVISIBLE) {
+            anim_image_empty_list.playAnimation()
             empty_state.translationY = empty_state.height.toFloat()
             empty_state.visibility = View.VISIBLE
             empty_state.animate()
@@ -481,6 +482,7 @@ class GalleryListFragment : BaseFragment(R.layout.fragment_gallery_list), Galler
 
     private fun hideEmptyState() {
         if (empty_state.visibility == View.VISIBLE) {
+            anim_image_empty_list.cancelAnimation()
             empty_state.animate()
                     .translationY(empty_state.height.toFloat())
                     .setDuration(ANIMATION_MOVE_DURATION)

@@ -8,16 +8,6 @@
  *
  ******************************************************************************/
 
-/*******************************************************************************
- *  @author FurianRT
- *  Copyright 2019
- *
- *  All rights reserved.
- *  Distribution of the software in any form is only allowed with
- *  explicit, prior permission from the owner.
- *
- ******************************************************************************/
-
 package com.furianrt.mydiary.presentation.screens.gallery.fragments.list.adapter
 
 import android.annotation.SuppressLint
@@ -36,10 +26,7 @@ import com.bumptech.glide.signature.ObjectKey
 import com.furianrt.mydiary.R
 import com.furianrt.mydiary.model.entity.MyImage
 import com.furianrt.mydiary.presentation.general.GlideApp
-import com.furianrt.mydiary.presentation.general.ItemTouchHelperCallback
-import com.furianrt.mydiary.presentation.screens.gallery.fragments.list.adapter.entity.BaseImageListItem
-import com.furianrt.mydiary.presentation.screens.gallery.fragments.list.adapter.entity.ImageListFooter
-import com.furianrt.mydiary.presentation.screens.gallery.fragments.list.adapter.entity.ImageListItem
+import com.furianrt.mydiary.presentation.screens.gallery.fragments.list.ItemTouchHelperCallback
 import kotlinx.android.synthetic.main.fragment_gallery_list_item.view.*
 
 @SuppressLint("ClickableViewAccessibility")
@@ -86,17 +73,17 @@ class GalleryListAdapter(
         }
     }
 
-    private val mList = mutableListOf<BaseImageListItem>()
+    private val mList = mutableListOf<ImagesListItem>()
 
     fun getImages(): List<MyImage> = mList
-            .filterIsInstance(ImageListItem::class.java)
+            .filterIsInstance(ImagesListItem.Image::class.java)
             .map { it.image }
 
     fun submitList(list: List<MyImage>) {
         val newViewItems = list
-                .map { ImageListItem(it) }
-                .toMutableList<BaseImageListItem>()
-                .apply { add(ImageListFooter()) }
+                .map { ImagesListItem.Image(it) }
+                .toMutableList<ImagesListItem>()
+                .apply { add(ImagesListItem.Footer()) }
         val diffResult = DiffUtil.calculateDiff(GalleryListDiffCallback(mList, newViewItems))
         mList.clear()
         mList.addAll(newViewItems)
@@ -105,7 +92,7 @@ class GalleryListAdapter(
 
     fun deactivateSelection() {
         mList.forEachIndexed { index, item ->
-            if (item is ImageListItem && selectedImageNames.contains(item.image.name)) {
+            if (item is ImagesListItem.Image && selectedImageNames.contains(item.image.name)) {
                 notifyItemChanged(index)
             }
         }
@@ -126,11 +113,7 @@ class GalleryListAdapter(
 
     override fun getItemCount() = mList.size
 
-    override fun getItemViewType(position: Int): Int = when (mList[position]) {
-        is ImageListItem -> TYPE_IMAGE
-        is ImageListFooter -> TYPE_FOOTER
-        else -> throw IllegalStateException("Unsupported item type")
-    }
+    override fun getItemViewType(position: Int): Int = mList[position].getTypeId()
 
     fun onItemMove(fromPosition: Int, toPosition: Int) {
         if (fromPosition < 0 || toPosition < 0 || fromPosition >= mList.size || toPosition >= mList.size) {
@@ -146,14 +129,14 @@ class GalleryListAdapter(
     }
 
     abstract class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        abstract fun bind(item: BaseImageListItem)
+        abstract fun bind(item: ImagesListItem)
         abstract fun onItemClear()
         abstract fun onItemSelected()
         abstract fun onItemReleased()
     }
 
     class ViewHolderFooter(view: View) : ViewHolder(view) {
-        override fun bind(item: BaseImageListItem) {
+        override fun bind(item: ImagesListItem) {
             itemView.visibility = View.VISIBLE
         }
 
@@ -167,8 +150,8 @@ class GalleryListAdapter(
         private var mImage: MyImage? = null
         private var mIsTrashed = false
 
-        override fun bind(item: BaseImageListItem) {
-            with((item as ImageListItem).image) {
+        override fun bind(item: ImagesListItem) {
+            with((item as ImagesListItem.Image).image) {
                 mImage = this
                 itemView.alpha = 1f
                 itemView.setOnClickListener { listener.onListItemClick(this, adapterPosition) }
@@ -197,11 +180,11 @@ class GalleryListAdapter(
         }
 
         override fun onItemClear() {
-            mList.filterIsInstance(ImageListItem::class.java).forEachIndexed { index, item ->
+            mList.filterIsInstance(ImagesListItem.Image::class.java).forEachIndexed { index, item ->
                 item.image.order = index
             }
             listener.onListItemDropped(itemView)
-            listener.onImagesOrderChange(mList.filterIsInstance(ImageListItem::class.java).map { it.image })
+            listener.onImagesOrderChange(mList.filterIsInstance(ImagesListItem.Image::class.java).map { it.image })
             mIsTrashed = false
         }
 

@@ -10,7 +10,6 @@
 
 package com.furianrt.mydiary.model.gateway.general
 
-import com.furianrt.mydiary.R
 import com.furianrt.mydiary.model.entity.SyncProgressMessage
 import com.furianrt.mydiary.model.source.preferences.PreferencesSource
 import com.google.gson.Gson
@@ -19,8 +18,6 @@ import javax.inject.Inject
 class GeneralGatewayImp @Inject constructor(
         private val prefs: PreferencesSource
 ) : GeneralGateway {
-
-    override fun is24TimeFormat(): Boolean = prefs.is24TimeFormat()
 
     override fun getLastAppLaunchTime(): Long = prefs.getLastAppLaunchTime()
 
@@ -57,33 +54,9 @@ class GeneralGatewayImp @Inject constructor(
 
     override fun isRateOfferEnabled(): Boolean = prefs.isRateOfferEnabled()
 
-    override fun getPrimaryColor(): Int = prefs.getPrimaryColor()
-
-    override fun getAccentColor(): Int = prefs.getAccentColor()
-
     override fun isNeedDefaultValues(): Boolean = prefs.isNeedDefaultValues()
 
     override fun setNeedDefaultValues(need: Boolean) {
         prefs.setNeedDefaultValues(need)
-    }
-
-    override fun getAppFontStyle(): Int? = when(prefs.getAppFontStyle()) {
-        1 -> R.style.ArimaMaduraiFontStyle
-        2 -> R.style.ArimoFontStyle
-        3 -> R.style.BadScriptFontStyle
-        4 -> R.style.CaveatFontStyle
-        5 -> R.style.CuprumFontStyle
-        6 -> R.style.GabrielaFontStyle
-        7 -> R.style.IbmPlexMonoFlowerFontStyle
-        8 -> R.style.NotoSerifFontStyle
-        9 -> R.style.PhilosopherFontStyle
-        10 -> R.style.PlayRegularFontStyle
-        11 -> R.style.PoppinsLightFontStyle
-        12 -> R.style.ProductSansLightFontStyle
-        13 -> R.style.RobotoFontStyle
-        14 -> R.style.RobotoSlabFontStyle
-        15 -> R.style.RobotoMediumFontStyle
-        16 -> R.style.UbuntuFontStyle
-        else ->  null
     }
 }

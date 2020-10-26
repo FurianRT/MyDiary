@@ -68,6 +68,7 @@ class AuthFragment : BaseFragment(R.layout.fragment_auth), AuthContract.View {
         super.onViewCreated(view, savedInstanceState)
         button_auth_close.setOnClickListener { presenter.onButtonCloseClick() }
         button_create_account.setOnClickListener { presenter.onButtonCreateAccountClick() }
+        image_create_account.setOnClickListener { presenter.onButtonCreateAccountClick() }
 
         savedInstanceState?.let {
             card_create_account.translationY = it.getFloat(BUNDLE_CREATE_BUTTON_TRANSLATION_Y, 0f)

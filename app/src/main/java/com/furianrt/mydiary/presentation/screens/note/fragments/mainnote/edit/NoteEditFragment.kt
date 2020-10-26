@@ -23,7 +23,6 @@ import com.furianrt.mydiary.R
 import com.furianrt.mydiary.analytics.MyAnalytics
 import com.furianrt.mydiary.presentation.base.BaseFragment
 import com.furianrt.mydiary.model.entity.MyNoteAppearance
-import com.furianrt.mydiary.utils.hideKeyboard
 import com.furianrt.mydiary.presentation.screens.note.fragments.mainnote.NoteFragment
 import com.furianrt.mydiary.utils.getTextSpans
 import com.furianrt.mydiary.utils.showKeyboard
@@ -129,7 +128,6 @@ class NoteEditFragment : BaseFragment(R.layout.fragment_note_edit), NoteEditCont
                         edit_note_title.setSelection(mClickPosition)
                     }
                     edit_note_title.showKeyboard()
-
                 }
                 VIEW_CONTENT -> {
                     edit_note_content.requestFocus()
@@ -160,10 +158,6 @@ class NoteEditFragment : BaseFragment(R.layout.fragment_note_edit), NoteEditCont
             }
 
     override fun closeView() {
-        activity?.currentFocus?.let { focus ->
-            focus.hideKeyboard()
-            focus.clearFocus()
-        }
         parentFragmentManager.popBackStack()
     }
 

@@ -18,7 +18,6 @@ interface PreferencesSource {
     fun isMapEnabled(): Boolean
     fun setMapEnabled(enabled: Boolean)
     fun isMoodEnabled(): Boolean
-    fun isPanoramaEnabled(): Boolean
     fun getTextColor(): Int
     fun setTextColor(color: Int)
     fun getSurfaceTextColor(): Int
@@ -64,7 +63,6 @@ interface PreferencesSource {
         const val WEATHER_UNITS = "weather_units"
         const val MOOD_AVAILABILITY = "mood_activation"
         const val MAP_AVAILABILITY = "map_activation"
-        const val PANORAMA_AVAILABILITY = "panorama_activation"
         const val TEXT_COLOR = "all_notes_text_color"
         const val SURFACE_TEXT_COLOR = "all_notes_surface_text_color"
         const val TEXT_SIZE = "all_notes_text_size"

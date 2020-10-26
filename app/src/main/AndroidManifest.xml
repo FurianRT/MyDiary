@@ -51,7 +51,6 @@
             </intent-filter>
         </service>
 
-        <!-- TODO разлочить ориентацию, когда будут готовы лейауты -->
         <activity
             android:name=".presentation.screens.main.MainActivity"
             android:launchMode="singleTask"

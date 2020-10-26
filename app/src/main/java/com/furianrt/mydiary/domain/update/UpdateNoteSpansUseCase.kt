@@ -10,11 +10,10 @@
 
 package com.furianrt.mydiary.domain.update
 
-import com.furianrt.mydiary.BuildConfig
 import com.furianrt.mydiary.model.entity.MyTextSpan
-import com.furianrt.mydiary.model.gateway.device.DeviceGateway
 import com.furianrt.mydiary.model.gateway.span.SpanGateway
 import com.furianrt.mydiary.di.application.component.AppScope
+import com.furianrt.mydiary.domain.check.IsPremiumPurchasedUseCase
 import com.furianrt.mydiary.utils.generateUniqueId
 import io.reactivex.rxjava3.core.Completable
 import javax.inject.Inject
@@ -22,7 +21,7 @@ import javax.inject.Inject
 @AppScope
 class UpdateNoteSpansUseCase @Inject constructor(
         private val spanGateway: SpanGateway,
-        private val deviceGateway: DeviceGateway
+        private val isPremiumPurchasedUseCase: IsPremiumPurchasedUseCase
 ) {
 
     private fun List<MyTextSpan>.isEqualTo(spans: List<MyTextSpan>): Boolean {
@@ -48,7 +47,7 @@ class UpdateNoteSpansUseCase @Inject constructor(
                         if (existingSpans.isEqualTo(textSpans)) {
                             Completable.complete()
                         } else {
-                            if (deviceGateway.isItemPurchased(BuildConfig.ITEM_PREMIUM_SKU)) {
+                            if (isPremiumPurchasedUseCase()) {
                                 spanGateway.deleteTextSpan(noteId)
                                         .andThen(spanGateway.insertTextSpan(textSpans.map { span ->
                                             span.apply {

@@ -18,7 +18,6 @@ import com.furianrt.mydiary.domain.FindLocationUseCase
 import com.furianrt.mydiary.domain.check.IsForecastEnabledUseCase
 import com.furianrt.mydiary.domain.check.IsLocationEnabledUseCase
 import com.furianrt.mydiary.domain.check.IsMoodEnabledUseCase
-import com.furianrt.mydiary.domain.check.IsPanoramaEnabledUseCase
 import com.furianrt.mydiary.domain.get.*
 import com.furianrt.mydiary.domain.save.AddForecastUseCase
 import com.furianrt.mydiary.domain.save.SaveImagesUseCase
@@ -53,7 +52,6 @@ class NoteFragmentPresenter @Inject constructor(
         private val isLocationEnabledUseCase: IsLocationEnabledUseCase,
         private val isForecastEnabledUseCase: IsForecastEnabledUseCase,
         private val findLocationUseCase: FindLocationUseCase,
-        private val isPanoramaEnabledUseCase: IsPanoramaEnabledUseCase,
         private val disableLocationUseCase: DisableLocationUseCase,
         private val analytics: MyAnalytics,
         private val scheduler: MyRxUtils.BaseSchedulerProvider
@@ -119,13 +117,12 @@ class NoteFragmentPresenter @Inject constructor(
 
     private fun loadImages() {
         addDisposable(getImagesUseCase(mNoteId)
-                .map { Pair(it, isPanoramaEnabledUseCase()) }
                 .observeOn(scheduler.ui())
-                .subscribe { imagesAndPanorama ->
-                    if (imagesAndPanorama.first.isEmpty()) {
+                .subscribe { images ->
+                    if (images.isEmpty()) {
                         view?.showNoImages()
                     } else {
-                        view?.showImages(imagesAndPanorama.first, imagesAndPanorama.second)
+                        view?.showImages(images)
                     }
                 })
     }
